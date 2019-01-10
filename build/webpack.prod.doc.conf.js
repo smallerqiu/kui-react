@@ -15,14 +15,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = merge(webpackBaseConfig, {
   mode: 'production',
   entry: {
-    index: [/* 'babel-polyfill', */ './docs/app.jsx'],
+    index: ["@babel/polyfill", './docs/src/app.jsx'],
     // index: path.resolve(__dirname, '../docs/main.js'),
     // vendors: ['react', 'react-dom', 'react-router-dom',]
   },
   output: {
-    path: path.resolve(__dirname, '../docs-html'),
+    path: path.resolve(__dirname, '../docs/dist'),
     filename: 'js/[name].[hash:5].js',
-    publicPath: '/',
+    publicPath: './dist/',
     chunkFilename: 'js/[name].[chunkhash:5].js',
     libraryTarget: 'umd',
   },
@@ -31,28 +31,14 @@ module.exports = merge(webpackBaseConfig, {
   },
   module: {
     rules: [
-      // {
-      //   test: /\.css$/,
-      //   use: ExtractTextPlugin.extract({ fallback: "style-loader", use: "css-loader" })
-      // },
       {
         test: /\.less$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'],
       },
-      // {
-      //   test: /\.js[x]$/, exclude: /node_modules/, loader: 'babel-loader',
-      //   include: [path.resolve(__dirname, '../docs'),]
-      // },
     ]
   },
   optimization: {
     splitChunks: {
-      // name(module) {
-      //   return (
-      //     module.resource && /\.js$/.test(module.resource) &&
-      //     module.resource.indexOf(path.join(__dirname, '../node_modules')) === 0
-      //   )
-      // }
       chunks: 'async',
       minSize: 30000, //分离前的最小块文件大小，单位为字节
       minChunks: 1, //分离前，该块被引入的次数
@@ -70,29 +56,29 @@ module.exports = merge(webpackBaseConfig, {
       }
     },
     minimize: true,
-    minimizer: [
-      new UglifyJsPlugin({
-        uglifyOptions: {
-          compress: {
-            warnings: false,
-            // drop_debugger: true,
-            // drop_console: true
-          },
-          sourceMap: false
-        }
-      })
-    ]
+    // minimizer: [
+    //   new UglifyJsPlugin({
+    //     uglifyOptions: {
+    //       compress: {
+    //         warnings: false,
+    //         // drop_debugger: true,
+    //         // drop_console: true
+    //       },
+    //       sourceMap: false
+    //     }
+    //   })
+    // ]
   },
   plugins: [
     new webpack.DefinePlugin({ 'process.env.NODE_ENV': '"production"' }),
     new MiniCssExtractPlugin({ filename: "css/[name].[hash:5].css" }),
     // new webpack.HashedModuleIdsPlugin(),
     new HtmlWebpackPlugin({
-      favicon: path.join(__dirname, '../docs/assets/favicon.png'),
+      favicon: path.join(__dirname, '../docs/src/assets/favicon.png'),
       // 生成html文件的名字，路径和生产环境下的不同，要与修改后的publickPath相结合，否则开启服务器后页面空白
-      filename: 'index.html',
+      filename: '../index.html',
       // 源文件，路径相对于本文件所在的位置 
-      template: path.resolve(__dirname, '../docs/index.html'),
+      template: path.resolve(__dirname, '../docs/src/index.html'),
       // 需要引入entry里面的哪几个入口，如果entry里有公共模块，记住一定要引入
       // chunks: ['index', 'vendors'],
       // 要把<script>标签插入到页面哪个标签里(body|true|head|false)
@@ -113,9 +99,7 @@ module.exports = merge(webpackBaseConfig, {
     new webpack.BannerPlugin(pkg.name + ' v' + pkg.version + ' by chuchur (c) ' + new Date().getFullYear() + ' Licensed ' + pkg.license),
     // 允许错误不打断程序
     // new webpack.NoErrorsPlugin(),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
-    })
+    new webpack.LoaderOptionsPlugin({ minimize: true })
   ],
 
 })

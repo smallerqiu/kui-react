@@ -1,6 +1,6 @@
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
-import { Transition, Transfer, Button } from '../../index'
+import { Transition, Transfer, Button } from '@/index'
 import Picker from './picker'
 export default class ColorPicker extends Kui {
   constructor(props) {

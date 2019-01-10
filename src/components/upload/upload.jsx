@@ -1,6 +1,6 @@
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
-import Message from '../message'
+import { Message } from '../message'
 export default class Upload extends Kui {
   constructor(props) {
     super(props)

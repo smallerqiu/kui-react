@@ -1,7 +1,4 @@
-// const ExtractTextPlugin = require('extract-text-webpack-plugin')
-// const pkg = require('../package.json');
-// const webpack = require('webpack');
-
+const path = require('path')
 module.exports = {
   module: {
     rules: [
@@ -12,13 +9,10 @@ module.exports = {
           // plugins: ['transform-runtime']
         } */
       },
-      { test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader'] },
-      { test: /\.sass$/, use: ['style-loader', 'css-loader', 'sass-loader'] },
+      { test: /\.s(c|a)ss$/, use: ['style-loader', 'css-loader', 'sass-loader'] },
       { test: /\.styl(us)?$/, use: ['style-loader', 'css-loader', 'stylus-loader'] },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader', ]
-      }, 
+      { test: /\.css$/, use: ['style-loader', 'css-loader',] },
+      { test: /\.less$/, use: ['style-loader', 'css-loader', 'less-loader'], },
       {
         test: /\.(png|jpg|gif)$/,
         loader: 'url-loader',
@@ -34,10 +28,10 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx', '.json', '.less'],
     alias: {
-      // 'vue': 'vue/dist/vue.esm.js',
+      '@': path.resolve(__dirname, '../src'),
     },
     plugins: [
-       
+
     ]
   }
 }

@@ -1,9 +1,9 @@
 /**
  * by chuchur /chuchur@qq.com
- * 打包vue 组件
+ * 打包react 组件
  */
 const webpack = require('webpack')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+// const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const merge = require('webpack-merge');
@@ -14,56 +14,38 @@ module.exports = merge(webpackBaseConfig, {
     mode: 'development',
     devtool: 'none',
     devServer: {
-        contentBase: path.resolve(__dirname, '../docs-html'),
+        contentBase: path.resolve(__dirname, 'docs'),
         port: 7002,
+        clientLogLevel: 'none',
         hot: true,
-        // open: true,
+        // open: false,
         inline: true,
         compress: true,
         historyApiFallback: true,
-        // proxy: {
-        //     '/rest': {
-        //         target: 'http://10.0.101.162:9596', //测试环境
-        //         changeOrigin: true,
-        //         pathRewrite: {
-        //             '^/rest': '' //本地没有rest
-        //         },
-        //     }
-        // }
     },
     entry: {
-        // index: [path.resolve(__dirname, '../docs/main.js')],
-        index: ['./docs/app.jsx'],
+        index: ['./docs/src/app.jsx'],
         vendors: ['react', 'react-router', 'react-dom']
     },
     output: {
-        path: path.resolve(__dirname, '../docs-html'),
-        filename: 'js/[name].[hash:5].js',
+        path: path.resolve(__dirname, 'docs'),
+        filename: '[name].[hash:5].js',
         publicPath: '/',
-        chunkFilename: 'js/[name].[chunkhash:5].js',
-    },
-    module: {
-        rules: [
-            {
-                test: /\.less$/,
-                use: ['style-loader', 'css-loader', 'less-loader'],
-            },
-        ]
-    },
+        chunkFilename: '[name].[chunkhash:5].js',
+    }, 
     optimization: {
         minimize: false,
     },
     plugins: [
         //热键替换，配合devServer => hot:true
         new webpack.HotModuleReplacementPlugin(),
-
         // 自动生成html插件，如果创建多个HtmlWebpackPlugin的实例，就会生成多个页面
         new HtmlWebpackPlugin({
-            favicon: path.join(__dirname, '../docs/assets/favicon.png'),
+            favicon: path.join(__dirname, '../docs/src/assets/favicon.png'),
             // 生成html文件的名字，路径和生产环境下的不同，要与修改后的publickPath相结合，否则开启服务器后页面空白
             filename: 'index.html',
             // 源文件，路径相对于本文件所在的位置
-            template: path.resolve(__dirname, '../docs/index.html'),
+            template: path.resolve(__dirname, '../docs/src/index.html'),
             // 需要引入entry里面的哪几个入口，如果entry里有公共模块，记住一定要引入
             chunks: ['vendors', 'index'],
             // 要把<script>标签插入到页面哪个标签里(body|true|head|false)

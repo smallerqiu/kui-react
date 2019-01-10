@@ -1,6 +1,6 @@
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
-import Icon from '../../components/icon'
+import Icon from '@/components/icon'
 import Item from './carouselItem'
 export default class Carousel extends Kui {
   constructor(props) {
@@ -160,7 +160,7 @@ Carousel.propTypes = {
   dots: PropTypes.bool
 }
  /*    < script >
-import resize from '../../directives/winScroll'
+import resize from '@/directives/winScroll'
 export default {
     name: 'Carousel',
     directives: { resize },

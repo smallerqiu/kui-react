@@ -30,7 +30,7 @@ RadioButton.propTypes = {
 </template>
 <script>
 import { Button } from '../button'
-import emitter from '../../mixins/emitter'
+import emitter from '@/mixins/emitter'
 export default {
   name: 'RadioButton',
   components: { 'k-button': Button },

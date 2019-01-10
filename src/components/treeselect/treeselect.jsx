@@ -1,6 +1,6 @@
 import React from 'react'
-import { Kui, PropTypes } from '../../../src/components/kui'
-import { Transition, Transfer, Tree } from '../../index'
+import { Kui, PropTypes } from '@/components/kui'
+import { Transition, Transfer, Tree } from '@/index'
 export default class TreeSelect extends Kui {
   constructor(props) {
     super(props)

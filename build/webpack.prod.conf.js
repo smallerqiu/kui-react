@@ -1,6 +1,6 @@
 /**
  * by chuchur /chuchur@qq.com
- * 打包vue 组件
+ * 打包 react 组件
  */
 const webpack = require('webpack')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin'); //for webpack 4
@@ -46,7 +46,6 @@ module.exports = merge(webpackBaseConfig, {
             {
                 test: /\.less$/,
                 use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'], // : , 
-                // use: ExtractTextPlugin.extract({ fallback: "style-loader", use: [{ loader: "css-loader" }, { loader: "less-loader" },], }),
             },
         ]
     },

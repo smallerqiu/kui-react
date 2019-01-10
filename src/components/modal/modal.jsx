@@ -1,6 +1,6 @@
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
-import { Button, Transition, Icon } from '../../index'
+import { Button, Transition, Icon } from '@/index'
 
 export default class Modal extends Kui {
   constructor(props) {

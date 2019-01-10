@@ -1,6 +1,6 @@
 import React from 'react'
-import { Kui, PropTypes } from '../../components/kui'
-import { Input, Button, Select, Icon } from '../../index'
+import { Kui, PropTypes } from '@/components/kui'
+import { Input, Button, Select, Icon } from '@/index'
 export default class Page extends Kui {
   constructor(props) {
     super(props)
