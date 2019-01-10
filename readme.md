@@ -1,7 +1,7 @@
 
 <p align="center">
-    <a href="https://react.k-ui.xyz">
-        <img width="100" src="https://github.com/chuchur/kui-react/assets/logo.svg">
+    <a href="https://chuchur.github.io/kui-react/">
+        <img width="100" src="https://chuchur.github.io/kui-react/assets/logo.svg">
     </a>
 </p>
 
@@ -31,10 +31,10 @@ npm run build
 组件丰富，功能强大
 
 ### 更新日志
-logs：[https://react.k-ui.xyz/log](https://react.k-ui.xyz/log)
+logs：[https://chuchur.github.io/kui-react/#log](https://chuchur.github.io/kui-react/#log)
 
 #### 文档
-Docs : [https://react.k-ui.xyz](https://react.k-ui.xyz)   
+Docs : [https://chuchur.github.io/kui-react/](https://chuchur.github.io/kui-react/)   
 Github: [https://github.com/chuchur/kui-react](https://github.com/chuchur/kui-react)
 
 #### 安装
