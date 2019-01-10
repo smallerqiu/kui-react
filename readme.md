@@ -1,7 +1,7 @@
 
 <p align="center">
     <a href="https://react.k-ui.xyz">
-        <img width="100" src="https://k-ui.xyz/img/logo.svg">
+        <img width="100" src="https://github.com/chuchur/kui-react/assets/logo.svg">
     </a>
 </p>
 
@@ -10,6 +10,15 @@
 在追求完美视觉体验的同时也保证了其性能高效。
 
 欢迎使用 、批评、指正、吐槽、[Star](https://github.com/chuchur/kui-react) 
+
+## 编译   
+```xml
+//编译文档
+npm run build:docs
+//编译组件
+npm run build
+```
+
 
 ### 特性   
 漂亮的UI，可定制主题   
