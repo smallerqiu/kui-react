@@ -1,7 +1,7 @@
 
 <p align="center">
     <a href="https://chuchur.github.io/kui-react/">
-        <img width="100" src="https://chuchur.github.io/kui-react/assets/logo.svg">
+        <img width="100" src="https://chuchur.github.io/kui-react/src/assets/logo.svg">
     </a>
 </p>
 
