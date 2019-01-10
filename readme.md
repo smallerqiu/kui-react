@@ -11,8 +11,8 @@
 
 欢迎使用 、批评、指正、吐槽、[Star](https://github.com/chuchur/kui-react) 
 
-## 编译   
-```xml
+### 编译   
+```js
 //编译文档
 npm run build:docs
 //编译组件
