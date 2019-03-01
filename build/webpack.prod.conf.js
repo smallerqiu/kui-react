@@ -3,7 +3,8 @@
  * 打包 react 组件
  */
 const webpack = require('webpack')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin'); //for webpack 4
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin'); //for webpack 4
+const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') //for webpack 4
 // const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const path = require('path');
@@ -52,8 +53,8 @@ module.exports = merge(webpackBaseConfig, {
     optimization: {
         minimize: true,
         minimizer: [
-            new UglifyJsPlugin({
-                uglifyOptions: {
+            new TerserPlugin({
+                terserOptions: {
                     compress: {
                         warnings: false,
                         drop_debugger: true,

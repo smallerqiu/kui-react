@@ -1,10 +1,10 @@
-import React, { Component } from 'react' 
+import React, { Component } from 'react'
 import { Button } from '@/index'
 import logo from '../assets/favicon.png'
 export default class Index extends Component {
   start() {
     this.props.history.push('/start')
-  } 
+  }
   render() {
     return (<section className="index">
       <header className="header">
@@ -21,9 +21,9 @@ export default class Index extends Component {
             <ul>
               <li><a href="/">首页</a> </li>
               <li><a href="#/start">组件</a> </li>
-              <li><a href="//chuchur.github.io/kui-vue/" target="_blank">KUI VUE</a></li>
-              <li><a href="//github.com/chuchur/kui-react">GITHUB</a></li>
-              <li><a href="//chuchur.com">BLOG</a></li>
+              <li><a href="https://vue.k-ui.cn" target="_blank">KUI VUE</a></li>
+              <li><a href="https://gitee.com/chuchur/kui-react" target="_blank" >GITEE</a></li>
+              <li><a href="https://chuchur.com" target="_blank">BLOG</a></li>
             </ul>
           </div>
         </div>
@@ -33,7 +33,7 @@ export default class Index extends Component {
         <h1>一枚高质量前端UI组件库</h1>
         <div className="btn-content">
           <Button className="start" onClick={this.start.bind(this)}>开始使用</Button>
-          <Button icon="logo-github" className="github"><a href="//github.com/chuchur/kui-react" target="_blank">Github</a></Button>
+          <Button icon="ios-cloud" className="github"><a href="https://gitee.com/chuchur/kui-react" target="_blank">Gitee</a></Button>
         </div>
       </section>
     </section>)

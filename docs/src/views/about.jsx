@@ -14,8 +14,8 @@ export default class about extends React.Component {
     return <div>
       <h2>关于</h2>
       <p>欢迎批评、指正、吐槽、
-           <a href="https://github.com/chuchur/kui" target="_blank">Star</a>和
-           <a href="/sponsor">捐助</a>
+           <a href="https://gitee.com/chuchur/kui-vue" target="_blank">Star</a>和
+           <a href="#/sponsor">捐助</a>
       </p>
       <br />
       <br />

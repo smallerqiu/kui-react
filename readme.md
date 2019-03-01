@@ -1,7 +1,7 @@
 
 <p align="center">
-    <a href="https://chuchur.github.io/kui-react/">
-        <img width="100" src="https://chuchur.github.io/kui-react/src/assets/logo.svg">
+    <a href="https://react.k-ui.cn">
+        <img width="100" src="https://chuchur.com/kui/react/logo.svg">
     </a>
 </p>
 
@@ -9,7 +9,7 @@
 
 在追求完美视觉体验的同时也保证了其性能高效。
 
-欢迎使用 、批评、指正、吐槽、[Star](https://github.com/chuchur/kui-react) 
+欢迎使用 、批评、指正、吐槽、[Star](https://gitee.com/chuchur/kui-react) 
 
 ### 开发   
 ```xml
@@ -31,11 +31,11 @@ npm run build
 组件丰富，功能强大
 
 ### 更新日志
-logs：[https://chuchur.github.io/kui-react/#log](https://chuchur.github.io/kui-react/#log)
+logs：[https://react.k-ui.cn/#/log](https://react.k-ui.cn/#/log)
 
 #### 文档
-Docs : [https://chuchur.github.io/kui-react/](https://chuchur.github.io/kui-react/)   
-Github: [https://github.com/chuchur/kui-react](https://github.com/chuchur/kui-react)
+Docs : [https://react.k-ui.cn](https://react.k-ui.cn)   
+Gitee: [https://gitee.com/chuchur/kui-react](https://gitee.com/chuchur/kui-react)
 
 #### 安装
 ```

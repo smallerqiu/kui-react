@@ -64,9 +64,9 @@ export default class Layout extends Kui {
           </div>
           <Menu style={{ float: 'right' }} mode="horizontal" activeName="/install" onSelect={(path) => this.routerChange(path)}>
             <Menu.Item name="/" icon="ios-home">首页</Menu.Item>
-            <Menu.Item name="/start" icon="ios-options">组件</Menu.Item>
-            <Menu.Item name="https://chuchur.github.io/kui-vue/"><img src={vueIcon} style={{ height: 15, margin: 0 }} />KUI VUE</Menu.Item>
-            <Menu.Item name="https://github.com/chuchur/kui-react" icon="logo-github">GITHUB</Menu.Item>
+            <Menu.Item name="#/start" icon="ios-options">组件</Menu.Item>
+            <Menu.Item name="https://vue.k-ui.cn"><img src={vueIcon} style={{ height: 15, margin: 0 }} />KUI VUE</Menu.Item>
+            <Menu.Item name="https://gitee.com/chuchur/kui-react" icon="logo-github">GITEE</Menu.Item>
             <Menu.Item name="https://www.chuchur.com" icon="ios-leaf">Blog</Menu.Item>
           </Menu>
         </header>
@@ -94,25 +94,25 @@ export default class Layout extends Kui {
           <div className="ft-left">
             <ul>
               <li>链接</li>
-              <li><a href="//github.com/chuchur/kui-react" target="_blank">仓库代码</a></li>
-              <li><a href="//chuchur.github.io/kui-vue/" target="_blank">KUI VUE</a></li>
-              <li><a href="/sponsor">支持作者</a></li>
-              <li><a href="//gitee.com/chuchur/kui-react" target="_blank">码云</a></li>
-              <li><a href="/about">关于</a></li>
+              <li><a href="https://gitee.com/chuchur/kui-react" target="_blank">仓库代码</a></li>
+              <li><a href="https://vue.k-ui.cn" target="_blank">KUI VUE</a></li>
+              <li><a href="#/sponsor">支持作者</a></li>
+              <li><a href="https://gitee.com/chuchur/kui-react" target="_blank">码云</a></li>
+              <li><a href="#/about">关于</a></li>
             </ul>
-            <p>© 2018 Created by chuchur.com</p>
+            <p>© 2015-2019 Created by chuchur.com</p>
           </div>
           <div className="ft-right">
             <ul>
               <li>
-                <a href="//chuchur.com" target="_blank"><img src="//chuchur.com/favicon.png" />
+                <a href="https://chuchur.com" target="_blank"><img src="//chuchur.com/favicon.png" />
                   <span>chuchur</span>
                 </a>
               </li>
               <li>
-                <a href="//github.com/chuchur/kui-react" target="_blank">
-                  <Icon type="logo-github" />
-                  <span>github</span>
+                <a href="https://gitee.com/chuchur/kui-react" target="_blank">
+                  <Icon type="ios-cloud" />
+                  <span>gitee</span>
                 </a>
               </li>
             </ul>
