@@ -1,0 +1,99 @@
+@import '../../styles/global.less';
+.k-tree {
+	.k-tree-item {
+		padding: .2em 0;
+		margin: 0;
+		list-style: none;
+		white-space: nowrap;
+		outline: 0;
+		user-select: none;
+	}
+	.k-tree-children {
+		margin: 0;
+		.k-tree-children {
+			margin: 0 0 0 12px;
+		}
+	}
+	.k-tree-commes {
+		display: inline-block;
+		width: 24px;
+	}
+	.k-checkbox-wp {
+		margin: 0;
+	}
+	.k-tree-icon {
+		margin-right: 5px;
+		vertical-align: middle;
+	}
+	.k-tree-title {
+		display: inline-block;
+		padding: 0 4px;
+		margin: 0 4px;
+		border-radius: 2px;
+		cursor: pointer;
+		color: @color;
+		line-height: 24px;
+		// transition: all .2s ease-in-out;
+		&:hover, &:focus {
+			background: tint(@main, 90%);
+			outline: none;
+		}
+	}
+	.k-tree-item-disabled {
+		.k-tree-title, .k-tree-icon {
+			color: @disable-color;
+			cursor: not-allowed;
+		}
+	}
+	.k-tree-title-selected {
+		background: tint(@main, 70%);
+		&:hover, &:focus {
+			background: tint(@main, 70%);
+		}
+	}
+	.k-tree-arrow {
+		font-size: 14px;
+		width: 24px;
+		height: 24px;
+		line-height: 24px;
+		display: inline-block;
+		vertical-align: middle;
+		position: relative;
+		text-align: center;
+		transform: rotate(0deg);
+		transition: transform .2s ease-in-out;
+		cursor: pointer;
+		// background-color: #fff;
+	}
+	.k-tree-arrow-open {
+		transform: rotate(90deg)
+	}
+	.k-tree-children {
+		overflow: hidden;
+		transition: all .2s ease-in-out;
+	}
+	.tree-nodata {
+		padding: 8px 10px;
+		display: block;
+		color: @disable-color;
+		font-size: 12px;
+	}
+}
+
+.k-tree-show-line {
+	.k-tree-children-has-child {
+		&:not(:last-child) {
+			position: relative;
+			&::before {
+				position: absolute;
+				left: 13px;
+				width: 1px;
+				height: 100%;
+				height: calc(100% - 22px);
+				margin: 25px 0 0;
+				border-left: 1px solid #d9d9d9;
+				content: "";
+			}
+		}
+	}
+}

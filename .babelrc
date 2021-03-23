@@ -11,18 +11,17 @@
             "maintained node versions",
             "not dead"
           ],
-          "node":true,
+          "node": true
         },
         // for uglifyjs...
-        "forceAllTransforms": true,
-      },
+        "forceAllTransforms": true
+      }
     ],
     "@babel/preset-react"
   ],
   "plugins": [
-    [
-      "@babel/plugin-transform-runtime"
-    ]
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-transform-runtime"
   ],
   "comments": false
 }

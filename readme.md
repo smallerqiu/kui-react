@@ -4,50 +4,79 @@
         <img width="100" src="https://chuchur.com/kui/react/logo.svg">
     </a>
 </p>
+<h1 align="center">
+   KUI for React   
+</h1>
 
-### 一枚前端UI 组件库 for React
+<div align="center">
 
-在追求完美视觉体验的同时也保证了其性能高效。
+A high quality UI components Library with React.js
 
-欢迎使用 、批评、指正、吐槽、[Star](https://gitee.com/chuchur/kui-react) 
+[![View UI](https://img.shields.io/npm/v/react-kui.svg?style=flat-square)](https://www.npmjs.org/package/react-kui)
+[![NPM downloads](http://img.shields.io/npm/dm/react-kui.svg?style=flat-square)](https://npmjs.org/package/react-kui)
+[![NPM downloads](https://img.shields.io/npm/dt/react-kui.svg?style=flat-square)](https://npmjs.org/package/react-kui)
+![JS gzip size](http://img.badgesize.io/https://unpkg.com/react-kui/dist/k-ui.js?compression=gzip&label=gzip%20size:%20JS&style=flat-square)
+![CSS gzip size](http://img.badgesize.io/https://unpkg.com/react-kui/dist/k-ui.css?compression=gzip&label=gzip%20size:%20CSS&style=flat-square)
 
-### 开发   
-```xml
-npm run dev
-```
+![](https://k-ui.cn/img/theme.jpg)
+</div>
 
-### 编译   
-```js
-//编译文档
-npm run build:docs
-//编译组件
-npm run build
-```
+## Docs   
+[2.x](https://react.k-ui.cn)
+
+## Features
+Dozens of useful and beautiful components.    
+Friendly API. It's made for people with any skill level.    
+Extensive documentation and demos.    
+It is quite beautiful.   
 
 
-### 特性   
-漂亮的UI，可定制主题   
-兼容IE9+   
-组件丰富，功能强大
+## Compatibility
+Supports React.js 16.x +
+Supports SSR   
+Supports TypeScript   
+Supports Electron   
+Most components and features support IE9 and above browsers, some   components and features do not support IE
 
-### 更新日志
-logs：[https://react.k-ui.cn/#/log](https://react.k-ui.cn/#/log)
 
-#### 文档
-Docs : [https://react.k-ui.cn](https://react.k-ui.cn)   
-Gitee: [https://gitee.com/chuchur/kui-react](https://gitee.com/chuchur/kui-react)
+## Install
 
-#### 安装
-```
+Using npm:
+```bash
 npm install react-kui
 ```
 
-#### 使用
 
-```js
+Example :
+
+```jsx
 import React from 'react'
-import Render from 'react-dom'
-import { Button } from 'react-kui'
+import {render} from 'react-dom'
+import { Button ,Message } from 'react-kui'
 import 'react-kui/dist/k-ui.css'
 
-Render.render(<Button type="primary"></Button>,document.getElementById('app'))
+class App extends React.Component {
+
+  test = ()=>{
+    Message.info('Hello World !!')
+  }
+
+  render(){
+    <Button onClick={()=>this.test()}>Hello</Button>
+  }
+}
+
+render(<App />,document.getElementById('app'))
+```
+
+
+## Ecosystem Links
+[KUI for Vue.js](https://k-ui.cn)    
+
+[KUI for mobile](https://gitee.com/chuchur/kui-vue-mobile)
+
+
+## License
+[MIT](http://opensource.org/licenses/MIT)
+
+Copyright (c) 2017-present, Chuchur

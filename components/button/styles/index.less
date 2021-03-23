@@ -1,0 +1,219 @@
+@import '../../styles/global.less';
+.k-btn {
+  color: @color;
+  font-size: 12px;
+  height: 32px;
+  line-height: 30px;
+  padding: 0 15px;
+  box-sizing: border-box;
+  border-radius: @radius;
+  display: inline-block;
+  vertical-align: middle; // transition: opacity .2s ease-in-out;
+  user-select: none;
+  outline: none;
+  border: 1px solid @border-color;
+  background-color: #fff;
+  transition: all .3s cubic-bezier(.645, .045, .355, 1);
+  z-index: 0;
+  &:focus, &:hover {
+    border-color: @main;
+    color: @main;
+    z-index: 1;
+  }
+  &>.k-icon +span, span +.k-icon {
+    margin-left: 4px;
+  }
+  .k-icon {
+    font-size: 16px;
+    vertical-align: middle;
+    margin-top: -2px;
+  }
+}
+
+.k-btn-block {
+  width: 100%;
+}
+
+.k-btn-dashed {
+  border-style: dashed;
+}
+
+.k-btn-loading {
+  opacity: .8;
+  &:hover {
+    opacity: .8;
+  }
+}
+
+.k-btn-sm {
+  height: 25px;
+  line-height: 23px;
+  font-size: 12px;
+  padding: 0 8px;
+  [class^="k-ion"] {
+    font-size: 12px;
+  }
+}
+
+.k-btn-lg {
+  height: 40px;
+  line-height: 38px;
+  font-size: 14px;
+  padding: 0 15px;
+  .k-icon {
+    font-size: 20px;
+  }
+}
+
+.k-btn-circle {
+  border-radius: 30px;
+}
+
+.k-btn-primary {
+  color: #fff;
+  background: @main;
+  border-color: @main;
+  &:hover {
+    opacity: .8;
+    zoom: 0%;
+    color: #fff;
+  }
+  &:focus {
+    color: #fff;
+  }
+}
+
+.k-btn-danger {
+  color: #fff;
+  border-color: @danger;
+  background: @danger;
+  &:hover {
+    opacity: .8;
+    zoom: 0%;
+    color: #fff;
+    border-color: @danger;
+  }
+  &:focus {
+    border-color: @danger;
+    color: #fff;
+  }
+  .badge-count {
+    border-color: @danger;
+    color: @danger;
+  }
+}
+
+.k-btn.k-btn-hollow {
+  background: 0 0;
+  color: #fff;
+  border-color: #fff;
+  &:focus, &:hover {
+    border-color: @main;
+    color: @main;
+  }
+}
+
+.k-btn-primary.k-btn-hollow {
+  color: @main;
+  border-color: @main;
+  &:focus {
+    border-color: @main;
+    color: @main;
+  }
+}
+
+.k-btn-danger.k-btn-hollow {
+  &, &:focus, &:hover {
+    border-color: @danger;
+    color: @danger;
+  }
+}
+
+.k-btn-group {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  white-space: nowrap;
+  .k-btn {
+    margin-left: -1px;
+    position: relative;
+    margin-right: 0;
+    border-radius: 0;
+    &:first-child {
+      border-radius: @radius 0 0 @radius;
+    }
+    &:last-child {
+      border-radius: 0 @radius @radius 0;
+    }
+  }
+}
+
+.k-btn-icon-only {
+  padding: 0;
+  height: 32px;
+  width: 32px;
+}
+
+.k-btn-icon-only.k-btn-lg {
+  padding: 0;
+  height: 40px;
+  width: 40px;
+}
+
+.k-btn-icon-only.k-btn-sm {
+  padding: 0;
+  height: 25px;
+  width: 25px;
+}
+
+.k-btn-group-sm {
+  .k-btn {
+    height: 25px;
+    line-height: 23px;
+    font-size: 12px;
+    padding: 0 8px;
+  }
+}
+
+.k-btn-group-lg {
+  .k-btn {
+    height: 40px;
+    line-height: 38px;
+    font-size: 14px;
+    padding: 0 15px;
+  }
+}
+
+.k-btn-group-circle {
+  .k-btn {
+    &:first-child {
+      border-top-left-radius: 30px;
+      border-bottom-left-radius: 30px;
+    }
+    &:last-child {
+      border-top-right-radius: 30px;
+      border-bottom-right-radius: 30px;
+    }
+  }
+}
+
+.k-btn[disabled] {
+  &, &:hover, &:active, &:active, &:focus {
+    opacity: .8;
+    cursor: not-allowed;
+    color: @disable-color;
+    background: @disable-back;
+    border-color: @disable-border;
+  }
+}
+
+.k-btn-link {
+  background: none;
+  border: none !important;
+  color: @main;
+  &:disabled {
+    &, &:hover, &:active, &:active, &:focus {
+      background: 0 0;
+    }
+  }
+}

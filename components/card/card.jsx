@@ -1,0 +1,32 @@
+import Icon from "../icon";
+import React from 'react'
+import { Kui, PropTypes } from '../kui'
+
+export default class Card extends Kui {
+  render() {
+    const { title, icon, children, bordered, extra } = this.props
+    const cls = ['k-card', {
+      ['k-card-bordered']: bordered
+    }]
+    const extraNode = extra ? <div className="k-card-extra">{extra}</div> : null
+    const iconNode = icon ? <Icon type={icon} /> : null
+    const titleNode = title ? <span className="k-card-title">{title}</span> : null
+    return (
+      <div className={this.className(cls)}>
+        <div className="k-card-head">{iconNode}{titleNode}{extraNode}</div>
+        {children ? <div className="k-card-body">{children}</div> : null}
+      </div>
+    )
+  }
+}
+
+Card.propTypes = {
+  bordered: PropTypes.boolean,
+  title: PropTypes.string,
+  icon: PropTypes.string,
+  extra: PropTypes.any,
+}
+
+Card.defaultProps = {
+  bordered: true
+}
