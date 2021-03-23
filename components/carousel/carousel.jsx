@@ -1,146 +1,165 @@
 import Icon from "../icon";
-import resize from '../_tool/resize'
-import { getChild } from '../_tool/utils'
-export default {
-	name: 'Carousel',
-	directives: { resize },
-	props: {
-		value: { type: [Number, String], default: 0 },
-		loop: Boolean,
-		autoplay: Boolean,
-		delay: { type: [String, Number], default: 3000 },
-		vertical: Boolean,
-		dots: { type: Boolean, default: true }
-	},
-	data() {
-		return {
-			currentIndex: this.value,
-			autotimer: null,
-			width: 0,
-			height: 0,
-			animate: this.value > 0 ? false : true,
-			resizing: false,
-			playing: false,
+import React from 'react'
+import { Kui, PropTypes } from '../kui'
+
+export default class Carousel extends Kui {
+	state = {
+		currentIndex: this.props.value,
+		autotimer: null,
+		width: 0,
+		height: 0,
+		animate: this.props.value > 0 ? false : true,
+		resizing: false,
+		playing: false,
+		onMouseIn: false,
+	}
+	carouselRef = React.createRef()
+
+	next = () => {
+		this.change('right')
+	}
+	prev = () => {
+		this.change('left')
+	}
+	autoTimer = null
+
+	autoToPlay = () => {
+		clearInterval(this.autotimer)
+		this.autotimer = setInterval(() => {
+			if (this.state.onMouseIn) return;
+			this.change('right')
+		}, parseInt(this.props.delay));
+	}
+	change = (type) => {
+		let { playing, currentIndex } = this.state
+		let length = this.props.children.length
+		if (playing) return;
+		this.setState({ animate: true })
+		let index = currentIndex
+		if (type == 'left') {
+			index -= 1
+			index = Math.max(0, index)
+		} else if (type == 'right') {
+			if (!this.props.loop) {
+				if (index == length - 1) {
+					index = 0
+				} else
+					index += 1
+				index = Math.min(length - 1, index)
+			}
+		} else {
+			index = type
 		}
-	},
-	provide() {
+		this.setState({ currentIndex: index, playing: true })
+
+		setTimeout(() => {
+			this.setState({ playing: false })
+		}, 600);
+	}
+
+	resize = () => {
+		let carousel = this.carouselRef
+		if (carousel) {
+			this.setState({
+				animate: false,
+				width: carousel.current.offsetWidth,
+				height: carousel.current.offsetHeight
+			})
+		}
+	}
+
+	getChildContext() {
 		return {
 			Carousel: this
-		}
-	},
-	watch: {
-		value(v) {
-			this.currentIndex = v
-		},
-	},
-	beforDestory() {
+		};
+	}
+	componentWillUnmount() {
 		clearInterval(this.autotimer)
-	},
-	methods: {
-		next() {
-			this.change('right')
-		},
-		prev() {
-			this.change('left')
-		},
-		autoToPlay() {
-			clearInterval(this.autotimer)
-			this.autotimer = setInterval(() => {
-				this.change('right')
-			}, parseInt(this.delay));
-		},
-		change(type) {
-			if (this.playing) return;
-			this.animate = true
-			let index = this.currentIndex
-			if (type == 'left') {
-				index -= 1
-				index = Math.max(0, index)
-			} else if (type == 'right') {
-				let length = getChild(this.$slots.default).length
-				if (!this.loop) {
-					if (index == length - 1) {
-						index = 0
-					} else
-						index += 1
-					index = Math.min(length - 1, index)
-				}
-			} else {
-				index = type
-			}
-			this.currentIndex = index
-			this.playing = true
-			setTimeout(() => {
-				this.playing = false
-			}, 600);
-		},
-		resize() {
-			this.animate = false
-			let carousel = this.$refs.carousel
-			this.width = carousel.offsetWidth
-			this.height = carousel.offsetHeight
-		}
-	},
+		window.removeEventListener('resize', this.resize)
+	}
+	componentDidMount() {
+		this.resize();
 
-	mounted() {
-		this.$nextTick(e => {
-			this.resize()
-			this.autoplay && this.autoToPlay()
-		})
-	},
+		let { autoplay } = this.props
+		autoplay && (this.autoToPlay())
+
+		window.addEventListener('resize', this.resize)
+	}
+
 	render() {
-		let { currentIndex, change, vertical } = this
-		let kid = getChild(this.$slots.default)
-		currentIndex = Math.min(kid.length - 1, currentIndex)
+		let { change, vertical, children, dots } = this.props
+		let { currentIndex, width, height, animate } = this.state
+
+		currentIndex = Math.min(children.length - 1, currentIndex)
 		currentIndex = Math.max(0, currentIndex)
 		const classes = ['k-carousel', {
 			'k-carousel-vertical': vertical
 		}]
 
 		const dotsNode = (
-			<ul class="k-carousel-dots">
-				{kid.map((e, i) => <li class={{ 'k-carousel-dots-active': currentIndex == i }} onClick={e => change(i)}></li>)}
+			<ul className="k-carousel-dots">
+				{
+					React.Children.map(children, (child, i) => {
+						return <li key={i} className={this.className({ 'k-carousel-dots-active': currentIndex == i })} onClick={() => this.change(i)}></li>
+					})
+				}
 			</ul>
 		)
 
 		let offsetX = 0, offsetY = 0;
 		if (!vertical) {
-			offsetX = currentIndex * this.width
+			offsetX = currentIndex * width
 		} else {
-			offsetY = currentIndex * this.height
+			offsetY = currentIndex * height
 		}
 		const warpperCls = {
-			class: 'k-carousel-warpper',
+			className: 'k-carousel-warpper',
 			style: {
 				transform: `translateX(-${offsetX}px) translateY(-${offsetY}px)`,
-				width: !vertical ? kid.length * this.width + 'px' : '',
-				height: vertical ? kid.length * this.height + 'px' : '',
-				transitionDuration: !this.animate ? '0s' : ''
+				width: !vertical ? children.length * width : '',
+				height: vertical ? children.length * height : '',
+				transitionDuration: !animate ? '0s' : ''
 			}
 		}
-		const arrowLeft = <span class="k-carousel-arrow-left" onClick={e => change('left')}>
+		const arrowLeft = <span className="k-carousel-arrow-left" onClick={() => this.change('left')} key="left">
 			<Icon type="chevron-back" />
 		</span>
-		const arrowRight = <span class="k-carousel-arrow-right" onClick={e => change('right')}>
+		const arrowRight = <span className="k-carousel-arrow-right" onClick={() => this.change('right')} key="right">
 			<Icon type="chevron-forward" />
 		</span>
 		const props = {
-			class: classes,
-			ref: 'carousel',
-			on: {
-				mouseenter: e => clearInterval(this.autotimer),
-				mouseleave: e => { this.autoplay && this.autoToPlay() }
-			}
+			className: this.className(classes),
+			ref: this.carouselRef,
+			onMouseEnter: () => this.setState({ onMouseIn: true }),
+			onMouseLeave: () => this.setState({ onMouseIn: false }),
 		}
 		return (
-			<div v-resize={this.resize} {...props}>
+			<div {...props}>
 				<div {...warpperCls}>
-					{kid}
+					{children}
 				</div>
-				{!vertical ? arrowLeft : null}
-				{!vertical ? arrowRight : null}
-				{this.dots ? dotsNode : null}
+				{!vertical ? [arrowLeft, arrowRight] : null}
+				{dots ? dotsNode : null}
 			</div >
 		)
 	}
-} 
+}
+
+Carousel.propTypes = {
+	value: PropTypes.number,
+	loop: PropTypes.bool,
+	autoplay: PropTypes.bool,
+	delay: PropTypes.number,
+	vertical: PropTypes.bool,
+	dots: PropTypes.bool
+}
+
+Carousel.defaultProps = {
+	value: 0,
+	delay: 3000,
+	dots: true
+}
+
+Carousel.childContextTypes = {
+	Carousel: PropTypes.any
+};

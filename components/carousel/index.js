@@ -1,5 +1,5 @@
-import Carousel from './carousel.jsx'
-import CarouselItem from './carouselItem.jsx'
+import Carousel from './carousel'
+import CarouselItem from './carouselItem'
 Carousel.Item = CarouselItem
 
 export default Carousel;

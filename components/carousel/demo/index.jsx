@@ -1,13 +1,13 @@
 import Info from './info'
-import Base from './base.md'
-import Vertical from './vertical.md'
-import AutoPlay from './autoplay.md'
+import Base from './base'
+import Vertical from './vertical'
+import AutoPlay from './autoplay'
 import CN from '../index.md'
 import React from 'react'
 export default class Index extends React.Component {
   render() {
     return (
-      <div class="demo-carousel">
+      <div className="demo-carousel">
         <Info className="typo" />
         <Base />
         <Vertical />

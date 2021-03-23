@@ -1,19 +1,27 @@
-export default {
-	name: 'CarouselItem',
-	inject: {
-		Carousel: { default: null }
-	},
+import React from 'react'
+import { Kui, PropTypes } from '../kui'
+
+export default class CarouselItem extends Kui {
+
 	render() {
-		let width, height, carousel = this.Carousel
-		if (carousel) {
-			width = carousel.width
-			height = carousel.height
+		let width, height, { state } = this.context.Carousel
+		if (state) {
+			width = state.width
+			height = state.height
 		}
-		let styles = { width: `${width}px`, height: `${height}px` }
+		let styles = { width, height }
 		return (
-			<div class="k-carousel-item" style={styles}>
-				{this.$slots.default}
+			<div className={this.className(["k-carousel-item"])} style={this.styles(styles)}>
+				{this.props.children}
 			</div>
 		)
 	}
-} 
+}
+// CarouselItem.propTypes = {
+// 	width: PropTypes.number,
+// 	height: PropTypes.number,
+// }
+
+CarouselItem.contextTypes = {
+	Carousel: PropTypes.any
+};
