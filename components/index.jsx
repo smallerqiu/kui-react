@@ -8,7 +8,7 @@ import Button from './button'
 import Card from './card'
 import Carousel from './carousel'
 import Checkbox from './checkbox'
-// import Collapse from './collapse'
+import Collapse from './collapse'
 // import ColorPicker from './colorPicker'
 import Divider from './divider'
 // // import DatePicker from './datePicker'
@@ -50,7 +50,8 @@ export {
     Card,
     Carousel,
     Checkbox,
-    // Collapse, ColorPicker, ,
+    Collapse,
+    // ColorPicker, ,
     // // DatePicker,
     Divider,
     // Form,

@@ -1,50 +1,55 @@
-import React from 'react'
-import { Kui, PropTypes } from '../kui'
-import Icon from '../icon'
+import Icon from "../icon";
 import Collapse from './collapse.js'
 
+import { Kui, PropTypes } from '../kui'
+import React from 'react'
+
 export default class Panel extends Kui {
-    constructor(props) {
-        super(props)
-        this.state = {
-            actived: props.actived
-        }
+
+  handelClick = (e) => {
+    let collapse = this.context.Collapse
+    if (collapse) {
+      collapse.change(this.props.activeKey)
     }
-    classes() {
-        return this.className(['k-collapse-item', {
-            ['k-collapse-item-active']: this.state.actived
-        }])
-    }
-    handelClick() {
-        if (this.props.onClick) {
-            this.props.onClick()
-        } else {
-            this.setState({ actived: !this.state.actived })
-        }
-    }
-    componentWillReceiveProps(props) {
-        if (props.actived != this.state.actived) {
-            this.setState({ actived: props.actived })
-        }
-    }
-    render() {
-        return (<div className={this.classes()} style={this.styles()}>
-            <div className="k-collapse-header" onClick={this.handelClick.bind(this)}>
-                <Icon type="ios-arrow-forward" />{this.props.title}</div>
-            <Collapse show={this.state.actived}>
-                <div className="k-collapse-content">
-                    <div className="k-collapse-content-box">
-                        {this.props.children}
-                    </div>
-                </div>
-            </Collapse>
-        </div>)
-    }
+  }
+  render() {
+    let { children, title, actived, extra } = this.props
+    // let collapse = this.context.Collapse
+
+    // let key = 'a'
+    // if (collapse) {
+    //   active = collapse.props.activeKey.indexOf(key) >= 0
+    // }
+    const classes = ['k-collapse-item', {
+      ['k-collapse-item-active']: actived
+    }]
+    return (
+      <div className={this.className(classes)}>
+        <div className="k-collapse-header" onClick={this.handelClick}>
+          <Icon type="chevron-forward" className="k-collapse-arrow" />
+          <span className="k-collapse-title">{title}</span>
+          {extra ? <span className="k-collapse-extra">{extra}</span> : null}
+        </div>
+        <Collapse show={actived}>
+          <div className="k-collapse-content">
+            <div className="k-collapse-content-box">
+              {children}
+            </div>
+          </div>
+        </Collapse>
+      </div>
+    )
+  }
 }
 
+
 Panel.propTypes = {
-    onClick: PropTypes.any,
-    title: PropTypes.string.isRequired,
-    name: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    actived: PropTypes.bool,
+  title: PropTypes.string,
+  actived: PropTypes.bool,
+  activeKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  extra: PropTypes.any
 }
+
+Panel.contextTypes = {
+  Collapse: PropTypes.any
+};

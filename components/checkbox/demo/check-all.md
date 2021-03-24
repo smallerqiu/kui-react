@@ -38,7 +38,6 @@ class Demo extends React.Component {
   }
   render(){
     const {checked ,checkAll ,indeterminate ,options ,cities} = this.state
-    console.log(indeterminate)
     return (
       <div>
         <Checkbox checked={checkAll} indeterminate={indeterminate} onChange={this.handelCheckAll}>Check all</Checkbox>

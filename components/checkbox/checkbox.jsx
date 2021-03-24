@@ -45,8 +45,7 @@ export default class Checkbox extends Kui {
     if (group) {
       checked = group.props.value.indexOf(value) !== -1
       disabled = disabled || group.disabled
-
-      console.log(indeterminate)
+      // console.log(indeterminate)
     } else {
       if (checked === undefined) {
         checked = isChecked

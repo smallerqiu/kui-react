@@ -1,47 +1,78 @@
-import React from 'react'
 import { Kui, PropTypes } from '../kui'
+import React from 'react'
 import Panel from './panel'
+
 export default class Collapse extends Kui {
-    constructor(props) {
-        super(props)
-        this.state = {
-            activeName: props.value === undefined ? '' : props.value
-        }
-    }
-    classes() {
-        return this.className(['k-collapse', {
-            ['k-collaplse-sample']: this.props.sample
-        }])
-    }
-    onClick(name, actived) {
-        this.setState({ activeName: !actived ? name : '' })
-        this.props.onChange && this.props.onChange(actived)
-    }
 
-    render() {
-        let { activeName } = this.state
-        let renderPanel = () => {
-            return React.Children.map(this.props.children, (child, index) => {
-                if (child.type != Panel) return null
-                let props = {}
-                let name = child.props.name === undefined ? index : child.props.name
-                props.name = name
-                let actived = Array.isArray(activeName) ? activeName.indexOf(name) >= 0 : activeName === name
-                props.actived = actived
-                if (this.props.accrodion) {
-                    props.onClick = this.onClick.bind(this, name, actived)
-                }
+  //   data() {
+  //     return {
+  //       currentValue: (!hasProp(this, 'value')) ? [] : this.value
+  //     }
+  //   }
+  //   watch: {
+  //     value(v) {
+  //   if (v !== undefined && v !== null && v !== '')
+  //     this.currentValue = v
+  // }
+  //   }
+  getChildContext() {
+    return {
+      Collapse: this
+    };
+  }
+  state = {
+    currentValue: this.props.activeKey || []
+  }
+  change = (key) => {
+    if (!key) return;
 
-                return React.cloneElement(child, Object.assign({}, child.props, props))
-            })
-        }
-        return (<div className={this.classes()} style={this.styles()}>
-            {renderPanel()}
-        </div>)
+    // console.log(key)
+    // return
+    let { onChange, accrodion, } = this.props
+    let { currentValue } = this.state
+    let index = currentValue.indexOf(key)
+
+    if (index >= 0) {
+      accrodion ? currentValue = [] : currentValue.splice(index, 1)
+    } else {
+      accrodion ? currentValue = [key] : currentValue.push(key)
     }
+    this.setState({ currentValue })
+    onChange && onChange(key)
+  }
+  render() {
+    const { children, sample, activeKey } = this.props
+    const { currentValue } = this.state
+    const classes = ['k-collapse', {
+      ['k-collaplse-sample']: sample
+    }]
+    return (<div className={this.className(classes)}>{
+      React.Children.map(children, (child, index) => {
+        let { children, title, extra } = child.props
+        let key = child.key || String(index)
+        return <Panel
+          title={title}
+          key={key}
+          activeKey={key}
+          actived={(currentValue || []).indexOf(key) >= 0}
+          extra={extra}
+        >{children}</Panel>
+      })
+    }</div>)
+  }
 }
+
 Collapse.propTypes = {
-    value: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
-    accrodion: PropTypes.bool,
-    sample: PropTypes.bool
-} 
+  activeKey: PropTypes.array,
+  accrodion: PropTypes.bool,
+  sample: PropTypes.bool,
+  onChange: PropTypes.func
+}
+
+Collapse.childContextTypes = {
+  Collapse: PropTypes.any
+}
+
+Collapse.contextTypes = {
+  Collapse: PropTypes.any
+}

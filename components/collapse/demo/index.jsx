@@ -1,20 +1,21 @@
-import Base from './base'
 import Info from './info'
-import Disabled from './disabled'
-import Group from './group'
-import CheckAll from './check-all'
+import Base from './base'
+import Accrodion from './accrodion'
+import Nesting from './nesting'
+import Extra from './extra'
+import Sample from './sample'
 import CN from '../index.md'
 import React from 'react'
-
 export default class Index extends React.Component {
   render() {
     return (
       <div>
         <Info className="typo" />
         <Base />
-        <Disabled />
-        <Group />
-        <CheckAll />
+        <Accrodion />
+        <Nesting />
+        <Extra />
+        <Sample />
         <CN className="typo" />
       </div>
     )
