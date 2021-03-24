@@ -3,12 +3,10 @@ import { Kui, PropTypes } from '../kui'
 import Icon from '../icon'
 
 export default class Button extends Kui {
-  constructor() {
-    super()
-    this.onClick.bind(this)
-  }
-  onClick(e) {
-    this.props.onClick && this.props.onClick(e)
+
+  onClick = (e) => {
+    let { onClick } = this.props
+    onClick && onClick(e)
   }
   render() {
     const { type, loading, circle, hollow, onClick, disabled,

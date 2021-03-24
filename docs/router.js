@@ -10,9 +10,9 @@ const backtop = asyncComponent(() => import(/*webpackChunkName:'backtop'*/'../co
 const breadcrumb = asyncComponent(() => import(/*webpackChunkName:'breadcrumb'*/'../components/breadcrumb/demo'))
 const card = asyncComponent(() => import(/*webpackChunkName:'card'*/'../components/card/demo'))
 const carousel = asyncComponent(() => import(/*webpackChunkName:'carousel'*/'../components/carousel/demo'))
+const checkbox = asyncComponent(() => import(/*webpackChunkName:'checkbox'*/'../components/checkbox/demo'))
 // const collapse = asyncComponent(() => import(/*webpackChunkName:'collapse'*/'../components/collapse/demo'))
 // const colorpicker = asyncComponent(() => import(/*webpackChunkName:'colorpicker'*/'../components/colorpicker/demo'))
-// const checkbox = asyncComponent(() => import(/*webpackChunkName:'checkbox'*/'../components/checkbox/demo'))
 // const datepicker = asyncComponent(() => import(/*webpackChunkName:'datepicker'*/'../components/datepicker/demo'))
 const divider = asyncComponent(() => import(/*webpackChunkName:'divider'*/'../components/divider/demo'))
 // const form = asyncComponent(() => import(/*webpackChunkName:'form'*/'../components/form/demo'))
@@ -57,8 +57,9 @@ let R = {
   backtop,
   card,
   carousel,
+  checkbox,
   // collapse, 
-  // checkbox, colorpicker, ,
+  // , colorpicker, ,
   // datepicker,
   divider,
   // form,

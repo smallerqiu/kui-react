@@ -7,7 +7,7 @@ import Button from './button'
 
 import Card from './card'
 import Carousel from './carousel'
-// import Checkbox from './checkbox'
+import Checkbox from './checkbox'
 // import Collapse from './collapse'
 // import ColorPicker from './colorPicker'
 import Divider from './divider'
@@ -25,7 +25,7 @@ import { Row, Col } from './grid'
 // import Page from './page'
 import Radio from './radio'
 import Select from './select'
-import Switch from './switch' 
+import Switch from './switch'
 // import Steps from './steps'
 // import Tabs from './tabs'
 // import Tag from './tag'
@@ -49,7 +49,8 @@ export {
     Button,
     Card,
     Carousel,
-    // Checkbox, Collapse, ColorPicker, ,
+    Checkbox,
+    // Collapse, ColorPicker, ,
     // // DatePicker,
     Divider,
     // Form,
