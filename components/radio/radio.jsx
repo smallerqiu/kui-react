@@ -1,61 +1,92 @@
+import Icon from '../icon'
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
 
-export default class Radio extends Kui {
-  constructor(props) {
-    super(props)
-    this.state = {
-      checked: props.checked,
-      value: props.value
-    }
-  }
-  onChange(e) {
-    const checked = e.target.checked;
-    if (checked) {
-      if (this.props.onChange) {
-        this.props.onChange(checked);
-        this.props.onFormItemChange && this.props.onFormItemChange(checked)
-      }
-    }
 
-    this.setState({ checked: checked });
+export default class Radio extends Kui {
+
+  state = {
+    isChecked: false
   }
-  wpclasses() {
-    return this.className([
-      "k-radio-wp",
-      {
-        ["k-radio-disabled"]: this.props.disabled
-      }
-    ])
+
+  componentDidMount() {
+    const { checked, indeterminaten } = this.props
+    this.setState({
+      isChecked: checked !== undefined ? checked : checked == true && !indeterminaten
+    })
   }
-  classes() {
-    return this.className([
-      "k-radio",
-      {
-        ["k-radio-checked"]: this.state.checked
-      }
-    ])
+
+  componentDidUpdate(props, state) {
+
   }
-  componentWillReceiveProps(props) {
-    this.setState({ checked: props.checked })
+  change = (e) => {
+    let { disabled, children, label, onChange, value } = this.props
+    if (disabled) {
+      return false;
+    }
+    let group = this.context.Group
+    let FormItem = this.context.FormItem
+
+    const checked = e.target.checked;
+    this.setState({ isChecked: checked })
+    if (group) {
+      label = label || children.text
+      group.change({ label, value })
+    } else {
+      onChange && onChange(e)
+      FormItem && FormItem.testValue(checked)
+    }
   }
   render() {
-    return <label className={this.wpclasses()} style={this.styles()}>
-      <span className={this.classes()}>
-        <span className="k-radio-inner"></span>
-        <input type="radio" className="k-radio-input" name={this.props.name} disabled={this.props.disabled} checked={this.state.checked} onChange={this.onChange.bind(this)} />
-      </span>
-      {this.props.label || this.props.children}
-    </label>
+    let { disabled, label, value, checked, children } = this.props
+    let { isChecked } = this.state
+    let group = this.context.Group
+
+    if (group) {
+      checked = group.props.value == value
+      disabled = disabled || group.props.disabled
+    } else {
+      if (checked === undefined) {
+        checked = isChecked
+      }
+    }
+    const wpclasses = ["k-radio-wrapper", { ["k-radio-disabled"]: disabled }];
+
+    const classes = [
+      "k-radio",
+      {
+        ["k-radio-checked"]: checked ,
+      }
+    ];
+    let inner = checked ? <Icon type="checkmark" /> : null
+    const labelNode = label || children
+    const props = {
+      type: "radio",
+      className: "k-radio-input",
+      checked,
+      disabled,
+      onChange: this.change
+    }
+    return (
+      <label className={this.className(wpclasses)}>
+        <span className={this.className(classes)}>
+          <input {...props} />
+          <span className="k-radio-inner">{inner}</span>
+        </span>
+        {labelNode ? <span className="k-radio-label">{labelNode}</span> : null}
+      </label>
+    )
   }
 }
 
 Radio.propTypes = {
-  // value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]),
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]),
   disabled: PropTypes.bool,
-  checked: PropTypes.bool,
-  name: PropTypes.string,
-  label: PropTypes.string,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  onChange: PropTypes.func
-} 
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  checked: PropTypes.bool
+}
+
+Radio.contextTypes = {
+  Group: PropTypes.any,
+  FormItem: PropTypes.any
+};

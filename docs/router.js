@@ -29,12 +29,12 @@ const layout = asyncComponent(() => import(/*webpackChunkName:'layout'*/'../comp
 // const notice = asyncComponent(() => import(/*webpackChunkName:'notice'*/'../components/notice/demo'))
 // const poptip = asyncComponent(() => import(/*webpackChunkName:'poptip'*/'../components/poptip/demo'))
 // const page = asyncComponent(() => import(/*webpackChunkName:'page'*/'../components/page/demo'))
-// const radio = asyncComponent(() => import(/*webpackChunkName:'radio'*/'../components/radio/demo'))
+const radio = asyncComponent(() => import(/*webpackChunkName:'radio'*/'../components/radio/demo'))
 // const sponsor = asyncComponent(() => import(/*webpackChunkName:'sponsor'*/'../components/sponsor/demo'))
 // const select = asyncComponent(() => import(/*webpackChunkName:'select'*/'../components/select/demo'))
 // const start = asyncComponent(() => import(/*webpackChunkName:'start'*/'../components/start/demo'))
 // const steps = asyncComponent(() => import(/*webpackChunkName:'steps'*/'../components/steps/demo'))
-// const Switch = asyncComponent(() => import(/*webpackChunkName:'Switch'*/'../components/switch/demo'))
+const Switch = asyncComponent(() => import(/*webpackChunkName:'switch'*/'../components/switch/demo'))
 // const tag = asyncComponent(() => import(/*webpackChunkName:'tag '*/'../components/tag/demo'))
 // const table = asyncComponent(() => import(/*webpackChunkName:'table'*/'../components/table/demo'))
 // const tree = asyncComponent(() => import(/*webpackChunkName:'tree'*/'../components/tree/demo'))
@@ -71,8 +71,10 @@ let R = {
   // modal, message, menu,
   // notice,
   // poptip, page,
-  // radio,
-  // sponsor, select, Switch, start, tooltip, steps,
+  radio,
+  // sponsor, select, 
+  Switch, 
+  // start, tooltip, steps,
   // tag, test, timeline, tabs, table, theme, tree, 
   // upload,
 

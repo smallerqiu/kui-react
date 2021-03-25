@@ -1,58 +1,70 @@
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
+import Icon from '../icon'
 export default class Switch extends Kui {
-  constructor(props) {
-    super(props)
-    this.state = {
-      checked: props.value
-    }
-  }
-  classes() {
-    return this.className([
-      "k-switch",
-      {
-        ["k-switch-checked"]: this.state.checked,
-        ["k-switch-disabled"]: this.props.disabled,
-        [`k-switch-${this.props.type}`]: !!this.props.type
-      }
-    ])
-  }
-  componentWillReceiveProps(props) {
-    if (props.value !== this.props.value)
-      this.setState({
-        checked: props.value
-      })
+
+  state = {
+    isChecked: this.props.checked || false
   }
 
-  onChange() {
-    if (this.props.disabled) {
+
+  change = (e) => {
+    let { disabled, onChange, checked } = this.props
+    let { isChecked } = this.state
+    if (disabled) {
       return false;
     }
-    const checked = !this.state.checked
-    this.setState({
-      checked: checked
-    })
-    this.props.onChange && this.props.onChange(checked)
-    this.props.onFormItemChange && this.props.onFormItemChange(checked)
+    const check = checked === undefined ? isChecked : checked
+    this.setState({ isChecked: !check })
+    onChange && onChange(!check)
   }
   render() {
-    return <span className={this.classes()} onClick={this.onChange.bind(this)} style={this.styles()}>
-      <span className="k-switch-inner">
-        <span>
-          {this.state.checked ? this.props.trueText : this.props.falseText}
-        </span>
-      </span>
-      <span className="k-switch-button"></span>
-    </span>
+    let { disabled, size, falseText, trueText, checked, loading,
+      checkedChildren, uncheckedChildren } = this.props
+    let { isChecked } = this.state
+    if (checked === undefined) {
+      checked = isChecked
+    }
+    const classes = [
+      "k-switch",
+      {
+        ["k-switch-checked"]: checked,
+        ["k-switch-loading"]: loading,
+        ["k-switch-disabled"]: disabled||loading,
+        ["k-switch-sm"]: size == 'small',
+      }
+    ];
+    const children = checkedChildren || trueText || uncheckedChildren || falseText
+    const textNode = (
+      (size != 'small' && children) ? <span className="k-switch-inner">{checked ? checkedChildren || trueText : uncheckedChildren || falseText}</span> : null
+    )
+    const loadNode = loading ? <Icon spin type="sync" className="k-switch-loading" /> : null
+    const props = {
+      className: this.className(classes),
+      onClick: this.change,
+      type: "button",
+      disabled: disabled || loading,
+      style: this.styles()
+    }
+
+    return (
+      <button {...props}>{textNode}{loadNode}</ button>
+    )
   }
-}
+};
 
 Switch.propTypes = {
   onChange: PropTypes.func,
-  value: PropTypes.bool,
-  type: PropTypes.oneOf(['success', 'warning', 'danger', 'primary']),
+  checked: PropTypes.bool,
+  checkedChildren: PropTypes.any,
+  uncheckedChildren: PropTypes.any,
   disabled: PropTypes.bool,
+  loading: PropTypes.bool,
   trueText: PropTypes.string,
-  falseText: PropTypes.string
+  falseText: PropTypes.string,
+  size: PropTypes.oneOf(['default', 'small'])
 }
 
+Switch.contextTypes = {
+  FormItem: PropTypes.any,
+};

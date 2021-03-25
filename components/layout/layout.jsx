@@ -1,6 +1,6 @@
 import { Kui, PropTypes } from '../kui'
 import React from 'react'
-const { Provider, Consumer } = React.createContext('layout')
+// const { Provider, Consumer } = React.createContext('layout')
 
 class Content extends Kui {
   render() {
