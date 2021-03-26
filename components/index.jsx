@@ -14,7 +14,7 @@ import Divider from './divider'
 // // import DatePicker from './datePicker'
 // import Form from './form'
 import Icon from './icon'
-// import Input from './input'
+import { Input, TextArea } from './input'
 // import Loading from './loading'
 import { Layout } from './layout'
 import { Message, Notice } from './message'
@@ -28,7 +28,7 @@ import Select from './select'
 import Switch from './switch'
 // import Steps from './steps'
 // import Tabs from './tabs'
-// import Tag from './tag'
+import Tag from './tag'
 // import Table from './table'
 import Tooltip from './tooltip'
 // import TimeLine from './timeline'
@@ -58,7 +58,7 @@ export {
     // Loading,
     Layout,
     Icon,
-    // Input,
+    Input, TextArea,
     // Modal, 
     Menu, Message,
     // Notice,
@@ -68,7 +68,8 @@ export {
     Select,
     Switch,
     // Steps,
-    // Tag, Table, Tabs, TimeLine, 
+    Tag,
+    //Table, Tabs, TimeLine, 
     Transition,
     Transfer,
     Tooltip,

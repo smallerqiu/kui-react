@@ -19,7 +19,7 @@ const divider = asyncComponent(() => import(/*webpackChunkName:'divider'*/'../co
 const grid = asyncComponent(() => import(/*webpackChunkName:'grid'*/'../components/grid/demo'))
 // // const kuiangular = asyncComponent(() => import(/*webpackChunkName:'kuiangular'*/'../components/angular-kui/demo'))
 const icon = asyncComponent(() => import(/*webpackChunkName:'icon'*/'../components/icon/demo'))
-// const input = asyncComponent(() => import(/*webpackChunkName:'input'*/'../components/input/demo'))
+const input = asyncComponent(() => import(/*webpackChunkName:'input'*/'../components/input/demo'))
 const layout = asyncComponent(() => import(/*webpackChunkName:'layout'*/'../components/layout/demo'))
 // const loading = asyncComponent(() => import(/*webpackChunkName:'loading'*/'../components/loading/demo'))
 // const log = asyncComponent(() => import(/*webpackChunkName:'log'*/'../components/log/demo'))
@@ -35,7 +35,7 @@ const radio = asyncComponent(() => import(/*webpackChunkName:'radio'*/'../compon
 // const start = asyncComponent(() => import(/*webpackChunkName:'start'*/'../components/start/demo'))
 // const steps = asyncComponent(() => import(/*webpackChunkName:'steps'*/'../components/steps/demo'))
 const Switch = asyncComponent(() => import(/*webpackChunkName:'switch'*/'../components/switch/demo'))
-// const tag = asyncComponent(() => import(/*webpackChunkName:'tag '*/'../components/tag/demo'))
+const tag = asyncComponent(() => import(/*webpackChunkName:'tag '*/'../components/tag/demo'))
 // const table = asyncComponent(() => import(/*webpackChunkName:'table'*/'../components/table/demo'))
 // const tree = asyncComponent(() => import(/*webpackChunkName:'tree'*/'../components/tree/demo'))
 // // const treeselect = asyncComponent(() => import(/*webpackChunkName:'treeselect'*/'../components/treeselect/demo'))
@@ -47,7 +47,6 @@ const Switch = asyncComponent(() => import(/*webpackChunkName:'switch'*/'../comp
 // const upload = asyncComponent(() => import(/*webpackChunkName:'upload'*/'../components/upload/demo'))
 
 let R = {
-  icon,
   // about, 
   alert,
   affix,
@@ -58,13 +57,13 @@ let R = {
   card,
   carousel,
   checkbox,
-  collapse, 
+  collapse,
   // , colorpicker, ,
   // datepicker,
   divider,
   // form,
   grid,
-  // input, icon,
+  input, icon,
   // log, 
   layout,
   //loading,
@@ -73,9 +72,10 @@ let R = {
   // poptip, page,
   radio,
   // sponsor, select, 
-  Switch, 
+  Switch,
   // start, tooltip, steps,
-  // tag, test, timeline, tabs, table, theme, tree, 
+  tag,
+  //test, timeline, tabs, table, theme, tree, 
   // upload,
 
 }

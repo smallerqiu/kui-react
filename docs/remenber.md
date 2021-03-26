@@ -14,3 +14,24 @@ Checkbox.propTypes = {
   value: PropTypes.string
 }
 ```
+
+ts
+import { Affix , Button } from 'react-kui';
+
+ReactDOM.render(
+
+
+
+,
+  mountNode
+)
+```  
+
+ReactDOM.render(<Demo />,  mountNode)
+```
+
+
+
+class Demo extends React.Component {
+  render(){
+    return(

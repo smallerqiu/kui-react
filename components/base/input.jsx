@@ -1,0 +1,168 @@
+import Icon from '../icon'
+import { isNotEmpty } from '../_tool/utils'
+import React from 'react'
+import { Kui, PropTypes } from '../kui'
+
+export default class BaseInput extends Kui {
+
+  state = {
+    currentValue: this.props.value || '',
+    isFocus: false,
+    isEnter: false,
+    isPassword: true,
+  }
+  inputRef = React.createRef()
+  
+  componentDidMount() {
+    let textInput = (this.context.Input || this.context.TextArea)
+    textInput.focus = () => {
+      this.inputRef.current.focus()
+    }
+    textInput.blur = () => {
+      this.inputRef.current.blur()
+    }
+  }
+  clear = () => {
+    this.setState({ currentValue: '' }, () => {
+      this.inputRef.current.focus()
+    })
+  }
+  iconClick = () => {
+    let { disabled, onIconClick } = this.props
+    if (!disabled && onIconClick) {
+      onIconClick()
+    }
+  }
+  onFocus = (e) => {
+    let { isFocus } = this.state
+    let { onFocus } = this.props
+    onFocus && onFocus(e)
+    this.setState({ isFocus: !isFocus })
+  }
+  onBlur = (e) => {
+    this.isFocus = false
+    let { onBlur } = this.props
+    onBlur && onBlur(e)
+    this.FormItem && this.FormItem.testValue(this.state.currentValue, 'blur')
+  }
+
+  showPassword = () => {
+    let { isPassword } = this.state
+    let type = isPassword ? 'text' : 'password'
+
+    isPassword = !isPassword
+    this.setState({ isPassword })
+    this.inputRef.current.type = type
+  }
+  onChange = (e) => {
+    let onChange = this.props.onChange
+    onChange && onChange(e)
+    this.setState({ currentValue: e.target.value })
+  }
+  onSearch = () => {
+    let { onSearch } = this.props
+    onSearch && onSearch(this.state.currentValue)
+  }
+  getSuffix = () => {
+    let { type, suffix } = this.props
+    let { isPassword } = this.state
+    const Search = this.props.onSearch ? <Icon type='search' onClick={this.onSearch} /> : null
+    const Password = (type == 'password') ? <Icon type={!isPassword ? 'eye-outline' : 'eye-off-outline'} onClick={this.showPassword} /> : null
+
+    return Password || Search || suffix
+  }
+  getTextInput = () => {
+    const { disabled, size, placeholder, autoFocus, rows,
+      maxLength, readOnly, style,
+      onKeyUp, onKeyDown, onKeyPress, type, inputType } = this.props
+    let { currentValue } = this.state
+
+    let isTextArea = inputType == 'textarea'
+    // console.log(this.props)
+    const props = {
+      placeholder, autoFocus, rows, style,
+      maxLength, readOnly, disabled,
+      value: currentValue,
+      className: this.className([
+        `k-${inputType}`,
+        {
+          [`k-${inputType}-disabled`]: disabled,
+          ["k-input-sm"]: size == 'small' && !isTextArea,
+          ["k-input-lg"]: size == 'large' && !isTextArea
+        }
+      ]),
+      ref: this.inputRef,
+      onChange: this.onChange,
+      onBlur: this.onBlur,
+      onFocus: this.onFocus,
+      onKeyUp,
+      onKeyDown,
+      onKeyPress,
+    }
+    if (!isTextArea) {
+      props.type = type
+      delete props.rows
+    }
+    return isTextArea ? <textarea {...props} /> : <input {...props} />
+  }
+
+  render() {
+    const { inputType, icon, suffix, size, type, onSearch, clearable } = this.props
+
+    let isTextArea = inputType == 'textarea'
+    let hasChild = icon || onSearch || suffix || type == 'password' || clearable
+
+    let textInput = this.getTextInput()
+
+    if (isTextArea || !hasChild) {
+      return textInput
+    } else {
+      let { isFocus, isEnter, currentValue } = this.state
+      const clearableShow = clearable && (isFocus || isEnter) && isNotEmpty(currentValue)
+      let hasSuffix = onSearch || suffix || type == 'password'
+      const props = {
+        className: this.className([
+          'k-input-wrapper',
+          {
+            ["k-input-has-suffix"]: hasSuffix,
+            ["k-input-sm"]: size == 'small',
+            ["k-input-lg"]: size == 'large',
+            ["k-input-has-clear"]: clearable,
+          }
+        ]),
+        onMouseEnter: () => this.setState({ isEnter: true }),
+        onMouseLeave: () => this.setState({ isEnter: false })
+      }
+      const suffixNode = this.getSuffix()
+      return <div {...props}>
+        {icon ? <Icon type={icon} className="k-input-icon" onClick={this.iconClick} /> : null}
+        {textInput}
+        {suffixNode ? <div className="k-input-suffix">{suffixNode}</div> : null}
+        {clearableShow ? <Icon type="close-circle" className="k-input-clearable" onClick={this.clear} /> : null}
+      </div>
+    }
+  }
+};
+
+BaseInput.propTypes = {
+  clearable: PropTypes.bool,
+  size: PropTypes.oneOf(["small", "large", "default"]),
+  inputType: PropTypes.string,
+  value: PropTypes.any,
+  disabled: PropTypes.bool,
+  type: PropTypes.oneOf(["text", "textarea", "password", "url", "email", "date", "search"]),
+  icon: PropTypes.string,
+  iconAlign: PropTypes.string,
+  suffix: PropTypes.any
+}
+BaseInput.defaultProps = {
+  size: 'default',
+  type: 'text',
+  inputType: 'input'
+}
+
+BaseInput.contextTypes = {
+  FormItem: PropTypes.any,
+  Input: PropTypes.any,
+  TextArea: PropTypes.any,
+}
