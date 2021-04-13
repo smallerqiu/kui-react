@@ -32,7 +32,7 @@ export default class SubMenu extends Kui {
       }
     ])
   }
-  componentWillReceiveProps(props) {
+/*   componentWillReceiveProps(props) {
     let _props = {}
     if (this.state.visible != props.visible) {
       _props.visible = props.visible
@@ -41,7 +41,7 @@ export default class SubMenu extends Kui {
       _props.actived = props.actived
     }
     this.setState(_props)
-  }
+  } */
   render() {
     return (<li className={this.classes()} onMouseOver={this.openMenu.bind(this)} onMouseOut={this.closeMenu.bind(this)}>
       <div className="k-menu-title" onClick={this.onClick.bind(this)} >

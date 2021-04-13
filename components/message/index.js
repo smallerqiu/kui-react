@@ -1,49 +1,30 @@
-import React from 'react';
-import Render from 'react-dom';
+import React from 'react'
+import newInstance from './instance'
 
-import notice from './notice'
+let messageInstance;
 
-let Message = {}
-let Notice = {}
 
-let docker = []
-
-let Instance = (props) => {
-    docker =  docker || []
-    let popup = document.body.querySelector(`.k-${props.noticeType}`)
-    if (!popup) {
-        popup = document.createElement('div')
-        popup.className = `k-${props.noticeType}`
-        document.body.appendChild(popup)
+let Message = {
+  name: 'Message',
+  config(options = {}) {
+    options.noticeType = 'message'
+    if (!messageInstance) {
+      messageInstance = newInstance({ type: 'message' })
     }
-    let component = React.createElement(notice, Object.assign(props, {
-        key: new Date() * 1,
-        onExited: (e) => {
-            docker.splice(docker.indexOf(component), 1)
-        }
-    }))
-    docker = [].concat(docker, component)
-    Render.render(docker, popup)
-}
-
-
-
-Message.config = (props) => {
-    props.noticeType = 'message'
-    Instance(props)
-}
-
+    messageInstance.show(options)
+  },
+  destroy() {
+    if (messageInstance) {
+      messageInstance.destroy()
+      messageInstance = null;
+      document.body.removeChild(document.querySelector('.k-message-box'));
+    }
+  }
+};
 ['info', 'success', 'warning', 'error'].forEach(type => {
-    Message[type] = (content, duration, onClose) => Instance({ noticeType: 'message', type, content, duration, onClose })
-});
+  Message[type] = (content, duration, onClose) => {
+    return Message.config({ type, content, duration, onClose })
+  }
+})
 
-Notice.open = (props) => {
-    Instance(Object.assign({ noticeType: 'notice', type: null, transitionName: 'fadeleft' }, props))
-}
-['info', 'success', 'warning', 'error'].forEach(type => {
-    Notice[type] = (props) => Instance(Object.assign({ noticeType: 'notice', transitionName: 'fadeleft', type }, props))
-});
-
-
-
-export { Notice, Message }
+export default Message;

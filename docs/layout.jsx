@@ -14,9 +14,9 @@ export default class DocLayout extends Kui {
     }
   }
 
-  // componentWillMount() {
-  //   this.setState({ activeName: this.context.router.route.location.pathname })
-  // }
+  componentDidMount() {
+    this.setState({ activeName: this.context.router.route.location.pathname })
+  }
 
   routerChange(path) {
     if (path.indexOf('http') >= 0) {

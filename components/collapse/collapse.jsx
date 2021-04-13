@@ -3,18 +3,6 @@ import React from 'react'
 import Panel from './panel'
 
 export default class Collapse extends Kui {
-
-  //   data() {
-  //     return {
-  //       currentValue: (!hasProp(this, 'value')) ? [] : this.value
-  //     }
-  //   }
-  //   watch: {
-  //     value(v) {
-  //   if (v !== undefined && v !== null && v !== '')
-  //     this.currentValue = v
-  // }
-  //   }
   getChildContext() {
     return {
       Collapse: this
@@ -26,8 +14,6 @@ export default class Collapse extends Kui {
   change = (key) => {
     if (!key) return;
 
-    // console.log(key)
-    // return
     let { onChange, accrodion, } = this.props
     let { currentValue } = this.state
     let index = currentValue.indexOf(key)

@@ -141,7 +141,7 @@ export default class Select extends Kui {
     this.setLabel()
   }
 
-  componentWillReceiveProps(props) {
+/*   componentWillReceiveProps(props) {
     let { value } = props
     if (props.value !== this.state.value) {
       this.setState({ value: value }, () => {
@@ -151,7 +151,7 @@ export default class Select extends Kui {
           this.setLabel()
       })
     }
-  }
+  } */
   labelChange(e) {
     this.setState({ label: e.target.value, queryKey: e.target.value })
   }

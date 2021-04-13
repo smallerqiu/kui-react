@@ -112,7 +112,7 @@ export default class Page extends Kui {
   // componentWillMount = () => {
 
   // }
-  componentWillReceiveProps(props) {
+/*   componentWillReceiveProps(props) {
     if (props.pageSize != this.state.pageSize) {
       this.setState({ pageSize: props.pageSize })
     }
@@ -122,7 +122,7 @@ export default class Page extends Kui {
         current: props.current,
       }, () => this.initPage())
     }
-  }
+  } */
   render() {
     let { mini, showSizer, sizeData, showTotal, showElevator } = this.props;
     let { elevator, pageSize, pageCount, showNextMore, showPrevMore, pagers, page } = this.state;

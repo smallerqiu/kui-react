@@ -99,13 +99,13 @@ export default class Modal extends Kui {
     style.top = `${top}px`;
     return style;
   }
-  componentWillReceiveProps(props) {
+/*   componentWillReceiveProps(props) {
     if (this.state.visible !== props.visible) {
       this.setState({
         visible: props.visible
       })
     }
-  }
+  } */
   onKeyUp(e) {
     if (this.state.visible && e.keyCode == 27) {
       this.setState({ visible: false })

@@ -246,9 +246,9 @@ export default class DateCalendar extends Kui {
     e.nativeEvent.stopImmediatePropagation()
     this.setState({ showMonths: !y })
   }
-  componentWillReceiveProps(props) {
+/*   componentWillReceiveProps(props) {
     this.time = this.get(props.value);
-  }
+  } */
   componentDidMount() {
     const is = c => this.props.format.indexOf(c) !== -1;
     let { showYears, m, showMonths } = this.state

@@ -154,14 +154,14 @@ export default class TreeSelect extends Kui {
     this.handleScroll()
   }
 
-  componentWillReceiveProps(props) {
+/*   componentWillReceiveProps(props) {
     if (props.label !== this.state.showLabel) {
       this.setState({ showLabel: props.label })
     }
     if (props.value !== this.state.value) {
       this.setState({ value: props.value })
     }
-  }
+  } */
   labelChange(e) {
     this.setState({ showLabel: e.target.value, queryKey: e.target.value })
   }

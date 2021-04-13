@@ -23,10 +23,10 @@ const input = asyncComponent(() => import(/*webpackChunkName:'input'*/'../compon
 const layout = asyncComponent(() => import(/*webpackChunkName:'layout'*/'../components/layout/demo'))
 // const loading = asyncComponent(() => import(/*webpackChunkName:'loading'*/'../components/loading/demo'))
 // const log = asyncComponent(() => import(/*webpackChunkName:'log'*/'../components/log/demo'))
-// const message = asyncComponent(() => import(/*webpackChunkName:'message'*/'../components/message/demo'))
+const message = asyncComponent(() => import(/*webpackChunkName:'message'*/'../components/message/demo'))
 // const menu = asyncComponent(() => import(/*webpackChunkName:'menu'*/'../components/menu/demo'))
 // const modal = asyncComponent(() => import(/*webpackChunkName:'modal'*/'../components/modal/demo'))
-// const notice = asyncComponent(() => import(/*webpackChunkName:'notice'*/'../components/notice/demo'))
+const notice = asyncComponent(() => import(/*webpackChunkName:'notice'*/'../components/notice/demo'))
 // const poptip = asyncComponent(() => import(/*webpackChunkName:'poptip'*/'../components/poptip/demo'))
 // const page = asyncComponent(() => import(/*webpackChunkName:'page'*/'../components/page/demo'))
 const radio = asyncComponent(() => import(/*webpackChunkName:'radio'*/'../components/radio/demo'))
@@ -67,8 +67,10 @@ let R = {
   // log, 
   layout,
   //loading,
-  // modal, message, menu,
-  // notice,
+  // modal, 
+  message, 
+  //menu,
+  notice,
   // poptip, page,
   radio,
   // sponsor, select, 

@@ -74,18 +74,18 @@
 @keyframes msgOut {
   from {
     opacity: 1;
-    margin-top: -55px;
+    margin-top: 0
   }
   to {
     opacity: 0;
-    margin-top: 0;
+    margin-top: -55px;
   }
 }
 
 .k-message-slide-enter-active {
-  animation: msgIn .3s ease;
+  animation: msgIn .31s ease;
 }
 
-.k-message-slide-leave-active {
-  animation: msgOut .3s ease;
+.k-message-slide-exit-active {
+  animation: msgOut .31s ease;
 }

@@ -17,7 +17,8 @@ import Icon from './icon'
 import { Input, TextArea } from './input'
 // import Loading from './loading'
 import { Layout } from './layout'
-import { Message, Notice } from './message'
+import  Message  from './message'
+import  Notice  from './notice'
 // import Modal from './modal'
 import Menu from './menu'
 import { Row, Col } from './grid'
@@ -60,8 +61,9 @@ export {
     Icon,
     Input, TextArea,
     // Modal, 
-    Menu, Message,
-    // Notice,
+    Menu,
+    Message,
+    Notice,
     // Poptip, Page,
     Row, Col,
     Radio,

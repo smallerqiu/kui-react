@@ -186,11 +186,11 @@ export default class DatePicker extends Kui {
       str => map[str]
     );
   }
-  componentWillReceiveProps(props) {
+/*   componentWillReceiveProps(props) {
     if (props.value != this.state.value) {
       this.setState({ value: props.value, dates: this.vi(props.value) }, () => this.ok())
     }
-  }
+  } */
   render() {
     let { visible, text, dates, local } = this.state
     let { placeholder, disabled, name, clearable, transfer, value, format, disabledDate } = this.props

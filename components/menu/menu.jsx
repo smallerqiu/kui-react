@@ -39,14 +39,14 @@ export default class Menu extends Kui {
     }
     this.setState({ openName: openName })
   }
-  componentWillReceiveProps(props) {
+/*   componentWillReceiveProps(props) {
     if (this.state.activeIndex != props.activeName) {
       this.setState({ activeIndex: props.activeName })
     }
     if (this.state.openName != props.openName) {
       this.setState({ openName: Array.isArray(props.openName) ? props.openName : [].concat(props.openName) })
     }
-  }
+  } */
   render() {
     let renderItem = (child, subName) => {
       return React.cloneElement(child, Object.assign({}, child.props, {

@@ -72,11 +72,11 @@ export default class Tree extends Kui {
     this.setState({ data })
     this.props.onSelect && this.props.onSelect(obj)
   }
-  componentWillReceiveProps(props) {
+/*   componentWillReceiveProps(props) {
     if (props.data != this.state.data) {
       this.setState({ data: props.data })
     }
-  }
+  } */
   render() {
     let data = this.state.data || []
     let { checkbox } = this.props

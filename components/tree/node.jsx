@@ -70,11 +70,11 @@ export default class TreeNode extends Kui {
       this.props.onExpand && this.props.onExpand(data)
     }
   }
-  componentWillReceiveProps(props) {
+/*   componentWillReceiveProps(props) {
     if (props.data != this.state.data) {
       this.setState({ data: props.data })
     }
-  }
+  } */
   render() {
     let { data } = this.state
     let { checkbox, onSelect, onChecked, onExpand, onLoadData } = this.props

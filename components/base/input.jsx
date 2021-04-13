@@ -12,9 +12,9 @@ export default class BaseInput extends Kui {
     isPassword: true,
   }
   inputRef = React.createRef()
-  
+
   componentDidMount() {
-    let textInput = (this.context.Input || this.context.TextArea)
+    let textInput = (this.context.Input || this.context.TextArea) || {}
     textInput.focus = () => {
       this.inputRef.current.focus()
     }
@@ -49,9 +49,7 @@ export default class BaseInput extends Kui {
   showPassword = () => {
     let { isPassword } = this.state
     let type = isPassword ? 'text' : 'password'
-
-    isPassword = !isPassword
-    this.setState({ isPassword })
+    this.setState({ isPassword: !isPassword })
     this.inputRef.current.type = type
   }
   onChange = (e) => {
