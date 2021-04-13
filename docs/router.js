@@ -28,7 +28,7 @@ const message = asyncComponent(() => import(/*webpackChunkName:'message'*/'../co
 // const modal = asyncComponent(() => import(/*webpackChunkName:'modal'*/'../components/modal/demo'))
 const notice = asyncComponent(() => import(/*webpackChunkName:'notice'*/'../components/notice/demo'))
 // const poptip = asyncComponent(() => import(/*webpackChunkName:'poptip'*/'../components/poptip/demo'))
-// const page = asyncComponent(() => import(/*webpackChunkName:'page'*/'../components/page/demo'))
+const page = asyncComponent(() => import(/*webpackChunkName:'page'*/'../components/page/demo'))
 const radio = asyncComponent(() => import(/*webpackChunkName:'radio'*/'../components/radio/demo'))
 // const sponsor = asyncComponent(() => import(/*webpackChunkName:'sponsor'*/'../components/sponsor/demo'))
 // const select = asyncComponent(() => import(/*webpackChunkName:'select'*/'../components/select/demo'))
@@ -68,10 +68,11 @@ let R = {
   layout,
   //loading,
   // modal, 
-  message, 
+  message,
   //menu,
   notice,
-  // poptip, page,
+  // poptip, 
+  page,
   radio,
   // sponsor, select, 
   Switch,

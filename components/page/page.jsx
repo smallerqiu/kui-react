@@ -1,187 +1,200 @@
 import React from 'react'
 import { Kui, PropTypes } from '@/components/kui'
-import { Input, Button, Select, Icon } from '../index'
+import { Input } from '../input'
+import Icon from '../icon'
+import Select from '../select'
+
 export default class Page extends Kui {
-  constructor(props) {
-    super(props)
-    this.state = {
-      elevator: 0,
-      pageCount: 0,
-      page: 0,
-      current: 1,
-      total: props.total,
-      showPrevMore: false,
-      showNextMore: false,
-      pageSize: props.pageSize,
-      pagers: []
-    }
+  state = {
+    pageCount: 0,
+    page: this.props.current,
+    defaultPageSize: this.props.pageSize
   }
-  setPagers() {
-    const pagerCount = 7;
-    const page = Number(this.state.page);
-    const pageCount = Number(this.state.pageCount);
+
+  componentDidMount() {
+    this.setState({
+      pageCount: Math.ceil(this.props.total / this.state.defaultPageSize) || 1
+    })
+  }
+
+  renderPage() {
+    const groupCount = 7,
+      page = Number(this.state.page),
+      pageCount = Number(this.state.pageCount);
     let showPrevMore = false;
     let showNextMore = false;
-    if (pageCount > pagerCount) {
-      if (page > pagerCount - 3) {
-        showPrevMore = true;
-      }
-      if (page < pageCount - 3) {
-        showNextMore = true;
-      }
+    if (pageCount > groupCount) {
+      if (page > groupCount - 3) { showPrevMore = true; }
+      if (page < pageCount - 3) { showNextMore = true; }
     }
-    const pagers = [];
+    const array = [];
     if (showPrevMore && !showNextMore) {
-      const startPage = pageCount - (pagerCount - 2);
+      const startPage = pageCount - (groupCount - 2);
       for (let i = startPage; i < pageCount; i++) {
-        pagers.push(i);
+        array.push(i);
       }
     } else if (!showPrevMore && showNextMore) {
-      for (let i = 2; i < pagerCount; i++) {
-        pagers.push(i);
+      for (let i = 2; i < groupCount; i++) {
+        array.push(i);
       }
     } else if (showPrevMore && showNextMore) {
-      const offset = Math.floor(pagerCount / 2) - 1;
+      const offset = Math.floor(groupCount / 2) - 1;
       for (let i = page - offset; i <= page + offset; i++) {
-        pagers.push(i);
+        array.push(i);
       }
     } else {
       for (let i = 2; i < pageCount; i++) {
-        pagers.push(i);
+        array.push(i);
       }
     }
-    this.setState({ showPrevMore, showNextMore, pagers })
-    // return array;
-  }
-  classes() {
-    return this.className(["k-page", { ["k-page-mini"]: this.props.mini }])
-  }
-  changeSize(value) {
-    let { page, pageSize, pageCount, total } = this.state
-    this.setState({
-      pageSize: value,
-      pageCount: Math.ceil(total / value) || 1,
-      page: page > pageCount ? pageCount : page
-    }, () => this.setPagers())
-    this.props.onPageSizeChange && this.props.onPageSizeChange(value)
-  }
-  goPage() {
-    let { page, elevator, pageCount } = this.state
+    let child = array.map((p, i) => {
+      let prop = {
+        className: this.className(['k-pager-item', { active: page == p }]),
+        key: i,
+        onClick: () => this.toPage(p)
+      }
+      return <li {...prop} key={i}><span>{p}</span></li>
+    })
+    const moreNode = (key) => <li key={key} className="k-pager-item k-pager-more"><Icon type="ellipsis-horizontal" /></li>;
 
-    if (elevator >= 1 && elevator < pageCount) {
-      if (!elevator || page < 0) return;
-      this.setState({ page: elevator }, () => this.setPagers())
+    if (showPrevMore) {
+      child.unshift(moreNode('fmore'))
     }
-  }
-  toPage(page) {
-    if (page != this.state.page) {
-      this.setState({ page }, () => this.setPagers())
-      this.props.onChange && this.props.onChange(page)
+    if (showNextMore) {
+      child.push(moreNode('lmore'))
     }
+    return child
   }
   prePage() {
     let { page } = this.state
-    page = parseInt(page)
     if (page > 1) {
-      this.setState({ page: page - 1, elevator: page - 1 }, () => this.setPagers());
-      this.props.onChange && this.props.onChange(page - 1)
+      page--
+      this.setState({ page })
+      this.props.onChange && this.props.onChange(page)
     }
   }
   nextPage() {
-    let { page, pageCount } = this.state;
-    page = parseInt(page)
+    let { pageCount, page } = this.state;
     if (page < pageCount) {
-      this.setState({ page: page + 1, elevator: page + 1 }, () => this.setPagers())
-      this.props.onChange && this.props.onChange(page + 1)
+      page++;
+      this.setState({ page })
+      this.props.onChange && this.props.onChange(page)
     }
   }
-
-  // componentWillMount() {
-  //   this.initPage()
-  // }
-  initPage() {
-    let { total, current, pageSize } = this.state;
-    let pageCount = Math.ceil(total / pageSize) || 1;
-    this.setState({
-      pageCount: pageCount,
-      elevator: current,
-      page: current,
-      groupCount: Math.ceil(pageCount / 5),
-    }, () => this.setPagers())
+  toPage(page) {
+    this.setState({ page })
+    this.props.onChange && this.props.onChange(page)
   }
-  // componentWillMount = () => {
-
-  // }
-/*   componentWillReceiveProps(props) {
-    if (props.pageSize != this.state.pageSize) {
-      this.setState({ pageSize: props.pageSize })
+  changeSize({ value }) {
+    // console.log(value)
+    let { total, onPageSizeChange } = this.props
+    let defaultPageSize = value,
+      pageCount = Math.ceil(total / this.state.defaultPageSize) || 1;
+    this.setState({ defaultPageSize, pageCount })
+    onPageSizeChange && onPageSizeChange(value)
+  }
+  renderFirst() {
+    let { pageCount, page } = this.state
+    if (pageCount > 0) {
+      return <li key="first" className={this.className(["k-pager-item", { 'active': page == 1 }])} onClick={() => this.toPage(1)} >
+        <span>1</span>
+      </li>
     }
-    if (props.total != this.props.total || this.props.current != props.current) {
-      this.setState({
-        total: props.total,
-        current: props.current,
-      }, () => this.initPage())
+    return null
+  }
+  renderLast() {
+    let { pageCount, page } = this.state
+    if (pageCount > 1) {
+      return <li key="last" className={this.className(['k-pager-item', { 'active': page == pageCount }])} onClick={() => this.toPage(pageCount)} >
+        <span>{pageCount}</span>
+      </li>
     }
-  } */
-  render() {
-    let { mini, showSizer, sizeData, showTotal, showElevator } = this.props;
-    let { elevator, pageSize, pageCount, showNextMore, showPrevMore, pagers, page } = this.state;
-    let renderPager = () => {
-      let pages = []
-      for (let pager of pagers) {
-        pages.push(<li key={pager} className={this.className(['k-pager-item', { ['active']: page == pager }])} onClick={this.toPage.bind(this, pager)}><span >{pager}</span></li>)
+    return null
+  }
+  renderSize() {
+    let { defaultPageSize, page } = this.state
+    let { size, sizeData, showSizer } = this.prop
+    let prop = {
+      value: defaultPageSize,
+      props: { size },
+      on: {
+        input: e => defaultPageSize = e,
+        change: this.changeSize
       }
-      return pages
     }
-    return (<div className={this.className()} style={this.styles()}>
-      <div className={this.classes()}>
-        <ul className="k-pager">
-          <li className="k-pager-item" onClick={this.prePage.bind(this)}><span><Icon type="ios-arrow-back" /></span></li>
-          {pageCount > 0 && <li className={this.className(['k-pager-item', { ['active']: page == 1 }])} onClick={this.toPage.bind(this, 1)}><span >1</span></li>}
-          {showPrevMore && <li className="k-pager-item k-pager-more"><span ><Icon type="ios-more" /></span></li>}
-          {renderPager()}
-          {showNextMore && <li className="k-pager-item k-pager-more"><span ><Icon type="ios-more" /></span></li>}
-          {pageCount > 1 && <li className={this.className(['k-pager-item', { ['active']: page == pageCount }])} onClick={this.toPage.bind(this, pageCount)}><span >{pageCount}</span></li>}
-          <li className="k-pager-item" onClick={this.nextPage.bind(this)}><span><Icon type="ios-arrow-forward" /></span></li>
-        </ul >
-        {
-          showSizer && <div className="k-page-sizer" >
-            <Select mini={mini} value={pageSize} onChange={this.changeSize.bind(this)}>
-              {
-                sizeData.map((p) => {
-                  return <Select.Option key={p} value={p}>{p}条/页</Select.Option>
-                })
-              }
-            </Select>
-          </div>
+    return (
+      showSizer ?
+        <div className="k-page-sizer">
+          <Select {...prop}>
+            {sizeData.map((p, i) => <Option key={i} value={p}>{p}条/页</Option>)}
+          </Select >
+        </div > : null
+    )
+  }
+  renderElvator() {
+    let { size, onChange, showElevator } = this.props
+    let { page } = this.state
+    let prop = {
+      className: 'k-page-options-elevator',
+      size, value: page,
+      onBlur: e => {
+        let page = e.target.value;
+        let { pageCount } = this.state
+        if (page > pageCount) page = pageCount
+        if (page < 1) page = 1
+
+        if ((page >= 1 || page <= pageCount) && this.props.page != page) {
+          this.setState({ page })
+          onChange && onChange(page)
         }
-        {showTotal && <div className="k-page-number" >
-          <span>共{pageCount}页</span>
-        </div >}
-        {showElevator && <div className="k-page-options">
-          <span>跳至</span>
-          <Input value={elevator} mini={mini} className="k-page-options-elevator" onChange={(e) => this.setState({ elevator: parseInt(e.target.value) })} />
-          <span>页</span>
-          <Button mini={mini} className="k-page-options-action" onClick={this.goPage.bind(this)}>确定</Button>
-        </div>}
-      </div >
-    </div >)
+        // change: e => this.page = e
+      }
+    }
+    return (
+      showElevator ?
+        <div className="k-page-options" key="elevator">
+          <span>跳至</span><Input {...prop} /><span>页</span>
+        </div> : null
+    )
+  }
+
+  render() {
+    let { size, total, showTotal } = this.props
+    let { page, pageCount } = this.state
+    const classes = ["k-page", { ["k-page-sm"]: size == 'small' }],
+      preNode = <li key="prev" className={this.className(['k-pager-item', { 'k-pager-item-disabled': page == 1 }])} onClick={() => this.prePage()}><Icon type="chevron-back" /></li>,
+      nextNode = <li key="next" className={this.className(['k-pager-item', { 'k-pager-item-disabled': page == pageCount }])} onClick={() => this.nextPage()}><Icon type="chevron-forward" /></li>,
+      totalNode = (showTotal ? <div key="total" className="k-page-number"><span>共{total}条</span></div> : null),
+      pagerNode = this.renderPage(),
+      sizeNode = [],// this.renderSize(),
+      elvatorNode = this.renderElvator(),
+      firstNode = this.renderFirst(),
+      lastNode = this.renderLast()
+    return (
+      <div className={this.className(classes)}>
+        <ul className="k-pager">
+          {[preNode, firstNode, pagerNode, lastNode, nextNode, sizeNode, totalNode, elvatorNode]}
+        </ul>
+      </div>
+    )
   }
 }
 Page.defaultProps = {
   sizeData: [10, 15, 20, 30, 40],
   total: 0,
-  pageSize: 30,
+  pageSize: 10,
+  size: 'default',
   current: 1
 }
 Page.propTypes = {
   onPageSizeChange: PropTypes.func,
+  onChange: PropTypes.func,
   showSizer: PropTypes.bool,
   showTotal: PropTypes.bool,
   showElevator: PropTypes.bool,
   sizeData: PropTypes.array,
-  mini: PropTypes.bool,
-  total: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  pageSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  current: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  size: PropTypes.oneOf(['small', 'large', 'default']),
+  total: PropTypes.number,
+  pageSize: PropTypes.number,
+  current: PropTypes.number,
 }

@@ -35,3 +35,7 @@ ReactDOM.render(<Demo />,  mountNode)
 class Demo extends React.Component {
   render(){
     return(
+
+
+
+把function 统一为 onX

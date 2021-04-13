@@ -17,13 +17,13 @@ import Icon from './icon'
 import { Input, TextArea } from './input'
 // import Loading from './loading'
 import { Layout } from './layout'
-import  Message  from './message'
-import  Notice  from './notice'
+import Message from './message'
+import Notice from './notice'
 // import Modal from './modal'
 import Menu from './menu'
 import { Row, Col } from './grid'
 // import Poptip from './poptip'
-// import Page from './page'
+import Page from './page'
 import Radio from './radio'
 import Select from './select'
 import Switch from './switch'
@@ -64,7 +64,8 @@ export {
     Menu,
     Message,
     Notice,
-    // Poptip, Page,
+    // Poptip, 
+    Page,
     Row, Col,
     Radio,
     Select,
