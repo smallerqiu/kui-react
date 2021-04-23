@@ -4,7 +4,7 @@
 `Notice` 的基本用法
 </cn>
 
-```ts
+```tsx
 import { Notice , Button } from 'react-kui';
 
 class Demo extends React.Component {

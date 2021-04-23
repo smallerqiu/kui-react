@@ -3,7 +3,7 @@
 `closable` 来控制是否显示可关闭按钮,平滑、自然隐藏关闭
 </cn>
 
-```ts
+```tsx
 import { Alert } from 'react-kui';
 
 ReactDOM.render(

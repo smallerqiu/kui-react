@@ -3,7 +3,7 @@
 全选组合
 </cn>
 
-```ts
+```tsx
 import { Checkbox } from 'react-kui';
 
 class Demo extends React.Component {

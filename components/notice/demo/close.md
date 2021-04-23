@@ -3,7 +3,7 @@
 可以自定义配置，其中 `duration` 来控制自动关闭时长,默认 `3s`
 </cn>
 
-```ts
+```tsx
 import { Notice , Button ,Message } from 'react-kui';
 
 class Demo extends React.Component {

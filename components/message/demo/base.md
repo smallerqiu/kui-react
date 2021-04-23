@@ -3,7 +3,7 @@
 信息提醒反馈。
 </cn>
 
-```ts
+```tsx
 import { Message , Button } from 'react-kui';
 let count = 0
 class Demo extends React.Component {

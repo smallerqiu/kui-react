@@ -3,7 +3,7 @@
 `showIcon` 来设置是否显示图标
 </cn>
 
-```ts
+```tsx
 import { Alert } from 'react-kui';
 
 ReactDOM.render(

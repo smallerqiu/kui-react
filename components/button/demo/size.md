@@ -3,7 +3,7 @@
 `small` 为小尺寸， `large` 为大尺寸
 </cn>
 
-```ts
+```tsx
 import { Button, Radio } from 'react-kui';
 
 class ButtonSize extends React.Component {

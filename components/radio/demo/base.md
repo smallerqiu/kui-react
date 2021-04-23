@@ -3,7 +3,7 @@
 单独使用可使用 `v-model` 双向绑定数据
 </cn>
 
-```ts
+```tsx
 import { Radio , Button } from 'react-kui';
 
 class Demo extends React.Component {

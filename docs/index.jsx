@@ -1,17 +1,17 @@
 import React, { Component } from 'react'
 import { Button, Layout } from 'react-kui'
-import DocHeader from './components/header'
-import './index.less'
+import Header from './components/header'
+import './assets/home.less'
 export default class Index extends Component {
   start() {
-    this.props.history.push('/start')
+    this.props.history.push('/docs/start')
   }
   gitee() {
     window.open("//gitee.com/chuchur/kui-vue");
   }
   render() {
     return (<Layout className="index">
-      <DocHeader />
+      <Header />
       <section className="index-content">
         <div className="logo">K UI</div>
         <h1>轻量级桌面UI组件库 for React</h1>

@@ -3,7 +3,7 @@
 `Badge` 基础使用
 </cn>
 
-```ts
+```tsx
 import { Badge , Button } from 'react-kui';
 
 ReactDOM.render(

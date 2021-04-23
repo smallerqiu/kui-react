@@ -16,22 +16,18 @@ export default class Transition extends Component {
     this.setState({ show: false })
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
-    // console.log(prevProps, prevState)
-    if (this.state.show !== this.props.show) {
+    if (prevProps.show !== this.props.show) {
       this.setState({ show: this.props.show })
     }
   }
-  // componentWillReceiveProps(props) {
-  //   if (this.state.show != props.show) {
-  //     this.setState({ show: props.show })
-  //   }
-  // }
   onExit(el) {
+    if (!el) return
     this.props.onExit && this.props.onExit(el)
     el.style.height = el.scrollHeight + 'px'
     el.style.opacity = 1
   }
   onExiting(el) {
+    if (!el) return
     this.props.onExiting && this.props.onExiting(el)
     if (el.scrollHeight !== 0) {
       el.style.height = 0;
@@ -44,6 +40,7 @@ export default class Transition extends Component {
     }
   }
   onExited(el) {
+    if (!el) return
     this.props.onExited && this.props.onExited(el)
     el.style.height = '';
     el.style.paddingTop = '';
@@ -54,6 +51,7 @@ export default class Transition extends Component {
     el.style.overflow = ''
   }
   onEnter(el) {
+    if (!el) return
     this.props.onEnter && this.props.onEnter(el)
     if (el) {
       el.style.overflow = 'hidden';
@@ -62,6 +60,7 @@ export default class Transition extends Component {
     }
   }
   onEntering(el) {
+    if (!el) return
     this.props.onEntering && this.props.onEntering(el)
     if (el.scrollHeight !== 0) {
       el.style.height = el.scrollHeight + 'px'
@@ -72,27 +71,30 @@ export default class Transition extends Component {
     }
   }
   onEntered(el) {
+    if (!el) return
     this.props.onEntered && this.props.onEntered(el)
     el.style.height = ''
     el.style.overflow = ''
     el.style.opacity = ''
   }
   render() {
-    const { timeout, name, children } = this.props
-    return (<CSSTransition in={this.state.show} timeout={timeout}
+    const { timeout, name, children, unmountOnExit } = this.props
+    const { show } = this.state
+    return (<CSSTransition in={show} timeout={timeout}
       onExited={(e) => this.onExited(e)}
       onExiting={(e) => this.onExiting(e)}
       onExit={(e) => this.onExit(e)}
       onEnter={(e) => this.onEnter(e)}
       onEntering={(e) => this.onEntering(e)}
       onEntered={(e) => this.onEntered(e)}
-      unmountOnExit classNames={name}>
+      unmountOnExit={unmountOnExit} classNames={name}>
       {children}</CSSTransition>)
   }
 }
 Transition.defaultProps = {
   name: 'fade',
-  timeout: 300
+  timeout: 300,
+  unmountOnExit: true
 }
 Transition.propTypes = {
   onEnter: PropTypes.func,
@@ -103,4 +105,6 @@ Transition.propTypes = {
   onExited: PropTypes.func,
   name: PropTypes.string,
   show: PropTypes.bool,
+  timeout: PropTypes.number,
+  unmountOnExit: PropTypes.bool,
 }

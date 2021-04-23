@@ -3,7 +3,7 @@
 可以获得是否固定的状态。
 </cn>
 
-```ts
+```tsx
 import { Affix , Message , Button } from 'react-kui';
 class Demo extends React.Component {
   change(value){

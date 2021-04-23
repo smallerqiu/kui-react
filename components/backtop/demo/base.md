@@ -3,7 +3,7 @@
 默认位置距离页面右部和底部 50px，滚动至距顶端 400px 时显示。
 </cn>
 
-```ts
+```tsx
 import { BackTop } from 'react-kui';
 
 ReactDOM.render(

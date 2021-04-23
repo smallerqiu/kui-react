@@ -3,7 +3,7 @@
 通过 `to` 添加跳转链接
 </cn>
 
-```ts
+```tsx
 import { Breadcrumb } from 'react-kui';
 
 ReactDOM.render(

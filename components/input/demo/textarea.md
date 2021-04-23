@@ -3,7 +3,7 @@
 通过设置 `rows` 来控制行数
 </cn>
 
-```ts
+```tsx
 import { TextArea } from 'react-kui';
 
 ReactDOM.render(

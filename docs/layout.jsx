@@ -1,78 +1,120 @@
 import React from 'react'
 import { Kui, PropTypes } from '@/components/kui'
 import { Nav, baseNav } from "./menu";
-import { Row, Col, Menu, Badge, Select, Icon, Layout } from '@/components'
-import DocHeader from './components/header'
-// import vueIcon from './assets/vue.svg'
+import { Row, Col, Menu, SubMenu, Badge, Select, Icon, Layout } from '@/components'
+import Header from './components/header'
+import './assets/index.less'
+
 export default class DocLayout extends Kui {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      activeName: '',
-      components: []// code.components
-    }
+  state = {
+    prev: {}, next: {},
+    typo: false,
+    activeName: [],
   }
 
   componentDidMount() {
-    this.setState({ activeName: this.context.router.route.location.pathname })
+    this.setActiveKey({ path: this.context.router.route.location.pathname })
   }
 
-  routerChange(path) {
-    if (path.indexOf('http') >= 0) {
-      window.open(path)
+  go({ key, keyPath, item }) {
+    if (!key) return;
+    let { current } = this.getPath(key), path;
+    if (!current) {
+      path = key
     } else {
-      setTimeout(() => this.setState({ key: '' }), 500)
-      if (path != window.location.pathname) {
-        document.scrollTop = document.documentElement.scrollTop = 0
-      }
-      this.context.router.history.push(path)
-
+      let { title, sub, name } = current
+      document.title = `${title} ${sub || ""} - KUI`;
+      path = (sub ? "/components/" : "/docs/") + key;
+      this.setState({ typo: !sub })
     }
-    this.setState({ activeName: path })
+    this.context.router.history.push(path);
+
+    // setTimeout(() => {
+    window.scrollTo(0, 0)
+    // }, 1000);
+  }
+  getPath(name) {
+    const data = Nav.concat([
+      {
+        title: "m",
+        child: baseNav,
+      },
+    ]);
+    let routes = data.reduce((x, y) => x.concat(y.child), [])
+    let index = routes.findIndex(x => x.name == name)
+    return { current: routes[index], prev: routes[index - 1], next: routes[index + 1] }
+  }
+
+  setActiveKey({ path }) {
+    let key = path.replace(/\/docs\/|\/components\//, "").toLowerCase();
+    let { current, prev = {}, next = {} } = this.getPath(key), activeName, typo;
+    if (path == '/components/all') {
+      prev = baseNav[5]
+      next = Nav[0].child[0]
+      document.title = `组件总览 - KUI`;
+      activeName = [path];
+    } else {
+      let { title, sub, name } = current;
+      document.title = `${title} ${sub || ""} - KUI`;
+      typo = sub
+    }
+    this.setState({
+      prev, next, typo: !typo, activeName: [name]
+    })
   }
   render() {
-    let renderItem = (data) => {
-      return data.map((child, y) => {
-        return (<Menu.Item icon={child.icon} name={child.link || child.weblink} key={y}>
-          {child.link === '/log' && <Badge dot>{child.title}</Badge>}
-          {child.link !== '/log' && child.title}
-          {child.sub && <span className="sub">{child.sub}</span>}
-        </Menu.Item>)
-      })
-    }
-    let renderGroup = (child, x) => {
-      return <Menu.Group title={child.title} name={child.title} key={x}>{renderItem(child.child)}</Menu.Group>
-    }
-
-    let renderLeftMenu = () => {
-      return Nav.map((child, x) => renderGroup(child, x))
-    }
-    let getSearchCom = () => {
-      return this.state.components.map((com, index) => {
-        return <Select.Option key={index} value={com.name}>{com.name} {com.title}</Select.Option>
-      })
-    }
+    let { activeName, typo, prev, next } = this.state
     return (
       <Layout>
-        <DocHeader />
+        <Header />
         <Layout className="main">
           <Layout.Sider className="docs-k-layout-sider">
-
-            <Menu onSelect={this.routerChange.bind(this)} activeName={this.state.activeName} width="auto" className="left-menu">
+            <Menu selectedKeys={activeName} className="left-menu" onClick={this.go.bind(this)} mode="inline" openKeys={['components']}>
               {
                 baseNav.map(m => {
-                  return <Menu.Item key={m.title}>{m.title}</Menu.Item>
+                  return <Menu.Item key={m.name}>
+                    {m.badeg ?
+                      <Badge dot >{m.title}</Badge> :
+                      m.title}
+                  </Menu.Item>
                 })
               }
-              {renderLeftMenu()}
+              <SubMenu key="components" title="Components(65)">
+                {
+                  Nav.map(({ child, title }, x) => {
+                    return (<Menu.Group title={title} name={title} key={'sub' + x}>
+                      {
+                        child.map(({ icon, name, sub }) => {
+                          return (<Menu.Item icon={icon} key={name}>
+                            <span>{sub}</span>
+                            <span className="sub">{title}</span>
+                          </Menu.Item>)
+                        })
+                      }
+                    </Menu.Group>)
+                  })
+                }
+              </SubMenu>
             </Menu>
           </Layout.Sider>
-          <Layout.Content>
+          <Layout.Content className={this.className({ 'typo': typo })}>
             {this.props.children}
-            <Layout.Footer>
+            <Row className="foot-nav">
+              <Col span={12}>
+                <a onClick={() => this.go({ key: prev.name })}>
+                  <Icon type="chevron-back-outline" />{prev.name}
+                </a>
+              </Col>
+              <Col span={12}>
+                <a onClick={() => this.go({ key: next.name })}>{next.name}
+                  <Icon type="chevron-forward-outline" />
+                </a>
+              </Col>
+            </Row>
+            <Layout.Footer className="docs-k-footer">
               KUI ©2018 Created by chuchur |
-          <a href="https://beian.miit.gov.cn/" target="_blank">粤ICP备19016072号-2</a>
+              <a href="https://beian.miit.gov.cn/" target="_blank">粤ICP备19016072号-2</a>
             </Layout.Footer>
           </Layout.Content>
         </Layout >
@@ -80,6 +122,7 @@ export default class DocLayout extends Kui {
     )
   }
 }
+
 DocLayout.contextTypes = {
   router: PropTypes.object.isRequired
 }

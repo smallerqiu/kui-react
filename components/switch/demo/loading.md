@@ -3,7 +3,7 @@
 标识开关操作仍在执行中。
 </cn>
 
-```ts
+```tsx
 import { Switch } from 'react-kui';
 
 ReactDOM.render(

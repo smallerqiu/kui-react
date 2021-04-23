@@ -3,7 +3,7 @@
 通过 `icon` 设置图标
 </cn>
 
-```ts
+```tsx
 import { Breadcrumb } from 'react-kui';
 
 ReactDOM.render(

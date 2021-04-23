@@ -315,12 +315,14 @@
       }
       .k-menu-submenu-affix-item-active {
         .k-menu-submenu-affix-item-text {
-          // background-color: #fff;
-          // color: #333;
-          // border: none;
           &:hover {
             background-color: rgba(255, 255, 255, 0.3);
           }
+        }
+      }
+      .k-menu-submenu-active, .k-menu-submenu-selected {
+        .k-menu-submenu-title {
+          color: @main;
         }
       }
     }
@@ -346,7 +348,7 @@
     .k-menu-item-active, .k-menu-submenu-active .k-menu-submenu-title {
       color: #fff;
     }
-    .k-menu-submenu-selected, .k-menu-selected {
+    .k-menu-submenu-selected {
       color: #fff;
       a {
         color: #fff;
@@ -491,6 +493,11 @@
       }
     }
   }
+  .k-menu-submenu-affix-popup {
+    .k-menu-item {
+      font-size: 12px;
+    }
+  }
   .k-menu-submenu {
     position: relative;
     .k-menu-submenu-popup {
@@ -528,7 +535,7 @@
   animation: k-menu-zoom-in 0.2s cubic-bezier(.215, .61, .355, 1);
 }
 
-.k-menu-submenu-fade-leave-active {
+.k-menu-submenu-fade-exit-active {
   animation-fill-mode: both;
   transform-origin: 0% 0%;
   animation: k-menu-zoom-out 0.2s cubic-bezier(.215, .61, .355, 1);
@@ -538,8 +545,8 @@
   animation: dropDownIn .3s;
 }
 
-.k-dropdown-leave-active {
-  animation: dropDownOut .3s;
+.k-dropdown-exit-active {
+  animation: dropDownOut .31s;
 }
 
 .k-menu-submenu-popup-enter-active {
@@ -552,13 +559,13 @@
   }
 }
 
-.k-menu-submenu-popup-leave-active {
+.k-menu-submenu-popup-exit-active {
   &[k-placement="left-bottom"], &[k-placement="right-top"], &[k-placement="right-bottom"] {
     animation-fill-mode: both;
-    animation: k-menu-zoom-out 0.2s cubic-bezier(.215, .61, .355, 1);
+    animation: k-menu-zoom-out 0.5s cubic-bezier(.215, .61, .355, 1);
   }
   &[k-placement="bottom-left"] {
-    animation: dropDownOut .3s;
+    animation: dropDownOut .5s;
   }
 }
 
@@ -567,7 +574,7 @@
   animation-fill-mode: both;
 }
 
-.k-collaplse-slide-leave-active {
+.k-collaplse-slide-exit-active {
   animation: slideOut 0.3s ease-in-out;
   animation-fill-mode: both;
 }
@@ -596,4 +603,8 @@
     transform-origin: 0% 0%;
     opacity: 0;
   }
+}
+
+.k-menu-hidden {
+  display: none;
 }

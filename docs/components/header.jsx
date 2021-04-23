@@ -1,30 +1,32 @@
 import React, { Component } from 'react'
-import { Layout, Select, Menu } from '@/components/index'
+import { Layout, Select, Menu, SubMenu } from '@/components/index'
 import logo from '../assets/favicon.png'
+import { Nav } from "../menu";
 
 export default class DocHeader extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      activeName: '',
-      components: []//code.components
-    }
+  state = {
+    activeName: '',
+    components: []//code.components
   }
-  start() {
-    this.props.history.push('/start')
-  }
-  routerChange(path) {
-    if (path.indexOf('http') >= 0) {
-      window.open(path)
-    } else {
-      setTimeout(() => this.setState({ key: '' }), 500)
-      if (path != window.location.pathname) {
-        document.scrollTop = document.documentElement.scrollTop = 0
-      }
-      this.context.router.history.push(path)
 
+  go({ key, keyPath, item }) {
+    if (key == "home") {
+      this.topMenu = ['home']
+      this.$router.push("/");
+    } else if (key == '/components/all') {
+      this.$router.push("/components/all");
+    } else {
+      open(key);
     }
-    this.setState({ activeName: path })
+  }
+  change({ value }) {
+    this.$router.push(`/components/${value}`);
+    setTimeout(() => (this.key = ""), 500);
+  }
+  changeV({ value }) {
+    if (value == "2") {
+      open("https://v2.k-ui.cn");
+    }
   }
   render() {
     let getSearchCom = () => {
@@ -39,25 +41,25 @@ export default class DocHeader extends Component {
       </a>
       </div>
       <div className="search-component">
-        <Select placeholder="搜索组件..." filterable value={this.state.key} onChange={(path) => this.routerChange(path)}>
+        <Select placeholder="搜索组件..." filterable value={this.state.key} onChange={(path) => this.change(path)}>
           {getSearchCom()}
         </Select>
       </div >
-      <Menu mode="horizontal" onClick={this.go} className="top-menu">
+      {/* <Menu mode="horizontal" onClick={this.go} className="top-menu">
         <Menu.Item key="home" name="home">首页</Menu.Item>
-        <Menu.Item key="start" name="start">组件</Menu.Item>
-        <Menu.SubMenu key="shengtai" name="shengtai">
+        <MenuItem key="/components/all">组件</MenuItem>
+        <SubMenu key="shengtai" name="shengtai">
           <template slot="title">生态相关</template>
           <Menu.Item key="https://v2.k-ui.cn">KUI v2.x</Menu.Item>
           <Menu.Item key="https://gitee.com/chuchur/kui-vue">Gitee</Menu.Item>
           <Menu.Item key="https://react.k-ui.cn">KUI for React</Menu.Item>
           <Menu.Item key="https://www.chuchur.com">Blog</Menu.Item>
-        </Menu.SubMenu>
+        </SubMenu>
         <Select size="small" width={100} style="margin-left:10px" v-model="version" transfer={false} >
           <Option value="3">3.x</Option>
           <Option value="2">2.x</Option>
         </Select >
-      </Menu >
+      </Menu > */}
     </Layout.Header >)
   }
 }

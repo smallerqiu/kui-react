@@ -3,7 +3,7 @@
 展示小尺寸。
 </cn>
 
-```ts
+```tsx
 import { Page } from 'react-kui';
 
 ReactDOM.render(

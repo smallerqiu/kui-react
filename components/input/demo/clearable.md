@@ -3,7 +3,7 @@
 通过设置 `clearable` 属性可控制是否显示清空按钮
 </cn>
 
-```ts
+```tsx
 import { Input } from 'react-kui';
 
 ReactDOM.render(

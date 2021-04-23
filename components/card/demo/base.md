@@ -3,7 +3,7 @@
 通过 `title` 和 `icon` 可设置标题和图标
 </cn>
 
-```ts
+```tsx
 import { Tooltip , Card } from 'react-kui';
 
 ReactDOM.render(

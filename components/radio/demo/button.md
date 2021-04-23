@@ -3,7 +3,7 @@
 结合 `RadioGroup`,`RadioButton` 可以组合使用
 </cn>
 
-```ts
+```tsx
 import { Radio , Button } from 'react-kui';
 
 class Demo extends React.Component{

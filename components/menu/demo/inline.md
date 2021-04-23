@@ -3,57 +3,47 @@
 垂直菜单，子菜单内嵌在菜单区域。
 </cn>
 
-```vue
-<template>
-  <div style="width:256px">
-    <Menu v-model="current" :open-keys="openKeys" mode="inline">
-      <SubMenu key="sub1">
-        <template slot="title">
-          <Icon type="mail" />Navigation One
-        </template>
-        <MenuGroup title="Item 1">
-          <MenuItem key="1-1">Option 1</MenuItem>
-          <MenuItem key="1-2">Option 2</MenuItem>
-        </MenuGroup>
-        <MenuGroup title="Item 2">
-          <MenuItem key="1-3">Option 3</MenuItem>
-          <MenuItem key="1-4">Option 4</MenuItem>
-        </MenuGroup>
-      </SubMenu>
-      <SubMenu key="sub2">
-        <template slot="title">
-          <Icon type="keypad" />Navigation Two
-        </template>
-          <MenuItem key="2-1">Option 5</MenuItem>
-          <MenuItem key="2-2">Option 6</MenuItem>
-        <SubMenu title="Item 2" key="sub2-1">
-          <template slot="title">
-            <Icon type="keypad" />SubMenu
-          </template>
-          <MenuItem key="2-3">Option 7</MenuItem>
-          <MenuItem key="2-4">Option 8</MenuItem>
-        </SubMenu>
-      </SubMenu>
-       <SubMenu key="sub3">
-        <template slot="title">
-          <Icon type="settings" />Navigation Three
-        </template>
-        <MenuItem key="3-1">Option 9</MenuItem>
-        <MenuItem key="3-2">Option 10</MenuItem>
-        <MenuItem key="3-3">Option 11</MenuItem>
-        <MenuItem key="3-4">Option 12</MenuItem>
-      </SubMenu>
-    </Menu>
-  </div>
-</template>
-<script>
-export default {
-  data() {
-    return {
-      current: ['1-1'],
-      openKeys:['sub1']
-    }
-  },
+```tsx
+import { Menu ,SubMenu } from 'react-kui';
+
+class Demo extends React.Component {
+  state = {
+    current: ['1-1'],
+    openKeys:['sub1']
+  }
+  render(){
+    let { current,openKeys } = this.state
+    return(
+      <div style={{width:256}}>
+        <Menu selectedKeys={current} openKeys={openKeys} mode="inline">
+         <SubMenu key="sub1" icon="mail" title="Navigation One">
+            <Menu.Group title="Item 1">
+              <Menu.Item key="1-1">Option 1</Menu.Item>
+              <Menu.Item key="1-2">Option 2</Menu.Item>
+            </Menu.Group>
+            <Menu.Group title="Item 2">
+              <Menu.Item key="1-3">Option 3</Menu.Item>
+              <Menu.Item key="1-4">Option 4</Menu.Item>
+            </Menu.Group>
+          </SubMenu>
+          <SubMenu key="sub2" icon="keypad" title="Navigation Two">
+            <Menu.Item key="2-1">Option 5</Menu.Item>
+            <Menu.Item key="2-2">Option 6</Menu.Item>
+            <SubMenu key="sub2-1" icon="keypad" title="SubMenu">
+              <Menu.Item key="2-3">Option 7</Menu.Item>
+              <Menu.Item key="2-4">Option 8</Menu.Item>
+            </SubMenu>
+          </SubMenu>
+          <SubMenu key="sub3" icon="settings" title="Navigation Three">
+            <Menu.Item key="3-1">Option 9</Menu.Item>
+            <Menu.Item key="3-2">Option 10</Menu.Item>
+            <Menu.Item key="3-3">Option 11</Menu.Item>
+            <Menu.Item key="3-4">Option 12</Menu.Item>
+          </SubMenu>  
+        </Menu>
+      </div>
+    )
+  }
 }
-</script>
+ReactDOM.render(<Demo />, mountNode)
 ```

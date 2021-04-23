@@ -3,7 +3,7 @@
 通过设置 `icon` 属性，可设置输入框图标，只对 `input` 有效。可以快速的实现 ，密码显示隐藏，搜索
 </cn>
 
-```ts
+```tsx
 import { Input ,Message, Tooltip,Icon } from 'react-kui';
 
 class Demo extends React.Component {

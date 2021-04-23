@@ -3,7 +3,7 @@
 典型的页面布局。
 </cn>
 
-```ts
+```tsx
 import { Layout } from 'react-kui';
 
 class Demo extends React.Component {

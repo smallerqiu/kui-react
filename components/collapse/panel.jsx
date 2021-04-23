@@ -7,19 +7,20 @@ import React from 'react'
 export default class Panel extends Kui {
 
   handelClick = (e) => {
-    let collapse = this.context.Collapse
-    if (collapse) {
-      collapse.change(this.props.activeKey)
+    let CP = this.context.Collapse
+    if (CP) {
+      CP.change(this.props.eventKey)
     }
   }
   render() {
-    let { children, title, actived, extra } = this.props
-    // let collapse = this.context.Collapse
+    let actived = false
+    let { children, title, extra, eventKey } = this.props
+    let CP = this.context.Collapse
 
     // let key = 'a'
-    // if (collapse) {
-    //   active = collapse.props.activeKey.indexOf(key) >= 0
-    // }
+    if (CP) {
+      actived = CP.state.currentValue.indexOf(eventKey) >= 0
+    }
     const classes = ['k-collapse-item', {
       ['k-collapse-item-active']: actived
     }]
@@ -45,8 +46,7 @@ export default class Panel extends Kui {
 
 Panel.propTypes = {
   title: PropTypes.string,
-  actived: PropTypes.bool,
-  activeKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  eventKey: PropTypes.any,
   extra: PropTypes.any
 }
 

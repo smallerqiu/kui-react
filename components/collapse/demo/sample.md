@@ -3,7 +3,7 @@
 设置 `sample` 呈现没有边框的简洁样式。
 </cn>
 
-```ts
+```tsx
 import { Collapse } from 'react-kui';
 
 const text =  'A long time ago, In a beautiful kingdom, '+

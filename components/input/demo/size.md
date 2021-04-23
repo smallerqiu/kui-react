@@ -3,7 +3,7 @@
 `large` 为大尺寸， `small` 为小尺寸
 </cn>
 
-```ts
+```tsx
 import { Input ,Message } from 'react-kui';
 
 ReactDOM.render(

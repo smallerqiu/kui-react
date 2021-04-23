@@ -27,7 +27,7 @@ export default class Collapse extends Kui {
     onChange && onChange(key)
   }
   render() {
-    const { children, sample, activeKey } = this.props
+    const { children, sample } = this.props
     const { currentValue } = this.state
     const classes = ['k-collapse', {
       ['k-collaplse-sample']: sample
@@ -39,8 +39,7 @@ export default class Collapse extends Kui {
         return <Panel
           title={title}
           key={key}
-          activeKey={key}
-          actived={(currentValue || []).indexOf(key) >= 0}
+          eventKey={key}
           extra={extra}
         >{children}</Panel>
       })

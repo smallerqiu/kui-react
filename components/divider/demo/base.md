@@ -4,7 +4,7 @@
 使用 type="vertical" 设置为行内的垂直分割线。
 </cn>
 
-```ts
+```tsx
 import { Divider } from 'react-kui';
 
 ReactDOM.render(

@@ -3,7 +3,7 @@
 添加 `loading` 属性即可让按钮处于加载状态
 </cn>
 
-```ts
+```tsx
 import { Button } from 'react-kui';
 
 class ButtonLoading extends React.Component {

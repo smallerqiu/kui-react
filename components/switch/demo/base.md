@@ -3,7 +3,7 @@
 可使用 `v-model` 进行数据双向绑定
 </cn>
 
-```ts
+```tsx
 import { Switch , Button } from 'react-kui';
 
 class Demo extends React.Component {

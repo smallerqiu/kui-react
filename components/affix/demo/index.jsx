@@ -14,7 +14,7 @@ export default class Index extends React.Component {
         <Base />
         <Callback />
         <Container />
-        <div style={{ height: 500, display: 'flex', color: '#ddd', alignItems: 'center',justifyContent:'center' }}>我是打酱油的,请忽略我...</div>
+        <div style={{ height: 500, display: 'flex', color: '#ddd', alignItems: 'center', justifyContent: 'center' }}>我是打酱油的,请忽略我...</div>
         <Bottom />
         <CN className="typo" />
       </div>

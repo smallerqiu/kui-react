@@ -3,7 +3,7 @@
 可以同时展开多个面板。
 </cn>
 
-```ts
+```tsx
 import { Collapse ,Icon } from 'react-kui';
 
 const text =  'A long time ago, In a beautiful kingdom, '+

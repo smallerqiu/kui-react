@@ -1,7 +1,7 @@
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
 import Icon from '../icon'
-import Transition from '../transition'
+import { CSSTransition } from 'react-transition-group'
 
 export default class BackTop extends Kui {
 
@@ -51,16 +51,15 @@ export default class BackTop extends Kui {
     let { bottom, right, children } = this.props
     let { visible } = this.state
     let styles = { bottom, right }
-    console.log(children)
     if (!children) {
       children = <div className="k-backtop-content"><Icon type="arrow-up" /></div>
     }
 
-    return <Transition show={visible} >
+    return <CSSTransition in={visible} unmountOnExit classNames="k-backtop-fade" timeout={400}>
       <div className="k-backtop" onClick={this.handle} style={this.styles(styles)} >
         {children}
       </div>
-    </Transition>
+    </CSSTransition>
   }
 }
 

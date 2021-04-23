@@ -4,7 +4,7 @@
 分割线中带有文字，可以用 orientation 指定文字位置。
 </cn>
 
-```ts
+```tsx
 import { Divider } from 'react-kui';
 
 ReactDOM.render(

@@ -3,7 +3,7 @@
 通过 `closeable` 显示关闭按钮，点击隐藏标签，触发 `close` 回调
 </cn>
 
-```ts
+```tsx
 import { Tag } from 'react-kui';
 
 ReactDOM.render(

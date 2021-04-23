@@ -3,7 +3,7 @@
 设置 `dot` 来展示一个点
 </cn>
 
-```ts
+```tsx
 import { Badge, Icon } from 'react-kui';
 
 ReactDOM.render(

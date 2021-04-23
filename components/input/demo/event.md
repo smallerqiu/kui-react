@@ -3,7 +3,7 @@
 本示例测试组件事件是否正常触发
 </cn>
 
-```ts
+```tsx
 import { Input , TextArea ,Message} from 'react-kui';
 
  

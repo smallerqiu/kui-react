@@ -3,51 +3,46 @@
 水平的顶部导航菜单。
 </cn>
 
-```vue
-<template>
-  <div>
-    <Menu mode="horizontal" v-model="current">
-      <MenuItem key="1" icon="mail">Navigation One</MenuItem>
-      <MenuItem key="2" icon="keypad" disabled>Navigation Two</MenuItem>
-      <SubMenu key="3">
-        <template slot="title">
-          <Icon type="settings" />Navigation - Submenu
-        </template>
-        <MenuGroup title="Item 1">
-          <MenuItem key="3-1">Option 1</MenuItem>
-          <MenuItem key="3-2">Option 2</MenuItem>
-        </MenuGroup>
-        <MenuGroup title="Item 2">
-          <MenuItem key="3-3">Option 1</MenuItem>
-          <MenuItem key="3-4">Option 2</MenuItem>
-          <SubMenu key="3-5">
-            <template slot="title">
-              <Icon type="settings" />Submenu
-            </template>
-            <MenuGroup title="Item 1">
-              <MenuItem key="3-5-1">Option 1</MenuItem>
-              <MenuItem key="3-5-2">Option 2</MenuItem>
-            </MenuGroup>
-            <MenuGroup title="Item 2">
-              <MenuItem key="3-5-3">Option 1</MenuItem>
-              <MenuItem key="3-5-4">Option 2</MenuItem>
-            </MenuGroup>
+```tsx
+import { Menu ,SubMenu } from 'react-kui';
+
+class Demo extends React.Component {
+  state = {
+    current: ['1']
+  }
+  render(){
+    return(
+      <div>
+        <Menu mode="horizontal" selectedKeys={this.state.current}>
+          <Menu.Item key="1" icon="mail">Navigation One</Menu.Item>
+          <Menu.Item key="2" icon="keypad" disabled>Navigation Two</Menu.Item>
+          <SubMenu key="3" icon="settings" title="Navigation - Submenu"> 
+            <Menu.Group title="Item 1">
+              <Menu.Item key="3-1">Option 1</Menu.Item>
+              <Menu.Item key="3-2">Option 2</Menu.Item>
+            </Menu.Group>
+            {/*<Menu.Group title="Item 2">
+              <Menu.Item key="3-3">Option 1</Menu.Item>
+              <Menu.Item key="3-4">Option 2</Menu.Item>
+              <SubMenu key="3-5" icon="settings" title="Submenu">
+                <Menu.Group title="Item 1">
+                  <Menu.Item key="3-5-1">Option 1</Menu.Item>
+                  <Menu.Item key="3-5-2">Option 2</Menu.Item>
+                </Menu.Group>
+                <Menu.Group title="Item 2">
+                  <Menu.Item key="3-5-3">Option 1</Menu.Item>
+                  <Menu.Item key="3-5-4">Option 2</Menu.Item>
+                </Menu.Group>
+              </SubMenu>
+            </Menu.Group>*/}
           </SubMenu>
-        </MenuGroup>
-      </SubMenu>
-      <MenuItem key="4">
-      <a href="https://k-ui.cn" target="_blank">Navigation -Link</a>
-      </MenuItem>
-    </Menu>
-  </div>
-</template>
-<script> 
-export default {
-  data() {
-    return {
-      current: ['1']
-    }
-  },
+          <Menu.Item key="4">
+          <a href="https://k-ui.cn" target="_blank">Navigation -Link</a>
+          </Menu.Item>
+        </Menu>
+      </div>
+    )
+  }
 }
-</script> 
+ReactDOM.render(<Demo />, mountNode)
 ```

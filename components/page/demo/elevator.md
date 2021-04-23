@@ -3,7 +3,7 @@
 快速跳转到某一页。
 </cn>
 
-```ts
+```tsx
 import { Page } from 'react-kui';
 
 ReactDOM.render(

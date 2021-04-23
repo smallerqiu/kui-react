@@ -4,7 +4,7 @@
 默认为水平分割线，可在中间加入文字。
 </cn>
 
-```ts
+```tsx
 import { Divider } from 'react-kui';
 
 ReactDOM.render(

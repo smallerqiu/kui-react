@@ -2,6 +2,11 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 
 export default class Row extends Kui {
+  getChildContext() {
+    return {
+      Row: this
+    };
+  }
   render() {
     let { children, align, justify, gutter, type } = this.props
 
@@ -13,8 +18,8 @@ export default class Row extends Kui {
 
       }]),
       style: {
-        marginLeft: gutter / -2,
-        marginRight: gutter / -2
+        marginLeft: (gutter / -2) + 'px',
+        marginRight: (gutter / -2) + 'px'
       }
     }
     return (<div {...props}>{children}</div >)

@@ -3,7 +3,7 @@
 Col 提供 flex 属性以支持填充。
 </cn>
 
-```ts
+```tsx
 import { Row ,Col  } from 'react-kui';
 
 ReactDOM.render(

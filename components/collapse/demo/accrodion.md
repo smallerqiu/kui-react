@@ -3,7 +3,7 @@
 设置 `accrodion` 只允许同时展开一个面板
 </cn>
 
-```ts
+```tsx
 import { Collapse } from 'react-kui';
 
 const text =  'A long time ago, In a beautiful kingdom, '+

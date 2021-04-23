@@ -3,7 +3,7 @@
 动态控制
 </cn>
 
-```ts
+```tsx
 import { Switch , Badge , Button , Icon } from 'react-kui';
 
 class Demo extends React.Component {

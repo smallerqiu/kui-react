@@ -3,7 +3,7 @@
 更多分页。
 </cn>
 
-```ts
+```tsx
 import { Page } from 'react-kui';
 
 ReactDOM.render(

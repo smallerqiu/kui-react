@@ -4,7 +4,7 @@
 **`CheckboxGroup` 可以直接使用 `options` 来组合，3.0版本增加**
 </cn>
 
-```ts
+```tsx
 import { Checkbox , Button } from 'react-kui';
 
 class Demo extends React.Component {

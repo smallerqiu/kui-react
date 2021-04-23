@@ -3,8 +3,8 @@
 同样拥有顶部导航及侧边栏，区别是两边未留边距，多用于应用型的网站。
 </cn>
 
-```ts
-import { Layout, Menu, Breadcrumb, Icon } from 'react-kui';
+```tsx
+import { Layout, Menu, SubMenu, Breadcrumb, Icon } from 'react-kui';
 
 class Layout1 extends React.Component {
   state = {
@@ -27,7 +27,7 @@ class Layout1 extends React.Component {
           <Layout>
             <Layout.Sider>
               <Menu value={left} className="demo-left-menu" mode="inline">
-                <Menu.SubMenu key="l0">
+                <SubMenu key="l0">
                   <template slot="title">
                     <Icon type="newspaper" />subnav1
                   </template>
@@ -35,8 +35,8 @@ class Layout1 extends React.Component {
                   <Menu.Item key="0-2">option2</Menu.Item>
                   <Menu.Item key="0-3">option3</Menu.Item>
                   <Menu.Item key="0-4">option4</Menu.Item>
-                </Menu.SubMenu>
-                <Menu.SubMenu key="l1">
+                </SubMenu>
+                <SubMenu key="l1">
                   <template slot="title">
                     <Icon type="keypad" />subnav2
                   </template>
@@ -44,8 +44,8 @@ class Layout1 extends React.Component {
                   <Menu.Item key="1-2">option2</Menu.Item>
                   <Menu.Item key="1-3">option3</Menu.Item>
                   <Menu.Item key="1-4">option4</Menu.Item>
-                </Menu.SubMenu>
-                <Menu.SubMenu key="l2">
+                </SubMenu>
+                <SubMenu key="l2">
                   <template slot="title">
                     <Icon type="settings" />subnav3
                   </template>
@@ -53,7 +53,7 @@ class Layout1 extends React.Component {
                   <Menu.Item key="2-2">option2</Menu.Item>
                   <Menu.Item key="2-3">option3</Menu.Item>
                   <Menu.Item key="2-4">option4</Menu.Item>
-                </Menu.SubMenu>
+                </SubMenu>
               </Menu>
             </Layout.Sider>
             <Layout className="k-demo-main">  

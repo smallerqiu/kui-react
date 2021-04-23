@@ -51,7 +51,7 @@ Button.propTypes = {
   buttonType: PropTypes.string,
   icon: PropTypes.string,
   block: PropTypes.bool,
-  size: PropTypes.oneOf(['small', 'large']),
+  size: PropTypes.oneOf(['small', 'large','default']),
   loading: PropTypes.bool,
   circle: PropTypes.bool,
   onClick: PropTypes.func,
@@ -62,4 +62,5 @@ Button.propTypes = {
 
 Button.defaultProps = {
   type: 'default',
+  size: 'default',
 }

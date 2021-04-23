@@ -3,59 +3,46 @@
 点击菜单，收起其他展开的所有菜单，保持菜单聚焦简洁。
 </cn>
 
-```vue
-<template>
-  <div style="width:256px">
-    <Menu v-model="current" :open-keys="openKeys" @open-change="openChange" accordion mode="inline">
-      <SubMenu key="sub1">
-        <template slot="title">
-          <Icon type="mail" />Navigation One
-        </template>
-        <MenuItem key="1-1">Option 1</MenuItem>
-        <MenuItem key="1-2">Option 2</MenuItem>
-        <MenuItem key="1-3">Option 3</MenuItem>
-        <MenuItem key="1-4">Option 4</MenuItem>
-      </SubMenu>
-      <SubMenu key="sub2">
-        <template slot="title">
-          <Icon type="keypad" />Navigation Two
-        </template>
-          <MenuItem key="2-1">Option 5</MenuItem>
-          <MenuItem key="2-2">Option 6</MenuItem>
-        <SubMenu title="Item 2" key="sub2-1">
-          <template slot="title">
-            <Icon type="keypad" />SubMenu
-          </template>
-          <MenuItem key="2-3">Option 7</MenuItem>
-          <MenuItem key="2-4">Option 8</MenuItem>
-        </SubMenu>
-      </SubMenu>
-       <SubMenu key="sub3">
-        <template slot="title">
-          <Icon type="settings" />Navigation Three
-        </template>
-        <MenuItem key="3-1">Option 9</MenuItem>
-        <MenuItem key="3-2">Option 10</MenuItem>
-        <MenuItem key="3-3">Option 11</MenuItem>
-        <MenuItem key="3-4">Option 12</MenuItem>
-      </SubMenu>
-    </Menu>
-  </div>
-</template>
-<script>
-export default {
-  data() {
-    return {
-      current: ['1-1'],
-      rootSubmenuKeys:['sub1','sub2','sub3'],
-      openKeys:['sub1']
-    }
-  },
-  methods:{
-    openChange(openKeys){
-      console.log(openKeys)
-    }
+```tsx
+import { Menu ,SubMenu } from 'react-kui';
+
+class Demo extends React.Component {
+  state = {
+    current: ['1-1'],
+    openKeys:['sub1']
+  }
+  openChange(openKeys){
+    console.log(openKeys)
+  }
+  render(){
+    let {current , openKeys} = this.state
+    return(
+      <div style={{width:256}}>
+        <Menu selectedKeys={current} openKeys={openKeys} onOpenChange={this.openChange.bind(this)} accordion mode="inline">
+          <SubMenu key="sub1" icon="mail" title="Navigation One">
+            <Menu.Item key="1-1">Option 1</Menu.Item>
+            <Menu.Item key="1-2">Option 2</Menu.Item>
+            <Menu.Item key="1-3">Option 3</Menu.Item>
+            <Menu.Item key="1-4">Option 4</Menu.Item>
+          </SubMenu>
+          <SubMenu key="sub2" icon="keypad" title="Navigation Two">
+            <Menu.Item key="2-1">Option 5</Menu.Item>
+            <Menu.Item key="2-2">Option 6</Menu.Item>
+            <SubMenu  key="sub2-1" icon="keypad" title="SubMenu">
+              <Menu.Item key="2-3">Option 7</Menu.Item>
+              <Menu.Item key="2-4">Option 8</Menu.Item>
+            </SubMenu>
+          </SubMenu>
+            <SubMenu key="sub3" icon="settings" title="Navigation Three">
+            <Menu.Item key="3-1">Option 9</Menu.Item>
+            <Menu.Item key="3-2">Option 10</Menu.Item>
+            <Menu.Item key="3-3">Option 11</Menu.Item>
+            <Menu.Item key="3-4">Option 12</Menu.Item>
+          </SubMenu>
+        </Menu>
+      </div>
+    )
   }
 }
-</script>
+ReactDOM.render(<Demo />, mountNode)
 ```

@@ -3,7 +3,7 @@
 通过 `type` 来设置提示类型
 </cn>
 
-```ts
+```tsx
 import { Message , Button } from 'react-kui';
 let count = 0
 class Demo extends React.Component {

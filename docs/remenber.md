@@ -6,7 +6,7 @@ String
 checkbox  options
 
 
-```ts
+```tsx
 Checkbox.propTypes = {
   disabled: PropTypes.bool,
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

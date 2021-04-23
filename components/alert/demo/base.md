@@ -3,7 +3,7 @@
 通过 `type` 来控制展示类型
 </cn>
 
-```ts
+```tsx
 import { Alert } from 'react-kui';
 
 ReactDOM.render(

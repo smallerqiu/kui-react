@@ -3,7 +3,7 @@
 通过 `closeable` 显示关闭按钮
 </cn>
 
-```ts
+```tsx
 import { Tag, Input , Button} from 'react-kui';
 
 class Demo extends React.Component {

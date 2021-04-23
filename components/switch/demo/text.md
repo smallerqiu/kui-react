@@ -3,7 +3,7 @@
 通过 `trueText` 和 `falseText` 设置选中和非选中呈现文字, 通过设置 `slot` 为 `(checked|unchecked)` 控制内容
 </cn>
 
-```ts
+```tsx
 import { Switch , Icon } from 'react-kui';
 
 class Demo extends React.Component {

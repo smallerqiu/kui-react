@@ -3,7 +3,7 @@
 通过添加 `icon` 属性 设置按钮按钮图标。
 </cn>
 
-```ts
+```tsx
 import { Button } from 'react-kui';
 
 ReactDOM.render(

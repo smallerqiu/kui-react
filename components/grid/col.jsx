@@ -22,8 +22,8 @@ export default class Col extends Kui {
         [`k-col-offset-${offset}`]: offset > 0 && offset <= 24
       }]),
       style: {
-        paddingLeft: gutter / 2,
-        paddingRight: gutter / 2,
+        paddingLeft: (gutter / 2) + 'px',
+        paddingRight: (gutter / 2) + 'px',
         flex: flex ? this.parseFlex(flex) : null
       }
     }

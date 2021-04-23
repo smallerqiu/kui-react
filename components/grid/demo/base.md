@@ -3,7 +3,7 @@
 `col` 必须放在 `row` 里面
 </cn>
 
-```ts
+```tsx
 import { Row ,Col  } from 'react-kui';
 
 ReactDOM.render(

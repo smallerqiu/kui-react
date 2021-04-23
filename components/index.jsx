@@ -20,7 +20,7 @@ import { Layout } from './layout'
 import Message from './message'
 import Notice from './notice'
 // import Modal from './modal'
-import Menu from './menu'
+import { Menu, SubMenu } from './menu'
 import { Row, Col } from './grid'
 // import Poptip from './poptip'
 import Page from './page'
@@ -62,6 +62,7 @@ export {
     Input, TextArea,
     // Modal, 
     Menu,
+    SubMenu,
     Message,
     Notice,
     // Poptip, 

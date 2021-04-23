@@ -3,7 +3,7 @@
 用于表示状态的小圆点。
 </cn>
 
-```ts
+```tsx
 import { Badge } from 'react-kui';
 
 ReactDOM.render(

@@ -3,7 +3,7 @@
 改变每页显示条目数。
 </cn>
 
-```ts
+```tsx
 import { Page } from 'react-kui';
 
 // const []

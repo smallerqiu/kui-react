@@ -3,7 +3,7 @@
 通过 `separator` 设置分隔符
 </cn>
 
-```ts
+```tsx
 import { Breadcrumb } from 'react-kui';
 
 ReactDOM.render(

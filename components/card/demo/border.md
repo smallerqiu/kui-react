@@ -3,7 +3,7 @@
 `bordered` 可以设置是否显示边框
 </cn>
 
-```ts
+```tsx
 import { Card } from 'react-kui';
 
 ReactDOM.render(

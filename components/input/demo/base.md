@@ -3,7 +3,7 @@
 使用 `v-model` 进行数据双向绑定
 </cn>
 
-```ts
+```tsx
 import { Input } from 'react-kui';
 
 ReactDOM.render(

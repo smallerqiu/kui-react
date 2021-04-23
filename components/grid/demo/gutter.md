@@ -3,7 +3,7 @@
 使用 `gutter` 熟悉来设置分栏的间隔
 </cn>
 
-```ts
+```tsx
 import { Row ,Col  } from 'react-kui';
 
 ReactDOM.render(

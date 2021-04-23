@@ -4,8 +4,8 @@
 侧边导航在页面布局上采用的是左右的结构，一般主导航放置于页面的左侧固定位置，辅助菜单放置于工作区顶部。内容根据浏览器终端进行自适应，能提高横向空间的使用率，但是整个页面排版不稳定。侧边导航的模式层级扩展性强，一、二、三级导航项目可以更为顺畅且具关联性的被展示，同时侧边导航可以固定，使得用户在操作和浏览中可以快速的定位和切换当前位置，有很高的操作效率。但这类导航横向页面内容的空间会被牺牲一部份。
 </cn>
 
-```ts
-import { Layout ,Menu, Breadcrumb, Icon } from 'react-kui';
+```tsx
+import { Layout ,Menu,SubMenu, Breadcrumb, Icon } from 'react-kui';
 
 class Layout6 extends React.Component {
   state = {
@@ -21,7 +21,7 @@ class Layout6 extends React.Component {
             <div className="logo" />
             <Menu value={left}  mode="vertical" verticalAffixed theme="dark">
               <Menu.Item key="dashboard" icon="speedometer">Dashboard</Menu.Item>
-              <Menu.SubMenu key="sub1">
+              <SubMenu key="sub1">
                 <template slot="title">
                   <Icon type="keypad" />Navigation One
                 </template>
@@ -34,8 +34,8 @@ class Layout6 extends React.Component {
                   <Menu.Item key="1-7">Option 7</Menu.Item>
                   <Menu.Item key="1-8">Option 8</Menu.Item>
                   <Menu.Item key="1-9">Option 9</Menu.Item>
-              </Menu.SubMenu>
-              <Menu.SubMenu key="sub2">
+              </SubMenu>
+              <SubMenu key="sub2">
                 <template slot="title">
                   <Icon type="keypad" />Navigation Two
                 </template>
@@ -46,8 +46,8 @@ class Layout6 extends React.Component {
                   <Menu.Item key="2-5" affixed>Option 5</Menu.Item>
                   <Menu.Item key="2-6" affixed>Option 6</Menu.Item>
                   <Menu.Item key="2-7">Option 7</Menu.Item>
-              </Menu.SubMenu>
-              <Menu.SubMenu key="sub3">
+              </SubMenu>
+              <SubMenu key="sub3">
                 <template slot="title">
                   <Icon type="settings" />Navigation Three
                 </template>
@@ -55,8 +55,8 @@ class Layout6 extends React.Component {
                 <Menu.Item key="3-2" affixed>Option 2</Menu.Item>
                 <Menu.Item key="3-3" affixed>Option 3</Menu.Item>
                 <Menu.Item key="3-4">Option 4</Menu.Item>
-              </Menu.SubMenu>
-              <Menu.SubMenu key="sub4">
+              </SubMenu>
+              <SubMenu key="sub4">
                 <template slot="title">
                   <Icon type="settings" />Navigation Four
                 </template>
@@ -64,8 +64,8 @@ class Layout6 extends React.Component {
                 <Menu.Item key="4-2">Option 2</Menu.Item>
                 <Menu.Item key="4-3" affixed>Option 3</Menu.Item>
                 <Menu.Item key="4-4" affixed>Option 4</Menu.Item>
-              </Menu.SubMenu>
-              <Menu.SubMenu key="sub5">
+              </SubMenu>
+              <SubMenu key="sub5">
                 <template slot="title">
                   <Icon type="settings" />Navigation Five
                 </template>
@@ -73,7 +73,7 @@ class Layout6 extends React.Component {
                 <Menu.Item key="5-2" affixed>Option 2</Menu.Item>
                 <Menu.Item key="5-3" affixed>Option 3</Menu.Item>
                 <Menu.Item key="5-4" affixed>Option 4</Menu.Item>
-              </Menu.SubMenu>
+              </SubMenu>
             </Menu>
           </Layout.Sider>
           <Layout.Content className="k-demo-main">

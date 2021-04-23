@@ -3,7 +3,7 @@
 Flex 子元素垂直对齐。
 </cn>
 
-```ts
+```tsx
 import { Row ,Col } from 'react-kui';
 
 ReactDOM.render(

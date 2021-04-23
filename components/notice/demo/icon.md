@@ -3,7 +3,7 @@
 通过调用不同的方法，可展示不同的类型
 </cn>
 
-```ts
+```tsx
 import { Notice , Button } from 'react-kui';
 
 class Demo extends React.Component {

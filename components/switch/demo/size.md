@@ -3,7 +3,7 @@
 size="small" 表示小号开关。
 </cn>
 
-```ts
+```tsx
 import { Switch } from 'react-kui';
 
 ReactDOM.render(

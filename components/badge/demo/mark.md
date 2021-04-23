@@ -4,7 +4,7 @@
 在右上角的 badge 则限定为红色。
 </cn>
 
-```ts
+```tsx
 import { Badge } from 'react-kui';
 
 ReactDOM.render(

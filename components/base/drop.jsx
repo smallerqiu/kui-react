@@ -1,63 +1,78 @@
-import { getPosition } from '../_tool/utils'
-
-import transfer from "../_tool/transfer";
-import Resize from "../_tool/resize";
-import outsideclick from "../_tool/outsiteclick";
-
 import React from 'react'
+// import PropTypes from 'prop-types'
+import { getPosition } from '../_tool/utils'
+// import Transition from '../transition'
+import Transfer from '../transfer'
+import { Kui, PropTypes } from '../kui'
+import { CSSTransition } from 'react-transition-group'
 
-export default class BaseDrop extends React.Component {
+export default class BaseDrop extends Kui {
 
   state = {
     left: 0,
     top: 0,
     mousedownIn: false,
     transformOrigin: '',
-    _placement: this.placement,
-    selection: null
+    placement: this.props.placement,
   }
+  elRef = React.createRef()
 
-  created() {
-    this.selection = this.$parent.$el
+  componentDidMount() {
+    // this.$nextTick(e => this.setPosition())
+    this.setPosition()
+    document.addEventListener('mousedown', this.onMouseDown.bind(this))
   }
-
-  mounted() {
-    this.$nextTick(e => this.setPosition())
-    document.addEventListener('mousedown', this.onMouseDown)
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.onMouseDown.bind(this))
   }
-
-  beforeDestory() {
-    document.removeEventListener('mousedown', this.onMouseDown)
-  }
-
-  render() {
-    const props = {
-      class: this.className,
-      // ref: 'overlay',
-      style: {
-        left: `${this.left}px`,
-        top: `${this.top}px`,
-        width: `${this.width}px`,
-        // transformOrigin: this.placement == 'top' ? 'center bottom' : ''
-        transformOrigin: this.transformOrigin
-      },
-      attrs: {
-        'k-placement': this._placement
-        // ...this.$props.attrs
-      },
-      on: {
-        // ...this.$props.on,
-        ...this.$listeners
-      },
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.show != prevProps.show) {
+      setTimeout(() => {
+        this.setPosition()
+      }, 0);
     }
-    // console.log(this.transitionName)
-    return <transition name={this.transitionName}>
-      <div {...props} v-show={this.show} v-transfer={this.transfer} v-outsideclick={this.hide} v-resize={this.resize}>
-        {this.$slots.default}
-      </div>
-    </transition>
   }
-  
+  onExited(el) {
+    if (el) {
+      el.className += ' k-menu-hidden'
+    }
+  }
+  onEnter(el) {
+    if (el) {
+      el.className = el.className.replace('k-menu-hidden', '')
+    }
+  }
+ 
+  render() {
+    let { className, show, width, transfer, children, onMouseEnter, unmountOnExit, showInit,
+      onMouseLeave, transitionName } = this.props
+    let { left, top, transformOrigin, placement } = this.state
+    const props = {
+      ref: this.elRef,
+      className: className,
+      style: {
+        left: `${left}px`,
+        top: `${top}px`,
+        width: `${width}px`,
+        transformOrigin
+      },
+      'k-placement': placement,
+      onMouseEnter, onMouseLeave
+    }
+    return showInit ?
+      <Transfer transfer={transfer} show={show} docOnClick={this.hide.bind(this)} onResize={this.resize.bind(this)}>
+        <CSSTransition classNames={transitionName}
+          in={show} timeout={300}
+          onEnter={this.onEnter.bind(this)}
+          onExited={this.onExited.bind(this)}>
+          <div {...props}>
+            {children}
+          </div>
+        </CSSTransition>
+      </Transfer>
+      : null
+  }
+
   baseContextmenu(e) {
     let pickerHeight = this.$el.offsetHeight
     let pickerWidth = this.$el.offsetWidth
@@ -89,50 +104,56 @@ export default class BaseDrop extends React.Component {
   }
 
   onMouseDown({ target }) {
-    this.mousedownIn = this.show && this.$el.contains(target)
+    let mousedownIn = this.props.show && this.elRef && this.elRef.current.contains(target)
+    this.setState({ mousedownIn })
   }
 
   setPosition(e) {
-    if (this.trigger == 'contextmenu') {
+    let { trigger, transfer, placement, selectionRef } = this.props
+    if (trigger == 'contextmenu') {
       return;
     }
-    let { selection, transfer } = this
-    getPosition(selection, this.$el, transfer, this.placement, (top, left, origin, placement) => {
-      this.top = top
-      this.left = left
-      this.transformOrigin = origin
-      this._placement = placement
+    getPosition(selectionRef.current, this.elRef.current, transfer, placement, (top, left, transformOrigin, placement) => {
+      this.setState({ top, left, transformOrigin, placement })
     })
   }
 
   hide(e) {
     let { target } = e
     e.stopPropagation()
-    // console.log(this._show, this.selection.contains(target), this.$el.contains(target))
-    if (this.show &&
-      !this.selection.contains(target) &&
-      !this.$el.contains(target) &&
-      !this.mousedownIn
+    let { show, onHide, selectionRef } = this.props
+    let { mousedownIn } = this.state
+    if (show &&
+      !selectionRef.current.contains(target) &&
+      !this.elRef.current.contains(target) &&
+      !mousedownIn
     ) {
-      // console.log('eeeaa')
-      this.$emit('hide')
-      this.$emit('input', false)
+      onHide && onHide()
     }
   }
 
   resize() {
-    if (this.show) {
-      this.$emit('resize')
+    let { show, onResize } = this.props
+    if (show) {
+      onResize && onResize()
       this.setPosition()
     }
   }
 }
+BaseDrop.defaultProps = {
+  trigger: 'click',
+  transitionName: 'dropdown'
+}
+
 BaseDrop.propTypes = {
-  transfer: Boolean,
-  show: Boolean,
-  className: [String, Array],
-  width: Number,
-  placement: String,
-  trigger: { type: String, default: "click" },
-  transitionName: { type: String, default: 'dropdown' }
+  selectionRef: PropTypes.any,
+  transfer: PropTypes.bool,
+  show: PropTypes.bool,
+  className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  width: PropTypes.number,
+  placement: PropTypes.string,
+  trigger: PropTypes.oneOf(['click', 'hover', 'contextmenu']),
+  transitionName: PropTypes.string,
+  unmountOnExit: PropTypes.bool,
+  showInit: PropTypes.bool,
 }

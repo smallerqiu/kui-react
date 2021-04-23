@@ -2,15 +2,20 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 export default class MenuGroup extends Kui {
   render() {
+    let index = -1;
     return (<li className="k-menu-item-group">
       <div className="k-menu-item-group-title">{this.props.title}</div>
-      <ul>
-        {this.props.children}
+      <ul className="k-menu-item-group-list">
+        {
+          React.Children.map(this.props.children, child => {
+            return React.cloneElement(child, { eventKey: child.key || `menu_item_${index++}` })
+          })
+        }
       </ul>
     </li>)
   }
 }
 MenuGroup.propTypes = {
-  title: PropTypes.string.isRequired
+  title: PropTypes.any
 }
 

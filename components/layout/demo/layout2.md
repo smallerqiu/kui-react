@@ -3,8 +3,8 @@
 拥有顶部导航及侧边栏的页面，多用于展示类网站。
 </cn>
 
-```ts
-import { Layout ,Menu,Breadcrumb, Icon } from 'react-kui';
+```tsx
+import { Layout ,Menu,SubMenu, Breadcrumb, Icon } from 'react-kui';
 
 class Layout2 extends React.Component{
   state = {
@@ -33,7 +33,7 @@ class Layout2 extends React.Component{
             <Layout style={{padding:'24px 0',background:'#fff'}}>
               <Layout.Sider>
                 <Menu  value={left} className="demo-left-menu" mode="inline">
-                  <Menu.SubMenu key="l0">
+                  <SubMenu key="l0">
                     <template slot="title">
                       <Icon type="newspaper" />subnav1
                     </template>
@@ -41,8 +41,8 @@ class Layout2 extends React.Component{
                     <Menu.Item key="0-2">option2</Menu.Item>
                     <Menu.Item key="0-3">option3</Menu.Item>
                     <Menu.Item key="0-4">option4</Menu.Item>
-                  </Menu.SubMenu>
-                  <Menu.SubMenu key="l1">
+                  </SubMenu>
+                  <SubMenu key="l1">
                     <template slot="title">
                       <Icon type="keypad" />subnav2
                     </template>
@@ -50,8 +50,8 @@ class Layout2 extends React.Component{
                     <Menu.Item key="1-2">option2</Menu.Item>
                     <Menu.Item key="1-3">option3</Menu.Item>
                     <Menu.Item key="1-4">option4</Menu.Item>
-                  </Menu.SubMenu>
-                  <Menu.SubMenu key="l2">
+                  </SubMenu>
+                  <SubMenu key="l2">
                     <template slot="title">
                       <Icon type="settings" />subnav3
                     </template>
@@ -59,7 +59,7 @@ class Layout2 extends React.Component{
                     <Menu.Item key="2-2">option2</Menu.Item>
                     <Menu.Item key="2-3">option3</Menu.Item>
                     <Menu.Item key="2-4">option4</Menu.Item>
-                  </Menu.SubMenu>
+                  </SubMenu>
                 </Menu>
               </Layout.Sider>
               <Layout.Content>Conent</Layout.Content>

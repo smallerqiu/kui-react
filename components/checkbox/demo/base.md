@@ -3,7 +3,7 @@
 单独使用 `checked` 表示是否为选中状态 ,使用 `v-model` 可以双向绑定数据。
 </cn>
 
-```ts
+```tsx
 import { Checkbox , Button } from 'react-kui';
 
 // const []

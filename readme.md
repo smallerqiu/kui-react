@@ -49,7 +49,7 @@ npm install react-kui
 
 Example :
 
-```jsx
+```tsx
 import React from 'react'
 import {render} from 'react-dom'
 import { Button ,Message } from 'react-kui'

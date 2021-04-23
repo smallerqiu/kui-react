@@ -1,36 +1,45 @@
-import React from 'react'
-import { BrowserRouter as Router, Route, Switch, HashRouter } from 'react-router-dom'
+import React, { Suspense, lazy } from 'react'
+import { BrowserRouter, Route, Switch, HashRouter } from 'react-router-dom'
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
-
-import Index from './index'
 import Main from './layout'
-import routers from './router'
+import { docs, components } from './router'
+import Loadable from './Loadable'
+
+const Index = Loadable(() => import(/*webpackChunkName:'index'*/'./index'))
+const Test = Loadable(() => import(/*webpackChunkName:'test'*/'./test'))
 
 export default () => {
-    const routes = () => (
-        Object.keys(routers).map(route => {
-            return (<Route path={`/${route}`} component={routers[route]} key={route} />)
-        })
-    )
-    return <HashRouter>
-        <Switch>
-            <Route path="/" exact component={Index} />
-            <Route render={({ location }) => (
-                <Main>
-                    <TransitionGroup className="layout-transtion">
-                        <CSSTransition timeout={500} classNames="fade" key={location.key}>
-                            <div className="animate">
-                                <Switch location={location}>
-                                    {routes()}
-                                    {/* <Route path="/log" component={log} />
-                                        <Route path="/theme" component={theme} /> */}
-                                </Switch>
-                            </div>
-                        </CSSTransition>
-                    </TransitionGroup>
-                </Main>
-            )} />
-        </Switch>
-    </HashRouter>
+
+  const getRoute = (data, pre) => {
+    return data.map(({ path, component }) => {
+      return (<Route path={`/${pre}/${path}`} component={component} key={path} />)
+    })
+  }
+
+
+  return (
+    // <HashRouter>
+    <BrowserRouter>
+      {/* <Suspense fallback={null}> */}
+      <Switch>
+        <Route path="/" exact component={Index} />
+        <Route path="/test" exact component={Test} />
+        <Route render={({ location }) => (
+          <Main>
+            <TransitionGroup className="route-main">
+              <CSSTransition timeout={500} unmountOnExit={true} classNames="fade" key={location.pathname}>
+                <Switch location={location}>
+                  {getRoute(docs, 'docs')}
+                  {getRoute(components, 'components')}
+                </Switch>
+              </CSSTransition>
+            </TransitionGroup>
+          </Main>
+        )} />
+      </Switch>
+      {/* </Suspense> */}
+    </BrowserRouter>
+    // </Router>
+  )
 }

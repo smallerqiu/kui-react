@@ -3,7 +3,7 @@
 颜色镂空模式
 </cn>
 
-```ts
+```tsx
 import { Button } from 'react-kui';
 
 ReactDOM.render(

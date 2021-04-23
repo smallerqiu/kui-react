@@ -3,7 +3,7 @@
 最简单的用法,可以通过 `value(v-model)` 指定初始值
 </cn>
 
-```ts
+```tsx
 import { Carousel } from 'react-kui';
 
 ReactDOM.render(

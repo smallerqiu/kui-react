@@ -3,7 +3,7 @@
 最简单的用法。
 </cn>
 
-```ts
+```tsx
 import { Affix , Button } from 'react-kui';
 
 ReactDOM.render(

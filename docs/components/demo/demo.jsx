@@ -23,7 +23,8 @@ export default class Demo extends Kui {
   }
   render() {
     const { expand } = this.state
-    const { description, code, children, sourceCode } = this.props
+    let { description, code, children, sourceCode } = this.props
+    sourceCode = sourceCode.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"')
     return (
       <div className="k-demo">
         <div className="k-demo-main">

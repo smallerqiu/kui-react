@@ -54,8 +54,7 @@ markdown.core.ruler.push('render', ({ tokens }) => {
            us = getDomHtml(token.content, 'us');
            token.content = '';
          } */
-    }
-    if (token.info === 'ts') {
+    } else if (token.info === 'tsx') {
       sourceCode = token.content;
       code = '````jsx\n' + token.content + '````';
       template = token.content;//getDomHtml(token.content, 'template');
@@ -66,11 +65,8 @@ markdown.core.ruler.push('render', ({ tokens }) => {
 
   if (template) {
     // let data = { html: template, script, style,  cn, sourceCode, };
-
     let source = markdown.utils.escapeHtml(JSON.stringify(sourceCode));
-
     const codeHtml = code ? markdown.render(code) : '';
-
     const cnHtml = cn ? markdown.render(cn) : '';
     //找出 代码里的 import
     let rg = /import(.*?)(?=[\n])/g
@@ -82,23 +78,19 @@ import Demo from '@/docs/components/demo/demo.jsx'
 import ReactDOM from 'react-dom'
 ${imps.join('\n')}
 export default class demo extends React.Component {
-  state = {
-    a : 0
+  descRef = React.createRef()
+  componentDidMount() {
+    let mountNode = this.descRef.current
+    ${cns}
   }
   render(){
     let codeHtml = \`${codeHtml}\`,
     source = \`${source}\`,
     cnHtml = \`${cnHtml}\`;
     
-    const child = (<Demo description={cnHtml} code={codeHtml} sourceCode={source}>
-      <div className="k-content" ref="com"></div>
+    return (<Demo description={cnHtml} code={codeHtml} sourceCode={source}>
+      <div className="k-content" ref={this.descRef}></div>
       </Demo>)
-
-    setTimeout(()=>{
-      let mountNode = this.refs.com
-      ${cns}
-    })
-    return child
   }
 }`;
 
@@ -115,29 +107,21 @@ export default class demo extends React.Component {
 module.exports = function loader(content) {
   const callback = this.async();
   let md = markdown.render(content)
-
-
-  if (md.indexOf('import') >= 0) {
-
-    // md = md
-    //   .replace(/{/g, '{"{"{')
-    //   .replace(/}/g, '{"}"}')
-    //   .replace(/{"{"{/g, '{"{"}')
-    //   .replace(/(\n)/g, '{"\\n"}')
-    //   .replace(/class=/g, 'className=');
+  if (md.indexOf('<Demo') >= 0) {
     return callback(null, md)
   }
-  md = md.replace(/class=/g, 'className=');
+  md = md
+    .replace(/{/g, '{"{"{')
+    .replace(/}/g, '{"}"}')
+    .replace(/{"{"{/g, '{"{"}')
+    // .replace(/(\n)/g, '{"\\n"}') // Make sure you don't have any extra whitespace between tags on each line of your source code
+    .replace(/(\n)/g, '')
+    .replace(/class=/g, 'className=');
 
   md = `
   ${doImports}
-  export default function() { return (<div className="typo">${md}</div>); };`
+  export default function() { 
+    return (<div className="typo">${md}</div>); 
+  };`
   callback(null, md)
-  // parser
-  //   .parse(content)
-  //   .then(build)
-  //   .then((component) => callback(null, component))
-  //   .catch(callback);
-
-  // callback(null, null)
 };
