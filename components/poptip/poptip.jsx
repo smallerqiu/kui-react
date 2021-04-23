@@ -4,16 +4,35 @@ import Button from "../button";
 import Transition from '../transition'
 import Transfer from '../transfer'
 export default class Poptip extends Kui {
-  constructor(props) {
-    super(props)
-    this.state = {
-      visible: false,
-      left: 0,
-      top: 0
-    }
-    this.domRef = React.createRef()
-    this.relRef = React.createRef()
+  static defaultProps = {
+    okText: '确定',
+    cancelText: '取消',
+    placement: 'top',
+    trigger: 'click',
+    width: 0,
+    transfer: true
   }
+  static propTypes = {
+    onOk: PropTypes.func,
+    onCancel: PropTypes.func,
+    trigger: PropTypes.string,
+    confirm: PropTypes.bool,
+    transfer: PropTypes.bool,
+    title: PropTypes.string,
+    content: PropTypes.any,
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    placement: PropTypes.oneOf(["top", "top-left", "top-right", "bottom", "bottom-left", "bottom-right", "left", "left-bottom", "left-top", "right", "right-top", "right-bottom"]),
+    okText: PropTypes.string,
+    cancelText: PropTypes.string,
+    disabled: PropTypes.bool
+  }
+  state = {
+    visible: false,
+    left: 0,
+    top: 0
+  }
+  domRef = React.createRef()
+  relRef = React.createRef()
   classes() {
     return this.className([
       "k-poptip-dom",
@@ -154,26 +173,4 @@ export default class Poptip extends Kui {
       </Transfer>
     </div>)
   }
-}
-Poptip.defaultProps = {
-  okText: '确定',
-  cancelText: '取消',
-  placement: 'top',
-  trigger: 'click',
-  width: 0,
-  transfer: true
-}
-Poptip.propTypes = {
-  onOk: PropTypes.func,
-  onCancel: PropTypes.func,
-  trigger: PropTypes.string,
-  confirm: PropTypes.bool,
-  transfer: PropTypes.bool,
-  title: PropTypes.string,
-  content: PropTypes.any,
-  width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  placement: PropTypes.oneOf(["top", "top-left", "top-right", "bottom", "bottom-left", "bottom-right", "left", "left-bottom", "left-top", "right", "right-top", "right-bottom"]),
-  okText: PropTypes.string,
-  cancelText: PropTypes.string,
-  disabled: PropTypes.bool
 }

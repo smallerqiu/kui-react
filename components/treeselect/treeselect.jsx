@@ -2,21 +2,41 @@ import React from 'react'
 import { Kui, PropTypes } from '@/components/kui'
 import { Transition, Transfer, Tree } from '../index'
 export default class TreeSelect extends Kui {
-  constructor(props) {
-    super(props)
-    this.state = {
-      visible: false,
-      dropdownWith: 0,
-      left: 0,
-      fadeInBottom: false,
-      top: 0,
-      showLabel: props.label || '',
-      value: props.value,
-      queryKey: ''
-    }
-    this.domRef = React.createRef();
-    this.relRef = React.createRef()
+  static defaultProps = {
+    placeholder: '请选择',
+    queryPlaceholder: '请输入关键字查询',
+    transfer: true,
+    width: 0,
+    value: '',
+    data: [],
+    label: ''
   }
+  static propTypes = {
+    onChange: PropTypes.func,
+    queryPlaceholder: PropTypes.string,
+    placeholder: PropTypes.string,
+    mini: PropTypes.bool,
+    data: PropTypes.array,
+    queryable: PropTypes.bool,
+    transfer: PropTypes.bool,
+    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    clearable: PropTypes.bool,
+    disabled: PropTypes.bool
+  }
+  state = {
+    visible: false,
+    dropdownWith: 0,
+    left: 0,
+    fadeInBottom: false,
+    top: 0,
+    showLabel: props.label || '',
+    value: props.value,
+    queryKey: ''
+  }
+  domRef = React.createRef();
+  relRef = React.createRef()
   isClearable() {
     return this.props.clearable && !this.props.disabled && this.state.showLabel;
   }
@@ -154,14 +174,14 @@ export default class TreeSelect extends Kui {
     this.handleScroll()
   }
 
-/*   componentWillReceiveProps(props) {
-    if (props.label !== this.state.showLabel) {
-      this.setState({ showLabel: props.label })
-    }
-    if (props.value !== this.state.value) {
-      this.setState({ value: props.value })
-    }
-  } */
+  /*   componentWillReceiveProps(props) {
+      if (props.label !== this.state.showLabel) {
+        this.setState({ showLabel: props.label })
+      }
+      if (props.value !== this.state.value) {
+        this.setState({ value: props.value })
+      }
+    } */
   labelChange(e) {
     this.setState({ showLabel: e.target.value, queryKey: e.target.value })
   }
@@ -196,27 +216,3 @@ export default class TreeSelect extends Kui {
     </div>)
   }
 }
-TreeSelect.defaultProps = {
-  placeholder: '请选择',
-  queryPlaceholder: '请输入关键字查询',
-  transfer: true,
-  width: 0,
-  value: '',
-  data: [],
-  label: ''
-}
-TreeSelect.propTypes = {
-  onChange: PropTypes.func,
-  queryPlaceholder: PropTypes.string,
-  placeholder: PropTypes.string,
-  mini: PropTypes.bool,
-  data: PropTypes.array,
-  queryable: PropTypes.bool,
-  transfer: PropTypes.bool,
-  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  clearable: PropTypes.bool,
-  disabled: PropTypes.bool
-}
-

@@ -3,6 +3,17 @@ import { Kui, PropTypes } from '../kui'
 import icons from 'kui-icons'
 
 export default class Icon extends Kui {
+  static propTypes = {
+    spin: PropTypes.bool,
+    onClick: PropTypes.func,
+    type: PropTypes.string,
+    size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    color: PropTypes.string
+  }
+  
+  static defaultProps = {
+  
+  }
   procss(str) {
     if (str) {
       //string to json
@@ -47,14 +58,4 @@ export default class Icon extends Kui {
   }
 }
 
-Icon.propTypes = {
-  spin: PropTypes.bool,
-  onClick: PropTypes.func,
-  type: PropTypes.string,
-  size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  color: PropTypes.string
-}
 
-Icon.defaultProps = {
-
-}

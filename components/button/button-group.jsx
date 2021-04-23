@@ -1,7 +1,13 @@
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
 export default class ButtonGroup extends Kui {
-  
+
+  static propTypes = {
+    size: PropTypes.oneOf(['small', 'large']),
+    circle: PropTypes.bool
+  }
+
+
   render() {
     const { size, circle, children } = this.props
     const props = {
@@ -17,10 +23,4 @@ export default class ButtonGroup extends Kui {
     return <div {...props} style={this.styles()}>{children}</div>
   }
 }
-
-ButtonGroup.propTypes = {
-  size: PropTypes.oneOf(['small', 'large']),
-  circle: PropTypes.bool
-}
-
 

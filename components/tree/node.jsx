@@ -4,6 +4,17 @@ import Collapse from '../collapse/collapse.js'
 import Checkbox from '../checkbox'
 import Icon from '../icon'
 export default class TreeNode extends Kui {
+  static defaultProps = {
+    data: {}
+  }
+  static propTypes = {
+    data: PropTypes.object,
+    checkbox: PropTypes.bool,
+    // onSelect: PropTypes.fuc,
+    // onChecked: PropTypes.fuc,
+    // onExpand: PropTypes.fuc,
+    // onLoadData: PropTypes.fuc,
+  }
   constructor(props) {
     super(props)
     this.state = {
@@ -109,16 +120,3 @@ export default class TreeNode extends Kui {
     )
   }
 }
-TreeNode.defaultProps = {
-  data: {}
-}
-TreeNode.propTypes = {
-  data: PropTypes.object,
-  checkbox: PropTypes.bool,
-  // onSelect: PropTypes.fuc,
-  // onChecked: PropTypes.fuc,
-  // onExpand: PropTypes.fuc,
-  // onLoadData: PropTypes.fuc,
-}
-
-

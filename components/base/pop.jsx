@@ -5,6 +5,30 @@ import Drop from './drop'
 import PropTypes from 'prop-types'
 
 export default class BasePop extends React.Component {
+
+  static defaultProps = {
+    trigger: 'hover',
+    showPlacementArrow: true,
+    placement: 'top',
+    okText: '确定',
+    cancelText: '取消',
+  }
+
+  static propTypes = {
+    preCls: PropTypes.string,
+    trigger: PropTypes.string,
+    confirm: PropTypes.bool,
+    dark: PropTypes.bool,
+    transfer: PropTypes.bool,
+    show: PropTypes.bool,
+    title: PropTypes.any,
+    content: PropTypes.any,
+    showPlacementArrow: PropTypes.bool,
+    width: PropTypes.number,
+    placement: PropTypes.oneOf(["top", "top-left", "top-right", "bottom", "bottom-left", "bottom-right", "left", "left-bottom", "left-top", "right", "right-top", "right-bottom"]),
+    okText: PropTypes.string,
+    cancelText: PropTypes.string,
+  }
   // export default {
   state = {
     showPop: this.props.show,
@@ -165,28 +189,4 @@ export default class BasePop extends React.Component {
     return React.cloneElement(children, props, [...children.props.children, popup])
 
   }
-}
-
-BasePop.defaultProps = {
-  trigger: 'hover',
-  showPlacementArrow: true,
-  placement: 'top',
-  okText: '确定',
-  cancelText: '取消',
-}
-
-BasePop.propTypes = {
-  preCls: PropTypes.string,
-  trigger: PropTypes.string,
-  confirm: PropTypes.bool,
-  dark: PropTypes.bool,
-  transfer: PropTypes.bool,
-  show: PropTypes.bool,
-  title: PropTypes.any,
-  content: PropTypes.any,
-  showPlacementArrow: PropTypes.bool,
-  width: PropTypes.number,
-  placement: PropTypes.oneOf(["top", "top-left", "top-right", "bottom", "bottom-left", "bottom-right", "left", "left-bottom", "left-top", "right", "right-top", "right-bottom"]),
-  okText: PropTypes.string,
-  cancelText: PropTypes.string,
 }

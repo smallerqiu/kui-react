@@ -5,6 +5,19 @@ import { Kui, PropTypes } from '../kui'
 
 export default class Checkbox extends Kui {
 
+  static propTypes = {
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]),
+    disabled: PropTypes.bool,
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    indeterminate: PropTypes.bool,
+    checked: PropTypes.bool
+  }
+
+  static contextTypes = {
+    Group: PropTypes.any,
+    FormItem: PropTypes.any
+  }
+
   state = {
     isChecked: false
   }
@@ -80,16 +93,3 @@ export default class Checkbox extends Kui {
     )
   }
 }
-
-Checkbox.propTypes = {
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]),
-  disabled: PropTypes.bool,
-  label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  indeterminate: PropTypes.bool,
-  checked: PropTypes.bool
-}
-
-Checkbox.contextTypes = {
-  Group: PropTypes.any,
-  FormItem: PropTypes.any
-};

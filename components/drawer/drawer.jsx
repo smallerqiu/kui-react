@@ -8,6 +8,29 @@ import React from 'react'
 let cacheBodyOverflow = {};
 
 export default class Drawer extends Kui {
+  static propTypes = {
+    value: PropTypes.bool,
+    title: PropTypes.string,
+    width: PropTypes.number,
+    height: PropTypes.number,
+    okText: PropTypes.string,
+    cancelText: PropTypes.string,
+    placement: PropTypes.oneOf(['top', 'left', 'bottom', 'right']),
+    closable: PropTypes.bool,
+    footer: PropTypes.bool,
+    maskClosable: PropTypes.bool,
+  }
+
+  static defaultProps = {
+    title: 'Title',
+    width: 520,
+    height: 256,
+    okText: '确定',
+    cancelText: '取消',
+    placement: 'right',
+    closable: true,
+    maskClosable: true,
+  }
   // name: "Drawer",
   // directives: { transfer },
   // props: {
@@ -123,27 +146,3 @@ export default class Drawer extends Kui {
     )
   }
 };
-
-Drawer.propTypes = {
-  value: PropTypes.bool,
-  title: PropTypes.string,
-  width: PropTypes.number,
-  height: PropTypes.number,
-  okText: PropTypes.string,
-  cancelText: PropTypes.string,
-  placement: PropTypes.oneOf(['top', 'left', 'bottom', 'right']),
-  closable: PropTypes.bool,
-  footer: PropTypes.bool,
-  maskClosable: PropTypes.bool,
-}
-
-Drawer.defaultProps = {
-  title: 'Title',
-  width: 520,
-  height: 256,
-  okText: '确定',
-  cancelText: '取消',
-  placement: 'right',
-  closable: true,
-  maskClosable: true,
-}

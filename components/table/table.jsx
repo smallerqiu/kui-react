@@ -2,6 +2,22 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 import Checkbox from '../checkbox'
 export default class Table extends Kui {
+  static defaultProps = {
+    noDataText: '暂无数据...',
+    data: [],
+    columns: []
+  }
+  
+  static propTypes = {
+    bordered: PropTypes.bool,
+    mini: PropTypes.bool,
+    noDataText: PropTypes.string,
+    data: PropTypes.array,
+    columns: PropTypes.array, // 表格类目
+    // onselect: { type: Function, default:function(){} }, //单个选中触发
+    // onselectAll: { type: Function, default:function(){} }, //所有选中触发
+    onSelection: PropTypes.func  //选中的时候触发,
+  }
   constructor(props) {
     super(props)
     this.state = {
@@ -98,21 +114,4 @@ export default class Table extends Kui {
       {!data || data.length == 0 && <div className="no-data">{noDataText}</div>}
     </div>)
   }
-}
-
-Table.defaultProps = {
-  noDataText: '暂无数据...',
-  data: [],
-  columns: []
-}
-
-Table.propTypes = {
-  bordered: PropTypes.bool,
-  mini: PropTypes.bool,
-  noDataText: PropTypes.string,
-  data: PropTypes.array,
-  columns: PropTypes.array, // 表格类目
-  // onselect: { type: Function, default:function(){} }, //单个选中触发
-  // onselectAll: { type: Function, default:function(){} }, //所有选中触发
-  onSelection: PropTypes.func  //选中的时候触发,
 }

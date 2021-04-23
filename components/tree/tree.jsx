@@ -2,11 +2,19 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 import TreeNode from './node'
 export default class Tree extends Kui {
-  constructor(props) {
-    super(props)
-    this.state = {
-      data: props.data || []
-    }
+  static defaultProps = {
+    data: []
+  }
+  static propTypes = {
+    data: PropTypes.array,
+    checkbox: PropTypes.bool,
+    onLoadData: PropTypes.func,
+    onSelect: PropTypes.func,
+    onExpand: PropTypes.func,
+    onLoadData: PropTypes.func,
+  }
+  state = {
+    data: props.data || []
   }
   onExpand(data) {
     this.props.onExpand && this.props.onExpand(data)
@@ -72,11 +80,11 @@ export default class Tree extends Kui {
     this.setState({ data })
     this.props.onSelect && this.props.onSelect(obj)
   }
-/*   componentWillReceiveProps(props) {
-    if (props.data != this.state.data) {
-      this.setState({ data: props.data })
-    }
-  } */
+  /*   componentWillReceiveProps(props) {
+      if (props.data != this.state.data) {
+        this.setState({ data: props.data })
+      }
+    } */
   render() {
     let data = this.state.data || []
     let { checkbox } = this.props
@@ -99,15 +107,4 @@ export default class Tree extends Kui {
       {(!data || !data.length) && <span className="tree-nodata">暂无数据...</span>}
     </div>)
   }
-}
-Tree.defaultProps = {
-  data: []
-}
-Tree.propTypes = {
-  data: PropTypes.array,
-  checkbox: PropTypes.bool,
-  onLoadData: PropTypes.func,
-  onSelect: PropTypes.func,
-  onExpand: PropTypes.func,
-  onLoadData: PropTypes.func,
 }

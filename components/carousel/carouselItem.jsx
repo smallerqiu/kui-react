@@ -2,7 +2,14 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 
 export default class CarouselItem extends Kui {
+	// static propTypes = {
+	// 	width: PropTypes.number,
+	// 	height: PropTypes.number,
+	// }
 
+	static contextTypes = {
+		Carousel: PropTypes.any
+	}
 	render() {
 		let width, height, { state } = this.context.Carousel
 		if (state) {
@@ -17,11 +24,3 @@ export default class CarouselItem extends Kui {
 		)
 	}
 }
-// CarouselItem.propTypes = {
-// 	width: PropTypes.number,
-// 	height: PropTypes.number,
-// }
-
-CarouselItem.contextTypes = {
-	Carousel: PropTypes.any
-};

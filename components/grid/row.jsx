@@ -2,6 +2,20 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 
 export default class Row extends Kui {
+  static propTypes = {
+    gutter: PropTypes.number,
+    type: PropTypes.string,
+    justify: PropTypes.oneOf(['start', 'end', 'center', 'space-around', 'space-between']),
+    align: PropTypes.oneOf(['top', 'middle', 'bottom'])
+  }
+  
+  static defaultProps = {
+  
+  }
+  
+  static childContextTypes = {
+    Row: PropTypes.any
+  }
   getChildContext() {
     return {
       Row: this
@@ -26,17 +40,3 @@ export default class Row extends Kui {
   }
 };
 
-Row.propTypes = {
-  gutter: PropTypes.number,
-  type: PropTypes.string,
-  justify: PropTypes.oneOf(['start', 'end', 'center', 'space-around', 'space-between']),
-  align: PropTypes.oneOf(['top', 'middle', 'bottom'])
-}
-
-Row.defaultProps = {
-
-}
-
-Row.childContextTypes = {
-  Row: PropTypes.any
-};

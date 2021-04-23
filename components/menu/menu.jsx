@@ -1,6 +1,32 @@
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
 export default class Menu extends Kui {
+  static defaultProps = {
+    theme: 'light',
+    mode: 'vertical',
+  }
+
+  static propTypes = {
+    theme: PropTypes.string,
+    mode: PropTypes.string,
+    selectedKeys: PropTypes.array,
+    openKeys: PropTypes.array,
+    accordion: PropTypes.bool,
+    verticalAffixed: PropTypes.bool,
+    inlineCollapsed: PropTypes.bool,
+    onClick: PropTypes.func
+  }
+
+  static childContextTypes = {
+    Menu: PropTypes.any,
+    SubMenu: PropTypes.any,
+    Dropdown: PropTypes.any
+  }
+
+  static contextTypes = {
+    SubMenu: PropTypes.any,
+    Menu: PropTypes.any
+  }
   state = {
     selectedKeys: this.props.selectedKeys || [],
     defaultOpenKeys: this.props.openKeys || [],
@@ -48,29 +74,3 @@ export default class Menu extends Kui {
     </ul>)
   }
 }
-Menu.defaultProps = {
-  theme: 'light',
-  mode: 'vertical',
-}
-
-Menu.propTypes = {
-  theme: PropTypes.string,
-  mode: PropTypes.string,
-  selectedKeys: PropTypes.array,
-  openKeys: PropTypes.array,
-  accordion: PropTypes.bool,
-  verticalAffixed: PropTypes.bool,
-  inlineCollapsed: PropTypes.bool,
-  onClick: PropTypes.func
-}
-
-Menu.childContextTypes = {
-  Menu: PropTypes.any,
-  SubMenu: PropTypes.any,
-  Dropdown: PropTypes.any
-};
-
-Menu.contextTypes = {
-  SubMenu: PropTypes.any,
-  Menu: PropTypes.any
-};

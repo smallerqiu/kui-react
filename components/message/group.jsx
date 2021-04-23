@@ -12,7 +12,9 @@ function getUuid() {
 }
 
 export default class Group extends Kui {
-
+  static propTypes = {
+    type: PropTypes.string,
+  }
   state = {
     group: []
   }
@@ -66,6 +68,4 @@ export default class Group extends Kui {
   }
 }
 
-Group.propTypes = {
-  type: PropTypes.string,
-}
+

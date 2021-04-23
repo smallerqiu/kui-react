@@ -5,6 +5,26 @@ import Icon from '../icon'
 import Select from '../select'
 
 export default class Page extends Kui {
+  static defaultProps = {
+    sizeData: [10, 15, 20, 30, 40],
+    total: 0,
+    pageSize: 10,
+    size: 'default',
+    current: 1
+  }
+  static propTypes = {
+    onPageSizeChange: PropTypes.func,
+    onChange: PropTypes.func,
+    showSizer: PropTypes.bool,
+    showTotal: PropTypes.bool,
+    showElevator: PropTypes.bool,
+    sizeData: PropTypes.array,
+    size: PropTypes.oneOf(['small', 'large', 'default']),
+    total: PropTypes.number,
+    pageSize: PropTypes.number,
+    current: PropTypes.number,
+  }
+
   state = {
     pageCount: 0,
     page: this.props.current,
@@ -178,23 +198,4 @@ export default class Page extends Kui {
       </div>
     )
   }
-}
-Page.defaultProps = {
-  sizeData: [10, 15, 20, 30, 40],
-  total: 0,
-  pageSize: 10,
-  size: 'default',
-  current: 1
-}
-Page.propTypes = {
-  onPageSizeChange: PropTypes.func,
-  onChange: PropTypes.func,
-  showSizer: PropTypes.bool,
-  showTotal: PropTypes.bool,
-  showElevator: PropTypes.bool,
-  sizeData: PropTypes.array,
-  size: PropTypes.oneOf(['small', 'large', 'default']),
-  total: PropTypes.number,
-  pageSize: PropTypes.number,
-  current: PropTypes.number,
 }

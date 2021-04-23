@@ -5,6 +5,29 @@ import { Kui, PropTypes } from '../kui'
 
 export default class BaseInput extends Kui {
 
+  static propTypes = {
+    clearable: PropTypes.bool,
+    size: PropTypes.oneOf(["small", "large", "default"]),
+    inputType: PropTypes.string,
+    value: PropTypes.any,
+    disabled: PropTypes.bool,
+    type: PropTypes.oneOf(["text", "textarea", "password", "url", "email", "date", "search"]),
+    icon: PropTypes.string,
+    iconAlign: PropTypes.string,
+    suffix: PropTypes.any
+  }
+  static defaultProps = {
+    size: 'default',
+    type: 'text',
+    inputType: 'input'
+  }
+  
+  static contextTypes = {
+    FormItem: PropTypes.any,
+    Input: PropTypes.any,
+    TextArea: PropTypes.any,
+  }
+  
   state = {
     currentValue: this.props.value || '',
     isFocus: false,
@@ -141,26 +164,3 @@ export default class BaseInput extends Kui {
     }
   }
 };
-
-BaseInput.propTypes = {
-  clearable: PropTypes.bool,
-  size: PropTypes.oneOf(["small", "large", "default"]),
-  inputType: PropTypes.string,
-  value: PropTypes.any,
-  disabled: PropTypes.bool,
-  type: PropTypes.oneOf(["text", "textarea", "password", "url", "email", "date", "search"]),
-  icon: PropTypes.string,
-  iconAlign: PropTypes.string,
-  suffix: PropTypes.any
-}
-BaseInput.defaultProps = {
-  size: 'default',
-  type: 'text',
-  inputType: 'input'
-}
-
-BaseInput.contextTypes = {
-  FormItem: PropTypes.any,
-  Input: PropTypes.any,
-  TextArea: PropTypes.any,
-}

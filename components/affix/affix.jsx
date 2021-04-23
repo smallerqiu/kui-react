@@ -23,6 +23,18 @@ function getOffset(element, target) {
 
 export default class Affix extends Kui {
 
+  static propTypes = {
+    offsetTop: PropTypes.number,
+    offsetBottom: PropTypes.number,
+    target: PropTypes.func,
+    onChange: PropTypes.func
+  }
+
+  static defaultProps = {
+    offsetTop: 0,
+    target: () => window
+  }
+
   blobRef = React.createRef()
   state = {
     fixed: false,
@@ -144,16 +156,4 @@ export default class Affix extends Kui {
       </div>
     )
   }
-}
-
-Affix.propTypes = {
-  offsetTop: PropTypes.number,
-  offsetBottom: PropTypes.number,
-  target: PropTypes.func,
-  onChange: PropTypes.func
-}
-
-Affix.defaultProps = {
-  offsetTop: 0,
-  target: () => window
 }

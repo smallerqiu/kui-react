@@ -4,25 +4,38 @@ import { Kui, PropTypes } from '../kui'
 import Icon from '../icon'
 import TabPane from './tabPane'
 export default class Tabs extends Kui {
-  constructor(props) {
-    super(props)
-    this.state = {
-      active: false,
-      paneLeft: 0,
-      tabLeft: 0,
-      activeName: this.value || '',
-      scrollable: false,
-      listWidth: 0,
-      itemWidth: 0,
-      items: []
-    }
-    this.scrollRef = React.createRef()
-    this.extraRef = React.createRef()
-    this.rootRef = React.createRef()
-    this.panesRef = React.createRef()
-    this.tabsRef = React.createRef()
-    // this.setScroll.bind(this)
+  static childContextTypes = {
+    Tabs: PropTypes.any,
   }
+  static defaultProps = {
+    animated: true
+  }
+  static propTypes = {
+    onClocse: PropTypes.func,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    card: PropTypes.bool,
+    closable: PropTypes.bool,
+    mini: PropTypes.bool,
+    sample: PropTypes.bool,
+    animated: PropTypes.bool,
+    extra: PropTypes.any,
+  }
+  state = {
+    active: false,
+    paneLeft: 0,
+    tabLeft: 0,
+    activeName: this.value || '',
+    scrollable: false,
+    listWidth: 0,
+    itemWidth: 0,
+    items: []
+  }
+  scrollRef = React.createRef()
+  extraRef = React.createRef()
+  rootRef = React.createRef()
+  panesRef = React.createRef()
+  tabsRef = React.createRef()
+  // setScroll.bind(this)
   addItem(item) {
     let { items } = this.state
     items.push(item)
@@ -215,20 +228,4 @@ export default class Tabs extends Kui {
       </div>
     </div>)
   }
-}
-Tabs.childContextTypes = {
-  Tabs: PropTypes.any,
-}
-Tabs.defaultProps = {
-  animated: true
-}
-Tabs.propTypes = {
-  onClocse: PropTypes.func,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  card: PropTypes.bool,
-  closable: PropTypes.bool,
-  mini: PropTypes.bool,
-  sample: PropTypes.bool,
-  animated: PropTypes.bool,
-  extra: PropTypes.any,
 }

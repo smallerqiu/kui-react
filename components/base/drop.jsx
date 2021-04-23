@@ -7,7 +7,23 @@ import { Kui, PropTypes } from '../kui'
 import { CSSTransition } from 'react-transition-group'
 
 export default class BaseDrop extends Kui {
+  static defaultProps = {
+    trigger: 'click',
+    transitionName: 'dropdown'
+  }
 
+  static propTypes = {
+    selectionRef: PropTypes.any,
+    transfer: PropTypes.bool,
+    show: PropTypes.bool,
+    className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+    width: PropTypes.number,
+    placement: PropTypes.string,
+    trigger: PropTypes.oneOf(['click', 'hover', 'contextmenu']),
+    transitionName: PropTypes.string,
+    unmountOnExit: PropTypes.bool,
+    showInit: PropTypes.bool,
+  }
   state = {
     left: 0,
     top: 0,
@@ -42,7 +58,7 @@ export default class BaseDrop extends Kui {
       el.className = el.className.replace('k-menu-hidden', '')
     }
   }
- 
+
   render() {
     let { className, show, width, transfer, children, onMouseEnter, unmountOnExit, showInit,
       onMouseLeave, transitionName } = this.props
@@ -139,21 +155,4 @@ export default class BaseDrop extends Kui {
       this.setPosition()
     }
   }
-}
-BaseDrop.defaultProps = {
-  trigger: 'click',
-  transitionName: 'dropdown'
-}
-
-BaseDrop.propTypes = {
-  selectionRef: PropTypes.any,
-  transfer: PropTypes.bool,
-  show: PropTypes.bool,
-  className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
-  width: PropTypes.number,
-  placement: PropTypes.string,
-  trigger: PropTypes.oneOf(['click', 'hover', 'contextmenu']),
-  transitionName: PropTypes.string,
-  unmountOnExit: PropTypes.bool,
-  showInit: PropTypes.bool,
 }

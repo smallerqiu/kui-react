@@ -3,16 +3,27 @@ import { Kui, PropTypes } from '../kui'
 import Transition from '../transition'
 import Transfer from '../transfer'
 export default class Tooltip extends Kui {
-  constructor(props) {
-    super(props)
-    this.state = {
-      visible: false,
-      left: 0,
-      top: 0
-    }
-    this.domRef = React.createRef()
-    this.relRef = React.createRef()
+  static defaultProps = {
+    transfer: true,
+    trigger: 'hover',
+    width: 0,
+    placement: 'top'
   }
+
+  static propTypes = {
+    transfer: PropTypes.bool,
+    trigger: PropTypes.string,
+    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    content: PropTypes.any,
+    placement: PropTypes.oneOf(["top", "top-left", "top-right", "bottom", "bottom-left", "bottom-right", "left", "left-bottom", "left-top", "right", "right-top", "right-bottom"]),
+  }
+  state = {
+    visible: false,
+    left: 0,
+    top: 0
+  }
+  domRef = React.createRef()
+  relRef = React.createRef()
   domStyles() {
     let style = {};
     this.props.width && (style.width = `${this.props.width}px`);
@@ -122,20 +133,4 @@ export default class Tooltip extends Kui {
       </Transfer>
     </div>)
   }
-}
-
-Tooltip.defaultProps = {
-  transfer: true,
-  trigger: 'hover',
-  width: 0,
-  placement: 'top'
-}
-
-
-Tooltip.propTypes = {
-  transfer: PropTypes.bool,
-  trigger: PropTypes.string,
-  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  content: PropTypes.any,
-  placement: PropTypes.oneOf(["top", "top-left", "top-right", "bottom", "bottom-left", "bottom-right", "left", "left-bottom", "left-top", "right", "right-top", "right-bottom"]),
 }

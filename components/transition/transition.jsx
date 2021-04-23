@@ -4,6 +4,23 @@ import { CSSTransition } from 'react-transition-group'
 
 
 export default class Transition extends Component {
+  static defaultProps = {
+    name: 'fade',
+    timeout: 300,
+    unmountOnExit: true
+  }
+  static propTypes = {
+    onEnter: PropTypes.func,
+    onEntering: PropTypes.func,
+    onEntered: PropTypes.func,
+    onExit: PropTypes.func,
+    onExiting: PropTypes.func,
+    onExited: PropTypes.func,
+    name: PropTypes.string,
+    show: PropTypes.bool,
+    timeout: PropTypes.number,
+    unmountOnExit: PropTypes.bool,
+  }
   state = {
     show: this.props.show
   }
@@ -90,21 +107,4 @@ export default class Transition extends Component {
       unmountOnExit={unmountOnExit} classNames={name}>
       {children}</CSSTransition>)
   }
-}
-Transition.defaultProps = {
-  name: 'fade',
-  timeout: 300,
-  unmountOnExit: true
-}
-Transition.propTypes = {
-  onEnter: PropTypes.func,
-  onEntering: PropTypes.func,
-  onEntered: PropTypes.func,
-  onExit: PropTypes.func,
-  onExiting: PropTypes.func,
-  onExited: PropTypes.func,
-  name: PropTypes.string,
-  show: PropTypes.bool,
-  timeout: PropTypes.number,
-  unmountOnExit: PropTypes.bool,
 }

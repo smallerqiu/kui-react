@@ -1,6 +1,11 @@
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
 export default class TimeLineItem extends Kui {
+  static propTypes = {
+    color: PropTypes.string,
+    icon: PropTypes.string,
+    dot: PropTypes.node,
+  } 
   colorStyles() {
     let color = this.props.color;
     return color ? { color: color } : {};
@@ -20,8 +25,3 @@ export default class TimeLineItem extends Kui {
     </li>)
   }
 }
-TimeLineItem.propTypes = {
-  color: PropTypes.string,
-  icon: PropTypes.string,
-  dot: PropTypes.node,
-} 

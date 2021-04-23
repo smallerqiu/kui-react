@@ -3,6 +3,25 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 
 export default class Carousel extends Kui {
+
+	static propTypes = {
+		value: PropTypes.number,
+		loop: PropTypes.bool,
+		autoplay: PropTypes.bool,
+		delay: PropTypes.number,
+		vertical: PropTypes.bool,
+		dots: PropTypes.bool
+	}
+
+	static defaultProps = {
+		value: 0,
+		delay: 3000,
+		dots: true
+	}
+
+	static childContextTypes = {
+		Carousel: PropTypes.any
+	};
 	state = {
 		currentIndex: this.props.value,
 		autotimer: null,
@@ -144,22 +163,3 @@ export default class Carousel extends Kui {
 		)
 	}
 }
-
-Carousel.propTypes = {
-	value: PropTypes.number,
-	loop: PropTypes.bool,
-	autoplay: PropTypes.bool,
-	delay: PropTypes.number,
-	vertical: PropTypes.bool,
-	dots: PropTypes.bool
-}
-
-Carousel.defaultProps = {
-	value: 0,
-	delay: 3000,
-	dots: true
-}
-
-Carousel.childContextTypes = {
-	Carousel: PropTypes.any
-};

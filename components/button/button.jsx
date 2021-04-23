@@ -4,6 +4,24 @@ import Icon from '../icon'
 
 export default class Button extends Kui {
 
+  static propTypes = {
+    buttonType: PropTypes.string,
+    icon: PropTypes.string,
+    block: PropTypes.bool,
+    size: PropTypes.oneOf(['small', 'large','default']),
+    loading: PropTypes.bool,
+    circle: PropTypes.bool,
+    onClick: PropTypes.func,
+    type: PropTypes.oneOf(["danger", "primary", "link", "default", "dashed"]),
+    hollow: PropTypes.bool,
+    disabled: PropTypes.bool,
+  }
+  
+  static defaultProps = {
+    type: 'default',
+    size: 'default',
+  }
+  
   onClick = (e) => {
     let { onClick } = this.props
     onClick && onClick(e)
@@ -45,22 +63,4 @@ export default class Button extends Kui {
       {kid}
     </button>
   }
-}
-
-Button.propTypes = {
-  buttonType: PropTypes.string,
-  icon: PropTypes.string,
-  block: PropTypes.bool,
-  size: PropTypes.oneOf(['small', 'large','default']),
-  loading: PropTypes.bool,
-  circle: PropTypes.bool,
-  onClick: PropTypes.func,
-  type: PropTypes.oneOf(["danger", "primary", "link", "default", "dashed"]),
-  hollow: PropTypes.bool,
-  disabled: PropTypes.bool,
-}
-
-Button.defaultProps = {
-  type: 'default',
-  size: 'default',
 }

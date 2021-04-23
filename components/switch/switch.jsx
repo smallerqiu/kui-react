@@ -2,7 +2,21 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 import Icon from '../icon'
 export default class Switch extends Kui {
+  static propTypes = {
+    onChange: PropTypes.func,
+    checked: PropTypes.bool,
+    checkedChildren: PropTypes.any,
+    uncheckedChildren: PropTypes.any,
+    disabled: PropTypes.bool,
+    loading: PropTypes.bool,
+    trueText: PropTypes.string,
+    falseText: PropTypes.string,
+    size: PropTypes.oneOf(['default', 'small'])
+  }
 
+  static contextTypes = {
+    FormItem: PropTypes.any,
+  };
   state = {
     isChecked: this.props.checked || false
   }
@@ -30,7 +44,7 @@ export default class Switch extends Kui {
       {
         ["k-switch-checked"]: checked,
         ["k-switch-loading"]: loading,
-        ["k-switch-disabled"]: disabled||loading,
+        ["k-switch-disabled"]: disabled || loading,
         ["k-switch-sm"]: size == 'small',
       }
     ];
@@ -51,20 +65,4 @@ export default class Switch extends Kui {
       <button {...props}>{textNode}{loadNode}</ button>
     )
   }
-};
-
-Switch.propTypes = {
-  onChange: PropTypes.func,
-  checked: PropTypes.bool,
-  checkedChildren: PropTypes.any,
-  uncheckedChildren: PropTypes.any,
-  disabled: PropTypes.bool,
-  loading: PropTypes.bool,
-  trueText: PropTypes.string,
-  falseText: PropTypes.string,
-  size: PropTypes.oneOf(['default', 'small'])
-}
-
-Switch.contextTypes = {
-  FormItem: PropTypes.any,
 };

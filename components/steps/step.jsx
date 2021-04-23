@@ -3,6 +3,17 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 import Icon from '../icon'
 export default class Step extends Kui {
+  static defaultProps = {
+    status: 'wait'
+  }
+  static propTypes = {
+    step: PropTypes.number,
+    width: PropTypes.number,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    status: PropTypes.oneOf(['wait', 'process', 'finish', 'error']),
+    icon: PropTypes.string
+  }
   stepStyles() {
     let { width } = this.props
     return width ? { width: `${width}%` } : {}
@@ -34,15 +45,4 @@ export default class Step extends Kui {
       </div>
     </div>)
   }
-}
-Step.defaultProps = {
-  status: 'wait'
-}
-Step.propTypes = {
-  step: PropTypes.number,
-  width: PropTypes.number,
-  title: PropTypes.string,
-  description: PropTypes.string,
-  status: PropTypes.oneOf(['wait', 'process', 'finish', 'error']),
-  icon: PropTypes.string
 }

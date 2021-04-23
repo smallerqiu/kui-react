@@ -4,7 +4,17 @@ import { Kui, PropTypes } from '../kui'
 
 
 export default class Radio extends Kui {
+  static propTypes = {
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]),
+    disabled: PropTypes.bool,
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    checked: PropTypes.bool
+  }
 
+  static contextTypes = {
+    Group: PropTypes.any,
+    FormItem: PropTypes.any
+  };
   state = {
     isChecked: false
   }
@@ -55,7 +65,7 @@ export default class Radio extends Kui {
     const classes = [
       "k-radio",
       {
-        ["k-radio-checked"]: checked ,
+        ["k-radio-checked"]: checked,
       }
     ];
     let inner = checked ? <Icon type="checkmark" /> : null
@@ -78,15 +88,3 @@ export default class Radio extends Kui {
     )
   }
 }
-
-Radio.propTypes = {
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]),
-  disabled: PropTypes.bool,
-  label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  checked: PropTypes.bool
-}
-
-Radio.contextTypes = {
-  Group: PropTypes.any,
-  FormItem: PropTypes.any
-};

@@ -4,6 +4,23 @@ import { Kui, PropTypes } from '../kui'
 
 export default class CheckboxGroup extends Kui {
 
+  static childContextTypes = {
+    Group: PropTypes.any
+  };
+
+  static contextTypes = {
+    FormItem: PropTypes.any
+  };
+
+  static propTypes = {
+    disabled: PropTypes.bool,
+    options: PropTypes.array,
+    value: PropTypes.array,
+  }
+  static defaultProps = {
+    options: [],
+    value: []
+  }
   change = (data) => {
     const { value, onChange } = this.props
     let index = value.indexOf(data.value)
@@ -39,20 +56,3 @@ export default class CheckboxGroup extends Kui {
   }
 }
 
-CheckboxGroup.childContextTypes = {
-  Group: PropTypes.any
-};
-
-CheckboxGroup.contextTypes = {
-  FormItem: PropTypes.any
-};
-
-CheckboxGroup.propTypes = {
-  disabled: PropTypes.bool,
-  options: PropTypes.array,
-  value: PropTypes.array,
-}
-CheckboxGroup.defaultProps = {
-  options: [],
-  value: []
-}

@@ -4,7 +4,19 @@ import { Kui, PropTypes } from '../kui'
 // import Tooltip from '../tooltip'
 
 export default class MenuItem extends Kui {
+  static propTypes = {
+    eventKey: PropTypes.any,
+    icon: PropTypes.string,
+    disabled: PropTypes.bool,
+    affixed: PropTypes.bool,
+  }
 
+  static contextTypes = {
+    Menu: PropTypes.any,
+    SubMenu: PropTypes.any,
+    Dropdown: PropTypes.any,
+    collectAffixItem: PropTypes.func,
+  };
   state = {
     active: false,
     currentAffixed: this.props.affixed,
@@ -87,16 +99,3 @@ export default class MenuItem extends Kui {
   }
 }
 
-MenuItem.propTypes = {
-  eventKey: PropTypes.any,
-  icon: PropTypes.string,
-  disabled: PropTypes.bool,
-  affixed: PropTypes.bool,
-}
-
-MenuItem.contextTypes = {
-  Menu: PropTypes.any,
-  SubMenu: PropTypes.any,
-  Dropdown: PropTypes.any,
-  collectAffixItem: PropTypes.func,
-};

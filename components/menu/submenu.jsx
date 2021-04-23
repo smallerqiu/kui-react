@@ -11,6 +11,22 @@ const animateNames = {
   vertical: 'k-menu-submenu-fade'
 }
 export default class SubMenu extends Kui {
+  static propTypes = {
+    disabled: PropTypes.bool,
+    title: PropTypes.any,
+    icon: PropTypes.string,
+    eventKey: PropTypes.any,
+  }
+
+  static childContextTypes = {
+    SubMenu: PropTypes.any,
+  }
+
+  static contextTypes = {
+    Menu: PropTypes.any,
+    SubMenu: PropTypes.any,
+    Dropdown: PropTypes.any
+  }
   state = {
     active: false,
     opened: false,
@@ -94,6 +110,7 @@ export default class SubMenu extends Kui {
     }
 
     const childNode = <div {...popupProps}>
+      {/* {React.createElement(CMenu, { mode: types, theme }, children)} */}
       <CMenu mode={types} theme={theme}>{children}</CMenu>
     </div>
     // let wocao = <CMenu mode={types} theme={theme}>{children}</CMenu>
@@ -243,19 +260,3 @@ export default class SubMenu extends Kui {
   }
 }
 
-SubMenu.propTypes = {
-  disabled: PropTypes.bool,
-  title: PropTypes.any,
-  icon: PropTypes.string,
-  eventKey: PropTypes.any,
-}
-
-SubMenu.childContextTypes = {
-  SubMenu: PropTypes.any,
-};
-
-SubMenu.contextTypes = {
-  Menu: PropTypes.any,
-  SubMenu: PropTypes.any,
-  Dropdown: PropTypes.any
-};

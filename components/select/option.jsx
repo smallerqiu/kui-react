@@ -1,13 +1,21 @@
 import React from 'react'
 import { Kui, PropTypes } from '../kui';
 export default class Option extends Kui {
-  constructor(props) {
-    super(props)
-    this.state = {
-      // selected: false,
-      // index: 0,
-      // visible: true
-    }
+  static defaultProps = {
+    onClick: function () { }
+  }
+
+  static propTypes = {
+    onClick: PropTypes.any,
+    value: PropTypes.oneOfType([PropTypes.string.isRequired, PropTypes.number.isRequired]),
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    disabled: PropTypes.bool,
+    selected: PropTypes.bool
+  }
+  state = {
+    // selected: false,
+    // index: 0,
+    // visible: true
   }
   itemClasses() {
     return this.className([
@@ -19,7 +27,7 @@ export default class Option extends Kui {
     ])
   }
   onSelect(e) {
-    if(this.props.disabled) return
+    if (this.props.disabled) return
     this.props.onClick && this.props.onClick(e)
   }
   query(query) {
@@ -33,16 +41,3 @@ export default class Option extends Kui {
     </li >)
   }
 }
-
-Option.defaultProps = {
-  onClick: function () { }
-}
-
-Option.propTypes = {
-  onClick: PropTypes.any,
-  value: PropTypes.oneOfType([PropTypes.string.isRequired, PropTypes.number.isRequired]),
-  label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  disabled: PropTypes.bool,
-  selected: PropTypes.bool
-}
-

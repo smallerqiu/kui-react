@@ -3,7 +3,28 @@ import { Kui, PropTypes } from '../kui'
 import BaseInput from '../base/input'
 
 export default class Input extends Kui {
+  // static defaultProps = {
+  //   iconAlign: 'right'
+  // }
+  static childContextTypes = {
+    Input: PropTypes.any
+  }
+  // static propTypes = {
+  //   onKeyUp: PropTypes.func,
+  //   onKeyPress: PropTypes.func,
+  //   onKeyDown: PropTypes.func,
+  //   onFocus: PropTypes.func,
+  //   onBlur: PropTypes.func,
+  //   onChange: PropTypes.func,
+  //   onEnter: PropTypes.func,
+  //   onIconClick: PropTypes.func,
 
+  //   iconAlign: PropTypes.oneOf(["left", 'right']),
+  //   clearable: PropTypes.bool,
+  //   type: PropTypes.oneOf(["text", "password", "url", "email", "date"]),
+  //   icon: PropTypes.string,
+  //   value: PropTypes.any,
+  // }
   getChildContext() {
     return {
       Input: this
@@ -19,25 +40,3 @@ export default class Input extends Kui {
     return <BaseInput {...props} />
   }
 }
-// Input.defaultProps = {
-//   iconAlign: 'right'
-// }
-Input.childContextTypes = {
-  Input: PropTypes.any
-}
-// Input.propTypes = {
-//   onKeyUp: PropTypes.func,
-//   onKeyPress: PropTypes.func,
-//   onKeyDown: PropTypes.func,
-//   onFocus: PropTypes.func,
-//   onBlur: PropTypes.func,
-//   onChange: PropTypes.func,
-//   onEnter: PropTypes.func,
-//   onIconClick: PropTypes.func,
-
-//   iconAlign: PropTypes.oneOf(["left", 'right']),
-//   clearable: PropTypes.bool,
-//   type: PropTypes.oneOf(["text", "password", "url", "email", "date"]),
-//   icon: PropTypes.string,
-//   value: PropTypes.any,
-// }

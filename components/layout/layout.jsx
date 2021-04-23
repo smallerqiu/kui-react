@@ -24,6 +24,9 @@ class Footer extends Kui {
 }
 
 class Sider extends Kui {
+  static contextTypes = {
+    Layout: PropTypes.any
+  }
   componentDidMount() {
     let parent = this.context.Layout
     if (parent) {
@@ -44,12 +47,12 @@ class Sider extends Kui {
   }
 }
 
-Sider.contextTypes = {
-  Layout: PropTypes.any
-};
 
-export default class Layout extends Kui {
 
+class Layout extends Kui {
+  static childContextTypes = {
+    Layout: PropTypes.any
+  }
   state = {
     siders: 0
   }
@@ -73,11 +76,10 @@ export default class Layout extends Kui {
     return (<div className={cls} style={this.styles()}>{this.props.children}</div>)
   }
 }
-Layout.childContextTypes = {
-  Layout: PropTypes.any
-};
 
 Layout.Sider = Sider
 Layout.Content = Content
 Layout.Header = Header
 Layout.Footer = Footer
+
+export default Layout

@@ -4,7 +4,17 @@ import { Kui, PropTypes } from '../kui'
 import Transition from '../transition'
 
 export default class Alert extends Kui {
+  static propTypes = {
+    type: PropTypes.oneOf(['info', 'error', 'success', 'warning']),
+    closable: PropTypes.bool,
+    showIcon: PropTypes.bool,
+    message: PropTypes.string,
+    description: PropTypes.string
+  }
 
+  static defaultProps = {
+    type: 'warning'
+  }
   state = {
     closed: false
   }
@@ -51,14 +61,3 @@ export default class Alert extends Kui {
   }
 };
 
-Alert.propTypes = {
-  type: PropTypes.oneOf(['info', 'error', 'success', 'warning']),
-  closable: PropTypes.bool,
-  showIcon: PropTypes.bool,
-  message: PropTypes.string,
-  description: PropTypes.string
-}
-
-Alert.defaultProps = {
-  type: 'warning'
-}

@@ -3,6 +3,20 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 
 export default class Notice extends Kui {
+  static defaultProps = {
+    type: "info",
+    noticeType: "message",
+    onClose: () => { }
+  }
+  static propTypes = {
+    type: PropTypes.string,
+    title: PropTypes.string,
+    name: PropTypes.string,
+    content: PropTypes.string,
+    closable: PropTypes.bool,
+    noticeType: PropTypes.string,
+    onClose: PropTypes.func
+  }
   render() {
     let { noticeType, type, content, title, onClose, closable } = this.props
     const classes = [`k-${noticeType}-box`, `k-${noticeType}-${type}`, {
@@ -43,17 +57,3 @@ export default class Notice extends Kui {
   }
 }
 
-Notice.defaultProps = {
-  type: "info",
-  noticeType: "message",
-  onClose: () => { }
-}
-Notice.propTypes = {
-  type: PropTypes.string,
-  title: PropTypes.string,
-  name: PropTypes.string,
-  content: PropTypes.string,
-  closable: PropTypes.bool,
-  noticeType: PropTypes.string,
-  onClose: PropTypes.func
-}

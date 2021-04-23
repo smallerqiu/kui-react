@@ -5,6 +5,20 @@ import Icon from '../icon'
 
 export default class BreadcrumbItem extends Kui {
 
+  static contextTypes = {
+    // router: PropTypes.object.isRequired
+  }
+
+  static propTypes = {
+    separator: PropTypes.string,
+    to: PropTypes.string,
+    replace: PropTypes.bool,
+    icon: PropTypes.string
+  }
+
+  static defaultProps = {
+    separator: '/'
+  }
   toPath() {
     let { to, replace } = this.props
     let router = this.context.router.history
@@ -22,19 +36,4 @@ export default class BreadcrumbItem extends Kui {
       </span>
     )
   }
-}
-
-BreadcrumbItem.contextTypes = {
-  // router: PropTypes.object.isRequired
-}
-
-BreadcrumbItem.propTypes = {
-  separator: PropTypes.string,
-  to: PropTypes.string,
-  replace: PropTypes.bool,
-  icon: PropTypes.string
-}
-
-BreadcrumbItem.defaultProps = {
-  separator: '/'
 }

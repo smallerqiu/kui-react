@@ -3,18 +3,38 @@ import { Kui, PropTypes } from '../kui'
 import { Button, Transition, Icon } from '../index'
 
 export default class Modal extends Kui {
-  constructor(props) {
-    super(props)
-    this.state = {
-      visible: props.visible,
-      left: 0,
-      top: 100,
-      isMouseDown: false,
-      startPos: { x: 0, y: 0 }
-    }
-    this.onKeyUp = this.onKeyUp.bind(this)
-    this.modalRef = React.createRef()
+  static defaultProps = {
+    type: 'modal',
+    icon: 'success',
+    title: '我是一个标题',
+    width: 520,
+    okText: '确定',
+    cancelText: '取消',
   }
+  static propTypes = {
+    footer: PropTypes.node,
+    onOk: PropTypes.func,
+    onClose: PropTypes.func,
+    onCancel: PropTypes.func,
+    type: PropTypes.oneOf(['modal', 'toast']),
+    color: PropTypes.string,
+    icon: PropTypes.string,
+    visible: PropTypes.bool,
+    title: PropTypes.string,
+    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    okText: PropTypes.string,
+    cancelText: PropTypes.string,
+    isMove: PropTypes.bool,
+  }
+  state = {
+    visible: props.visible,
+    left: 0,
+    top: 100,
+    isMouseDown: false,
+    startPos: { x: 0, y: 0 }
+  }
+  onKeyUp = this.onKeyUp.bind(this)
+  modalRef = React.createRef()
   onStop(e) {
     e.cancelBubble = true
   }
@@ -41,15 +61,15 @@ export default class Modal extends Kui {
     if (e.button == 0) {
       this.setState({
         isMouseDown: true,
-        // x: this.refs.modal.offsetLeft,
-        // y: this.refs.modal.offsetTop,
+        // x: this.refs.Modal.offsetLeft,
+        // y: this.refs.Modal.offsetTop,
         startPos: { x: e.clientX, y: e.clientY }
       })
     }
   }
   onMouseMove(e) {
     if (this.state.isMouseDown && this.props.isMove) {
-      let { startPos, left,top} = this.state
+      let { startPos, left, top } = this.state
       let movex = e.clientX - startPos.x
       let movey = e.clientY - startPos.y
       this.setState({
@@ -99,13 +119,13 @@ export default class Modal extends Kui {
     style.top = `${top}px`;
     return style;
   }
-/*   componentWillReceiveProps(props) {
-    if (this.state.visible !== props.visible) {
-      this.setState({
-        visible: props.visible
-      })
-    }
-  } */
+  /*   componentWillReceiveProps(props) {
+      if (this.state.visible !== props.visible) {
+        this.setState({
+          visible: props.visible
+        })
+      }
+    } */
   onKeyUp(e) {
     if (this.state.visible && e.keyCode == 27) {
       this.setState({ visible: false })
@@ -182,26 +202,3 @@ export default class Modal extends Kui {
     </div>
   }
 }
-Modal.defaultProps = {
-  type: 'modal',
-  icon: 'success',
-  title: '我是一个标题',
-  width: 520,
-  okText: '确定',
-  cancelText: '取消',
-}
-Modal.propTypes = {
-  footer: PropTypes.node,
-  onOk: PropTypes.func,
-  onClose: PropTypes.func,
-  onCancel: PropTypes.func,
-  type: PropTypes.oneOf(['modal', 'toast']),
-  color: PropTypes.string,
-  icon: PropTypes.string,
-  visible: PropTypes.bool,
-  title: PropTypes.string,
-  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  okText: PropTypes.string,
-  cancelText: PropTypes.string,
-  isMove: PropTypes.bool,
-} 

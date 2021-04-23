@@ -3,12 +3,22 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 import FormItem from './formitem'
 export default class Form extends Kui {
-  constructor(props) {
-    super(props)
-    this.state = {
-      items: [],
-      model: props.model
-    }
+  static childContextTypes = {
+    Form: PropTypes.any
+  }
+  static defaultProps = {
+    labelAlign: 'right',
+    labelWidth: 80
+  }
+  static propTypes = {
+    labelAlign: PropTypes.oneOf(['left', 'top', 'right']),
+    model: PropTypes.object,
+    rules: PropTypes.object,
+    labelWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  }
+  state = {
+    items: [],
+    model: props.model
   }
   classes() {
     let { labelAlign } = this.props
@@ -115,16 +125,4 @@ export default class Form extends Kui {
     </div>)
   }
 }
-Form.childContextTypes = {
-  Form: PropTypes.any
-}
-Form.defaultProps = {
-  labelAlign: 'right',
-  labelWidth: 80
-}
-Form.propTypes = {
-  labelAlign: PropTypes.oneOf(['left', 'top', 'right']),
-  model: PropTypes.object,
-  rules: PropTypes.object,
-  labelWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-}
+

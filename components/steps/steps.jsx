@@ -4,6 +4,16 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 import Step from './step'
 export default class Steps extends Kui {
+  static defaultProps = {
+    status: 'process',
+    current: 0
+  }
+  static propTypes = {
+    current: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    vertical: PropTypes.bool,
+    mini: PropTypes.bool,
+    status: PropTypes.oneOf(['wait', 'process', 'finish', 'error']),
+  }
   classes() {
     let { vertical, mini } = this.props
     return this.className(['k-steps', {
@@ -32,14 +42,4 @@ export default class Steps extends Kui {
     }
     return (<div className={this.classes()} style={this.styles()}>{renderStep()}</div>)
   }
-}
-Steps.defaultProps = {
-  status: 'process',
-  current: 0
-}
-Steps.propTypes = {
-  current: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  vertical: PropTypes.bool,
-  mini: PropTypes.bool,
-  status: PropTypes.oneOf(['wait', 'process', 'finish', 'error']),
 }

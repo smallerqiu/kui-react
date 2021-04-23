@@ -2,15 +2,29 @@
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
 export default class FormItem extends Kui {
-  constructor(props) {
-    super(props)
-    this.state = {
-      width: props.width || props.labelWidth,
-      valid: true,
-      errorTip: '',
-      rules: props.rules,
-      fieldValue: props.value || ''
-    }
+  static contextTypes = {
+    Form: PropTypes.any
+  };
+  static defaultProps = {
+    width: 0
+  }
+  static propTypes = {
+    onFormItemChange: PropTypes.func,
+    onBlur: PropTypes.func,
+    label: PropTypes.string,
+    errorTip: PropTypes.string,
+    rules: PropTypes.array,
+    prop: PropTypes.string,
+    labelAlign: PropTypes.string,
+    labelWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  }
+  state = {
+    width: props.width || props.labelWidth,
+    valid: true,
+    errorTip: '',
+    rules: props.rules,
+    fieldValue: props.value || ''
   }
   classes() {
     let { required } = this.props
@@ -138,20 +152,4 @@ export default class FormItem extends Kui {
     </div>)
   }
 }
-FormItem.contextTypes = {
-  Form: PropTypes.any
-};
-FormItem.defaultProps = {
-  width: 0
-}
-FormItem.propTypes = {
-  onFormItemChange: PropTypes.func,
-  onBlur: PropTypes.func,
-  label: PropTypes.string,
-  errorTip: PropTypes.string,
-  rules: PropTypes.array,
-  prop: PropTypes.string,
-  labelAlign: PropTypes.string,
-  labelWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-}
+

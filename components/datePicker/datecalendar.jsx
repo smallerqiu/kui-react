@@ -2,24 +2,36 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 import { DatePicker } from '../..';
 export default class DateCalendar extends Kui {
-  constructor(props) {
-    super(props)
-    this.time = this.get(props.value);
-    this.state = {
-      pre: "k-calendar",
-      m: "D",
-      showYears: false,
-      showMonths: false,
-      showHours: false,
-      showMinutes: false,
-      showSeconds: false,
-      year: this.time.year,
-      month: this.time.month,
-      day: this.time.day,
-      hour: this.time.hour,
-      minute: this.time.minute,
-      second: this.time.second
-    }
+  static defaultProps = {
+    format: 'YYYY-MM-DD',
+    data: [],
+    disabledDate: () => { }
+  }
+  static propTypes = {
+    data: PropTypes.array,
+    format: PropTypes.string,
+    local: PropTypes.object,
+    value: PropTypes.any,
+    left: PropTypes.bool,
+    right: PropTypes.bool,
+    disabledDate: PropTypes.func,
+    onOK: PropTypes.func,
+    onChange: PropTypes.func,
+  }
+  state = {
+    pre: "k-calendar",
+    m: "D",
+    showYears: false,
+    showMonths: false,
+    showHours: false,
+    showMinutes: false,
+    showSeconds: false,
+    year: this.time.year,
+    month: this.time.month,
+    day: this.time.day,
+    hour: this.time.hour,
+    minute: this.time.minute,
+    second: this.time.second
   }
   years() {
     const arr = [];
@@ -183,17 +195,17 @@ export default class DateCalendar extends Kui {
       _month = time.month;
     }
     let { year, month, day, hour, minute, second } = this.state
-    let { right,left,data } = this.props
+    let { right, left, data } = this.props
     let d = new Date(_year || year, _month || month, day, hour, minute, second);
 
     this.props.onChange && this.props.onChange(d)
-    if(!right && !left){
+    if (!right && !left) {
       this.props.onOK && this.props.onOK();
-    }else if(data[0] && data[1]){
+    } else if (data[0] && data[1]) {
       this.props.onOK && this.props.onOK();
     }
   }
-  daysClick(e,j, disabled) {
+  daysClick(e, j, disabled) {
     e.nativeEvent.stopImmediatePropagation()
     if (!disabled) {
       this.setState({ day: j.i }, () => this.ok(j))
@@ -246,9 +258,9 @@ export default class DateCalendar extends Kui {
     e.nativeEvent.stopImmediatePropagation()
     this.setState({ showMonths: !y })
   }
-/*   componentWillReceiveProps(props) {
-    this.time = this.get(props.value);
-  } */
+  /*   componentWillReceiveProps(props) {
+      this.time = this.get(props.value);
+    } */
   componentDidMount() {
     const is = c => this.props.format.indexOf(c) !== -1;
     let { showYears, m, showMonths } = this.state
@@ -330,7 +342,7 @@ export default class DateCalendar extends Kui {
               let status = this.status(j.y, j.m, j.i, hour, minute, second, 'YYYYMMDD');
               let cls = this.className([Object.assign({}, { [`${pre}-date-out`]: (j.p || j.n) }, status)])
               let disabled = status[`${pre}-date-disabled`]
-              return <span key={x} onClick={(e) => this.daysClick(e,j, disabled)} className={cls}>{j.i}</span>
+              return <span key={x} onClick={(e) => this.daysClick(e, j, disabled)} className={cls}>{j.i}</span>
             })
           }
         </div>
@@ -384,19 +396,3 @@ export default class DateCalendar extends Kui {
     </div >)
   }
 }
-DateCalendar.defaultProps = {
-  format: 'YYYY-MM-DD',
-  data: [],
-  disabledDate: () => { }
-}
-DateCalendar.propTypes = {
-  data: PropTypes.array,
-  format: PropTypes.string,
-  local: PropTypes.object,
-  value: PropTypes.any,
-  left: PropTypes.bool,
-  right: PropTypes.bool,
-  disabledDate: PropTypes.func,
-  onOK: PropTypes.func,
-  onChange: PropTypes.func,
-} 

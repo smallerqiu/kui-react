@@ -2,6 +2,21 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 import Icon from '../icon'
 export default class TabPane extends Kui {
+  static contextTypes = {
+    Tabs: PropTypes.any
+  };
+  static propTypes = {
+    name: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    icon: PropTypes.string,
+    disabled: PropTypes.bool,
+    closable: PropTypes.bool,
+    visible: PropTypes.bool,
+  }
+
+  static defaultProps = {
+    closable: true
+  }
   constructor(props) {
     super(props)
     this.state = {
@@ -24,19 +39,4 @@ export default class TabPane extends Kui {
       {this.props.children}
     </div>
   }
-}
-TabPane.contextTypes = {
-  Tabs: PropTypes.any
-};
-TabPane.propTypes = {
-  name: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  icon: PropTypes.string,
-  disabled: PropTypes.bool,
-  closable: PropTypes.bool,
-  visible: PropTypes.bool,
-}
-
-TabPane.defaultProps = {
-  closable: true
 }

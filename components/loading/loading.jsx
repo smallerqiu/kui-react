@@ -2,6 +2,19 @@ import React from 'react';
 import { Kui, PropTypes } from '../kui'
 import Transition from '../transition'
 export default class Loading extends Kui {
+  static defaultProps = {
+    type: 'line',
+    height: 2,
+    percent: 0,
+  }
+  static propTypes = {
+    error: PropTypes.bool,
+    percent: PropTypes.number,
+    type: PropTypes.oneOf(['line', 'zoom', 'flip', 'rotate', 'bounce']),
+    loadingText: PropTypes.string,
+    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    color: PropTypes.string
+  }
   constructor(props) {
     super(props)
     let { percent, height, color, type, error } = props
@@ -43,7 +56,7 @@ export default class Loading extends Kui {
       }
     ])
   }
-  update(obj){
+  update(obj) {
     this.setState(obj)
   }
   // percent()=>this.state.percent
@@ -65,16 +78,4 @@ export default class Loading extends Kui {
     );
   }
 }
-Loading.defaultProps = {
-  type: 'line',
-  height: 2,
-  percent: 0,
-}
-Loading.propTypes = {
-  error: PropTypes.bool,
-  percent: PropTypes.number,
-  type: PropTypes.oneOf(['line', 'zoom', 'flip', 'rotate', 'bounce']),
-  loadingText: PropTypes.string,
-  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  color: PropTypes.string
-}
+

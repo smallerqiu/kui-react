@@ -3,6 +3,22 @@ import React from 'react'
 import Panel from './panel'
 
 export default class Collapse extends Kui {
+
+  static propTypes = {
+    activeKey: PropTypes.array,
+    accrodion: PropTypes.bool,
+    sample: PropTypes.bool,
+    onChange: PropTypes.func
+  }
+
+  static childContextTypes = {
+    Collapse: PropTypes.any
+  }
+
+  static contextTypes = {
+    Collapse: PropTypes.any
+  }
+  
   getChildContext() {
     return {
       Collapse: this
@@ -45,19 +61,4 @@ export default class Collapse extends Kui {
       })
     }</div>)
   }
-}
-
-Collapse.propTypes = {
-  activeKey: PropTypes.array,
-  accrodion: PropTypes.bool,
-  sample: PropTypes.bool,
-  onChange: PropTypes.func
-}
-
-Collapse.childContextTypes = {
-  Collapse: PropTypes.any
-}
-
-Collapse.contextTypes = {
-  Collapse: PropTypes.any
 }

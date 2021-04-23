@@ -3,6 +3,17 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 
 export default class Card extends Kui {
+
+  static propTypes = {
+    bordered: PropTypes.boolean,
+    title: PropTypes.string,
+    icon: PropTypes.string,
+    extra: PropTypes.any,
+  }
+
+  static defaultProps = {
+    bordered: true
+  }
   render() {
     const { title, icon, children, bordered, extra } = this.props
     const cls = ['k-card', {
@@ -18,15 +29,4 @@ export default class Card extends Kui {
       </div>
     )
   }
-}
-
-Card.propTypes = {
-  bordered: PropTypes.boolean,
-  title: PropTypes.string,
-  icon: PropTypes.string,
-  extra: PropTypes.any,
-}
-
-Card.defaultProps = {
-  bordered: true
 }

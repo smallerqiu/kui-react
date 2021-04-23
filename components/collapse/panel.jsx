@@ -5,6 +5,15 @@ import { Kui, PropTypes } from '../kui'
 import React from 'react'
 
 export default class Panel extends Kui {
+  static propTypes = {
+    title: PropTypes.string,
+    eventKey: PropTypes.any,
+    extra: PropTypes.any
+  }
+
+  static contextTypes = {
+    Collapse: PropTypes.any
+  }
 
   handelClick = (e) => {
     let CP = this.context.Collapse
@@ -42,14 +51,3 @@ export default class Panel extends Kui {
     )
   }
 }
-
-
-Panel.propTypes = {
-  title: PropTypes.string,
-  eventKey: PropTypes.any,
-  extra: PropTypes.any
-}
-
-Panel.contextTypes = {
-  Collapse: PropTypes.any
-};

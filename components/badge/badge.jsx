@@ -3,6 +3,20 @@ import { Kui, PropTypes } from '../kui'
 
 export default class Badge extends Kui {
 
+
+  static propTypes = {
+    count: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    dot: PropTypes.bool,
+    color: PropTypes.string,
+    status: PropTypes.string,
+    text: PropTypes.string,
+    maxCount: PropTypes.number
+  }
+
+  static defaultProps = {
+    maxCount: 99
+  }
+
   render() {
     const { children, maxCount, count, dot, color, status, text } = this.props
 
@@ -45,17 +59,3 @@ export default class Badge extends Kui {
     )
   }
 };
-
-
-Badge.propTypes = {
-  count: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  dot: PropTypes.bool,
-  color: PropTypes.string,
-  status: PropTypes.string,
-  text: PropTypes.string,
-  maxCount: PropTypes.number
-}
-
-Badge.defaultProps = {
-  maxCount: 99
-}

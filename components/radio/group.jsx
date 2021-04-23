@@ -4,7 +4,28 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 
 export default class CheckboxGroup extends Kui {
+  static childContextTypes = {
+    Group: PropTypes.any
+  };
 
+  static contextTypes = {
+    FormItem: PropTypes.any
+  };
+
+  static propTypes = {
+    disabled: PropTypes.bool,
+    options: PropTypes.array,
+    value: PropTypes.any,
+    optionType: PropTypes.oneOf(['button', 'default']),
+    size: PropTypes.oneOf(['small', 'large']),
+    hollow: PropTypes.bool,
+    circle: PropTypes.bool
+  }
+  static defaultProps = {
+    options: [],
+    optionType: 'default',
+    value: []
+  }
   change = (data) => {
     const { onChange } = this.props
 
@@ -39,27 +60,4 @@ export default class CheckboxGroup extends Kui {
     }
     return (<div className={this.className(['k-radio-group', { 'k-radio-cirle': circle }])}>{childs}</div>)
   }
-}
-
-CheckboxGroup.childContextTypes = {
-  Group: PropTypes.any
-};
-
-CheckboxGroup.contextTypes = {
-  FormItem: PropTypes.any
-};
-
-CheckboxGroup.propTypes = {
-  disabled: PropTypes.bool,
-  options: PropTypes.array,
-  value: PropTypes.any,
-  optionType: PropTypes.oneOf(['button', 'default']),
-  size: PropTypes.oneOf(['small', 'large']),
-  hollow: PropTypes.bool,
-  circle: PropTypes.bool
-}
-CheckboxGroup.defaultProps = {
-  options: [],
-  optionType: 'default',
-  value: []
 }

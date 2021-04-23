@@ -1,6 +1,16 @@
 import Render from 'react-dom'
 import { Kui, PropTypes } from '../kui'
 export default class Transfer extends Kui {
+  static defaultProps = {
+    transfer: true
+  }
+  static propTypes = {
+    docOnClick: PropTypes.func,
+    onResize: PropTypes.func,
+    onScroll: PropTypes.func,
+    transfer: PropTypes.bool,
+    show: PropTypes.bool
+  }
   state = {
     popup: null
   }
@@ -56,14 +66,4 @@ export default class Transfer extends Kui {
   render() {
     return !this.props.transfer ? this.props.children : null
   }
-}
-Transfer.defaultProps = {
-  transfer: true
-}
-Transfer.propTypes = {
-  docOnClick: PropTypes.func,
-  onResize: PropTypes.func,
-  onScroll: PropTypes.func,
-  transfer: PropTypes.bool,
-  show: PropTypes.bool
 }

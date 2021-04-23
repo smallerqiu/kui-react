@@ -3,6 +3,12 @@ import { Kui, PropTypes } from '../kui'
 import Transition from '../transition'
 import Icon from '../icon'
 export default class Tag extends Kui {
+  static propTypes = {
+    onClick: PropTypes.func,
+    onClose: PropTypes.func,
+    closeable: PropTypes.bool,
+    color: PropTypes.string
+  }
   state = {
     visible: true,
     isDefaultColor: ['blue', 'red', 'orange', 'gray', 'green'].indexOf(this.props.color) >= 0
@@ -39,10 +45,4 @@ export default class Tag extends Kui {
       </div>
     </Transition>)
   }
-}
-Tag.propTypes = {
-  onClick: PropTypes.func,
-  onClose: PropTypes.func,
-  closeable: PropTypes.bool,
-  color: PropTypes.string
 }

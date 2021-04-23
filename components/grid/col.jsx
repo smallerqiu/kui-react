@@ -2,7 +2,15 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 
 export default class Col extends Kui {
+  static propTypes = {
+    span: PropTypes.number,
+    offset: PropTypes.number,
+    flex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  }
 
+  static contextTypes = {
+    Row: PropTypes.any
+  }
   parseFlex = (flex) => {
     if (typeof flex === 'number') {
       return `${flex} ${flex} auto`;
@@ -31,12 +39,3 @@ export default class Col extends Kui {
   }
 };
 
-Col.propTypes = {
-  span: PropTypes.number,
-  offset: PropTypes.number,
-  flex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-}
-
-Col.contextTypes = {
-  Row: PropTypes.any
-};

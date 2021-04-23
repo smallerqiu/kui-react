@@ -3,6 +3,23 @@ import { Kui, PropTypes } from '@/components/kui'
 import { Transition, Transfer } from '../index'
 import Option from './option'
 export default class Select extends Kui {
+  static defaultProps = {
+    placeholder: '请选择',
+    transfer: true,
+    width: 0,
+    value: '',
+  }
+  static propTypes = {
+    onChange: PropTypes.func,
+    placeholder: PropTypes.string,
+    mini: PropTypes.bool,
+    filterable: PropTypes.bool,
+    transfer: PropTypes.bool,
+    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    clearable: PropTypes.bool,
+    disabled: PropTypes.bool
+  }
   constructor(props) {
     super(props)
     this.state = {
@@ -141,17 +158,17 @@ export default class Select extends Kui {
     this.setLabel()
   }
 
-/*   componentWillReceiveProps(props) {
-    let { value } = props
-    if (props.value !== this.state.value) {
-      this.setState({ value: value }, () => {
-        if (value === '' || value === undefined || value === null)
-          this.setState({ label: '', selectLabel: '' })
-        else
-          this.setLabel()
-      })
-    }
-  } */
+  /*   componentWillReceiveProps(props) {
+      let { value } = props
+      if (props.value !== this.state.value) {
+        this.setState({ value: value }, () => {
+          if (value === '' || value === undefined || value === null)
+            this.setState({ label: '', selectLabel: '' })
+          else
+            this.setLabel()
+        })
+      }
+    } */
   labelChange(e) {
     this.setState({ label: e.target.value, queryKey: e.target.value })
   }
@@ -199,21 +216,3 @@ export default class Select extends Kui {
     </div>)
   }
 }
-Select.defaultProps = {
-  placeholder: '请选择',
-  transfer: true,
-  width: 0,
-  value: '',
-}
-Select.propTypes = {
-  onChange: PropTypes.func,
-  placeholder: PropTypes.string,
-  mini: PropTypes.bool,
-  filterable: PropTypes.bool,
-  transfer: PropTypes.bool,
-  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  clearable: PropTypes.bool,
-  disabled: PropTypes.bool
-}
-

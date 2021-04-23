@@ -3,21 +3,41 @@ import { Kui, PropTypes } from '@/components/kui'
 import { Transition, Transfer } from '../index'
 import DateCalendar from './datecalendar'
 export default class DatePicker extends Kui {
-  constructor(props) {
-    super(props)
-    this.state = {
-      text: "",
-      visible: false,
-      left: 0,
-      fadeInBottom: false,
-      top: 0,
-      dates: this.vi(props.value),
-      local: require(`./lang/${props.lang}.js`),
-      value: props.value
-    }
-    this.domRef = React.createRef()
-    this.relRef = React.createRef()
+  static defaultProps = {
+    DatePicker: true,
+    rangeSeparator: '~',
+    placeholder: '清选择',
+    lang: 'zh',
+    format: 'YYYY-MM-DD',
+    transfer: true,
+    disabledDate: () => { }
   }
+  static propTypes = {
+    transfer: PropTypes.bool,
+    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    mini: PropTypes.bool,
+    name: PropTypes.string,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+    disabled: PropTypes.bool,
+    rangeSeparator: PropTypes.string,
+    clearable: PropTypes.bool,
+    placeholder: PropTypes.string,
+    lang: PropTypes.oneOf(['zh', 'en']),
+    disabledDate: PropTypes.func,
+    format: PropTypes.string,
+  }
+  state = {
+    text: "",
+    visible: false,
+    left: 0,
+    fadeInBottom: false,
+    top: 0,
+    dates: this.vi(props.value),
+    local: require(`./lang/${props.lang}.js`),
+    value: props.value
+  }
+  domRef = React.createRef()
+  relRef = React.createRef()
   relStyles() {
     let { width } = this.props
     return { width: `${width}px` }
@@ -186,11 +206,11 @@ export default class DatePicker extends Kui {
       str => map[str]
     );
   }
-/*   componentWillReceiveProps(props) {
-    if (props.value != this.state.value) {
-      this.setState({ value: props.value, dates: this.vi(props.value) }, () => this.ok())
-    }
-  } */
+  /*   componentWillReceiveProps(props) {
+      if (props.value != this.state.value) {
+        this.setState({ value: props.value, dates: this.vi(props.value) }, () => this.ok())
+      }
+    } */
   render() {
     let { visible, text, dates, local } = this.state
     let { placeholder, disabled, name, clearable, transfer, value, format, disabledDate } = this.props
@@ -222,26 +242,4 @@ export default class DatePicker extends Kui {
     </div>)
   }
 }
-DatePicker.defaultProps = {
-  DatePicker: true,
-  rangeSeparator: '~',
-  placeholder: '清选择',
-  lang: 'zh',
-  format: 'YYYY-MM-DD',
-  transfer: true,
-  disabledDate: () => { }
-}
-DatePicker.propTypes = {
-  transfer: PropTypes.bool,
-  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  mini: PropTypes.bool,
-  name: PropTypes.string,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
-  disabled: PropTypes.bool,
-  rangeSeparator: PropTypes.string,
-  clearable: PropTypes.bool,
-  placeholder: PropTypes.string,
-  lang: PropTypes.oneOf(['zh', 'en']),
-  disabledDate: PropTypes.func,
-  format: PropTypes.string,
-}
+

@@ -2,16 +2,29 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 import { Message } from '../message'
 export default class Upload extends Kui {
-  constructor(props) {
-    super(props)
-    this.state = {
-      file: null,
-      span: Math.floor(Math.random() * 99999999)
-    }
-    this.uploadFileRef = React.createRef()
-    this.uploadFormRef = React.createRef()
-    this.uploadIframeRef = React.createRef()
+  static defaultProps = {
+    method: 'post',
+    type: 'change',
+    data: {}
   }
+  static propTypes = {
+    onChange: PropTypes.func,
+    onComplite: PropTypes.func,
+    method: PropTypes.string,
+    name: PropTypes.string, //提交的 name值
+    id: PropTypes.string, //提交的 id值
+    action: PropTypes.string.isRequired, //url 要带/rest
+    type: PropTypes.string,
+    data: PropTypes.object,
+    disabled: PropTypes.bool,
+  }
+  state = {
+    file: null,
+    span: Math.floor(Math.random() * 99999999)
+  }
+  uploadFileRef = React.createRef()
+  uploadFormRef = React.createRef()
+  uploadIframeRef = React.createRef()
   classes() {
     return this.className([
       "k-upload",
@@ -105,20 +118,3 @@ export default class Upload extends Kui {
     </div>)
   }
 }
-Upload.defaultProps = {
-  method: 'post',
-  type: 'change',
-  data: {}
-}
-Upload.propTypes = {
-  onChange: PropTypes.func,
-  onComplite: PropTypes.func,
-  method: PropTypes.string,
-  name: PropTypes.string, //提交的 name值
-  id: PropTypes.string, //提交的 id值
-  action: PropTypes.string.isRequired, //url 要带/rest
-  type: PropTypes.string,
-  data: PropTypes.object,
-  disabled: PropTypes.bool,
-}
-

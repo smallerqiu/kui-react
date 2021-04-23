@@ -3,6 +3,20 @@ import { Kui, PropTypes } from '../kui'
 import React from 'react'
 
 export default class RadioButton extends Kui {
+
+  static propTypes = {
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]),
+    disabled: PropTypes.bool,
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    checked: PropTypes.bool,
+    size: PropTypes.oneOf(['small', 'large']),
+    hollow: PropTypes.bool
+  }
+
+  static contextTypes = {
+    Group: PropTypes.any,
+    FormItem: PropTypes.any
+  };
   state = {
     isChecked: false
   }
@@ -55,20 +69,4 @@ export default class RadioButton extends Kui {
       <Button {...props}>{label || children}</Button>
     )
   }
-};
-
-
-
-RadioButton.propTypes = {
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]),
-  disabled: PropTypes.bool,
-  label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  checked: PropTypes.bool,
-  size: PropTypes.oneOf(['small', 'large']),
-  hollow: PropTypes.bool
-}
-
-RadioButton.contextTypes = {
-  Group: PropTypes.any,
-  FormItem: PropTypes.any
 };
