@@ -29,18 +29,14 @@ export default class BasePop extends React.Component {
     okText: PropTypes.string,
     cancelText: PropTypes.string,
   }
-  // export default {
   state = {
     showPop: this.props.show,
     showInit: false,
     timer: null,
   }
+
   overlayRef = React.createRef()
-  // watch: {
-  //   value(show) {
-  //     this.showPop = show
-  //   }
-  // },
+
   ok() {
     this.setState({ showPop: false })
     this.props.onOk && this.props.onOk()
@@ -50,12 +46,11 @@ export default class BasePop extends React.Component {
     this.props.onCancel && this.props.onCancel()
   }
   setPopShow() {
-    // if (!this.showInit) {
     this.setState({ showInit: true })
     setTimeout(() => {
       this.setState({ showPop: true })
       this.props.onOpen && this.props.onOpen()
-    }, 300);
+    }, 100);
   }
   mouseEnter(e) {
     clearTimeout(this.timer)
@@ -105,15 +100,18 @@ export default class BasePop extends React.Component {
       }
       e.preventDefault();
       return false;
-    }
-    if (trigger == "click" || confirm) {
+    } else if (trigger == "click" || confirm) {
       this.setPopShow()
+    }
+  }
+  componentDidUpdate(prevProps, prevState, snap) {
+    if (prevProps.show != this.props.show) {
+      this.setState({ showPop: this.props.show })
     }
   }
   renderPopup() {
     let { placement, title, preCls, content, confirm, transfer, width, trigger, children,
       showPlacementArrow, cancelText, okText } = this.props, childNode;
-
     if (showPlacementArrow) {
       let titleNode, contentNode, footerNode;
       if (confirm) {
@@ -179,11 +177,18 @@ export default class BasePop extends React.Component {
   }
   render() {
     let { children } = this.props
+    let { onMouseEnter, onMouseLeave } = children.props
     let popup = this.renderPopup()
     const props = {
       onContextMenu: e => this.mouseEvent(e),
-      onMouseEnter: e => this.mouseEnter(e),
-      onMouseLeave: e => this.mouseLeave(e),
+      onMouseEnter: e => {
+        onMouseEnter && onMouseEnter(e)
+        this.mouseEnter(e)
+      },
+      onMouseLeave: e => {
+        onMouseLeave && onMouseLeave(e)
+        this.mouseLeave(e)
+      },
       onClick: e => this.mouseEvent(e),
     }
     return React.cloneElement(children, props, [...children.props.children, popup])

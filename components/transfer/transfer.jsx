@@ -1,5 +1,7 @@
-import Render from 'react-dom'
+import React from 'react'
+// import Render from 'react-dom'
 import { Kui, PropTypes } from '../kui'
+
 export default class Transfer extends Kui {
   static defaultProps = {
     transfer: true
@@ -9,14 +11,16 @@ export default class Transfer extends Kui {
     onResize: PropTypes.func,
     onScroll: PropTypes.func,
     transfer: PropTypes.bool,
-    show: PropTypes.bool
+    show: PropTypes.bool,
+    dropRef: PropTypes.any,
   }
   state = {
-    popup: null
+    popup: null,
+    parentNode: null,
   }
-
+  elRef = React.createRef()
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.transfer) {
+    if (this.props.transfer && this.props.show != prevProps.show && this.props.show) {
       this.rerender()
     }
   }
@@ -42,28 +46,33 @@ export default class Transfer extends Kui {
   }
 
   componentWillUnmount() {
-    let { transfer, onScroll, onResize, docOnClick, show } = this.props
-    let { popup } = this.state
-    if (transfer && show) {
-      Render.unmountComponentAtNode(popup)
-      document.body.removeChild(popup);
-
+    // console.log('transfer','componentWillUnmount')
+    let { transfer, onScroll, onResize, docOnClick, dropRef } = this.props
+    let { popup, parentNode } = this.state
+    if (transfer) {
+      // Render.unmountComponentAtNode(popup)
+      parentNode.appendChild(dropRef.current)
+      document.body.removeChild(popup)
       onScroll && window.removeEventListener('scroll', onScroll)
-      // window.removeEventListener('mousewheel', this.props.onScroll)
       onResize && window.removeEventListener('resize', onResize)
       docOnClick && document.removeEventListener('click', docOnClick)
     }
-    console.log('owww')
   }
   rerender() {
-    let { show, children, transfer } = this.props
-    let { popup } = this.state
+    let { show, transfer, dropRef } = this.props
+    let { popup, parentNode } = this.state
     if (!document.body.contains(popup) && show) {
       document.body.appendChild(popup)
     }
-    transfer && Render.render(children, popup)
+    if (!parentNode) {
+      this.setState({ parentNode: dropRef.current.parentNode })
+    }
+    if (transfer && dropRef) {
+      popup.appendChild(dropRef.current)
+    }
+    // transfer && Render.render(this.elRef.current, popup)
   }
   render() {
-    return !this.props.transfer ? this.props.children : null
+    return this.props.children
   }
 }

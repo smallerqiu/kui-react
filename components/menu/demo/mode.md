@@ -23,11 +23,11 @@ class Demo extends React.Component {
     let {current ,openKeys, theme ,mode } = this.state
     return(
       <div>
-        <Switch onChange={()=>this.changeMode()}/> Change Mode
-        <Switch trueText="dark" falseText="light" onChange={()=>this.changeTheme()}/> Change Theme
+        <Switch onChange={this.changeMode.bind(this)}/> Change Mode
+        <Switch trueText="dark" falseText="light" onChange={this.changeTheme.bind(this)}/> Change Theme
         <br/>
         <br/>
-        <Menu selectedKeys={current} openKeys={openKeys} theme={theme} mode={mode} style={{width:mode=='horizontal'?null:256}}>
+        <Menu selectedKeys={current} openKeys={openKeys} theme={theme} mode={mode}  style={{width:256}}>
           <Menu.Item key="1-1" icon="mail">Option 1</Menu.Item>
           <Menu.Item key="1-2" icon="calendar">Option 2</Menu.Item>
           <SubMenu key="sub2" icon="keypad" title="Navigation Two">

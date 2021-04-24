@@ -85,7 +85,7 @@ export default class DocLayout extends Kui {
                   Nav.map(({ child, title }, x) => {
                     return (<Menu.Group title={title} name={title} key={'sub' + x}>
                       {
-                        child.map(({ icon, name, sub }) => {
+                        child.map(({ icon, name, sub, title }) => {
                           return (<Menu.Item icon={icon} key={name}>
                             <span>{sub}</span>
                             <span className="sub">{title}</span>

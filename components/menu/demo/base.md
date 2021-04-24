@@ -21,7 +21,7 @@ class Demo extends React.Component {
               <Menu.Item key="3-1">Option 1</Menu.Item>
               <Menu.Item key="3-2">Option 2</Menu.Item>
             </Menu.Group>
-            {/*<Menu.Group title="Item 2">
+            <Menu.Group title="Item 2">
               <Menu.Item key="3-3">Option 1</Menu.Item>
               <Menu.Item key="3-4">Option 2</Menu.Item>
               <SubMenu key="3-5" icon="settings" title="Submenu">
@@ -34,7 +34,7 @@ class Demo extends React.Component {
                   <Menu.Item key="3-5-4">Option 2</Menu.Item>
                 </Menu.Group>
               </SubMenu>
-            </Menu.Group>*/}
+            </Menu.Group>
           </SubMenu>
           <Menu.Item key="4">
           <a href="https://k-ui.cn" target="_blank">Navigation -Link</a>

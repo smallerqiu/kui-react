@@ -18,7 +18,7 @@ class Demo extends React.Component {
     let {current,theme } = this.state
     return(
       <div style={{width:256}}>
-        <Switch trueText="dark" falseText="light" onChange={()=>this.change()} checked={theme=='dark'}/>
+        <Switch trueText="dark" falseText="light" onChange={this.change.bind(this)} checked={theme=='dark'}/>
         <br/>
         <br/>
         <Menu selectedKeys={current} mode="vertical" vertical-affixed theme={theme}>

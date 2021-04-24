@@ -1,6 +1,6 @@
 <cn>
 #### 主题
-内建了两套主题 `light|dark`，默认 `light`。
+内建了两套主题 `light | dark`，默认 `light`。
 </cn>
 
 ```tsx
@@ -19,7 +19,7 @@ class Demo extends React.Component {
     let {current,openKeys,theme } = this.state
     return(
       <div style={{width:256}}>
-        <Switch trueText="dark" falseText="light" onChange={()=>this.change()} checked={theme=='dark'}/>
+        <Switch trueText="dark" falseText="light" onChange={this.change.bind(this)} checked={theme=='dark'}/>
         <br/>
         <br/>
         <Menu selectedKeys={current} openKeys={openKeys} theme={theme} mode="inline">

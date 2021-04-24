@@ -76,9 +76,10 @@ export default class BaseDrop extends Kui {
       onMouseEnter, onMouseLeave
     }
     return showInit ?
-      <Transfer transfer={transfer} show={show} docOnClick={this.hide.bind(this)} onResize={this.resize.bind(this)}>
+      <Transfer transfer={transfer} dropRef={this.elRef} show={show} docOnClick={this.hide.bind(this)} onResize={this.resize.bind(this)}>
         <CSSTransition classNames={transitionName}
           in={show} timeout={300}
+          // unmountOnExit={true}
           onEnter={this.onEnter.bind(this)}
           onExited={this.onExited.bind(this)}>
           <div {...props}>

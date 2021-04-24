@@ -1,5 +1,5 @@
 import Icon from "../icon";
-import Collapse from './collapse.js'
+import CollapseEl from '../base/collapse'
 
 import { Kui, PropTypes } from '../kui'
 import React from 'react'
@@ -15,20 +15,20 @@ export default class Panel extends Kui {
     Collapse: PropTypes.any
   }
 
-  handelClick = (e) => {
-    let CP = this.context.Collapse
-    if (CP) {
-      CP.change(this.props.eventKey)
+  handelClick = () => {
+    let { Collapse } = this.context
+    if (Collapse) {
+      Collapse.change(this.props.eventKey)
     }
   }
   render() {
     let actived = false
     let { children, title, extra, eventKey } = this.props
-    let CP = this.context.Collapse
+    let { Collapse } = this.context
 
     // let key = 'a'
-    if (CP) {
-      actived = CP.state.currentValue.indexOf(eventKey) >= 0
+    if (Collapse) {
+      actived = Collapse.state.currentValue.indexOf(eventKey) >= 0
     }
     const classes = ['k-collapse-item', {
       ['k-collapse-item-active']: actived
@@ -40,13 +40,13 @@ export default class Panel extends Kui {
           <span className="k-collapse-title">{title}</span>
           {extra ? <span className="k-collapse-extra">{extra}</span> : null}
         </div>
-        <Collapse show={actived}>
+        <CollapseEl show={actived}>
           <div className="k-collapse-content">
             <div className="k-collapse-content-box">
               {children}
             </div>
           </div>
-        </Collapse>
+        </CollapseEl>
       </div>
     )
   }

@@ -6,6 +6,9 @@ import { Kui, PropTypes } from '../kui'
 import { Transition } from 'react-transition-group';
 
 export default class Collapse extends Kui {
+  static propTypes = {
+    show: PropTypes.bool,
+  }
   onEnter(el) {
     el.style.overflow = 'hidden';
     el.style.height = 0
@@ -50,9 +53,8 @@ export default class Collapse extends Kui {
     el.style.opacity = ''
     el.style.overflow = ''
   }
-
   render() {
-    return React.createElement(Transition, {
+    const props = {
       onEnter: this.onEnter,
       onEntering: this.onEntering,
       onEntered: this.onEntered,
@@ -62,11 +64,7 @@ export default class Collapse extends Kui {
       timeout: 300,
       unmountOnExit: true,
       in: this.props.show,
-    }, this.props.children)
+    }
+    return <Transition {...props}>{this.props.children}</Transition>
   }
-}
-
-
-Collapse.propTypes = {
-  show: PropTypes.bool,
 }
