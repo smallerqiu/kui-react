@@ -5,7 +5,7 @@ import { Kui, PropTypes } from '../kui'
 export default class Card extends Kui {
 
   static propTypes = {
-    bordered: PropTypes.boolean,
+    bordered: PropTypes.bool,
     title: PropTypes.string,
     icon: PropTypes.string,
     extra: PropTypes.any,

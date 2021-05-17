@@ -2,7 +2,7 @@ import React from 'react';
 import { Kui, PropTypes } from '../kui'
 import Button from "../button";
 import Transition from '../transition'
-import Transfer from '../transfer'
+import Transfer from '../base/transfer'
 export default class Poptip extends Kui {
   static defaultProps = {
     okText: '确定',

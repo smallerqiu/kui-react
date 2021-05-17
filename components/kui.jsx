@@ -3,6 +3,10 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
 class Kui extends React.Component {
+  static propTypes = {
+    className: PropTypes.string,
+    style: PropTypes.object
+  }
   classNames(...args) {
     return classnames(args)
   }
@@ -14,11 +18,6 @@ class Kui extends React.Component {
   styles(args) {
     return Object.assign({}, args, this.props.style)
   }
-}
-
-Kui.propTypes = {
-  className: PropTypes.string,
-  style: PropTypes.object
 }
 
 export { Kui, PropTypes }

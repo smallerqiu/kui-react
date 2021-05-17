@@ -7,7 +7,12 @@ import { Transition } from 'react-transition-group';
 
 export default class Collapse extends Kui {
   static propTypes = {
+    unmountOnExit: PropTypes.bool,
     show: PropTypes.bool,
+    name: PropTypes.string
+  }
+  static defaultTypes = {
+    unmountOnExit: false,
   }
   onEnter(el) {
     el.style.overflow = 'hidden';
@@ -54,6 +59,7 @@ export default class Collapse extends Kui {
     el.style.overflow = ''
   }
   render() {
+    let { children, unmountOnExit } = this.props
     const props = {
       onEnter: this.onEnter,
       onEntering: this.onEntering,
@@ -62,9 +68,14 @@ export default class Collapse extends Kui {
       onExiting: this.onExiting,
       onExited: this.onExited,
       timeout: 300,
-      unmountOnExit: true,
+      unmountOnExit: unmountOnExit,
       in: this.props.show,
     }
-    return <Transition {...props}>{this.props.children}</Transition>
+    let clsName = children.props.className || null
+    return <Transition {...props}>
+      {
+        state => React.cloneElement(children, { className: this.className(`${clsName} ${this.props.name} ${this.props.name}-${state}`) })
+      }
+    </Transition>
   }
 }

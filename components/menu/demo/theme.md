@@ -9,7 +9,7 @@ import {Switch, Menu ,SubMenu } from 'react-kui';
 class Demo extends React.Component {
   state = {
     current: ['1-1'],
-    openKeys:['sub1'],
+    openKeys:['sub2'],
     theme:'dark'
   }
   change(checked){

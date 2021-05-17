@@ -41,7 +41,7 @@ class Demo extends React.Component {
           }
           placeholder="请输入验证码" 
           icon="disc"  
-          maxlength="8" />
+          maxLength="8" />
         <Input 
           suffix= {
             <Tooltip title="此处如果不知道怎么填，请咨询管理员">

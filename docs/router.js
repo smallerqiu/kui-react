@@ -39,6 +39,7 @@ let components = [
   // { path:'colorpicker',component: lazy(() => import(/*webpackChunkName:'colorpicker'*/'../components/colorpicker/demo'))},
   // { path:'datepicker',component: lazy(() => import(/*webpackChunkName:'datepicker'*/'../components/datepicker/demo'))},
   { path: 'divider', component: lazy(() => import(/*webpackChunkName:'divider'*/'../components/divider/demo')) },
+  { path: 'dropdown', component: lazy(() => import(/*webpackChunkName:'dropdown'*/'../components/dropdown/demo')) },
   // { path:'form',component: lazy(() => import(/*webpackChunkName:'form'*/'../components/form/demo'))},
   { path: 'grid', component: lazy(() => import(/*webpackChunkName:'grid'*/'../components/grid/demo')) },
   // // { path:'kuiangular',component: lazy(() => import(/*webpackChunkName:'kuiangular'*/'../components/angular-kui/demo'))},
@@ -66,7 +67,7 @@ let components = [
   // { path:'tooltip',component: lazy(() => import(/*webpackChunkName:'tooltip'*/'../components/tooltip/demo'))},
   // { path:'theme',component: lazy(() => import(/*webpackChunkName:'theme'*/'../components/theme/demo'))},
   // { path:'test',component: lazy(() => import(/*webpackChunkName:'test'*/'../components/test/demo'))},
-  // { path:'tabs',component: lazy(() => import(/*webpackChunkName:'tabs'*/'../components/tabs/demo'))},
+  { path:'tabs',component: lazy(() => import(/*webpackChunkName:'tabs'*/'../components/tabs/demo'))},
   // { path:'timeline',component: lazy(() => import(/*webpackChunkName:'timeline  '*/'../components/timeline/demo'))},
   // { path:'upload',component: lazy(() => import(/*webpackChunkName:'upload'*/'../components/upload/demo'))},
 ]

@@ -17,7 +17,7 @@ class Layout4 extends React.Component {
         <Layout>
           <Layout.Sider className="demo-sider">
             <div className="logo" />
-            <Menu mode="inline" theme="dark" value={top} className="demo-top-menu">
+            <Menu mode="inline" theme="dark" selectedKeys={top} className="demo-top-menu">
               <Menu.Item key="t1" icon="home">nav1</Menu.Item>
               <Menu.Item key="t2" icon="logo-buffer">nav2</Menu.Item>
               <Menu.Item key="t3" icon="heart">nav3</Menu.Item>

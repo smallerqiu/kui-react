@@ -20,7 +20,7 @@ export default class Transfer extends Kui {
   }
   elRef = React.createRef()
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.transfer && this.props.show != prevProps.show && this.props.show) {
+    if (this.props.transfer && this.props.show && !this.rendered) {
       this.rerender()
     }
   }
@@ -46,10 +46,9 @@ export default class Transfer extends Kui {
   }
 
   componentWillUnmount() {
-    // console.log('transfer','componentWillUnmount')
     let { transfer, onScroll, onResize, docOnClick, dropRef } = this.props
     let { popup, parentNode } = this.state
-    if (transfer) {
+    if (transfer && parentNode) {
       // Render.unmountComponentAtNode(popup)
       parentNode.appendChild(dropRef.current)
       document.body.removeChild(popup)
@@ -59,7 +58,7 @@ export default class Transfer extends Kui {
     }
   }
   rerender() {
-    let { show, transfer, dropRef } = this.props
+    let { show, transfer, dropRef, onTransfer } = this.props
     let { popup, parentNode } = this.state
     if (!document.body.contains(popup) && show) {
       document.body.appendChild(popup)
@@ -68,9 +67,11 @@ export default class Transfer extends Kui {
       this.setState({ parentNode: dropRef.current.parentNode })
     }
     if (transfer && dropRef) {
+      this.rendered = true
       popup.appendChild(dropRef.current)
+      onTransfer && onTransfer()
     }
-    // transfer && Render.render(this.elRef.current, popup)
+    // // transfer && Render.render(this.elRef.current, popup)
   }
   render() {
     return this.props.children

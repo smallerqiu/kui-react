@@ -1,15 +1,10 @@
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
-import Collapse from '../collapse/collapse'
 import CMenu from './menu.jsx'
 import Icon from '../icon'
 import BasePop from '../base/pop'
+import Transition from '../base/transition'
 
-const animateNames = {
-  horizontal: 'dropdown',
-  inline: 'k-collaplse-slide',
-  vertical: 'k-menu-submenu-fade'
-}
 export default class SubMenu extends Kui {
   static propTypes = {
     disabled: PropTypes.bool,
@@ -25,6 +20,7 @@ export default class SubMenu extends Kui {
   static contextTypes = {
     Menu: PropTypes.any,
     SubMenu: PropTypes.any,
+    openChange: PropTypes.func,
     Dropdown: PropTypes.any
   }
   state = {
@@ -33,6 +29,8 @@ export default class SubMenu extends Kui {
     left: null,
     minWidth: null,
     currentMode: null,
+    rendered: false,
+    affixedKeys: []
   }
 
   titleRef = React.createRef()
@@ -44,68 +42,110 @@ export default class SubMenu extends Kui {
   }
   componentDidMount() {
     let { SubMenu, Menu } = this.context
-    if (Menu && SubMenu) {
-      let { selectedKeys } = Menu.state
-      let selected = selectedKeys.indexOf(this.props.eventKey) >= 0
-      if (selected && selectedKeys.indexOf(SubMenu.props.eventKey) < 0) {
-        Menu.selectedKeys.push(SubMenu.props.eventKey)
+    if (Menu != null) {
+      let { selectedKeys, inlineCollapsed, defaultOpenKeys, currentMode } = Menu.state
+      let { eventKey, children } = this.props
+
+      const opened = defaultOpenKeys.indexOf(eventKey) >= 0
+
+      if (opened) {
+        this.setState({ rendered: true })
       }
+
+      if (SubMenu != null) {
+        let selected = selectedKeys.indexOf(eventKey) >= 0
+        if (selected && selectedKeys.indexOf(SubMenu.props.eventKey) < 0) {
+          selectedKeys.push(SubMenu.props.eventKey)
+          Menu.setState({ selectedKeys })
+        }
+      }
+
+      if (!inlineCollapsed) {
+        this.setState({ opened })
+      }
+
+      if (currentMode == 'inline') {
+        this.setState({ opened, rendered: opened })
+      }
+
+      const affixedKeys = children.filter(({ props }) => props.affixed).map(i => i.key)
+      this.setState({ affixedKeys })
     }
   }
 
+  componentDidUpdate(prevProps, prevState, snap) {
+    // let { opened } = this.state
+    // if (opened != prevState.opened && opened) {
+    //   this.setState({ rendered: true })
+    // }
+    // const { defaultOpenKeys,inlineCollapsed } = this.context.Menu.state
+    // const { inlineCollapsed } = this.context.Menu.props
+
+    // console.log(inlineCollapsed)
+
+  }
+
+
   render() {
     let { disabled, eventKey, title, children, icon } = this.props
-    let { opened, minWidth, active } = this.state
+    let { opened, minWidth, active, rendered } = this.state
     let { Dropdown, Menu, SubMenu } = this.context
 
-    const { currentMode, theme, selectedKeys, defaultOpenKeys,
-      mode, verticalAffixed } = Menu.state
+    const { currentMode, selectedKeys, defaultOpenKeys, inlineCollapsed } = Menu.state
+    const { theme, verticalAffixed } = Menu.props
 
     let selected = selectedKeys.indexOf(eventKey) >= 0
-
-    if (currentMode == 'inline') {
+    const showInline = currentMode == 'inline'
+    //when accordion
+    if (showInline) {
       opened = defaultOpenKeys.indexOf(eventKey) >= 0
+      if (opened) rendered = true
     }
+
     // opened = true
-    let types = currentMode == 'horizontal' ? 'vertical' : currentMode
+    let types = currentMode == 'horizontal' || inlineCollapsed ? 'vertical' : currentMode
 
     const preCls = Dropdown ? 'dropdown-menu-submenu' : 'menu-submenu';
-
-    let aniName = currentMode == 'horizontal' && !SubMenu ? 'dropdown' : animateNames[types];
 
     let titleProps = {
       ref: this.titleRef,
       key: 'title',
       className: `k-${preCls}-title`,
-      onClick: () => this.openChange()
-    }
-    if (SubMenu || Menu || Dropdown) {
-      titleProps.onMouseEnter = e => this.showPopupMenu()
-      titleProps.onMouseLeave = e => this.hidePopupMenu()
+      onClick: () => this.openChange(),
+      onMouseEnter: () => this.showPopupMenu(),
+      onMouseLeave: () => this.hidePopupMenu()
     }
     const titleNode = <div {...titleProps}>
       <span className={`k-${preCls}-inner`}>
         {icon ? <Icon type={icon} /> : null}
         {React.isValidElement(title) ? title : <span>{title}</span>}
       </span>
-      <Icon type={currentMode == 'inline' || (currentMode == 'horizontal' && SubMenu == null) ? "chevron-down" : 'chevron-forward'} className={`k-${preCls}-arrow`} />
+      <Icon type={(showInline && !inlineCollapsed) || (currentMode == 'horizontal' && SubMenu == null) ?
+        "chevron-down" : 'chevron-forward'} className={`k-${preCls}-arrow`} />
     </div>
+
+    const hasRenderAffix = SubMenu == null && currentMode == 'vertical' && verticalAffixed
+
     const popupProps = {
       key: 'content',
-      className: `k-${preCls}-popup`,
+      className: this.className([`k-${preCls}-popup`, { [`k-${preCls}-affix-popup`]: hasRenderAffix }]),
       style: {
         'minWidth': `${minWidth}px`,
-        'marginLeft': theme == 'dark' && /* this.$parent == root && */ mode == "horizontal" ? '-16px' : null
+        'marginLeft': theme == 'dark' && SubMenu == null && currentMode == "horizontal" ? '-16px' : null
       },
       onMouseEnter: () => {
         clearTimeout(this.timer);
         this.setState({
-          opened: true,
           active: true
         })
+        if (!showInline) {
+          this.setState({
+            opened: true,
+          })
+        }
       },
       onMouseLeave: () => {
-        this.hidePopupMenu(currentMode)
+        this.hidePopupMenu()
       }
     }
 
@@ -113,122 +153,151 @@ export default class SubMenu extends Kui {
       {/* {React.createElement(CMenu, { mode: types, theme }, children)} */}
       <CMenu mode={types} theme={theme}>{children}</CMenu>
     </div>
-    // let wocao = <CMenu mode={types} theme={theme}>{children}</CMenu>
-    //  console.log(wocao)
-    // let childNode = React.cloneElement(<div />, popupProps, wocao)
-    let haspop = currentMode != 'inline' && SubMenu == null && !Dropdown,
-      popProps = {};
-    if (haspop) {
-      popProps = {
+    let popMenuNode = null
+    // console.log(inlineCollapsed, showInline, inlineCollapsed)
+    if ((!showInline || inlineCollapsed) && SubMenu == null && Dropdown == null) {
+
+      const popProps = {
         content: childNode,
         showPlacementArrow: false,
         preCls: preCls + '-popup',
-        transfer: true,
+        transfer: SubMenu == null,
         placement: currentMode == 'horizontal' ? 'bottom-left' : 'right-top',
         show: opened,
-        onOpen: () => {
-          let state = { opened: true }
-          if (currentMode == 'horizontal') {
-            state.minWidth = this.titleRef.current.offsetWidth
+        onUnmount: this.onUnmount.bind(this),
+        onVisibleChange: (opened, { current }) => {
+          let state = { opened }
+          if (currentMode == 'horizontal' && SubMenu == null && Menu != null) {
+            state.minWidth = current.offsetWidth
           }
           this.setState(state)
         }
-        // on: {
-        //   input: e => {
-        //     if (currentMode == 'horizontal')
-        //       this.minWidth = this.$el.offsetWidth
-        //   }
-        // }
       }
+      popMenuNode = <BasePop {...popProps}>{titleNode}</BasePop>
+    } else {
+      // console.log(opened, rendered, !rendered, !rendered && !opened)
+      popMenuNode = [titleNode, <Transition
+        show={opened}
+        name={'k-' + preCls + (showInline && !inlineCollapsed && !Dropdown ? '-slide' : '-fade')}
+        collapse={showInline}
+        unmountOnExit={!rendered}
+        onUnmount={this.onUnmount.bind(this)}
+        key="collapse">{childNode}</Transition>]
     }
 
-    const classes = [
-      `k-${preCls}`,
-      {
-        [`k-${preCls}-active`]: active,
-        [`k-${preCls}-selected`]: selected && !Dropdown,
-        [`k-${preCls}-opened`]: opened,
-        [`k-${preCls}-disabled`]: disabled
-      }
-    ]
-    // const hasRenderAffix = this.$parent == root && mode == 'vertical' && verticalAffixed
+    const classes = [`k-${preCls}`, {
+      [`k-${preCls}-active`]: active,
+      [`k-${preCls}-selected`]: selected && !Dropdown,
+      [`k-${preCls}-opened`]: opened,
+      [`k-${preCls}-disabled`]: disabled
+    }]
 
-    // const affixNode = hasRenderAffix ? this.renderAffix(root) : null
-    return (
-      <li className={this.className(classes)}>
-        {haspop ? <BasePop {...popProps}>{titleNode}</BasePop> :
-          [titleNode, <Collapse show={opened} name={aniName} key="collapse">{childNode}</Collapse>]}
-        {/* {affixNode} */}
-      </li>
-    )
+    const affixNode = hasRenderAffix ? this.renderAffix() : null
+
+    return (<li className={this.className(classes)}>{popMenuNode}{affixNode}</li>)
+  }
+  onUnmount() {
+    // mode 切换的时候，原来显示的子集，给他销毁掉，再次展开要重新 render
+    this.setState({ rendered: false })
   }
   hidePopupMenu() {
+    let { currentMode, defaultOpenKeys } = this.context.Menu.state
     if (this.props.disabled) return;
+    let { inlineCollapsed } = this.context.Menu.props
+
     this.setState({ active: false })
-    if (this.context.Menu && this.context.Menu.state.currentMode != 'inline') return;
-    clearTimeout(this.timer)
-    this.timer = setTimeout(() => {
-      this.setState({ opened: false })
-    }, 300);
+
+    if (currentMode != 'inline' || inlineCollapsed) {
+      clearTimeout(this.timer)
+      this.timer = setTimeout(() => {
+        this.setState({ opened: false }, () => {
+          let openKeys = [].concat(defaultOpenKeys)
+          let key = this.props.eventKey,
+            index = openKeys.indexOf(key)
+          index > -1 && openKeys.splice(index, 1)
+          this.context.Menu.openChange(openKeys)
+        })
+
+      }, 300);
+    }
   }
   showPopupMenu() {
     if (this.props.disabled) return;
     clearTimeout(this.timer)
     this.setState({ active: true })
-
-    let { SubMenu, Dropdown, Menu } = this.context
-    if (Menu && Menu.state.currentMode != 'inline') {
-      if (SubMenu || Dropdown) {
+    let { currentMode, defaultOpenKeys } = this.context.Menu.state
+    let { inlineCollapsed } = this.context.Menu.props
+    if (currentMode != 'inline' || inlineCollapsed) {
+      this.setState({ rendered: true }, () => {
         this.setState({ opened: true })
-      }
+        let openKeys = [].concat(defaultOpenKeys)
+        let key = this.props.eventKey,
+          index = openKeys.indexOf(key)
+        index < 0 && openKeys.push(key)
+        this.context.Menu.openChange(openKeys)
+      })
     }
   }
-
-  renderAffix(root) {
-    const childs = getChild(this.$slots.default)
-    const itemClick = (item, e) => {
-      let disabled = item.componentOptions.propsData.disabled
-      if (disabled == undefined) {
-        // this.selected = true
-        let key = item.data.key
-
+  affixed(item, e) {
+    let parent = this.context.Menu
+    let key = item.props.eventKey
+    if (parent) {
+      let options = {
+        key,
+        keyPath: [key],
+        item,
+        event: e
+      }
+      parent.props.onAffixed && parent.props.onAffixed(options)
+      let { affixedKeys } = this.state
+      if (item.state.currentAffixed) {
+        affixedKeys.push(key)
+      } else {
+        let index = affixedKeys.indexOf(key)
+        affixedKeys.splice(index, 1)
+      }
+      this.setState({ affixedKeys })
+    }
+  }
+  affixItemClick(item, e) {
+    let disabled = item.props.disabled
+    if (!disabled) {
+      let parent = this.context.SubMenu || this.context.Menu
+      if (parent != null) {
+        let key = item.key
         let options = {
           key,
           keyPath: [key],
           item,
           event: e
         }
-        let parent = this.SubMenu || this.Menu
-        if (parent) {
-          parent.handleClick(options)
-        }
+        parent.handleClick(options)
       }
     }
-    const child = childs.map(item => {
-      let affixed = item.componentOptions.propsData.affixed
-      let vnode = item.componentOptions.children
-      let key = item.data.key
-      if (affixed !== undefined && affixed !== false) {
-        return <li className={["k-menu-submenu-affix-item", { 'k-menu-submenu-affix-item-active': root.selectedKeys.indexOf(key) >= 0 }]} key={key}>
-          <span className="k-menu-submenu-affix-item-text" onClick={e => itemClick(item, e)}>{vnode}</span>
-        </li>
-      }
+  }
+  renderAffix() {
+    let { affixedKeys } = this.state
+    let { selectedKeys } = this.context.Menu.state
+    const childs = this.props.children.filter((child) => affixedKeys.indexOf(child.key) > -1)
+    const childNode = childs.map(item => {
+      return (<li className={this.className(["k-menu-submenu-affix-item", { 'k-menu-submenu-affix-item-active': selectedKeys.indexOf(item.key) >= 0 }])} key={item.key}>
+        <span className="k-menu-submenu-affix-item-text" onClick={e => this.affixItemClick(item, e)}>{item.props.children}</span>
+      </li>)
     })
-    return <div className="k-menu-submenu-affix">{child}</div>
+    return <ul className="k-menu-submenu-affix">{childNode}</ul>
   }
   openChange() {
     let { Menu, SubMenu } = this.context
-    if (Menu) {
+    if (Menu != null) {
       let { currentMode, defaultOpenKeys } = Menu.state
-      let { accordion } = Menu.props
-      if (currentMode != 'inline') return;
-      let openKeys = defaultOpenKeys
+      let { accordion, inlineCollapsed } = Menu.props
+      if (currentMode != 'inline' || inlineCollapsed) return;
+      let openKeys = [].concat(defaultOpenKeys)
       let key = this.props.eventKey
       let index = openKeys.indexOf(key)
 
-      if (accordion && !SubMenu) {
+      if (accordion && SubMenu == null) {
         openKeys = index >= 0 ? [] : [key]
-        console.log(openKeys)
       } else {
         if (index >= 0) {
           openKeys.splice(index, 1)
@@ -236,26 +305,30 @@ export default class SubMenu extends Kui {
           openKeys.push(key)
         }
       }
-      Menu.openChange(openKeys)
+
+      const opened = openKeys.indexOf(key) > -1
+      if (!this.state.rendered) {
+        this.setState({ rendered: true }, () => {
+          this.setState({ opened }, () => Menu.openChange(openKeys))
+        })
+      } else {
+        this.setState({ opened }, () => Menu.openChange(openKeys))
+      }
     }
   }
-  closeSub() {
-    this.setState({ opened: false })
-    let SubMenu = this.context.SubMenu
-    if (SubMenu) SubMenu.closeSub()
-  }
+
   handleClick(options) { //item click event
-    console.log('sss')
     options.keyPath.unshift(this.props.eventKey)
-    let root = this.context.Menu
-    let parent = this.context.SubMenu || root
-    if (parent) {
+    let { Menu, SubMenu } = this.context
+    let parent = SubMenu || Menu
+    if (parent != null) {
       parent.handleClick(options)
     }
-    let { currentMode } = root.state
-    console.log(currentMode)
-    if (currentMode == 'horizontal' || currentMode == 'vertical') {
-      this.closeSub()
+    let { currentMode } = Menu.state
+    let { inlineCollapsed } = Menu.props
+    if (currentMode != 'inline' || inlineCollapsed) {
+      Menu.openChange([])
+      this.setState({ opened: false }, () => { })
     }
   }
 }

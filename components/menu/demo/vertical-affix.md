@@ -21,7 +21,7 @@ class Demo extends React.Component {
         <Switch trueText="dark" falseText="light" onChange={this.change.bind(this)} checked={theme=='dark'}/>
         <br/>
         <br/>
-        <Menu selectedKeys={current} mode="vertical" vertical-affixed theme={theme}>
+        <Menu selectedKeys={current} mode="vertical" verticalAffixed theme={theme}>
           <SubMenu key="sub1" icon="keypad" title="Navigation One">
             <Menu.Item key="1-1">Option 1</Menu.Item>
             <Menu.Item key="1-2">Option 2</Menu.Item>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
-import Transition from '../transition'
-import Transfer from '../transfer'
+import Transition from '../base/transition'
+import Transfer from '../base/transfer'
 export default class Tooltip extends Kui {
   static defaultProps = {
     transfer: true,

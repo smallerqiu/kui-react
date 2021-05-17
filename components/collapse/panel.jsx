@@ -1,5 +1,5 @@
 import Icon from "../icon";
-import CollapseEl from '../base/collapse'
+import Transition from '../base/transition'
 
 import { Kui, PropTypes } from '../kui'
 import React from 'react'
@@ -8,11 +8,17 @@ export default class Panel extends Kui {
   static propTypes = {
     title: PropTypes.string,
     eventKey: PropTypes.any,
+    actived: PropTypes.bool,
     extra: PropTypes.any
   }
 
   static contextTypes = {
     Collapse: PropTypes.any
+  }
+
+  state = {
+    visible: this.props.actived,
+    rendered: this.props.actived == true
   }
 
   handelClick = () => {
@@ -21,15 +27,15 @@ export default class Panel extends Kui {
       Collapse.change(this.props.eventKey)
     }
   }
-  render() {
-    let actived = false
-    let { children, title, extra, eventKey } = this.props
-    let { Collapse } = this.context
-
-    // let key = 'a'
-    if (Collapse) {
-      actived = Collapse.state.currentValue.indexOf(eventKey) >= 0
+  componentDidUpdate(prevProps, prevState, snap) {
+    if (prevProps.actived !== this.props.actived) {
+      this.setState({ rendered: true }, this.setState({ visible: this.props.actived }))
     }
+  }
+  render() {
+    let { children, title, extra, actived } = this.props
+    let { rendered } = this.state
+
     const classes = ['k-collapse-item', {
       ['k-collapse-item-active']: actived
     }]
@@ -40,13 +46,13 @@ export default class Panel extends Kui {
           <span className="k-collapse-title">{title}</span>
           {extra ? <span className="k-collapse-extra">{extra}</span> : null}
         </div>
-        <CollapseEl show={actived}>
+        <Transition show={actived} unmountOnExit={!rendered} timeout={300} name="k-collapse">
           <div className="k-collapse-content">
             <div className="k-collapse-content-box">
               {children}
             </div>
           </div>
-        </CollapseEl>
+        </Transition>
       </div>
     )
   }

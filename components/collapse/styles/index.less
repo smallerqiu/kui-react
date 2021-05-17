@@ -24,7 +24,7 @@
           transition: transform .3s ease-in-out;
         }
       }
-      .k-collapse-extra{
+      .k-collapse-extra {
         float: right;
       }
     }
@@ -63,12 +63,20 @@
   }
 }
 
+.k-collapse-hidden {
+  display: none;
+}
+
 .k-alert-info {
   background: tint(@main, 90%);
   border-color: tint(@main, 70%);
   .k-alert-icon {
     color: @main;
   }
+}
+
+.k-collaplse-slide {
+  transition: all .3s ease-in-out;
 }
 
 .k-collaplse-slide-enter-actived {

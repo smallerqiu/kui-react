@@ -1,7 +1,7 @@
 import React from 'react'
 import Icon from '../icon'
 import { Kui, PropTypes } from '../kui'
-import Transition from '../transition'
+import Transition from '../base/transition'
 
 export default class Alert extends Kui {
   static propTypes = {

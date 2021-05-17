@@ -48,11 +48,12 @@ class Sider extends Kui {
 }
 
 
-
 class Layout extends Kui {
+  
   static childContextTypes = {
     Layout: PropTypes.any
   }
+
   state = {
     siders: 0
   }

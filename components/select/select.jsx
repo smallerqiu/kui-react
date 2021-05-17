@@ -1,6 +1,7 @@
 import React from 'react'
 import { Kui, PropTypes } from '@/components/kui'
-import { Transition, Transfer } from '../index'
+import Transition from '../base/transition'
+import Transfer from '../base/transfer'
 import Option from './option'
 export default class Select extends Kui {
   static defaultProps = {

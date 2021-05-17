@@ -8,13 +8,13 @@ import { Input ,Message } from 'react-kui';
 
 ReactDOM.render(
   <div>
-    <Input placeholder="Large Input" size="large" icon="logo-apple" iconAlign="right" clearable/>
-    <Input placeholder="Base Input" icon="logo-apple" clearable iconAlign="right"/>
+    <Input placeholder="Large Input" size="large" icon="logo-apple" clearable/>
+    <Input placeholder="Base Input" icon="logo-apple" clearable />
     <Input 
       size="small" 
       placeholder="Small Input" 
       icon="logo-apple" 
-      onIconClick={()=>Message.info('点击图标事件')} clearable iconAlign="right"/>
+      onIconClick={()=>Message.info('点击图标事件')} clearable />
   </div>,
   mountNode
 )

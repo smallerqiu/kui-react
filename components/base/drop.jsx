@@ -1,19 +1,23 @@
 import React from 'react'
-// import PropTypes from 'prop-types'
-import { getPosition } from '../_tool/utils'
+import { getPosition, isReactNode } from '../_tool/utils'
 // import Transition from '../transition'
-import Transfer from '../transfer'
+import Transfer from './transfer'
 import { Kui, PropTypes } from '../kui'
 import { CSSTransition } from 'react-transition-group'
+import Render from 'react-dom'
 
 export default class BaseDrop extends Kui {
+
+  static contextTypes = {
+    BasePop: PropTypes.any
+  }
+
   static defaultProps = {
     trigger: 'click',
     transitionName: 'dropdown'
   }
 
   static propTypes = {
-    selectionRef: PropTypes.any,
     transfer: PropTypes.bool,
     show: PropTypes.bool,
     className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
@@ -21,31 +25,57 @@ export default class BaseDrop extends Kui {
     placement: PropTypes.string,
     trigger: PropTypes.oneOf(['click', 'hover', 'contextmenu']),
     transitionName: PropTypes.string,
-    unmountOnExit: PropTypes.bool,
-    showInit: PropTypes.bool,
+    selectionRef: PropTypes.any,
   }
   state = {
     left: 0,
     top: 0,
+    minWidth: 0,
     mousedownIn: false,
     transformOrigin: '',
     placement: this.props.placement,
+    rendered: this.props.show === true,
+    visible: this.props.show
   }
+  points = null
   elRef = React.createRef()
 
   componentDidMount() {
-    // this.$nextTick(e => this.setPosition())
-    this.setPosition()
-    document.addEventListener('mousedown', this.onMouseDown.bind(this))
+
+    this.onMouseDown = this.onMouseDown.bind(this)
+
+    document.addEventListener('mousedown', this.onMouseDown)
+
+    let parent = this.context.BasePop
+
+    if (parent) {
+      parent.dropRef = this
+    }
+
+    setTimeout(() => {
+      // this.setPosition()
+    }, 0);
   }
   componentWillUnmount() {
-    document.removeEventListener('mousedown', this.onMouseDown.bind(this))
+    document.removeEventListener('mousedown', this.onMouseDown)
+    let parent = this.context.BasePop
+    if (parent) {
+      parent.dropRef = null
+    }
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.show != prevProps.show) {
-      setTimeout(() => {
-        this.setPosition()
-      }, 0);
+    let { show, placement, trigger } = this.props
+    if (show != prevProps.show) {
+      this.setState({ rendered: true, visible: show }, () => {
+        trigger == 'contextmenu' ? this.showContextmenu() : this.setPosition()
+      })
+    }
+
+    if (placement != prevProps.placement) {
+      this.setState({ placement })
+    }
+    if (this.state.rendered != prevState.rendered) {
+      this.props.onRender && this.props.onRender()
     }
   }
   onExited(el) {
@@ -60,26 +90,33 @@ export default class BaseDrop extends Kui {
   }
 
   render() {
-    let { className, show, width, transfer, children, onMouseEnter, unmountOnExit, showInit,
+    let { className, width, transfer, children, onMouseEnter, minWidth,
       onMouseLeave, transitionName } = this.props
-    let { left, top, transformOrigin, placement } = this.state
+    let { left, top, transformOrigin, placement, rendered, visible } = this.state
     const props = {
       ref: this.elRef,
       className: className,
       style: {
         left: `${left}px`,
         top: `${top}px`,
+        minWidth: `${minWidth}px`,
         width: `${width}px`,
         transformOrigin
       },
       'k-placement': placement,
       onMouseEnter, onMouseLeave
     }
-    return showInit ?
-      <Transfer transfer={transfer} dropRef={this.elRef} show={show} docOnClick={this.hide.bind(this)} onResize={this.resize.bind(this)}>
+    return (
+      <Transfer
+        transfer={transfer}
+        dropRef={this.elRef}
+        show={rendered}
+        onTransfer={this.setPosition.bind(this)}
+        docOnClick={this.hide.bind(this)}
+        onResize={this.resize.bind(this)}>
         <CSSTransition classNames={transitionName}
-          in={show} timeout={300}
-          // unmountOnExit={true}
+          in={visible} timeout={300}
+          unmountOnExit={!rendered}
           onEnter={this.onEnter.bind(this)}
           onExited={this.onExited.bind(this)}>
           <div {...props}>
@@ -87,12 +124,14 @@ export default class BaseDrop extends Kui {
           </div>
         </CSSTransition>
       </Transfer>
-      : null
+    )
   }
 
-  baseContextmenu(e) {
-    let pickerHeight = this.$el.offsetHeight
-    let pickerWidth = this.$el.offsetWidth
+  showContextmenu() {
+    let e = this.points
+    let { current } = this.elRef
+    let pickerHeight = current.offsetHeight
+    let pickerWidth = current.offsetWidth
     let clientHeight = document.documentElement.clientHeight
     let clientWidth = document.documentElement.clientWidth
 
@@ -111,26 +150,24 @@ export default class BaseDrop extends Kui {
       top -= pickerHeight
       transformOrigin = 'bottom center'
     }
-    if (this.show) {
-      this.$el.style.left = left + 'px'
-      this.$el.style.top = top + 'px'
-    }
-    this.left = left
-    this.top = top
-    this.transformOrigin = transformOrigin
+    this.setState({ left, top, transformOrigin })
   }
 
   onMouseDown({ target }) {
-    let mousedownIn = this.props.show && this.elRef && this.elRef.current.contains(target)
+    let mousedownIn = this.props.visible && this.elRef && this.elRef.current.contains(target)
     this.setState({ mousedownIn })
   }
-
+  getSelection() {
+    let { current } = this.props.selectionRef
+    return isReactNode(current) ? Render.findDOMNode(current) : current
+  }
   setPosition(e) {
-    let { trigger, transfer, placement, selectionRef } = this.props
-    if (trigger == 'contextmenu') {
+    let { trigger, transfer, placement, show } = this.props
+    if (trigger == 'contextmenu' || !this.state.rendered || !show) {
       return;
     }
-    getPosition(selectionRef.current, this.elRef.current, transfer, placement, (top, left, transformOrigin, placement) => {
+    let selection = this.getSelection()
+    getPosition(selection, this.elRef.current, transfer, placement, (top, left, transformOrigin, placement) => {
       this.setState({ top, left, transformOrigin, placement })
     })
   }
@@ -138,20 +175,24 @@ export default class BaseDrop extends Kui {
   hide(e) {
     let { target } = e
     e.stopPropagation()
-    let { show, onHide, selectionRef } = this.props
-    let { mousedownIn } = this.state
-    if (show &&
-      !selectionRef.current.contains(target) &&
+    let { onClose } = this.props
+    let { mousedownIn, visible } = this.state
+
+    let selection = this.getSelection()
+    if (visible &&
+      selection &&
+      !selection.contains(target) &&
       !this.elRef.current.contains(target) &&
       !mousedownIn
     ) {
-      onHide && onHide()
+      onClose && onClose()
     }
   }
 
   resize() {
-    let { show, onResize } = this.props
-    if (show) {
+    let { onResize } = this.props
+    let { visible } = this.state
+    if (visible) {
       onResize && onResize()
       this.setPosition()
     }

@@ -10,10 +10,9 @@ export default class BaseInput extends Kui {
     size: PropTypes.oneOf(["small", "large", "default"]),
     inputType: PropTypes.string,
     value: PropTypes.any,
-    disabled: PropTypes.bool,
     type: PropTypes.oneOf(["text", "textarea", "password", "url", "email", "date", "search"]),
     icon: PropTypes.string,
-    iconAlign: PropTypes.string,
+    // iconAlign: PropTypes.string,
     suffix: PropTypes.any
   }
   static defaultProps = {
@@ -21,13 +20,13 @@ export default class BaseInput extends Kui {
     type: 'text',
     inputType: 'input'
   }
-  
+
   static contextTypes = {
     FormItem: PropTypes.any,
     Input: PropTypes.any,
     TextArea: PropTypes.any,
   }
-  
+
   state = {
     currentValue: this.props.value || '',
     isFocus: false,
@@ -93,16 +92,20 @@ export default class BaseInput extends Kui {
     return Password || Search || suffix
   }
   getTextInput = () => {
-    const { disabled, size, placeholder, autoFocus, rows,
-      maxLength, readOnly, style,
-      onKeyUp, onKeyDown, onKeyPress, type, inputType } = this.props
+    const { disabled, size, type, inputType } = this.props
     let { currentValue } = this.state
 
     let isTextArea = inputType == 'textarea'
     // console.log(this.props)
-    const props = {
-      placeholder, autoFocus, rows, style,
-      maxLength, readOnly, disabled,
+
+    const options = { ...this.props }
+    delete options.inputType
+    delete options.onSearch
+    delete options.clearable
+    delete options.onIconClick
+
+    const props = Object.assign(options, {
+      style: this.styles(),
       value: currentValue,
       className: this.className([
         `k-${inputType}`,
@@ -116,10 +119,8 @@ export default class BaseInput extends Kui {
       onChange: this.onChange,
       onBlur: this.onBlur,
       onFocus: this.onFocus,
-      onKeyUp,
-      onKeyDown,
-      onKeyPress,
-    }
+    })
+
     if (!isTextArea) {
       props.type = type
       delete props.rows
@@ -156,7 +157,7 @@ export default class BaseInput extends Kui {
       }
       const suffixNode = this.getSuffix()
       return <div {...props}>
-        {icon ? <Icon type={icon} className="k-input-icon" onClick={this.iconClick} /> : null}
+        {icon ? <Icon type={icon} className="k-input-icon" onClick={this.iconClick.bind(this)} /> : null}
         {textInput}
         {suffixNode ? <div className="k-input-suffix">{suffixNode}</div> : null}
         {clearableShow ? <Icon type="close-circle" className="k-input-clearable" onClick={this.clear} /> : null}

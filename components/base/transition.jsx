@@ -7,7 +7,8 @@ export default class Transition extends Component {
   static defaultProps = {
     name: 'fade',
     timeout: 300,
-    unmountOnExit: true
+    unmountOnExit: true,
+    collapse: true,
   }
   static propTypes = {
     onEnter: PropTypes.func,
@@ -20,16 +21,17 @@ export default class Transition extends Component {
     show: PropTypes.bool,
     timeout: PropTypes.number,
     unmountOnExit: PropTypes.bool,
+    collapse: PropTypes.bool
   }
   state = {
     show: this.props.show
   }
   componentDidMount() {
-    if (this.state.show === undefined) {
-      this.setState({ show: true })
-    }
+
   }
   componentWillUnmount() {
+    this.props.onUnmount && this.props.onUnmount()
+    // console.log('componentWillUnmount')
     this.setState({ show: false })
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -40,13 +42,15 @@ export default class Transition extends Component {
   onExit(el) {
     if (!el) return
     this.props.onExit && this.props.onExit(el)
-    el.style.height = el.scrollHeight + 'px'
-    el.style.opacity = 1
+    if (this.props.collapse) {
+      el.style.height = el.scrollHeight + 'px'
+      el.style.opacity = 1
+    }
   }
   onExiting(el) {
     if (!el) return
     this.props.onExiting && this.props.onExiting(el)
-    if (el.scrollHeight !== 0) {
+    if (el.scrollHeight !== 0 && this.props.collapse) {
       el.style.height = 0;
       el.style.paddingTop = 0;
       el.style.paddingBottom = 0;
@@ -59,18 +63,22 @@ export default class Transition extends Component {
   onExited(el) {
     if (!el) return
     this.props.onExited && this.props.onExited(el)
-    el.style.height = '';
-    el.style.paddingTop = '';
-    el.style.paddingBottom = '';
-    el.style.marginTop = '';
-    el.style.marginBottom = '';
-    el.style.opacity = ''
-    el.style.overflow = ''
+    el.className += ` ${this.props.name}-hidden`
+    if (this.props.collapse) {
+      el.style.height = '';
+      el.style.paddingTop = '';
+      el.style.paddingBottom = '';
+      el.style.marginTop = '';
+      el.style.marginBottom = '';
+      el.style.opacity = ''
+      el.style.overflow = ''
+    }
   }
   onEnter(el) {
     if (!el) return
     this.props.onEnter && this.props.onEnter(el)
-    if (el) {
+    el.className = el.className.replace(`${this.props.name}-hidden`, '')
+    if (this.props.collapse) {
       el.style.overflow = 'hidden';
       el.style.height = 0
       el.style.opacity = 0.1
@@ -79,20 +87,24 @@ export default class Transition extends Component {
   onEntering(el) {
     if (!el) return
     this.props.onEntering && this.props.onEntering(el)
-    if (el.scrollHeight !== 0) {
-      el.style.height = el.scrollHeight + 'px'
-      el.style.opacity = 1
-    } else {
-      el.style.height = ''
-      el.style.opacity = ''
+    if (this.props.collapse) {
+      if (el.scrollHeight !== 0) {
+        el.style.height = el.scrollHeight + 'px'
+        el.style.opacity = 1
+      } else {
+        el.style.height = ''
+        el.style.opacity = ''
+      }
     }
   }
   onEntered(el) {
     if (!el) return
     this.props.onEntered && this.props.onEntered(el)
-    el.style.height = ''
-    el.style.overflow = ''
-    el.style.opacity = ''
+    if (this.props.collapse) {
+      el.style.height = ''
+      el.style.overflow = ''
+      el.style.opacity = ''
+    }
   }
   render() {
     const { timeout, name, children, unmountOnExit } = this.props

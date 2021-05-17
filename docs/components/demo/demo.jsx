@@ -1,7 +1,7 @@
 
 import React from 'react'
-import { Icon, ToolTip, Transition, Message } from 'react-kui'
-
+import { Icon, ToolTip,  Message } from 'react-kui'
+import Transition from '../../../components/base/transition'
 import { Kui, PropTypes } from '@/components/kui'
 // import Collapse from '@/components/collapse/collapse'
 import './demo.less'

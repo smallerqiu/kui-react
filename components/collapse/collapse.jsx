@@ -43,14 +43,15 @@ export default class Collapse extends Kui {
   }
   render() {
     const { children, sample } = this.props
-    // const { currentValue } = this.state
+    const { currentValue } = this.state
     const classes = ['k-collapse', {
       ['k-collaplse-sample']: sample
     }]
     return (<div className={this.className(classes)}>{
       React.Children.map(children, (child, index) => {
         let eventKey = child.key || String(index)
-        return React.cloneElement(child, { eventKey })
+        let actived = currentValue.indexOf(eventKey) >= 0
+        return React.cloneElement(child, { eventKey, actived })
       })
     }</div >)
   }

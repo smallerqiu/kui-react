@@ -11,6 +11,7 @@ import Checkbox from './checkbox'
 import Collapse from './collapse'
 // import ColorPicker from './colorPicker'
 import Divider from './divider'
+import Dropdown from './dropdown'
 // // import DatePicker from './datePicker'
 // import Form from './form'
 import Icon from './icon'
@@ -28,13 +29,13 @@ import Radio from './radio'
 import Select from './select'
 import Switch from './switch'
 // import Steps from './steps'
-// import Tabs from './tabs'
+import Tabs from './tabs'
 import Tag from './tag'
 // import Table from './table'
 import Tooltip from './tooltip'
 // import TimeLine from './timeline'
-import Transition from './transition'
-import Transfer from './transfer'
+// import Transition from './transition'
+// import Transfer from './transfer'
 // import Tree from './tree'
 // import TreeSelect from './treeselect'
 // import Upload from './upload'
@@ -55,6 +56,7 @@ export {
     // ColorPicker, ,
     // // DatePicker,
     Divider,
+    Dropdown,
     // Form,
     // Loading,
     Layout,
@@ -73,9 +75,11 @@ export {
     Switch,
     // Steps,
     Tag,
-    //Table, Tabs, TimeLine, 
-    Transition,
-    Transfer,
+    //Table,
+    Tabs,
+    // TimeLine,
+    // Transition,
+    // Transfer,
     Tooltip,
     // Tree, TreeSelect,
     // Upload

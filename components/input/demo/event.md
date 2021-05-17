@@ -30,7 +30,7 @@ class Demo extends React.Component {
         </Input>
         <TextArea placeholder="请输入内容..."
           onChange={()=> this.change()} 
-          onKeypress={()=> this.keypress()} 
+          onKeyPress={()=> this.keypress()} 
           onKeyUp={()=> this.keyup()} 
           onKeyDown={()=> this.keydown()} 
           onBlur={()=> this.blur()} 

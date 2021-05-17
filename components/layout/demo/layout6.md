@@ -19,12 +19,9 @@ class Layout6 extends React.Component {
         <Layout>
           <Layout.Sider className="demo-sider" style={{width:200}}>
             <div className="logo" />
-            <Menu value={left}  mode="vertical" verticalAffixed theme="dark">
+            <Menu selectedKeys={left}  mode="vertical" verticalAffixed theme="dark">
               <Menu.Item key="dashboard" icon="speedometer">Dashboard</Menu.Item>
-              <SubMenu key="sub1">
-                <template slot="title">
-                  <Icon type="keypad" />Navigation One
-                </template>
+              <SubMenu key="sub1" title="Navigation One" icon="keypad">
                   <Menu.Item key="1-1" affixed>Option 1</Menu.Item>
                   <Menu.Item key="1-2">Option 2</Menu.Item>
                   <Menu.Item key="1-3" affixed>Option 3</Menu.Item>
@@ -35,10 +32,7 @@ class Layout6 extends React.Component {
                   <Menu.Item key="1-8">Option 8</Menu.Item>
                   <Menu.Item key="1-9">Option 9</Menu.Item>
               </SubMenu>
-              <SubMenu key="sub2">
-                <template slot="title">
-                  <Icon type="keypad" />Navigation Two
-                </template>
+              <SubMenu key="sub2" title="Navigation Two" icon="keypad">
                   <Menu.Item key="2-1">Option 1</Menu.Item>
                   <Menu.Item key="2-2">Option 2</Menu.Item>
                   <Menu.Item key="2-3" affixed>Option 3</Menu.Item>
@@ -47,28 +41,19 @@ class Layout6 extends React.Component {
                   <Menu.Item key="2-6" affixed>Option 6</Menu.Item>
                   <Menu.Item key="2-7">Option 7</Menu.Item>
               </SubMenu>
-              <SubMenu key="sub3">
-                <template slot="title">
-                  <Icon type="settings" />Navigation Three
-                </template>
+              <SubMenu key="sub3" title="Navigation Three" icon="settings">
                 <Menu.Item key="3-1">Option 1</Menu.Item>
                 <Menu.Item key="3-2" affixed>Option 2</Menu.Item>
                 <Menu.Item key="3-3" affixed>Option 3</Menu.Item>
                 <Menu.Item key="3-4">Option 4</Menu.Item>
               </SubMenu>
-              <SubMenu key="sub4">
-                <template slot="title">
-                  <Icon type="settings" />Navigation Four
-                </template>
+              <SubMenu key="sub4" title="Navigation Four" icon="settings">
                 <Menu.Item key="4-1">Option 1</Menu.Item>
                 <Menu.Item key="4-2">Option 2</Menu.Item>
                 <Menu.Item key="4-3" affixed>Option 3</Menu.Item>
                 <Menu.Item key="4-4" affixed>Option 4</Menu.Item>
               </SubMenu>
-              <SubMenu key="sub5">
-                <template slot="title">
-                  <Icon type="settings" />Navigation Five
-                </template>
+              <SubMenu key="sub5" title="Navigation Five" icon="settings">
                 <Menu.Item key="5-1" affixed>Option 1</Menu.Item>
                 <Menu.Item key="5-2" affixed>Option 2</Menu.Item>
                 <Menu.Item key="5-3" affixed>Option 3</Menu.Item>
@@ -77,7 +62,7 @@ class Layout6 extends React.Component {
             </Menu>
           </Layout.Sider>
           <Layout.Content className="k-demo-main">
-            <Menu mode="horizontal" theme="dark" value={top} className="demo-top-menu">
+            <Menu mode="horizontal" theme="dark" selectedKeys={top} className="demo-top-menu">
               <Menu.Item key="t1" icon="home">nav1</Menu.Item>
               <Menu.Item key="t2" icon="logo-buffer">nav2</Menu.Item>
               <Menu.Item key="t3" icon="heart">nav3</Menu.Item>

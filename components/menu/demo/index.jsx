@@ -16,13 +16,13 @@ export default class Index extends React.Component {
       <div>
         <Info className="typo" />
         <Base />
-        {/* <InLine /> */}
-        {/* <Accrodion /> */}
-        {/* <Vertical /> */}
-        {/* <VerticalAffix /> */}
-        {/* <Theme /> */}
-        {/* <Mode /> */}
-        {/* <Collapsed /> */}
+        <InLine />
+        <Accrodion />
+        <Vertical />
+        <VerticalAffix />
+        <Theme />
+        <Mode />
+        <Collapsed />
         <CN className="typo" />
       </div>
     );

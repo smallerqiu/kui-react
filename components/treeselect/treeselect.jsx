@@ -1,6 +1,6 @@
 import React from 'react'
 import { Kui, PropTypes } from '@/components/kui'
-import { Transition, Transfer, Tree } from '../index'
+import { Tree } from '../index'
 export default class TreeSelect extends Kui {
   static defaultProps = {
     placeholder: '请选择',

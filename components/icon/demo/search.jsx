@@ -2,7 +2,8 @@
 import React, { Component } from 'react'
 import icons from 'kui-icons'
 import Icon from '../icon'
-
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { Message } from 'react-kui'
 export default class Index extends Component {
   state = {
     key: '',
@@ -49,13 +50,8 @@ export default class Index extends Component {
     }
   }
 
-  copy(x) {
-    let text = `<Icon type="${x}" />`
-    this.$copyText(text).then(e => {
-      this.$Message.success('代码复制成功！')
-    }, e => {
-      this.$Message.error('复制代码失败，请手动复制')
-    })
+  copy() {
+    Message.success('代码复制成功！')
   }
   render() {
     const { applist, logos, key } = this.state
@@ -75,8 +71,8 @@ export default class Index extends Component {
               <div className="icon-item">
                 {
                   applist.map((x, y) => {
-                    return <span onClick={() => this.copy(x)} key={x}>
-                      <Icon type={x} />
+                    return <span key={x}>
+                      <CopyToClipboard text={`<Icon type="${x}" />`} onCopy={this.copy}><Icon type={x} /></CopyToClipboard>
                     </span>
                   })
                 }
@@ -90,8 +86,8 @@ export default class Index extends Component {
               <div className="icon-item">
                 {
                   logos.map((x, y) => {
-                    return <span onClick={() => this.copy(x)} key={x}>
-                      <Icon type={x} />
+                    return <span key={x}>
+                      <CopyToClipboard text={`<Icon type="${x}" />`} onCopy={this.copy}><Icon type={x} /></CopyToClipboard>
                     </span>
                   })
                 }

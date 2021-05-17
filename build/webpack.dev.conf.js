@@ -12,7 +12,7 @@ const webpackBaseConfig = require('./webpack.base.conf.js');
 
 module.exports = merge(webpackBaseConfig, {
     mode: 'development',
-    devtool: 'none',
+    devtool: 'inline-source-map',
     devServer: {
         contentBase: path.resolve(__dirname, 'docs'),
         port: 7002,

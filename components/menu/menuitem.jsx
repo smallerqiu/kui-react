@@ -1,31 +1,33 @@
 import React from 'react'
 import Icon from '../icon'
+import { isReactNode } from '../_tool/utils'
 import { Kui, PropTypes } from '../kui'
 // import Tooltip from '../tooltip'
 
 export default class MenuItem extends Kui {
   static propTypes = {
-    eventKey: PropTypes.any,
     icon: PropTypes.string,
     disabled: PropTypes.bool,
     affixed: PropTypes.bool,
+    eventKey: PropTypes.any,
   }
 
   static contextTypes = {
     Menu: PropTypes.any,
     SubMenu: PropTypes.any,
     Dropdown: PropTypes.any,
-    collectAffixItem: PropTypes.func,
-  };
+  }
   state = {
     active: false,
     currentAffixed: this.props.affixed,
   }
   starClick(e) {
-    if (!this.disabled) {
+    if (!this.props.disabled) {
       e.stopPropagation();
-      this.currentAffixed = !this.currentAffixed
-      this.collectAffixItem(this, this.currentAffixed)
+      let { currentAffixed } = this.state
+      let item = this
+      this.setState({ currentAffixed: !currentAffixed }, () => this.context.SubMenu.affixed(item, e))
+
     }
   }
   componentDidMount() {
@@ -43,10 +45,9 @@ export default class MenuItem extends Kui {
     let { icon, disabled, children, eventKey } = this.props
     let { currentAffixed, active } = this.state
     let { Menu, SubMenu, Dropdown } = this.context
-    let { selectedKeys, verticalAffixed, mode } = Menu.state
+    let { selectedKeys, currentMode } = Menu.state
+    let { verticalAffixed } = Menu.props
     let selected = selectedKeys.indexOf(eventKey) >= 0
-
-    // console.log(selected,selectedKeys,eventKey)
 
     const item = this
     const preCls = Dropdown ? 'dropdown-menu' : 'menu';
@@ -75,27 +76,24 @@ export default class MenuItem extends Kui {
           }
           let parent = SubMenu || Menu
           if (parent) {
-            console.log(parent)
             parent.handleClick(options)
           }
         }
       },
     }
 
-    // const showTooltip = this.$parent == Menu && Menu.inlineCollapsed
-    // let child = this.$slots.default
-    // let titleNode = child.length == 1 ? isVnode(child[0]) ? child : <span>{child}</span> : child
-
+    const showTooltip = !SubMenu && Menu.props.inlineCollapsed
+    let titleNode = children.length > 1 ? <span>{children}</span> : (isReactNode(children) ? children : <span>{children}</span>)
     return (
       // {/* <Tooltip placement="right"> */}
       <li {...props}>
         {icon ? <Icon type={icon} className={`k-${preCls}-item-icon`} /> : null}
-        {children}
-        {mode == 'vertical' && verticalAffixed && SubMenu ? <Icon onClick={this.starClick} className="k-menu-item-icon-affix" type={currentAffixed ? "star" : "star-outline"} /> : null}
+        {titleNode}
+        {currentMode == 'vertical' && verticalAffixed && SubMenu ?
+          <Icon onClick={this.starClick.bind(this)} className="k-menu-item-icon-affix" type={currentAffixed ? "star" : "star-outline"} /> : null}
       </li>
       // {/* {showTooltip ? <template slot="title">{children}</template> : null} */}
       // {/* </Tooltip> */}
     )
   }
 }
-

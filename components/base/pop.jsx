@@ -2,13 +2,23 @@ import React from 'react'
 import Button from "../button";
 import Icon from "../icon";
 import Drop from './drop'
-import PropTypes from 'prop-types'
+import { Kui, PropTypes } from '../kui'
+// import Render from 'react-dom'
+export default class BasePop extends Kui {
 
-export default class BasePop extends React.Component {
+  static childContextTypes = {
+    BasePop: PropTypes.any
+  }
+
+  getChildContext() {
+    return {
+      BasePop: this
+    };
+  }
 
   static defaultProps = {
     trigger: 'hover',
-    showPlacementArrow: true,
+    // showPlacementArrow: false,
     placement: 'top',
     okText: '确定',
     cancelText: '取消',
@@ -28,89 +38,88 @@ export default class BasePop extends React.Component {
     placement: PropTypes.oneOf(["top", "top-left", "top-right", "bottom", "bottom-left", "bottom-right", "left", "left-bottom", "left-top", "right", "right-top", "right-bottom"]),
     okText: PropTypes.string,
     cancelText: PropTypes.string,
+    onVisibleChange: PropTypes.func
   }
+
+  timer = null
+
   state = {
-    showPop: this.props.show,
-    showInit: false,
-    timer: null,
+    opened: this.props.show || false,
   }
 
-  overlayRef = React.createRef()
+  selectionRef = React.createRef()
+  dropRef = null
 
+  componentDidUpdate(prevProps, prevState, snap) {
+    let { show } = this.props
+    if (show != prevProps.show) {
+      this.setState({ opened: show })
+    }
+  }
+  toggle(opened, callback) {
+    this.setState({ opened }, () => callback && callback())
+    this.props.onVisibleChange && this.props.onVisibleChange(opened, this.selectionRef)
+  }
   ok() {
-    this.setState({ showPop: false })
+    this.toggle(false)
     this.props.onOk && this.props.onOk()
   }
   cancel() {
-    this.setState({ showPop: false })
+    this.toggle(false)
     this.props.onCancel && this.props.onCancel()
-  }
-  setPopShow() {
-    this.setState({ showInit: true })
-    setTimeout(() => {
-      this.setState({ showPop: true })
-      this.props.onOpen && this.props.onOpen()
-    }, 100);
   }
   mouseEnter(e) {
     clearTimeout(this.timer)
     let { trigger, confirm } = this.props
-    let { showPop } = this.state
-    if (trigger == "hover" && !confirm && !showPop) {
-      this.setPopShow()
+    let { opened } = this.state
+    if (trigger == "hover" && !confirm && !opened) {
+      this.toggle(true)
     }
   }
   mouseLeave(e) {
     let { trigger, confirm } = this.props
-    let { showPop } = this.state
-
+    let { opened } = this.state
     if (trigger == 'hover' &&
       !confirm &&
-      showPop
+      opened
     ) {
       clearTimeout(this.timer)
       this.timer = setTimeout(() => {
-        this.setState({ showPop: false })
+        this.toggle(false)
       }, 200);
     }
   }
-  mouseEvent(e) {
-    let { trigger, confirm } = this.props
-    let { showInit } = this.state
+
+  contextMenu(e) {
+    let { trigger, confirm, show } = this.props
     if (trigger == 'contextmenu') {
-      if (e.which == 3) {
-        if (!showInit) {
-          showInit = true
-          this.$nextTick(() => {
-            this.showPop = true
-            this.$emit('input', true)
-            this.$nextTick(() => {
-              this.$refs.overlay.baseContextmenu(e)
-            })
-          })
-        } else {
-          this.showPop = true
-          this.$emit('input', true)
-          this.$nextTick(() => {
-            this.$refs.overlay.baseContextmenu(e)
-          })
-        }
-      } else {
-        this.showPop = false
+      e.persist()
+      this.dropRef.points = e
+      this.toggle(true)
+      if (show) {
+        this.dropRef.showContextmenu()
       }
       e.preventDefault();
       return false;
-    } else if (trigger == "click" || confirm) {
-      this.setPopShow()
     }
   }
-  componentDidUpdate(prevProps, prevState, snap) {
-    if (prevProps.show != this.props.show) {
-      this.setState({ showPop: this.props.show })
+
+  onClick(e) {
+    let { trigger, confirm } = this.props
+    let { opened } = this.state
+    if (trigger == 'contextmenu' && opened && !this.dropRef.elRef.current.contains(e.target)) {
+      this.toggle(false)
+    }
+    if (trigger == "click" || confirm) {
+      if (!opened) {
+        this.toggle(true)
+      }
     }
   }
+
   renderPopup() {
-    let { placement, title, preCls, content, confirm, transfer, width, trigger, children,
+    let { placement, title, preCls, content, confirm, transfer,
+      width, trigger,
       showPlacementArrow, cancelText, okText } = this.props, childNode;
     if (showPlacementArrow) {
       let titleNode, contentNode, footerNode;
@@ -134,53 +143,48 @@ export default class BasePop extends React.Component {
       childNode = content
     }
 
-    const overlayRef = React.createRef()
-    childNode = React.cloneElement(childNode, { ref: overlayRef })
+    // childNode = React.cloneElement(childNode, { ref: this.overlayRef }) 
+    let { opened } = this.state
 
-    let { showPop, showInit } = this.state
     const props = {
-      selectionRef: children.ref,
       key: 'drop',
+      selectionRef: this.selectionRef,
       transfer,
-      show: showPop,
+      show: opened,
       className: `k-${preCls}-content`,
       width,
       placement,
-      unmountOnExit: showInit,
-      showInit: showInit,
       trigger,
       transitionName: `k-${preCls}`,
       onMouseEnter: e => {
-        if (overlayRef.current.contains(e.target)) {
+        if (this.dropRef.elRef.current.contains(e.target)) {
           clearTimeout(this.timer)
         }
       },
-      onMouseLeave: e => {
-        let { trigger } = this.props
+      onMouseLeave: () => {
         if (trigger == 'hover') {
-          this.setState({ showPop: false })
+          this.toggle(false)
         }
       },
-      onHide: () => {
-        this.setState({ showPop: false })
+      onClose: () => {
+        this.toggle(false)
       }
-      // input: (e) => {
-      //   this.showPop = e
-
-      //   if (hasProp(this, 'value')) {
-      //     console.log(e)
-      //     this.$emit('input', e);
-      //   }
-      // }
     }
-    return showInit ? <Drop {...props}>{childNode}</Drop> : null
+    return <Drop {...props}>{childNode}</Drop>
+  }
+  componentWillUnmount() {
+    this.props.onUnmount && this.props.onUnmount()
   }
   render() {
     let { children } = this.props
-    let { onMouseEnter, onMouseLeave } = children.props
+    let { onMouseEnter, onClick, onMouseLeave, onContextMenu } = children.props
     let popup = this.renderPopup()
     const props = {
-      onContextMenu: e => this.mouseEvent(e),
+      ref: this.selectionRef,
+      onContextMenu: e => {
+        onContextMenu && onContextMenu(e)
+        this.contextMenu(e)
+      },
       onMouseEnter: e => {
         onMouseEnter && onMouseEnter(e)
         this.mouseEnter(e)
@@ -189,9 +193,12 @@ export default class BasePop extends React.Component {
         onMouseLeave && onMouseLeave(e)
         this.mouseLeave(e)
       },
-      onClick: e => this.mouseEvent(e),
+      onClick: e => {
+        onClick && onClick(e)
+        this.onClick(e)
+      }
     }
-    return React.cloneElement(children, props, [...children.props.children, popup])
-
+    let childs = [].concat(children.props.children, popup)
+    return React.cloneElement(children, props, childs)
   }
 }

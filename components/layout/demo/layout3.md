@@ -9,16 +9,16 @@ import { Layout ,Menu, Breadcrumb } from 'react-kui';
 
 class Layout3 extends React.Component {
   state = {
-    top:['t1'],
-    left:['0-1']
+    top:['t1']
   }
   render(){
+    let {top} = this.state
     return(
       <div className="k-demo-layout-3">
         <Layout>
           <Layout.Header>
             <div className="logo" />
-            <Menu mode="horizontal" theme="dark" v-model="top" className="demo-top-menu">
+            <Menu mode="horizontal" theme="dark" selectedKeys={top} className="demo-top-menu">
               <Menu.Item key="t1" icon="home">nav1</Menu.Item>
               <Menu.Item key="t2" icon="logo-buffer">nav2</Menu.Item>
               <Menu.Item key="t3" icon="heart">nav3</Menu.Item>

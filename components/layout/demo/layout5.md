@@ -11,28 +11,25 @@ class Layout5 extends React.Component {
   state = {
     top:['t1'],
     left:['0-1'],
-    open:['l0'],
+    openKeys:['l0'],
     collapsed:false
   }
   toggle = () =>{
     this.setState({collapsed:!this.state.collapsed})
   }
   render(){
-    const {top ,left, collapsed, open} = this.state
+    const {top ,left, collapsed, openKeys} = this.state
     return(
       <div className="k-demo-layout-5">
         <Layout>
           <Layout.Sider className="demo-sider" style={{width:collapsed?'80px':'200px'}}>
             <div className="logo" />
-            <Menu mode="inline" theme="dark" value={left} openKeys={open} className="demo-top-menu" inlineCollapsed={collapsed}>
+            <Menu mode="inline" theme="dark" selectedKeys={left} openKeys={openKeys} className="demo-top-menu" inlineCollapsed={collapsed}>
               <Menu.Item key="1-1" icon="home"><span>option1</span></Menu.Item>
               <Menu.Item key="1-2" icon="logo-buffer"><span>option2</span></Menu.Item>
               <Menu.Item key="1-3" icon="heart"><span>option3</span></Menu.Item>
               <Menu.Item key="1-4" icon="albums"><span>option4</span></Menu.Item>
-              <SubMenu key="l0">
-                <template slot="title">
-                  <Icon type="newspaper" /><span>subnav1</span>
-                </template>
+              <SubMenu key="l0" title="subnav1" icon="newspaper">
                 <Menu.Item key="0-1">option1</Menu.Item>
                 <Menu.Item key="0-2">option2</Menu.Item>
                 <Menu.Item key="0-3">option3</Menu.Item>
@@ -44,7 +41,7 @@ class Layout5 extends React.Component {
             </div>
           </Layout.Sider>
           <Layout.Content className="k-demo-main">
-            <Menu mode="horizontal" theme="dark" value={top} className="demo-top-menu">
+            <Menu mode="horizontal" theme="dark" selectedKeys={top} className="demo-top-menu">
               <Menu.Item key="t1" icon="home">nav1</Menu.Item>
               <Menu.Item key="t2" icon="logo-buffer">nav2</Menu.Item>
               <Menu.Item key="t3" icon="heart">nav3</Menu.Item>

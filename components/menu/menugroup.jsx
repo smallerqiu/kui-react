@@ -2,7 +2,7 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 export default class MenuGroup extends Kui {
   static propTypes = {
-    title: PropTypes.any
+    title: PropTypes.any.isRequired
   }
   render() {
     let index = -1;
@@ -18,5 +18,3 @@ export default class MenuGroup extends Kui {
     </li>)
   }
 }
-
-

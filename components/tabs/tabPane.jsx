@@ -3,39 +3,32 @@ import { Kui, PropTypes } from '../kui'
 import Icon from '../icon'
 export default class TabPane extends Kui {
   static contextTypes = {
-    Tabs: PropTypes.any
+    Tabs: PropTypes.any,
+    collectTabPanes: PropTypes.func
   };
   static propTypes = {
-    name: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    title: PropTypes.string,
     icon: PropTypes.string,
     disabled: PropTypes.bool,
     closable: PropTypes.bool,
-    visible: PropTypes.bool,
+    eventKey: PropTypes.string
   }
 
-  static defaultProps = {
-    closable: true
-  }
-  constructor(props) {
-    super(props)
-    this.state = {
-      activeName: props.name,
-      width: props.width || 0 //ie9
-    }
-  }
-  paneStyle() {
-    let { width } = this.props
-    return width ? { width: `${width}px` } : {};
-  }
   componentDidMount() {
-    this.context.Tabs.addItem(this)
+    this.context.collectTabPanes(this, 'add')
   }
   componentWillUnmount() {
-    this.context.Tabs.removeItem(this)
+    this.context.collectTabPanes(this, 'delete')
   }
   render() {
-    return <div className={this.className('k-tabs-tabpane')} style={this.styles(this.paneStyle())}>
+    const classes = [
+      'k-tabs-tabpane',
+      {
+        'k-tabs-tabpane-active': this.context.Tabs.props.activeKey == this.props.eventKey
+      }
+    ]
+    return <div className={this.className(classes)}
+      style={this.styles()}>
       {this.props.children}
     </div>
   }

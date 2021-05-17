@@ -8,26 +8,20 @@ export default class Button extends Kui {
     buttonType: PropTypes.string,
     icon: PropTypes.string,
     block: PropTypes.bool,
-    size: PropTypes.oneOf(['small', 'large','default']),
+    size: PropTypes.oneOf(['small', 'large', 'default']),
     loading: PropTypes.bool,
     circle: PropTypes.bool,
-    onClick: PropTypes.func,
     type: PropTypes.oneOf(["danger", "primary", "link", "default", "dashed"]),
     hollow: PropTypes.bool,
-    disabled: PropTypes.bool,
   }
-  
+
   static defaultProps = {
     type: 'default',
     size: 'default',
   }
-  
-  onClick = (e) => {
-    let { onClick } = this.props
-    onClick && onClick(e)
-  }
+
   render() {
-    const { type, loading, circle, hollow, onClick, disabled,
+    const { type, loading, circle, hollow,
       buttonType, icon, children, size, block } = this.props
     const onlyIcon = !(children && children.length)
     const cls = this.className([
@@ -46,14 +40,13 @@ export default class Button extends Kui {
     const iconType = loading ? 'sync' : icon;
 
     const iconNode = iconType ? <Icon type={iconType} spin={loading} /> : null
-
-    const props = {
+    const options = { ...this.props };
+    ['hollow', 'circle', 'loading', 'block'].map(a=>delete options[a])
+    const props = Object.assign(options, {
       type: buttonType,
-      disabled,
       style: this.styles(),
       className: cls,
-      onClick: onClick
-    }
+    })
     const kid = React.Children.map(children, child => {
       return <span>{child}</span>
     })

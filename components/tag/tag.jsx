@@ -1,6 +1,6 @@
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
-import Transition from '../transition'
+import Transition from '../base/transition'
 import Icon from '../icon'
 export default class Tag extends Kui {
   static propTypes = {

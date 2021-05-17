@@ -136,20 +136,16 @@ export default class Page extends Kui {
     let { size, sizeData, showSizer } = this.prop
     let prop = {
       value: defaultPageSize,
-      props: { size },
+      size,
+      options: sizeData.map(s => {
+        return { value: s, label: `${s}条/页` }
+      }),
       on: {
         input: e => defaultPageSize = e,
         change: this.changeSize
       }
     }
-    return (
-      showSizer ?
-        <div className="k-page-sizer">
-          <Select {...prop}>
-            {sizeData.map((p, i) => <Option key={i} value={p}>{p}条/页</Option>)}
-          </Select >
-        </div > : null
-    )
+    return (showSizer ? <div className="k-page-sizer"><Select {...prop} /></div > : null)
   }
   renderElvator() {
     let { size, onChange, showElevator } = this.props
