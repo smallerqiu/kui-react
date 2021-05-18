@@ -1,41 +1,74 @@
 import React, { Suspense, lazy } from 'react'
 import ReactDOM from 'react-dom'
-import { Switch, Button, Menu, SubMenu } from 'react-kui';
+import { Tabs, Button } from 'react-kui';
 
+const data = [
+  { title: 'Tab 1', content: 'Content of Tab 1', key: '1' },
+  { title: 'Tab 2', content: 'Content of Tab 2', key: '2', closable: true },
+  { title: 'Tab 3', content: 'Content of Tab 3', key: '3', closable: true },
+];
 class Demo extends React.Component {
   state = {
-    current: ['1-1'],
-    openKeys: ['sub2'],
-    collapsed: false
+    panes: data,
+    activeKey: data[0].key,
   }
-  change() {
-    this.setState({ collapsed: !this.state.collapsed })
+
+  newTabIndex = 0
+  onChange(activeKey) {
+    this.setState({ activeKey })
+  }
+  onClose(key) {
+    let { panes, activeKey } = this.state
+
+    const index = panes.map(p => p.key).indexOf(key)
+    if (activeKey == key) {
+      if (index == panes.length - 1) {
+        activeKey = panes[index - 1].key
+      } else {
+        activeKey = panes[index + 1].key
+      }
+    }
+    panes.splice(index, 1)
+    this.setState({ panes, activeKey })
+  }
+  add() {
+    let { panes } = this.state
+    const activeKey = 'pane_' + this.newTabIndex++;
+    panes.push({
+      title: 'New Tab' + this.newTabIndex,
+      content: 'Content of new Tab ' + this.newTabIndex,
+      key: activeKey,
+      closable: true
+    });
+    this.setState({ panes, activeKey })
   }
   render() {
-    let { collapsed, current, openKeys } = this.state
+
     return (
-      <div style={{ width: 256 }}>
-        <Button onClick={() => this.change()} icon={collapsed ? 'list' : 'menu'} type="primary"></Button>
-        <br />
-        <br />
-        <Menu selectedKeys={current} openKeys={openKeys} theme="dark" inlineCollapsed={collapsed} mode="inline">
-          <Menu.Item key="1-1" icon="mail">Option 1</Menu.Item>
-          <Menu.Item key="1-2" icon="calendar"><span>Option 2</span></Menu.Item>
-          <SubMenu key="sub2" icon="keypad" title="Navigation Two">
-            <Menu.Item key="2-1">Option 5</Menu.Item>
-            <Menu.Item key="2-2">Option 6</Menu.Item>
-            <SubMenu title="SubMenu" key="sub2-1" icon="keypad">
-              <Menu.Item key="2-3">Option 7</Menu.Item>
-              <Menu.Item key="2-4">Option 8</Menu.Item>
-            </SubMenu>
-          </SubMenu>
-          <SubMenu key="sub3" icon="settings" title="Navigation Three">
-            <Menu.Item key="3-1">Option 9</Menu.Item>
-            <Menu.Item key="3-2">Option 10</Menu.Item>
-            <Menu.Item key="3-3">Option 11</Menu.Item>
-            <Menu.Item key="3-4">Option 12</Menu.Item>
-          </SubMenu>
-        </Menu>
+      <div className="t1">
+        <div className="t2"></div>
+        <div className="t3">
+          <div className="t4">
+            <div className="t5">
+              <div className="t6"></div>
+              <div className="t6"></div>
+              <div className="t6"></div>
+              <div className="t6"></div>
+              <div className="t6"></div>
+              <div className="t6"></div>
+              <div className="t6"></div>
+              <div className="t6"></div>
+              <div className="t6"></div>
+              <div className="t6"></div>
+              <div className="t6"></div>
+              <div className="t6"></div>
+              <div className="t6"></div>
+              <div className="t6"></div>
+              <div className="t6"></div>
+            </div>
+          </div>
+        </div>
+        <div className="t2"></div>
       </div>
     )
   }

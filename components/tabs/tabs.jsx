@@ -2,11 +2,9 @@
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
 import Icon from '../icon'
-import TabPane from './tabPane'
 export default class Tabs extends Kui {
   static childContextTypes = {
     Tabs: PropTypes.any,
-    collectTabPanes: PropTypes.func
   }
   static defaultProps = {
     animated: true
@@ -36,25 +34,24 @@ export default class Tabs extends Kui {
   navRef = React.createRef()
   inkbarRef = React.createRef()
 
-  componentDidUpdate(prevProps, prevStat, snap) {
-    let { activeKey } = this.props
+  componentDidUpdate(prevProps, prevState, snap) {
+    let { activeKey, children } = this.props
     if (prevProps.activeKey != activeKey) {
-      this.setState({ activeKey })
-      this.updateIndex()
+      this.setState({ activeKey }, () => {
+        console.log('aaa')
+        this.updateIndex()
+      })
+    } else if (prevProps.children.length != children.length) { 
+      setTimeout(() => {
+      this.resetNavPosition()
+        
+      }, 100);
     }
   }
 
   getChildContext() {
     return {
       Tabs: this,
-      collectTabPanes: (context, type) => {
-        let { tabPanes } = this.state
-        type === 'delete' ? tabPanes.splice(tabPanes.indexOf(context), 1) : tabPanes.push(context)
-        this.setState({ tabPanes }, () => {
-          this.resetNavPosition()
-          this.updateNav()
-        })
-      }
     }
   }
 
@@ -74,13 +71,13 @@ export default class Tabs extends Kui {
   }
 
   resetActivePostion() {
-    const target = this.navRef.current.children[this.currentIndex]
+    let { navOffsetLeft, currentIndex } = this.state
+    const target = this.navRef.current.children[currentIndex]
     if (!target) return;
     // show active tab in client
     const pane = this.navscrollRef.current
     // let totalWidth = pane.offsetWidth
     let clientWidth = this.navboxRef.current.clientWidth
-    let { navOffsetLeft } = this
     let { offsetLeft, offsetWidth } = target
 
 
@@ -97,7 +94,7 @@ export default class Tabs extends Kui {
 
       navOffsetLeft -= offsetLeft + offsetWidth + navOffsetLeft - clientWidth + 2 //marginRight
     }
-    this.navOffsetLeft = navOffsetLeft
+    this.setState({ navOffsetLeft })
     pane.style.transform = `translate3d(${navOffsetLeft}px,0,0)`
   }
 
@@ -108,23 +105,24 @@ export default class Tabs extends Kui {
     if (!pane) return;
     let totalWidth = pane.offsetWidth
     let clientWidth = this.navboxRef.current.clientWidth
-    let { navOffsetLeft } = this
+    let { navOffsetLeft } = this.state
     if (clientWidth + navOffsetLeft < clientWidth) {
       navOffsetLeft = clientWidth - totalWidth
     }
     if (navOffsetLeft > 0) navOffsetLeft = 0
-    this.navOffsetLeft = navOffsetLeft
 
 
-    this.nextBtnDisabed = navOffsetLeft == clientWidth - totalWidth
-    this.prevBtnDisabed = navOffsetLeft == 0
+    const nextBtnDisabed = navOffsetLeft == clientWidth - totalWidth
+    const prevBtnDisabed = navOffsetLeft == 0
+
+    this.setState({ navOffsetLeft, nextBtnDisabed, prevBtnDisabed })
 
     pane.style.transform = `translate3d(${navOffsetLeft}px,0,0)`
 
 
     this.resetActivePostion()
 
-    this.updateNav()
+    this.updateControlArrow()
     // })
 
   }
@@ -135,7 +133,7 @@ export default class Tabs extends Kui {
     const pane = this.navscrollRef.current
     let totalWidth = pane.offsetWidth
     let clientWidth = this.navboxRef.current.clientWidth
-    let { navOffsetLeft } = this
+    let { navOffsetLeft } = this.state
     // console.log(totalWidth, clientWidth)
     if (direction == 'right') {
       const endWidth = totalWidth - clientWidth + navOffsetLeft
@@ -151,79 +149,74 @@ export default class Tabs extends Kui {
         navOffsetLeft = 0
       }
     }
-    this.nextBtnDisabed = navOffsetLeft == clientWidth - totalWidth
-    this.prevBtnDisabed = navOffsetLeft == 0
+    const nextBtnDisabed = navOffsetLeft == clientWidth - totalWidth
+    const prevBtnDisabed = navOffsetLeft == 0
 
-    this.navOffsetLeft = navOffsetLeft
+    this.setState({ navOffsetLeft, nextBtnDisabed, prevBtnDisabed })
+
     pane.style.transform = `translate3d(${navOffsetLeft}px,0,0)`
   }
 
-  tabClick(pane, index) {
-    if (!pane.disabled) {
-      let key = pane.key
+  tabClick(pane, currentIndex) {
+    if (!pane.props.disabled) {
+      let activeKey = pane.key
       let { onChange, onTabClick } = this.props
-
-      this.$emit('input', key)
-      this.$emit('change', key)
-      this.$emit('tab-click', key)
-      this.activeKey = key
-      this.currentIndex = index
+      onChange && onChange(activeKey)
+      onTabClick && onTabClick(activeKey)
+      this.setState({ activeKey, currentIndex }, () => {
+        this.updateInkBarPosition()
+      })
     }
   }
 
   updateIndex() {
-    // this.$nextTick(e => {
-    const { tabPanes } = this.state
-    const currentTab = tabPanes.filter(tab => tab.key == this.props.activeKey)[0] || {}
-    this.currentIndex = tabPanes.indexOf(currentTab)
-    setTimeout(e => {
-      this.resetActivePostion()
+    const currentIndex = this.props.children.map(pane => pane.key).indexOf(this.state.activeKey)
+    this.setState({ currentIndex }, () => {
+      this.resetNavPosition()
       this.updateInkBarPosition()
-    }, 100)
-    // })
+    })
   }
-
+  // update bar
   updateInkBarPosition() {
-    if (!this.card && !this.sample && this.animated) {
-      const nav = this.navRef.current.children[this.currentIndex]
+    const { card, sample, animated } = this.props
+    if (!card && !sample && animated) {
+      const nav = this.navRef.current.children[this.state.currentIndex]
       if (nav) {
-        const inkbar = this.$refs.inkbar
+        const inkbar = this.inkbarRef.current
         inkbar.style.width = `${nav.offsetWidth}px`
         inkbar.style.transform = `translate3d(${nav.offsetLeft}px, 0px, 0px)`
       }
     }
   }
 
-  updateNav() {
-    // this.$nextTick(e => {
+  updateControlArrow() {
     // update inkbar position
-
     // set pane has scroll arrow
     const navbox = this.navboxRef.current
     if (!navbox) return;
-    this.scrollable = navbox.scrollWidth > navbox.clientWidth
-    // })
+    const scrollable = navbox.scrollWidth > navbox.clientWidth
+    this.setState({ scrollable })
   }
 
   renderNav() {
-    return this.state.tabPanes.map((pane, index) => {
-      const { icon, title, closable,disabled } = pane.props
+    return React.Children.map(this.props.children, (pane, index) => {
+      const { icon, title, closable, disabled } = pane.props
       const prop = {
         key: pane.key,
-        className: this.className(['k-tabs-tab', { ['k-tabs-tab-active']: pane.key == this.props.activeKey, ['k-tabs-tab-disabled']: disabled }]),
+        className: this.className(['k-tabs-tab', { ['k-tabs-tab-active']: pane.key == this.state.activeKey, ['k-tabs-tab-disabled']: disabled }]),
         onClick: () => this.tabClick(pane, index)
       }
       return <div {...prop}>
         {icon ? <Icon type={icon} /> : null}
         {title}
-        {closable && this.card ? <Icon type="close" className="k-tabs-close" onClick={e => this.closeTab(pane.$vnode.key, e)} /> : null}
+        {closable && this.props.card ? <Icon type="close" className="k-tabs-close" onClick={e => this.closeTab(pane.key, e)} /> : null}
       </div>
     })
   }
 
   render() {
     const { children, extra, card, animated, centered, sample, tabPanes } = this.props
-    const { scrollable, nextBtnDisabed, prevBtnDisabed } = this.state
+    const { scrollable, nextBtnDisabed, prevBtnDisabed, currentIndex } = this.state
     const classes = [
       "k-tabs",
       {
@@ -238,31 +231,35 @@ export default class Tabs extends Kui {
 
 
     if (animated && !card && !sample) {
-      paneStyle.marginLeft = `-${100 * this.currentIndex}%`
+      paneStyle.marginLeft = `-${100 * currentIndex}%`
     }
 
     const navCls = ['k-tabs-nav-container', { ['k-tabs-nav-container-scroll']: scrollable }]
+    const index = -1
     return (
       <div className={this.className(classes)}>
         <div className="k-tabs-bar">
-          {extra ? <div className="k-tabs-extra" ref={this.extraRef}>{extra}</div> : null}
           <div className={this.className(navCls)}>
-            {scrollable ? [<span className={this.className(['k-tabs-tab-btn-prev', { 'k-tabs-tab-btn-prev-disabed': prevBtnDisabed }])}
-              onClick={e => this.scroll('left')}><Icon type="chevron-back" /></span>,
-            <span className={this.className(['k-tabs-tab-btn-next', { 'k-tabs-tab-btn-next-disabed': nextBtnDisabed }])}
-              onClick={e => this.scroll('right')}><Icon type="chevron-forward" /></span>] : null}
+            {scrollable ?
+              <span key="btnprev" className={this.className(['k-tabs-tab-btn-prev', { 'k-tabs-tab-btn-prev-disabed': prevBtnDisabed }])}
+                onClick={e => this.scroll('left')}><Icon type="chevron-back" /></span> : null}
             <div className="k-tabs-nav-wrap" ref={this.navboxRef}>
               <div className="k-tabs-nav" style={scrollStyle} ref={this.navscrollRef}>
                 {!card && animated && !sample ? <div className="k-tabs-ink-bar" ref={this.inkbarRef} /> : null}
                 <div className="k-tabs-nav-inner" ref={this.navRef}>{this.renderNav()}</div>
               </div>
             </div>
+            {scrollable ?
+              <span key="btnnext" className={this.className(['k-tabs-tab-btn-next', { 'k-tabs-tab-btn-next-disabed': nextBtnDisabed }])}
+                onClick={e => this.scroll('right')}><Icon type="chevron-forward" /></span> : null}
           </div>
+          {extra ? <div className="k-tabs-extra" ref={this.extraRef}>{extra}</div> : null}
         </div>
         <div className="k-tabs-content" style={paneStyle}>
           {
             React.Children.map(children, (child) => {
-              return React.cloneElement(child, { eventKey: child.key })
+              const key = child.key || `pane_${index++}`
+              return React.cloneElement(child, { eventKey: key, key })
             })
           }
         </div>

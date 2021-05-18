@@ -17,7 +17,7 @@ class Demo extends React.Component {
     const {activeKey} = this.state
     return(
       <div style={{background:'#f2f2f2',padding:'10px'}}>
-        <Tabs activeKey={activeKey} sample onChange={()=>this.change}>
+        <Tabs activeKey={activeKey} sample onChange={this.change.bind(this)}>
           <Tabs.Pane key="1" title="Tab 1">
             <p>Content of Tab Pane 1</p>
             <p>Content of Tab Pane 1</p>

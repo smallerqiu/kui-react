@@ -15,7 +15,12 @@ export default class Index extends React.Component {
       <div className="switch-demo">
         <Info className="typo" />
         <Base />
-        
+        <Disabled />
+        <Icon />
+        <Extra />
+        <Card />
+        <Closable />
+        <Sample />
         <CN className="typo" />
       </div>
     )

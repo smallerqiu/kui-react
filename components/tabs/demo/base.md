@@ -10,13 +10,13 @@ class Demo extends React.Component {
   state = {
     current:'1'
   }
-  change(key){
+  onChange(key){
     console.log(key)
   }
   render(){
     const {current} = this.state
     return(
-      <Tabs activeKey={current} onChange={()=>this.change()}>
+      <Tabs activeKey={current} onChange={(key)=>this.onChange(key)}>
         <Tabs.Pane key="1" title="Tab 1">
           Content of Tab Pane 1
         </Tabs.Pane>

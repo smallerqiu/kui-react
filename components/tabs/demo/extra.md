@@ -4,7 +4,7 @@
 </cn>
 
 ```tsx
-import { Tabs } from 'react-kui';
+import { Tabs , Button } from 'react-kui';
 
 class Demo extends React.Component {
   state = {
@@ -12,9 +12,9 @@ class Demo extends React.Component {
   }
   render(){
     const {activeKey} = this.state
-    const extra = <Button>Extra Action</Button>
+    const extra = <Button size="small">Extra Action</Button>
     return(
-      <Tabs activeKey={current} extra={extra}>
+      <Tabs activeKey={activeKey} extra={extra}>
         <Tabs.Pane key="1" title="Tab 1">
           Content of Tab Pane 1
         </Tabs.Pane>
