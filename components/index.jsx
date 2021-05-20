@@ -29,6 +29,7 @@ import Progress from './progress'
 import Page from './page'
 import Radio from './radio'
 import Select from './select'
+import Spin from './spin'
 import Switch from './switch'
 // import Steps from './steps'
 import Tabs from './tabs'
@@ -74,6 +75,7 @@ export {
     Row, Col,
     Radio,
     Select,
+    Spin,
     Switch,
     // Steps,
     Tag,

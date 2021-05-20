@@ -59,6 +59,7 @@ let components = [
   { path: 'radio', component: lazy(() => import(/*webpackChunkName:'radio'*/'../components/radio/demo')) },
   // { path:'sponsor',component: lazy(() => import(/*webpackChunkName:'sponsor'*/'../components/sponsor/demo'))},
   // { path:'select',component: lazy(() => import(/*webpackChunkName:'select'*/'../components/select/demo'))},
+  { path:'spin',component: lazy(() => import(/*webpackChunkName:'spin'*/'../components/spin/demo'))},
   // { path:'start',component: lazy(() => import(/*webpackChunkName:'start'*/'../components/start/demo'))},
   // { path:'steps',component: lazy(() => import(/*webpackChunkName:'steps'*/'../components/steps/demo'))},
   { path: 'Switch', component: lazy(() => import(/*webpackChunkName:'switch'*/'../components/switch/demo')) },
