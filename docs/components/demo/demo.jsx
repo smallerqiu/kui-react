@@ -1,11 +1,12 @@
 
 import React from 'react'
-import { Icon, ToolTip,  Message } from 'react-kui'
+import { Icon, Tooltip, Message } from 'react-kui'
 import Transition from '../../../components/base/transition'
 import { Kui, PropTypes } from '@/components/kui'
+import copyText from 'copy-to-clipboard';
 // import Collapse from '@/components/collapse/collapse'
 import './demo.less'
-import { CopyToClipboard } from 'react-copy-to-clipboard';
+// import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 
 
@@ -14,9 +15,28 @@ export default class Demo extends Kui {
     expand: false,
   }
 
+  // codeRef = React.createRef()
+
   copy = () => {
-    Message.success('Copied')
+
+    /*     const range = document.createRange()
+        getSelection().removeAllRanges()
+        range.selectNode(this.codeRef.current) // range.selectNodeContents(this.codeRef.current)
+        getSelection().addRange(range)
+        const tag = document.execCommand('Copy')
+        getSelection().removeAllRanges()
+        
+        if (tag) { */
+
+    const code = this.props.sourceCode.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
+
+    if (copyText(code)) {
+      Message.success('Copied')
+    } else {
+      Message.success('Copied failed')
+    }
   }
+
 
   toggle = () => {
     this.setState({ expand: !this.state.expand })
@@ -24,7 +44,6 @@ export default class Demo extends Kui {
   render() {
     const { expand } = this.state
     let { description, code, children, sourceCode } = this.props
-    sourceCode = sourceCode.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"')
     return (
       <div className="k-demo">
         <div className="k-demo-main">
@@ -34,14 +53,14 @@ export default class Demo extends Kui {
             </div>
           </div>
           <div className="k-code-actions">
-            {/* <ToolTip title="Copy code"> */}
-            <CopyToClipboard text={sourceCode} onCopy={() => this.copy()}>
-              <Icon type="copy-outline" />
-            </CopyToClipboard>
-            {/* </ToolTip> */}
-            {/* <ToolTip title={expand ? 'Hide code' : 'Show code'}> */}
-            <Icon type={'code' + (expand ? '-working' : '')} onClick={() => this.toggle()} />
-            {/* </ToolTip> */}
+            {/* <CopyToClipboard text={sourceCode} onCopy={() => this.copy()}> */}
+            <Tooltip title="Copy code">
+              <Icon type="copy-outline" onClick={() => this.copy()} />
+            </Tooltip>
+            {/* </CopyToClipboard> */}
+            <Tooltip title={expand ? 'Hide code' : 'Show code'}>
+              <Icon type={'code' + (expand ? '-working' : '')} onClick={() => this.toggle()} />
+            </Tooltip>
           </div>
         </div>
         <Transition show={expand}>

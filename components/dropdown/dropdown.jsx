@@ -8,6 +8,7 @@ export default class Dropdown extends Kui {
     trigger: 'hover',
     transfer: true,
     placement: 'bottom-left',
+    showPlacementArrow: false
   }
   static propTypes = {
     dark: PropTypes.bool,
@@ -42,6 +43,9 @@ export default class Dropdown extends Kui {
   render() {
     let { show } = this.state
     let { dark, trigger, transfer, showPlacementArrow, placement, content, children } = this.props
+    if (trigger == 'contextmenu') {
+      showPlacementArrow = false
+    }
     let props = {
       preCls: 'dropdown',
       dark, trigger, transfer, showPlacementArrow,

@@ -38,13 +38,11 @@ export default class Tabs extends Kui {
     let { activeKey, children } = this.props
     if (prevProps.activeKey != activeKey) {
       this.setState({ activeKey }, () => {
-        console.log('aaa')
         this.updateIndex()
       })
-    } else if (prevProps.children.length != children.length) { 
+    } else if (prevProps.children.length != children.length) {
       setTimeout(() => {
-      this.resetNavPosition()
-        
+        this.resetNavPosition()
       }, 100);
     }
   }

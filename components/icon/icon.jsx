@@ -10,9 +10,9 @@ export default class Icon extends Kui {
     size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     color: PropTypes.string
   }
-  
+
   static defaultProps = {
-  
+
   }
   procss(str) {
     if (str) {
@@ -41,20 +41,23 @@ export default class Icon extends Kui {
     return null
   }
   render() {
-    const { size, color, onClick, type, spin } = this.props
+    const { children, size, color, onClick, onMouseEnter, onMouseLeave, onContextMenu, type, spin } = this.props
     const props = {
       className: this.className(['k-icon', { 'k-load-loop': spin }]),
       style: this.styles({
         fontSize: size ? Number(size) : null,
         color
       }),
-      onClick
+      onClick, onMouseEnter, onMouseLeave, onContextMenu
     }
 
     const pathNode = (icons[type] || []).map((i, x) => {
       return <path key={x} d={i.d} style={this.procss(i.s || 'fill:currentColor;')} />
     })
-    return <i {...props}><svg id={type} viewBox='0 0 512 512' width="1em" height="1em">{pathNode}</svg></i>
+    return <i {...props}>
+      <svg id={type} viewBox='0 0 512 512' width="1em" height="1em">{pathNode}</svg>
+      {children}
+    </i>
   }
 }
 

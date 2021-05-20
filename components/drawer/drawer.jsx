@@ -106,14 +106,14 @@ export default class Drawer extends Kui {
     const canelBtn = <Button onClick={cancel}>{cancelText}</Button>
     const okBtn = <Button type="primary" onClick={ok}>{okText}</Button>
     const footNode = (
-      hasFooter ? <div class="k-drawer-footer">
+      hasFooter ? <div className="k-drawer-footer">
         {$slots.footer}
         {!$slots.footer && canelBtn}
         {!$slots.footer && okBtn}
       </div> : null
     )
     const closeNode = closable
-      ? <span class="k-drawer-close" onClick={close}><Icon type="close" /></span>
+      ? <span className="k-drawer-close" onClick={close}><Icon type="close" /></span>
       : null
     const transitionName = `k-drawer-${placement}`
 
@@ -126,16 +126,16 @@ export default class Drawer extends Kui {
     if (placement == 'top' || placement == 'bottom') styles.height = this.height + 'px'
     // const wrapCls =
     return (
-      this.init ? <div class={classes} v-transfer={true}>
+      this.init ? <div className={classes} v-transfer={true}>
         <transition name="fade">
-          <div class="k-drawer-mask" ref="mask" v-show={visible} onClick={this.maskToClose}></div>
+          <div className="k-drawer-mask" ref="mask" v-show={visible} onClick={this.maskToClose}></div>
         </transition>
         <transition name={transitionName}>
-          <div class="k-drawer-box" ref="drawer" v-show={visible} style={styles}>
-            <div class="k-drawer-content">
+          <div className="k-drawer-box" ref="drawer" v-show={visible} style={styles}>
+            <div className="k-drawer-content">
               {closeNode}
-              <div class="k-drawer-header"><div class="k-drawer-header-inner">{title}</div></div>
-              <div class="k-drawer-body">
+              <div className="k-drawer-header"><div className="k-drawer-header-inner">{title}</div></div>
+              <div className="k-drawer-body">
                 {$slots.default}
               </div>
               {footNode}

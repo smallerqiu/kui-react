@@ -5,7 +5,7 @@
 
 ```vue
 <template>
-  <div class="demo-collapse">
+  <div className="demo-collapse">
     <ColorPicker showMode v-model="color" :defalut-colors="colors" />
   </div>
 </template>

@@ -5,7 +5,7 @@
 
 ```vue
 <template>
-  <div class="demo-collapse">
+  <div className="demo-collapse">
    Default: <ColorPicker showMode v-model="color1"/>
    <br/>
    Rgba: <ColorPicker showMode v-model="color2" mode="rgba"/>

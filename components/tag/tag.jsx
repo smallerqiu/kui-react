@@ -41,7 +41,7 @@ export default class Tag extends Kui {
         <span className="k-tag-text">
           {children}
         </span>
-        {closeable ? <Icon type="close" class="k-tag-close" onClick={this.onClose} /> : null}
+        {closeable ? <Icon type="close" className="k-tag-close" onClick={this.onClose} /> : null}
       </div>
     </Transition>)
   }

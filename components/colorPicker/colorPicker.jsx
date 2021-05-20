@@ -348,28 +348,28 @@ export default {
         let { currentMode, renderValueInput } = this, node = []
         if (currentMode == 'rgba') {
           let keys = ['R', 'G', 'B', 'A']
-          let v = <div class="k-color-picker-val">{keys.map(k => renderValueInput(k))}</div>
-          let k = <div class="k-color-picker-key">{keys.map(k => <span>{k}</span>)}</div>
+          let v = <div className="k-color-picker-val">{keys.map(k => renderValueInput(k))}</div>
+          let k = <div className="k-color-picker-key">{keys.map(k => <span>{k}</span>)}</div>
           node.push(v, k)
         } else if (currentMode == 'hsla') {
           let keys = ['H', 'S', 'L', 'A']
-          let v = <div class="k-color-picker-val">{keys.map(k => renderValueInput(k))}</div>
-          let k = <div class="k-color-picker-key">{keys.map(k => <span>{k}</span>)}</div>
+          let v = <div className="k-color-picker-val">{keys.map(k => renderValueInput(k))}</div>
+          let k = <div className="k-color-picker-key">{keys.map(k => <span>{k}</span>)}</div>
           node.push(v, k)
         } else { //hex
-          let v = <div class="k-color-picker-val">{renderValueInput('HEX')}</div>
-          let k = <div class="k-color-picker-key"><span>HEX</span></div>
+          let v = <div className="k-color-picker-val">{renderValueInput('HEX')}</div>
+          let k = <div className="k-color-picker-key"><span>HEX</span></div>
           node.push(v, k)
         }
         let btn = <Button icon="flash" size="small" circle onClick={this.setMode} />
         node.push(btn)
-        return <div class={`k-color-picker-mode k-color-picker-${currentMode}`}>{node}</div>
+        return <div className={`k-color-picker-mode k-color-picker-${currentMode}`}>{node}</div>
       }
     },
     renderDefaultColor() {
       let color = this.defalutColors.map(c => <span style={"background-color:" + c} onClick={e => this.valueChange('COLOR', c)}></span>)
       let okBtn = <Button icon="color-fill" circle onClick={this.updateValue} />
-      return <div class="k-coclor-picker-defaults">{[color, okBtn]}</div>
+      return <div className="k-coclor-picker-defaults">{[color, okBtn]}</div>
     },
     renderDrop() {
       let paint = this.renderPaint()
@@ -391,18 +391,18 @@ export default {
         }
       }
       return (
-        // <Drop class="k-color-picker-dropdown" ref="dom" v-show={this.showDrop} style={dropStyle} v-transfer={this.transfer} v-resize={this.setPosition}>
+        // <Drop className="k-color-picker-dropdown" ref="dom" v-show={this.showDrop} style={dropStyle} v-transfer={this.transfer} v-resize={this.setPosition}>
         <Drop {...props}>
           {paint}
-          < span class="k-color-picker-paint-dot" style={'left:' + this.paintPointer.x + 'px;top:' + this.paintPointer.y + 'px'} ></span >
-          <div class="k-color-picker-bar">
-            <div class="k-color-picker-avatar">
-              <div class="k-color-picker-avatar-inner" style={`background-color:rgba(${this.R}, ${this.G}, ${this.B}, ${this.A})`}></div>
+          < span className="k-color-picker-paint-dot" style={'left:' + this.paintPointer.x + 'px;top:' + this.paintPointer.y + 'px'} ></span >
+          <div className="k-color-picker-bar">
+            <div className="k-color-picker-avatar">
+              <div className="k-color-picker-avatar-inner" style={`background-color:rgba(${this.R}, ${this.G}, ${this.B}, ${this.A})`}></div>
             </div>
-            <div class="k-color-picker-bar-box">
+            <div className="k-color-picker-bar-box">
               {[hue, alpha]}
-              <span class="k-color-picker-hue-dot" style={'left:' + this.huePointer.x + 'px'}></span>
-              <span class="k-color-picker-alpha-dot" style={'left:' + this.alphaPointer.x + 'px'}></span>
+              <span className="k-color-picker-hue-dot" style={'left:' + this.huePointer.x + 'px'}></span>
+              <span className="k-color-picker-alpha-dot" style={'left:' + this.alphaPointer.x + 'px'}></span>
             </div>
           </div>
           {valueNode}
@@ -424,10 +424,10 @@ export default {
         'k-color-picker-lg': this.size == 'large'
       },
     ]
-    return (<div class={style}>
-      <div class="k-color-picker-selection" onClick={this.toggleDrop}>
-        <div class="k-color-picker-color">
-          <div class="k-color-picker-color-inner" style={`background-color:${this.currentColor}`}></div>
+    return (<div className={style}>
+      <div className="k-color-picker-selection" onClick={this.toggleDrop}>
+        <div className="k-color-picker-color">
+          <div className="k-color-picker-color-inner" style={`background-color:${this.currentColor}`}></div>
         </div>
         <Icon type="chevron-down" />
       </div>

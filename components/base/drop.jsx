@@ -80,12 +80,12 @@ export default class BaseDrop extends Kui {
   }
   onExited(el) {
     if (el) {
-      el.className += ' k-menu-hidden'
+      el.className += ` k-${this.props.preCls}-hidden`
     }
   }
   onEnter(el) {
     if (el) {
-      el.className = el.className.replace('k-menu-hidden', '')
+      el.className = el.className.replace(`k-${this.props.preCls}-hidden`, '')
     }
   }
 

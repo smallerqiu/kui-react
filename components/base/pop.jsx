@@ -18,7 +18,7 @@ export default class BasePop extends Kui {
 
   static defaultProps = {
     trigger: 'hover',
-    // showPlacementArrow: false,
+    showPlacementArrow: true,
     placement: 'top',
     okText: '确定',
     cancelText: '取消',
@@ -29,6 +29,7 @@ export default class BasePop extends Kui {
     trigger: PropTypes.string,
     confirm: PropTypes.bool,
     dark: PropTypes.bool,
+    color: PropTypes.string,
     transfer: PropTypes.bool,
     show: PropTypes.bool,
     title: PropTypes.any,
@@ -118,7 +119,7 @@ export default class BasePop extends Kui {
   }
 
   renderPopup() {
-    let { placement, title, preCls, content, confirm, transfer,
+    let { placement, title, preCls, content, confirm, transfer, color,
       width, trigger,
       showPlacementArrow, cancelText, okText } = this.props, childNode;
     if (showPlacementArrow) {
@@ -136,8 +137,8 @@ export default class BasePop extends Kui {
       }
       contentNode = contentNode ? <div key="content" className={`k-${preCls}-inner-content`}>{contentNode}</div> : null;
 
-      childNode = [<div className={`k-${preCls}-arrow`} key="arrow"></div>,
-      <div className={`k-${preCls}-inner`} key="inner">{[titleNode, contentNode, footerNode]}</div>]
+      childNode = [<div className={`k-${preCls}-arrow`} key="arrow"><div className={`k-${preCls}-arrow-content`} style={{ backgroundColor: /^#/.test(color) ? color : null }}></div></div>,
+      <div className={`k-${preCls}-inner`} key="inner" style={{ backgroundColor: /^#/.test(color) ? color : null }}>{[titleNode, contentNode, footerNode]}</div>]
 
     } else {
       childNode = content
@@ -151,9 +152,11 @@ export default class BasePop extends Kui {
       selectionRef: this.selectionRef,
       transfer,
       show: opened,
-      className: `k-${preCls}-content`,
+      className: this.className([`k-${preCls}-content`, { [`k-${preCls}-${color}`]: color && !/^#/.test(color) }]),
       width,
+      preCls,
       placement,
+      color,
       trigger,
       transitionName: `k-${preCls}`,
       onMouseEnter: e => {
@@ -193,7 +196,7 @@ export default class BasePop extends Kui {
         onMouseLeave && onMouseLeave(e)
         this.mouseLeave(e)
       },
-      onClick: e => {
+      onClick: e => { 
         onClick && onClick(e)
         this.onClick(e)
       }

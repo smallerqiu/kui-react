@@ -2,7 +2,7 @@ import React from 'react'
 import Icon from '../icon'
 import { isReactNode } from '../_tool/utils'
 import { Kui, PropTypes } from '../kui'
-// import Tooltip from '../tooltip'
+import Tooltip from '../tooltip'
 
 export default class MenuItem extends Kui {
   static propTypes = {
@@ -85,15 +85,14 @@ export default class MenuItem extends Kui {
     const showTooltip = !SubMenu && Menu.props.inlineCollapsed
     let titleNode = children.length > 1 ? <span>{children}</span> : (isReactNode(children) ? children : <span>{children}</span>)
     return (
-      // {/* <Tooltip placement="right"> */}
-      <li {...props}>
-        {icon ? <Icon type={icon} className={`k-${preCls}-item-icon`} /> : null}
-        {titleNode}
-        {currentMode == 'vertical' && verticalAffixed && SubMenu ?
-          <Icon onClick={this.starClick.bind(this)} className="k-menu-item-icon-affix" type={currentAffixed ? "star" : "star-outline"} /> : null}
-      </li>
-      // {/* {showTooltip ? <template slot="title">{children}</template> : null} */}
-      // {/* </Tooltip> */}
+      <Tooltip placement="right" title={showTooltip ? children : null}>
+        <li {...props}>
+          {icon ? <Icon type={icon} className={`k-${preCls}-item-icon`} /> : null}
+          {titleNode}
+          {currentMode == 'vertical' && verticalAffixed && SubMenu ?
+            <Icon onClick={this.starClick.bind(this)} className="k-menu-item-icon-affix" type={currentAffixed ? "star" : "star-outline"} /> : null}
+        </li>
+      </Tooltip>
     )
   }
 }

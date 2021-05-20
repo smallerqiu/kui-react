@@ -23,7 +23,7 @@ import Notice from './notice'
 // import Modal from './modal'
 import { Menu, SubMenu } from './menu'
 import { Row, Col } from './grid'
-// import Poptip from './poptip'
+import Poptip from './poptip'
 import Page from './page'
 import Radio from './radio'
 import Select from './select'
@@ -67,7 +67,7 @@ export {
     SubMenu,
     Message,
     Notice,
-    // Poptip, 
+    Poptip, 
     Page,
     Row, Col,
     Radio,
