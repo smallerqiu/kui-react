@@ -25,6 +25,7 @@ import { Menu, SubMenu } from './menu'
 import { Row, Col } from './grid'
 import Poptip from './poptip'
 import Popconfirm from './popconfirm'
+import Progress from './progress'
 import Page from './page'
 import Radio from './radio'
 import Select from './select'
@@ -83,6 +84,7 @@ export {
     // Transfer,
     Tooltip,
     Popconfirm,
+    Progress,
     // Tree, TreeSelect,
     // Upload
 }
