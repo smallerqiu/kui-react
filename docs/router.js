@@ -53,6 +53,7 @@ let components = [
   // { path:'modal',component: lazy(() => import(/*webpackChunkName:'modal'*/'../components/modal/demo'))},
   { path: 'notice', component: lazy(() => import(/*webpackChunkName:'notice'*/'../components/notice/demo')) },
   { path:'poptip',component: lazy(() => import(/*webpackChunkName:'poptip'*/'../components/poptip/demo'))},
+  { path:'popconfirm',component: lazy(() => import(/*webpackChunkName:'popconfirm'*/'../components/popconfirm/demo'))},
   { path: 'page', component: lazy(() => import(/*webpackChunkName:'page'*/'../components/page/demo')) },
   { path: 'radio', component: lazy(() => import(/*webpackChunkName:'radio'*/'../components/radio/demo')) },
   // { path:'sponsor',component: lazy(() => import(/*webpackChunkName:'sponsor'*/'../components/sponsor/demo'))},

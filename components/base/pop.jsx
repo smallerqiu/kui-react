@@ -128,8 +128,8 @@ export default class BasePop extends Kui {
         contentNode = [<Icon type="help-circle" key="icon" />, <div key="title" className={`k-${preCls}-title`}>{title}</div>]
 
         footerNode = <div key="footer" className={`k-${preCls}-footer`}>
-          <Button size="small" onClick={this.cancel}>{cancelText}</Button>
-          <Button type="primary" size="small" onClick={this.ok}>{okText}</Button>
+          <Button size="small" onClick={this.cancel.bind(this)}>{cancelText}</Button>
+          <Button type="primary" size="small" onClick={this.ok.bind(this)}>{okText}</Button>
         </div>
       } else {
         titleNode = title ? <div key="title" className={`k-${preCls}-title`}>{title}</div> : ''
