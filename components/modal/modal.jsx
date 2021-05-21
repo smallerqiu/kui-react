@@ -1,204 +1,260 @@
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
-import { Button, Transition, Icon } from '../index'
+import Icon from '../icon'
+import Button from '../button'
+import Transfer from '../base/transfer'
+import { CSSTransition } from 'react-transition-group'
+import { measureScrollBar, getOffset } from '../_tool/utils'
+
+let cacheBodyOverflow = {};
 
 export default class Modal extends Kui {
   static defaultProps = {
-    type: 'modal',
-    icon: 'success',
-    title: '我是一个标题',
-    width: 520,
     okText: '确定',
     cancelText: '取消',
+    mask: true,
+    maskClosable: true,
   }
   static propTypes = {
-    footer: PropTypes.node,
+    visible: PropTypes.bool,
+    title: PropTypes.string,
+    okText: PropTypes.string,
+    cancelText: PropTypes.string,
+    top: PropTypes.number,
+    width: PropTypes.number,
+    mask: PropTypes.bool,
+    maskClosable: PropTypes.bool,
+    maximized: PropTypes.bool,
+    centered: PropTypes.bool,
+    draggable: PropTypes.bool,
+    loading: PropTypes.bool,
+    footer: PropTypes.any,
     onOk: PropTypes.func,
     onClose: PropTypes.func,
     onCancel: PropTypes.func,
-    type: PropTypes.oneOf(['modal', 'toast']),
-    color: PropTypes.string,
-    icon: PropTypes.string,
-    visible: PropTypes.bool,
-    title: PropTypes.string,
-    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    okText: PropTypes.string,
-    cancelText: PropTypes.string,
-    isMove: PropTypes.bool,
+
+    // type: PropTypes.oneOf(['modal', 'toast']),
+    // color: PropTypes.string,
+    // icon: PropTypes.string,
   }
   state = {
-    visible: props.visible,
-    left: 0,
-    top: 100,
+    rendered: false,
+    show: this.props.visible,
+    showInner: this.props.visible,
+    left: '',
+    currentTop: this.props.top,
     isMouseDown: false,
-    startPos: { x: 0, y: 0 }
+    mousedownIn: false,
+    startPos: { x: 0, y: 0 },
+    showPoint: { x: 0, y: 0 }
   }
-  onKeyUp = this.onKeyUp.bind(this)
+
   modalRef = React.createRef()
-  onStop(e) {
-    e.cancelBubble = true
-  }
-  getColor() {
-    return this.props.color ? { color: this.props.color } : {};
-  }
-  getIcon() {
-    let { icon } = this.props
-    let icons = {
-      info: "ios-information-circle",
-      error: "ios-close-circle",
-      success: "ios-checkmark-circle",
-      warning: "ios-alert"
-    };
-    return this.className([
-      "k-toast-icon",
-      {
-        [`k-ion-${icons[icon]}`]: icons[icon],
-        [`k-ion-${icon}`]: !icons[icon]
-      }
-    ])
-  }
-  onMouseDown(e) {
-    if (e.button == 0) {
-      this.setState({
-        isMouseDown: true,
-        // x: this.refs.Modal.offsetLeft,
-        // y: this.refs.Modal.offsetTop,
-        startPos: { x: e.clientX, y: e.clientY }
-      })
+  headerRef = React.createRef()
+  elRef = React.createRef()
+
+  componentDidUpdate(prevProps, prevState, snap) {
+    let { visible } = this.props
+    if (visible != prevProps.visible) {
+      this.updateProp(visible)
+    }
+    if (visible) {
+      this.setPos()
     }
   }
-  onMouseMove(e) {
-    if (this.state.isMouseDown && this.props.isMove) {
-      let { startPos, left, top } = this.state
-      let movex = e.clientX - startPos.x
-      let movey = e.clientY - startPos.y
-      this.setState({
-        left: left + movex,
-        top: top + movey,
-        startPos: { x: e.clientX, y: e.clientY },
+
+  componentDidMount() {
+    this.mousedown = this.mousedown.bind(this)
+    this.mousemove = this.mousemove.bind(this)
+    this.mouseup = this.mouseup.bind(this)
+    document.addEventListener('mousedown', this.mousedown)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.mousedown)
+    this.resetBodyStyle(false)
+  }
+
+  updateProp(visible) {
+    if (visible) {
+      // this.rendered = true
+      this.setState({ rendered: true }, () => {
+        this.setState({ show: visible, showInner: visible })
       })
+    } else {
+      this.setState({ show: false }, () => {
+        setTimeout(() => {
+          this.setState({ showInner: false })
+        }, 230);
+      })
+      // setTimeout(() => {
+      //   this.showInner = false
+      // }, 300);
     }
+    this.resetBodyStyle(visible)
   }
-  onMouseUp() {
-    this.setState({
-      isMouseDown: false,
-    })
-  }
-  onOk() {
-    this.props.onOk && this.props.onOk()
-    this.onClose();
-  }
-  onCancel() {
-    this.props.onCancel && this.props.onCancel()
-    this.onClose();
-  }
-  onClose() {
-    this.props.onClose && this.props.onClose()
-    this.setState({
-      visible: false
-    })
-    // setTimeout(() => { this.left = 0; this.top = 100; }, 500);
-  }
-  classes() {
-    return this.className([
-      "k-modal",
-      {
-        ["k-toast"]: this.props.type == "toast"
+  resetBodyStyle(opened) {
+    if (!this.state.show && !cacheBodyOverflow.hasOwnProperty('overflow')) {
+      cacheBodyOverflow = {
+        width: document.body.width,
+        overflow: document.body.overflow,
+        overflowX: document.body.overflowX,
+        overflowY: document.body.overflowY,
       }
-    ])
-  }
-  headerStyle() {
-    return this.props.isMove ? { cursor: 'move' } : {};
-  }
-  modalStyles() {
-    let style = {};
-    let { width } = this.props
-    let { top, left } = this.state
-    style.width = `${width}px`;
-    style.left = `${left}px`;
-    style.top = `${top}px`;
-    return style;
-  }
-  /*   componentWillReceiveProps(props) {
-      if (this.state.visible !== props.visible) {
-        this.setState({
-          visible: props.visible
+    }
+    if (opened) {
+      let barWidth = measureScrollBar(true)
+      if (barWidth) {
+        document.body.style.width = `calc(100% - ${barWidth}px)`
+        document.body.style.overflow = `hidden`
+      }
+    } else {
+      setTimeout(() => {
+        Object.keys(cacheBodyOverflow).forEach(key => {
+          document.body.style[key] = cacheBodyOverflow[key] || ''
+          delete cacheBodyOverflow[key]
         })
-      }
-    } */
-  onKeyUp(e) {
-    if (this.state.visible && e.keyCode == 27) {
-      this.setState({ visible: false })
-      this.props.onClose && this.props.onClose();
+      }, 300)
     }
+  }
+  setPos() {
+    let { showPoint: { x, y }, show } = this.state
+
+    if (show) {
+      let { left, top } = getOffset(this.modalRef.current)
+      this.modalRef.current.style['transform-origin'] = `${x - left}px ${y - top}px`
+    }
+  }
+  ok() {
+    this.props.onOk && this.props.onOk()
+  }
+  cancel() {
+    this.close()
+    this.props.onCancel && this.props.onCancel()
+  }
+  close() {
+    this.props.onCancel && this.props.onCancel()
+    this.props.onClose && this.props.onClose()
   }
   clickMaskToClose(e) {
-    if (!this.modalRef.current.contains(e.target) && !this.props.isMove) {
-      this.setState({ visible: false })
-      this.props.onClose && this.props.onClose();
+    // console.log(this.mousedownIn)
+    let { loading, maskClosable } = this.props
+    let { mousedownIn } = this.state
+    if (!loading && maskClosable && !this.modalRef.current.contains(e.target) && !mousedownIn) {
+      this.close()
     }
   }
-  componentDidMount() {
-    document.addEventListener('keyup', this.onKeyUp);
-  }
-  componentWillUnmount() {
-    document.removeEventListener('keyup', this.onKeyUp);
-  }
-  renderWrap() {
-    let { type, children, footer, cancelText, okText, title } = this.props
-    let renderBody = () => {
-      if (type == 'modal')
-        return children || '我是内容';
-      else if (type == 'toast') {
-        return <div className="k-pull-center">
-          <span className={this.getIcon()} style={this.styles(this.getColor())}></span>
-          <div className="k-toast-content">
-            {children || '我是内容'}
-          </div>
-        </div>
-      }
+  mousemove(e) {
+    let { draggable } = this.props
+    let { isMouseDown, startPos, currentTop, left } = this.state
+    if (isMouseDown && draggable) {
+      let { x, y } = startPos
+      left += e.clientX - x
+      currentTop = currentTop || 100
+      currentTop += e.clientY - y
+      startPos = { x: e.clientX, y: e.clientY }
+      this.setState({ startPos, currentTop, left })
+      this.setPos()
+      e.preventDefault()
     }
-    let renderFooter = () => {
-      if (footer != undefined) {
-        return <div className="k-modal-footer"> {footer} </div>
-      }
-      else return <div className="k-modal-footer">
-        {type == 'modal' && <div className="k-pull-right">
-          <Button onClick={this.onCancel.bind(this)}>{cancelText}</Button>
-          <Button type="primary" onClick={this.onOk.bind(this)}>{okText}</Button>
-        </div>
-        }
-        {type == 'toast' && <div className="k-pull-center">
-          <Button type="gray" hollow onClick={this.onOk.bind(this)}>{okText}</Button>
-        </div>
-        }
-      </div>
+  }
+  mouseup(e) {
+    this.setState({ isMouseDown: false })
+    document.removeEventListener('mousemove', this.mousemove)
+    document.removeEventListener('mouseup', this.mouseup)
+  }
+  mousedown(e) {
+    let { show, startPos } = this.state
+    let { draggable } = this.props
+    let { current } = this.headerRef
+    if (!show) {
+      let showPoint = { x: e.clientX, y: e.clientY }
+      this.setState({ showPoint })
     }
-    return <div className="k-modal-wrap" onClick={this.clickMaskToClose.bind(this)} style={this.styles()}>
-      <div className="modal" ref={this.modalRef} style={this.styles(this.modalStyles())}>
-        <div className="k-modal-content">
-          <a className="k-modal-close" onClick={this.onClose.bind(this)}><Icon type="md-close" /></a>
-          {this.props.type == 'modal' && <div className="k-modal-header" style={this.styles(this.headerStyle())}
-            onMouseDown={this.onMouseDown.bind(this)}>
-            <div className="k-modal-header-inner">{title}</div>
-          </div>}
-          <div className="k-modal-body">
-            {renderBody()}
-          </div>
-          {renderFooter()}
-        </div>
-      </div>
-    </div>
+    if (e.button == 0 && draggable === true && current && current.contains(e.target)) {
+      startPos = { x: e.clientX, y: e.clientY }
+      this.setState({ startPos, isMouseDown: true },()=>{
+        // this.mousemove(e)
+        document.addEventListener('mousemove', this.mousemove)
+        document.addEventListener('mouseup', this.mouseup)
+      })
+     
+    }
+
+    let mousedownIn = show && this.modalRef.current && this.modalRef.current.contains(e.target)
+    this.setState({ mousedownIn })
   }
   render() {
+    let { content, mask, title, children,
+      cancelText, loading, okText, width,
+      maximized, centered, footer,
+      draggable } = this.props
+    let { left, currentTop, showInner, show, rendered } = this.state
 
-    return <div className={this.classes()} onMouseMove={this.onMouseMove.bind(this)} onMouseUp={this.onMouseUp.bind(this)}>
-      <Transition name="fade" show={this.state.visible} key="fsdafa">
-        <div className="k-modal-mask" ></div>
-      </Transition>
-      <Transition name="fadeease" show={this.state.visible} key="fff">
-        {this.renderWrap()}
-      </Transition>
-    </div>
+    //mask
+    let maskNode = null
+    if (mask) {
+      maskNode = <CSSTransition
+        timeout={300}
+        classNames="k-modal-fade"
+        in={show}>
+        <div className="k-modal-mask" />
+      </CSSTransition>
+    }
+
+    //content
+    if (!content) {
+      const contents = []
+      contents.push(<span key="btnClose" className="k-modal-close" onClick={this.close.bind(this)}><Icon type="close" /></span>)
+      contents.push(<div key="header" className="k-modal-header" ref={this.headerRef}><div className="k-modal-header-inner">{title}</div></div>)
+      contents.push(<div key="body" className="k-modal-body">{children}</div>)
+
+      //footer
+      if (footer !== null) {
+        // let footer = $slots.footer
+        if (!footer) {
+          footer = [<Button key="btnOk" onClick={this.cancel.bind(this)}>{cancelText}</Button>,
+          <Button key="btnCancel" onClick={this.ok.bind(this)} type="primary" loading={loading}>{okText}</Button>]
+        }
+        const footerNode = footer ? <div className="k-modal-footer" key="footer">{footer}</div> : null;
+
+        contents.push(footerNode)
+      }
+      content = <div className="k-modal-content" key="content">{contents}</div>
+    }
+
+    if (draggable) {
+      left = left || (document.body.offsetWidth - (width || 520)) / 2
+    }
+    const style = {
+      width: `${width}px`,
+      top: `${currentTop}px`,
+      left: `${left}px`,
+    }
+    const classes = [
+      'k-modal', {
+        'k-modal-draggable': draggable,
+        'k-modal-maximized': maximized,
+        'k-modal-centered': centered,
+        'k-modal-has-footer': footer !== null,
+      }
+    ]
+    return rendered ? <Transfer
+      dropRef={this.elRef}
+      show={rendered}
+      transfer={true}>
+      <div className={this.className(classes)} ref={this.elRef}>
+        {maskNode}
+        <div className="k-modal-wrap"
+          onClick={this.clickMaskToClose.bind(this)}
+          style={{ display: showInner ? '' : 'none' }}>
+          <CSSTransition timeout={300} classNames="k-modal-zoom" in={show}>
+            <div className="k-modal-inner" ref={this.modalRef} style={style}>
+              {content}
+            </div>
+          </CSSTransition>
+        </div>
+      </div>
+    </Transfer> : null
   }
 }

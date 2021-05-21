@@ -78,16 +78,6 @@ export default class BaseDrop extends Kui {
       this.props.onRender && this.props.onRender()
     }
   }
-  onExited(el) {
-    if (el) {
-      el.className += ` k-${this.props.preCls}-hidden`
-    }
-  }
-  onEnter(el) {
-    if (el) {
-      el.className = el.className.replace(`k-${this.props.preCls}-hidden`, '')
-    }
-  }
 
   render() {
     let { className, width, transfer, children, onMouseEnter, minWidth,
@@ -116,9 +106,7 @@ export default class BaseDrop extends Kui {
         onResize={this.resize.bind(this)}>
         <CSSTransition classNames={transitionName}
           in={visible} timeout={300}
-          unmountOnExit={!rendered}
-          onEnter={this.onEnter.bind(this)}
-          onExited={this.onExited.bind(this)}>
+          unmountOnExit={!rendered}>
           <div {...props}>
             {children}
           </div>

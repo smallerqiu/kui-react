@@ -19,11 +19,14 @@ export default class Transfer extends Kui {
     parentNode: null,
   }
   elRef = React.createRef()
+  rendered = false
+
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (this.props.transfer && this.props.show && !this.rendered) {
       this.rerender()
     }
   }
+  
   componentDidMount() {
     let { transfer, onScroll, onResize, docOnClick } = this.props
     let { popup } = this.state

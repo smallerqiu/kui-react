@@ -63,7 +63,6 @@ export default class Transition extends Component {
   onExited(el) {
     if (!el) return
     this.props.onExited && this.props.onExited(el)
-    el.className += ` ${this.props.name}-hidden`
     if (this.props.collapse) {
       el.style.height = '';
       el.style.paddingTop = '';
@@ -77,7 +76,6 @@ export default class Transition extends Component {
   onEnter(el) {
     if (!el) return
     this.props.onEnter && this.props.onEnter(el)
-    el.className = el.className.replace(`${this.props.name}-hidden`, '')
     if (this.props.collapse) {
       el.style.overflow = 'hidden';
       el.style.height = 0

@@ -63,10 +63,6 @@
   }
 }
 
-.k-collapse-hidden {
-  display: none;
-}
-
 .k-alert-info {
   background: tint(@main, 90%);
   border-color: tint(@main, 70%);
@@ -79,14 +75,18 @@
   transition: all .3s ease-in-out;
 }
 
-.k-collaplse-slide-enter-actived {
+.k-collaplse-enter-active {
   animation: slideIn 0.3s ease-in-out;
   animation-fill-mode: both;
 }
 
-.k-collaplse-slide-leave-actived {
+.k-collaplse-exit-active {
   animation: slideOut 0.3s ease-in-out;
   animation-fill-mode: both;
+}
+
+.k-collapse-exit-done {
+  display: none;
 }
 
 @keyframes slideIn {
