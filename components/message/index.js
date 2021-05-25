@@ -1,4 +1,3 @@
-import React from 'react'
 import newInstance from './instance'
 
 let messageInstance;

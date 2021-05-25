@@ -18,10 +18,10 @@
   
 参数 `options` 为对象，具体说明如下：
 
-| 属性       | 说明                                                | 类型       | 默认值   |
-|----------|---------------------------------------------------|----------|-------|
-| type     | 提示类型，提供 `info`、`success`、`error`、`warning` 四种可选类型 | String   | info  |
-| content  | 提示内容                                              | String   | -     |
-| duration | 自动关闭的延时，单位秒，0为 不自动关闭                              | Number   | 3     |
-| closable | 是否可手动关闭                                           | Boolean  | false |
-| close    | 关闭时的回调                                            | Function | -     |
+| 属性     | 说明                                                              | 类型     | 默认值 |
+|----------|-------------------------------------------------------------------|----------|--------|
+| type     | 提示类型，提供 `info`、`success`、`error`、`warning` 四种可选类型 | String   | info   |
+| content  | 提示内容                                                          | String   | -      |
+| duration | 自动关闭的延时，单位秒，0为 不自动关闭                            | Number   | 3      |
+| closable | 是否可手动关闭                                                    | Boolean  | false  |
+| onClose  | 关闭时的回调                                                      | Function | -      |

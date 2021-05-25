@@ -14,6 +14,8 @@ export default class Modal extends Kui {
     cancelText: '取消',
     mask: true,
     maskClosable: true,
+    transfer: true,
+    showPoint: { x: 0, y: 0 }
   }
   static propTypes = {
     visible: PropTypes.bool,
@@ -32,7 +34,8 @@ export default class Modal extends Kui {
     onOk: PropTypes.func,
     onClose: PropTypes.func,
     onCancel: PropTypes.func,
-
+    transfer: PropTypes.bool,
+    showPoint: PropTypes.object
     // type: PropTypes.oneOf(['modal', 'toast']),
     // color: PropTypes.string,
     // icon: PropTypes.string,
@@ -46,7 +49,7 @@ export default class Modal extends Kui {
     isMouseDown: false,
     mousedownIn: false,
     startPos: { x: 0, y: 0 },
-    showPoint: { x: 0, y: 0 }
+    showPoint: this.props.showPoint
   }
 
   modalRef = React.createRef()
@@ -68,6 +71,11 @@ export default class Modal extends Kui {
     this.mousemove = this.mousemove.bind(this)
     this.mouseup = this.mouseup.bind(this)
     document.addEventListener('mousedown', this.mousedown)
+
+    if (this.props.draggable) {
+      let left = (document.body.offsetWidth - (this.props.width || 520)) / 2
+      this.setState({ left })
+    }
   }
 
   componentWillUnmount() {
@@ -77,7 +85,6 @@ export default class Modal extends Kui {
 
   updateProp(visible) {
     if (visible) {
-      // this.rendered = true
       this.setState({ rendered: true }, () => {
         this.setState({ show: visible, showInner: visible })
       })
@@ -87,9 +94,6 @@ export default class Modal extends Kui {
           this.setState({ showInner: false })
         }, 230);
       })
-      // setTimeout(() => {
-      //   this.showInner = false
-      // }, 300);
     }
     this.resetBodyStyle(visible)
   }
@@ -137,7 +141,6 @@ export default class Modal extends Kui {
     this.props.onClose && this.props.onClose()
   }
   clickMaskToClose(e) {
-    // console.log(this.mousedownIn)
     let { loading, maskClosable } = this.props
     let { mousedownIn } = this.state
     if (!loading && maskClosable && !this.modalRef.current.contains(e.target) && !mousedownIn) {
@@ -153,8 +156,9 @@ export default class Modal extends Kui {
       currentTop = currentTop || 100
       currentTop += e.clientY - y
       startPos = { x: e.clientX, y: e.clientY }
-      this.setState({ startPos, currentTop, left })
-      this.setPos()
+      this.setState({ startPos, currentTop, left }, () => {
+        this.setPos()
+      })
       e.preventDefault()
     }
   }
@@ -173,12 +177,12 @@ export default class Modal extends Kui {
     }
     if (e.button == 0 && draggable === true && current && current.contains(e.target)) {
       startPos = { x: e.clientX, y: e.clientY }
-      this.setState({ startPos, isMouseDown: true },()=>{
-        // this.mousemove(e)
+      this.setState({ startPos, isMouseDown: true }, () => {
+        this.mousemove(e)
         document.addEventListener('mousemove', this.mousemove)
         document.addEventListener('mouseup', this.mouseup)
       })
-     
+
     }
 
     let mousedownIn = show && this.modalRef.current && this.modalRef.current.contains(e.target)
@@ -187,7 +191,7 @@ export default class Modal extends Kui {
   render() {
     let { content, mask, title, children,
       cancelText, loading, okText, width,
-      maximized, centered, footer,
+      maximized, centered, footer, transfer,
       draggable } = this.props
     let { left, currentTop, showInner, show, rendered } = this.state
 
@@ -242,7 +246,7 @@ export default class Modal extends Kui {
     return rendered ? <Transfer
       dropRef={this.elRef}
       show={rendered}
-      transfer={true}>
+      transfer={transfer}>
       <div className={this.className(classes)} ref={this.elRef}>
         {maskNode}
         <div className="k-modal-wrap"

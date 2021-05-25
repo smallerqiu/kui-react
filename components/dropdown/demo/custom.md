@@ -19,7 +19,7 @@ class Demo extends React.Component {
   
   render(){
     const menu = (
-      <Menu slot="content" onClick={this.handleMenuClick.bind(this)}>
+      <Menu onClick={this.handleMenuClick.bind(this)}>
         <Menu.Item key="1">
           Not close the menu.
         </Menu.Item>

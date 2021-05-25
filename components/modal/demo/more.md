@@ -29,12 +29,6 @@ class Demo extends React.Component {
     return(
       <div>
         <Button onClick={()=>this.changeVisible('show1',1)} type="primary">Draggable</Button>
-        <Button onClick={()=>this.changeVisible('show2',1)} type="primary">Centered</Button>
-        <Button onClick={()=>this.changeVisible('show3',1)} type="primary">Top 200px</Button>
-        <Button onClick={()=>this.changeVisible('show4',1)} type="primary">Maximized</Button>
-        <Button onClick={()=>this.changeVisible('show5',1)} type="primary">No mask</Button>
-        <Button onClick={()=>this.changeVisible('show6',1)} type="primary">No footer</Button>
-
         <Modal 
           title="Draggable" 
           visible={show1} 
@@ -44,6 +38,7 @@ class Demo extends React.Component {
           {text}
         </Modal>
 
+        <Button onClick={()=>this.changeVisible('show2',1)} type="primary">Centered</Button>
         <Modal 
           title="Centered" 
           visible={show2} 
@@ -53,6 +48,7 @@ class Demo extends React.Component {
           {text}
         </Modal>
 
+        <Button onClick={()=>this.changeVisible('show3',1)} type="primary">Top 200px</Button>
         <Modal 
           title="Top 200px" 
           visible={show3} 
@@ -62,6 +58,7 @@ class Demo extends React.Component {
           {text}
         </Modal>
 
+        <Button onClick={()=>this.changeVisible('show4',1)} type="primary">Maximized</Button>
         <Modal 
           title="Maximized" 
           visible={show4} 
@@ -71,6 +68,7 @@ class Demo extends React.Component {
           {text}
         </Modal>
 
+        <Button onClick={()=>this.changeVisible('show5',1)} type="primary">No mask</Button>
         <Modal 
           title="Click mask dont't be close"
           visible={show5} 
@@ -81,6 +79,7 @@ class Demo extends React.Component {
           {text}
         </Modal>
 
+        <Button onClick={()=>this.changeVisible('show6',1)} type="primary">No footer</Button>
         <Modal 
           title="No footer" 
           visible={show6} 

@@ -39,10 +39,6 @@ class Demo extends React.Component {
     return(
       <div>
         <Button onClick={()=>this.changeVisible('visible1',1)} type="primary">Width 300px</Button>
-        <Button onClick={()=>this.changeVisible('visible2',1)} type="primary">Custom footer</Button>
-        <Button onClick={()=>this.changeVisible('visible3',1)} type="primary">国际化</Button>
-        <Button onClick={()=>this.changeVisible('visible4',1)} type="primary">异步关闭</Button>
-
         <Modal 
           title="Width 300px" 
           visible={visible1} 
@@ -52,6 +48,7 @@ class Demo extends React.Component {
           <p>content</p>
         </Modal>
 
+        <Button onClick={()=>this.changeVisible('visible2',1)} type="primary">Custom footer</Button>
         <Modal 
           title="Custom footer"
           footer={footer} 
@@ -60,6 +57,7 @@ class Demo extends React.Component {
           <p>content</p> 
         </Modal>
 
+        <Button onClick={()=>this.changeVisible('visible3',1)} type="primary">国际化</Button>
         <Modal 
           title="Are you ok ?" 
           visible={visible3} okText="Ok" 
@@ -69,6 +67,7 @@ class Demo extends React.Component {
           <p>Yes , I'm fine !</p>
         </Modal>
 
+        <Button onClick={()=>this.changeVisible('visible4',1)} type="primary">异步关闭</Button>
         <Modal title="提交表单" 
           visible={visible4} 
           loading={loading} 
