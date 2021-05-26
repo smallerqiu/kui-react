@@ -1,219 +1,389 @@
 import React from 'react'
-import { Kui, PropTypes } from '@/components/kui'
+import { Kui, PropTypes } from '../kui'
 import Transition from '../base/transition'
-import Transfer from '../base/transfer'
+import Icon from '../icon'
 import Option from './option'
+import { isNotEmpty } from '../_tool/utils'
+import Drop from '../base/drop'
+import Empty from '../empty'
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+
 export default class Select extends Kui {
+  static contextTypes = {
+    FormItem: PropTypes.any
+  }
+  static childContextTypes = {
+    Select: PropTypes.any
+  }
   static defaultProps = {
     placeholder: '请选择',
+    size: 'default',
     transfer: true,
-    width: 0,
-    value: '',
   }
   static propTypes = {
-    onChange: PropTypes.func,
     placeholder: PropTypes.string,
-    mini: PropTypes.bool,
-    filterable: PropTypes.bool,
+    size: PropTypes.oneOf(['small', 'large', 'default']),
     transfer: PropTypes.bool,
     width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    value: PropTypes.any,
     clearable: PropTypes.bool,
-    disabled: PropTypes.bool
+    filterable: PropTypes.bool,
+    disabled: PropTypes.bool,
+    multiple: PropTypes.bool,
+    loading: PropTypes.bool,
+    options: PropTypes.array,
+    onChange: PropTypes.func,
   }
-  constructor(props) {
-    super(props)
-    this.state = {
-      visible: false,
-      dropdownWith: 0,
-      left: 0,
-      fadeInBottom: false,
-      top: 0,
-      label: "",
-      selectLabel: '',
-      value: props.value === undefined ? '' : props.value,
-      queryKey: ''
-    }
-    this.domRef = React.createRef();
-    this.relRef = React.createRef()
+
+  state = {
+    label: "",
+    opened: false,
+    currentValue: this.props.value || '',
+    showSearch: false,
+    queryKey: '',
+    selectWidth: this.props.width
   }
-  isClearable() {
-    return this.props.clearable && !this.props.disabled && this.state.label;
+
+  getChildContext() {
+    return {
+      Select: this
+    };
   }
-  classes() {
-    return this.className([
-      "k-select",
-      {
-        ["k-select-disabled"]: this.props.disabled,
-        ["k-select-open"]: this.state.visible,
-        ["k-select-mini"]: this.props.mini
+
+  searchRef = React.createRef();
+  elRef = React.createRef()
+  overlayRef = React.createRef()
+  mirrorRef = React.createRef()
+
+  componentDidUpdate(prevProps, prevState, snap) {
+    let { value } = this.props
+    if (value !== prevProps.value) {
+      if (isNotEmpty(value)) {
+        this.setState({ currentValue: value }, () => {
+          this.setLabel()
+        })
+      } else {
+        this.setState({ label: '', currentValue: '' })
       }
-    ])
-  }
-  selectClass() {
-    return this.className([
-      "k-select-selection",
-      {
-        ["k-select-isclearable"]: this.props.clearable && this.state.label
-      }
-    ])
-  }
-  selectStyles() {
-    return this.props.width > 0 ? { width: `${this.props.width}px` } : {};
-  }
-  dropdownStyles() {
-    let style = {};
-    style.width = `${this.state.dropdownWith}px`;
-    style.left = `${this.state.left}px`;
-    style.top = `${this.state.top}px`;
-    if (this.state.fadeInBottom) {
-      style["transformOrigin"] = "center bottom 0px";
-    }
-    return style;
-  }
-  onClear(e) {
-    this.setState({
-      selectLabel: '',
-      label: ''
-    })
-    this.props.onChange && this.props.onChange('')
-    this.props.onFormItemChange && this.props.onFormItemChange('')
-    e.stopPropagation()
-  }
-  toggleDrop() {
-    if (!this.props.disabled) {
-      this.setState({
-        dropdownWith: this.relRef.current.offsetWidth,
-        visible: !this.state.visible
-      })
+      this.FormItem && this.FormItem.testValue(value)
     }
   }
-  handleScroll() {
-    setTimeout(() => {
-      this.setPosition()
-    });
-  }
-  setPosition() {
-    if (!this.state.visible) return;
-    let m = 3;
-    let rel = this.relRef.current;
-    let dom = this.domRef.current;
-    let relPos = rel.getBoundingClientRect()
 
-
-    let clientH = window.innerHeight;
-    let clientW = window.innerWidth;
-    // console.log(relPos)
-    let scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-    let scrollLeft = document.body.scrollLeft || document.documentElement.scrollLeft;
-
-    let domH = dom.offsetHeight;
-    let relH = rel.offsetHeight;
-
-    //set
-    let left = 0
-    let top = 0
-    let fadeInBottom = false
-
-    if (this.props.transfer) left = relPos.left + 1 + scrollLeft;
-    //new
-    if (clientH - relPos.top - relH - m < domH) {
-      //空出来的高度不足以放下dom
-      fadeInBottom = true;
-      top = this.props.transfer ? relPos.top - m - domH + scrollTop : -(domH + m);
-    } else {
-      fadeInBottom = false;
-      top = this.props.transfer ? relPos.top + relH + m + scrollTop : relH + m;
+  componentDidMount() {
+    if (isNotEmpty(this.props.value)) {
+      this.setLabel()
     }
-    let dropdownWith = rel.offsetWidth;
-    this.setState({
-      left, top, dropdownWith, fadeInBottom
-    })
   }
-  onChange(item) {
-    this.props.onChange && this.props.onChange(item.value);
-    this.props.onFormItemChange && this.props.onFormItemChange(item.value)
-    this.setState({
-      label: item.label,
-      selectLabel: item.label,
-      visible: false,
-      value: item.value,
-      queryKey: ''
-    })
+
+  hidedrop() {
+    if (this.state.showSearch) {
+      this.setState({ queryKey: '' })
+      this.searchRef.current.value = ''
+      this.searchRef.current.style.width = ''
+    }
+    this.setState({ showSearch: false })
+  }
+  getLabel(kid, labelValue) {
+    const obj = kid.map(({ props }) => props).filter(({ value }) => value === labelValue)
+    return obj.length ? obj[0].label : ''
   }
   setLabel() {
-    React.Children.map(this.props.children, child => {
-      if (this.state.value == child.props.value) {
-        let label = child.props.label === undefined ? child.props.children : child.props.label
-        this.setState({ label, selectLabel: label, })
+    let { currentValue, label } = this.state
+    let { multiple } = this.props
+    // if (!isNotEmpty(currentValue) || currentValue.length == 0) return;
+    let kid = this.getOptions()
+    let currentLabel = label || ''
+    if (multiple) {
+      currentLabel = currentLabel || []
+      currentValue = currentValue || []
+      if (currentValue.length) {
+        let labels = []
+        let index = -1
+        currentValue.forEach((value) => {
+          let Label = this.getLabel(kid, value)
+          labels.push({ label: Label, key: `label_${index++}`, value })
+        })
+        currentLabel = labels
+      } else {
+        currentLabel = []
       }
-    })
-  }
-  hidePopup(e) {
-    if (!this.state.visible) return
-    if (!this.relRef.current.contains(e.target) && !this.domRef.current.contains(e.target)) {
-      this.setState({ visible: false, queryKey: '', label: this.state.selectLabel })
-    }
-  }
-  componentDidMount() {
-    this.setLabel()
-  }
 
-  /*   componentWillReceiveProps(props) {
-      let { value } = props
-      if (props.value !== this.state.value) {
-        this.setState({ value: value }, () => {
-          if (value === '' || value === undefined || value === null)
-            this.setState({ label: '', selectLabel: '' })
-          else
-            this.setLabel()
+    } else {
+      currentLabel = this.getLabel(kid, currentValue)
+    }
+    this.setState({ label: currentLabel })
+    setTimeout(e => { this.setPosition() }, 230);
+
+  }
+  clear(e) {
+    this.setState({ label: '', currentValue: '' })
+    this.props.onChange && this.props.onChange('')
+    e.stopPropagation()
+  }
+  showDrops() {
+    let { opened, queryKey } = this.state
+    opened = !opened
+    this.setState({ opened }, () => {
+
+      if (this.props.filterable || this.props.onSearch) {
+        if (!opened) queryKey = ''
+        this.setState({ showSearch: opened }, () => {
+          const { current } = this.searchRef
+          opened ? current.focus() : current.blur()
+          clearTimeout(this.clearKeyTimer)
+          this.clearKeyTimer = setTimeout(() => {
+            this.setState({ queryKey })
+          }, 200);
         })
       }
-    } */
-  labelChange(e) {
-    this.setState({ label: e.target.value, queryKey: e.target.value })
+      this.setPosition()
+    })
   }
-  render() {
-    let { value, label, visible, queryKey } = this.state
-    let { placeholder, disabled, filterable, transfer } = this.props
-    let renderOption = (
-      React.Children.map(this.props.children, child => {
-        let _label = child.props.label === undefined ? child.props.children : child.props.label
-        let show = true
-        if (filterable) {
-          let parsedQuery = String(queryKey).replace(/(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g, "\\$1");
-          show = new RegExp(parsedQuery, "i").test(_label);
-        }
-        if (child.type !== Option || !show) return null
-        return React.cloneElement(child, Object.assign({}, child.props, {
-          selected: (value !== '' && value !== undefined && value !== null) && value == child.props.value,
-          onClick: this.onChange.bind(this, { value: child.props.value, label: _label })
-        }))
+  toggleDrop() {
+    if (this.props.disabled) {
+      return false;
+    }
+    if (this.props.onSearch) {
+      this.setState({ showSearch: true }, () => {
+        this.searchRef.current.focus()
       })
+      return;
+    }
+    this.showDrops()
+  }
+  setPosition() {
+    if (!this.props.width) {
+      this.setState({ selectWidth: this.elRef.current.offsetWidth })
+    }
+    if (this.state.opened) {
+      this.overlayRef.current.setPosition()
+    }
+  }
+  change(item) {
+    let { multiple, value, onChange, onSearch, filterable } = this.props
+    let { currentValue, showSearch, label } = this.state
+    if (showSearch) {
+      this.setState({ queryKey: '' })
+      this.searchRef.current.value = ''
+      this.searchRef.current.style.width = ''
+    }
+    if (!multiple) {
+      this.setState({ opened: false, showSearch: false })
+    } else if (onSearch != null || filterable) {
+      this.searchRef.current.focus()
+    }
+    let hasValue = isNotEmpty(value)
+
+    //set value
+    if (multiple) {
+      if (!hasValue) {
+        value = currentValue || []
+      }
+      let index = value.indexOf(item.value)
+      if (index === -1) {
+        value.push(item.value)
+      } else {
+        value.splice(index, 1)
+      }
+
+    } else {
+      value = item.value
+    }
+    this.setState({ currentValue: value })
+
+    //set label
+    if (multiple) {
+      let currentLabel = label || []
+      let index = currentLabel.findIndex(x => x.value === item.value)//  .map(x => x.label).indexOf(item.label)
+      if (index === -1) {
+        currentLabel.push({ label: item.label, key: item.label + item.value, value: item.value })
+      } else {
+        currentLabel.splice(index, 1)
+      }
+      label = currentLabel
+    } else {
+      label = item.label
+    }
+    this.setState({ label }, () => {
+      setTimeout(() => { this.setPosition() }, 230);
+    })
+    onChange && onChange(value)
+  }
+  removeTag(e, i) {
+    let { disabled } = this.props
+    if (disabled) return
+    let { currentValue, label } = this.state
+    let values = currentValue || []
+    let labels = label || []
+    this.change({ value: values[i], label: labels[i].label })
+    e.stopPropagation()
+  }
+  searchInput(e) {
+    const { current } = this.searchRef
+    this.setState({ queryKey: current.value }, () => {
+      current.style.width = this.mirrorRef.current.offsetWidth + 'px'
+      this.setPosition()
+    })
+
+    if (this.props.onSearch) {
+      clearTimeout(this.timer)
+      this.timer = setTimeout(() => {
+        this.opened = true;
+        this.setState({ opened: true })
+        this.props.onSearch(current.value)
+      }, 500);
+    }
+  }
+  emptyClick(e) {
+    if (this.state.showSearch) {
+      this.searchRef.current.focus()
+    }
+  }
+  getOptions() {
+    let { options, children, filterable } = this.props
+    let { queryKey } = this.state
+    let kid = null
+    let index = -1
+    if (Array.isArray(options)) {
+      kid = options.map((k, i) => {
+        const key = k.key || `opt_${index++}`
+        let prop = {
+          ...k,
+          eventKey: key,
+          key
+        }
+        return <Option {...prop} />
+      })
+    } else {
+      kid = React.Children.map(children, (child) => {
+        return React.cloneElement(child, { eventKey: child.key || `opt_${index++}` })
+      })
+    }
+    if (filterable && queryKey) {
+      let parsedQuery = String(queryKey).replace(/(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g, "\\$1");
+      let Reg = new RegExp(parsedQuery, 'i')
+
+      kid = kid.filter(({ props }) => {
+        return Reg.test(props.label)
+      })
+    }
+    return kid
+  }
+
+  render() {
+    let { disabled, filterable, width, size, multiple, onSearch,
+      placeholder, clearable, loading, transfer } = this.props
+    let { opened, label, queryKey, showSearch, selectWidth } = this.state
+    let childNode = []
+
+    const classes = [
+      "k-select",
+      {
+        ["k-select-disabled"]: disabled,
+        ["k-select-open"]: opened,
+        ["k-select-lg"]: size == 'large',
+        ["k-select-sm"]: size == 'small'
+      }
+    ]
+
+    const queryProps = {
+      onChange: (e) => this.searchInput(e),
+      ref: this.searchRef,
+      className: 'k-select-search',
+      autoComplete: 'off',
+      value: queryKey
+    }
+
+    const queryNode = <div key="search"
+      className="k-select-search-wrap"
+    >
+      <input {...queryProps} />
+      <span className="k-select-search-mirror" ref={this.mirrorRef}>{queryKey}</span>
+    </div>
+
+    let kid = this.getOptions()
+    // kid = (
+    //   !kid.length
+    //     ? <li className="k-select-empty" onClick={this.emptyClick}><Icon type="albums" /><p className="k-empty-desc">暂无数据</p></li>
+    //     : kid
+    // )
+    const loadingNode = <div className="k-select-loading" key="loading"><Icon type="sync" spin /><span>加载中...</span></div>
+    const props = {
+      ref: this.overlayRef,
+      width: selectWidth,
+      show: opened,
+      selectionRef: this.elRef,
+      // transfer: false,
+      transfer,
+      transitionName: 'k-select',
+      className: this.className(['k-select-dropdown', { 'k-select-dropdown-multiple': this.multiple }]),
+      onClose: () => {
+        this.setState({ opened: false })
+        setTimeout(() => {
+          this.hidedrop()
+        }, 300);
+      }
+    }
+    let overlay = <Drop {...props}>{loading ? loadingNode : (!kid.length ? <Empty onClick={this.emptyClick.bind(this)} /> : <ul>{kid}</ul>)}</Drop>
+
+    label = multiple ? (label || []) : label
+    const placeNode = ((placeholder && ((!label || !label.length) && !queryKey))
+      ? <div className="k-select-placeholder" key="placeholder">{placeholder}</div>
+      : null
     )
-    return (<div className={this.classes()} style={this.styles(this.selectStyles())}  >
-      <div className={this.selectClass()} onClick={this.toggleDrop.bind(this)} ref={this.relRef}>
-        <input type="text" className="k-select-label" placeholder={placeholder} value={label}
-          readOnly={!filterable || disabled}
-          disabled={disabled} onChange={(e) => this.labelChange(e)} />
-        <span className="k-select-arrow"></span>
-        {this.isClearable && <span className="k-select-clearable" onClick={(e) => this.onClear(e)}></span>}
-      </div >
-      <Transfer transfer={transfer}
-        onScroll={this.setPosition.bind(this)}
-        onResize={this.setPosition.bind(this)}
-        docOnClick={(e) => this.hidePopup(e)}>
-        <Transition name="dropdown" show={visible} onEnter={() => this.setPosition()}>
-          {
-            <div className="k-select-dropdown" ref={this.domRef} style={this.styles(this.dropdownStyles())}>
-              <ul>
-                {renderOption}
-                {renderOption && renderOption.length == 0 && <li className="k-select-item">暂无数据...</li>}
-              </ul>
-            </div>
-          }
-        </Transition>
-      </Transfer>
-    </div>)
+    const tags = multiple ?
+      label.map((c, i) => {
+        return <CSSTransition timeout={200} classNames="k-select-tag" key={c.key}>
+          <span className="k-select-tag" >
+            {c.label}
+            <Icon type="close" onClick={e => this.removeTag(e, i)} />
+          </span>
+        </CSSTransition>
+      })
+      : null
+
+    const labelStyle = {
+      opacity: showSearch ? .4 : 1,
+      display: queryKey.length ? 'none' : ''
+    }
+    const labelsNode = (multiple
+      ? (
+        <div className="k-select-labels" key="labels">
+          <TransitionGroup>
+            {tags}
+          </TransitionGroup>
+          {queryNode}
+        </div>
+      )
+      : <div className="k-select-label" key="labels" style={labelStyle}>{label}</div>
+    )
+    let isSearch = onSearch != null
+    childNode.push(labelsNode)
+    childNode.push(placeNode)
+
+    !isSearch && childNode.push(<Icon className="k-select-arrow" key="arrowIcon" type="chevron-down" />)
+
+    if ((filterable || isSearch) && !multiple) {
+      childNode.push(queryNode)
+    }
+
+    const styles = { width }
+    let showClear = !disabled && clearable && label && !multiple
+    const selectCls = [
+      "k-select-selection", {
+        "k-select-has-clear": showClear
+      }
+    ]
+    showClear && childNode.push(<Icon className="k-select-clearable" key="clearIcon" type="close-circle" onClick={this.clear.bind(this)} />)
+
+    return (
+      <div tabIndex="0" className={this.className(classes)} style={styles}>
+        <div className={this.className(selectCls)}
+          onClick={this.toggleDrop.bind(this)} ref={this.elRef}>
+          {childNode}
+        </div>
+        {overlay}
+      </div>
+    )
   }
 }

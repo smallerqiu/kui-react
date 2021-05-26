@@ -3,9 +3,6 @@ import Modal from './modal'
 import RDOM from 'react-dom'
 import Toast from './toast'
 
-
-
-
 let createInstance = (props = {}) => {
 
   const toastRef = React.createRef()

@@ -1,0 +1,59 @@
+<cn>
+#### 多选
+通过设置 `multiple` 值来呈现多选模式
+</cn>
+
+```tsx
+import { Select , Button } from 'react-kui';
+
+let { Option } = Select
+
+const Demo = ()=>{
+  
+  const [data1,setValue1] = React.useState([])
+  const [data2,setValue2] = React.useState(['2','4'])
+
+  return(
+    <div>
+      <Select width={300} multiple value={data1} size="large" onChange={setValue1}>
+        <Option value="1" label="Apple" />
+        <Option value="2" label="Orange" />
+        <Option value="3" label="Banana"/>
+        <Option value="4" label="Pear" />
+        <Option value="5" label="Peach" />
+        <Option value="6" label="Grape" />
+      </Select>
+      <Button size="small" onClick={()=>setValue1([])}>Clear</Button>
+      <Button size="small" onClick={()=>setValue1(['3','1'])}>Select Banana & Apple</Button>
+      <br/>
+      <Select width={300} multiple value={data2} onChange={setValue2}>
+        <Option value="1" label="Apple" />
+        <Option value="2" label="Orange" />
+        <Option value="3" label="Banana"/>
+        <Option value="4" label="Pear" />
+        <Option value="5" label="Peach" />
+        <Option value="6" label="Grape" />
+      </Select>
+      <br/>
+      <Select width={300} size="small" multiple >
+        <Option value="1" label="苹果" />
+        <Option value="2" label="香蕉" />
+        <Option value="3" label="梨子" />
+        <Option value="4" label="火龙果" />
+        <Option value="5" label="桃子" />
+        <Option value="6" label="葡萄" />
+      </Select>
+      <br/>
+      <Select width={300} multiple value={data2} onChange={setValue2} disabled>
+        <Option value="1" label="Apple" />
+        <Option value="2" label="Orange" />
+        <Option value="3" label="Banana"/>
+        <Option value="4" label="Pear" />
+        <Option value="5" label="Peach" />
+        <Option value="6" label="Grape" />
+      </Select>
+    </div>
+  )
+} 
+ReactDOM.render(<Demo />  ,  mountNode)
+```

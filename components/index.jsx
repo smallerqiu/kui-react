@@ -14,6 +14,7 @@ import Divider from './divider'
 import Dropdown from './dropdown'
 // // import DatePicker from './datePicker'
 // import Form from './form'
+import Empty from './empty'
 import Icon from './icon'
 import { Input, TextArea } from './input'
 // import Loading from './loading'
@@ -60,17 +61,18 @@ export {
     // // DatePicker,
     Divider,
     Dropdown,
+    Empty,
     // Form,
     // Loading,
     Layout,
     Icon,
     Input, TextArea,
-    Modal, 
+    Modal,
     Menu,
     SubMenu,
     Message,
     Notice,
-    Poptip, 
+    Poptip,
     Page,
     Row, Col,
     Radio,

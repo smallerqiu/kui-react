@@ -61,6 +61,7 @@ const Nav = [
       { title: "警告提示", sub: "Alert", name: "alert", icon: 'alert-circle' },
       { title: "徽标", sub: "Badge", name: "badge", icon: 'mail-unread' },
       { title: "抽屉", sub: "Drawer", name: "drawer", icon: 'file-tray-stacked' },
+      { title: "空状态", sub: "Empty", name: "empty", icon: 'file-tray' },
       { title: "全局提示", sub: "Message", name: "message", icon: 'chatbubble' },
       { title: "通知提醒", sub: "Notice", name: "notice", icon: 'notifications' },
       { title: "对话框", sub: "Modal", name: "modal", icon: 'browsers-outline' },

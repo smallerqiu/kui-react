@@ -372,8 +372,11 @@
   .k-select-arrow {
     color: @disable-border;
   }
-  &:hover .k-select-selection {
-    border-color: @disable-border;
+  &:hover, &:focus {
+    .k-select-selection {
+      border-color: @disable-border;
+      box-shadow: none;
+    }
   }
 }
 
@@ -411,11 +414,15 @@
 }
 
 .k-select-tag-enter-active {
-  animation: zoomIn .2s ease-out;
+  animation: zoomIn .21s ease-out;
 }
 
-.k-select-tag-leave-active {
-  animation: zoomOut .2s ease-out;
+.k-select-tag-exit-done {
+  display: none;
+}
+
+.k-select-tag-exit-active {
+  animation: zoomOut .21s ease-out;
 }
 
 @keyframes dropDownIn {
@@ -442,10 +449,14 @@
 
 .k-select-enter-active {
   transform-origin: 0 0;
-  animation: dropDownIn .3s;
+  animation: dropDownIn .31s;
 }
 
-.k-select-leave-active {
+.k-select-exit-done {
+  display: none;
+}
+
+.k-select-exit-active {
   transform-origin: 0 0;
-  animation: dropDownOut .3s
+  animation: dropDownOut .31s
 }
