@@ -41,7 +41,13 @@ export default class DocHeader extends Component {
       </a>
       </div>
       <div className="search-component">
-        <Select placeholder="搜索组件..." filterable value={this.state.key} onChange={(path) => this.change(path)}>
+        <Select
+          placeholder="搜索组件..."
+          filterable
+          value={this.state.key}
+          bordered={false}
+          showArrow={false}
+          onChange={(path) => this.change(path)}>
           {getSearchCom()}
         </Select>
       </div >

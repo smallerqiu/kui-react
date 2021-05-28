@@ -53,9 +53,6 @@ pre {
       flex: 1;
       position: relative;
       padding-left: 2px;
-      .k-select-open .k-select-selection, .k-select:focus .k-select-selection {
-        box-shadow: none;
-      }
       .k-select {
         width: 280px;
       }
@@ -67,13 +64,6 @@ pre {
         left: 0;
         position: absolute;
         top: 21px;
-      }
-      .k-select-selection {
-        font-size: 15px;
-        border: none !important;
-      }
-      .k-select-arrow {
-        display: none;
       }
     }
   }
@@ -208,8 +198,8 @@ pre {
   }
 }
 
-.demo-button, .k-message-demo, .k-notice-demo, .demo-dropdown, .demo-modal, .demo-select {
-  .k-btn, .k-btn-group, .k-select {
+.demo-button, .k-message-demo, .demo-datepicker, .k-notice-demo, .demo-dropdown, .demo-modal, .demo-select {
+  .k-btn, .k-btn-group, .k-select, .k-datepicker, .k-radio-group {
     margin-right: 10px;
     margin-bottom: 10px;
   }

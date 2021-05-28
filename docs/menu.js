@@ -4,7 +4,6 @@ const Nav = [
     child: [
       { title: "按钮", sub: "Button", name: "button", icon: 'square' },
       { title: "图标", sub: "Icon", name: "icon", icon: "heart" },
-      { title: "颜色", sub: "ColorPicker", name: "colorpicker", icon: 'color-palette' },
     ]
   },
   {

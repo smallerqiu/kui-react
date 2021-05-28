@@ -1,6 +1,5 @@
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
-import Transition from '../base/transition'
 import Icon from '../icon'
 import Option from './option'
 import { isNotEmpty } from '../_tool/utils'
@@ -19,6 +18,8 @@ export default class Select extends Kui {
     placeholder: '请选择',
     size: 'default',
     transfer: true,
+    bordered: true,
+    showArrow: true,
   }
   static propTypes = {
     placeholder: PropTypes.string,
@@ -31,6 +32,8 @@ export default class Select extends Kui {
     disabled: PropTypes.bool,
     multiple: PropTypes.bool,
     loading: PropTypes.bool,
+    bordered: PropTypes.bool,
+    showArrow: PropTypes.bool,
     options: PropTypes.array,
     onChange: PropTypes.func,
   }
@@ -56,7 +59,7 @@ export default class Select extends Kui {
   mirrorRef = React.createRef()
 
   componentDidUpdate(prevProps, prevState, snap) {
-    let { value } = this.props
+    let { value, onOpenChange } = this.props
     if (value !== prevProps.value) {
       if (isNotEmpty(value)) {
         this.setState({ currentValue: value }, () => {
@@ -66,6 +69,10 @@ export default class Select extends Kui {
         this.setState({ label: '', currentValue: '' })
       }
       this.FormItem && this.FormItem.testValue(value)
+    }
+    let { opened } = this.state
+    if (opened != prevState.opened) {
+      onOpenChange && onOpenChange(opened)
     }
   }
 
@@ -90,18 +97,17 @@ export default class Select extends Kui {
   setLabel() {
     let { currentValue, label } = this.state
     let { multiple } = this.props
-    // if (!isNotEmpty(currentValue) || currentValue.length == 0) return;
+    currentValue = isNotEmpty(currentValue) ? currentValue : (multiple ? [] : '')
+    let currentLabel = isNotEmpty(label) ? label : (multiple ? [] : '')
+
     let kid = this.getOptions()
-    let currentLabel = label || ''
     if (multiple) {
-      currentLabel = currentLabel || []
-      currentValue = currentValue || []
       if (currentValue.length) {
         let labels = []
         let index = -1
         currentValue.forEach((value) => {
-          let Label = this.getLabel(kid, value)
-          labels.push({ label: Label, key: `label_${index++}`, value })
+          let label = this.getLabel(kid, value)
+          labels.push({ label, key: `label_${index++}`, value })
         })
         currentLabel = labels
       } else {
@@ -267,12 +273,12 @@ export default class Select extends Kui {
         return Reg.test(props.label)
       })
     }
-    return kid
+    return kid || []
   }
 
   render() {
-    let { disabled, filterable, width, size, multiple, onSearch,
-      placeholder, clearable, loading, transfer } = this.props
+    let { disabled, filterable, width, size, multiple, onSearch, showArrow,
+      placeholder, clearable, loading, transfer, bordered } = this.props
     let { opened, label, queryKey, showSearch, selectWidth } = this.state
     let childNode = []
 
@@ -281,6 +287,7 @@ export default class Select extends Kui {
       {
         ["k-select-disabled"]: disabled,
         ["k-select-open"]: opened,
+        'k-select-borderless': bordered === false,
         ["k-select-lg"]: size == 'large',
         ["k-select-sm"]: size == 'small'
       }
@@ -358,17 +365,17 @@ export default class Select extends Kui {
       : <div className="k-select-label" key="labels" style={labelStyle}>{label}</div>
     )
     let isSearch = onSearch != null
-    childNode.push(labelsNode)
-    childNode.push(placeNode)
+    childNode.push(labelsNode);
+    childNode.push(placeNode);
 
-    !isSearch && childNode.push(<Icon className="k-select-arrow" key="arrowIcon" type="chevron-down" />)
+    (!isSearch && showArrow) && childNode.push(<Icon className="k-select-arrow" key="arrowIcon" type="chevron-down" />)
 
     if ((filterable || isSearch) && !multiple) {
       childNode.push(queryNode)
     }
 
     const styles = { width }
-    let showClear = !disabled && clearable && label && !multiple
+    let showClear = !disabled && clearable && isNotEmpty(label) && label.length > 0
     const selectCls = [
       "k-select-selection", {
         "k-select-has-clear": showClear
