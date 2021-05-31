@@ -4,30 +4,36 @@
 </cn>
 
 ```tsx
-import { Select } from 'react-kui';
+import { Select ,Radio } from 'react-kui';
 let {Option} = Select
 
-ReactDOM.render(
-  <div>
-    <Select width={200} size="large" clearable>
+const Demo = ()=>{
+  const [size,setSize] = React.useState('default')
+  const [value,setValute] = React.useState(['1','3'])
+
+  return (
+  <>
+    <Radio.Group value={size} onChange={setSize}>
+      <Radio.Button value="large" label="large"/>
+      <Radio.Button value="default" label="default"/>
+      <Radio.Button value="small" label="small"/>
+    </Radio.Group>
+    <br/>
+    <Select width={256} size={size} clearable>
       <Option value="1" label="Apple" />
       <Option value="2" label="Orange" />
       <Option value="3" label="Banana"/>
       <Option value="4" label="Pear" />
     </Select>
-    <Select width={200} >
+    <br/>
+    <Select width={256} size={size} multiple value={value} onChange={setValute}>
       <Option value="1" label="Apple" />
       <Option value="2" label="Orange" />
       <Option value="3" label="Banana"/>
       <Option value="4" label="Pear" />
     </Select>
-    <Select width={200} size="small">
-      <Option value="1" label="Apple" />
-      <Option value="2" label="Orange" />
-      <Option value="3" label="Banana" />
-      <Option value="4" label="Pear" />
-    </Select>
-  </div>,
-  mountNode
-)
+  </>
+  )
+}
+ReactDOM.render(<Demo />,  mountNode)
 ```

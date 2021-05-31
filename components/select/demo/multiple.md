@@ -15,7 +15,7 @@ const Demo = ()=>{
 
   return(
     <div>
-      <Select width={300} multiple value={data1} size="large" onChange={setValue1}>
+      <Select width={300} multiple value={data1} size="large"  onChange={setValue1}>
         <Option value="1" label="Apple" />
         <Option value="2" label="Orange" />
         <Option value="3" label="Banana"/>
@@ -26,7 +26,7 @@ const Demo = ()=>{
       <Button size="small" onClick={()=>setValue1([])}>Clear</Button>
       <Button size="small" onClick={()=>setValue1(['3','1'])}>Select Banana & Apple</Button>
       <br/>
-      <Select width={300} multiple value={data2} onChange={setValue2}>
+      <Select width={300} multiple value={data2} onChange={setValue2} clearable>
         <Option value="1" label="Apple" />
         <Option value="2" label="Orange" />
         <Option value="3" label="Banana"/>

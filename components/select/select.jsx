@@ -355,12 +355,10 @@ export default class Select extends Kui {
     }
     const labelsNode = (multiple
       ? (
-        <div className="k-select-labels" key="labels">
-          <TransitionGroup>
+          [<TransitionGroup className="k-select-labels" key="labels">
             {tags}
-          </TransitionGroup>
-          {queryNode}
-        </div>
+          </TransitionGroup>,
+          queryNode]
       )
       : <div className="k-select-label" key="labels" style={labelStyle}>{label}</div>
     )
