@@ -12,7 +12,7 @@ import Collapse from './collapse'
 // import ColorPicker from './colorPicker'
 import Divider from './divider'
 import Dropdown from './dropdown'
-// // import DatePicker from './datePicker'
+import DatePicker from './datePicker'
 // import Form from './form'
 import Empty from './empty'
 import Icon from './icon'
@@ -58,7 +58,7 @@ export {
     Checkbox,
     Collapse,
     // ColorPicker, ,
-    // // DatePicker,
+    DatePicker,
     Divider,
     Dropdown,
     Empty,

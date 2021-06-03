@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from 'react'
 import ReactDOM from 'react-dom'
-import { Modal, Button } from 'react-kui';
+import { DatePicker } from 'react-kui';
 
 class Demo extends React.Component {
 
@@ -18,16 +18,15 @@ class Demo extends React.Component {
   render() {
     let { v1, v2 } = this.state
     return (
-      <div>
-        <Button onClick={() => this.setVisible('v1', true)} type="primary">Open Modal</Button>
-        <Modal title="Title"
-          visible={v1}
-          draggable 
-          onCancel={() => this.setVisible('v1', false)}
-          onOk={() => this.setVisible('v1', false)}
-        >Content</Modal>
-      
-      </div>
+      <div style={{padding:200}}>
+      {/* <DatePicker /> */}
+      <br/>
+      <br/>
+      {/* <DatePicker mode="month" placeholder="请选择月份"/> */}
+      <br/>
+      <br/>
+      <DatePicker mode="range" />
+    </div>
     )
   }
 }

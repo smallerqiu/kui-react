@@ -162,19 +162,21 @@ export default class BaseDrop extends Kui {
 
   hide(e) {
     let { target } = e
-    e.stopPropagation()
+    // e.stopPropagation()
     let { onClose } = this.props
     let { mousedownIn, visible } = this.state
 
     let selection = this.getSelection()
     if (visible &&
       selection &&
+      target.parentNode != null && target.parentNode.parentNode != null &&
       !selection.contains(target) &&
-      !this.elRef.current.contains(target) &&
+      this.elRef.current != null && !this.elRef.current.contains(target) &&
       !mousedownIn
     ) {
       onClose && onClose()
     }
+
   }
 
   resize() {

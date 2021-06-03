@@ -1,245 +1,249 @@
 import React from 'react'
-import { Kui, PropTypes } from '@/components/kui'
-import { Transition, Transfer } from '../index'
+import { Kui, PropTypes } from '../kui'
 import DateCalendar from './datecalendar'
+import Drop from '../base/drop'
+import Icon from '../icon'
+import { isNotEmpty } from '../_tool/utils'
+import moment from 'moment'
+
 export default class DatePicker extends Kui {
+
+
+  static contextTypes = {
+    FormItem: PropTypes.any
+  }
+  static childContextTypes = {
+    DatePicker: PropTypes.any
+  }
+
   static defaultProps = {
-    DatePicker: true,
-    rangeSeparator: '~',
-    placeholder: '清选择',
-    lang: 'zh',
+    mode: 'date',
     format: 'YYYY-MM-DD',
+    size: 'default',
+    clearable: true,
     transfer: true,
-    disabledDate: () => { }
   }
   static propTypes = {
-    transfer: PropTypes.bool,
-    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    mini: PropTypes.bool,
-    name: PropTypes.string,
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+    value: PropTypes.any,
+    mode: PropTypes.string,
+    showTime: PropTypes.bool,
     disabled: PropTypes.bool,
-    rangeSeparator: PropTypes.string,
-    clearable: PropTypes.bool,
-    placeholder: PropTypes.string,
-    lang: PropTypes.oneOf(['zh', 'en']),
-    disabledDate: PropTypes.func,
     format: PropTypes.string,
+    clearable: PropTypes.bool,
+    size: PropTypes.oneOf(['small', 'large', 'default']),
+    placeholder: PropTypes.oneOfType(PropTypes.string, PropTypes.array)
   }
   state = {
-    text: "",
-    visible: false,
-    left: 0,
-    fadeInBottom: false,
-    top: 0,
-    dates: this.vi(props.value),
-    local: require(`./lang/${props.lang}.js`),
-    value: props.value
+    opened: false,
+    currentValue: this.props.value,
+    leftPicker: null,
+    rightPicker: null,
+    temp_date_hover: {}, //range hover date
+    temp_range_one: null, //range one select
+    temp_range_left: null, // range left value
+    temp_range_right: null, // range right value
+    temp_range_showtime: false, //range showtime
   }
-  domRef = React.createRef()
-  relRef = React.createRef()
-  relStyles() {
-    let { width } = this.props
-    return { width: `${width}px` }
+
+  elRef = React.createRef()
+
+  getChildContext() {
+    return {
+      DatePicker: this
+    }
   }
-  classes() {
-    let { rangeSeparator, clearable, disabled, mini } = this.props
-    return this.className([
-      "k-datepicker",
-      {
-        ["k-datepicker-range"]: rangeSeparator,
-        ["k-datepicker-clearable"]: clearable && !disabled,
-        ["k-datepicker-mini"]: mini
+
+
+  componentDidUpdate(prevProps, prevState, snap) {
+    let { value } = this.props
+    if (value != prevProps.value) {
+      this.setState({ currentValue: value })
+      this.context.FormItem && this.context.FormItem.testValue(value)
+    }
+  }
+
+  getDate(value) {
+    let { format, mode, showTime } = this.props
+
+    let isDefaultFormat = format == 'YYYY-MM-DD'
+    if (mode == 'range') {
+      if (isDefaultFormat) {
+        if (showTime) {
+          format = 'YYYY-MM-DD HH:mm:ss'
+        }
       }
-    ])
-  }
-  inputClass() {
-    return this.className([
-      "k-datepicker-input",
-      {
-        ["focus"]: this.state.visible
-      }
-    ])
-  }
-  popupStyle() {
-    let { left, top, fadeInBottom } = this.state
-    let style = {};
-    Array.isArray(this.props.value) && (style.width = "415px");
-    style.left = `${left}px`;
-    style.top = `${top}px`;
-    if (fadeInBottom) {
-      style.transformOrigin = "center bottom 0px";
-    }
-    return style;
-  }
-  hidePopup(e) {
-    if (this.state.visible &&
-      !this.relRef.current.contains(e.target) &&
-      !this.domRef.current.contains(e.target)) {
-      this.setState({ visible: false })
-    }
+      value = value || []
+      let label = []
 
-  }
-  toggleDrop() {
-    if (!this.props.disabled) {
-      this.setState({ visible: !this.state.visible })
-    }
-  }
-  handleScroll() {
-    setTimeout(() => {
-      this.setPosition()
-    });
-  }
-  setPosition() {
-    // if (!this.state.visible) return;
-    let m = 3;
-    let rel = this.relRef.current;
-    let dom = this.domRef.current;
-    if (!dom) return;
-    let relPos = rel.getBoundingClientRect()
+      let [v1, v2] = value
+      v1 = v1 ? new Date(v1) : ''
+      v2 = v2 ? new Date(v2) : ''
 
-
-    let clientH = window.innerHeight;
-    let clientW = window.innerWidth;
-    // console.log(relPos)
-    let scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-    let scrollLeft = document.body.scrollLeft || document.documentElement.scrollLeft;
-
-    let domH = dom.offsetHeight;
-    let relH = rel.offsetHeight;
-
-    //set
-    let left = 0
-    let top = 0
-    let fadeInBottom = false
-
-    if (this.props.transfer) left = relPos.left + 1 + scrollLeft;
-    //new
-    if (clientH - relPos.top - relH - m < domH) {
-      //空出来的高度不足以放下dom
-      fadeInBottom = true;
-      top = this.props.transfer ? relPos.top - m - domH + scrollTop : -(domH + m);
+    
+      if (v1) label[0] = moment(v1).format(format)
+      if (v2) label[1] = moment(v2).format(format)
+      return label
     } else {
-      fadeInBottom = false;
-      top = this.props.transfer ? relPos.top + relH + m + scrollTop : relH + m;
+      if (isDefaultFormat) {
+        if (mode == 'month') {
+          format = 'YYYY-MM'
+        }
+        if (mode == 'year') {
+          format = 'YYYY'
+        }
+        if (showTime) {
+          format = 'YYYY-MM-DD HH:mm:ss'
+        }
+      }
+      return value ? moment(value).format(format) : ''
     }
-    let dropdownWith = rel.offsetWidth;
+  }
+
+  updateValue(value) {
+    let date = this.getDate(value)
+    this.props.onChange && this.props.onChange(date)
     this.setState({
-      left, top, dropdownWith, fadeInBottom
+      currentValue: value,
+      opened: false,
+      temp_date_hover: {},
+      temp_range_one: null,
+      temp_range_left: null,
+      temp_range_right: null,
+      temp_range_showtime: false,
     })
   }
-  setText() {
-    let { dates, text, value } = this.state
-    let date = dates.map(date => this.format(date));
-    let txt = date.join(` ${this.props.rangeSeparator} `);
-    text = value ? (date.length == 1 ? date[0] : txt) : "";
-    this.setState({ text })
-  }
-  onClear() {
-    let { dates, value } = this.state
-    dates = []
-    value = Array.isArray(value) ? [] : ""
-    this.setState({ dates, value }, () => this.setText())
-    this.props.onChange && this.props.onChange(value)
-    this.props.onFormItemChange && this.props.onFormItemChange(value)
-  }
-  vi(val) {
-    //在ie浏览器里面new Date() 格式必须为yyy/MM/dd 其他格式均不识别
-    if (Array.isArray(val)) {
-      return val.length > 1
-        ? val.map((item, i) => item ? new Date(item.toString().replace(/-/g, "/")) : '')
-        : [];
-    } else {
-      return val
-        ? new Array(new Date(val.toString().replace(/-/g, "/")))
-        : [];
-    }
-  }
-  ok() {
-    let { dates, text, value, visible } = this.state
-    let date = dates.map(date => this.format(date));
-    let txt = date.join(` ${this.props.rangeSeparator} `);
-    text = date.length == 1 ? date[0] : txt;
-    visible = false
 
-    value = date.length == 1 ? date[0] : date
-    this.setState({ text, value, visible })
-    this.props.onChange && this.props.onChange(value)
-    this.props.onFormItemChange && this.props.onFormItemChange(value)
+  clear(e) {
+    let { currentValue, temp_range_one } = this.state
+
+    if (Array.isArray(currentValue)) {
+      currentValue = []
+      temp_range_one = null
+    } else {
+      currentValue = ''
+    }
+    this.setState({ currentValue, temp_range_one })
+    this.props.onChange && this.props.onChange(currentValue)
+
+    e.stopPropagation()
   }
-  setDates(d, i) {
-    let dates = this.state.dates
-    dates[i] = d
-    this.setState({ dates })
+  toggleDrop() {
+    if (this.props.disabled) {
+      return false;
+    }
+    this.setState({ opened: !this.state.opened })
   }
-  format(time, format) {
-    if (!time) return '';
-    const year = time.getFullYear();
-    const month = time.getMonth();
-    const day = time.getDate();
-    const hours24 = time.getHours();
-    const hours = hours24 % 12 === 0 ? 12 : hours24 % 12;
-    const minutes = time.getMinutes();
-    const seconds = time.getSeconds();
-    const milliseconds = time.getMilliseconds();
-    const dd = t => ("0" + t).slice(-2);
-    const map = {
-      YYYY: year,
-      MM: dd(month + 1),
-      MMM: this.state.local.months[month],
-      MMMM: this.state.local.monthsHead[month],
-      M: month + 1,
-      DD: dd(day),
-      D: day,
-      HH: dd(hours24),
-      H: hours24,
-      hh: dd(hours),
-      h: hours,
-      mm: dd(minutes),
-      m: minutes,
-      ss: dd(seconds),
-      s: seconds,
-      S: milliseconds
-    };
-    return (format || this.props.format).replace(
-      /Y+|M+|D+|H+|h+|m+|s+|S+/g,
-      str => map[str]
-    );
-  }
-  /*   componentWillReceiveProps(props) {
-      if (props.value != this.state.value) {
-        this.setState({ value: props.value, dates: this.vi(props.value) }, () => this.ok())
-      }
-    } */
+
   render() {
-    let { visible, text, dates, local } = this.state
-    let { placeholder, disabled, name, clearable, transfer, value, format, disabledDate } = this.props
-    return (<div className={this.classes()} style={this.styles(this.relStyles())}>
-      <input readOnly value={text} type="text" className={this.inputClass()}
-        onClick={this.toggleDrop.bind(this)} disabled={disabled} placeholder={placeholder} name={name} ref={this.relRef} />
-      {(clearable && !disabled) && <a className="k-datepicker-close" onClick={this.onClear.bind(this)}></a>}
-      <Transfer transfer={transfer}
-        onScroll={this.setPosition.bind(this)}
-        onResize={this.setPosition.bind(this)}
-        docOnClick={(e) => this.hidePopup(e)}>
-        <Transition name="dropdown" show={visible} onEnter={() => this.setPosition()}>
-          <div className="k-datepicker-popup" style={this.popupStyle()} tabIndex="-1" ref={this.domRef} >
-            {
-              Array.isArray(value) ?
-                <React.Fragment>
-                  <DateCalendar value={dates[0]} left={true} className="k-calendar-left"
-                    local={local} format={format} data={dates} onOK={this.ok.bind(this)} onChange={(date) => this.setDates(date, 0)} />
-                  <DateCalendar value={dates[1]} right={true} className="k-calendar-right" onChange={(date) => this.setDates(date, 1)}
-                    local={local} format={format} data={dates} onOK={this.ok.bind(this)} />
-                </React.Fragment>
-                :
-                <DateCalendar value={dates[0]} local={local} format={format} data={dates} onChange={(date) => this.setDates(date, 0)}
-                  disabledDate={disabledDate} onOK={this.ok.bind(this)} />
-            }
-          </div>
-        </Transition>
-      </Transfer>
-    </div>)
+    let { placeholder, disabled, clearable,
+      size, transfer, showTime,
+      format, mode, disabledTime, disabledDate,
+    } = this.props
+    let { opened, currentValue } = this.state
+    let childNode = [], isRange = mode == 'range';
+
+    const label = this.getDate(currentValue)
+
+    childNode.push(<Icon type="calendar-outline" key="calendarIcon" className="k-icon-calendar" />)
+    if (isRange) {
+      placeholder = placeholder || []
+      if (placeholder && !Array.isArray(placeholder)) {
+        console.error('Please set placeholder as array !')
+        placeholder = []
+      }
+      let [p1 = '开始日期', p2 = '结束日期'] = placeholder
+      let [v1, v2] = label
+      if (v1) {
+        childNode.push(<div className="k-datepicker-value" key="leftValue">{v1}</div>)
+      } else {
+        childNode.push(<div className="k-datepicker-placeholder" key="placeholder1">{p1}</div>)
+      }
+      childNode.push(<div className="k-datepicker-separator" key="separator">~</div>)
+      if (v2) {
+        childNode.push(<div className="k-datepicker-value" key="rightValue">{v2}</div>)
+      } else {
+        childNode.push(<div className="k-datepicker-placeholder" key="placeholder2">{p2}</div>)
+      }
+    } else {
+      placeholder = placeholder || '请选择日期'
+      if (label) {
+        childNode.push(<div className="k-datepicker-value" key="leftValue">{label}</div>)
+      } else if (placeholder) {
+        childNode.push(<div className="k-datepicker-placeholder" key="placeholder">{placeholder}</div>)
+      }
+    }
+
+
+    let calendar = []
+    if (isRange) {
+      currentValue = currentValue || []
+      let v1 = currentValue[0] || '', v2 = currentValue[1] || '';
+      let leftProps = {
+        format, mode, disabledTime,
+        disabledDate, showTime, float: 'left', value: v1,
+        key: 'left',
+        onChange: e => this.updateValue(e)
+      }
+      let rightProps = {
+        key: 'right',
+        format, mode, disabledTime,
+        disabledDate, showTime, float: 'right', value: v2,
+        onChange: e => this.updateValue(e)
+      };
+      calendar.push(<DateCalendar {...leftProps} />, <DateCalendar {...rightProps} />)
+    } else {
+      const props = {
+        key: 'left',
+        Context: this.Context,
+        format, mode, disabledTime, disabledDate, showTime, value: currentValue,
+        onChange: e => {
+          this.updateValue(e);
+          this.setState({ opened: false })
+        }
+      }
+      calendar.push(<DateCalendar {...props} />)
+    }
+    const props = {
+      className: this.className(['k-datepicker-dropdown', { 'k-datepicker-range-dropdown': isRange }]),
+      transfer,
+      selectionRef: this.elRef,
+      show: opened,
+      transitionName: 'k-date-picker',
+      onClose: () => {
+        this.setState({ opened: false })
+        setTimeout(() => this.setState({
+          temp_date_hover: {},
+          temp_range_one: null,
+          temp_range_left: null,
+          temp_range_right: null,
+          temp_range_showtime: false,
+        }), 200);
+      },
+    }
+    let overlay = <Drop {...props}>{calendar}</Drop >
+
+    let showClear = !disabled && clearable && isNotEmpty(label) && label.length > 0
+    showClear && childNode.push(<Icon className="k-datepicker-clearable" key="clearableIcon" type="close-circle" onClick={this.clear.bind(this)} />)
+    const selectCls = [
+      "k-datepicker-selection", {
+        "k-datepicker-has-clear": showClear
+      }
+    ]
+    const classes = ['k-datepicker',
+      { 'k-datepicker-open': opened },
+      { 'k-datepicker-range': isRange },
+      { 'k-datepicker-sm': size == 'small' },
+      { 'k-datepicker-lg': size == 'large' },
+      { 'k-datepicker-disabled': disabled },
+    ]
+    return (
+      <div tabIndex="0" className={this.className(classes)} style={this.styles()}>
+        <div className={this.className(selectCls)} ref={this.elRef} onClick={this.toggleDrop.bind(this)}>
+          {childNode}
+        </div>
+        {overlay}
+      </div>
+    )
   }
 }
 
