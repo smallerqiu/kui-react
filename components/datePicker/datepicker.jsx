@@ -21,6 +21,7 @@ export default class DatePicker extends Kui {
     format: 'YYYY-MM-DD',
     size: 'default',
     clearable: true,
+    bordered: true,
     transfer: true,
   }
   static propTypes = {
@@ -30,6 +31,7 @@ export default class DatePicker extends Kui {
     disabled: PropTypes.bool,
     format: PropTypes.string,
     clearable: PropTypes.bool,
+    bordered: PropTypes.bool,
     size: PropTypes.oneOf(['small', 'large', 'default']),
     placeholder: PropTypes.oneOfType(PropTypes.string, PropTypes.array)
   }
@@ -79,7 +81,7 @@ export default class DatePicker extends Kui {
       v1 = v1 ? new Date(v1) : ''
       v2 = v2 ? new Date(v2) : ''
 
-    
+
       if (v1) label[0] = moment(v1).format(format)
       if (v2) label[1] = moment(v2).format(format)
       return label
@@ -136,7 +138,7 @@ export default class DatePicker extends Kui {
 
   render() {
     let { placeholder, disabled, clearable,
-      size, transfer, showTime,
+      size, transfer, showTime, bordered,
       format, mode, disabledTime, disabledDate,
     } = this.props
     let { opened, currentValue } = this.state
@@ -232,6 +234,7 @@ export default class DatePicker extends Kui {
     const classes = ['k-datepicker',
       { 'k-datepicker-open': opened },
       { 'k-datepicker-range': isRange },
+      { 'k-datepicker-borderless': bordered === false },
       { 'k-datepicker-sm': size == 'small' },
       { 'k-datepicker-lg': size == 'large' },
       { 'k-datepicker-disabled': disabled },
