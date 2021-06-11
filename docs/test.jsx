@@ -1,33 +1,102 @@
 import React, { Suspense, lazy } from 'react'
 import ReactDOM from 'react-dom'
-import { DatePicker } from 'react-kui';
+import { Form, Input, Select, Button, Icon, Message } from 'react-kui';
 
-class Demo extends React.Component {
+const { Option } = Select
+const Demo = () => {
+  const layout = {
+    labelCol: { span: 5 },
+    wrapperCol: { span: 16 },
+  }
+  let formModel = {
+    cname: '',
+    info: {
+      gender: '',
+      age: ''
+    },
+    webs: [
+      { value: '', key: '0' },
+      { value: '', key: '1' },
+    ],
+  }
+  const [count, setCount] = React.useState(1)
+  let [form, setForm] = React.useState(formModel)
 
-  state = {
-    v1: false,
-    v2: false
+  const add = () => {
+    let item = { value: '', key: count + 1 }
+    form.webs.push(item)
+    setForm(form)
+    setCount(count + 1)
+  }
+  const remove = (index) => {
+    const a = form.webs.splice(index, 1)
+    console.log(index, a)
+    setForm(form)
+  }
+  const submit = (e, valid, model) => {
+    e.preventDefault()
+    Message[valid ? 'success' : 'error'](valid ? 'success' : 'faild')
+    console.log(model)
   }
 
-  setVisible = (key, visible) => {
-    let obj = {}
-    obj[key] = visible
-    this.setState(obj)
-  }
-
-  render() {
-    let { v1, v2 } = this.state
-    return (
-      <div style={{padding:200}}>
-      {/* <DatePicker /> */}
-      <br/>
-      <br/>
-      {/* <DatePicker mode="month" placeholder="请选择月份"/> */}
-      <br/>
-      <br/>
-      <DatePicker mode="range" />
+  const webs = form.webs
+  return (
+    <div style={{ width: 600 }}>
+      <Form
+        model={form}
+        onSubmit={submit}
+        {...layout}>
+        <Form.Item
+          label="姓名"
+          prop="cname"
+          rules={[
+            { required: true, message: '请输入姓名' }
+          ]}
+        >
+          <Input clearable />
+        </Form.Item>
+        <Form.Item
+          label="性别"
+          prop="info.gender"
+          rules={[
+            { required: true, message: '请输入性别' }
+          ]}
+        >
+          <Select clearable>
+            <Option value="1" label="男" />
+            <Option value="0" label="女" />
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label="年龄"
+          prop="info.age"
+          rules={[
+            { required: true, message: '请输入年龄' }
+          ]}
+        >
+          <Input clearable />
+        </Form.Item>
+        {
+          webs.map((item, i) => {
+            return <Form.Item
+              label={'网址' + item.key}
+              prop={'webs.' + i + '.value'}
+              key={item.key}
+              rules={{ required: true, message: '网址不能为空' }}
+            >
+              <Input style={{ width: 230 }} />
+              {i > 0 ? <Icon type="remove-circle-outline" onClick={() => remove(i)} style={{ fontSize: 25, margin: '0 10px' }} color="red" /> : null}
+            </Form.Item>
+          })
+        }
+        <Form.Item wrapperCol={{ offset: 5 }}>
+          <Button type="primary" buttontype="submit">Submit</Button>
+          <Button onClick={add} style={{ margin: '0 10px' }}>Add</Button>
+          <Button buttontype="reset">Reset</Button>
+        </Form.Item>
+      </Form>
     </div>
-    )
-  }
+  )
 }
+
 ReactDOM.render(<Demo />, document.getElementById('app'))

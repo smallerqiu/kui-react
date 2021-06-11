@@ -8,8 +8,7 @@ import { Message , Button } from 'react-kui';
 let count = 0
 class Demo extends React.Component {
   info() {
-    count++
-    Message.info("this is a base message number : "+count);
+    Message.info("this is a base message number : "+ count++);
   }
   render(){
     return(

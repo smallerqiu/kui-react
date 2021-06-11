@@ -7,36 +7,27 @@
 ```tsx
 import { Layout ,Menu, Breadcrumb } from 'react-kui';
 
-class Layout3 extends React.Component {
-  state = {
-    top:['t1']
-  }
-  render(){
-    let {top} = this.state
-    return(
-      <div className="k-demo-layout-3">
-        <Layout>
-          <Layout.Header>
-            <div className="logo" />
-            <Menu mode="horizontal" theme="dark" selectedKeys={top} className="demo-top-menu">
-              <Menu.Item key="t1" icon="home">nav1</Menu.Item>
-              <Menu.Item key="t2" icon="logo-buffer">nav2</Menu.Item>
-              <Menu.Item key="t3" icon="heart">nav3</Menu.Item>
-            </Menu>
-          </Layout.Header> 
-          <Layout.Content className="k-demo-main">
-            <Breadcrumb className="nav">
-                <Breadcrumb.Item>Home</Breadcrumb.Item>
-                <Breadcrumb.Item>List</Breadcrumb.Item>
-                <Breadcrumb.Item>App</Breadcrumb.Item>
-              </Breadcrumb>
-            <Layout.Content>Conent</Layout.Content>
-          </Layout.Content> 
-          <Layout.Footer>KUI ©2018 Created by chuchur</Layout.Footer>
-        </Layout>
-      </div>
-    )
-  }
-}
-ReactDOM.render(<Layout3 />  , mountNode)
+ReactDOM.render(
+  <div className="k-demo-layout-3">
+    <Layout>
+      <Layout.Header>
+        <div className="logo" />
+        <Menu mode="horizontal" theme="dark" selectedKeys={['t1']} className="demo-top-menu">
+          <Menu.Item key="t1" icon="home">nav1</Menu.Item>
+          <Menu.Item key="t2" icon="logo-buffer">nav2</Menu.Item>
+          <Menu.Item key="t3" icon="heart">nav3</Menu.Item>
+        </Menu>
+      </Layout.Header> 
+      <Layout.Content className="k-demo-main">
+        <Breadcrumb className="nav">
+            <Breadcrumb.Item>Home</Breadcrumb.Item>
+            <Breadcrumb.Item>List</Breadcrumb.Item>
+            <Breadcrumb.Item>App</Breadcrumb.Item>
+          </Breadcrumb>
+        <Layout.Content>Conent</Layout.Content>
+      </Layout.Content> 
+      <Layout.Footer>KUI ©2018 Created by chuchur</Layout.Footer>
+    </Layout>
+  </div>
+, mountNode)
 ```

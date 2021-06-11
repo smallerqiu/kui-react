@@ -5,7 +5,7 @@ import Icon from '../icon'
 export default class Button extends Kui {
 
   static propTypes = {
-    buttonType: PropTypes.string,
+    buttontype: PropTypes.oneOf(["button", "submit", "reset"]),
     icon: PropTypes.string,
     block: PropTypes.bool,
     size: PropTypes.oneOf(['small', 'large', 'default']),
@@ -18,11 +18,12 @@ export default class Button extends Kui {
   static defaultProps = {
     type: 'default',
     size: 'default',
+    buttontype: 'button'
   }
 
   render() {
     const { type, loading, circle, hollow,
-      buttonType, icon, children, size, block } = this.props
+      buttontype, icon, children, size, block } = this.props
     const onlyIcon = !(children && children.length)
     const cls = this.className([
       "k-btn",
@@ -41,19 +42,19 @@ export default class Button extends Kui {
 
     const iconNode = iconType ? <Icon type={iconType} spin={loading} /> : null
     const options = { ...this.props };
-    ['hollow', 'circle', 'loading', 'block'].map(a=>delete options[a])
+    ['hollow', 'circle', 'loading', 'block'].map(a => delete options[a])
     const props = Object.assign(options, {
-      type: buttonType,
+      type: buttontype,
       style: this.styles(),
       className: cls,
     })
-    const kid = React.Children.map(children, child => {
+    const childs = React.Children.map(children, child => {
       return <span>{child}</span>
     })
 
     return <button {...props}>
       {iconNode}
-      {kid}
+      {childs}
     </button>
   }
 }

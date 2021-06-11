@@ -13,7 +13,7 @@ import Collapse from './collapse'
 import Divider from './divider'
 import Dropdown from './dropdown'
 import DatePicker from './datePicker'
-// import Form from './form'
+import Form from './form'
 import Empty from './empty'
 import Icon from './icon'
 import { Input, TextArea } from './input'
@@ -62,7 +62,7 @@ export {
     Divider,
     Dropdown,
     Empty,
-    // Form,
+    Form,
     // Loading,
     Layout,
     Icon,

@@ -90,8 +90,8 @@ export default class Select extends Kui {
     }
     this.setState({ showSearch: false })
   }
-  getLabel(kid, labelValue) {
-    const obj = kid.map(({ props }) => props).filter(({ value }) => value === labelValue)
+  getLabel(childs, labelValue) {
+    const obj = childs.map(({ props }) => props).filter(({ value }) => value === labelValue)
     return obj.length ? obj[0].label : ''
   }
   setLabel() {
@@ -100,13 +100,13 @@ export default class Select extends Kui {
     currentValue = isNotEmpty(currentValue) ? currentValue : (multiple ? [] : '')
     let currentLabel = isNotEmpty(label) ? label : (multiple ? [] : '')
 
-    let kid = this.getOptions()
+    let childs = this.getOptions()
     if (multiple) {
       if (currentValue.length) {
         let labels = []
         let index = -1
         currentValue.forEach((value) => {
-          let label = this.getLabel(kid, value)
+          let label = this.getLabel(childs, value)
           labels.push({ label, key: `label_${index++}`, value })
         })
         currentLabel = labels
@@ -115,7 +115,7 @@ export default class Select extends Kui {
       }
 
     } else {
-      currentLabel = this.getLabel(kid, currentValue)
+      currentLabel = this.getLabel(childs, currentValue)
     }
     this.setState({ label: currentLabel })
     setTimeout(e => { this.setPosition() }, 230);
@@ -248,10 +248,10 @@ export default class Select extends Kui {
   getOptions() {
     let { options, children, filterable } = this.props
     let { queryKey } = this.state
-    let kid = null
+    let childs = null
     let index = -1
     if (Array.isArray(options)) {
-      kid = options.map((k, i) => {
+      childs = options.map((k, i) => {
         const key = k.key || `opt_${index++}`
         let prop = {
           ...k,
@@ -261,7 +261,7 @@ export default class Select extends Kui {
         return <Option {...prop} />
       })
     } else {
-      kid = React.Children.map(children, (child) => {
+      childs = React.Children.map(children, (child) => {
         return React.cloneElement(child, { eventKey: child.key || `opt_${index++}` })
       })
     }
@@ -269,11 +269,11 @@ export default class Select extends Kui {
       let parsedQuery = String(queryKey).replace(/(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g, "\\$1");
       let Reg = new RegExp(parsedQuery, 'i')
 
-      kid = kid.filter(({ props }) => {
+      childs = childs.filter(({ props }) => {
         return Reg.test(props.label)
       })
     }
-    return kid || []
+    return childs || []
   }
 
   render() {
@@ -301,18 +301,16 @@ export default class Select extends Kui {
       value: queryKey
     }
 
-    const queryNode = <div key="search"
-      className="k-select-search-wrap"
-    >
+    const queryNode = <div key="search" className="k-select-search-wrap">
       <input {...queryProps} />
       <span className="k-select-search-mirror" ref={this.mirrorRef}>{queryKey}</span>
     </div>
 
-    let kid = this.getOptions()
-    // kid = (
-    //   !kid.length
+    let childs = this.getOptions()
+    // childs = (
+    //   !childs.length
     //     ? <li className="k-select-empty" onClick={this.emptyClick}><Icon type="albums" /><p className="k-empty-desc">暂无数据</p></li>
-    //     : kid
+    //     : childs
     // )
     const loadingNode = <div className="k-select-loading" key="loading"><Icon type="sync" spin /><span>加载中...</span></div>
     const props = {
@@ -331,7 +329,8 @@ export default class Select extends Kui {
         }, 300);
       }
     }
-    let overlay = <Drop {...props}>{loading ? loadingNode : (!kid.length ? <Empty onClick={this.emptyClick.bind(this)} /> : <ul>{kid}</ul>)}</Drop>
+    let overlay = <Drop {...props}>{loading ? loadingNode :
+      (!childs.length ? <Empty onClick={this.emptyClick.bind(this)} /> : <ul>{childs}</ul>)}</Drop>
 
     label = multiple ? (label || []) : label
     const placeNode = ((placeholder && ((!label || !label.length) && !queryKey))
@@ -355,10 +354,10 @@ export default class Select extends Kui {
     }
     const labelsNode = (multiple
       ? (
-          [<TransitionGroup className="k-select-labels" key="labels">
-            {tags}
-          </TransitionGroup>,
-          queryNode]
+        <TransitionGroup className="k-select-labels" key="labels">
+          {tags}
+          <CSSTransition timeout={200} in={showSearch}>{queryNode}</CSSTransition>
+        </TransitionGroup>
       )
       : <div className="k-select-label" key="labels" style={labelStyle}>{label}</div>
     )

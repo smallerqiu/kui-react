@@ -44,8 +44,15 @@ export default class BaseInput extends Kui {
       this.inputRef.current.blur()
     }
   }
+  componentDidUpdate(prevProps, prevState, snap) {
+    let { value } = this.props
+    if (value != prevProps.value) {
+      this.setState({ currentValue: value })
+    }
+  }
   clear = () => {
     this.setState({ currentValue: '' }, () => {
+      this.props.onChange && this.props.onChange({ target: { value: '' } })
       this.inputRef.current.focus()
     })
   }

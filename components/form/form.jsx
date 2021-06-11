@@ -1,128 +1,156 @@
 
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
-import FormItem from './formitem'
+
 export default class Form extends Kui {
   static childContextTypes = {
     Form: PropTypes.any
   }
   static defaultProps = {
     labelAlign: 'right',
-    labelWidth: 80
+    size: 'default'
   }
   static propTypes = {
     labelAlign: PropTypes.oneOf(['left', 'top', 'right']),
     model: PropTypes.object,
+    labelCol: PropTypes.object,
+    wrapperCol: PropTypes.object,
     rules: PropTypes.object,
-    labelWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    size: PropTypes.oneOf(['small', 'large', 'default']),
+    onSubmit: PropTypes.func,
+    onReset: PropTypes.func
   }
   state = {
-    items: [],
-    model: props.model
+    FormItems: [],
+    defaultModel: this.props.model || {}
   }
-  classes() {
-    let { labelAlign } = this.props
-    return this.className([
-      "k-form",
-      {
-        [`k-form-${labelAlign}`]: labelAlign
-      }
-    ])
-  }
-  resetField(key) {
-    let { model } = this.props
-    if (model && model[key]) {
-      let type = Object.prototype.toString.call(model[key])
-      if (type === '[object Object]') model[key] = {}
-      else if (type === '[object Array]') model[key] = []
-      else model[key] = ''
-      this.props.onChange && this.props.onChange(model)
-    }
-  }
+
   getChildContext() {
     return {
       Form: this
     }
   }
-  resetFields() {
-    this.state.items.forEach(item => item.reset())
+
+  componentDidUpdate(prevProps, prevState, snap) {
+    let { model } = this.props
+    console.log(model)
+    if (model != prevProps.model) {
+      this.setState({ defaultModel: model }, () => {
+        this.validate()
+      })
+    }
   }
-  removeField(field) {
-    let { items } = this.state
-    items.splice(items.indexOf(field), 1);
-    this.setState({ items })
-  }
-  addField(field) {
-    let { items } = this.state
-    items.push(field)
-    this.setState({ items })
-  }
-  getProp(prop) {
-    prop = prop.replace(/\[(\w+)\]/g, '.$1').replace(/^\./, '');
-    let keys = prop.split('.')
-    let newModel = this.props.rules
-    let len = keys.length - 1
-    for (let i = 0; i < len; i++) {
+
+  setValue(prop, value = '') {
+    let keys = prop.replace(/\[(\w+)\]/g, '.$1').replace(/^\./, '').split('.')
+    let { defaultModel } = this.state
+    let model = defaultModel
+    for (let i = 0; i < keys.length; i++) {
       let key = keys[i]
-      if (key in newModel) {
-        newModel = newModel[key]
-      } else {
-        throw new Error('请传入正确的prop值')
+      if (key in model) {
+        if (i == keys.length - 1 || keys.length == 1) {
+          let val = model[key]
+          if (typeof val === 'boolean') {
+            model[key] = value || false
+          } else if (Array.isArray(val)) {
+            model[key] = value || []
+          } else {
+            model[key] = value
+          }
+        }
+        model = model[key]
       }
     }
-    return {
-      model: newModel,
-      key: keys[len],
-      value: newModel[keys[len]]
-    };
+    this.setState({ defaultModel })
   }
+
+  test(key) {
+    //提供外部单独验证
+    let item = this.state.FormItems.filter(item => item.props.prop == key)[0]
+    if (item) {
+      let rule = item.props.rules || (this.props.rules || {})[item.props.prop]
+      if (rule) {
+        return item.validate(rule)
+      }
+    }
+  }
+
+  testProp(path) {
+    let keys = path.replace(/\[(\w+)\]/g, '.$1').replace(/^\./, '').split('.')
+    let model = this.state.defaultModel
+    for (let i = 0; i < keys.length; i++) {
+      let key = keys[i]
+      if (key in model) {
+        model = JSON.parse(JSON.stringify(model[key]))
+      } else {
+        throw new Error('请传入正确的prop值:' + path)
+      }
+    }
+    return model;
+  }
+
   validate(callback) {
-    var isValid = true
-    this.state.items.forEach(item => {
-      item.validates(null, valid => {
-        if (!valid) isValid = valid
-      })
+    var result = true
+
+    this.state.FormItems.forEach((item) => {
+      let rules = item.props.rules || (this.props.rules || {})[item.props.prop]
+      if (rules) {
+        let valid = item.validate(rules)
+        if (!valid) result = false
+      }
     })
-    if (typeof callback === 'function') {
-      callback(isValid)
+
+    if (typeof callback == 'function') {
+      callback(result)
     }
   }
-  validateField(key) {
-    let field = this.fields.filter(x => x.prop == key)[0]
-    if (field) {
-      field.validates()
+  onCollect = (context, push) => {
+    const { FormItems } = this.state
+    !push ? FormItems.splice(FormItems.indexOf(context), 1) : FormItems.push(context)
+    if (push && context.props.prop && this.props.model) {
+      this.testProp(context.props.prop)
     }
   }
-  onFormItemChange(prop, value) {
-    let { model } = this.state
-    if (model) {
-      model[prop] = value
-      this.props.onChange && this.props.onChange(model)
-    }
+  reset = () => {
+    this.state.FormItems.forEach(item => {
+      let { prop } = item.props
+      if (prop) {
+        this.setValue(prop)
+      }
+      item.setState({ valid: true })
+    })
   }
-  // componentWillReceiveProps(props)
+  submit = (e) => {
+    e.preventDefault()
+    this.validate((result) => {
+      this.props.onSubmit && this.props.onSubmit(e, result, this.state.defaultModel)
+    })
+  }
   render() {
-    let { labelWidth, labelAlign, children } = this.props
-    let renderItem = () => {
-      return React.Children.map(children, child => {
-        let { props, type } = child
-        if (type == FormItem) {
-          let itemRules = props.rules || (props.prop && this.getProp(props.prop).value)
-          let required = props.required || itemRules && itemRules.filter(rule => rule.required).length > 0
-          return React.cloneElement(child, Object.assign({}, child.props, {
-            labelWidth, labelAlign, required,
-            resetField: this.resetField.bind(this),
-          }))
-        } else {
-          return child
+    let { labelAlign, size, labelCol = {}, wrapperCol = {}, children } = this.props
+    const classes = ["k-form",
+      {
+        [`k-form-label-${labelAlign}`]: labelAlign,
+        'k-form-lg': size == 'large',
+        'k-form-sm': size == 'small',
+      }
+    ];
+    return (
+      <form
+        autoComplete="off"
+        className={this.className(classes)}
+        onSubmit={this.submit}
+        onReset={this.reset}
+      >
+        {
+          React.Children.map(children, child => {
+            labelCol = child.props.labelCol || labelCol
+            wrapperCol = child.props.wrapperCol || wrapperCol
+            return React.cloneElement(child, { labelCol, wrapperCol, onCollect: this.onCollect })
+          })
         }
-      })
-    }
-    return (<div>
-      <form autoComplete="off" className={this.classes()} style={this.styles()}>
-        {renderItem()}
       </form>
-    </div>)
+    )
   }
 }
 

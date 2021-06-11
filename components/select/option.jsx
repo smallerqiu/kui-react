@@ -2,6 +2,7 @@ import React from 'react'
 import Icon from '../icon'
 import { Kui, PropTypes } from '../kui';
 import { isNotEmpty } from "../_tool/utils";
+
 export default class Option extends Kui {
 
   static contextTypes = {
@@ -59,10 +60,10 @@ export default class Option extends Kui {
         ["k-select-item-disabled"]: disabled
       }
     ];
-    const kid = <span>{label}{iconNode}</span>
+    const childs = <span>{label}{iconNode}</span>
 
     return (
-      <li className={this.className(classes)} onClick={this.onSelect.bind(this)}>{kid}</li>
+      <li className={this.className(classes)} onClick={this.onSelect.bind(this)}>{childs}</li>
     )
   }
 }

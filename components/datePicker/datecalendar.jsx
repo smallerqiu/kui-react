@@ -62,8 +62,8 @@ export default class DateCalendar extends Kui {
       if (showTimes) {
         let { hour, minute, second } = this.state
         let d = [hour, minute, second].map(x => x * 24)
-        let kid = this.timepickerRef.current.children;
-        [0, 1, 2].map((e, i) => kid[i].scrollTop = d[i])
+        let childs = this.timepickerRef.current.children;
+        [0, 1, 2].map((e, i) => childs[i].scrollTop = d[i])
       }
     }
   }
@@ -410,10 +410,10 @@ export default class DateCalendar extends Kui {
   setTimeScroll() {
     let { hour, minute, second } = this.state
     let d = [hour, minute, second].map(x => x * 24)
-    let kid = this.timepickerRef.current.children;
+    let childs = this.timepickerRef.current.children;
     animate({
       draw: function (progress) {
-        [0, 1, 2].map((e, i) => kid[i].scrollTop += progress * (d[i] - kid[i].scrollTop))
+        [0, 1, 2].map((e, i) => childs[i].scrollTop += progress * (d[i] - childs[i].scrollTop))
       }
     })
   }

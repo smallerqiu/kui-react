@@ -16,13 +16,13 @@ export default class Radio extends Kui {
     FormItem: PropTypes.any
   };
   state = {
-    isChecked: false
+    defaultChecked: false
   }
 
   componentDidMount() {
     const { checked, indeterminaten } = this.props
     this.setState({
-      isChecked: checked !== undefined ? checked : checked == true && !indeterminaten
+      defaultChecked: checked !== undefined ? checked : checked == true && !indeterminaten
     })
   }
 
@@ -38,9 +38,9 @@ export default class Radio extends Kui {
     let FormItem = this.context.FormItem
 
     const checked = e.target.checked;
-    this.setState({ isChecked: checked })
+    this.setState({ defaultChecked: checked })
     if (group) {
-      label = label || children.text
+      label = label || children
       group.change({ label, value })
     } else {
       onChange && onChange(e)
@@ -49,15 +49,15 @@ export default class Radio extends Kui {
   }
   render() {
     let { disabled, label, value, checked, children } = this.props
-    let { isChecked } = this.state
+    let { defaultChecked } = this.state
     let group = this.context.Group
 
     if (group) {
-      checked = group.props.value == value
+      checked = group.state.defaultValue == value
       disabled = disabled || group.props.disabled
     } else {
       if (checked === undefined) {
-        checked = isChecked
+        checked = defaultChecked
       }
     }
     const wpclasses = ["k-radio-wrapper", { ["k-radio-disabled"]: disabled }];

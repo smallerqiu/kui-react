@@ -6,57 +6,52 @@
 ```tsx
 import { Badge } from 'react-kui';
 
-class Demo extends React.Component {
-  state = {
-    colors:[
-      'pink',
-      'red',
-      'yellow',
-      'orange',
-      'cyan',
-      'green',
-      'blue',
-      'purple',
-      'geekblue',
-      'magenta',
-      'volcano',
-      'gold',
-      'lime'
-      ]
-  }
-  render(){
-    const { colors } = this.state
-    return (
-      <div className="demo-badge">
-        <h4 style={{marginBottom: 16}}>
-          Presets:
-        </h4>
-        <div>
-          {
-            colors.map(color=>{
-              return (
-                <div key={color}>
-                  <Badge color={color} text={color} />
-                </div>
-              )
-            })
-          }
-        </div>
-        <h4 style={{margin: '16px 0'}}>
-          Custom:
-        </h4>
-        <div>
-          <Badge color="#c20" text="#c20"  />
-          <br />
-          <Badge color="#39f" text="#39f" />
-          <br />
-          <Badge color="#e3f" text="#e3f" />
-          <br />
-          <Badge color="#6c0" text="#6c0" />
-        </div>
+const Demo = ()=> {
+  const colors = [
+    'pink',
+    'red',
+    'yellow',
+    'orange',
+    'cyan',
+    'green',
+    'blue',
+    'purple',
+    'geekblue',
+    'magenta',
+    'volcano',
+    'gold',
+    'lime'
+    ]
+  return (
+    <div className="demo-badge">
+      <h4 style={{marginBottom: 16}}>
+        Presets:
+      </h4>
+      <div>
+        {
+          colors.map(color=>{
+            return (
+              <div key={color}>
+                <Badge color={color} text={color} />
+              </div>
+            )
+          })
+        }
       </div>
-    )
-  }
+      <h4 style={{margin: '16px 0'}}>
+        Custom:
+      </h4>
+      <div>
+        <Badge color="#c20" text="#c20"  />
+        <br />
+        <Badge color="#39f" text="#39f" />
+        <br />
+        <Badge color="#e3f" text="#e3f" />
+        <br />
+        <Badge color="#6c0" text="#6c0" />
+      </div>
+    </div>
+  )
 }
 ReactDOM.render(<Demo />,  mountNode)
 ```

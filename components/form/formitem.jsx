@@ -1,6 +1,10 @@
 
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
+import { Row, Col } from '../grid'
+import { CSSTransition } from 'react-transition-group'
+import { isNotEmpty } from '../_tool/utils'
+
 export default class FormItem extends Kui {
   static contextTypes = {
     Form: PropTypes.any
@@ -9,147 +13,205 @@ export default class FormItem extends Kui {
     width: 0
   }
   static propTypes = {
-    onFormItemChange: PropTypes.func,
-    onBlur: PropTypes.func,
     label: PropTypes.string,
-    errorTip: PropTypes.string,
-    rules: PropTypes.array,
     prop: PropTypes.string,
-    labelAlign: PropTypes.string,
-    labelWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    labelCol: PropTypes.object,
+    wrapperCol: PropTypes.object,
+    rules: PropTypes.oneOfType([PropTypes.array, PropTypes.object])
   }
   state = {
-    width: props.width || props.labelWidth,
     valid: true,
-    errorTip: '',
-    rules: props.rules,
-    fieldValue: props.value || ''
+    itemValue: null,
+    message: ''
   }
-  classes() {
-    let { required } = this.props
-    return this.className([
-      "k-form-item",
-      {
-        "k-form-item-required": required,
-        "k-form-item-error": !this.state.valid
-      }
-    ])
-  }
-  labelStyles() {
-    let width = this.state.width
-    return { width: `${width}px` }
-  }
-  contentStyles() {
-    let width = this.state.width
-    return this.props.labelAlign != 'top' ? { marginLeft: `${width}px` } : {}
-  }
-  reset() {
-    if (this.props.prop) {
-      let { valid, fieldValue } = this.state
-      valid = true
-      fieldValue = Array.isArray(fieldValue) ? [] : ''
-      console.log(fieldValue)
-      this.setState({ valid, fieldValue }, () => {
-        this.context.Form.resetField(this.props.prop)
-      })
-    }
-  }
-  test(rule) {
-    let valid = true
-    let value = this.state.fieldValue
-    let message = rule.message || 'This field must required'
-    let type = Object.prototype.toString.call(value)
-    if (value === '' && type == '[object String]' && rule.required) {
-      valid = false
-    } else if (value.length == 0 && type == '[object Array]' && rule.required) {
-      valid = false
-    } else if (rule.min && value.length < rule.min) {
-      valid = false
-      message = rule.message || (type == '[object Array]' ? `Choose at least ${rule.min} item` : `Introduce no less than ${rule.min} words`)
-    } else if (rule.max && value.length > rule.max) {
-      valid = false
-      message = rule.message || (type == '[object Array]' ? `Choose ${rule.max} items at best` : `Introduce no more than ${rule.max} words`)
-    } else if (rule.pattner) {
-      valid = rule.pattner.test(value)
-      message = rule.message || 'Incorrect email format'
-    } else if (rule.type == 'mail') {
-      valid = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(value)
-      message = rule.message || 'Incorrect email format'
-    } else if (rule.type == 'mobile') {
-      valid = /^[1][3,4,5,7,8][0-9]{9}$/.test(value)
-      message = rule.message || 'Incorrect mobile format'
-    } else if (rule.type == 'number') {
-      valid = typeof value === 'number' && isNaN(value);
-      message = rule.message || 'Incorrect number format'
-    } else if (rule.validator && typeof rule.validator == 'function') {
-      rule.validator(this.rule, value, error => {
-        if (error) {
-          valid = false
-          message = error.message
-        }
-      })
-    }
-    this.setState({ valid, errorTip: message })
-    return valid
-  }
-  validates(trigger, callback = () => { }) {
-    let { prop, rules } = this.props
-    rules = rules || (prop && this.context.Form.getProp(prop).value)
+
+  testValue = () => {
+    // 正在清理中，这时不进行验证
+    let { rules, prop } = this.props
     if (prop) {
-      if (rules && rules.length) {
-        let valid = true
-        rules.forEach(rule => {
-          trigger = !trigger ? rule.trigger || 'blur' : trigger
-          if (rule.trigger == trigger) {
-            if (!valid) {
-              callback(valid)
-              return false;
-            }
-            valid = this.test(rule)
-            callback(valid)
+      let rule = rules || (this.context.Form.props.rules || {})[prop]
+      rule && this.validate(rule)
+    }
+  }
+
+  test = (rule, valid = true) => {
+    let { prop } = this.props
+    const itemValue = this.context.Form.testProp(prop)
+    let message = rule.message
+    // todo：
+    // if (trigger == 'blur' && rule.trigger !== trigger) {
+    //   return;
+    // }
+    if (rule.required) {
+      valid = Array.isArray(itemValue) ? itemValue.length > 0 : (isNotEmpty(itemValue) && itemValue !== false)
+      message = message || 'This field is required'
+      // console.log(valid, message)
+    } else {
+      //valid custom pattern
+      if (rule.pattern) {
+        valid = rule.pattern.test(itemValue)
+      }
+      //valid type
+      else if (rule.type) {
+        switch (rule.type) {
+          case 'mail':
+            valid = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(itemValue)
+            message = message || 'Incorrect email format'
+            break;
+          case 'mobile':
+            valid = /^[1][3,4,5,6,7,8][0-9]{9}$/.test(itemValue)
+            message = message || 'Incorrect mobile phone number format'
+            break;
+          case 'number':
+            // valid = typeof itemValue === 'number' && !isNaN(itemValue)
+            valid = /^(-?\d+)(\.\d+)?$/.test(itemValue)
+            message = message || 'Incorrect number format'
+            // let { min, max } = rule
+            // if (min !== undefined && min !== null && min !== '') {
+            //   valid = itemValue <= min
+            // }
+            break;
+          default:
+            break;
+
+        }
+        // console.log(valid, prop, message)
+
+      }
+      //valid custom validator
+      else if (typeof rule.validator === 'function') {
+        rule.validator(rule, itemValue, error => {
+          valid = error === undefined
+          if (error) {
+            message = error.message
           }
         })
       }
+      //valid length (min or max)
+      else if (rule.min !== undefined || rule.max !== undefined) {
+        const _type = typeof itemValue
+        //min
+        if (rule.min !== undefined) {
+          if (Array.isArray(itemValue)) {
+            valid = itemValue.length >= rule.min
+          } else if (_type === 'string') {
+            valid = itemValue.replace(/[\u0391-\uFFE5]/g, "aa").length >= rule.min
+          } else if (_type === 'number') {
+            valid = itemValue >= rule.min
+          }
+        }
+
+        //max
+        if (rule.max !== undefined && valid) {
+          if (Array.isArray(itemValue)) {
+            valid = itemValue.length <= rule.max
+          } else if (_type === 'string') {
+            valid = itemValue.replace(/[\u0391-\uFFE5]/g, "aa").length <= rule.max
+          } else if (_type === 'number') {
+            valid = itemValue <= rule.max
+          }
+        }
+        message = message || 'Incorrect length'
+      }
     }
+    this.setState({ message, valid })
+    return valid
   }
-  onFormItemBlur(value) {
-    this.setState({ fieldValue: value }, () => {
-      this.validates('blur')
-    })
-  }
-  onFormItemChange(value) {
-    if (value != this.state.fieldValue) {
-      this.setState({ fieldValue: value }, () => {
-        this.validates('change')
-      })
-      this.context.Form.onFormItemChange(this.props.prop, value)
+
+  validate = (rules) => {
+    if (rules.constructor === Object) return this.test(rules)
+    // 有 required 排前面
+    rules = rules.sort((a, b) => a.required ? -1 : 0)
+    let valid = true
+    for (let i = 0; i < rules.length; i++) {
+      valid = this.test(rules[i], valid)
+      if (!valid) {
+        // 有一条规则不通过就跳出
+        break;
+      }
     }
-  }
-  componentWillUnmount() {
-    this.props.prop && this.context.Form.addField(this)
+    return valid
   }
   componentDidMount() {
-    this.props.prop && this.context.Form.addField(this)
+    this.props.onCollect && this.props.onCollect(this, true)
+  }
+  componentWillUnmount() {
+    this.props.onCollect && this.props.onCollect(this, false)
   }
   render() {
-    let { label, children } = this.props
-    let { valid, errorTip } = this.state
-    let renderItem = () => {
-      return React.Children.map(children, child => {
-        return React.cloneElement(child, Object.assign({}, child.props, {
-          onFormItemChange: this.onFormItemChange.bind(this),
-          onFormItemBlur: this.onFormItemBlur.bind(this)
-        }))
-      })
-    }
-    return (<div className={this.classes()} style={this.styles()}>
-      {label && <label style={this.styles(this.labelStyles())} className="k-form-item-label">{label}</label>}
-      <div className="k-form-item-content" style={this.styles(this.contentStyles())}>
-        {renderItem()}
-        {!valid && <div className="k-form-item-error-tip">{errorTip}</div>}
-      </div>
-    </div>)
+    let { label, prop, wrapperCol = {}, labelCol = {}, rules, children } = this.props
+    let { message, valid, } = this.state
+    const { Form } = this.context
+    rules = rules || (Form.props.rules || {})[prop] || []
+    const required = rules.constructor === Object ? rules.required : rules.filter(r => r.required).length > 0
+
+    const classes = [
+      "k-form-item",
+      {
+        "k-form-item-required": required,
+        "k-form-item-error": !valid
+      }
+    ]
+    return (
+      <Row className={classes} type="flex">
+        {
+          label ? <Col className="k-form-item-label"  {...labelCol}>
+            {label ? <label htmlFor={prop}>{label}</label> : null}
+          </Col>
+            : null
+        }
+        <Col {...wrapperCol}>
+          <div className="k-form-item-content">
+            {
+              React.Children.map(children, child => {
+                if (child) {
+                  const tag = child.type.name
+                  const value = prop ? Form.testProp(prop) : ''
+                  const props = {
+                    id: prop,
+                    size: Form.props.size
+                  }
+                  if (prop) {
+                    if (['Radio', 'Checkbox', 'Switch'].indexOf(tag) > -1) {
+                      props.checked = value || false
+                    } else {
+                      props.value = value
+                    }
+                    props.onChange = (value) => {
+                      if (tag) {
+                        if (['Radio', 'Checkbox'].indexOf(tag) > -1) {
+                          value = value.target.checked
+                        }
+                        if (['Input', 'TextArea'].indexOf(tag) > -1) {
+                          value = value.target.value
+                        }
+                        Form.setValue(prop, value)
+                        this.testValue()
+                      }
+                    }
+                    if (['Input', 'TextArea'].indexOf(tag) > -1) {
+                      props.onBlur = (value) => {
+                        value = value.target.value
+                        this.testValue()
+                      }
+                    }
+                  }
+                  if (tag == 'FormItem') {
+                    props.onCollect = (context, push) => {
+                      this.props.onCollect && this.props.onCollect(context, push)
+                    }
+                  }
+                  return React.cloneElement(child, props)
+                }
+              })
+            }
+            <CSSTransition classNames="k-form-item-fade" in={!valid} timeout={300} unmountOnExit>
+              <div className="k-form-item-error-tip">{message}</div>
+            </CSSTransition>
+          </div>
+        </Col>
+      </Row>
+    )
   }
 }
 

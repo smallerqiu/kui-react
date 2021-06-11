@@ -11,7 +11,7 @@ export default class Switch extends Kui {
     loading: PropTypes.bool,
     trueText: PropTypes.string,
     falseText: PropTypes.string,
-    size: PropTypes.oneOf(['default', 'small'])
+    size: PropTypes.oneOf(['default', 'small', 'large'])
   }
 
   static contextTypes = {

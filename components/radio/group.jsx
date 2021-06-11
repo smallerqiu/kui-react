@@ -17,27 +17,38 @@ export default class CheckboxGroup extends Kui {
     options: PropTypes.array,
     value: PropTypes.any,
     optionType: PropTypes.oneOf(['button', 'default']),
-    size: PropTypes.oneOf(['small', 'large']),
+    size: PropTypes.oneOf(['small', 'default', 'large']),
     hollow: PropTypes.bool,
     circle: PropTypes.bool
   }
   static defaultProps = {
     options: [],
     optionType: 'default',
-    value: []
+    value: '',
   }
-  change = (data) => {
-    const { onChange } = this.props
 
-    onChange && onChange(data.value)
+  state = {
+    defaultValue: this.props.value || ''
+  }
+
+  change = ({ value }) => {
+    const { onChange } = this.props
+    this.setState({ defaultValue: value })
+    onChange && onChange(value)
     let FormItem = this.context.FormItem
-    FormItem && FormItem.testValue(data.value)
+    FormItem && FormItem.testValue(value)
 
   }
   getChildContext() {
     return {
       Group: this
     };
+  }
+  componentDidUpdate(prevProps, prevState, snap) {
+    let { value } = this.props
+    if (value != prevProps.value) {
+      this.setState({ defaultValue: value })
+    }
   }
   render() {
     const { options, children, optionType, circle } = this.props
