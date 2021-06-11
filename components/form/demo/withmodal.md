@@ -1,9 +1,10 @@
-import React, { Suspense, lazy } from 'react'
-import ReactDOM from 'react-dom'
+<cn>
+#### 多表单联动
+在Form之外，通过`submit`从外部提交表单，反之 则推荐使用 `<Button htmlType="submit" />`调用原生提交逻辑
+</cn>
+
+```tsx
 import { Form, Input, Modal, Button } from 'react-kui';
-
-
-
 
 class Demo extends React.Component {
 
@@ -106,4 +107,5 @@ class Demo extends React.Component {
     )
   }
 }
-ReactDOM.render(<Demo />, document.getElementById('app'))
+ReactDOM.render(<Demo />, mountNode )
+```

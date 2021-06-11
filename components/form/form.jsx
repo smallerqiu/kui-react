@@ -11,6 +11,7 @@ export default class Form extends Kui {
     size: 'default'
   }
   static propTypes = {
+    name: PropTypes.string,
     labelAlign: PropTypes.oneOf(['left', 'top', 'right']),
     model: PropTypes.object,
     labelCol: PropTypes.object,
@@ -33,7 +34,6 @@ export default class Form extends Kui {
 
   componentDidUpdate(prevProps, prevState, snap) {
     let { model } = this.props
-    console.log(model)
     if (model != prevProps.model) {
       this.setState({ defaultModel: model }, () => {
         this.validate()
@@ -62,6 +62,7 @@ export default class Form extends Kui {
       }
     }
     this.setState({ defaultModel })
+    this.props.onChange && this.props.onChange(defaultModel)
   }
 
   test(key) {
@@ -121,13 +122,14 @@ export default class Form extends Kui {
     })
   }
   submit = (e) => {
-    e.preventDefault()
+    e && e.preventDefault()
     this.validate((result) => {
-      this.props.onSubmit && this.props.onSubmit(e, result, this.state.defaultModel)
+      let mode = JSON.parse(JSON.stringify(this.state.defaultModel))
+      this.props.onSubmit && this.props.onSubmit(result, mode)
     })
   }
   render() {
-    let { labelAlign, size, labelCol = {}, wrapperCol = {}, children } = this.props
+    let { labelAlign, size, labelCol = {}, wrapperCol = {}, children, name } = this.props
     const classes = ["k-form",
       {
         [`k-form-label-${labelAlign}`]: labelAlign,
@@ -137,6 +139,7 @@ export default class Form extends Kui {
     ];
     return (
       <form
+        id={name}
         autoComplete="off"
         className={this.className(classes)}
         onSubmit={this.submit}

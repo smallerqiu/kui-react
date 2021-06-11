@@ -1,6 +1,8 @@
 import Info from "./info.md";
 import Base from "./base.md";
 import Align from "./align.md";
+import Length from "./length.md";
+import Withmodal from "./withmodal.md";
 import Valid from "./valid.md";
 import CustomValid from "./customvalid.md";
 import DynamicValid from "./dynamicvalid.md";
@@ -12,10 +14,12 @@ export default class Index extends React.Component {
     return (
       <div>
         <Info className="typo" />
-        {/* <Base />
+        <Base />
         <Align />
+        <Length />
+        <Withmodal />
         <Valid />
-        <CustomValid /> */}
+        <CustomValid />
         <DynamicValid />
         <CN className="typo" />
       </div>

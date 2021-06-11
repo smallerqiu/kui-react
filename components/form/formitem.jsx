@@ -59,7 +59,7 @@ export default class FormItem extends Kui {
             message = message || 'Incorrect email format'
             break;
           case 'mobile':
-            valid = /^[1][3,4,5,6,7,8][0-9]{9}$/.test(itemValue)
+            valid = /^[1][3-9][0-9]{9}$/.test(itemValue)
             message = message || 'Incorrect mobile phone number format'
             break;
           case 'number':
@@ -152,11 +152,15 @@ export default class FormItem extends Kui {
         "k-form-item-error": !valid
       }
     ]
+    let id = null
+    if (Form.props.name && prop) {
+      id = `${Form.props.name}_${prop}`
+    }
     return (
       <Row className={classes} type="flex">
         {
           label ? <Col className="k-form-item-label"  {...labelCol}>
-            {label ? <label htmlFor={prop}>{label}</label> : null}
+            {label ? <label htmlFor={id}>{label}</label> : null}
           </Col>
             : null
         }
@@ -164,11 +168,11 @@ export default class FormItem extends Kui {
           <div className="k-form-item-content">
             {
               React.Children.map(children, child => {
-                if (child) {
+                if (child && React.isValidElement(child)) {
                   const tag = child.type.name
                   const value = prop ? Form.testProp(prop) : ''
                   const props = {
-                    id: prop,
+                    id,
                     size: Form.props.size
                   }
                   if (prop) {
@@ -202,6 +206,8 @@ export default class FormItem extends Kui {
                     }
                   }
                   return React.cloneElement(child, props)
+                } else {
+                  return child
                 }
               })
             }

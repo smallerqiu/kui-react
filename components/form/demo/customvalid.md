@@ -78,8 +78,8 @@ const Demo = () => {
           <Input type="password" placeholder="请重复输入密码"/>
         </Form.Item>
         <Form.Item wrapperCol={{offset:6}}>
-          <Button type="primary" buttontype="submit">Submit</Button>
-          <Button style={{marginLeft: 10}} buttontype="reset">Reset</Button>
+          <Button type="primary" htmlType="submit">Submit</Button>
+          <Button style={{marginLeft: 10}} htmlType="reset">Reset</Button>
         </Form.Item>
       </Form>
     </div> 
