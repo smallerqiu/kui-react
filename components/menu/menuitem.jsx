@@ -27,7 +27,6 @@ export default class MenuItem extends Kui {
       let { currentAffixed } = this.state
       let item = this
       this.setState({ currentAffixed: !currentAffixed }, () => this.context.SubMenu.affixed(item, e))
-
     }
   }
   componentDidMount() {

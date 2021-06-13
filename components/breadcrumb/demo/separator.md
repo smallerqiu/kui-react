@@ -9,8 +9,8 @@ import { Breadcrumb } from 'react-kui';
 ReactDOM.render(
   <div>
     <Breadcrumb>
-      <Breadcrumb.Item to="/" icon="home" separator="~">Home</Breadcrumb.Item>
-      <Breadcrumb.Item to="/components/breadcrumb" icon="logo-buffer" separator="~">breadcrumb</Breadcrumb.Item>
+      <Breadcrumb.Item href="/" icon="home" separator="~">Home</Breadcrumb.Item>
+      <Breadcrumb.Item href="/components/breadcrumb" icon="logo-buffer" separator="~">breadcrumb</Breadcrumb.Item>
       <Breadcrumb.Item icon="heart" separator="~">other</Breadcrumb.Item>
     </Breadcrumb>
   </div>,

@@ -231,8 +231,8 @@ const Demo = () => {
           <Checkbox>我已阅读 <a>服务条款</a> </Checkbox>
         </Form.Item>
         <Form.Item wrapperCol={{offset:6}}>
-          <Button type="primary" buttontype="submit">Submit</Button>
-          <Button style={{margin:'0 10px'}} buttontype="reset">Reset</Button>
+          <Button type="primary" htmlType="submit">Submit</Button>
+          <Button style={{margin:'0 10px'}} htmlType="reset">Reset</Button>
           <Button type="dashed" onClick={setValue} >Set Value</Button>
         </Form.Item>
       </Form>

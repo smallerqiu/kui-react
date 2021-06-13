@@ -50,7 +50,7 @@ export default class Alert extends Kui {
     const msg = <div className="k-alert-message">{(message || children)}</div>
     return (
       <Transition name='k-alert-slide' show={!closed}>
-        <div className={this.className(classes)} >
+        <div className={this.className(classes)} style={this.styles()}>
           {iconNode}
           {msg}
           {description}

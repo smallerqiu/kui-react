@@ -235,7 +235,7 @@ export default class Tabs extends Kui {
     const navCls = ['k-tabs-nav-container', { ['k-tabs-nav-container-scroll']: scrollable }]
     const index = -1
     return (
-      <div className={this.className(classes)}>
+      <div className={this.className(classes)} style={this.styles()}>
         <div className="k-tabs-bar">
           <div className={this.className(navCls)}>
             {scrollable ?

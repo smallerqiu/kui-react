@@ -8,10 +8,6 @@ import moment from 'moment'
 
 export default class DatePicker extends Kui {
 
-
-  static contextTypes = {
-    FormItem: PropTypes.any
-  }
   static childContextTypes = {
     DatePicker: PropTypes.any
   }
@@ -33,7 +29,7 @@ export default class DatePicker extends Kui {
     clearable: PropTypes.bool,
     bordered: PropTypes.bool,
     size: PropTypes.oneOf(['small', 'large', 'default']),
-    placeholder: PropTypes.oneOfType(PropTypes.string, PropTypes.array)
+    placeholder: PropTypes.oneOfType([PropTypes.string, PropTypes.array])
   }
   state = {
     opened: false,
@@ -60,7 +56,6 @@ export default class DatePicker extends Kui {
     let { value } = this.props
     if (value != prevProps.value) {
       this.setState({ currentValue: value })
-      this.context.FormItem && this.context.FormItem.testValue(value)
     }
   }
 

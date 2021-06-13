@@ -34,7 +34,8 @@ export default class Form extends Kui {
 
   componentDidUpdate(prevProps, prevState, snap) {
     let { model } = this.props
-    if (model != prevProps.model) {
+
+    if (JSON.stringify(model) !== JSON.stringify(prevProps.model)) {
       this.setState({ defaultModel: model }, () => {
         this.validate()
       })

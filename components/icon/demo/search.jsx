@@ -3,66 +3,84 @@ import React, { Component } from 'react'
 import icons from 'kui-icons'
 import Icon from '../icon'
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { Message } from 'react-kui'
+import { Message, Affix, Radio, Input } from 'react-kui'
+
+const iconKeys = Object.keys(icons);
+let logos = [], outlines = [], filleds = [];
+iconKeys.forEach(i => {
+  if (i.indexOf('logo') > -1) {
+    logos.push(i)
+  } else if (i.indexOf('outline') > -1) {
+    outlines.push(i)
+  } else {
+    filleds.push(i)
+  }
+})
+
 export default class Index extends Component {
   state = {
     key: '',
     type: 'outline',
-    logos: [],
-    applist: [],
-    filled: [],
-    outline: [],
-    logo: []
-  }
-  componentDidMount() {
-    let all = Object.keys(icons), logos;
-    let logo = logos = all.filter(x => x.indexOf('logo') >= 0)
-    let applist = all.filter(x => x.indexOf('outline') >= 0)
-    let outline = all.filter(x => x.indexOf('outline') >= 0)
-    let filled = all.filter(x => x.indexOf('logo') < 0 && x.indexOf('outline') < 0)
-    this.setState({
-      logo, logos, applist, outline, filled
-    })
+    logo: logos,
+    showIcons: outlines
   }
 
-  switchIcon() {
-    this.filter(this.key)
+  switchIcon = (type) => {
+    this.setState({ type }, () => {
+      this.filter(this.state.key)
+    })
   }
-  search(e) {
-    let key = this.key//e.target.value
+  search = (e) => {
+    let key = e.target.value
     key = key.replace(/ /g, '')
     this.filter(key)
+    this.setState({ key })
   }
-  filter(key) {
-    let { outline, filled, logo } = this
+  filter = (key) => {
+    let { showIcons, logo, type } = this.state
+    let origin = type == 'outline' ? outlines : filleds;
     if (key) {
-      let oriapp = this.type == 'outline' ? outline : filled;
-      this.applist = oriapp.filter(x => {
+      showIcons = origin.filter(x => {
         return x.indexOf(key) >= 0
       })
-      let orilogo = logo
-      this.logos = orilogo.filter(x => {
+      logo = logos.filter(x => {
         return x.indexOf(key) >= 0
       })
     } else {
-      this.applist = this.type == 'outline' ? outline : filled;
-      this.logos = logo
+      showIcons = origin
+      logo = logos
     }
+
+    this.setState({ showIcons, logo })
   }
 
-  copy() {
+  copy = () => {
     Message.success('代码复制成功！')
   }
   render() {
-    const { applist, logos, key } = this.state
+    const { showIcons, logo, type, key } = this.state
     return (
       <div>
         <h3>图标快速检索</h3>
         <br />
+        <Affix offsetTop={52}>
+          <div style={{ background: '#fff', padding: '20px 0' }}>
+            <div style={{ position: 'relative', width: 800, margin: '0 auto' }}>
+              <Radio.Group value={type} onChange={this.switchIcon} style={{ position: 'absolute', right: 4, top: 4, zIndex: 10 }}>
+                <Radio.Button value="outline">Outline</Radio.Button>
+                <Radio.Button value="filled">Filled</Radio.Button>
+              </Radio.Group>
+              <Input placeholder="输入英文关键字，搜索图标，点击图标即可复制"
+                icon="logo-apple"
+                value={key}
+                size="large" onChange={this.search} />
+            </div>
+          </div>
+        </Affix>
         <br />
         <br />
         <div className="show-icons">
-          {applist.length ?
+          {showIcons.length ?
             <>
               <div className="icon-head">
                 <h3><span>App icons</span></h3>
@@ -70,25 +88,25 @@ export default class Index extends Component {
               <br />
               <div className="icon-item">
                 {
-                  applist.map((x, y) => {
-                    return <span key={x}>
-                      <CopyToClipboard text={`<Icon type="${x}" />`} onCopy={this.copy}><Icon type={x} /></CopyToClipboard>
-                    </span>
+                  showIcons.map((x, y) => {
+                    return <CopyToClipboard text={`<Icon type="${x}" />`} onCopy={this.copy} key={x}>
+                      <span><Icon type={x} /></span>
+                    </CopyToClipboard>
                   })
                 }
               </div>
             </>
             : null}
 
-          {logos.length ?
+          {logo.length ?
             <>
               <h3>Logos</h3>
               <div className="icon-item">
                 {
-                  logos.map((x, y) => {
-                    return <span key={x}>
-                      <CopyToClipboard text={`<Icon type="${x}" />`} onCopy={this.copy}><Icon type={x} /></CopyToClipboard>
-                    </span>
+                  logo.map((x, y) => {
+                    return <CopyToClipboard text={`<Icon type="${x}" />`} onCopy={this.copy} key={x}>
+                      <span><Icon type={x} /></span>
+                    </CopyToClipboard>
                   })
                 }
 
@@ -96,7 +114,7 @@ export default class Index extends Component {
             </> : null
           }
           {
-            !applist.length && !logos.length ?
+            !showIcons.length && !logo.length ?
               <h3 style={{ textAlign: 'center', paddingBottom: 50, color: '#888' }}>
                 No results for "{key}"
             </h3> : null
@@ -105,5 +123,4 @@ export default class Index extends Component {
       </div >
     )
   }
-
 }

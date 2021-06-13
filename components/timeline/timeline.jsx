@@ -1,12 +1,13 @@
 import React from 'react'
-import { Kui } from '../kui'
+import { Kui, PropTypes } from '../kui'
 export default class TimeLine extends Kui {
+  static propTypes = {
+    mode: PropTypes.string
+  }
   render() {
-    return (<div className={this.className(['k-timeline'])} style={this.styles()}>
-      <ul>
-        {this.props.children}
-      </ul>
-    </div>)
+    return (<ul className={this.className(['k-timeline', `k-timeline-${this.props.mode}`])} style={this.styles()}>
+      {this.props.children}
+    </ul>)
   }
 }
 

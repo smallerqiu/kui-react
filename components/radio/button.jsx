@@ -15,7 +15,6 @@ export default class RadioButton extends Kui {
 
   static contextTypes = {
     Group: PropTypes.any,
-    FormItem: PropTypes.any
   };
   state = {
     isChecked: false
@@ -38,7 +37,6 @@ export default class RadioButton extends Kui {
       group.change({ label, value })
     } else {
       onChange && onChange(e)
-      FormItem && FormItem.testValue(checked)
     }
   }
 

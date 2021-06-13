@@ -1,20 +1,33 @@
 import React from 'react'
 import { Kui, PropTypes } from '@/components/kui'
 import { Nav, baseNav } from "./menu";
-import { Row, Col, Menu, SubMenu, Badge, Select, Icon, Layout } from '@/components'
+import { Row, Col, Menu, SubMenu, Badge, Icon, Layout } from '@/components'
 import Header from './components/header'
 import './assets/index.less'
 
 export default class DocLayout extends Kui {
 
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  }
   state = {
     prev: {}, next: {},
     typo: false,
     activeName: [],
+    pathname: this.context.router.history.location
   }
 
   componentDidMount() {
-    this.setActiveKey({ path: this.context.router.route.location.pathname })
+    let { pathname } = this.context.router.history.location
+    this.setActiveKey({ path: pathname })
+  }
+  componentDidUpdate(prevProps, prevState, snap) {
+    let { pathname } = this.state
+    let newPathname = this.context.router.history.location.pathname
+    if (pathname != newPathname) {
+      this.setState({ pathname: newPathname })
+      this.setActiveKey({ path: newPathname })
+    }
   }
 
   go({ key, keyPath, item }) {
@@ -48,19 +61,21 @@ export default class DocLayout extends Kui {
 
   setActiveKey({ path }) {
     let key = path.replace(/\/docs\/|\/components\//, "").toLowerCase();
-    let { current, prev = {}, next = {} } = this.getPath(key), activeName, typo;
+    let { current, prev = {}, next = {} } = this.getPath(key);
+    let { typo, activeName } = this.state
     if (path == '/components/all') {
       prev = baseNav[5]
       next = Nav[0].child[0]
       document.title = `组件总览 - KUI`;
       activeName = [path];
-    } else {
+    } else if (current) {
       let { title, sub, name } = current;
       document.title = `${title} ${sub || ""} - KUI`;
-      typo = sub
+      typo = !sub
+      activeName = [name]
     }
     this.setState({
-      prev, next, typo: !typo, activeName: [name]
+      prev, next, typo, activeName
     })
   }
   render() {
@@ -81,6 +96,7 @@ export default class DocLayout extends Kui {
                 })
               }
               <SubMenu key="components" title="Components(65)">
+                <Menu.Item key="/components/all">组件总览</Menu.Item>
                 {
                   Nav.map(({ child, title }, x) => {
                     return (<Menu.Group title={title} name={title} key={'sub' + x}>
@@ -121,8 +137,4 @@ export default class DocLayout extends Kui {
       </Layout >
     )
   }
-}
-
-DocLayout.contextTypes = {
-  router: PropTypes.object.isRequired
 }

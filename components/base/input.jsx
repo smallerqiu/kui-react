@@ -22,7 +22,6 @@ export default class BaseInput extends Kui {
   }
 
   static contextTypes = {
-    FormItem: PropTypes.any,
     Input: PropTypes.any,
     TextArea: PropTypes.any,
   }
@@ -72,7 +71,6 @@ export default class BaseInput extends Kui {
     this.isFocus = false
     let { onBlur } = this.props
     onBlur && onBlur(e)
-    this.FormItem && this.FormItem.testValue(this.state.currentValue, 'blur')
   }
 
   showPassword = () => {

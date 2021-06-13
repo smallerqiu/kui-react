@@ -13,7 +13,6 @@ export default class Radio extends Kui {
 
   static contextTypes = {
     Group: PropTypes.any,
-    FormItem: PropTypes.any
   };
   state = {
     defaultChecked: false
@@ -35,7 +34,6 @@ export default class Radio extends Kui {
       return false;
     }
     let group = this.context.Group
-    let FormItem = this.context.FormItem
 
     const checked = e.target.checked;
     this.setState({ defaultChecked: checked })
@@ -44,7 +42,6 @@ export default class Radio extends Kui {
       group.change({ label, value })
     } else {
       onChange && onChange(e)
-      FormItem && FormItem.testValue(checked)
     }
   }
   render() {

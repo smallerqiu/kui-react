@@ -23,7 +23,7 @@ export default class Col extends Kui {
 
   render() {
     let { offset, span, children, flex } = this.props
-    const gutter = this.context.Row ? this.context.Row.gutter : 0
+    const gutter = this.context.Row ? this.context.Row.props.gutter : 0
     const props = {
       className: this.className([`k-col`, {
         [`k-col-${span}`]: span,

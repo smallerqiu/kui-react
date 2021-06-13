@@ -1,23 +1,25 @@
 import Button from "../button";
 import Icon from "../icon";
-import transfer from "../_tool/transfer";
+import Transfer from "../base/transfer";
 import { measureScrollBar } from '../_tool/utils'
 import { Kui, PropTypes } from '../kui'
 import React from 'react'
+import { CSSTransition } from 'react-transition-group'
 
 let cacheBodyOverflow = {};
 
 export default class Drawer extends Kui {
+
   static propTypes = {
-    value: PropTypes.bool,
+    visible: PropTypes.bool,
     title: PropTypes.string,
-    width: PropTypes.number,
-    height: PropTypes.number,
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     okText: PropTypes.string,
     cancelText: PropTypes.string,
     placement: PropTypes.oneOf(['top', 'left', 'bottom', 'right']),
     closable: PropTypes.bool,
-    footer: PropTypes.bool,
+    footer: PropTypes.any,
     maskClosable: PropTypes.bool,
   }
 
@@ -31,51 +33,51 @@ export default class Drawer extends Kui {
     closable: true,
     maskClosable: true,
   }
-  // name: "Drawer",
-  // directives: { transfer },
-  // props: {
 
-  // },
-  // watch: {
-  //   value(v) {
-  //     this.init = true
-  //     this.$nextTick(e => {
-  //       this.visible = v
-  //       this.resetBodyStyle(v)
-  //     })
-  //   },
-  // },
   state = {
-    visible: this.value,
-    init: false
+    show: this.props.visible,
+    rendered: false
   }
-  beforDestory() {
+  componentDidUpdate(prevProps, prevState, snap) {
+    let { visible, placement } = this.props
+    if (visible != prevProps.visible) {
+      this.setState({ rendered: true }, () => {
+        this.setState({ show: visible }, () => {
+          this.resetBodyStyle(visible)
+        })
+      })
+    }
+    if (placement != prevProps.placement && this.state.rendered) {
+      this.contentRef.current.className = `k-drawer-box k-drawer-${placement}-exit-done`
+    }
+  }
+  componentWillUnmount() {
     this.resetBodyStyle(false)
   }
-  ok() {
-    this.$emit("ok");
+  ok = () => {
+    this.props.onOk && this.props.onOk()
   }
-  onKeyUp(e) {
-    if (this.visible) {
+  onKeyUp = (e) => {
+    if (this.state.show) {
       if (e.keyCode == 27) this.close();
     }
   }
-  cancel() {
-    this.$emit("cancel");
+  cancel = () => {
+    this.props.onCancel && this.props.onCancel()
     this.close();
   }
-  close() {
-    this.visible = false;
-    this.$emit("input", false);
-    this.$emit("close");
+  close = () => {
+    // this.setState({ show: false })
+    this.props.onCancel && this.props.onCancel()
+    this.props.onClose && this.props.onClose()
   }
-  maskToClose() {
-    if (this.maskClosable) {
+  maskToClose = () => {
+    if (this.props.maskClosable) {
       this.close()
     }
   }
   resetBodyStyle(opened) {
-    if (!this.visible && !cacheBodyOverflow.hasOwnProperty('overflow')) {
+    if (!this.state.show && !cacheBodyOverflow.hasOwnProperty('overflow')) {
       cacheBodyOverflow = {
         width: document.body.width,
         overflow: document.body.overflow,
@@ -98,51 +100,53 @@ export default class Drawer extends Kui {
       }, 300)
     }
   }
+  elRef = React.createRef()
+  contentRef = React.createRef()
   render() {
-    const { title, visible, cancelText, okText, ok,
-      placement, cancel, $slots,
-      closable, close, } = this
-    const hasFooter = this.footer || $slots.footer
-    const canelBtn = <Button onClick={cancel}>{cancelText}</Button>
-    const okBtn = <Button type="primary" onClick={ok}>{okText}</Button>
+    const { title, cancelText, okText, placement, closable, footer, width, height, children } = this.props
+    const { rendered, show } = this.state
+    const canelBtn = <Button onClick={this.cancel} key="cancelBtn">{cancelText}</Button>
+    const okBtn = <Button type="primary" onClick={this.ok} key="okBtn">{okText}</Button>
     const footNode = (
-      hasFooter ? <div className="k-drawer-footer">
-        {$slots.footer}
-        {!$slots.footer && canelBtn}
-        {!$slots.footer && okBtn}
+      footer !== null ? <div className="k-drawer-footer">
+        {footer}
+        {!footer && [canelBtn, okBtn]}
       </div> : null
     )
     const closeNode = closable
-      ? <span className="k-drawer-close" onClick={close}><Icon type="close" /></span>
+      ? <span className="k-drawer-close" onClick={this.close}><Icon type="close" /></span>
       : null
     const transitionName = `k-drawer-${placement}`
 
     const classes = ['k-drawer', `k-drawer-${placement}`,
-      { 'k-drawer-open': visible },
-      { 'k-drawer-has-footer': hasFooter },
+      { 'k-drawer-open': show },
+      { 'k-drawer-has-footer': footer !== null },
     ]
     let styles = {}
-    if (placement == 'left' || placement == 'right') styles.width = this.width + 'px'
-    if (placement == 'top' || placement == 'bottom') styles.height = this.height + 'px'
+    if (placement == 'left' || placement == 'right') styles.width = width + 'px'
+    if (placement == 'top' || placement == 'bottom') styles.height = height + 'px'
     // const wrapCls =
     return (
-      this.init ? <div className={classes} v-transfer={true}>
-        <transition name="fade">
-          <div className="k-drawer-mask" ref="mask" v-show={visible} onClick={this.maskToClose}></div>
-        </transition>
-        <transition name={transitionName}>
-          <div className="k-drawer-box" ref="drawer" v-show={visible} style={styles}>
-            <div className="k-drawer-content">
-              {closeNode}
-              <div className="k-drawer-header"><div className="k-drawer-header-inner">{title}</div></div>
-              <div className="k-drawer-body">
-                {$slots.default}
+      rendered ?
+        <Transfer Transfer transfer={true} show={rendered} dropRef={this.elRef}>
+          <div className={this.className(classes)} ref={this.elRef}>
+            <CSSTransition classNames="k-drawer-fade" timeout={300} in={show}>
+              <div className="k-drawer-mask" onClick={this.maskToClose}></div>
+            </CSSTransition>
+            <CSSTransition classNames={transitionName} timeout={200} in={show}>
+              <div className="k-drawer-box" ref="drawer" style={styles} ref={this.contentRef}>
+                <div className="k-drawer-content">
+                  {closeNode}
+                  <div className="k-drawer-header"><div className="k-drawer-header-inner">{title}</div></div>
+                  <div className="k-drawer-body">
+                    {children}
+                  </div>
+                  {footNode}
+                </div>
               </div>
-              {footNode}
-            </div>
-          </div>
-        </transition>
-      </div> : ''
+            </CSSTransition>
+          </div></Transfer>
+        : null
     )
   }
 };

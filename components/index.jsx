@@ -11,6 +11,7 @@ import Checkbox from './checkbox'
 import Collapse from './collapse'
 // import ColorPicker from './colorPicker'
 import Divider from './divider'
+import Drawer from './drawer'
 import Dropdown from './dropdown'
 import DatePicker from './datePicker'
 import Form from './form'
@@ -37,7 +38,7 @@ import Tabs from './tabs'
 import Tag from './tag'
 // import Table from './table'
 import Tooltip from './tooltip'
-// import TimeLine from './timeline'
+import TimeLine from './timeline'
 // import Transition from './transition'
 // import Transfer from './transfer'
 // import Tree from './tree'
@@ -60,6 +61,7 @@ export {
     // ColorPicker, ,
     DatePicker,
     Divider,
+    Drawer,
     Dropdown,
     Empty,
     Form,
@@ -83,7 +85,7 @@ export {
     Tag,
     //Table,
     Tabs,
-    // TimeLine,
+    TimeLine,
     // Transition,
     // Transfer,
     Tooltip,

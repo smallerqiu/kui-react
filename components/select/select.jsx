@@ -8,9 +8,7 @@ import Empty from '../empty'
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 export default class Select extends Kui {
-  static contextTypes = {
-    FormItem: PropTypes.any
-  }
+
   static childContextTypes = {
     Select: PropTypes.any
   }
@@ -68,7 +66,6 @@ export default class Select extends Kui {
       } else {
         this.setState({ label: '', currentValue: '' })
       }
-      this.FormItem && this.FormItem.testValue(value)
     }
     let { opened } = this.state
     if (opened != prevState.opened) {
@@ -92,7 +89,8 @@ export default class Select extends Kui {
   }
   getLabel(childs, labelValue) {
     const obj = childs.map(({ props }) => props).filter(({ value }) => value === labelValue)
-    return obj.length ? obj[0].label : ''
+
+    return obj.length ? (obj[0].label || obj[0].children) : ''
   }
   setLabel() {
     let { currentValue, label } = this.state
@@ -270,7 +268,7 @@ export default class Select extends Kui {
       let Reg = new RegExp(parsedQuery, 'i')
 
       childs = childs.filter(({ props }) => {
-        return Reg.test(props.label)
+        return Reg.test(props.label || props.children)
       })
     }
     return childs || []
@@ -381,7 +379,7 @@ export default class Select extends Kui {
     showClear && childNode.push(<Icon className="k-select-clearable" key="clearIcon" type="close-circle" onClick={this.clear.bind(this)} />)
 
     return (
-      <div tabIndex="0" className={this.className(classes)} style={styles}>
+      <div tabIndex="0" className={this.className(classes)} style={this.styles(styles)}>
         <div className={this.className(selectCls)}
           onClick={this.toggleDrop.bind(this)} ref={this.elRef}>
           {childNode}

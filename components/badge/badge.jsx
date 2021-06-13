@@ -51,7 +51,7 @@ export default class Badge extends Kui {
     }
     const supNode = (innerText !== null || dot) ? <sup {...props}>{innerText}</sup> : null
     return (
-      <div className={this.className(["k-badge"])}>
+      <div className={this.className(["k-badge"])} style={this.styles()}>
         {children}
         {supNode}
         {statusNode}

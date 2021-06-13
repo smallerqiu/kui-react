@@ -105,13 +105,11 @@ export default class Page extends Kui {
     this.setState({ page })
     this.props.onChange && this.props.onChange(page)
   }
-  changeSize({ value }) {
-    // console.log(value)
+  changeSize = (defaultPageSize) => {
     let { total, onPageSizeChange } = this.props
-    let defaultPageSize = value,
-      pageCount = Math.ceil(total / this.state.defaultPageSize) || 1;
+    let pageCount = Math.ceil(total / defaultPageSize) || 1;
     this.setState({ defaultPageSize, pageCount })
-    onPageSizeChange && onPageSizeChange(value)
+    onPageSizeChange && onPageSizeChange(defaultPageSize)
   }
   renderFirst() {
     let { pageCount, page } = this.state
@@ -133,19 +131,16 @@ export default class Page extends Kui {
   }
   renderSize() {
     let { defaultPageSize, page } = this.state
-    let { size, sizeData, showSizer } = this.prop
+    let { size, sizeData, showSizer } = this.props
     let prop = {
       value: defaultPageSize,
       size,
       options: sizeData.map(s => {
         return { value: s, label: `${s}条/页` }
       }),
-      on: {
-        input: e => defaultPageSize = e,
-        change: this.changeSize
-      }
+      onChange: this.changeSize
     }
-    return (showSizer ? <div className="k-page-sizer"><Select {...prop} /></div > : null)
+    return (showSizer ? <div className="k-page-sizer" key="pagesizer"><Select {...prop} /></div > : null)
   }
   renderElvator() {
     let { size, onChange, showElevator } = this.props
@@ -182,7 +177,7 @@ export default class Page extends Kui {
       nextNode = <li key="next" className={this.className(['k-pager-item', { 'k-pager-item-disabled': page == pageCount }])} onClick={() => this.nextPage()}><Icon type="chevron-forward" /></li>,
       totalNode = (showTotal ? <div key="total" className="k-page-number"><span>共{total}条</span></div> : null),
       pagerNode = this.renderPage(),
-      sizeNode = [],// this.renderSize(),
+      sizeNode = this.renderSize(),
       elvatorNode = this.renderElvator(),
       firstNode = this.renderFirst(),
       lastNode = this.renderLast()

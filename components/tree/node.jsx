@@ -3,6 +3,7 @@ import { Kui, PropTypes } from '../kui'
 import Collapse from '../collapse/collapse.js'
 import Checkbox from '../checkbox'
 import Icon from '../icon'
+
 export default class TreeNode extends Kui {
   static defaultProps = {
     data: {}

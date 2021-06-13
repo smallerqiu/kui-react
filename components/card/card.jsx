@@ -23,7 +23,7 @@ export default class Card extends Kui {
     const iconNode = icon ? <Icon type={icon} /> : null
     const titleNode = title ? <span className="k-card-title">{title}</span> : null
     return (
-      <div className={this.className(cls)}>
+      <div className={this.className(cls)} style={this.styles()}>
         <div className="k-card-head">{iconNode}{titleNode}{extraNode}</div>
         {children ? <div className="k-card-body">{children}</div> : null}
       </div>

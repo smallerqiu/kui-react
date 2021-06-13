@@ -15,7 +15,6 @@ export default class Checkbox extends Kui {
 
   static contextTypes = {
     Group: PropTypes.any,
-    FormItem: PropTypes.any
   }
 
   state = {
@@ -38,7 +37,6 @@ export default class Checkbox extends Kui {
       return false;
     }
     let group = this.context.Group
-    let FormItem = this.context.FormItem
 
     const checked = e.target.checked;
     this.setState({ isChecked: checked })
@@ -47,7 +45,6 @@ export default class Checkbox extends Kui {
       group.change({ label, value })
     } else {
       onChange && onChange(e)
-      FormItem && FormItem.testValue(checked)
     }
   }
   render() {

@@ -8,10 +8,6 @@ export default class CheckboxGroup extends Kui {
     Group: PropTypes.any
   };
 
-  static contextTypes = {
-    FormItem: PropTypes.any
-  };
-
   static propTypes = {
     disabled: PropTypes.bool,
     options: PropTypes.array,
@@ -30,9 +26,6 @@ export default class CheckboxGroup extends Kui {
       value.splice(index, 1);
     }
     onChange && onChange(value)
-    let FormItem = this.context.FormItem
-    FormItem && FormItem.testValue(value)
-
   }
   getChildContext() {
     return {

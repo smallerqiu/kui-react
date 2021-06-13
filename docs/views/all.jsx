@@ -1,24 +1,23 @@
+import React from 'react'
+import { Row, Col, Card, Icon } from 'react-kui'
 import { Nav } from '../menu.js'
-import { Col, Row } from '../../components/grid'
-import Card from '../../components/card'
-import Icon from '../../components/icon'
 
-export default {
-  renders(child) {
+export default class All extends React.Component {
+  renders(child, x) {
     let span = [], rows = [];
     child.forEach((item, i) => {
-      let card = <Col span={6} ><a href={"/components/" + item.name}><Card bordered title={item.sub + ' ' + item.title} ><Icon className="icon-view" type={item.icon} /></Card></a></Col>
+      let card = <Col span={6} key={i}><a href={"/components/" + item.name}><Card bordered title={item.sub + ' ' + item.title} ><Icon className="icon-view" type={item.icon} /></Card></a></Col>
       span.push(card)
     })
     if (span.length < 4) {
-      rows.push(<Row gutter={20}>{span}</Row>)
+      rows.push(<Row gutter={20} key={x}>{span}</Row>)
     } else {
       for (let i = 0; i < span.length; i += 4) {
-        rows.push(<Row gutter={20}>{span.slice(i, i + 4)}</Row>)
+        rows.push(<Row gutter={20} key={i}>{span.slice(i, i + 4)}</Row>)
       }
     }
     return rows
-  },
+  }
   render() {
     return (
       <div className="all-components typo">
@@ -27,8 +26,8 @@ export default {
         {
           Nav.map((item, x) => {
             return (
-              [<h2>{item.title}</h2>,
-              this.renders(item.child)])
+              [<h2 key={x}>{item.title}</h2>,
+              this.renders(item.child, x)])
           })
         }
       </div>

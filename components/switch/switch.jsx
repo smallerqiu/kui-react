@@ -14,9 +14,6 @@ export default class Switch extends Kui {
     size: PropTypes.oneOf(['default', 'small', 'large'])
   }
 
-  static contextTypes = {
-    FormItem: PropTypes.any,
-  };
   state = {
     isChecked: this.props.checked || false
   }

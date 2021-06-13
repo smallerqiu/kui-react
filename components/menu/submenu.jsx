@@ -67,9 +67,10 @@ export default class SubMenu extends Kui {
       if (currentMode == 'inline') {
         this.setState({ opened, rendered: opened })
       }
-
-      const affixedKeys = children.filter(({ props }) => props.affixed).map(i => i.key)
-      this.setState({ affixedKeys })
+      if (Menu.props.verticalAffixed) {
+        const affixedKeys = children.filter(({ props = {} }) => props.affixed).map(i => i.key)
+        this.setState({ affixedKeys })
+      }
     }
   }
 

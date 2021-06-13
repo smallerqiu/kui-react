@@ -97,41 +97,45 @@
 }
 
 .k-drawer-left-enter-active {
-  animation: fadeInLeft .2s linear;
+  animation: fadeInLeft .21s linear;
 }
 
-.k-drawer-left-leave-active {
-  animation: fadeOutLeft .2s linear;
+.k-drawer-left-exit-active {
+  animation: fadeOutLeft .21s linear;
 }
 
 .k-drawer-right-enter-active {
-  animation: fadeInRight .2s linear;
+  animation: fadeInRight .21s linear;
 }
 
-.k-drawer-right-leave-active {
-  animation: fadeOutRight .2s linear;
+.k-drawer-right-exit-active {
+  animation: fadeOutRight .21s linear;
 }
 
-.fade-enter-active {
+.k-drawer-fade-enter-active {
   animation: fadeIn .4s linear;
 }
 
-.fade-leave-active {
+.k-drawer-fade-exit-active {
   animation: fadeOut .4s linear;
 }
 
 .k-drawer-top-enter-active {
-  animation: fadeInTop .2s linear;
+  animation: fadeInTop .21s linear;
 }
 
-.k-drawer-top-leave-active {
-  animation: fadeOutTop .2s linear;
+.k-drawer-top-exit-active {
+  animation: fadeOutTop .21s linear;
 }
 
 .k-drawer-bottom-enter-active {
-  animation: fadeInBottom .2s linear;
+  animation: fadeInBottom .21s linear;
 }
 
-.k-drawer-bottom-leave-active {
-  animation: fadeOutBottom .2s linear;
+.k-drawer-bottom-exit-active {
+  animation: fadeOutBottom .21s linear;
+}
+
+.k-drawer-left-exit-done, .k-drawer-right-exit-done, .k-drawer-top-exit-done, .k-drawer-bottom-exit-done, .k-drawer-fade-exit-done {
+  display: none;
 }

@@ -33,8 +33,7 @@ const Demo = () => {
       callback()
     }
   }
-  const submit = (e,valid , model)=> {
-    e.preventDefault()
+  const submit = (valid , model)=> {
     Message[valid ? 'success' : 'error'](valid ? 'success' : 'faild')
     console.log(model)
   }

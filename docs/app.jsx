@@ -28,7 +28,7 @@ export default () => {
         <Route render={({ location }) => (
           <Main>
             <TransitionGroup className="route-main">
-              <CSSTransition timeout={500} unmountOnExit={true} classNames="fade" key={location.pathname}>
+              <CSSTransition timeout={500}  classNames="fade" key={location.pathname}>
                 <Switch location={location}>
                   {getRoute(docs, 'docs')}
                   {getRoute(components, 'components')}

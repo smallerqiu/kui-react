@@ -1,23 +1,26 @@
 
 <cn>
 #### 基本用法
-通过 `v-model` 双向绑定 `Drawer` 是否展示
+基础抽屉，点击触发按钮抽屉从右滑出，点击遮罩区关闭
 </cn>
 
-```vue
-<template>
-  <div>
-    <Button @click="show=!show">普通抽屉</Button>
-    <Drawer v-model="show"></Drawer>
-  </div>
-</template>
-<script>
-export default{
-  data(){
-    return{
-      show:false
-    }
-  }
+```tsx
+import { Button , Drawer } from 'react-kui';
+
+const Demo = ()=>{
+
+  const [show,toggle] = React.useState(false)
+
+  return(
+    <div>
+      <Button onClick={()=>toggle(true)}>普通抽屉</Button>
+      <Drawer visible={show} onCancel={()=>toggle(false)} closable={false} footer={null}>
+        <p>something ...</p>
+        <p>something ...</p>
+        <p>something ...</p>
+      </Drawer>
+    </div>
+  )
 }
-</script>
+ReactDOM.render(<Demo />  ,  mountNode)
 ```

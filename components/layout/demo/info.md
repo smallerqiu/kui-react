@@ -37,4 +37,4 @@
 
 
 <s>功能不多，他就是简单的布局。未采用 `flex`</s>
->3.0 版本以后使用 `flex` 布局，请注意[浏览器兼容性](http://caniuse.com/#search=flex)
+>2.0 版本以后使用 `flex` 布局，请注意[浏览器兼容性](http://caniuse.com/#search=flex)

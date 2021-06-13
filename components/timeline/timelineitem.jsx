@@ -1,27 +1,29 @@
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
+import Icon from '../icon'
 export default class TimeLineItem extends Kui {
   static propTypes = {
     color: PropTypes.string,
     icon: PropTypes.string,
-    dot: PropTypes.node,
-  } 
-  colorStyles() {
-    let color = this.props.color;
-    return color ? { color: color } : {};
+    dot: PropTypes.any,
   }
-  classes() {
-    let icon = this.props.icon;
-    return icon ? [`k-ion-${icon}`] : ["k-ion-ios-radio-button-off"];
-  }
+
   render() {
-    return (<li className={this.className('k-time-line-item')} style={this.styles()}>
-      <div className="k-time-line-dot" style={this.styles(this.colorStyles())}>
-        {this.props.dot || <i className={this.className(this.classes())}></i>}
-      </div>
-      <div className="k-time-line-item-content">
-        {this.props.children}
-      </div>
-    </li>)
+    let { icon, color, children, dot } = this.props
+    const styles = { color }
+    const type = icon ? icon : "radio-button-off";
+    const iconNode = dot || <Icon type={type} />
+    const iconCls = ['k-time-line-dot', { 'k-time-line-icon-default': !icon }]
+
+    return (
+      <li className="k-time-line-item">
+        <div className={this.className(iconCls)} style={styles}>
+          {iconNode}
+        </div>
+        <div className="k-time-line-item-content">
+          {children}
+        </div>
+      </li>
+    )
   }
 }
