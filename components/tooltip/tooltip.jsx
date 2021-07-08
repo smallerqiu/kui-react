@@ -34,13 +34,14 @@ export default class Tooltip extends Kui {
     let { children, dark, placement, width, transfer, color, title, trigger, content, onVisibleChange } = this.props
     let { visible } = this.state
     let props = {
-      show: visible, trigger,color,
+      show: visible, trigger, color,
       dark, placement, width, transfer, title, content,
       preCls: 'tooltip',
       onVisibleChange: (visible) => {
         this.setState({ visible })
         onVisibleChange && onVisibleChange(visible)
-      }
+      },
+      updateKey: title
     }
     return (title ? <BasePop {...props}>{children}</BasePop> : children)
   }

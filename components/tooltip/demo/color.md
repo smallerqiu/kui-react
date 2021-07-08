@@ -5,7 +5,7 @@
 
 
 ```tsx
-import { Tooltip ,Divider,Button } from 'react-kui';
+import { Tooltip ,Divider,Tag } from 'react-kui';
 
 class Demo extends React.Component {
   custom = ['#c20','#39f','#e3f','#6c0']
@@ -34,7 +34,7 @@ class Demo extends React.Component {
             this.colors.map(color=>{
               return(
                 <Tooltip color={color} title={color} key={color}>
-                  <Button size="small">{color}</Button>
+                  <Tag color={color}>{color}</Tag>
                 </Tooltip>
               )
             })
@@ -46,7 +46,7 @@ class Demo extends React.Component {
             this.custom.map(color=>{
               return(
                 <Tooltip color={color} title={color} key={color}>
-                  <Button size="small">{color}</Button>
+                  <Tag color={color}>{color}</Tag>
                 </Tooltip>
               )
             })

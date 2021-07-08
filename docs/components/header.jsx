@@ -5,12 +5,12 @@ import { Nav } from "../menu";
 import { version } from '../../package.json'
 const { Option } = Select
 const components = Nav.reduce((a, b) => a.concat(b.child), [])
-import PropTypes from 'prop-types'
-export default class DocHeader extends Component {
+// import PropTypes from 'prop-types'
 
-  static contextTypes = {
-    router: PropTypes.object.isRequired
-  }
+// import { createBrowserHistory  } from 'history'
+// const history = createBrowserHistory();
+
+export default class DocHeader extends Component {
 
   state = {
     activeName: '',
@@ -20,7 +20,7 @@ export default class DocHeader extends Component {
     topMenu: [],
   }
   menuClick = ({ key, keyPath, item }) => {
-    let { history } = this.context.router
+    let { history } = this.props
     if (key == "home") {
       this.setState({ topMenu: ['home'] })
       history.push('/')
@@ -31,8 +31,7 @@ export default class DocHeader extends Component {
     }
   }
   toComponents = (key) => {
-    let { history } = this.context.router
-    history.push(`/components/${key}`)
+    this.props.history.push(`/components/${key}`)
     this.setState({ key })
     setTimeout(() => this.setState({ key: '' }), 500);
   }
@@ -46,8 +45,7 @@ export default class DocHeader extends Component {
     }
   }
   componentDidMount() {
-    let { history } = this.context.router
-    let topMenu = history.location.pathname == '/' ? ['home'] : ['/components/all']
+    let topMenu = this.props.history.location.pathname == '/' ? ['home'] : ['/components/all']
     this.setState({ topMenu })
   }
   render() {
@@ -95,7 +93,7 @@ export default class DocHeader extends Component {
         content={menu}
         onClick={this.openOutLink}>
         <Button size="small">更多
-        <Icon type="chevron-down-outline" />
+          <Icon type="chevron-down-outline" />
         </Button>
       </Dropdown>
       <img src="https://img.shields.io/npm/v/react-kui.svg?style=flat-square" style={{ height: 24, marginLeft: 10 }} />

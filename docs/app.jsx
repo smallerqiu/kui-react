@@ -23,12 +23,12 @@ export default () => {
     <BrowserRouter>
       {/* <Suspense fallback={null}> */}
       <Switch>
-        <Route path="/" exact component={Index} />
+        <Route path="/" exact render={({ history }) => <Index history={history} />} />
         <Route path="/test" exact component={Test} />
-        <Route render={({ location }) => (
-          <Main>
+        <Route render={({ location, history }) => (
+          <Main history={history}>
             <TransitionGroup className="route-main">
-              <CSSTransition timeout={500}  classNames="fade" key={location.pathname}>
+              <CSSTransition timeout={500} classNames="fade" key={location.pathname}>
                 <Switch location={location}>
                   {getRoute(docs, 'docs')}
                   {getRoute(components, 'components')}

@@ -26,7 +26,7 @@ export default class Tag extends Kui {
     e.preventDefault()
   }
   render() {
-    let { children, closeable, color } = this.props
+    let { children, closeable, color, onMouseEnter, onMouseLeave } = this.props
     let { visible } = this.state
     const props = {
       className: this.className(['k-tag', {
@@ -34,7 +34,13 @@ export default class Tag extends Kui {
         ['k-tag-has-color']: /^#/.test(color)
       }]),
       style: this.styles({ backgroundColor: /^#/.test(color) ? color : null }),
-      onClick: this.handle
+      onClick: this.handle,
+      onMouseEnter: () => {
+        onMouseEnter && onMouseEnter()
+      },
+      onMouseLeave: () => {
+        onMouseLeave && onMouseLeave()
+      },
     }
     return (<Transition name="k-tag" show={visible}>
       <div {...props}>

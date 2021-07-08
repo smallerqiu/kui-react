@@ -11,7 +11,7 @@ export default class Index extends Component {
   }
   render() {
     return (<Layout className="index">
-      <Header />
+      <Header history={this.props.history} />
       <section className="index-content">
         <div className="logo">K UI</div>
         <h1>轻量级桌面UI组件库 for React</h1>
@@ -22,7 +22,7 @@ export default class Index extends Component {
       </section>
       <footer className="index-footer">
         <p>Copyright ©2009-2018
-        <a href="http://www.chuchur.com">禅境花园</a> by chuchur <a href="https://beian.miit.gov.cn" target="_blank">粤ICP备17111365号-2</a> </p>
+          <a href="http://www.chuchur.com">禅境花园</a> by chuchur <a href="https://beian.miit.gov.cn" target="_blank">粤ICP备17111365号-2</a> </p>
       </footer>
     </Layout>)
   }

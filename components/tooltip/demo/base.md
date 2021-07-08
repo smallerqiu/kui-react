@@ -28,7 +28,7 @@ class Demo extends React.Component {
         <br/>
         <br/>
         <br/>
-        <Tooltip title={this.state.change?'窗前明月光':'凝视地上霜'}>
+        <Tooltip title={this.state.change?'窗前明月光':'凝视地上霜,Oh,好冷！'}>
           <a onClick={this.clickHandle}>Click me!</a>
         </Tooltip>
       </>

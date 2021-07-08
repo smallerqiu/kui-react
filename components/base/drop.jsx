@@ -26,6 +26,7 @@ export default class BaseDrop extends Kui {
     trigger: PropTypes.oneOf(['click', 'hover', 'contextmenu']),
     transitionName: PropTypes.string,
     selectionRef: PropTypes.any,
+    updateKey: PropTypes.any,
   }
   state = {
     left: 0,
@@ -64,7 +65,7 @@ export default class BaseDrop extends Kui {
     }
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
-    let { show, placement, trigger } = this.props
+    let { show, placement, trigger, updateKey } = this.props
     if (show != prevProps.show) {
       this.setState({ rendered: true, visible: show }, () => {
         trigger == 'contextmenu' ? this.showContextmenu() : this.setPosition()
@@ -76,6 +77,10 @@ export default class BaseDrop extends Kui {
     }
     if (this.state.rendered != prevState.rendered) {
       this.props.onRender && this.props.onRender()
+    }
+
+    if (updateKey != prevProps.updateKey) {
+      this.setPosition()
     }
   }
 

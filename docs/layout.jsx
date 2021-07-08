@@ -4,26 +4,25 @@ import { Nav, baseNav } from "./menu";
 import { Row, Col, Menu, SubMenu, Badge, Icon, Layout } from '@/components'
 import Header from './components/header'
 import './assets/index.less'
+// import { createBrowserHistory } from 'history'
+// const history = createBrowserHistory();
 
 export default class DocLayout extends Kui {
 
-  static contextTypes = {
-    router: PropTypes.object.isRequired
-  }
   state = {
     prev: {}, next: {},
     typo: false,
     activeName: [],
-    pathname: this.context.router.history.location
+    pathname: this.props.history.location
   }
 
   componentDidMount() {
-    let { pathname } = this.context.router.history.location
+    let { pathname } = this.props.history.location
     this.setActiveKey({ path: pathname })
   }
   componentDidUpdate(prevProps, prevState, snap) {
     let { pathname } = this.state
-    let newPathname = this.context.router.history.location.pathname
+    let newPathname = this.props.history.location.pathname
     if (pathname != newPathname) {
       this.setState({ pathname: newPathname })
       this.setActiveKey({ path: newPathname })
@@ -41,7 +40,7 @@ export default class DocLayout extends Kui {
       path = (sub ? "/components/" : "/docs/") + key;
       this.setState({ typo: !sub })
     }
-    this.context.router.history.push(path);
+    this.props.history.push(path);
 
     // setTimeout(() => {
     window.scrollTo(0, 0)
@@ -82,7 +81,7 @@ export default class DocLayout extends Kui {
     let { activeName, typo, prev, next } = this.state
     return (
       <Layout>
-        <Header />
+        <Header history={this.props.history} />
         <Layout className="main">
           <Layout.Sider className="docs-k-layout-sider">
             <Menu selectedKeys={activeName} className="left-menu" onClick={this.go.bind(this)} mode="inline" openKeys={['components']}>

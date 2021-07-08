@@ -39,7 +39,8 @@ export default class BasePop extends Kui {
     placement: PropTypes.oneOf(["top", "top-left", "top-right", "bottom", "bottom-left", "bottom-right", "left", "left-bottom", "left-top", "right", "right-top", "right-bottom"]),
     okText: PropTypes.string,
     cancelText: PropTypes.string,
-    onVisibleChange: PropTypes.func
+    onVisibleChange: PropTypes.func,
+    updateKey: PropTypes.any,
   }
 
   timer = null
@@ -119,7 +120,7 @@ export default class BasePop extends Kui {
   }
 
   renderPopup() {
-    let { placement, title, preCls, content, confirm, transfer, color,
+    let { placement, title, preCls, content, confirm, transfer, color, updateKey,
       width, trigger,
       showPlacementArrow, cancelText, okText } = this.props, childNode;
     if (showPlacementArrow) {
@@ -156,6 +157,7 @@ export default class BasePop extends Kui {
       width,
       preCls,
       placement,
+      updateKey,
       color,
       trigger,
       transitionName: `k-${preCls}`,
@@ -196,7 +198,7 @@ export default class BasePop extends Kui {
         onMouseLeave && onMouseLeave(e)
         this.mouseLeave(e)
       },
-      onClick: e => { 
+      onClick: e => {
         onClick && onClick(e)
         this.onClick(e)
       }
