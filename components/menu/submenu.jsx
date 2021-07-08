@@ -202,9 +202,12 @@ export default class SubMenu extends Kui {
     this.setState({ rendered: false })
   }
   hidePopupMenu() {
-    let { currentMode, defaultOpenKeys } = this.context.Menu.state
+
+   
+    let { Menu } = this.context
+    let { currentMode } = Menu.state
     if (this.props.disabled) return;
-    let { inlineCollapsed } = this.context.Menu.props
+    let { inlineCollapsed } = Menu.props
 
     this.setState({ active: false })
 
@@ -212,11 +215,11 @@ export default class SubMenu extends Kui {
       clearTimeout(this.timer)
       this.timer = setTimeout(() => {
         this.setState({ opened: false }, () => {
-          let openKeys = [].concat(defaultOpenKeys)
+          let openKeys = [].concat(Menu.state.defaultOpenKeys)
           let key = this.props.eventKey,
             index = openKeys.indexOf(key)
           index > -1 && openKeys.splice(index, 1)
-          this.context.Menu.openChange(openKeys)
+          Menu.openChange(openKeys)
         })
 
       }, 300);
@@ -226,16 +229,17 @@ export default class SubMenu extends Kui {
     if (this.props.disabled) return;
     clearTimeout(this.timer)
     this.setState({ active: true })
-    let { currentMode, defaultOpenKeys } = this.context.Menu.state
-    let { inlineCollapsed } = this.context.Menu.props
+    let { Menu } = this.context
+    let { currentMode } = Menu.state
+    let { inlineCollapsed } = Menu.props
     if (currentMode != 'inline' || inlineCollapsed) {
       this.setState({ rendered: true }, () => {
         this.setState({ opened: true })
-        let openKeys = [].concat(defaultOpenKeys)
+        let openKeys = [].concat(Menu.state.defaultOpenKeys)
         let key = this.props.eventKey,
           index = openKeys.indexOf(key)
         index < 0 && openKeys.push(key)
-        this.context.Menu.openChange(openKeys)
+        Menu.openChange(openKeys)
       })
     }
   }

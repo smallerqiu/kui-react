@@ -18,7 +18,7 @@ class Demo extends React.Component {
   }
   render(){
     return(
-      <div>
+      <div style={{width:512}}>
         <Input placeholder="请输入内容..." 
         clearable
         onChange={()=> this.change()} 

@@ -27,7 +27,7 @@ const Demo = ()=>{
   const submitForm =()=> {
     formRef.current.submit()
   }
-  const submit = ({valid,model})=>{
+  const submit = (valid , model)=>{
     if (valid) {
       Message.success('验证通过')
     } else {
@@ -122,6 +122,7 @@ const Demo = ()=>{
           </Form.Item>
         </Form>
       </Drawer>
+      
       <Drawer visible={customVisible} 
         title="我是自定义标题" 
         onCancel={()=>customToggle(false)}

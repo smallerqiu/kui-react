@@ -12,7 +12,7 @@ import './demo.less'
 export default class Index extends React.Component {
   render() {
     return (
-      <div>
+      <div className="k-demo-layout">
         <Info className="typo" />
         <Base />
         <Layout1 />

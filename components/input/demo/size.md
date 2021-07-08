@@ -7,7 +7,7 @@
 import { Input ,Message } from 'react-kui';
 
 ReactDOM.render(
-  <div>
+  <div style={{width:512}}>
     <Input placeholder="Large Input" size="large" icon="logo-apple" clearable/>
     <Input placeholder="Base Input" icon="logo-apple" clearable />
     <Input 

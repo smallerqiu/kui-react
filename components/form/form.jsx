@@ -7,12 +7,12 @@ export default class Form extends Kui {
     Form: PropTypes.any
   }
   static defaultProps = {
-    labelAlign: 'right',
+    layout: 'horizontal',
     size: 'default'
   }
   static propTypes = {
     name: PropTypes.string,
-    labelAlign: PropTypes.oneOf(['left', 'top', 'right']),
+    layout: PropTypes.oneOf(["horizontal", "vertical", "inline"]),
     model: PropTypes.object,
     labelCol: PropTypes.object,
     wrapperCol: PropTypes.object,
@@ -130,10 +130,10 @@ export default class Form extends Kui {
     })
   }
   render() {
-    let { labelAlign, size, labelCol = {}, wrapperCol = {}, children, name } = this.props
+    let { layout, size, labelCol = {}, wrapperCol = {}, children, name } = this.props
     const classes = ["k-form",
       {
-        [`k-form-label-${labelAlign}`]: labelAlign,
+        [`k-form-${layout}`]: layout,
         'k-form-lg': size == 'large',
         'k-form-sm': size == 'small',
       }

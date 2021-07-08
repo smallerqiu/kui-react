@@ -1,6 +1,7 @@
 import Base from "./base.md";
 import Info from "./info.md";
 import Icon from "./icon.md";
+import Suffix from "./suffix.md";
 import Clearable from "./clearable.md";
 import Event from "./event";
 import Size from "./size.md";
@@ -15,6 +16,7 @@ export default class Demo extends React.Component {
         <Info className="typo" />
         <Base />
         <Icon />
+        <Suffix />
         <Clearable />
         <Size />
         <Event />

@@ -153,7 +153,7 @@ const Demo = () => {
         onSubmit={submit}
         {...layout}>
         <Form.Item label="Size">
-          <Radio.Group value={size} size={size} onChange={setSize}>
+          <Radio.Group value={size} onChange={setSize}>
             <Radio.Button value="large" label="Large" />
             <Radio.Button value="default" label="Default" />
             <Radio.Button value="small" label="Small" />

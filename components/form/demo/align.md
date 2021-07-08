@@ -4,27 +4,27 @@
 </cn>
 
 ```tsx
-import { Form , Input , Select, Radio, DatePicker } from 'react-kui';
+import { Form , Input , Select, Radio, DatePicker ,Button} from 'react-kui';
 
 const { Option } = Select
 
-const layout = {
+const layoutSpan = {
   labelCol:{ span:5 },
-  wrapperCol: { span:16 },
+  wrapperCol: { span:6 },
 }
 
 const Demo = () => {
 
-  const [align,setAlign] = React.useState('left')
+  const [layout,setLayout] = React.useState('horizontal')
 
   return(
-    <div style={{width:512}}>
-      <Form labelAlign={align} {...layout}>
-        <Form.Item label="Align">
-          <Radio.Group value={align} onChange={setAlign}>
-            <Radio.Button value="left" label="Left" />
-            <Radio.Button value="top" label="Top" />
-            <Radio.Button value="right" label="Right" />
+    <div>
+      <Form layout={layout} {...layoutSpan}>
+        <Form.Item label="Layout">
+          <Radio.Group value={layout} onChange={setLayout}>
+            <Radio.Button value="horizontal" label="Horizontal" />
+            <Radio.Button value="vertical" label="Vertical" />
+            <Radio.Button value="inline" label="Inline" />
           </Radio.Group>
         </Form.Item>
         <Form.Item label="Input">
@@ -39,6 +39,9 @@ const Demo = () => {
         </Form.Item>
         <Form.Item label="DatePicker">
           <DatePicker />
+        </Form.Item>
+        <Form.Item wrapperCol={{offset:5}}>
+          <Button type="primary">Submit</Button>
         </Form.Item>
       </Form>
     </div>

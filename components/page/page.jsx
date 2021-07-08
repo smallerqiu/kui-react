@@ -38,9 +38,10 @@ export default class Page extends Kui {
   }
 
   renderPage() {
-    const groupCount = 7,
-      page = Number(this.state.page),
-      pageCount = Number(this.state.pageCount);
+    let { page, pageCount } = this.state
+    const groupCount = 7;
+    page = Number(page);
+    pageCount = Number(pageCount);
     let showPrevMore = false;
     let showNextMore = false;
     if (pageCount > groupCount) {
@@ -69,7 +70,7 @@ export default class Page extends Kui {
     }
     let child = array.map((p, i) => {
       let prop = {
-        className: this.className(['k-pager-item', { active: page == p }]),
+        className: this.className(['k-pager-item', { 'k-pager-item-active': page == p }]),
         key: i,
         onClick: () => this.toPage(p)
       }
@@ -108,13 +109,17 @@ export default class Page extends Kui {
   changeSize = (defaultPageSize) => {
     let { total, onPageSizeChange } = this.props
     let pageCount = Math.ceil(total / defaultPageSize) || 1;
-    this.setState({ defaultPageSize, pageCount })
-    onPageSizeChange && onPageSizeChange(defaultPageSize)
+    let { page } = this.state
+    if (page > pageCount) {
+      page = pageCount
+    }
+    this.setState({ defaultPageSize, pageCount, page })
+    onPageSizeChange && onPageSizeChange(defaultPageSize, page)
   }
   renderFirst() {
     let { pageCount, page } = this.state
     if (pageCount > 0) {
-      return <li key="first" className={this.className(["k-pager-item", { 'active': page == 1 }])} onClick={() => this.toPage(1)} >
+      return <li key="first" className={this.className(["k-pager-item", { 'k-pager-item-active': page == 1 }])} onClick={() => this.toPage(1)} >
         <span>1</span>
       </li>
     }
@@ -123,7 +128,7 @@ export default class Page extends Kui {
   renderLast() {
     let { pageCount, page } = this.state
     if (pageCount > 1) {
-      return <li key="last" className={this.className(['k-pager-item', { 'active': page == pageCount }])} onClick={() => this.toPage(pageCount)} >
+      return <li key="last" className={this.className(['k-pager-item', { 'k-pager-item-active': page == pageCount }])} onClick={() => this.toPage(pageCount)} >
         <span>{pageCount}</span>
       </li>
     }
@@ -182,7 +187,7 @@ export default class Page extends Kui {
       firstNode = this.renderFirst(),
       lastNode = this.renderLast()
     return (
-      <div className={this.className(classes)}>
+      <div className={this.className(classes)} style={this.styles()}>
         <ul className="k-pager">
           {[preNode, firstNode, pagerNode, lastNode, nextNode, sizeNode, totalNode, elvatorNode]}
         </ul>

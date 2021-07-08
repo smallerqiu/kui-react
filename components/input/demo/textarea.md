@@ -7,7 +7,7 @@
 import { TextArea } from 'react-kui';
 
 ReactDOM.render(
-  <div>
+  <div style={{width:512}}>
     <TextArea rows="4" placeholder="请输入内容..." />
     <TextArea rows="2" placeholder="请输入内容..." />
     <TextArea rows="2" placeholder="disabled..." disabled />

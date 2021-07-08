@@ -10,7 +10,14 @@ export default class TabPane extends Kui {
     closable: PropTypes.bool,
     eventKey: PropTypes.string
   }
-
+  componentWillUnmount() {
+    let { Tabs } = this.context
+    Tabs && Tabs.resetNavPosition();
+  }
+  componentDidMount() {
+    let { Tabs } = this.context
+    Tabs && Tabs.resetNavPosition();
+  }
   render() {
     const classes = [
       'k-tabs-tabpane',

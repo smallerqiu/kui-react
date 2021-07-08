@@ -152,6 +152,15 @@ export default class FormItem extends Kui {
         "k-form-item-error": !valid
       }
     ]
+
+    if (Form.props.layout == 'vertical') {
+      delete wrapperCol.offset
+    }
+    if (Form.props.layout == 'inline') {
+      labelCol = {}
+      wrapperCol = {}
+    }
+
     let id = null
     if (Form.props.name && prop) {
       id = `${Form.props.name}_${prop}`
@@ -160,7 +169,7 @@ export default class FormItem extends Kui {
       <Row className={classes} type="flex">
         {
           label ? <Col className="k-form-item-label"  {...labelCol}>
-            {label ? <label htmlFor={id}>{label}</label> : null}
+            <label htmlFor={id}>{label}</label>
           </Col>
             : null
         }
@@ -171,9 +180,10 @@ export default class FormItem extends Kui {
                 if (child && React.isValidElement(child)) {
                   const tag = child.type.name
                   const value = prop ? Form.testProp(prop) : ''
+                  const size =  Form.props.size
                   const props = {
                     id,
-                    size: Form.props.size
+                    size
                   }
                   if (prop) {
                     if (['Radio', 'Checkbox', 'Switch'].indexOf(tag) > -1) {

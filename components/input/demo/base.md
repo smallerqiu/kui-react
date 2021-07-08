@@ -7,7 +7,7 @@
 import { Input } from 'react-kui';
 
 ReactDOM.render(
-  <div>
+  <div style={{width:512}}>
     <Input placeholder="请输入内容..."  />
     <Input placeholder="disabled..." disabled />
   </div>,

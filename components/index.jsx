@@ -39,11 +39,7 @@ import Tag from './tag'
 // import Table from './table'
 import Tooltip from './tooltip'
 import TimeLine from './timeline'
-// import Transition from './transition'
-// import Transfer from './transfer'
-// import Tree from './tree'
-// import TreeSelect from './treeselect'
-// import Upload from './upload'
+import Tree from './tree'
 
 import './styles';
 
@@ -91,6 +87,7 @@ export {
     Tooltip,
     Popconfirm,
     Progress,
-    // Tree, TreeSelect,
+    Tree, 
+    //TreeSelect,
     // Upload
 }

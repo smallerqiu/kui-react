@@ -7,6 +7,7 @@ import Tooltip from '../tooltip'
 export default class MenuItem extends Kui {
   static propTypes = {
     icon: PropTypes.string,
+    title: PropTypes.string,
     disabled: PropTypes.bool,
     affixed: PropTypes.bool,
     eventKey: PropTypes.any,
@@ -41,7 +42,7 @@ export default class MenuItem extends Kui {
     }
   }
   render() {
-    let { icon, disabled, children, eventKey } = this.props
+    let { icon, disabled, children, eventKey, title } = this.props
     let { currentAffixed, active } = this.state
     let { Menu, SubMenu, Dropdown } = this.context
     let { selectedKeys, currentMode } = Menu.state
@@ -82,6 +83,7 @@ export default class MenuItem extends Kui {
     }
 
     const showTooltip = !SubMenu && Menu.props.inlineCollapsed
+    children = title || children
     let titleNode = children.length > 1 ? <span>{children}</span> : (isReactNode(children) ? children : <span>{children}</span>)
     return (
       <Tooltip placement="right" title={showTooltip ? children : null}>
