@@ -3,41 +3,32 @@
 点击展开节点，动态加载数据。
 </cn>
 
-```vue
-<template>
-  <Tree :data="data" @load-data="loadData" />
-</template>
-<script>
-export default{
-  data(){
-    return{
-      data: [{
-        title: 'Tree',
-        loading: false,
-        children: []
-      }],
-    }
-  },
-  methods:{
-    loadData(item, callback) {
-      //模拟异步请求
-      setTimeout(() => {
-        let data = [
-          {
-            title: 'children',
-            loading: false,
-            children: []
-          },
-          {
-            title: 'children',
-            loading: false,
-            children: []
-          }
-        ];
-        callback(data);
-      }, 1000)
-    }
+```tsx
+import { Tree } from 'react-kui';
+
+const Demo = () => {
+  const data = [
+    { title: 'Expand to load' },
+    { title: 'Expand to load' },
+    { title: 'Tree Node', isLeaf: true },
+  ]
+
+  const onExpand = (data)=>{
+    console.log(data)
   }
+  const onLoadData =(node, callback)=> {
+    //模拟异步请求
+    setTimeout(() => {
+      let data = [
+        { title: 'Child Node' },
+        { title: 'Child Node' }
+      ];
+      callback(data);
+    }, 1000)
+  }
+  return (
+      <Tree data={data} onLoadData={onLoadData} onExpand={onExpand}/>
+  )
 }
-</script>
+ReactDOM.render(<Demo /> , mountNode)
 ```

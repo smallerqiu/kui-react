@@ -3,46 +3,48 @@
 设置属性 `disabled` 可以禁用节点。
 </cn>
 
-```vue
-<template>
-  <Tree :data="data" checkable @check="select"/>
-</template>
-<script>
-export default{
-  data(){
-    return{
-      data: [
+```tsx
+import { Tree} from 'react-kui';
+
+const Demo = () => {
+  const expandedKeys = ['0-0', '1-0', '1-1']
+  const checkedKeys = ['1-0-0']
+  const data = [
+    {
+      title: 'tree 1',
+      key: '0-0',
+      children: [
         {
-          title: 'tree 1',
-          expand: true,
+          title: 'leaf 1-1',
+          key: '1-0',
+          disabled: true,
           children: [
-            {
-              title: 'tree 1-1',
-              expand: true,
-              disabled:true,
-              children: [
-                { title: 'leaf 1-1-1',disabled:true },
-                { title: 'leaf 1-1-2' }
-              ]
-            },
-            {
-              title: 'tree 1-2',
-              expand: true,
-              children: [
-                { title: 'leaf 1-2-1' },
-                { title: 'leaf 1-2-2' }
-              ]
-            }
+            { title: 'leaf 1-1-1',key:'1-0-0', disabled: true },
+            { title: 'leaf 1-1-2' }
+          ]
+        },
+        {
+          title: 'leaf 1-2',
+          key: '1-1',
+          children: [
+            { title: 'leaf 1-2-1' },
+            { title: 'leaf 1-2-2' }
           ]
         }
-      ],
+      ]
     }
-  },
-  methods:{
-    select(data){
-      // console.log(data)
-    }
+  ]
+  const onCheck = (data)=> {
+    console.log(data)
   }
+  return (
+      <Tree data={data} 
+      checkable 
+      onCheck={onCheck}
+      checkedKeys={checkedKeys} 
+      expandedKeys={expandedKeys} />
+  )
 }
-</script>
+
+ReactDOM.render(<Demo /> , mountNode)
 ```

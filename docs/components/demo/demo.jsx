@@ -28,8 +28,8 @@ export default class Demo extends Kui {
         
         if (tag) { */
 
-    const code = this.props.sourceCode.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
-
+    let code = this.props.sourceCode.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
+    code = code.slice(1, code.length - 1)
     if (copyText(code)) {
       Message.success('Copied')
     } else {

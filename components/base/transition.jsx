@@ -31,7 +31,7 @@ export default class Transition extends Component {
   }
   componentWillUnmount() {
     this.props.onUnmount && this.props.onUnmount()
-    // console.log('componentWillUnmount')
+    console.log('componentWillUnmount-Transition')
     this.setState({ show: false })
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -108,6 +108,7 @@ export default class Transition extends Component {
     const { timeout, name, children, unmountOnExit } = this.props
     const { show } = this.state
     return (<CSSTransition in={show} timeout={timeout}
+      key={this.props.eventKey}
       onExited={(e) => this.onExited(e)}
       onExiting={(e) => this.onExiting(e)}
       onExit={(e) => this.onExit(e)}

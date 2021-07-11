@@ -28,7 +28,7 @@ export default class Button extends Kui {
     const cls = this.className([
       "k-btn",
       {
-        [`k-btn-${type}`]: !!type,
+        [`k-btn-${type}`]: !!type && type != 'default',
         ["k-btn-sm"]: size == 'small',
         ["k-btn-block"]: !!block,
         ["k-btn-loading"]: loading,

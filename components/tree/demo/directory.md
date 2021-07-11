@@ -1,7 +1,10 @@
-import React, { Suspense, lazy } from 'react'
-import ReactDOM from 'react-dom'
+<cn>
+#### 群控
+展示目录、连接线、拖动、复选框、图标、扩展。
+</cn>
 
-import { Tree, Icon, Checkbox } from 'react-kui';
+```tsx
+import { Tree , Icon , Checkbox } from 'react-kui';
 
 class Demo extends React.Component {
 
@@ -175,4 +178,5 @@ class Demo extends React.Component {
   }
 }
 
-ReactDOM.render(<Demo />, document.getElementById('app'))
+ReactDOM.render(<Demo /> , mountNode)
+```

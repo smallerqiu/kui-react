@@ -29,11 +29,11 @@ export default class Col extends Kui {
         [`k-col-${span}`]: span,
         [`k-col-offset-${offset}`]: offset > 0 && offset <= 24
       }]),
-      style: {
+      style: this.styles({
         paddingLeft: gutter ? `${gutter / 2}px` : null,
         paddingRight: gutter ? `${gutter / 2}px` : null,
         flex: flex ? this.parseFlex(flex) : null
-      }
+      })
     }
     return (<div {...props}>{children}</div>)
   }

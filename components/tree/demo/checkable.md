@@ -3,45 +3,48 @@
 设置属性 `checkable` 可以对节点进行勾选。
 </cn>
 
-```vue
-<template>
-  <Tree :data="data" checkable @check="select" @select="select"/>
-</template>
-<script>
-export default{
-  data(){
-    return{
-      data: [
+```tsx
+import { Tree} from 'react-kui';
+
+const Demo = () => {
+  const checkedKeys = ['1-1', 'aa', ]
+  const expandedKeys = ['1-1', '1-1-2', '1-2', '0-1']
+  const data = [
+    {
+      title: 'tree 1',
+      key: '0-1',
+      children: [
         {
-          title: 'tree 1',
-          expand: true,
+          title: 'tree 1-1',
+          key: '1-1',
+          disabled: true,
           children: [
-            {
-              title: 'tree 1-1',
-              expand: true,
-              children: [
-                { title: 'leaf 1-1-1' },
-                { title: 'leaf 1-1-2' }
-              ]
-            },
-            {
-              title: 'tree 1-2',
-              expand: true,
-              children: [
-                { title: 'leaf 1-2-1' },
-                { title: 'leaf 1-2-2' }
-              ]
-            }
+            { title: 'leaf 1-1-1' },
+            { title: 'leaf 1-1-2' }
+          ]
+        },
+        {
+          title: 'tree 1-2',
+          key: '1-2',
+          children: [
+            { title: 'leaf 1-2-1', key: 'aa' },
+            { title: 'leaf 1-2-2', key: 'bb' }
           ]
         }
-      ],
+      ]
     }
-  },
-  methods:{
-    select(data){
-      console.log(data)
-    }
+  ]
+  const onCheck = (data)=> {
+    console.log(data)
   }
+  return (
+      <Tree data={data} 
+      checkable 
+      onCheck={onCheck}
+      checkedKeys={checkedKeys} 
+      expandedKeys={expandedKeys} />
+  )
 }
-</script>
+
+ReactDOM.render(<Demo /> , mountNode)
 ```
