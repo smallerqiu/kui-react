@@ -134,7 +134,7 @@ export default class Carousel extends Kui {
 		const warpperCls = {
 			className: 'k-carousel-warpper',
 			style: {
-				transform: `translateX(-${offsetX}px) translateY(-${offsetY}px)`,
+				transform: `translate3D(-${offsetX}px,-${offsetY}px,0)`,
 				width: !vertical ? children.length * width : '',
 				height: vertical ? children.length * height : '',
 				transitionDuration: !animate ? '0s' : ''

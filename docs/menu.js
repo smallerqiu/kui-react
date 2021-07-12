@@ -81,11 +81,9 @@ const Nav = [
 ]
 const baseNav = [
   { title: "快速上手", name: "start", },
-  { title: "在 vue 中使用", name: "use-in-vue", badeg: true, },
-  { title: "SSR 支持", name: "ssr" },
+  { title: "在 react 中使用", name: "use-in-react", badeg: true, },
   { title: "更新日志", name: "log", badeg: true, },
   { title: "定制主题", name: "theme" },
-  { title: "kui-loader", name: "kui-loader" }
 ]
 
 export { Nav, baseNav }

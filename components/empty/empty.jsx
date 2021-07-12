@@ -11,9 +11,6 @@ export default class Empty extends Kui {
 
   render() {
     let { image, imageStyle, children, description } = this.props
-    // description = getChild($slots.description).length > 0 || description
-    // image = getChild($slots.image)
-    // console.log(description, $slots.description)
 
     return (<div className="k-empty">
       {!image ?

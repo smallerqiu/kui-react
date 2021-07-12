@@ -15,6 +15,17 @@ export default class Demo extends Kui {
     expand: false,
   }
 
+
+  static propTypes = {
+    component: PropTypes.any,
+    description: PropTypes.any,
+    code: PropTypes.any,
+    sourceCode: PropTypes.string
+  }
+
+  static defaultProps = {
+  }
+
   // codeRef = React.createRef()
 
   copy = () => {
@@ -75,14 +86,4 @@ export default class Demo extends Kui {
       </div >
     )
   }
-}
-
-Demo.propTypes = {
-  component: PropTypes.any,
-  description: PropTypes.any,
-  code: PropTypes.any,
-  sourceCode: PropTypes.string
-}
-
-Demo.defaultProps = {
 }

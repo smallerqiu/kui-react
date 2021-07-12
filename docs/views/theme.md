@@ -16,11 +16,10 @@
 // 组件的圆角覆盖为5px
 @radius:~'5px';
 ```
-然后在入口文件 main.js 内导入这个 less 文件即可：
+然后在入口文件 index.js 内导入这个 less 文件即可：
 ```js
-import Vue from 'vue';
-import kui from 'kui-vue';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import 'assets/styles/custom.less';
 
-Vue.use(kui);
 ```

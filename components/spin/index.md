@@ -1,5 +1,5 @@
 ### Radio API
 | 属性    | 说明                         | 类型             | 默认值 |
 |---------|------------------------------|------------------|--------|
-| visible | 是否加载状态                 | Boolean          | false  |
-| mode    | 展示spin类型,提供4中展示方式 | String           | -      |
+| visible | 是否加载状态                 | boolean          | false  |
+| mode    | 展示spin类型,提供4中展示方式 | string           | -      |

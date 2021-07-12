@@ -7,7 +7,7 @@ export default class Index extends Component {
     this.props.history.push('/docs/start')
   }
   gitee() {
-    window.open("//gitee.com/chuchur/kui-vue");
+    window.open("//gitee.com/chuchur/kui-react");
   }
   render() {
     return (<Layout className="index">

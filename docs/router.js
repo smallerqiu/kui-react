@@ -18,11 +18,9 @@ import lazy from './Loadable'
 
 let docs = [
   { path: 'start', component: lazy(() => import(/*webpackChunkName:'start'*/'./views/start')) },
-  { path: 'use-in-vue', component: lazy(() => import(/*webpackChunkName:'use-in-vue'*/'./views/use-in-vue')) },
+  { path: 'use-in-react', component: lazy(() => import(/*webpackChunkName:'use-in-react'*/'./views/use-in-react')) },
   { path: 'log', component: lazy(() => import(/*webpackChunkName:'log'*/'./views/log')) },
-  { path: 'ssr', component: lazy(() => import(/*webpackChunkName:'ssr'*/'./views/ssr')) },
   { path: 'theme', component: lazy(() => import(/*webpackChunkName:'theme'*/'./views/theme')) },
-  { path: 'kui-loader', component: lazy(() => import(/*webpackChunkName:'kui-loader'*/'./views/kui-loader')) },
 ]
 let components = [
   { path: 'all', component: lazy(() => import(/*webpackChunkName:'all'*/'./views/all.jsx')) },
@@ -64,10 +62,8 @@ let components = [
   { path: 'tag', component: lazy(() => import(/*webpackChunkName:'tag '*/'../components/tag/demo')) },
   // { path:'table',component: lazy(() => import(/*webpackChunkName:'table'*/'../components/table/demo'))},
   { path: 'tree', component: lazy(() => import(/*webpackChunkName:'tree'*/'../components/tree/demo')) },
-  // // { path:'treeselect',component: lazy(() => import(/*webpackChunkName:'treeselect'*/'../components/treeselect/demo'))},
   { path: 'tooltip', component: lazy(() => import(/*webpackChunkName:'tooltip'*/'../components/tooltip/demo')) },
   { path: 'tabs', component: lazy(() => import(/*webpackChunkName:'tabs'*/'../components/tabs/demo')) },
   { path: 'timeline', component: lazy(() => import(/*webpackChunkName:'timeline  '*/'../components/timeline/demo')) },
-  // { path:'upload',component: lazy(() => import(/*webpackChunkName:'upload'*/'../components/upload/demo'))},
 ]
 export { docs, components }

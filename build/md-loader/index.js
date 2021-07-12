@@ -114,8 +114,8 @@ module.exports = function loader(content) {
     .replace(/{/g, '{"{"{')
     .replace(/}/g, '{"}"}')
     .replace(/{"{"{/g, '{"{"}')
-    // .replace(/(\n)/g, '{"\\n"}') // Make sure you don't have any extra whitespace between tags on each line of your source code
-    .replace(/(\n)/g, '')
+    .replace(/(\n)/g, '{"\\n"}') //  react 里 pre 代码换行
+    // .replace(/(\n)/g, '')
     .replace(/class=/g, 'className=');
 
   md = `

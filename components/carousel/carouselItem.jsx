@@ -2,11 +2,6 @@ import React from 'react'
 import { Kui, PropTypes } from '../kui'
 
 export default class CarouselItem extends Kui {
-	// static propTypes = {
-	// 	width: PropTypes.number,
-	// 	height: PropTypes.number,
-	// }
-
 	static contextTypes = {
 		Carousel: PropTypes.any
 	}

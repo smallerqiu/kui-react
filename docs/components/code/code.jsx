@@ -6,6 +6,12 @@ import React from 'react'
 import { Kui, PropTypes } from '@/components/kui'
 
 export default class Code extends Kui {
+  static defaultProps = {
+    lang: 'js javascript'
+  }
+  static propTypes = {
+    lang: PropTypes.string
+  }
 
   componentDidMount() {
     let code = this.refs.code.innerHTML.trim()
@@ -22,12 +28,4 @@ export default class Code extends Kui {
       </pre>
     </div>)
   }
-}
-
-Code.propTypes = {
-  lang: PropTypes.string
-}
-
-Code.defaultProps = {
-  lang: 'js javascript'
 }

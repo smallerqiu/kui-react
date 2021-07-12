@@ -81,6 +81,7 @@ export default class Modal extends Kui {
   componentWillUnmount() {
     document.removeEventListener('mousedown', this.mousedown)
     this.resetBodyStyle(false)
+    console.log('componentWillUnmount-Modal')
   }
 
   updateProp(visible) {
@@ -215,7 +216,6 @@ export default class Modal extends Kui {
 
       //footer
       if (footer !== null) {
-        // let footer = $slots.footer
         if (!footer) {
           footer = [<Button key="btnOk" onClick={this.cancel.bind(this)}>{cancelText}</Button>,
           <Button key="btnCancel" onClick={this.ok.bind(this)} type="primary" loading={loading}>{okText}</Button>]

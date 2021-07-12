@@ -8,11 +8,11 @@ export default class Row extends Kui {
     justify: PropTypes.oneOf(['start', 'end', 'center', 'space-around', 'space-between']),
     align: PropTypes.oneOf(['top', 'middle', 'bottom'])
   }
-  
+
   static defaultProps = {
-  
+
   }
-  
+
   static childContextTypes = {
     Row: PropTypes.any
   }
@@ -31,10 +31,10 @@ export default class Row extends Kui {
         [`k-row-flex-${align}`]: align,
 
       }]),
-      style: {
+      style: this.styles({
         marginLeft: gutter ? gutter / -2 + "px" : null,
         marginRight: gutter ? gutter / -2 + "px" : null,
-      }
+      })
     }
     return (<div {...props}>{children}</div >)
   }

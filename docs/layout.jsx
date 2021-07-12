@@ -63,7 +63,7 @@ export default class DocLayout extends Kui {
     let { current, prev = {}, next = {} } = this.getPath(key);
     let { typo, activeName } = this.state
     if (path == '/components/all') {
-      prev = baseNav[5]
+      prev = baseNav[3]
       next = Nav[0].child[0]
       document.title = `组件总览 - KUI`;
       activeName = [path];

@@ -114,7 +114,7 @@ export default class Page extends Kui {
       page = pageCount
     }
     this.setState({ defaultPageSize, pageCount, page })
-    onPageSizeChange && onPageSizeChange(defaultPageSize, page)
+    onPageSizeChange && onPageSizeChange(page, defaultPageSize)
   }
   renderFirst() {
     let { pageCount, page } = this.state

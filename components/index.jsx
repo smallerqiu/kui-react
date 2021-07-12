@@ -39,7 +39,7 @@ import Tag from './tag'
 // import Table from './table'
 import Tooltip from './tooltip'
 import TimeLine from './timeline'
-import Tree from './tree'
+import { Tree, TreeNode } from './tree'
 
 import './styles';
 
@@ -82,12 +82,10 @@ export {
     //Table,
     Tabs,
     TimeLine,
-    // Transition,
-    // Transfer,
     Tooltip,
     Popconfirm,
     Progress,
-    Tree, 
+    Tree, TreeNode,
     //TreeSelect,
     // Upload
 }
