@@ -14,7 +14,7 @@ export default class Index extends Component {
       <Header history={this.props.history} />
       <section className="index-content">
         <div className="logo">K UI</div>
-        <h1>轻量级桌面UI组件库 for React</h1>
+        <h1>轻量级桌面UI组件库 for React.js</h1>
         <div className="btn-content">
           <Button className="start" onClick={this.start.bind(this)} size="large">开始使用</Button>
           <Button icon="logo-github" size="large" onClick={this.gitee.bind(this)}>Gitee</Button>

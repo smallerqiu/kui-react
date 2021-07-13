@@ -240,7 +240,7 @@ export default class Modal extends Kui {
         'k-modal-has-footer': footer !== null,
       }
     ]
-    return rendered ? <Transfer
+    return <Transfer
       dropRef={this.elRef}
       show={rendered}
       transfer={transfer}>
@@ -256,6 +256,6 @@ export default class Modal extends Kui {
           </CSSTransition>
         </div>
       </div>
-    </Transfer> : null
+    </Transfer>
   }
 }
