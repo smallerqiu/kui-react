@@ -180,7 +180,8 @@ export default class FormItem extends Kui {
                 if (child && React.isValidElement(child)) {
                   const tag = child.type.name
                   const value = prop ? Form.testProp(prop) : ''
-                  const size =  Form.props.size
+                  let { size } = child.props
+                  size = size && size != 'default' ? size : Form.props.size
                   const props = {
                     id,
                     size

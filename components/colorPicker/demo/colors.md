@@ -3,20 +3,13 @@
 可以定义默认的颜色盘
 </cn>
 
-```vue
-<template>
-  <div className="demo-collapse">
-    <ColorPicker showMode v-model="color" :defalut-colors="colors" />
-  </div>
-</template>
-<script>
-export default {
-  data() {
-    return {
-      color: '#f44336',
-      colors: ['#9c27b0','red','blue'],
-    };
-  }
-}
-</script> 
+```tsx
+import { ColorPicker } from 'react-kui'
+
+ReactDOM.render(
+  <div className="demo-color-picker">
+    <ColorPicker showMode value="#f44336" defalutColors={['#9c27b0','red','blue']} />
+  </div>,
+  mountNode
+)
 ```

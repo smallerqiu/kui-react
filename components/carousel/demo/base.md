@@ -10,14 +10,14 @@ import { Carousel } from 'react-kui';
 class Demo extends React.Component {
   render(){
     return(
-      <div>
-    <Carousel value={0}>
-      <Carousel.Item>1</Carousel.Item>
-      <Carousel.Item>2</Carousel.Item>
-      <Carousel.Item>3</Carousel.Item>
-      <Carousel.Item>4</Carousel.Item>
-    </Carousel>  
-  </div>
+      <div style={{width:900}}>
+        <Carousel value={0}>
+          <Carousel.Item>1</Carousel.Item>
+          <Carousel.Item>2</Carousel.Item>
+          <Carousel.Item>3</Carousel.Item>
+          <Carousel.Item>4</Carousel.Item>
+        </Carousel>  
+      </div>
     )
   }
  } 

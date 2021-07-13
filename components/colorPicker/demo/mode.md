@@ -1,27 +1,25 @@
 <cn>
 #### 颜色模式
-可以切换颜色模式,使用 `show-mode` 来展示 颜色模式
+可以切换颜色模式,使用 `showMode` 来展示 颜色模式
 </cn>
 
-```vue
-<template>
-  <div className="demo-collapse">
-   Default: <ColorPicker showMode v-model="color1"/>
-   <br/>
-   Rgba: <ColorPicker showMode v-model="color2" mode="rgba"/>
-   <br/>
-   Hsla: <ColorPicker showMode v-model="color3"  mode="hsla"/>
-  </div>
-</template>
-<script>
-export default {
-  data() {
-    return {
-      color1: '#f44336',
-      color2: '#9c27b0',
-      color3: '#03a9f4',
-    };
-  }
-}
-</script> 
+```tsx
+import { ColorPicker ,Form  } from 'react-kui'
+
+ReactDOM.render(
+  <div className="demo-color-picker">
+   <Form>
+    <Form.Item label="Default">
+      <ColorPicker showMode value="#f44336"/>
+    </Form.Item>
+    <Form.Item label="Rgba">
+      <ColorPicker showMode value="#03a9f4" mode="rgba"/>
+    </Form.Item>
+    <Form.Item label="Hsla">
+      <ColorPicker showMode value="#03a9f4"  mode="hsla"/>
+    </Form.Item>
+   </Form>
+  </div>,
+  mountNode
+)
 ```

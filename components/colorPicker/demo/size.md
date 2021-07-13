@@ -3,23 +3,23 @@
 `small` 为小尺寸， `large` 为大尺寸
 </cn>
 
-```vue
-<template>
-  <div className="demo-collapse">
-    <ColorPicker showMode v-model="color1" size="large"/>
-    <ColorPicker showMode v-model="color2" mode="rgba"/>
-    <ColorPicker showMode v-model="color3"  mode="hsla" size="small" />
-  </div>
-</template>
-<script>
-export default {
-  data() {
-    return {
-      color1: '#f44336',
-      color2: '#9c27b0',
-      color3: '#03a9f4',
-    };
-  }
-}
-</script> 
+```tsx
+import { ColorPicker ,Form } from 'react-kui'
+
+ReactDOM.render(
+  <div className="demo-color-picker">
+    <Form>
+      <Form.Item label="large">
+        <ColorPicker showMode value="#f44336" size="large"/>
+      </Form.Item>
+      <Form.Item label="Default">
+        <ColorPicker showMode value="#9c27b0" mode="rgba"/>
+      </Form.Item>
+      <Form.Item label="small">
+        <ColorPicker showMode value="#03a9f4"  mode="hsla" size="small" />
+      </Form.Item>
+    </Form>
+  </div>,
+  mountNode
+)
 ```

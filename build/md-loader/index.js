@@ -16,6 +16,14 @@ const renderHighlight = function (str, lang) {
   try {
     return replaceDelimiters(hljs.highlight(lang, str, true).value);
   } catch (err) { }
+
+  // if (lang && hljs.getLanguage(lang)) {
+  //   try {
+  //     let code = hljs.highlight(lang, str, true).value
+  //     return '<pre class="hljs"><code>' + hljs.highlight(lang, str, true).value + '</code></pre>';
+  //   } catch (__) { }
+  // }
+  // return '<pre class="hljs"><code>' + markdown.utils.escapeHtml(str) + '</code></pre>';
 };
 
 const getDomHtml = (str, tag) => {
@@ -41,7 +49,7 @@ const markdown = require('markdown-it')({
 const cnReg = new RegExp('<(cn)(?:[^<]|<)+</\\1>', 'g');
 let doImports = 'import React from \'react\';\n';
 
-markdown.core.ruler.push('render', ({ tokens }) => {
+markdown.core.ruler.push('render', ({ tokens, idx }) => {
   let cn, template, code, sourceCode;
 
   tokens.forEach(token => {
@@ -60,6 +68,14 @@ markdown.core.ruler.push('render', ({ tokens }) => {
       template = token.content;//getDomHtml(token.content, 'template');
       token.content = '';
       token.type = 'html_block';
+    } else {
+      // var aIndex = tokens[idx].attrIndex('target');
+
+      // if (aIndex < 0) {
+      //   tokens[idx].attrPush(['target', '_blank']); // 添加新属性
+      // } else {
+      //   tokens[idx].attrs[aIndex][1] = '_blank';    // 替换已经存在的属性值
+      // }
     }
   });
 
@@ -116,8 +132,14 @@ module.exports = function loader(content) {
     .replace(/{"{"{/g, '{"{"}')
     .replace(/(\n)/g, '{"\\n"}') //  react 里 pre 代码换行
     // .replace(/(\n)/g, '')
+    .replace(/<table>{"\\n"}/g, '<table>')
+    .replace(/<thead>{"\\n"}/g, '<thead>').replace(/<\/thead>{"\\n"}/g, '</thead>')
+    .replace(/<tbody>{"\\n"}/g, '<tbody>').replace(/<\/tbody>{"\\n"}/g, '</tbody>')
+    .replace(/<th>{"\\n"}/g, '<th>').replace(/<\/th>{"\\n"}/g, '</th>')
+    .replace(/<td>{"\\n"}/g, '<td>').replace(/<\/td>{"\\n"}/g, '</td>')
+    .replace(/<tr>{"\\n"}/g, '<tr>').replace(/<\/tr>{"\\n"}/g, '</tr>')
     .replace(/class=/g, 'className=');
-
+  console.log(md)
   md = `
   ${doImports}
   export default function() { 

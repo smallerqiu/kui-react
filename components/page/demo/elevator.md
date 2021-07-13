@@ -7,7 +7,7 @@
 import { Page } from 'react-kui';
 
 ReactDOM.render(
-  <div className="demo-collapse">
+  <div className="demo-page">
     <Page current={10} total={200} showElevator />
   </div>,
   mountNode

@@ -7,7 +7,7 @@
 import { Page } from 'react-kui';
 
 ReactDOM.render(
-  <div className="demo-collapse">
+  <div className="demo-page">
     <Page current={1} total={50}/>
   </div>,
   mountNode

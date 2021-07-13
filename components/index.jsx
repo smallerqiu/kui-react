@@ -9,7 +9,7 @@ import Card from './card'
 import Carousel from './carousel'
 import Checkbox from './checkbox'
 import Collapse from './collapse'
-// import ColorPicker from './colorPicker'
+import ColorPicker from './colorPicker'
 import Divider from './divider'
 import Drawer from './drawer'
 import Dropdown from './dropdown'
@@ -54,7 +54,7 @@ export {
     Carousel,
     Checkbox,
     Collapse,
-    // ColorPicker, ,
+    ColorPicker,
     DatePicker,
     Divider,
     Drawer,
