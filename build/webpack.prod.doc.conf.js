@@ -17,7 +17,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 module.exports = merge(webpackBaseConfig, {
   mode: 'production',
   entry: {
-    index: ["@babel/polyfill", './docs/main.jsx'],
+    index: ['./docs/main.jsx'],
     vendors: ['react', 'react-router', 'react-dom']
     // index: path.resolve(__dirname, '../docs/main.js'),
     // vendors: ['react', 'react-dom', 'react-router-dom',]

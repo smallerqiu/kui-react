@@ -1,4 +1,5 @@
 
+import { isEqual, clone } from 'lodash'
 import React from 'react'
 import { Kui, PropTypes } from '../kui'
 
@@ -35,7 +36,7 @@ export default class Form extends Kui {
   componentDidUpdate(prevProps, prevState, snap) {
     let { model } = this.props
 
-    if (JSON.stringify(model) !== JSON.stringify(prevProps.model)) {
+    if (!isEqual(model, prevProps.model)) {
       this.setState({ defaultModel: model }, () => {
         this.validate()
       })
@@ -45,12 +46,12 @@ export default class Form extends Kui {
   setValue(prop, value = '') {
     let keys = prop.replace(/\[(\w+)\]/g, '.$1').replace(/^\./, '').split('.')
     let { defaultModel } = this.state
-    let model = defaultModel
+    let model = clone(defaultModel)
     for (let i = 0; i < keys.length; i++) {
       let key = keys[i]
       if (key in model) {
         if (i == keys.length - 1 || keys.length == 1) {
-          let val = model[key]
+          let val = clone(model[key])
           if (typeof val === 'boolean') {
             model[key] = value || false
           } else if (Array.isArray(val)) {
@@ -59,7 +60,9 @@ export default class Form extends Kui {
             model[key] = value
           }
         }
-        model = model[key]
+        // defaultModel
+        model = clone(model[key])
+        defaultModel[key] = clone(model)
       }
     }
     this.setState({ defaultModel })
@@ -79,15 +82,16 @@ export default class Form extends Kui {
 
   testProp(path) {
     let keys = path.replace(/\[(\w+)\]/g, '.$1').replace(/^\./, '').split('.')
-    let model = this.state.defaultModel
+    let model = clone(this.state.defaultModel);
     for (let i = 0; i < keys.length; i++) {
-      let key = keys[i]
+      let key = keys[i];
       if (key in model) {
-        model = JSON.parse(JSON.stringify(model[key]))
+        model = clone(model[key]);
       } else {
-        throw new Error('请传入正确的prop值:' + path)
+        console.warn('规则验证需要传入正确的prop值:' + path)
+        // throw new Error('请传入正确的prop值:' + path);
       }
-    }
+    };
     return model;
   }
 

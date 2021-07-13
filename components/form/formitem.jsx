@@ -200,6 +200,7 @@ export default class FormItem extends Kui {
                         if (['Input', 'TextArea'].indexOf(tag) > -1) {
                           value = value.target.value
                         }
+                        // console.log(tag)
                         Form.setValue(prop, value)
                         this.testValue()
                       }
