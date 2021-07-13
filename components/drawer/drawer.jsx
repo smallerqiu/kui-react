@@ -48,7 +48,7 @@ export default class Drawer extends Kui {
       })
     }
     if (placement != prevProps.placement && this.state.rendered) {
-      this.contentRef.current.className = `k-drawer-box k-drawer-${placement}-exit-done`
+      // this.contentRef.current.className = `k-drawer-box k-drawer-${placement}-${visible ? 'enter' : 'exit'}-done`
     }
   }
   componentWillUnmount() {

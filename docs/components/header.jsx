@@ -65,7 +65,7 @@ export default class DocHeader extends Component {
       </div>
       <div className="search-component">
         <Select
-          placeholder="搜索组件..."
+          placeholder="🔍 搜索组件..."
           filterable
           value={key}
           bordered={false}
