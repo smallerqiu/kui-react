@@ -2,15 +2,17 @@
  * by chuchur /chuchur@qq.com
  * 打包react 组件
  */
-const webpack = require('webpack')
-// const ExtractTextPlugin = require('extract-text-webpack-plugin')
+// const ExtractTextPlugin = require('extract-text-webpack-plugin')//for webpack 3
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') //for webpack 4
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin'); //for webpack 4
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin'); //for webpack 4
+const TerserPlugin = require('terser-webpack-plugin');
 const path = require('path');
-const pkg = require('../package.json');
 const webpackBaseConfig = require('./webpack.base.conf.js');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const WebpackBar = require('webpackbar')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 module.exports = merge(webpackBaseConfig, {
   mode: 'production',
@@ -27,14 +29,6 @@ module.exports = merge(webpackBaseConfig, {
   },
   performance: {
     hints: false
-  },
-  module: {
-    rules: [
-      {
-        test: /\.less$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'],
-      },
-    ]
   },
   optimization: {
     splitChunks: {
@@ -66,6 +60,17 @@ module.exports = merge(webpackBaseConfig, {
       //       sourceMap: false
       //     }
       //   })
+      new TerserPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: true,
+        terserOptions: {
+          output: {
+            // comments: /react-kui/i,
+          },
+        },
+        extractComments: false,
+      }),
       new OptimizeCSSAssetsPlugin({})
     ]
   },
@@ -91,5 +96,4 @@ module.exports = merge(webpackBaseConfig, {
     }),
     new CleanWebpackPlugin()
   ],
-
 })

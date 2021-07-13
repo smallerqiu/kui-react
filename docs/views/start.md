@@ -48,43 +48,37 @@ kui-demo
 从 yarn 或 npm 安装并引入 kui-vue。
 
 ```sh
-$ npm install kuiv-ue
+$ npm install react-kui
 #or
-$ yarn add kui-vue
+$ yarn add react-kui
 ```
 #### 3. 使用组件
 
 直接用下面的代码替换 `index.js` 的内容:
 
 ```js
-import React , { useState }from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import reportWebVitals from './reportWebVitals';
-import moment from 'moment';
-
 
 import 'react-kui/dist/k-ui.css';
-import { Button , Modal } from 'react-kui';
+import { Button, Modal } from 'react-kui';
 
-const App =()=>{
-  const [visible, setVisible] = useState(null);
-}
-  <React.StrictMode>
+const App = () => {
+  const [visible, setVisible] = useState(false);
+  return (
     <div>
-      <Button onClick={()=>setVisible(true)} type="primary">Open Modal</Button>
-      <Modal title="Title" 
-        visible={visible} 
-        onCancel={()=>setVisible(false)}
-        onOk={()=>setVisible(false)}
-        >Content</Modal>
+      <Button onClick={() => setVisible(true)} type="primary">Open Modal</Button>
+      <Modal title="Title"
+        visible={visible}
+        onCancel={() => setVisible(false)}
+        onOk={() => setVisible(false)}
+      >Content</Modal>
     </div>
-  </React.StrictMode>,
-  
-);
-ReactDOM.render(<App />,document.getElementById('root'))
+  )
+}
 
-reportWebVitals();
+ReactDOM.render(<App />, document.getElementById('root'))
 ```
 
 以上代码便完成了 Kui 的引入。注意: 样式文件需要单独引入。

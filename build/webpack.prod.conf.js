@@ -2,22 +2,21 @@
  * by chuchur /chuchur@qq.com
  * 打包 react 组件
  */
-const webpack = require('webpack')
-// const UglifyJsPlugin = require('uglifyjs-webpack-plugin'); //for webpack 4
-const TerserPlugin = require('terser-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') //for webpack 4
-// const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin'); //for webpack 4
+const TerserPlugin = require('terser-webpack-plugin');
+
 const path = require('path');
 const webpackBaseConfig = require('./webpack.base.conf.js');
 const { merge } = require('webpack-merge');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-
+const WebpackBar = require('webpackbar')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 module.exports = merge(webpackBaseConfig, {
   mode: 'production',
   entry: {
-    main: path.resolve(__dirname, '../components/index.js')
+    main: path.resolve(__dirname, '../components/index.jsx')
   },
   output: {
     path: path.resolve(__dirname, "../dist"),
@@ -26,6 +25,9 @@ module.exports = merge(webpackBaseConfig, {
     library: 'ReactKui',
     libraryTarget: 'umd',
     umdNamedDefine: true
+  },
+  performance: {
+    hints: false
   },
   externals: {
     'react': {
@@ -40,32 +42,31 @@ module.exports = merge(webpackBaseConfig, {
       commonjs2: 'react-dom',
       amd: 'react-dom'
     },
-    'classnames': 'classnames',
-  },
-  performance: {
-    hints: false
-  },
-  module: {
-    rules: [
-      {
-        test: /\.less$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'], // : , 
-      },
-    ]
+    'react-router': {
+      root: 'ReactRouter',
+      commonjs: 'react-router',
+      commonjs2: 'react-router',
+      amd: 'react-router'
+    },
+    "kui-icons": "kui-icons",
+    'moment': 'moment'
   },
   optimization: {
     minimize: true,
     minimizer: [
       new TerserPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: false,
         terserOptions: {
-          compress: {
-            warnings: false,
-            drop_debugger: true,
-            drop_console: true,
-            pure_funcs: ["console.log"]
+          output: {
+            // comments: /react-kui/i,
           },
-          sourceMap: false
-        }
+          compress: {
+            pure_funcs: ["console.log"]
+          }
+        },
+        extractComments: false,
       }),
       new OptimizeCSSAssetsPlugin({})
     ]

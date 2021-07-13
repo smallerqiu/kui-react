@@ -1,7 +1,7 @@
 # 在 react 中使用
 ## 安装和初始化
 
-[create-react-app](https://github.com/facebookincubator/create-react-app) 是业界最优秀的 React 应用开发工具之一，本文会尝试在 create-react-app 创建的工程中使用 antd 组件，并自定义 webpack 的配置以满足各类工程化需求。
+[create-react-app](https://github.com/facebookincubator/create-react-app) 是业界最优秀的 React 应用开发工具之一，本文会尝试在 create-react-app 创建的工程中使用 kui 组件，并自定义 webpack 的配置以满足各类工程化需求。
 
 ```sh
 $ npm install -g create-react-app

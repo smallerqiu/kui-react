@@ -4,10 +4,10 @@ import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 import Main from './layout'
 import { docs, components } from './router'
-import Loadable from './Loadable'
+// import lazy from './Loadable'
 
-const Index = Loadable(() => import(/*webpackChunkName:'index'*/'./index'))
-const Test = Loadable(() => import(/*webpackChunkName:'test'*/'./test'))
+const Index = lazy(() => import('./index'))
+const Test = lazy(() => import('./test'))
 
 export default () => {
 
@@ -21,24 +21,24 @@ export default () => {
   return (
     // <HashRouter>
     <BrowserRouter>
-      {/* <Suspense fallback={null}> */}
-      <Switch>
-        <Route path="/" exact render={({ history }) => <Index history={history} />} />
-        <Route path="/test" exact component={Test} />
-        <Route render={({ location, history }) => (
-          <Main history={history}>
-            <TransitionGroup className="route-main">
-              <CSSTransition timeout={500} classNames="fade" key={location.pathname}>
-                <Switch location={location}>
-                  {getRoute(docs, 'docs')}
-                  {getRoute(components, 'components')}
-                </Switch>
-              </CSSTransition>
-            </TransitionGroup>
-          </Main>
-        )} />
-      </Switch>
-      {/* </Suspense> */}
+      <Suspense fallback={<div>.....</div>}>
+        <Switch>
+          <Route path="/" exact render={({ history }) => <Index history={history} />} />
+          <Route path="/test" exact render={() => <Test />} />
+          <Route render={({ location, history }) => (
+            <Main history={history}>
+              <TransitionGroup className="route-main">
+                <CSSTransition timeout={500} classNames="fade" key={location.pathname}>
+                  <Switch location={location}>
+                    {getRoute(docs, 'docs')}
+                    {getRoute(components, 'components')}
+                  </Switch>
+                </CSSTransition>
+              </TransitionGroup>
+            </Main>
+          )} />
+        </Switch>
+      </Suspense>
     </BrowserRouter>
     // </Router>
   )

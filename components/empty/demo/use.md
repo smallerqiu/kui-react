@@ -4,7 +4,7 @@
 默认会在以上组件展示
 </cn>
 
-```vue
+```tsx
 <template>
   <div>
     Select: <br/><br/>

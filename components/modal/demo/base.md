@@ -14,6 +14,7 @@ class Demo extends React.Component {
 
   setVisible = (visible)=>{
     this.setState({visible})
+    console.log('eee')
   }
 
   render(){

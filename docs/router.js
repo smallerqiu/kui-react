@@ -1,8 +1,8 @@
-import lazy from './Loadable'
-// import React, {Component, lazy, Suspense} from 'react';
+// import lazy from './Loadable'
+import React, { Component, lazy, Suspense } from 'react';
 
 // import a from './views/start'
-// import b from './views/use-in-vue'
+// import b from './views/use-in-react'
 // import c from './views/log'
 // import d from './views/ssr'
 // import e from './views/theme'
@@ -34,7 +34,7 @@ let components = [
   { path: 'carousel', component: lazy(() => import(/*webpackChunkName:'carousel'*/'../components/carousel/demo')) },
   { path: 'checkbox', component: lazy(() => import(/*webpackChunkName:'checkbox'*/'../components/checkbox/demo')) },
   { path: 'collapse', component: lazy(() => import(/*webpackChunkName:'collapse'*/'../components/collapse/demo')) },
-  { path:'colorpicker',component: lazy(() => import(/*webpackChunkName:'colorpicker'*/'../components/colorpicker/demo'))},
+  { path: 'colorpicker', component: lazy(() => import(/*webpackChunkName:'colorpicker'*/'../components/colorpicker/demo')) },
   { path: 'datepicker', component: lazy(() => import(/*webpackChunkName:'datepicker'*/'../components/datepicker/demo')) },
   { path: 'divider', component: lazy(() => import(/*webpackChunkName:'divider'*/'../components/divider/demo')) },
   { path: 'drawer', component: lazy(() => import(/*webpackChunkName:'drawer'*/'../components/drawer/demo')) },

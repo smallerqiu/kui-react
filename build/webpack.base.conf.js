@@ -1,8 +1,10 @@
 const webpack = require('webpack')
 const path = require('path')
 const pkg = require('../package.json');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin') //for webpack 4
 
 // const mdRender = require('./md-loader/render')
+const devMode = process.env.NODE_ENV !== "production";
 
 module.exports = {
   module: {
@@ -24,8 +26,16 @@ module.exports = {
       },
       // { test: /\.s(c|a)ss$/, use: ['style-loader', 'css-loader', 'sass-loader'] },
       // { test: /\.styl(us)?$/, use: ['style-loader', 'css-loader', 'stylus-loader'] },
-      { test: /\.css$/, use: ['style-loader', 'css-loader',] },
-      { test: /\.less$/, use: ['style-loader', 'css-loader', 'less-loader'], },
+      // { test: /\.css$/, use: ['style-loader', 'css-loader',] },
+      {
+        test: /\.(le|c)ss$/,
+        use: [
+          devMode ? "style-loader" : MiniCssExtractPlugin.loader,
+          'css-loader',
+          // 'postcss-loader',
+          'less-loader'
+        ],
+      },
       {
         test: /\.(png|jpg|gif)$/,
         loader: 'file-loader',

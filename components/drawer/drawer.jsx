@@ -36,7 +36,7 @@ export default class Drawer extends Kui {
 
   state = {
     show: this.props.visible,
-    rendered: false
+    rendered: this.props.visible
   }
   componentDidUpdate(prevProps, prevState, snap) {
     let { visible, placement } = this.props
@@ -127,26 +127,24 @@ export default class Drawer extends Kui {
     if (placement == 'top' || placement == 'bottom') styles.height = height + 'px'
     // const wrapCls =
     return (
-      rendered ?
-        <Transfer Transfer transfer={true} show={rendered} dropRef={this.elRef}>
-          <div className={this.className(classes)} ref={this.elRef}>
-            <CSSTransition classNames="k-drawer-fade" timeout={300} in={show}>
-              <div className="k-drawer-mask" onClick={this.maskToClose}></div>
-            </CSSTransition>
-            <CSSTransition classNames={transitionName} timeout={200} in={show}>
-              <div className="k-drawer-box" ref="drawer" style={styles} ref={this.contentRef}>
-                <div className="k-drawer-content">
-                  {closeNode}
-                  <div className="k-drawer-header"><div className="k-drawer-header-inner">{title}</div></div>
-                  <div className="k-drawer-body">
-                    {children}
-                  </div>
-                  {footNode}
+      <Transfer Transfer transfer={true} show={rendered} dropRef={this.elRef} parentSelector={() => document.body}>
+        <div className={this.className(classes)} ref={this.elRef}>
+          <CSSTransition classNames="k-drawer-fade" timeout={300} in={show}>
+            <div className="k-drawer-mask" onClick={this.maskToClose}></div>
+          </CSSTransition>
+          <CSSTransition classNames={transitionName} timeout={200} in={show}>
+            <div className="k-drawer-box" ref="drawer" style={styles} ref={this.contentRef}>
+              <div className="k-drawer-content">
+                {closeNode}
+                <div className="k-drawer-header"><div className="k-drawer-header-inner">{title}</div></div>
+                <div className="k-drawer-body">
+                  {children}
                 </div>
+                {footNode}
               </div>
-            </CSSTransition>
-          </div></Transfer>
-        : null
+            </div>
+          </CSSTransition>
+        </div></Transfer>
     )
   }
 };

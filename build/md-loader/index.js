@@ -139,7 +139,6 @@ module.exports = function loader(content) {
     .replace(/<td>{"\\n"}/g, '<td>').replace(/<\/td>{"\\n"}/g, '</td>')
     .replace(/<tr>{"\\n"}/g, '<tr>').replace(/<\/tr>{"\\n"}/g, '</tr>')
     .replace(/class=/g, 'className=');
-  console.log(md)
   md = `
   ${doImports}
   export default function() { 

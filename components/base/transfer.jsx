@@ -1,10 +1,21 @@
 import React from 'react'
-// import Render from 'react-dom'
+import ReactDOM from 'react-dom'
 import { Kui, PropTypes } from '../kui'
+
+function getParentElement(parentSelector) {
+  return parentSelector();
+}
+const isReact16 = ReactDOM.createPortal !== undefined;
+
+const getCreatePortal = () =>
+  isReact16
+    ? ReactDOM.createPortal
+    : ReactDOM.unstable_renderSubtreeIntoContainer;
 
 export default class Transfer extends Kui {
   static defaultProps = {
-    transfer: true
+    transfer: true,
+    parentSelector: () => document.body,
   }
   static propTypes = {
     docOnClick: PropTypes.func,
@@ -13,70 +24,106 @@ export default class Transfer extends Kui {
     transfer: PropTypes.bool,
     show: PropTypes.bool,
     dropRef: PropTypes.any,
+    parentSelector: PropTypes.func
   }
-  state = {
-    popup: null,
-    parentNode: null,
+
+  getSnapshotBeforeUpdate(prevProps) {
+    const prevParent = getParentElement(prevProps.parentSelector);
+    const nextParent = getParentElement(this.props.parentSelector);
+    return { prevParent, nextParent };
   }
-  elRef = React.createRef()
-  rendered = false
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.transfer && this.props.show && !this.rendered) {
-      this.rerender()
+    const { prevParent, nextParent } = snapshot;
+    if (nextParent !== prevParent) {
+      prevParent.removeChild(this.popup);
+      nextParent.appendChild(this.popup);
     }
+    let { show, parentSelector } = this.props
+    if (!show) return;
+
+    if (show && (prevProps.show != show)) {
+      const parent = getParentElement(parentSelector);
+      !parent.contains(this.popup) && parent.appendChild(this.popup);
+    }
+
+    !isReact16 && this.rerender()
   }
-  
+  createPopup() {
+    let popup = document.createElement('div')
+    popup.style.top = 0
+    popup.style.left = 0
+    popup.style.width = '100%'
+    popup.style.position = 'absolute'
+    this.popup = popup
+  }
   componentDidMount() {
-    let { transfer, onScroll, onResize, docOnClick } = this.props
-    let { popup } = this.state
+    let { transfer, onScroll, onResize, docOnClick, show, parentSelector } = this.props
     if (transfer) {
-      if (!popup) {
-        popup = document.createElement('div')
-        popup.style.top = 0
-        popup.style.left = 0
-        popup.style.width = '100%'
-        popup.style.position = 'absolute'
-        this.setState({ popup })
-        // document.body.appendChild(this.popup)
+      if (!isReact16) {
+        this.createPopup()
       }
       // document
       onScroll && window.addEventListener('scroll', onScroll)
       // window.addEventListener('mousewheel', this.props.onScroll)
       onResize && window.addEventListener('resize', onResize)
       docOnClick && document.addEventListener('click', docOnClick)
+
+      if (show) {
+        const parent = getParentElement(parentSelector);
+        !parent.contains(this.popup) && parent.appendChild(this.popup);
+      }
     }
   }
 
   componentWillUnmount() {
-    let { transfer, onScroll, onResize, docOnClick, dropRef } = this.props
-    let { popup, parentNode } = this.state
-    if (transfer && parentNode) {
-      // Render.unmountComponentAtNode(popup)
-      parentNode.appendChild(dropRef.current)
-      document.body.removeChild(popup)
+    let { transfer, onScroll, onResize, docOnClick, parentSelector } = this.props
+    if (transfer) {
       onScroll && window.removeEventListener('scroll', onScroll)
       onResize && window.removeEventListener('resize', onResize)
       docOnClick && document.removeEventListener('click', docOnClick)
+      // const popup = ReactDOM.findDOMNode(this.popup)
+      // console.log(popup)
+      !isReact16 && ReactDOM.unmountComponentAtNode(this.popup)
+      const parent = getParentElement(parentSelector);
+      if (parent && parent.contains(this.popup)) {
+        parent.removeChild(this.popup);
+      } else {
+        // console.warn(
+        //   'React-Modal: "parentSelector" prop did not returned any DOM ' +
+        //   "element. Make sure that the parent element is unmounted to " +
+        //   "avoid any memory leaks."
+        // );
+      }
+      // if (unmountResult) {
+      //   popup.parentNode.removeChild(document.getElementById('test'))
+      // }
+      // // if (document.body.contains(this.popup)) {
+      // document.body.removeChild(popup);
+      // }
     }
   }
+  portalRef = ref => this.portal = ref
+
   rerender() {
-    let { show, transfer, dropRef, onTransfer } = this.props
-    let { popup, parentNode } = this.state
-    if (!document.body.contains(popup) && show) {
-      document.body.appendChild(popup)
-    }
-    if (!parentNode) {
-      this.setState({ parentNode: dropRef.current.parentNode })
-    }
-    if (transfer && dropRef) {
-      this.rendered = true
-      popup.appendChild(dropRef.current)
-      onTransfer && onTransfer()
-    }
-    // // transfer && Render.render(this.elRef.current, popup)
+    const createPortal = getCreatePortal();
+    const portal = createPortal(
+      this,
+      <>{this.props.children}</>,
+      this.popup
+    );
+    this.portalRef(portal);
   }
   render() {
-    return this.props.children
+    if (!isReact16) {
+      return null;
+    }
+
+    if (!this.popup && isReact16) {
+      this.createPopup()
+    }
+    const createPortal = getCreatePortal();
+
+    return createPortal(<>{this.props.children}</>, this.popup)
   }
 }

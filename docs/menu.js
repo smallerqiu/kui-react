@@ -48,7 +48,7 @@ const Nav = [
       { title: "走马灯", sub: "Carousel", name: "carousel", icon: 'film' },
       { title: "折叠面板", sub: "Collapse", name: "collapse", icon: 'map' },
       // { title: "图片预览", sub: "ImagePreview", name: "imagepreview", icon: 'images' },
-      { title: "表格", sub: "Table", name: "table", icon: 'grid' },
+      // { title: "表格", sub: "Table", name: "table", icon: 'grid' },
       { title: "时间轴", sub: "TimeLine", name: "timeline", icon: 'time' },
       { title: "树形控件", sub: "Tree", name: "tree", icon: 'git-merge' },
       // { title: "树选择", sub: "TreeSelect", name: "treeselect", icon: 'git-pull-request' },

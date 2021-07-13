@@ -5,9 +5,7 @@ const webpack = require('webpack')
 let isBuildDoc = process.argv.splice(2).length > 0;
 let config = isBuildDoc ? require('./webpack.prod.doc.conf') : require('./webpack.prod.conf');
 
-
 webpack(config, function (err, stats) {
-    spinner.stop()
     if (err) throw err
     process.stdout.write(stats.toString({
         colors: true,

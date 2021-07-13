@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from './modal'
-import RDOM from 'react-dom'
+import ReactDOM from 'react-dom'
 import Toast from './toast'
 
 let createInstance = (props = {}) => {
@@ -9,7 +9,7 @@ let createInstance = (props = {}) => {
   let popup = document.createElement('div')
   const onDestroy = () => {
     modalList.splice(modalList.indexOf(toastRef.current), 1)
-    RDOM.unmountComponentAtNode(popup)
+    ReactDOM.unmountComponentAtNode(popup)
     if (document.body.contains(popup))
       document.body.removeChild(popup)
   }
@@ -17,7 +17,7 @@ let createInstance = (props = {}) => {
   document.body.appendChild(popup)
 
   // Render.render(component, popup)
-  RDOM.render(component, popup)
+  ReactDOM.render(component, popup)
 
   // return toastRef.current
   return toastRef.current

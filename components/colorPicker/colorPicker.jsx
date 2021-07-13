@@ -3,7 +3,6 @@ import { Input } from '../input'
 import Button from '../button'
 import Icon from '../icon'
 import Drop from '../base/drop'
-import uuid from 'uuid'
 import { Kui, PropTypes } from '../kui'
 
 import React from 'react'
