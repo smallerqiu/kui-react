@@ -1,8 +1,7 @@
 node_modules/
-publish/
-
 *.cmd
 .DS_Store
+docs/dist/*
 
 npm-debug.log*
 yarn-debug.log*
@@ -17,3 +16,5 @@ package-lock.json
 *.njsproj
 *.sln
 *.zip
+*.sh
+yarn.lock

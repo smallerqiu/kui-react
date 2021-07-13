@@ -16,7 +16,7 @@
   },
   "files": [
     "dist",
-    "src/styles"
+    "components"
   ],
   "bugs": {
     "url": "https://gitee.com/chuchur/kui-react/issues",

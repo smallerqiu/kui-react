@@ -6,7 +6,7 @@ import App from './app'
 
 ReactDOM.render(<App />, document.getElementById('app'))
 
-import './assets/index'
+import './assets/index.less'
 
 var _hmt = _hmt || [], host = window.location.hostname;
 if (host != 'localhost' && host != '127.0.0.1') {

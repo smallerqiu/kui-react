@@ -17,14 +17,15 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 module.exports = merge(webpackBaseConfig, {
   mode: 'production',
   entry: {
-    index: ["@babel/polyfill", './docs/src/app.jsx'],
+    index: ["@babel/polyfill", './docs/main.jsx'],
+    vendors: ['react', 'react-router', 'react-dom']
     // index: path.resolve(__dirname, '../docs/main.js'),
     // vendors: ['react', 'react-dom', 'react-router-dom',]
   },
   output: {
     path: path.resolve(__dirname, '../docs/dist'),
     filename: 'js/[name].[hash:5].js',
-    publicPath: './dist/',
+    publicPath: '/',
     chunkFilename: 'js/[name].[chunkhash:5].js',
   },
   performance: {
