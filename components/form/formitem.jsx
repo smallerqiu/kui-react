@@ -4,6 +4,13 @@ import { Kui, PropTypes } from '../kui'
 import { Row, Col } from '../grid'
 import { CSSTransition } from 'react-transition-group'
 import { isNotEmpty } from '../_tool/utils'
+import { Input, TextArea } from '../input'
+import Radio from '../radio'
+import Checkbox from '../checkbox'
+import form from '../form'
+import Switch from '../switch'
+import Select from '../select'
+import DatePicker from '../datePicker'
 
 export default class FormItem extends Kui {
   static contextTypes = {
@@ -178,41 +185,46 @@ export default class FormItem extends Kui {
             {
               React.Children.map(children, child => {
                 if (child && React.isValidElement(child)) {
-                  const tag = child.type.name
+                  const type = child.type
                   const value = prop ? Form.testProp(prop) : ''
                   let { size } = child.props
                   size = size && size != 'default' ? size : Form.props.size
-                  const props = {
-                    id,
-                    size
-                  }
-                  if (prop) {
-                    if (['Radio', 'Checkbox', 'Switch'].indexOf(tag) > -1) {
+                  const props = { id, size }
+                  if (prop && type) {
+                    if (type == Radio || type == Checkbox || type == Switch) {
                       props.checked = value || false
-                    } else {
-                      props.value = value
-                    }
-                    props.onChange = (value) => {
-                      if (tag) {
-                        if (['Radio', 'Checkbox'].indexOf(tag) > -1) {
-                          value = value.target.checked
-                        }
-                        if (['Input', 'TextArea'].indexOf(tag) > -1) {
-                          value = value.target.value
-                        }
-                        // console.log(tag)
-                        Form.setValue(prop, value)
+                      props.onChange = (value) => {
+                        const val = type == Switch ? value : value.target.checked
+                        Form.setValue(prop, val)
                         this.testValue()
                       }
-                    }
-                    if (['Input', 'TextArea'].indexOf(tag) > -1) {
+                    } else if (type == Input || type == TextArea) {
+                      props.value = value
+                      props.onChange = (value) => {
+                        const val = value.target.value
+                        Form.setValue(prop, val)
+                        this.testValue()
+                      }
                       props.onBlur = (value) => {
-                        value = value.target.value
+                        this.testValue()
+                      }
+                    } else if (
+                      type == Radio.Group
+                      || type == Radio.Button
+                      || type == Checkbox.Group
+                      || type == Select
+                      || type == DatePicker
+                    ) {
+                      // console.log('eee', child.type.name)
+                      props.value = value
+                      props.onChange = (value) => {
+                        const val = value
+                        Form.setValue(prop, val)
                         this.testValue()
                       }
                     }
                   }
-                  if (tag == 'FormItem') {
+                  if (type == form.Item) {
                     props.onCollect = (context, push) => {
                       this.props.onCollect && this.props.onCollect(context, push)
                     }

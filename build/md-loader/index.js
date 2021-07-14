@@ -14,7 +14,7 @@ const renderHighlight = function (str, lang) {
   }
 
   try {
-    return replaceDelimiters(hljs.highlight(lang, str, true).value);
+    return replaceDelimiters(hljs.highlight(str, { language: lang }).value);
   } catch (err) { }
 
   // if (lang && hljs.getLanguage(lang)) {

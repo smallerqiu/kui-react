@@ -46,7 +46,7 @@ export default class Form extends Kui {
   setValue(prop, value = '') {
     let keys = prop.replace(/\[(\w+)\]/g, '.$1').replace(/^\./, '').split('.')
     let { defaultModel } = this.state
-    let model = clone(defaultModel)
+    let model = defaultModel
     for (let i = 0; i < keys.length; i++) {
       let key = keys[i]
       if (key in model) {
@@ -60,9 +60,7 @@ export default class Form extends Kui {
             model[key] = value
           }
         }
-        // defaultModel
-        model = clone(model[key])
-        defaultModel[key] = clone(model)
+        model = model[key]
       }
     }
     this.setState({ defaultModel })

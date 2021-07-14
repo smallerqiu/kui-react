@@ -8,7 +8,6 @@ import { docs, components } from './router'
 
 const Index = lazy(() => import('./index'))
 const Test = lazy(() => import('./test'))
-
 export default () => {
 
   const getRoute = (data, pre) => {
@@ -21,7 +20,7 @@ export default () => {
   return (
     // <HashRouter>
     <BrowserRouter>
-      <Suspense fallback={<div>.....</div>}>
+      <Suspense fallback={<div></div>}>
         <Switch>
           <Route path="/" exact render={({ history }) => <Index history={history} />} />
           <Route path="/test" exact render={() => <Test />} />
