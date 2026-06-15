@@ -1,16 +1,16 @@
-import React from 'react'
-import { Kui, PropTypes } from '@/components/kui'
-import { Tree } from '../index'
+import React from "react";
+import { Kui, PropTypes } from "../../components/kui";
+import { Tree } from "../index";
 export default class TreeSelect extends Kui {
   static defaultProps = {
-    placeholder: '请选择',
-    queryPlaceholder: '请输入关键字查询',
+    placeholder: "请选择",
+    queryPlaceholder: "请输入关键字查询",
     transfer: true,
     width: 0,
-    value: '',
+    value: "",
     data: [],
-    label: ''
-  }
+    label: "",
+  };
   static propTypes = {
     onChange: PropTypes.func,
     queryPlaceholder: PropTypes.string,
@@ -23,20 +23,20 @@ export default class TreeSelect extends Kui {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     clearable: PropTypes.bool,
-    disabled: PropTypes.bool
-  }
+    disabled: PropTypes.bool,
+  };
   state = {
     visible: false,
     dropdownWith: 0,
     left: 0,
     fadeInBottom: false,
     top: 0,
-    showLabel: props.label || '',
+    showLabel: props.label || "",
     value: props.value,
-    queryKey: ''
-  }
+    queryKey: "",
+  };
   domRef = React.createRef();
-  relRef = React.createRef()
+  relRef = React.createRef();
   isClearable() {
     return this.props.clearable && !this.props.disabled && this.state.showLabel;
   }
@@ -46,17 +46,17 @@ export default class TreeSelect extends Kui {
       {
         ["k-select-disabled"]: this.props.disabled,
         ["k-select-open"]: this.state.visible,
-        ["k-select-mini"]: this.props.mini
-      }
-    ])
+        ["k-select-mini"]: this.props.mini,
+      },
+    ]);
   }
   selectClass() {
     return this.className([
       "k-select-selection",
       {
-        ["k-select-isclearable"]: this.props.clearable && this.state.showLabel
-      }
-    ])
+        ["k-select-isclearable"]: this.props.clearable && this.state.showLabel,
+      },
+    ]);
   }
   selectStyles() {
     return this.props.width > 0 ? { width: `${this.props.width}px` } : {};
@@ -72,34 +72,34 @@ export default class TreeSelect extends Kui {
     return style;
   }
   onQueryChange() {
-    this.props.onQueryChange && this.props.onQueryChange(this.state.queryKey)
+    this.props.onQueryChange && this.props.onQueryChange(this.state.queryKey);
   }
   treeSelect(item) {
-    let { onChange } = this.props
-    let { visible, showLabel } = this.state
+    let { onChange } = this.props;
+    let { visible, showLabel } = this.state;
     if (onChange) {
-      onChange(item, value => {
-        visible = value
+      onChange(item, (value) => {
+        visible = value;
         if (!value) {
-          showLabel = item.title
-          this.setState({ showLabel, visible, value: item.value || '' })
+          showLabel = item.title;
+          this.setState({ showLabel, visible, value: item.value || "" });
         }
-      })
+      });
       return;
     }
     this.setState({
       showLabel: item.title,
-      value: item.value || '',
-      visible: false
-    })
+      value: item.value || "",
+      visible: false,
+    });
   }
   onClear(e) {
     this.setState({
-      selectLabel: '',
-      showLabel: ''
-    })
-    this.props.onChange && this.props.onChange('')
-    e.stopPropagation()
+      selectLabel: "",
+      showLabel: "",
+    });
+    this.props.onChange && this.props.onChange("");
+    e.stopPropagation();
   }
   toggleDrop() {
     if (this.props.disabled) {
@@ -107,15 +107,14 @@ export default class TreeSelect extends Kui {
     }
     this.setState({
       dropdownWith: this.relRef.current.offsetWidth,
-      visible: !this.state.visible
-    })
+      visible: !this.state.visible,
+    });
 
     this.handleScroll();
-
   }
   handleScroll() {
     setTimeout(() => {
-      this.setPosition()
+      this.setPosition();
     });
   }
   setPosition() {
@@ -123,36 +122,43 @@ export default class TreeSelect extends Kui {
     let m = 3;
     let rel = this.relRef.current;
     let dom = this.domRef.current;
-    let relPos = rel.getBoundingClientRect()
+    let relPos = rel.getBoundingClientRect();
 
     let clientH = window.innerHeight;
     let clientW = window.innerWidth;
     // console.log(relPos)
-    let scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-    let scrollLeft = document.body.scrollLeft || document.documentElement.scrollLeft;
+    let scrollTop =
+      document.body.scrollTop || document.documentElement.scrollTop;
+    let scrollLeft =
+      document.body.scrollLeft || document.documentElement.scrollLeft;
 
     let domH = dom.offsetHeight;
     let relH = rel.offsetHeight;
 
     //set
-    let left = 0
-    let top = 0
-    let fadeInBottom = false
+    let left = 0;
+    let top = 0;
+    let fadeInBottom = false;
 
     if (this.props.transfer) left = relPos.left + 1 + scrollLeft;
     //new
     if (clientH - relPos.top - relH - m < domH) {
       //空出来的高度不足以放下dom
       fadeInBottom = true;
-      top = this.props.transfer ? relPos.top - m - domH + scrollTop : -(domH + m);
+      top = this.props.transfer
+        ? relPos.top - m - domH + scrollTop
+        : -(domH + m);
     } else {
       fadeInBottom = false;
       top = this.props.transfer ? relPos.top + relH + m + scrollTop : relH + m;
     }
     let dropdownWith = rel.offsetWidth;
     this.setState({
-      left, top, dropdownWith, fadeInBottom
-    })
+      left,
+      top,
+      dropdownWith,
+      fadeInBottom,
+    });
   }
   onChange(item) {
     this.props.onChange && this.props.onChange(item.value);
@@ -161,17 +167,24 @@ export default class TreeSelect extends Kui {
       selectLabel: item.label,
       visible: false,
       value: item.value,
-      queryKey: ''
-    })
+      queryKey: "",
+    });
   }
   hidePopup(e) {
-    if (!this.state.visible) return
-    if (!this.relRef.current.contains(e.target) && !this.domRef.current.contains(e.target)) {
-      this.setState({ visible: false, queryKey: '', label: this.state.selectLabel })
+    if (!this.state.visible) return;
+    if (
+      !this.relRef.current.contains(e.target) &&
+      !this.domRef.current.contains(e.target)
+    ) {
+      this.setState({
+        visible: false,
+        queryKey: "",
+        label: this.state.selectLabel,
+      });
     }
   }
   onExpand() {
-    this.handleScroll()
+    this.handleScroll();
   }
 
   /*   componentWillReceiveProps(props) {
@@ -183,36 +196,86 @@ export default class TreeSelect extends Kui {
       }
     } */
   labelChange(e) {
-    this.setState({ showLabel: e.target.value, queryKey: e.target.value })
+    this.setState({ showLabel: e.target.value, queryKey: e.target.value });
   }
   render() {
-    let { value, showLabel, visible, queryKey } = this.state
-    let { placeholder, disabled, queryPlaceholder, transfer, data, onLoadData, queryable } = this.props
+    let { value, showLabel, visible, queryKey } = this.state;
+    let {
+      placeholder,
+      disabled,
+      queryPlaceholder,
+      transfer,
+      data,
+      onLoadData,
+      queryable,
+    } = this.props;
 
-    return (<div className={this.classes()} style={this.styles(this.selectStyles())}  >
-      <div className={this.selectClass()} onClick={this.toggleDrop.bind(this)} ref={this.relRef}>
-        <input type="text" className="k-select-label" placeholder={placeholder} value={showLabel}
-          readOnly="readonly"
-          disabled={disabled} onChange={(e) => this.labelChange(e)} />
-        <span className="k-select-arrow"></span>
-        {this.isClearable && <span className="k-select-clearable" onClick={(e) => this.onClear(e)}></span>}
-      </div >
-      <Transfer transfer={transfer}
-        onScroll={this.setPosition.bind(this)}
-        onResize={this.setPosition.bind(this)}
-        docOnClick={(e) => this.hidePopup(e)}>
-        <Transition name="dropdown" show={visible}>
-          {
-            <div className="k-select-dropdown" ref={this.domRef} style={this.styles(this.dropdownStyles())}>
-              {queryable && <div className="k-treeselect-search">
-                <input className="k-treeselect-input" placeholder={queryPlaceholder} value={queryKey} onChange={(e) => this.setState({ queryKey: e.target.value })} />
-                <input type="button" value="搜索" className="k-treeselect-btn" onClick={this.onQueryChange.bind(this)} />
-              </div>}
-              <Tree data={data} onLoadData={onLoadData} onSelect={this.treeSelect.bind(this)} onExpand={this.onExpand.bind(this)}></Tree>
-            </div>
-          }
-        </Transition>
-      </Transfer>
-    </div>)
+    return (
+      <div className={this.classes()} style={this.styles(this.selectStyles())}>
+        <div
+          className={this.selectClass()}
+          onClick={this.toggleDrop.bind(this)}
+          ref={this.relRef}
+        >
+          <input
+            type="text"
+            className="k-select-label"
+            placeholder={placeholder}
+            value={showLabel}
+            readOnly="readonly"
+            disabled={disabled}
+            onChange={(e) => this.labelChange(e)}
+          />
+          <span className="k-select-arrow"></span>
+          {this.isClearable && (
+            <span
+              className="k-select-clearable"
+              onClick={(e) => this.onClear(e)}
+            ></span>
+          )}
+        </div>
+        <Transfer
+          transfer={transfer}
+          onScroll={this.setPosition.bind(this)}
+          onResize={this.setPosition.bind(this)}
+          docOnClick={(e) => this.hidePopup(e)}
+        >
+          <Transition name="dropdown" show={visible}>
+            {
+              <div
+                className="k-select-dropdown"
+                ref={this.domRef}
+                style={this.styles(this.dropdownStyles())}
+              >
+                {queryable && (
+                  <div className="k-treeselect-search">
+                    <input
+                      className="k-treeselect-input"
+                      placeholder={queryPlaceholder}
+                      value={queryKey}
+                      onChange={(e) =>
+                        this.setState({ queryKey: e.target.value })
+                      }
+                    />
+                    <input
+                      type="button"
+                      value="搜索"
+                      className="k-treeselect-btn"
+                      onClick={this.onQueryChange.bind(this)}
+                    />
+                  </div>
+                )}
+                <Tree
+                  data={data}
+                  onLoadData={onLoadData}
+                  onSelect={this.treeSelect.bind(this)}
+                  onExpand={this.onExpand.bind(this)}
+                ></Tree>
+              </div>
+            }
+          </Transition>
+        </Transfer>
+      </div>
+    );
   }
 }
