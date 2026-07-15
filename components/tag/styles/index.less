@@ -1,127 +1,183 @@
-@import '../../styles/global.less';
+@import "../../styles/less-css-var.less";
+
 .k-tag {
   display: inline-block;
-  line-height: 20px;
-  height: auto;
-  padding: 0 7px;
-  border: 1px solid @border-color;
-  background-color: @back-color;
-  font-size: 12px;
-  border-radius: @radius;
+  line-height: 1;
+  height: 32px;
+  flex-shrink: 0;
+  padding: 0 15px;
+  border: 1px solid var(--kui-color-border);
+  font-size: 14px;
+  border-radius: var(--kui-border-radius);
   box-sizing: border-box;
   white-space: nowrap;
-  margin-right: 8px;
   vertical-align: middle;
-  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  color: var(--kui-color-text);
+
+  &.k-tag-circle {
+    border-radius: 16px;
+  }
+  &.k-tag-square {
+    border-radius: 2px;
+  }
+  .k-tag-icon {
+    margin-right: 5px;
+  }
+
   .k-tag-close {
-    font-size: 16px;
-    margin-left: 4px;
-    vertical-align: -4px;
+    font-size: 18px;
+    margin-left: 2px;
+    color: var(--kui-color-text-description);
+    cursor: pointer;
     &:hover {
-      color: @danger;
+      color: var(--kui-color-danger);
     }
   }
+
+  &.k-tag-closeable {
+    padding-right: 7px;
+  }
+
   &-pink {
-    color: @pink;
-    border-color: @pink;
-    background-color: tint(@pink, 90%);
+    color: var(--kui-color-pink-3);
+    border-color: var(--kui-color-pink-6);
+    background-color: var(--kui-color-pink-9);
   }
+
   &-red {
-    color: @red;
-    border-color: @red;
-    background-color: tint(@red, 90%);
+    color: var(--kui-color-red-3);
+    border-color: var(--kui-color-red-6);
+    background-color: var(--kui-color-red-9);
   }
+
   &-yellow {
-    color: saturate(@yellow, 30%);
-    border-color: @yellow;
-    background-color: tint(@yellow, 90%);
+    color: var(--kui-color-yellow-3);
+    border-color: var(--kui-color-yellow-6);
+    background-color: var(--kui-color-yellow-9);
   }
+
   &-orange {
-    color: @orange;
-    border-color: @orange;
-    background-color: tint(@orange, 90%);
+    color: var(--kui-color-orange-3);
+    border-color: var(--kui-color-orange-6);
+    background-color: var(--kui-color-orange-9);
   }
+
   &-cyan {
-    color: @cyan;
-    border-color: @cyan;
-    background-color: tint(@cyan, 90%);
+    color: var(--kui-color-cyan-3);
+    border-color: var(--kui-color-cyan-6);
+    background-color: var(--kui-color-cyan-9);
   }
+
   &-green {
-    color: @green;
-    border-color: @green;
-    background-color: tint(@green, 90%);
+    color: var(--kui-color-green-3);
+    border-color: var(--kui-color-green-6);
+    background-color: var(--kui-color-green-9);
   }
+
   &-blue {
-    color: @blue;
-    border-color: @blue;
-    background-color: tint(@blue, 90%);
+    color: var(--kui-color-blue-3);
+    border-color: var(--kui-color-blue-6);
+    background-color: var(--kui-color-blue-9);
   }
+
   &-purple {
-    color: @purple;
-    border-color: @purple;
-    background-color: tint(@purple, 90%);
+    color: var(--kui-color-purple-3);
+    border-color: var(--kui-color-purple-6);
+    background-color: var(--kui-color-purple-9);
   }
-  &-geekblue {
-    color: @geekblue;
-    border-color: @geekblue;
-    background-color: tint(@geekblue, 90%);
-  }
+
   &-magenta {
-    color: @magenta;
-    border-color: @magenta;
-    background-color: tint(@magenta, 90%);
+    color: var(--kui-color-magenta-3);
+    border-color: var(--kui-color-magenta-6);
+    background-color: var(--kui-color-magenta-9);
   }
+
   &-volcano {
-    color: @volcano;
-    border-color: @volcano;
-    background-color: tint(@volcano, 90%);
+    color: var(--kui-color-volcano-3);
+    border-color: var(--kui-color-volcano-6);
+    background-color: var(--kui-color-volcano-9);
   }
+
   &-gold {
-    color: @gold;
-    border-color: @gold;
-    background-color: tint(@gold, 90%);
+    color: var(--kui-color-gold-3);
+    border-color: var(--kui-color-gold-6);
+    background-color: var(--kui-color-gold-9);
   }
+
   &-lime {
-    color: @lime;
-    border-color: @lime;
-    background-color: tint(@lime, 90%);
+    color: var(--kui-color-lime-3);
+    border-color: var(--kui-color-lime-6);
+    background-color: var(--kui-color-lime-9);
   }
 }
-
+.k-tag-fill {
+  border-color: transparent;
+  background-color: var(--kui-color-bg-component);
+}
 .k-tag-has-color {
   color: #fff;
   border-color: transparent;
+
   .k-tag-close {
     color: #fff;
   }
 }
 
-@keyframes zoomIn {
-  from {
-    opacity: 0;
-    transform: scale(0, 0);
+.k-tag-sm {
+  height: 24px;
+  padding: 0 7px;
+  font-size: 12px;
+
+  &.k-tag-closeable {
+    padding-right: 3px;
   }
-  to {
-    opacity: 1;
-    transform: scale(1, 1);
+
+  .k-tag-close {
+    font-size: 16px;
+  }
+
+  &.k-tag-circle {
+    border-radius: 16px;
   }
 }
 
-@keyframes zoomOut {
-  from {
-    opacity: 1;
-    transform: scale(1, 1);
+.k-tag-lg {
+  height: 40px;
+  padding: 0 18px;
+
+  .k-tag-text {
+    font-size: 16px;
   }
-  to {
+
+  &.k-tag-closeable {
+    padding-right: 9px;
+  }
+
+  &.k-tag-circle {
+    border-radius: 20px;
+  }
+}
+.k-tag-hidden {
+  visibility: hidden;
+}
+@keyframes k-tag-zoom {
+  from {
     opacity: 0;
     transform: scale(0, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1, 1);
   }
 }
 
 .k-tag-enter-active {
-  animation: zoomIn .2s ease-out;
+  animation: k-tag-zoom 0.2s ease-out;
 }
 
-.k-tag-exit-active {
-  animation: zoomOut .2s ease-out;
+.k-tag-leave-active {
+  animation: k-tag-zoom 0.2s ease-out reverse;
 }

@@ -1,35 +1,196 @@
+@import "../../styles/less-css-var.less";
+
 .k-slider {
-    .k-slider-wrap {
-        width: 100%;
-        height: 6px;
-        margin: 16px 0;
-        background-color: #e9eaec;
-        border-radius: 3px;
-        vertical-align: middle;
-        position: relative;
-        cursor: pointer;
-        .k-slider-bar {
-            height: 6px;
-            background-color: @main;
-            border-radius: 3px;
-            // border-top-left-radius: 3px;
-            // border-bottom-left-radius: 3px;
-        }
-        .k-slider-button {
-            width: 16px;
-            height: 16px;
-            border: 2px solid #57a3f3;
-            border-radius: 50%;
-            background-color: #fff;
-            transition: all .2s linear;
-            outline: 0;
-            // transform: translate(-50%,-50%);
-            top:0;
-            position: absolute;
-            // left: 50%;
-            &:hover{
-                // transform:translateX(-50%) scale(1.2)
-            }
-        }
+  width: 100%;
+  display: inline-block;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  -webkit-user-select: none;
+  user-select: none;
+  box-sizing: border-box;
+
+  .k-slider-bar {
+    height: 32px;
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .k-slider-thumb {
+    outline: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    box-shadow:var(--kui-color-border-shadow);
+
+    margin: 0;
+    border: none;
+    border-radius: 10px;
+    position: absolute;
+    cursor: grab;
+    background: #fff;
+    top: 50%;
+    outline: 2px solid transparent;
+    outline-offset: 1px;
+    z-index: 0;
+    &.is-dragging {
+      z-index: 1;
+      cursor: grabbing;
     }
+  }
+  .k-slider-thumb {
+    width: 24px;
+    height: 20px;
+  }
+
+  .k-slider-thumb-sm {
+    height: 14px;
+    width: 18px;
+    border-radius: 8px;
+
+    &:active {
+      z-index: 3;
+    }
+  }
+
+  .k-slider-track {
+    height: 4px;
+    cursor: pointer;
+    border-radius: 2px;
+    background: var(--kui-color-primary);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  .k-slider-rail {
+    touch-action: none;
+    cursor: pointer;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--kui-color-bg-component);
+    position: absolute;
+    width: 100%;
+    top: 14px;
+  }
+
+  .k-slider-marks {
+    position: absolute;
+    transform: translateY(-50%);
+    width: 100%;
+    top: 50%;
+    margin: -4px 0 0 0;
+    font-size: 14px;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .k-slider-mark-item {
+    position: absolute;
+  }
+
+  .k-slider-mark-dot {
+    position: absolute;
+    height: 4px;
+    width: 4px;
+    border: 2px solid var(--kui-color-border);
+    background: var(--kui-color-bg);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+    box-sizing: content-box;
+
+    &.is-active {
+      border-color: var(--kui-color-primary);
+    }
+  }
+
+  .k-slider-mark-text {
+    position: absolute;
+    transform: translateX(-50%);
+    color: var(--kui-color-text-placeholder);
+    z-index: 0;
+    line-height: 1;
+    margin-top: 18px;
+
+    &-active {
+      color: var(--kui-color-text);
+    }
+  }
+}
+
+.k-slider-vertical {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 32px;
+
+  .k-slider-bar {
+    width: 32px;
+    height: 100%;
+    justify-content: center;
+  }
+
+  .k-slider-track {
+    width: 4px;
+    height: 100%;
+    left: 50%;
+    top: auto;
+    transform: translateX(-50%);
+  }
+
+  .k-slider-rail {
+    height: 100%;
+    width: 4px;
+    left: 14px;
+    top: 0;
+  }
+
+  .k-slider-marks {
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0 0 0 -4px;
+    top: auto;
+    height: 100%;
+    width: auto;
+  }
+
+  .k-slider-thumb {
+    top: auto;
+    left: 50%;
+  }
+  .k-slider-thumb {
+    width: 20px;
+    height: 24px;
+  }
+  .k-slider-thumb-sm {
+    width: 14px;
+    height: 18px;
+  }
+
+  .k-slider-mark-dot,
+  .k-slider-mark-text {
+    transform: translateY(-50%);
+  }
+
+  .k-slider-mark-text {
+    margin: 0 0 0 18px;
+  }
+}
+
+.k-slider-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+
+  .k-slider-thumb,
+  .k-slider-thumb:active {
+    cursor: not-allowed;
+  }
+
+  .k-slider-rail {
+    cursor: not-allowed;
+  }
 }

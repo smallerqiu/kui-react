@@ -1,38 +1,59 @@
-@import '../../styles/global.less';
+@import "../../styles/less-css-var.less";
+
 .k-breadcrumb {
-  line-height: 1.5;
+  line-height: 1;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   list-style: none;
-  color: rgba(0, 0, 0, .45);
   font-size: 14px;
+
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
   &-item {
+    display: inline-flex;
+    align-items: center;
+    color: var(--kui-color-text-placeholder);
+
+    a {
+      color: var(--kui-color-text-placeholder);
+
+      &:hover {
+        color: var(--kui-color-primary);
+      }
+    }
+
     .k-icon {
       margin-right: 4px;
     }
-    &:hover {
-      color: @main;
-    }
   }
+
   &-link {
-    a {
-      color: rgba(0, 0, 0, .45);
-      &:hover {
-        color: @main;
-      }
-    }
-    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
   }
-  >span {
+
+  &-separator {
+    color: var(--kui-color-text-placeholder);
+  }
+
+  li {
     &:last-child {
-      color: rgba(0, 0, 0, .65);
+      color: var(--kui-color-text);
+
       .k-breadcrumb-separator {
         display: none;
       }
     }
   }
+
   &-separator {
-    margin: 0 5px;
+    margin: 0 8px;
   }
 }

@@ -1,13 +1,38 @@
+# Page 分页
+
+采用分页的形式分隔长列表，每次只加载一个页面。
+
+## 何时使用
+
+- 当加载/渲染所有数据将花费很多时间时；
+- 可切换页码浏览数据。
+
+## 代码演示
+
+[基本用法](./demo/basic.vue?show=vertical)
+
+- 基础分页。
+
+[条目 / 跳转](./demo/sizer-elevator.vue?show=vertical)
+
+- 改变每页显示条目数。
+
+[尺寸](./demo/size.vue?show=vertical)
+
+- 展示小尺寸。
+
 ## API
-| 属性             | 说明                                           | 类型                       | 默认值           |
-|------------------|------------------------------------------------|----------------------------|------------------|
-| current          | 当前页码                                       | number                     | 1                |
-| total            | 数据总数                                       | number                     | 0                |
-| pageSize         | 每页条数                                       | number                     | 10               |
-| showSizer        | 是否显示页码组                                 | boolean                    | false            |
-| showTotal        | 是否显示总数                                   | boolean                    | false            |
-| showElevator     | 是否显示页码阶梯                               | boolean                    | false            |
-| sizeData         | 自定义页码组数据                               | array                      | [10,15,20,30,40] |
-| size             | 值为'small' 时，程序小尺寸                     | string                      | -                |
-| onChange         | 页码改变的回调，返回改变后的页码               | function(page)             | -                |
-| onPageSizeChange | 切换页码组改变的回调，返回改变后的 `page-size` | function(current,pageSize) | -                |
+
+| 属性         | 说明                                     | 类型                                 | 默认值           |
+| ------------ | ---------------------------------------- | ------------------------------------ | ---------------- |
+| page         | 当前页码 (v-model:page)                  | number                               | 1                |
+| disabled     | 禁用状态                                 | bool                                 | false            |
+| total        | 数据总数                                 | number                               | 0                |
+| pageSize     | 每页条数                                 | number                               | 10               |
+| showSizer    | 是否显示页码组                           | bool                                 | false            |
+| showTotal    | 是否显示总数                             | bool                                 | false            |
+| showElevator | 是否显示页码阶梯                         | bool                                 | false            |
+| sizeData     | 自定义页码组数据                         | number[]                             | [10,15,20,30,40] |
+| size         | 值为'small' 时，呈现小尺寸               | string                               | -                |
+| theme        | 主题                                     | string                               | fill             |
+| onChange     | 页码,页码组 改变的回调，返回改变后的页码 | (page:number, pageSize:number)=>void | -                |

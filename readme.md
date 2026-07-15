@@ -1,82 +1,117 @@
-
 <p align="center">
-    <a href="https://react.k-ui.cn">
-        <img width="100" src="https://chuchur.com/kui/react/logo.svg">
+    <a href="https://k-ui.cn">
+        <img width="100" src="https://cdn.chuchur.com/img/logo-kui.svg">
     </a>
 </p>
 <h1 align="center">
-   KUI for React   
+   Kui for Vue
 </h1>
 
 <div align="center">
 
-A high quality UI components Library with React.js
+Lightweight Desktop UI Component Library for Vue.js
 
-[![View UI](https://img.shields.io/npm/v/react-kui.svg?style=flat-square)](https://www.npmjs.org/package/react-kui)
-[![NPM downloads](http://img.shields.io/npm/dm/react-kui.svg?style=flat-square)](https://npmjs.org/package/react-kui)
-[![NPM downloads](https://img.shields.io/npm/dt/react-kui.svg?style=flat-square)](https://npmjs.org/package/react-kui)
-![JS gzip size](http://img.badgesize.io/https://unpkg.com/react-kui/dist/k-ui.js?compression=gzip&label=gzip%20size:%20JS&style=flat-square)
-![CSS gzip size](http://img.badgesize.io/https://unpkg.com/react-kui/dist/k-ui.css?compression=gzip&label=gzip%20size:%20CSS&style=flat-square)
+[![kui-vue](https://img.shields.io/npm/v/kui-vue.svg?style=flat-square)](https://www.npmjs.org/package/kui-vue)
+[![NPM downloads](http://img.shields.io/npm/dm/kui-vue.svg?style=flat-square)](https://npmjs.org/package/kui-vue)
+[![NPM downloads](https://img.shields.io/npm/dt/kui-vue.svg?style=flat-square)](https://npmjs.org/package/kui-vue)
+![JS gzip size](http://img.badgesize.io/https://unpkg.com/kui-vue/dist/index.js?compression=gzip&label=gzip%20size:%20JS&style=flat-square)
+![CSS gzip size](http://img.badgesize.io/https://unpkg.com/kui-vue/style/index.css?compression=gzip&label=gzip%20size:%20CSS&style=flat-square)
 
-![](https://k-ui.cn/img/theme.jpg)
+![theme](demo.png)
+
+English | [简体中文](README.zh-CN.md)
+
 </div>
 
-## Docs   
-[2.x](https://react.k-ui.cn)
+# Documentation
 
-## Features
-Dozens of useful and beautiful components.    
-Friendly API. It's made for people with any skill level.    
-Extensive documentation and demos.    
-It is quite beautiful.   
+- [Quick Start](https://k-ui.cn/guide/quick-started)
+- [Components Overview](https://k-ui.cn/guide/components)
+- [Dark Mode](https://k-ui.cn/guide/dark-mode)
+- [Icons](https://k-ui.cn/components/icons)
+- [Internationalization](https://k-ui.cn/guide/language)
+- [CHANGELOG](https://k-ui.cn/guide/change-log)
 
+# Features
 
-## Compatibility
-Supports React.js 16.x +
-Supports SSR   
-Supports TypeScript   
-Supports Electron   
-Most components and features support IE9 and above browsers, some   components and features do not support IE
+- Up to 50 high-quality Components.
+- Internationalization Support for Dozens of Languages.
+- Develop with TypeScript
+- Supports Vue.js 3.x
+- Supports SSR
+- Supports [Nuxt.js](https://nuxtjs.org/)
+- Supports Electron
 
+# Install
 
-## Install
-
-Using npm:
 ```bash
-npm install react-kui
+npm install kui-vue --save
 ```
 
-
-Example :
-
-```tsx
-import React from 'react'
-import {render} from 'react-dom'
-import { Button ,Message } from 'react-kui'
-import 'react-kui/dist/k-ui.css'
-
-class App extends React.Component {
-
-  test = ()=>{
-    Message.info('Hello World !!')
-  }
-
-  render(){
-    <Button onClick={()=>this.test()}>Hello</Button>
-  }
-}
-
-render(<App />,document.getElementById('app'))
+```bash
+npm add kui-vue
 ```
 
+```bash
+yarn add kui-vue
+```
 
-## Ecosystem Links
-[KUI for Vue.js](https://k-ui.cn)    
+```bash
+bun add kui-vue
+```
 
-[KUI for mobile](https://gitee.com/chuchur/kui-vue-mobile)
+Using a script tag for global use:
 
+```html
+<!-- import stylesheet -->
+<link rel="stylesheet" href="//unpkg.com/kui-vue/style/index.css" />
+<!-- import kui -->
+<script src="//unpkg.com/kui-vue"></script>
+```
 
-## License
+# Usage
+
+```html
+<template>
+  <div>
+    <k-button type="primary" @click="test">Primary</k-button>
+  </div>
+</template>
+<script setup lang="ts">
+  import { message } from "kui-vue";
+  const test = () => {
+    message.info("Hello kui !");
+  };
+</script>
+```
+
+# 👌 Platform Support
+
+Kui supports all major modern browsers.
+
+| [<img alt="chrome" height="24px" src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/chrome/chrome.png" />](https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/chrome/chrome.png)<br>chrome | [<img alt="firefox" height="24px" src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/firefox/firefox.png" />](https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/firefox/firefox.png)<br>firefox | [<img alt="safari" height="24px" src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/safari/safari.png" />](https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/safari/safari.png)<br>safari | [<img alt="IE/Edge" height="24px" src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/edge/edge.png" />](https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/edge/edge.png)<br> IE/Edge | [<img alt="electron" height="24px" src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/electron/electron.png" />](https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/electron/electron.png)<br>Electron |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| latest 2 versions                                                                                                                                                                                                 | latest 2 versions                                                                                                                                                                                                       | latest 2 versions                                                                                                                                                                                                 | Edge                                                                                                                                                                                                         | latest 2 versions                                                                                                                                                                                                             |
+
+# Local Development
+
+Clone the repository locally:
+
+```bash
+$ git clone git@github.com:smallerqiu/kui-vue.git
+$ cd kui-vue
+$ npm install
+$ npm start
+```
+
+Open the browser to visit http://127.0.0.1:7005
+
+# Ecosystem Links
+
+[Kui for react](https://react.k-ui.cn)
+
+# License
+
 [MIT](http://opensource.org/licenses/MIT)
 
-Copyright (c) 2017-present, Chuchur
+Copyright (c) 2017-present, Qiu

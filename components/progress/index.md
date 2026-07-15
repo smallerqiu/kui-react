@@ -1,11 +1,53 @@
+# Progress 进度条
+
+展示操作的当前进度。
+
+## 何时使用
+
+在操作需要较长时间才能完成时，为用户显示该操作的当前进度和状态。
+
+- 当一个操作会打断当前界面，或者需要在后台运行，且耗时可能超过2秒时；
+- 当需要显示一个操作完成的百分比时。
+
+## 代码演示
+
+[进度条](./demo/basic.vue)
+
+- 标准的进度条。
+
+[进度圈](./demo/circle.vue)
+
+- 圆形的进度条。
+
+[盘仪表进度条](./demo/dashboard.vue)
+
+- 盘仪表进度条。可通过`gapDegree`调节缺口大小。`strokeLinecap="square|round"` 可以调整进度条边缘的形状。
+
+[动态展示](./demo/dynamic.vue)
+
+- 会动的进度条才是好进度条。
+
+[颜色和格式](./demo/color.vue)
+
+- 自定义颜色和自定义格式。
+
+[尺寸](./demo/size.vue)
+
+- 适合放在较狭窄的区域内。
+
 ## API
-| 属性     | 说明                                                             | 类型     | 默认值 |
-|----------|------------------------------------------------------------------|----------|--------|
-| percent  | 进度百分比                                                       | number   | 0      |
-| color    | 进度条颜色                                                       | string   | -      |
-| width    | 圆形进度条画布宽度，单位 px                                      | number   | -      |
-| size     | 值为`small`，展示小尺寸                                          | string   | -      |
-| format   | 自定义进度条文字                                                 | function | -      |
-| status   | 进度条状态,提供四种类型: `active`,`exception`,`success`,`normal` | string   | normal |
-| type     | 进度条类型,提供三种类型: `line`,`circle`,`dashboard`             | string   | -      |
-| showInfo | 是否显示进度文字                                                 | boolean  | true   |
+
+| 属性          | 说明                                                             | 类型                              | 默认值 |
+| ------------- | ---------------------------------------------------------------- | --------------------------------- | ------ |
+| percent       | 进度百分比                                                       | number                            | 0      |
+| color         | 进度条颜色                                                       | string                            | -      |
+| strokeLinecap | 进度条的样式                                                     | [round \| square \| butt]         | round  |
+| width         | 圆形进度条画布宽度，单位 px                                      | number                            | -      |
+| size          | 值为`small`，展示小尺寸                                          | string                            | -      |
+| format        | 自定义进度条文字                                                 | (percent: number) => any \| VNode | -      |
+| status        | 进度条状态,提供四种类型: `active`,`exception`,`success`,`normal` | string                            | normal |
+| type          | 进度条类型,提供三种类型: `line`,`circle`,`dashboard`             | string                            | -      |
+| showInfo      | 是否显示进度文字                                                 | bool                              | true   |
+| gapDegree     | 仪表盘进度条缺口角度，可取值 0 ~ 295                             | number                            | 75     |
+| strokeWidth   | 圆形进度条线的宽度                                               | number                            | 6      |
+| strokeHeight  | 进度条线的高度                                                   | number                            | -      |

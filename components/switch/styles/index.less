@@ -1,115 +1,146 @@
-@import '../../styles/global.less';
+@import "../../styles/less-css-var.less";
+
 .k-switch {
-   min-width: 44px;
-   height: 24px;
-   line-height: 22px;
-   border-radius: 24px;
-   vertical-align: middle;
-   border: 1px solid #ccc;
-   background-color: #ccc;
-   font-size: 12px;
-   position: relative;
-   cursor: pointer;
-   -webkit-user-select: none;
-   -moz-user-select: none;
-   -ms-user-select: none;
-   user-select: none;
-   transition: all .36s cubic-bezier(.78, .14, .15, .86);
-   display: inline-block;
-   box-sizing: border-box;
-   overflow: hidden;
-   outline: none;
-   &:focus {
-      // border: 1px solid @main;
-      box-shadow: 0 0 5px fade(@main, 75%);
-   }
-   .k-icon {
-      font-size: 16px;
-   }
-   &::before {
-      content: '';
-      width: 20px;
-      height: 20px;
-      border-radius: 20px;
-      background-color: #fff;
-      position: absolute;
-      left: 1px;
-      top: 50%;
-      cursor: pointer;
-      transform: translate3d(0, -50%, 0);
-      transition: all .36s cubic-bezier(.78, .14, .15, .86);
-   }
-   .k-switch-inner {
-      color: #fff;
-      margin-left: 25px;
-      margin-right: 8px;
-      display: flex;
-      line-height: 22px;
-   }
-   &:active:not(&:disabled) {
-      &::before {
-         width: 25px;
-      }
-   }
-   .k-switch-loading {
-      color: @main;
-      position: absolute;
-      left: 3px;
-      top: 3px
-   }
+  min-width: 44px;
+  height: 24px;
+  line-height: 22px;
+  border-radius: 12px;
+  vertical-align: middle;
+  border: none;
+  background-color: var(--kui-color-bg-component);
+  font-size: 12px;
+  position: relative;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  transition: all 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+  display: inline-block;
+  box-sizing: border-box;
+  overflow: hidden;
+  outline: none;
+  color: var(--kui-color-text);
+  padding: 0;
+  flex-shrink: 0;
+  outline: 2px solid transparent;
+  outline-offset: 1px;
+  &:focus {
+    outline: 2px solid var(--kui-color-outline);
+  }
+
+  .k-icon {
+    font-size: 16px;
+  }
+
+  &::before {
+    content: "";
+    width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    background-color: #fff;
+    position: absolute;
+    left: 3px;
+    top: 50%;
+    cursor: inherit;
+    transform: translate3d(0, -50%, 0);
+    transition: all 0.36s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+    box-shadow:
+      0 4px 6px rgba(0, 0, 0, 0.1),
+      0 0 1px rgba(0, 0, 0, 0.3);
+  }
+
+  .k-switch-inner {
+    color: var(--kui-color-icon);
+    margin-left: 25px;
+    margin-right: 8px;
+    display: flex;
+    line-height: 22px;
+  }
+
+  &:active:not(&:disabled) {
+    &::before {
+      width: 22px;
+    }
+  }
+
+  .k-switch-loading {
+    color: #000;
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    margin-top: -8px;
+  }
 }
 
 .k-switch-sm {
-   min-width: 28px;
-   height: 16px;
-   &::before {
-      width: 12px;
-      height: 12px;
-      border-radius: 12px;
-   }
-   &:active {
-      &::before {
-         width: 15px;
-      }
-   }
-   &:active:not(&:disabled) {
-      &::before {
-         width: 15px;
-      }
-   }
-   .k-switch-loading {
-      left: 2px;
-      font-size: 10px;
-      top: 2px;
-   }
-   &.k-switch-checked {
-      .k-switch-loading {
-         left: calc(100% - 11.5px);
-      }
-   }
+  min-width: 28px;
+  height: 16px;
+
+  &::before {
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+    left: 2px;
+  }
+
+  &:active {
+    &::before {
+      width: 15px;
+    }
+  }
+
+  &:active:not(&:disabled) {
+    &::before {
+      width: 15px;
+    }
+  }
+
+  .k-switch-loading {
+    left: 3px;
+    font-size: 10px;
+    margin-top: -5px;
+  }
+
+  &.k-switch-checked {
+    &::before {
+      margin-left: -2px;
+    }
+
+    .k-switch-loading {
+      right: 3px;
+      left: auto;
+    }
+  }
 }
 
 .k-switch-checked {
-   background: @main;
-   border-color: @main;
-   &::before {
-      left: 100%;
-      transform: translate3d(-100%, -50%, 0);
-      margin-left: -1px;
-   }
-   .k-switch-inner {
-      margin-left: 8px;
-      margin-right: 25px;
-   }
-   .k-switch-loading {
-      left: calc(100% - 19px);
-   }
+  background: var(--kui-color-primary);
+  border-color: var(--kui-color-primary);
+
+  &::before {
+    left: 100%;
+    transform: translate3d(-100%, -50%, 0);
+    margin-left: -3px;
+  }
+
+  .k-switch-inner {
+    margin-left: 8px;
+    margin-right: 25px;
+    color: #fff;
+  }
+
+  .k-switch-loading {
+    left: auto;
+    right: 4px;
+  }
 }
 
 .k-switch-disabled {
-   opacity: .6;
-   cursor: not-allowed;
-   .k-switch-loading {
-      color: @disable-color;
-   }
+  opacity: 0.6;
+  cursor: not-allowed;
+
+  .k-switch-loading {
+    color: #000;
+  }
 }

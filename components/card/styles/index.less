@@ -1,44 +1,48 @@
-@import '../../styles/global.less';
+@import "../../styles/less-css-var.less";
+
 .k-card {
-  background: #fff;
+  background: var(--kui-color-bg-component);
   position: relative;
-  border-radius: @radius;
+  border-radius: var(--kui-border-radius-card);
+  color: var(--kui-color-text);
+
   .k-card-head {
     position: relative;
-    border-bottom: 1px solid #e9eaec;
-    padding: 14px 16px;
+    padding: 16px;
     line-height: 1;
-    .k-icon {
+    display: flex;
+    align-items: center;
+
+    .k-card-title-icon {
       vertical-align: middle;
       margin-right: 6px;
       font-size: 14px;
     }
+
     .k-card-title {
-      font-weight: 500;
+      flex: 1;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      width: 80%;
-      display: inline-block;
       font-size: 14px;
-      vertical-align: middle;
+      font-weight: 600;
     }
   }
+
   .k-card-extra {
-    position: absolute;
-    right: 16px;
-    cursor: default;
-    top: 50%;
-    font-size: 12px;
-    transform: translate3d(0, -50%, 0);
-    user-select: none;
+    font-size: 14px;
   }
+
   .k-card-body {
     padding: 16px;
-    // font-size: 12px;
+    font-size: 14px;
   }
 }
 
 .k-card-bordered {
-  border: 1px solid #eee;
+  border: 1px solid var(--kui-color-border);
+  background-color: transparent;
+  .k-card-head {
+    border-bottom: 1px solid var(--kui-color-border);
+  }
 }

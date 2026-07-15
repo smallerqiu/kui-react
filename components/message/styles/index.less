@@ -1,8 +1,9 @@
-@import '../../styles/global.less';
+@import "../../styles/less-css-var.less";
+
 .k-message {
   font-size: 14px;
   line-height: 1.5;
-  color: @color;
+  color: var(--kui-color-text);
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -12,80 +13,81 @@
   top: 16px;
   left: 0;
   pointer-events: none;
+
   .k-message-box {
     box-sizing: content-box;
     padding: 0 12px 14px 12px;
     text-align: center;
-    transition: all .3s;
-    // margin-top: -8px;
+    transition: all 0.3s;
   }
+
   .k-message-content {
     box-sizing: content-box;
-    line-height: 1.5;
-    padding: 10px 16px;
-    border-radius: @radius;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    background: #fff;
-    display: inline-block;
+    line-height: 1;
+    padding: 10px 12px;
+    border-radius: var(--kui-border-radius-card);
+    box-shadow: var(--kui-pop-shadow);
+
+    background: var(--kui-color-bg-pop);
+    border: 1px solid var(--kui-color-pop-border);
+    display: inline-flex;
+    align-items: center;
     pointer-events: all;
     align-items: center;
+
     .k-message-icon {
       margin-right: 8px;
       font-size: 18px;
       vertical-align: sub;
     }
+    .k-load-loop {
+      color: var(--kui-color-primary);
+    }
   }
+
   .k-message-close {
-    overflow: hidden;
     cursor: pointer;
     margin-left: 15px;
-    font-size: 18px;
-    vertical-align: sub;
+    .k-icon {
+      font-size: 16px;
+    }
   }
 }
 
 .k-message-success .k-message-icon {
-  color: @success;
+  color: var(--kui-color-success);
 }
 
 .k-message-error .k-message-icon {
-  color: @danger;
+  color: var(--kui-color-danger);
 }
 
 .k-message-info .k-message-icon {
-  color: @main;
+  color: var(--kui-color-primary);
 }
 
 .k-message-warning .k-message-icon {
-  color: @warning;
+  color: var(--kui-color-warning);
 }
 
-@keyframes msgIn {
+@keyframes k-message-slide {
   from {
     opacity: 0;
     margin-top: -55px;
   }
+
   to {
     opacity: 1;
     margin-top: 0;
   }
 }
 
-@keyframes msgOut {
-  from {
-    opacity: 1;
-    margin-top: 0
-  }
-  to {
-    opacity: 0;
-    margin-top: -55px;
-  }
+.k-message-slide-enter-active,
+.k-message-slide-leave-active {
+  animation: k-message-slide 0.3s ease;
+  animation-fill-mode: both; /* ✅ 保证动画结束后样式保留 */
 }
 
-.k-message-slide-enter-active {
-  animation: msgIn .31s ease;
-}
-
-.k-message-slide-exit-active {
-  animation: msgOut .31s ease;
+.k-message-slide-leave-active {
+  animation-direction: reverse; /* ✅ 比写 reverse 简洁可控 */
 }

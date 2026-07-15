@@ -1,8 +1,9 @@
-@import '../../styles/global.less';
+@import "../../styles/less-css-var.less";
+
 .k-notice {
   font-size: 14px;
   line-height: 1.5;
-  color: @color;
+  color: var(--kui-color-text);
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   margin: 0;
@@ -16,30 +17,36 @@
   right: 0px;
   top: 24px;
   bottom: auto;
+
   .k-notice-box {
-    box-sizing: content-box;
-    transition: all .3s ease-in-out;
+    box-sizing: border-box;
+    transition: all 0.3s ease-in-out;
     padding: 16px 35px 16px 16px;
-    border-radius: @radius;
-    -webkit-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    background: #fff;
+    border-radius: var(--kui-border-radius-card);
+    box-shadow: var(--kui-pop-shadow);
+
+    background: var(--kui-color-bg-pop);
+    border: 1px solid var(--kui-color-pop-border);
     line-height: 1.5;
     position: relative;
     margin-bottom: 16px;
     overflow: hidden;
   }
+
   .k-notice-has-icon {
     padding-left: 45px;
   }
+
   .k-notice-title {
     font-size: 16px;
-    color: @title-color;
+    color: var(--kui-color-text-title);
     margin-bottom: 8px;
     line-height: 22px;
     vertical-align: middle;
     display: inline-block;
+    font-weight: 600;
   }
+
   .k-notice-icon {
     font-size: 22px;
     margin-right: 8px;
@@ -47,62 +54,65 @@
     top: 17px;
     left: 16px;
   }
-  .k-notoce-desc {
+
+  .k-notice-desc {
     font-size: 14px;
     line-height: 1.5;
   }
+
   .k-notice-close {
     position: absolute;
     right: 8px;
     top: 13px;
     outline: none;
-    cursor: pointer;
-    color: @color;
-    font-size: 20px;
-    display: block;
-    padding: 0 5px;
-    &:hover {
-      color: @danger;
+    .k-icon {
+      font-size: 16px;
     }
   }
+
   .k-notice-info .k-notice-icon {
-    color: @main;
+    color: var(--kui-color-primary);
   }
+
   .k-notice-error .k-notice-icon {
-    color: @danger;
+    color: var(--kui-color-danger);
   }
+
   .k-notice-success .k-notice-icon {
-    color: @success;
+    color: var(--kui-color-success);
   }
+
   .k-notice-warning .k-notice-icon {
-    color: @warning;
+    color: var(--kui-color-warning);
   }
 }
 
-@keyframes noticeIn {
+@keyframes k-notice-slide-in {
   from {
     opacity: 0;
     transform: translate3d(100%, 0, 0);
   }
+
   to {
     opacity: 1;
   }
 }
 
-@keyframes noticeOut {
+@keyframes k-notice-slide-out {
   from {
     opacity: 1;
   }
+
   to {
     opacity: 0;
-    transform: scaleY(.5);
+    transform: scaleY(0.5);
   }
 }
 
 .k-notice-slide-enter-active {
-  animation: noticeIn .31s ease;
+  animation: k-notice-slide-in 0.3s ease;
 }
 
-.k-notice-slide-exit-active {
-  animation: noticeOut .31s ease;
+.k-notice-slide-leave-active {
+  animation: k-notice-slide-out 0.3s ease;
 }
