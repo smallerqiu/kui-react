@@ -1,0 +1,133 @@
+.k-space {
+  display: inline-flex;
+}
+.k-space-item,
+.k-space-first-item,
+.k-space-last-item {
+  display: inline-flex;
+}
+.k-space-block > {
+  width: 100%;
+  &:not(.k-space-compact) {
+    > .k-space-vertical-item,
+    > .k-space-last-item,
+    > .k-space-first-item,
+    > .k-space-vertical-last-item,
+    > .k-space-vertical-first-item,
+    > .k-space-item {
+      width: 100%;
+    }
+  }
+}
+
+.k-space-wrap {
+  flex-wrap: wrap;
+}
+
+.k-space-align-start {
+  align-items: flex-start;
+}
+
+.k-space-align-end {
+  align-items: flex-end;
+}
+
+.k-space-align-center {
+  align-items: center;
+}
+
+.k-space-align-baseline {
+  align-items: baseline;
+}
+
+.k-space-vertical {
+  flex-direction: column;
+}
+
+.k-space-compact {
+  .k-space-first-item {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    // margin-right: -1px;
+    position: relative;
+    &::before {
+      position: absolute;
+      right: 0;
+      content: "";
+      height: 50%;
+      width: 1px;
+      background-color: var(--kui-color-border-split);
+    }
+
+    &:focus,
+    &:hover {
+      z-index: 1;
+    }
+  }
+
+  .k-space-item {
+    border-radius: 0;
+    // margin-right: -1px;
+    position: relative;
+    &::before {
+      position: absolute;
+      right: 0;
+      content: "";
+      height: 50%;
+      width: 1px;
+      background-color: var(--kui-color-border-split);
+    }
+
+    &:focus,
+    &:hover {
+      z-index: 1;
+    }
+  }
+
+  .k-select-opened,
+  .k-datepicker-opened {
+    z-index: 1;
+  }
+
+  .k-space-last-item {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+
+    &:focus,
+    &:hover {
+      z-index: 1;
+    }
+
+    .k-btn {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+
+  .k-space-vertical-first-item {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    // margin-bottom: -1px;
+    &:hover {
+      z-index: 1;
+    }
+  }
+
+  .k-space-vertical-item {
+    border-radius: 0;
+    margin-bottom: -1px;
+
+    &:hover {
+      z-index: 1;
+    }
+  }
+
+  .k-space-vertical-last-item {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+
+    &:hover {
+      z-index: 1;
+    }
+  }
+}

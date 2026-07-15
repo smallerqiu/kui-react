@@ -1,0 +1,248 @@
+@import "../../styles/less-css-var.less";
+
+.k-input-number {
+  position: relative;
+  display: inline-flex;
+  width: 100%;
+  color: var(--kui-color-text);
+  align-items: center;
+  border: 1px solid var(--kui-color-border);
+  border-radius: var(--kui-border-radius);
+  background-color: var(--kui-color-bg);
+  transition: border 0.2s ease-in-out;
+  box-sizing: border-box;
+  gap: var(--kui-padding-inline);
+  padding-left: var(--kui-padding-inline);
+  overflow: hidden;
+  font-size: 14px;
+  outline: 1px solid transparent;
+  &:not(.k-input-number-fill, .k-input-number-disabled):hover {
+    border-color: var(--kui-color-primary);
+  }
+  &:not(.k-input-number-disabled):hover {
+    .k-input-number-controls {
+      opacity: 1;
+      width: 20px;
+    }
+  }
+
+  .k-input-number-clearable-hidden {
+    visibility: hidden;
+  }
+}
+.k-input-number-circle {
+  border-radius: 20px;
+}
+.k-input-number-square {
+  border-radius: 2px;
+}
+.k-input-number-controls {
+  transition: all 0.15s ease-in-out;
+  -webkit-user-select: none;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  color: var(--kui-color-icon);
+  border-left: 1px solid var(--kui-color-border);
+  font-size: 11px;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+}
+
+.k-input-number-control {
+  flex: 1;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--kui-color-primary);
+    background-color: var(--kui-color-bg-component-hover);
+  }
+
+  &:active {
+    color: var(--kui-color-primary);
+    background-color: var(--kui-color-bg-component-active);
+  }
+
+  &:last-child {
+    border-top: 1px solid var(--kui-color-border);
+  }
+}
+
+.k-input-number-text {
+  padding-left: 0;
+  border: none;
+  height: 30px;
+  line-height: 1.5;
+  padding: 4px 0;
+  font-size: 14px;
+  color: var(--kui-color-text);
+  background-color: transparent;
+  background-image: none;
+  box-sizing: border-box;
+  flex: 1;
+  min-width: 10px;
+  line-height: 1.571;
+  outline: none;
+}
+.k-input-number-focus {
+  outline-offset: 1px;
+  outline: 2px solid var(--kui-color-outline);
+}
+.k-input-number-focus:not(.k-input-number-fill, .k-input-number-disabled) {
+  border-color: var(--kui-color-primary);
+  box-shadow: var(--kui-component-shadow);
+}
+
+.k-input-number-icon {
+  font-size: 14px;
+  color: var(--kui-color-icon);
+}
+
+.k-input-number[single] {
+  height: 32px;
+  width: auto;
+  padding-right: var(--kui-padding-inline);
+
+  &:not(.k-input-number-fill, .k-input-number-disabled):hover {
+    border-color: var(--kui-color-primary);
+  }
+}
+
+.k-input-number-sm[single] {
+  height: 24px;
+  font-size: 12px;
+  padding-right: var(--kui-padding-inline-sm);
+}
+
+.k-input-number-lg[single] {
+  height: 40px;
+  font-size: 16px;
+  padding-right: var(--kui-padding-inline-lg);
+}
+
+.k-input-number-suffix,
+.k-input-number-prefix {
+  font-size: 14px;
+  white-space: nowrap;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+
+  &:hover {
+    color: var(--kui-color-text);
+  }
+
+  .k-icon {
+    font-size: 14px;
+    transition: all 0.2s ease-in-out;
+    color: var(--kui-color-icon);
+  }
+}
+
+.k-input-number-clearable {
+  cursor: pointer;
+  font-size: 15px;
+  color: var(--kui-color-icon);
+
+  &:hover {
+    color: var(--kui-color-icon-hover);
+  }
+  &:active {
+    color: var(--kui-color-icon-active);
+  }
+}
+
+.k-input-number-sm {
+  gap: var(--kui-padding-inline-sm);
+  padding-left: var(--kui-padding-inline-sm);
+  font-size: 12px;
+  .k-input-number-controls {
+    height: 22px;
+  }
+
+  .k-input-number-text {
+    line-height: 1;
+    font-size: 12px;
+    height: 22px;
+  }
+
+  .k-input-number-clearable {
+    font-size: 11px;
+  }
+
+  .k-input-number-icon {
+    font-size: 11px;
+  }
+
+  .k-input-number-suffix {
+    .k-icon {
+      font-size: 12px;
+    }
+  }
+}
+
+.k-input-number-lg {
+  gap: var(--kui-padding-inline-lg);
+  padding-left: var(--kui-padding-inline-lg);
+  font-size: 16px;
+  .k-input-number-controls {
+    height: 38px;
+  }
+
+  .k-input-number-text {
+    padding: 2px 0;
+    height: 38px;
+    line-height: 38px;
+    font-size: 16px;
+  }
+
+  .k-input-number-clearable {
+    font-size: 16px;
+  }
+
+  .k-input-number-icon {
+    font-size: 16px;
+  }
+
+  .k-input-number-suffix {
+    .k-icon {
+      font-size: 16px;
+    }
+  }
+}
+
+.k-input-number-fill {
+  border-color: transparent;
+  background-color: var(--kui-color-bg-component);
+
+  &:focus,
+  &.k-input-number-focus {
+    box-shadow: none;
+  }
+}
+
+.k-input-number-disabled {
+  cursor: not-allowed;
+  color: var(--kui-color-text-disabled);
+  background: var(--kui-color-bg-component-disabled);
+
+  & * {
+    cursor: not-allowed;
+  }
+
+  .k-input-number-control:hover {
+    background: 0 0;
+    color: var(--kui-color-icon);
+  }
+}

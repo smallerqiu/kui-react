@@ -1,0 +1,42 @@
+# Tag
+
+Small labels for marking and categorization.
+
+## When to Use
+
+- Used to mark attributes and dimensions of things.
+- For classification.
+
+## Examples
+
+[Basic Usage](./demo/basic.vue)
+
+- Use `closeable` to show a close button. Clicking hides the tag and triggers the `close` callback.
+
+[Size and Shape](./demo/size.vue)
+
+- Control size via `size`.
+
+[Icon](./demo/icon.vue)
+
+- You can set the `icon` attribute or directly use the Icon component inside the Tag.
+
+[Colorful Tags](./demo/color.vue)
+
+- Multiple preset tag colors for different scenarios. If the presets don't meet your needs, you can set a specific color value.
+
+[Dynamic Add and Remove](./demo/dynamic.vue)
+
+- Use `closeable` to show a close button.
+
+## Tag API
+
+| Property  | Description                                                         | Type            | Default |
+| --------- | ------------------------------------------------------------------- | --------------- | ------- |
+| closeable | Whether to show close button                                        | bool            | false   |
+| color     | Tag color                                                           | string          | -       |
+| icon      | Tag icon                                                            | string          | -       |
+| onClose   | Callback event when tag is closed                                   | () => void      | -       |
+| size      | Button size, optional values `small`, `large`, default not selected | string          | -       |
+| theme     | The component renders the theme                                     | string          | fill    |
+| shape     | The shape in which the component is presented                       | [circle,square] | circle  |

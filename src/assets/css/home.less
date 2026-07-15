@@ -1,0 +1,69 @@
+.index {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: var(--kui-color-bg);
+
+  .header {
+    background: none;
+    box-shadow: none;
+    border-bottom: 1px solid var(--kui-color-border);
+
+    .top-menu {
+      background: none;
+      border: none;
+    }
+  }
+
+  .btn-install {
+    background-color: var(--kui-color-bg-component);
+    color: var(--kui-color-text);
+  }
+
+  .index-content {
+    margin: auto;
+
+    h1 {
+      font-size: 50px;
+      margin: 20px 0 20px;
+      text-align: center;
+    }
+    .desc {
+      font-size: 20px;
+      margin-bottom: 40px;
+    }
+    .btn-content {
+      text-align: center;
+
+      .k-btn {
+        margin-left: 35px;
+        transition: all 0.3s;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .start {
+        // background: linear-gradient(45deg, #65b87f, #008028);
+        background-color: #42b883;
+        color: var(--kui-color-bg);
+        // border: none;
+        font-weight: 600;
+        .k-icon {
+          transition: all 0.3s;
+        }
+        &:hover {
+          .k-icon {
+            transform: translateX(5px);
+          }
+        }
+      }
+    }
+  }
+}
+
+.web-icon {
+  display: flex;
+  align-items: center;
+  line-height: 0;
+}
