@@ -1,85 +1,98 @@
-import {
-  computed,
-  defineComponent,
-  inject,
-  onBeforeUnmount,
-  onMounted,
-  provide,
-  ref,
-  type ExtractPropTypes,
-  type InjectionKey,
-} from "vue";
-import type { BooleanType } from "../const/types";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
-const SiderHookKey: InjectionKey<(mounted: boolean) => void> = Symbol("SiderHookKey");
+export const SiderHookContext = createContext<((mounted: boolean) => void) | null>(null);
 
-export const layoutProps = {
-  suffixCls: { type: String, default: "layout" },
-  hasSider: { type: Boolean as BooleanType, default: undefined }, // 允许手动指定是否有 Sider
-};
-
-export const siderProps = {
-  suffixCls: { type: String, default: "layout-sider" },
-  width: { type: [Number, String], default: 200 },
-  collapsedWidth: { type: [Number, String], default: 80 },
-  collapsible: Boolean as BooleanType,
-  collapsed: Boolean as BooleanType,
-};
-
-export type LayoutProps = ExtractPropTypes<typeof layoutProps>;
-export type SiderProps = ExtractPropTypes<typeof siderProps>;
-
-function createBasicComponent(suffixCls: string, name: string) {
-  return defineComponent({
-    name,
-    props: { suffixCls: { type: String, default: suffixCls } },
-    setup(props, { slots }) {
-      return () => <section class={`k-${props.suffixCls}`}>{slots.default?.()}</section>;
-    },
-  });
+export interface LayoutProps extends React.HTMLAttributes<HTMLElement> {
+  suffixCls?: string;
+  hasSider?: boolean;
+  children?: React.ReactNode;
 }
 
-const LayoutMain = defineComponent({
-  name: "Layout",
-  props: layoutProps,
-  setup(props, { slots }) {
-    const siders = ref<string[]>([]); // 存储 Sider 的内部唯一标识
+export interface SiderProps extends React.HTMLAttributes<HTMLElement> {
+  suffixCls?: string;
+  width?: number | string;
+  collapsedWidth?: number | string;
+  collapsible?: boolean;
+  collapsed?: boolean;
+  children?: React.ReactNode;
+}
 
-    // 提供给子组件 Sider 调用的注册函数
-    const collectSider = (mounted: boolean) => {
-      mounted ? siders.value.push("sider") : siders.value.pop();
-    };
+function createBasicComponent(suffixCls: string, displayName: string) {
+  const Component: React.FC<LayoutProps> = ({
+    suffixCls: customSuffixCls = suffixCls,
+    children,
+    className = "",
+    ...rest
+  }) => {
+    const classes = [`k-${customSuffixCls}`, className].filter(Boolean).join(" ");
+    return (
+      <section className={classes} {...rest}>
+        {children}
+      </section>
+    );
+  };
+  Component.displayName = displayName;
+  return Component;
+}
 
-    provide(SiderHookKey, collectSider);
+const LayoutMain: React.FC<LayoutProps> = ({
+  suffixCls = "layout",
+  hasSider,
+  children,
+  className = "",
+  ...rest
+}) => {
+  const [siderCount, setSiderCount] = useState(0);
 
-    const classes = computed(() => [
-      `k-${props.suffixCls}`,
-      {
-        [`k-${props.suffixCls}-has-sider`]: props.hasSider ?? siders.value.length > 0,
-      },
-    ]);
+  const collectSider = (mounted: boolean) => {
+    setSiderCount((prev) => (mounted ? prev + 1 : Math.max(0, prev - 1)));
+  };
 
-    return () => <section class={classes.value}>{slots.default?.()}</section>;
-  },
-});
+  const classes = [
+    `k-${suffixCls}`,
+    (hasSider ?? siderCount > 0) ? `k-${suffixCls}-has-sider` : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
-const Sider = defineComponent({
-  name: "LayoutSider",
-  props: siderProps,
-  setup(props, { slots }) {
-    const collectSider = inject(SiderHookKey, null);
+  return (
+    <SiderHookContext.Provider value={collectSider}>
+      <section className={classes} {...rest}>
+        {children}
+      </section>
+    </SiderHookContext.Provider>
+  );
+};
 
-    onMounted(() => {
-      collectSider?.(true);
-    });
+const Sider: React.FC<SiderProps> = ({
+  suffixCls = "layout-sider",
+  width = 200,
+  collapsedWidth = 80,
+  collapsible,
+  collapsed,
+  children,
+  className = "",
+  style,
+  ...rest
+}) => {
+  const collectSider = useContext(SiderHookContext);
 
-    onBeforeUnmount(() => {
+  useEffect(() => {
+    collectSider?.(true);
+    return () => {
       collectSider?.(false);
-    });
+    };
+  }, [collectSider]);
 
-    return () => <aside class={`k-${props.suffixCls}`}>{slots.default?.()}</aside>;
-  },
-});
+  const classes = [`k-${suffixCls}`, className].filter(Boolean).join(" ");
+
+  return (
+    <aside className={classes} style={style} {...rest}>
+      {children}
+    </aside>
+  );
+};
 
 const Content = createBasicComponent("layout-content", "LayoutContent");
 const Header = createBasicComponent("layout-header", "LayoutHeader");
@@ -101,5 +114,4 @@ Layout.Content = Content;
 Layout.Sider = Sider;
 
 export default Layout;
-
-export { Content, Footer, Header, Layout, Sider };
+export { Content, Footer, Header, Sider };

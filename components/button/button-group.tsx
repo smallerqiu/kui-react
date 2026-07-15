@@ -1,48 +1,48 @@
-import {
-  defineComponent,
-  inject,
-  provide,
-  toRefs,
-  type ExtractPropTypes,
-  type PropType,
-} from "vue";
-import { type ShapeType, type SizeType } from "../const/types";
+import React, { useContext } from "react";
+import type { ShapeType, SizeType } from "../const/types";
+import { SizeContext } from "../config/size-context";
 
-const buttonGroupProps = {
-  size: {
-    type: String as PropType<SizeType>,
-  },
-  shape: String as PropType<ShapeType>,
+export interface ButtonGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+  size?: SizeType;
+  shape?: ShapeType;
+  children?: React.ReactNode;
+}
+
+export interface ButtonGroupContextValue {
+  size?: SizeType;
+  shape?: ShapeType;
+}
+
+export const ButtonGroupContext = React.createContext<ButtonGroupContextValue | null>(null);
+
+const ButtonGroup: React.FC<ButtonGroupProps> = ({
+  size,
+  shape,
+  children,
+  className = "",
+  ...rest
+}) => {
+  const parentSize = useContext(SizeContext);
+  const currentSize = size || parentSize;
+
+  const classes = [
+    "k-btn-group",
+    currentSize === "small" ? "k-btn-group-sm" : "",
+    currentSize === "large" ? "k-btn-group-lg" : "",
+    shape === "circle" ? "k-btn-group-circle" : "",
+    shape === "square" ? "k-btn-group-square" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <ButtonGroupContext.Provider value={{ size: currentSize, shape }}>
+      <div className={classes} {...rest}>
+        {children}
+      </div>
+    </ButtonGroupContext.Provider>
+  );
 };
 
-export type ButtonGroupProps = ExtractPropTypes<typeof buttonGroupProps>;
-
-const ButtonGroup = defineComponent({
-  name: "ButtonGroup",
-  props: buttonGroupProps,
-  setup(props, { slots }) {
-    const { size, shape } = toRefs(props);
-    const parentSize = inject<string | null>("size", null);
-
-    provide("KButtonGroup", {
-      size: props.size || parentSize,
-      shape,
-    });
-
-    return () => {
-      const groupProps = {
-        class: [
-          "k-btn-group",
-          {
-            ["k-btn-group-sm"]: size.value === "small",
-            ["k-btn-group-lg"]: size.value === "large",
-            ["k-btn-group-circle"]: shape.value === "circle",
-            ["k-btn-group-square"]: shape.value === "square",
-          },
-        ],
-      };
-      return <div {...groupProps}>{slots.default?.()}</div>;
-    };
-  },
-});
 export default ButtonGroup;

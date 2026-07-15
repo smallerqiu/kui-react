@@ -1,56 +1,52 @@
-import { defineComponent, provide, toRefs, type ExtractPropTypes, type PropType } from "vue";
+import React from "react";
 import type { ShapeType } from "../const/types";
-import { getChildren } from "../utils/vnode";
+import { getChildren } from "../utils/react-node";
 import Avatar from "./avatar";
 
-export const avatarGroupProps = {
-  maxCount: Number,
-  shape: {
-    type: String as PropType<ShapeType>,
-    default: "circle",
-  },
-  size: {
-    type: [String, Number] as PropType<number | "large" | "small" | "default">,
-    default: "default",
-  },
+export interface AvatarGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+  maxCount?: number;
+  shape?: ShapeType;
+  size?: number | "large" | "small" | "default";
+  children?: React.ReactNode;
+}
+
+export interface AvatarGroupContextValue {
+  shape?: ShapeType;
+  size?: number | "large" | "small" | "default";
+}
+
+export const AvatarGroupContext = React.createContext<AvatarGroupContextValue | null>(null);
+
+const AvatarGroup: React.FC<AvatarGroupProps> = ({
+  maxCount,
+  shape = "circle",
+  size = "default",
+  children,
+  className = "",
+  ...rest
+}) => {
+  const childList = getChildren(children);
+  let childrenToShow = [...childList];
+
+  if (maxCount && maxCount < childList.length) {
+    childrenToShow = childList.slice(0, maxCount);
+    const restCount = childList.length - maxCount;
+    childrenToShow.push(
+      <Avatar key="avatar-rest-count" shape={shape} size={size}>
+        {`+${restCount}`}
+      </Avatar>
+    );
+  }
+
+  const classes = ["k-avatar-group", className].filter(Boolean).join(" ");
+
+  return (
+    <AvatarGroupContext.Provider value={{ shape, size }}>
+      <div className={classes} {...rest}>
+        {childrenToShow}
+      </div>
+    </AvatarGroupContext.Provider>
+  );
 };
 
-export type AvatarGroupProps = ExtractPropTypes<typeof avatarGroupProps>;
-
-const AvatarGroup = defineComponent({
-  name: "AvatarGroup",
-  props: avatarGroupProps,
-  setup(props, { slots }) {
-    const { shape, size } = toRefs(props);
-
-    provide("KAvatarGroup", {
-      shape,
-      size,
-    });
-
-    return () => {
-      const children = getChildren(slots.default?.());
-      const { maxCount } = props;
-
-      let childrenToShow = [...children];
-
-      if (maxCount && maxCount < children.length) {
-        childrenToShow = children.slice(0, maxCount);
-        const restCount = children.length - maxCount;
-
-        childrenToShow.push(
-          <Avatar shape={props.shape} size={props.size}>
-            {`+${restCount}`}
-          </Avatar>
-        );
-      }
-
-      const groupProps = {
-        class: "k-avatar-group",
-      };
-
-      return <div {...groupProps}>{childrenToShow}</div>;
-    };
-  },
-});
 export default AvatarGroup;

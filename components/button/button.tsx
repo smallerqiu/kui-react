@@ -1,134 +1,130 @@
+import React, { useContext } from "react";
 import { Loading } from "kui-icons";
-import {
-  Comment,
-  computed,
-  defineComponent,
-  inject,
-  type ButtonHTMLAttributes,
-  type DefineComponent,
-  type ExtractPropTypes,
-  type PropType,
-} from "vue";
 import type { BooleanType, ButtonType, ShapeType, SizeType, ThemeType } from "../const/types";
 import { colors } from "../const/var";
 import Icon, { type IconType } from "../icon";
-import { getChildren } from "../utils/vnode";
+import { getChildren } from "../utils/react-node";
+import { ButtonGroupContext } from "./button-group";
+import { SizeContext } from "../config/size-context";
 
-const buttonProps = {
-  htmlType: {
-    type: String as PropType<"button" | "submit" | "reset">,
-    default: "button",
-  },
-  icon: [Array] as PropType<IconType[]>,
-  block: { type: Boolean as BooleanType, default: false },
-  size: {
-    type: String as PropType<SizeType>,
-  },
-  color: {
-    type: String as PropType<(typeof colors)[number]>,
-  },
-  loading: { type: Boolean as BooleanType, default: false },
-  type: {
-    type: String as PropType<ButtonType>,
-    default: "default",
-  },
-  disabled: Boolean as BooleanType,
-  theme: {
-    type: String as PropType<ThemeType>,
-  },
-  shape: String as PropType<ShapeType>,
-  href: String,
-  target: String,
+export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "type"> {
+  htmlType?: "button" | "submit" | "reset";
+  icon?: IconType[];
+  block?: boolean;
+  size?: SizeType;
+  color?: string;
+  loading?: boolean;
+  type?: ButtonType;
+  disabled?: boolean;
+  theme?: ThemeType;
+  shape?: ShapeType;
+  href?: string;
+  target?: string;
+}
+
+const Button: React.FC<ButtonProps> = ({
+  htmlType = "button",
+  icon,
+  block = false,
+  size,
+  color,
+  loading = false,
+  type = "default",
+  disabled = false,
+  theme,
+  shape,
+  href,
+  target,
+  children,
+  className = "",
+  onClick,
+  ...rest
+}) => {
+  const buttonGroup = useContext(ButtonGroupContext);
+  const parentSize = useContext(SizeContext);
+
+  const computedSize = size || buttonGroup?.size || parentSize || "default";
+  const computedShape = shape || buttonGroup?.shape;
+
+  const handleClick = (e: React.MouseEvent<any>) => {
+    if (loading || disabled) {
+      e.preventDefault();
+      return;
+    }
+    onClick?.(e);
+  };
+
+  const iconOnly = () => {
+    const childList = getChildren(children);
+    if (!childList.length) {
+      return !!icon || !!loading;
+    }
+    if (childList.length === 1) {
+      const firstChild = childList[0];
+      if (React.isValidElement(firstChild)) {
+        const childType = firstChild.type;
+        return childType === Icon || (typeof childType === "object" && (childType as any)?.name === "Icon");
+      }
+    }
+    return false;
+  };
+
+  const classes = [
+    "k-btn",
+    type && !color ? `k-btn-${type}` : "",
+    theme === "outline" ? "k-btn-outline" : "",
+    computedSize === "small" ? "k-btn-sm" : "",
+    block ? "k-btn-block" : "",
+    loading ? "k-btn-loading" : "",
+    iconOnly() ? "k-btn-icon-only" : "",
+    color && colors.includes(color as any) ? `k-btn-${color}` : "",
+    computedSize === "large" ? "k-btn-lg" : "",
+    computedShape === "circle" ? "k-btn-circle" : "",
+    computedShape === "square" ? "k-btn-square" : "",
+    theme ? `k-btn-${theme}` : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  let childNodes: React.ReactNode[] = [];
+  const iconType = loading ? Loading : icon;
+
+  if (iconType) {
+    childNodes.push(<Icon key="btn-icon" type={iconType} spin={loading} />);
+  }
+
+  const processedChildren = getChildren(children).map((c, index) => {
+    return typeof c === "string" ? <span key={`text-${index}`}>{c.trim()}</span> : c;
+  });
+
+  if (processedChildren.length > 0) {
+    childNodes = childNodes.concat(processedChildren);
+  }
+
+  const commonProps = {
+    ...rest,
+    className: classes,
+    onClick: handleClick,
+  };
+
+  if (type === "link" && href && !disabled) {
+    return (
+      <a href={href} target={target} {...(commonProps as any)}>
+        {childNodes}
+      </a>
+    );
+  }
+
+  return (
+    <button
+      type={htmlType}
+      disabled={disabled || loading}
+      {...commonProps}
+    >
+      {childNodes}
+    </button>
+  );
 };
 
-export type ButtonProps = Partial<ExtractPropTypes<typeof buttonProps>> &
-  Omit<ButtonHTMLAttributes, "type">;
-
-const Button = defineComponent({
-  name: "Button",
-  props: buttonProps,
-  setup(props, { slots, attrs }) {
-    const buttonGroup = inject<any>("KButtonGroup", null);
-    const parentSize = inject<string | null>("size", null);
-
-    const computedSize = computed(() => {
-      return props.size || buttonGroup?.size || parentSize || "default";
-    });
-
-    const computedShape = computed(() => {
-      return props.shape || buttonGroup?.shape?.value;
-    });
-
-    const handleClick = (e: MouseEvent) => {
-      if (props.loading || props.disabled) {
-        e.preventDefault();
-        return;
-      }
-    };
-
-    const children = computed(() => getChildren(slots.default?.()));
-
-    return () => {
-      const iconOnly = () => {
-        const excluded = children.value.filter((c: any) => c.type !== Comment);
-        if (!excluded?.length) {
-          return props.icon || props.loading;
-        }
-        if (excluded.length === 1) {
-          const type = excluded[0].type;
-          return type && (type.name === "Icon" || type === Icon);
-        }
-        return false;
-      };
-
-      const classes = [
-        "k-btn",
-        {
-          [`k-btn-${props.type}`]: !!props.type && !props.color,
-          [`k-btn-outline`]: props.theme === "outline",
-          ["k-btn-sm"]: computedSize.value === "small",
-          ["k-btn-block"]: !!props.block,
-          ["k-btn-loading"]: props.loading,
-          ["k-btn-icon-only"]: iconOnly(),
-          [`k-btn-${props.color}`]: props.color && colors.includes(props.color as any),
-          ["k-btn-lg"]: computedSize.value === "large",
-          ["k-btn-circle"]: computedShape.value === "circle",
-          ["k-btn-square"]: computedShape.value === "square",
-          [`k-btn-${props.theme}`]: !!props.theme,
-        },
-      ];
-
-      let childNodes: any[] = [];
-      const iconType = props.loading ? Loading : props.icon;
-
-      if (iconType) {
-        childNodes.push(<Icon type={iconType} spin={props.loading} />);
-      }
-
-      const processedChildren = children.value?.map((c: any) => {
-        return typeof c.children === "string" ? <span>{c.children.trim()}</span> : c;
-      });
-
-      if (processedChildren) {
-        childNodes = childNodes.concat(processedChildren);
-      }
-
-      const commonProps = {
-        ...attrs,
-        class: classes,
-        href: props.href,
-        target: props.target,
-        disabled: props.disabled || props.loading,
-        type: props.htmlType,
-        onClick: handleClick,
-      };
-
-      return props.type === "link" && props.href && !props.disabled ? (
-        <a {...commonProps}>{childNodes}</a>
-      ) : (
-        <button {...commonProps}>{childNodes}</button>
-      );
-    };
-  },
-});
-export default Button as DefineComponent<ButtonProps>;
+export default Button;

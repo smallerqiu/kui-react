@@ -1,68 +1,75 @@
-import type { CSSProperties, ExtractPropTypes, Ref } from "vue";
-import { defineComponent, inject } from "vue";
+import React, { useContext } from "react";
+import { RowContext } from "./row";
 
-export const colProps = {
-  span: Number,
-  offset: Number,
-  flex: [String, Number],
+export interface ColProps extends React.HTMLAttributes<HTMLDivElement> {
+  span?: number;
+  offset?: number;
+  flex?: string | number;
+  children?: React.ReactNode;
+}
+
+const Col: React.FC<ColProps> = ({
+  span,
+  offset,
+  flex,
+  children,
+  className = "",
+  style,
+  ...rest
+}) => {
+  const gutter = useContext(RowContext);
+
+  const parseFlex = (flexVal: number | string) => {
+    if (typeof flexVal === "number") {
+      return `${flexVal} ${flexVal} auto`;
+    }
+    if (/^\d+(\.\d+)?(px|em|rem|%)$/.test(flexVal)) {
+      return `0 0 ${flexVal}`;
+    }
+    return flexVal;
+  };
+
+  const classes = [
+    "k-col",
+    span ? `k-col-${span}` : "",
+    offset && offset > 0 && offset <= 24 ? `k-col-offset-${offset}` : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const colStyle: React.CSSProperties = { ...style };
+
+  if (Array.isArray(gutter)) {
+    const [v = 0, h = 0] = gutter;
+    if (v === h && v > 0) {
+      colStyle.padding = `${v / 2}px`;
+    } else if (v > 0 && h > 0) {
+      colStyle.padding = `${h / 2}px ${v / 2}px`;
+    } else {
+      if (v > 0) {
+        colStyle.paddingLeft = `${v / 2}px`;
+        colStyle.paddingRight = `${v / 2}px`;
+      }
+      if (h > 0) {
+        colStyle.paddingTop = `${h / 2}px`;
+        colStyle.paddingBottom = `${h / 2}px`;
+      }
+    }
+  } else if (gutter && gutter > 0) {
+    colStyle.paddingLeft = `${gutter / 2}px`;
+    colStyle.paddingRight = `${gutter / 2}px`;
+  }
+
+  if (flex !== undefined) {
+    colStyle.flex = parseFlex(flex);
+  }
+
+  return (
+    <div className={classes} style={colStyle} {...rest}>
+      {children}
+    </div>
+  );
 };
 
-export type ColProps = ExtractPropTypes<typeof colProps>;
-
-const Col = defineComponent({
-  name: "Col",
-  props: colProps,
-  setup(props, { slots }) {
-    const parseFlex = (flex: number | string) => {
-      if (typeof flex === "number") {
-        return `${flex} ${flex} auto`;
-      }
-      if (/^\d+(\.\d+)?(px|em|rem|%)$/.test(flex)) {
-        return `0 0 ${flex}`;
-      }
-      return flex;
-    };
-
-    return () => {
-      const gutter = inject<Ref<number[] | number>>("gutter")?.value;
-      let { offset, span, flex } = props;
-      let _props = {
-        class: [
-          `k-col`,
-          {
-            [`k-col-${span}`]: span,
-          },
-        ],
-        style: {} as CSSProperties,
-      };
-      if (Array.isArray(gutter)) {
-        let [v = 0, _h = 0] = gutter;
-        if (v == _h && v > 0) {
-          _props.style.padding = `${v / 2}px`;
-        } else if (v > 0 && _h > 0) {
-          _props.style.padding = `${_h / 2}px ${v / 2}px`;
-        } else {
-          if (v > 0) {
-            _props.style.paddingLeft = `${v / 2}px`;
-            _props.style.paddingRight = `${v / 2}px`;
-          }
-          if (_h > 0) {
-            _props.style.paddingTop = `${v / 2}px`;
-            _props.style.paddingTop = `${v / 2}px`;
-          }
-        }
-      } else if (gutter && gutter > 0) {
-        _props.style.paddingLeft = `${gutter / 2}px`;
-        _props.style.paddingRight = `${gutter / 2}px`;
-      }
-      if (flex) {
-        _props.style.flex = parseFlex(flex);
-      }
-      if (offset && offset > 0 && offset <= 24) {
-        _props.class.push(`k-col-offset-${offset}`);
-      }
-      return <div {..._props}>{slots.default?.()}</div>;
-    };
-  },
-});
 export default Col;
