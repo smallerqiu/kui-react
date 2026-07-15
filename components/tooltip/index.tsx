@@ -1,210 +1,195 @@
-import {
-  cloneVNode,
-  defineComponent,
-  nextTick,
-  onMounted,
-  onUnmounted,
-  ref,
-  Transition,
-  watch,
-  type CSSProperties,
-  type ExtractPropTypes,
-  type PropType,
-  type VNode,
-} from "vue";
-import { type BooleanType, type PlacementsType } from "../const/types";
+import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
+import type { PlacementsType } from "../const/types";
 import { colors } from "../const/var";
-import { transfer } from "../directives/transfer";
 import { isColor } from "../utils/color";
 import { setPlacement } from "../utils/placement";
-import { getChildren } from "../utils/vnode";
+import { getChildren } from "../utils/react-node";
 
-const tooltipProps = {
-  show: Boolean as BooleanType,
-  title: [String, Number, Object, Array] as PropType<any>,
-  color: String,
-  disabled: Boolean as BooleanType,
-  width: [Number, String] as PropType<number | string>,
-  placement: {
-    type: String as PropType<PlacementsType>,
-    default: "top",
-  },
+export interface TooltipProps {
+  show?: boolean;
+  title?: React.ReactNode;
+  color?: string;
+  disabled?: boolean;
+  width?: number | string;
+  placement?: PlacementsType;
+  onShowChange?: (show: boolean) => void;
+  children?: React.ReactNode;
+}
+
+const Tooltip: React.FC<TooltipProps> = ({
+  show = false,
+  title,
+  color,
+  disabled = false,
+  width,
+  placement = "top",
+  onShowChange,
+  children,
+}) => {
+  const [visible, setVisible] = useState(show);
+  const [rendered, setRendered] = useState(show);
+  const [left, setLeft] = useState(0);
+  const [top, setTop] = useState(0);
+  const [currentPlacement, setCurrentPlacement] = useState(placement);
+  const [transOrigin, setTransOrigin] = useState("bottom");
+
+  const refPopper = useRef<HTMLDivElement>(null);
+  const refSelection = useRef<HTMLElement>(null);
+  const hideTimer = useRef<NodeJS.Timeout | null>(null);
+  const showTimer = useRef<NodeJS.Timeout | null>(null);
+
+  const updatePosition = () => {
+    if (!refSelection.current || !refPopper.current) return;
+    const placementObj = { value: currentPlacement };
+    const originObj = { value: transOrigin };
+    const topObj = { value: top };
+    const leftObj = { value: left };
+
+    setPlacement({
+      refSelection: refSelection.current,
+      refPopper: refPopper.current,
+      currentPlacement: placementObj,
+      transOrigin: originObj,
+      top: topObj,
+      left: leftObj,
+    });
+
+    setCurrentPlacement(placementObj.value as PlacementsType);
+    setTransOrigin(originObj.value);
+    setTop(topObj.value);
+    setLeft(leftObj.value);
+  };
+
+  useEffect(() => {
+    setVisible(show);
+  }, [show]);
+
+  useEffect(() => {
+    if (visible) updatePosition();
+  }, [title, visible]);
+
+  useEffect(() => {
+    window.addEventListener("resize", updatePosition);
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+      if (showTimer.current) clearTimeout(showTimer.current);
+    };
+  }, []);
+
+  const updateShow = (value: boolean) => {
+    setVisible(value);
+    onShowChange?.(value);
+  };
+
+  const mouseEnter = () => {
+    if (disabled) return;
+    if (showTimer.current) clearTimeout(showTimer.current);
+    if (!rendered) {
+      setRendered(true);
+      setTimeout(() => {
+        updateShow(true);
+        setTimeout(updatePosition, 0);
+      }, 0);
+    } else {
+      updateShow(true);
+      setTimeout(updatePosition, 0);
+    }
+  };
+
+  const hide = () => {
+    if (hideTimer.current) clearTimeout(hideTimer.current);
+    hideTimer.current = setTimeout(() => {
+      if (!show) updateShow(false);
+    }, 300);
+  };
+
+  // Clone the trigger child to add event handlers
+  const childList = getChildren(children);
+  const firstChild = childList.length === 1 ? childList[0] : null;
+
+  const triggerProps: React.HTMLAttributes<HTMLElement> = {
+    onMouseEnter: mouseEnter,
+    onMouseLeave: hide,
+    onTouchStart: mouseEnter,
+    onTouchEnd: hide,
+  };
+
+  let triggerNode: React.ReactNode;
+  if (firstChild && React.isValidElement(firstChild)) {
+    triggerNode = React.cloneElement(firstChild as React.ReactElement<any>, {
+      ref: refSelection,
+      ...triggerProps,
+    });
+  } else {
+    triggerNode = (
+      <span ref={refSelection as any} {...triggerProps}>
+        {children}
+      </span>
+    );
+  }
+
+  const preCls = "tooltip";
+
+  const arrowFill = isColor(color)
+    ? colors.includes(color as any)
+      ? `var(--kui-color-${color})`
+      : color
+    : "currentcolor";
+
+  const bgColor = isColor(color)
+    ? colors.includes(color as any)
+      ? `var(--kui-color-${color})`
+      : color
+    : undefined;
+
+  const overlayNode =
+    rendered ? (
+      <div
+        ref={refPopper}
+        className={[
+          `k-${preCls}`,
+          color && !isColor(color) ? `k-${preCls}-${color}` : "",
+          isColor(color) ? `k-${preCls}-has-color` : "",
+          `k-${preCls}-has-arrow`,
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        style={{
+          left: `${left}px`,
+          top: `${top}px`,
+          transformOrigin: transOrigin,
+          display: visible ? undefined : "none",
+          width: width ? (typeof width === "number" ? `${width}px` : width) : undefined,
+        }}
+        onMouseEnter={() => {
+          if (hideTimer.current) clearTimeout(hideTimer.current);
+          if (!disabled) updateShow(true);
+        }}
+        onMouseLeave={() => {
+          showTimer.current = setTimeout(() => {
+            if (!show) updateShow(false);
+          }, 300);
+        }}
+      >
+        <div className={`k-${preCls}-content`} style={{ backgroundColor: bgColor }}>
+          <div className={`k-${preCls}-title`}>{title}</div>
+          <div className={`k-${preCls}-arrow`}>
+            <svg style={{ fill: arrowFill }} viewBox="0 0 24 7">
+              <path d="M24 0V1C20 1 18.5 2 16.5 4C14.5 6 14 7 12 7C10 7 9.5 6 7.5 4C5.5 2 4 1 0 1V0H24Z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    ) : null;
+
+  return (
+    <>
+      {triggerNode}
+      {overlayNode && createPortal(overlayNode, document.body)}
+    </>
+  );
 };
 
-export type TooltipProps = ExtractPropTypes<typeof tooltipProps>;
-
-const Tooltip = defineComponent({
-  name: "Tooltip",
-  directives: { transfer },
-  props: tooltipProps,
-  setup(props, { slots, attrs, emit }) {
-    const rendered = ref(props.show);
-    const visible = ref(props.show);
-    const refPopper = ref<HTMLElement | null>(null);
-    const refSelection = ref<HTMLElement | null>(null);
-    const left = ref(0);
-    const top = ref(0);
-    const currentPlacement = ref(props.placement);
-    const transOrigin = ref("bottom");
-    const hideTimer = ref<any>();
-    const showTimer = ref<any>();
-
-    const updateShow = (value: boolean) => {
-      visible.value = value;
-      emit("update:show", value);
-    };
-
-    const updatePosition = () => {
-      nextTick(() => {
-        setPlacement({
-          refSelection,
-          refPopper,
-          currentPlacement,
-          transOrigin,
-          top,
-          left,
-        });
-      });
-    };
-
-    onMounted(() => {
-      updatePosition();
-      window.addEventListener("resize", updatePosition);
-    });
-
-    onUnmounted(() => {
-      window.removeEventListener("resize", updatePosition);
-      clearTimeout(hideTimer.value);
-      clearTimeout(showTimer.value);
-    });
-
-    watch(
-      () => props.show,
-      (nv) => {
-        visible.value = nv;
-      }
-    );
-
-    watch(
-      () => props.title,
-      () => {
-        if (visible.value) updatePosition();
-      }
-    );
-
-    const mouseEnter = () => {
-      if (props.disabled) return;
-      if (!rendered.value) {
-        rendered.value = true;
-        nextTick(() => {
-          updateShow(true);
-          nextTick(() => {
-            updatePosition();
-          });
-        });
-      } else {
-        clearTimeout(showTimer.value);
-        updateShow(true);
-        nextTick(() => {
-          updatePosition();
-        });
-      }
-    };
-
-    const hide = () => {
-      hideTimer.value = setTimeout(() => {
-        if (!props.show) {
-          updateShow(false);
-        }
-      }, 300);
-    };
-
-    return () => {
-      const title = slots.title?.() || props.title;
-      const preCls = "tooltip";
-      const { color } = props;
-
-      const wpProps = {
-        ref: refSelection,
-        onTouchstart: mouseEnter,
-        onTouchend: hide,
-        onTouchmove: updatePosition,
-        onMouseenter: mouseEnter,
-        onMouseleave: hide,
-      };
-
-      const children = getChildren(slots.default?.()) as VNode[];
-      const nodes = children?.map((node) => {
-        const pp = children.length === 1 ? { ...attrs, ...wpProps } : { ...attrs };
-        return cloneVNode(node, pp, true, true);
-      });
-
-      const nodeWrapper = nodes.length > 1 ? <span {...wpProps}>{nodes}</span> : nodes[0];
-
-      const styles: CSSProperties = {
-        left: `${left.value}px`,
-        top: `${top.value}px`,
-        transformOrigin: transOrigin.value,
-      };
-
-      const overlayProps = {
-        class: [
-          `k-${preCls}`,
-          {
-            [`k-${preCls}-${color}`]: color && !isColor(color),
-            [`k-${preCls}-has-color`]: isColor(color),
-            [`k-${preCls}-has-arrow`]: true,
-          },
-        ],
-        "k-placement": currentPlacement.value,
-        style: styles,
-        ref: refPopper,
-        onMouseenter: () => {
-          clearTimeout(hideTimer.value);
-          if (!props.disabled) updateShow(true);
-        },
-        onMouseleave: () => {
-          showTimer.value = setTimeout(() => {
-            if (!props.show) updateShow(false);
-          }, 300);
-        },
-      };
-      const contentProps = {
-        class: [`k-${preCls}-content`],
-        style: {
-          backgroundColor: isColor(color)
-            ? colors.includes(color as any)
-              ? `var(--kui-color-${color})`
-              : color
-            : undefined,
-        } as CSSProperties,
-      };
-      const arrowProps = {
-        style: {
-          fill: isColor(color)
-            ? colors.includes(color as any)
-              ? `var(--kui-color-${color})`
-              : color
-            : "currentcolor",
-        } as CSSProperties,
-      };
-      const tooltipOverlay = rendered.value ? (
-        <Transition name={`k-${preCls}`}>
-          <div v-transfer={true} v-show={visible.value} {...overlayProps}>
-            <div {...contentProps}>
-              <div class={`k-${preCls}-title`}>{title}</div>
-              <div class={`k-${preCls}-arrow`}>
-                <svg {...arrowProps} viewBox="0 0 24 7">
-                  <path d="M24 0V1C20 1 18.5 2 16.5 4C14.5 6 14 7 12 7C10 7 9.5 6 7.5 4C5.5 2 4 1 0 1V0H24Z"></path>
-                </svg>
-              </div>
-            </div>
-          </div>
-        </Transition>
-      ) : null;
-
-      return [nodeWrapper, tooltipOverlay];
-    };
-  },
-});
 export default Tooltip;

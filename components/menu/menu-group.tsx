@@ -1,24 +1,17 @@
-import { defineComponent, type ExtractPropTypes } from "vue";
+import React from "react";
 
-export const menuGroupProps = {
-  title: { type: String, required: true },
+export interface MenuGroupProps {
+  title: string;
+  children?: React.ReactNode;
+}
+
+const MenuGroup: React.FC<MenuGroupProps> = ({ title, children }) => {
+  return (
+    <li className="k-menu-item-group">
+      <div className="k-menu-item-group-title">{title}</div>
+      <ul className="k-menu-item-group-list">{children}</ul>
+    </li>
+  );
 };
 
-export type MenuGroupProps = ExtractPropTypes<typeof menuGroupProps>;
-
-const MenuGroup = defineComponent({
-  name: "MenuGroup",
-  props: menuGroupProps,
-  setup(props, { slots }) {
-    return () => {
-      const titleNode = props.title || slots.title?.();
-      return (
-        <li class="k-menu-item-group">
-          <div class="k-menu-item-group-title">{titleNode}</div>
-          <ul class="k-menu-item-group-list">{slots.default?.()}</ul>
-        </li>
-      );
-    };
-  },
-});
 export default MenuGroup;

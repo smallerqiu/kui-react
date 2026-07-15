@@ -1,42 +1,44 @@
-import {
-  defineComponent,
-  getCurrentInstance,
-  inject,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  type ExtractPropTypes,
-  type PropType,
-  type Ref,
-} from "vue";
-import type { BooleanType } from "../const/types";
-import type { IconType } from "../icon";
-export const tabPanelProps = {
-  title: String,
-  icon: Array as PropType<IconType[]>,
-  disabled: Boolean as BooleanType,
-  closable: Boolean as BooleanType,
-};
-export type TabPanelProps = ExtractPropTypes<typeof tabPanelProps>;
-const TabPanel = defineComponent({
-  name: "TabPanel",
-  props: tabPanelProps,
-  setup(_, { slots }) {
-    const instance = getCurrentInstance();
-    const key = instance?.vnode.key;
-    const activeKey = inject<Ref<string | null>>("tabActiveKey", ref(null));
-    const tabUpdateNav = inject<(() => void) | null>("tabUpdateNav", null);
+import React from "react";
 
-    onMounted(() => tabUpdateNav?.());
-    onBeforeUnmount(() => tabUpdateNav?.());
-    // console.log(activeKey.value, key);
-    return () => {
-      return (
-        <div class={["k-tabs-tabpanel", { "k-tabs-tabpanel-active": activeKey.value == key }]}>
-          {slots.default?.()}
-        </div>
-      );
-    };
-  },
-});
+export interface TabPanelProps extends React.HTMLAttributes<HTMLDivElement> {
+  title?: string;
+  icon?: any[];
+  disabled?: boolean;
+  closable?: boolean;
+  /** injected by Tabs */
+  tabKey?: string | number;
+  /** injected by Tabs */
+  activeKey?: string | number;
+  children?: React.ReactNode;
+}
+
+const TabPanel: React.FC<TabPanelProps> = ({
+  tabKey,
+  activeKey,
+  children,
+  className = "",
+  // strip out props that should not be spread to DOM
+  title: _title,
+  icon: _icon,
+  disabled: _disabled,
+  closable: _closable,
+  ...rest
+}) => {
+  const isActive = activeKey === tabKey;
+  return (
+    <div
+      className={[
+        "k-tabs-tabpanel",
+        isActive ? "k-tabs-tabpanel-active" : "",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
+};
+
 export default TabPanel;

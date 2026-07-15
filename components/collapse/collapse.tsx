@@ -1,68 +1,72 @@
-import { cloneVNode, defineComponent, ref, watch, type ExtractPropTypes, type PropType } from "vue";
-import type { BooleanType } from "../const/types";
-import { getChildren } from "../utils/vnode";
+import React, { useState, useEffect } from "react";
+import { getChildren } from "../utils/react-node";
+import CollapsePanel from "./collapse-panel";
 
-const collapseProps = {
-  openKeys: {
-    type: Array as PropType<(string | number)[]>,
-    default: () => [],
-  },
-  accordion: Boolean as BooleanType,
-  sample: Boolean as BooleanType,
-  onChange: Function as PropType<(key: string | number) => void>,
+export interface CollapseProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+  openKeys?: (string | number)[];
+  accordion?: boolean;
+  sample?: boolean;
+  onChange?: (key: string | number) => void;
+  children?: React.ReactNode;
+}
+
+const Collapse: React.FC<CollapseProps> = ({
+  openKeys = [],
+  accordion = false,
+  sample = false,
+  onChange,
+  children,
+  className = "",
+  ...rest
+}) => {
+  const [activeKeys, setActiveKeys] = useState<(string | number)[]>(openKeys);
+
+  useEffect(() => {
+    setActiveKeys(openKeys);
+  }, [openKeys]);
+
+  const handleExpand = (key: string | number) => {
+    if (!key && key !== 0) return;
+
+    let nextKeys = [...activeKeys];
+    const index = nextKeys.indexOf(key);
+
+    if (index >= 0) {
+      nextKeys = accordion ? [] : nextKeys.filter((k) => k !== key);
+    } else {
+      nextKeys = accordion ? [key] : [...nextKeys, key];
+    }
+
+    setActiveKeys(nextKeys);
+    onChange?.(key);
+  };
+
+  const classes = [
+    "k-collapse",
+    sample ? "k-collapse-sample" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const childList = getChildren(children);
+
+  return (
+    <div className={classes} {...rest}>
+      {childList.map((child, index) => {
+        if (!React.isValidElement(child)) return child;
+
+        const key = child.key ?? index;
+        const isActive = activeKeys.includes(key as string | number);
+
+        return React.cloneElement(child as React.ReactElement<any>, {
+          panelKey: key,
+          active: isActive,
+          onExpand: handleExpand,
+        });
+      })}
+    </div>
+  );
 };
 
-export type CollapseProps = ExtractPropTypes<typeof collapseProps>;
-
-const Collapse = defineComponent({
-  name: "Collapse",
-  props: collapseProps,
-  setup(props, { slots, emit }) {
-    const defaultOpenKeys = ref<(string | number)[]>(props.openKeys || []);
-
-    watch(
-      () => props.openKeys,
-      (nv) => {
-        defaultOpenKeys.value = nv;
-      }
-    );
-
-    const change = (key: string | number) => {
-      if (!key && key !== 0) return;
-      let value = [...defaultOpenKeys.value];
-      const index = value.indexOf(key);
-
-      if (index >= 0) {
-        value = props.accordion ? [] : value.filter((k) => k !== key);
-      } else {
-        value = props.accordion ? [key] : [...value, key];
-      }
-      defaultOpenKeys.value = value;
-      emit("change", key);
-      emit("update:openKeys", value);
-    };
-
-    return () => {
-      const rootProps = {
-        class: [
-          "k-collapse",
-          {
-            "k-collapse-sample": props.sample,
-          },
-        ],
-      };
-
-      const children = getChildren(slots.default?.());
-
-      return (
-        <div {...rootProps}>
-          {children?.map((child) => {
-            const active = defaultOpenKeys.value.includes(child.key as string | number);
-            return cloneVNode(child, { active, onExpand: change });
-          })}
-        </div>
-      );
-    };
-  },
-});
 export default Collapse;

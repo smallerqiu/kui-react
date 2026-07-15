@@ -1,79 +1,70 @@
+import React, { useState, useEffect, useRef } from "react";
 import { ChevronUp } from "kui-icons";
-import {
-  Transition,
-  defineComponent,
-  getCurrentInstance,
-  nextTick,
-  ref,
-  watch,
-  type ExtractPropTypes,
-} from "vue";
-import { getTransitionProp } from "../base/transition";
-import type { BooleanType } from "../const/types";
 import Icon from "../icon";
 
-const collapsePanelProps = {
-  title: String,
-  active: Boolean as BooleanType,
+export interface CollapsePanelProps extends React.HTMLAttributes<HTMLDivElement> {
+  title?: string;
+  active?: boolean;
+  extra?: React.ReactNode;
+  panelKey?: string | number;
+  onExpand?: (key: string | number) => void;
+  children?: React.ReactNode;
+}
+
+const CollapsePanel: React.FC<CollapsePanelProps> = ({
+  title,
+  active = false,
+  extra,
+  panelKey,
+  onExpand,
+  children,
+  className = "",
+  ...rest
+}) => {
+  const [expanded, setExpanded] = useState(active);
+  const [rendered, setRendered] = useState(active);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setRendered(true);
+    // Use a small delay to trigger the CSS transition after mount
+    const timer = setTimeout(() => {
+      setExpanded(active);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [active]);
+
+  const handleClick = () => {
+    if (panelKey !== undefined) {
+      onExpand?.(panelKey);
+    }
+  };
+
+  const classes = [
+    "k-collapse-item",
+    expanded ? "k-collapse-item-active" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <div className={classes} {...rest}>
+      <div className="k-collapse-header" onClick={handleClick}>
+        <Icon type={ChevronUp} className="k-collapse-arrow" />
+        <span className="k-collapse-title">{title}</span>
+        {extra ? <span className="k-collapse-extra">{extra}</span> : null}
+      </div>
+      {rendered ? (
+        <div
+          className="k-collapse-content"
+          style={{ display: expanded ? undefined : "none" }}
+        >
+          <div className="k-collapse-content-box">{children}</div>
+        </div>
+      ) : null}
+    </div>
+  );
 };
 
-export type CollapsePanelProps = ExtractPropTypes<typeof collapsePanelProps>;
-
-const CollapsePanel = defineComponent({
-  name: "CollapsePanel",
-  props: collapsePanelProps,
-  setup(props, { slots, emit }) {
-    const instance = getCurrentInstance();
-    const expanded = ref(props.active);
-    const rendered = ref(props.active);
-
-    watch(
-      () => props.active,
-      (nv) => {
-        rendered.value = true;
-        nextTick(() => {
-          expanded.value = nv;
-        });
-      }
-    );
-
-    const handleClick = () => {
-      const key = instance?.vnode.key;
-      emit("expand", key);
-    };
-
-    return () => {
-      const rootProps = {
-        class: [
-          "k-collapse-item",
-          {
-            "k-collapse-item-active": expanded.value,
-          },
-        ],
-      };
-
-      const extraNode = slots.extra?.();
-      const transitionProps = getTransitionProp("k-collapse-slide");
-
-      const panelNode = rendered.value ? (
-        <Transition {...transitionProps} duration={350}>
-          <div class="k-collapse-content" v-show={expanded.value}>
-            <div class="k-collapse-content-box">{slots.default?.()}</div>
-          </div>
-        </Transition>
-      ) : null;
-
-      return (
-        <div {...rootProps}>
-          <div class="k-collapse-header" onClick={handleClick}>
-            <Icon type={ChevronUp} class="k-collapse-arrow" />
-            <span class="k-collapse-title">{props.title}</span>
-            {extraNode ? <span class="k-collapse-extra">{extraNode}</span> : null}
-          </div>
-          {panelNode}
-        </div>
-      );
-    };
-  },
-});
 export default CollapsePanel;

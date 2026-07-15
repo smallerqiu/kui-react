@@ -1,15 +1,10 @@
-import { defineComponent, inject } from "vue";
+import React, { useContext } from "react";
+import { MenuContext } from "./menu";
 
+const MenuDivider: React.FC = () => {
+  const ctx = useContext(MenuContext);
+  const preCls = ctx?.isDropdown ? "dropdown-menu" : "menu";
+  return <li className={`k-${preCls}-item-divider`} />;
+};
 
-const MenuDivider = defineComponent({
-  name: "MenuDivider",
-  setup() {
-    const dropdown = inject("dropdown", null);
-    return () => {
-      const preCls = dropdown ? "dropdown-menu" : "menu";
-
-      return <li class={`k-${preCls}-item-divider`} />;
-    };
-  },
-});
 export default MenuDivider;

@@ -1,299 +1,304 @@
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import { ChevronLeft, ChevronRight, X } from "kui-icons";
-import {
-  computed,
-  defineComponent,
-  nextTick,
-  onBeforeMount,
-  onMounted,
-  provide,
-  ref,
-  watch,
-  type CSSProperties,
-  type ExtractPropTypes,
-  type PropType,
-} from "vue";
-import type { BooleanType } from "../const/types";
 import Icon from "../icon";
-import { getChildren } from "../utils/vnode";
+import { getChildren } from "../utils/react-node";
 
-export const tabsProps = {
-  modelValue: [String, Number],
-  card: Boolean as BooleanType,
-  sample: Boolean as BooleanType,
-  centered: Boolean as BooleanType,
-  animated: { type: Boolean, default: true },
-  onTabClick: Function as PropType<(key: string) => void>,
-  onChange: Function as PropType<(key: string) => void>,
-  onRemove: Function as PropType<(key: string) => void>,
-};
+export interface TabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+  value?: string | number;
+  card?: boolean;
+  sample?: boolean;
+  centered?: boolean;
+  animated?: boolean;
+  extra?: React.ReactNode;
+  onTabClick?: (key: string) => void;
+  onChange?: (key: string) => void;
+  onRemove?: (key: string) => void;
+  children?: React.ReactNode;
+}
 
-type TabClickEvent = {
-  key: string;
-  disabled?: boolean;
-};
+const Tabs: React.FC<TabsProps> = ({
+  value,
+  card = false,
+  sample = false,
+  centered = false,
+  animated = true,
+  extra,
+  onTabClick,
+  onChange,
+  onRemove,
+  children,
+  className = "",
+  ...rest
+}) => {
+  const navRef = useRef<HTMLDivElement>(null);
+  const navScrollRef = useRef<HTMLDivElement>(null);
+  const navBoxRef = useRef<HTMLDivElement>(null);
+  const inkBarRef = useRef<HTMLDivElement>(null);
 
-export type TabsProps = ExtractPropTypes<typeof tabsProps>;
+  // Parse panels from children
+  const childList = getChildren(children);
 
-const Tabs = defineComponent({
-  name: "Tabs",
-  props: tabsProps,
-  setup(props, { slots, emit }) {
-    const defaultActiveKey = ref(props.modelValue);
-    const currentIndex = ref(-1);
-    const scrollable = ref(false);
-    const navOffsetLeft = ref(0);
-    const prevBtnDisabled = ref(false);
-    const nextBtnDisabled = ref(false);
-    const navRef = ref();
-    const navScrollRef = ref();
-    const navBoxRef = ref();
-    const inkBarRef = ref();
+  // Determine initial active key from first panel if not provided
+  const firstKey = childList.length > 0 && React.isValidElement(childList[0])
+    ? (childList[0].key as string)
+    : undefined;
 
-    provide("tabActiveKey", defaultActiveKey);
+  const [activeKey, setActiveKey] = useState<string | number | undefined>(
+    value !== undefined ? value : firstKey
+  );
+  const [currentIndex, setCurrentIndex] = useState(-1);
+  const [scrollable, setScrollable] = useState(false);
+  const [navOffsetLeft, setNavOffsetLeft] = useState(0);
+  const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
+  const [nextBtnDisabled, setNextBtnDisabled] = useState(false);
 
-    watch(
-      // () => props.activeKey,
-      () => props.modelValue,
-      (nv) => {
-        defaultActiveKey.value = nv;
-        updateIndex();
+  // Sync from prop
+  useEffect(() => {
+    if (value !== undefined) {
+      setActiveKey(value);
+    }
+  }, [value]);
+
+  const updateInkBarPosition = useCallback((index: number) => {
+    if (!card && !sample && inkBarRef.current && navRef.current) {
+      const nav = navRef.current.children[index] as HTMLElement;
+      if (nav) {
+        inkBarRef.current.style.width = `${nav.offsetWidth}px`;
+        inkBarRef.current.style.transform = `translate3d(${nav.offsetLeft}px, 0px, 0px)`;
       }
-    );
-    onMounted(() => {
-      nextTick(() => {
-        updateIndex();
-      });
-      window.addEventListener("resize", resetNavPosition);
-    });
-    onBeforeMount(() => {
-      window.removeEventListener("resize", resetNavPosition);
-    });
+    }
+  }, [card, sample]);
 
-    const resetActivePosition = () => {
-      const target = navRef.value.children[currentIndex.value];
-      if (!target) return;
-      // show active tab in client
-      const nav = navScrollRef.value;
-      // let totalWidth = panel.offsetWidth
-      let clientWidth = navBoxRef.value.clientWidth;
-      let navLeft = navOffsetLeft.value;
-      let { offsetLeft, offsetWidth } = target;
+  const resetActivePosition = useCallback((index: number) => {
+    const navEl = navRef.current;
+    const navBoxEl = navBoxRef.current;
+    const navScrollEl = navScrollRef.current;
+    if (!navEl || !navBoxEl || !navScrollEl) return;
 
-      // min left
-      if (navLeft + offsetLeft < 0) {
-        navLeft = -offsetLeft;
+    const target = navEl.children[index] as HTMLElement;
+    if (!target) return;
+
+    const clientWidth = navBoxEl.clientWidth;
+    let navLeft = navOffsetLeft;
+    const { offsetLeft, offsetWidth } = target;
+
+    if (navLeft + offsetLeft < 0) {
+      navLeft = -offsetLeft;
+    } else if (clientWidth - navLeft < offsetLeft + offsetWidth) {
+      navLeft -= offsetLeft + offsetWidth + navLeft - clientWidth + 2;
+    }
+
+    setNavOffsetLeft(navLeft);
+    navScrollEl.style.transform = `translate3d(${navLeft}px,0,0)`;
+  }, [navOffsetLeft]);
+
+  const updateNav = useCallback(() => {
+    const navBoxEl = navBoxRef.current;
+    if (!navBoxEl) return;
+    setScrollable(navBoxEl.scrollWidth > navBoxEl.clientWidth);
+  }, []);
+
+  const resetNavPosition = useCallback(() => {
+    setTimeout(() => {
+      const navScrollEl = navScrollRef.current;
+      const navBoxEl = navBoxRef.current;
+      if (!navScrollEl || !navBoxEl) return;
+      const totalWidth = navScrollEl.offsetWidth;
+      const clientWidth = navBoxEl.clientWidth;
+      let navLeft = navOffsetLeft;
+
+      if (clientWidth + navLeft < clientWidth) {
+        navLeft = clientWidth - totalWidth;
       }
-      //max right
-      else if (clientWidth - navLeft < offsetLeft + offsetWidth) {
-        navLeft -= offsetLeft + offsetWidth + navLeft - clientWidth + 2; //marginRight
-      }
-      navOffsetLeft.value = navLeft;
-      nav.style.transform = `translate3d(${navLeft}px,0,0)`;
-    };
-    const resetNavPosition = () => {
-      // when one tab removed or append
-      nextTick(() => {
-        const nav = navScrollRef.value;
-        if (!nav) return;
-        let totalWidth = nav.offsetWidth;
-        let clientWidth = navBoxRef.value.clientWidth;
-        let navLeft = navOffsetLeft.value;
-        if (clientWidth + navLeft < clientWidth) {
-          navLeft = clientWidth - totalWidth;
-        }
-        if (navLeft > 0) navLeft = 0;
-        navOffsetLeft.value = navLeft;
+      if (navLeft > 0) navLeft = 0;
 
-        nextBtnDisabled.value = navLeft == clientWidth - totalWidth;
-        prevBtnDisabled.value = navLeft == 0;
+      setNavOffsetLeft(navLeft);
+      setNextBtnDisabled(navLeft === clientWidth - totalWidth);
+      setPrevBtnDisabled(navLeft === 0);
+      navScrollEl.style.transform = `translate3d(${navLeft}px,0,0)`;
 
-        nav.style.transform = `translate3d(${navLeft}px,0,0)`;
-
-        resetActivePosition();
-        updateInkBarPosition();
-        updateNav();
-      });
-    };
-
-    provide("tabUpdateNav", resetNavPosition);
-
-    const scroll = (direction: string) => {
-      //control left or right
-
-      const panel = navScrollRef.value;
-      let totalWidth = panel.offsetWidth;
-      let clientWidth = navBoxRef.value.clientWidth;
-      let navLeft = navOffsetLeft.value;
-      // console.log(totalWidth, clientWidth)
-      if (direction == "right") {
-        const endWidth = totalWidth - clientWidth + navLeft;
-        if (endWidth > clientWidth) {
-          navLeft -= clientWidth;
-        } else if (endWidth > 0) {
-          navLeft -= endWidth;
-        }
-      } else {
-        if (navLeft < -clientWidth) {
-          navLeft += clientWidth;
-        } else if (navLeft < 0) {
-          navLeft = 0;
-        }
-      }
-      nextBtnDisabled.value = navLeft == clientWidth - totalWidth;
-      prevBtnDisabled.value = navLeft == 0;
-
-      navOffsetLeft.value = navLeft;
-      panel.style.transform = `translate3d(${navLeft}px,0,0)`;
-    };
-
-    const closeTab = (key: string, e: PointerEvent) => {
-      emit("remove", key);
-      e.stopPropagation();
-    };
-    const tabClick = ({ disabled, key }: TabClickEvent, index: number) => {
-      if (!disabled) {
-        emit("update:modelValue", key);
-        // emit("update:activeKey", key);
-        emit("tabClick", key);
-        if (defaultActiveKey.value !== key) {
-          defaultActiveKey.value = key;
-          currentIndex.value = index;
-          updateIndex();
-          emit("change", key);
-        }
-      }
-    };
-    const updateIndex = () => {
-      nextTick(() => {
-        const nodes = getChildren(slots.default?.());
-        currentIndex.value = nodes?.map((p) => p.key).indexOf(defaultActiveKey.value);
-        resetActivePosition();
-        updateInkBarPosition();
-      });
-    };
-    const updateInkBarPosition = () => {
-      if (!props.card && !props.sample) {
-        const nav = navRef.value.children[currentIndex.value];
-        if (nav) {
-          const inkBar = inkBarRef.value;
-          let offsetLeft = nav.offsetLeft;
-          if (props.centered) {
-            // offsetLeft = (navBoxRef.value.offsetWidth - offsetLeft) ;
-          }
-          inkBar.style.width = `${nav.offsetWidth}px`;
-          inkBar.style.transform = `translate3d(${offsetLeft}px, 0px, 0px)`;
-        }
-      }
-    };
-    const updateNav = () => {
-      nextTick(() => {
-        // update inkBar position
-
-        // set panel has scroll arrow
-        const navBox = navBoxRef.value;
-        if (!navBox) return;
-        scrollable.value = navBox.scrollWidth > navBox.clientWidth;
-      });
-    };
-
-    const navNodes = computed(() => {
-      const nodes = getChildren(slots.default?.());
-      return nodes?.map((panel, index) => {
-        const key = panel.key;
-
-        let { icon, title, closable, disabled } = panel.props;
-        disabled = disabled !== undefined && disabled != false;
-        closable = closable !== undefined;
-        const prop = {
-          class: [
-            "k-tabs-tab",
-            {
-              ["k-tabs-tab-active"]: key === defaultActiveKey.value,
-              ["k-tabs-tab-disabled"]: disabled,
-            },
-          ],
-          onClick: () => tabClick({ disabled, key }, index),
-        };
-        return (
-          <div {...prop}>
-            {icon ? <Icon type={icon} /> : null}
-            {title}
-            {closable && props.card ? (
-              <Icon type={X} class="k-tabs-close" onClick={(e) => closeTab(key, e)} />
-            ) : null}
-          </div>
-        );
-      });
-    });
-
-    return () => {
-      const { card, animated, centered, sample } = props;
-      const classes = [
-        "k-tabs",
-        {
-          ["k-tabs-animated"]: animated && !card && !sample,
-          ["k-tabs-card"]: card && !sample,
-          ["k-tabs-sample"]: sample && !card,
-          ["k-tabs-centered"]: centered,
-        },
-      ];
-
-      let scrollStyle: CSSProperties = {},
-        paneStyle: CSSProperties = {};
-
-      if (animated && !card && !sample) {
-        paneStyle.marginLeft = `-${100 * currentIndex.value}%`;
-      }
-
-      const navCls = [
-        "k-tabs-nav-container",
-        { ["k-tabs-nav-container-scroll"]: scrollable.value },
-      ];
-
-      // const { panels, navNodes } = renderNodes();
-      return (
-        <div class={classes}>
-          <div class="k-tabs-bar">
-            <div class={navCls}>
-              {scrollable.value ? (
-                <span
-                  class={[
-                    "k-tabs-tab-btn-prev",
-                    { "k-tabs-tab-btn-prev-disabled": prevBtnDisabled.value },
-                  ]}
-                  onClick={() => scroll("left")}
-                >
-                  <Icon type={ChevronLeft} />
-                </span>
-              ) : null}
-              <div class="k-tabs-nav-wrap" ref={navBoxRef}>
-                <div class="k-tabs-nav" style={scrollStyle} ref={navScrollRef}>
-                  {!card && !sample ? <div class="k-tabs-ink-bar" ref={inkBarRef} /> : null}
-                  <div class="k-tabs-nav-inner" ref={navRef}>
-                    {navNodes.value}
-                  </div>
-                </div>
-              </div>
-              {scrollable.value ? (
-                <span
-                  class={[
-                    "k-tabs-tab-btn-next",
-                    { "k-tabs-tab-btn-next-disabled": nextBtnDisabled.value },
-                  ]}
-                  onClick={() => scroll("right")}
-                >
-                  <Icon type={ChevronRight} />
-                </span>
-              ) : null}
-            </div>
-            {slots.extra ? <div class="k-tabs-extra">{slots.extra()}</div> : null}
-          </div>
-          <div class="k-tabs-content" style={paneStyle}>
-            {slots.default?.()}
-          </div>
-        </div>
+      const idx = childList.findIndex(
+        (c) => React.isValidElement(c) && c.key === activeKey
       );
-    };
-  },
-});
+      if (idx >= 0) {
+        resetActivePosition(idx);
+        updateInkBarPosition(idx);
+      }
+      updateNav();
+    }, 0);
+  }, [navOffsetLeft, activeKey, childList]);
+
+  // Recalculate on active change
+  useEffect(() => {
+    const idx = childList.findIndex(
+      (c) => React.isValidElement(c) && c.key === activeKey
+    );
+    setCurrentIndex(idx);
+    if (idx >= 0) {
+      setTimeout(() => {
+        resetActivePosition(idx);
+        updateInkBarPosition(idx);
+        updateNav();
+      }, 0);
+    }
+  }, [activeKey, children]);
+
+  useEffect(() => {
+    window.addEventListener("resize", resetNavPosition);
+    return () => window.removeEventListener("resize", resetNavPosition);
+  }, [resetNavPosition]);
+
+  const scroll = (direction: "left" | "right") => {
+    const navScrollEl = navScrollRef.current;
+    const navBoxEl = navBoxRef.current;
+    if (!navScrollEl || !navBoxEl) return;
+
+    const totalWidth = navScrollEl.offsetWidth;
+    const clientWidth = navBoxEl.clientWidth;
+    let navLeft = navOffsetLeft;
+
+    if (direction === "right") {
+      const endWidth = totalWidth - clientWidth + navLeft;
+      if (endWidth > clientWidth) navLeft -= clientWidth;
+      else if (endWidth > 0) navLeft -= endWidth;
+    } else {
+      if (navLeft < -clientWidth) navLeft += clientWidth;
+      else if (navLeft < 0) navLeft = 0;
+    }
+
+    setNextBtnDisabled(navLeft === clientWidth - totalWidth);
+    setPrevBtnDisabled(navLeft === 0);
+    setNavOffsetLeft(navLeft);
+    navScrollEl.style.transform = `translate3d(${navLeft}px,0,0)`;
+  };
+
+  const closeTab = (key: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    onRemove?.(key);
+  };
+
+  const tabClick = (key: string, disabled: boolean, index: number) => {
+    if (disabled) return;
+    onTabClick?.(key);
+    if (activeKey !== key) {
+      if (value === undefined) setActiveKey(key);
+      setCurrentIndex(index);
+      onChange?.(key);
+    }
+  };
+
+  // Build nav tabs from children
+  const navNodes = childList.map((panel, index) => {
+    if (!React.isValidElement(panel)) return null;
+    const key = panel.key as string;
+    const { icon, title, closable, disabled } = panel.props as any;
+    const isDisabled = disabled !== undefined && disabled !== false;
+    const isClosable = closable !== undefined;
+    return (
+      <div
+        key={key}
+        className={[
+          "k-tabs-tab",
+          key === activeKey ? "k-tabs-tab-active" : "",
+          isDisabled ? "k-tabs-tab-disabled" : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        onClick={() => tabClick(key, isDisabled, index)}
+      >
+        {icon ? <Icon type={icon} /> : null}
+        {title}
+        {isClosable && card ? (
+          <Icon type={X} className="k-tabs-close" onClick={(e) => closeTab(key, e)} />
+        ) : null}
+      </div>
+    );
+  });
+
+  // Inject activeKey into TabPanel children
+  const panelNodes = childList.map((panel) => {
+    if (!React.isValidElement(panel)) return panel;
+    return React.cloneElement(panel as React.ReactElement<any>, {
+      tabKey: panel.key,
+      activeKey,
+    });
+  });
+
+  const classes = [
+    "k-tabs",
+    animated && !card && !sample ? "k-tabs-animated" : "",
+    card && !sample ? "k-tabs-card" : "",
+    sample && !card ? "k-tabs-sample" : "",
+    centered ? "k-tabs-centered" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const paneStyle: React.CSSProperties =
+    animated && !card && !sample && currentIndex >= 0
+      ? { marginLeft: `-${100 * currentIndex}%` }
+      : {};
+
+  return (
+    <div className={classes} {...rest}>
+      <div className="k-tabs-bar">
+        <div
+          className={[
+            "k-tabs-nav-container",
+            scrollable ? "k-tabs-nav-container-scroll" : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        >
+          {scrollable ? (
+            <span
+              className={[
+                "k-tabs-tab-btn-prev",
+                prevBtnDisabled ? "k-tabs-tab-btn-prev-disabled" : "",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              onClick={() => scroll("left")}
+            >
+              <Icon type={ChevronLeft} />
+            </span>
+          ) : null}
+          <div className="k-tabs-nav-wrap" ref={navBoxRef}>
+            <div className="k-tabs-nav" ref={navScrollRef}>
+              {!card && !sample ? <div className="k-tabs-ink-bar" ref={inkBarRef} /> : null}
+              <div className="k-tabs-nav-inner" ref={navRef}>
+                {navNodes}
+              </div>
+            </div>
+          </div>
+          {scrollable ? (
+            <span
+              className={[
+                "k-tabs-tab-btn-next",
+                nextBtnDisabled ? "k-tabs-tab-btn-next-disabled" : "",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              onClick={() => scroll("right")}
+            >
+              <Icon type={ChevronRight} />
+            </span>
+          ) : null}
+        </div>
+        {extra ? <div className="k-tabs-extra">{extra}</div> : null}
+      </div>
+      <div className="k-tabs-content" style={paneStyle}>
+        {panelNodes}
+      </div>
+    </div>
+  );
+};
+
 export default Tabs;

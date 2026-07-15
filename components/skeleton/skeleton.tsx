@@ -1,86 +1,103 @@
-import { defineComponent, type ExtractPropTypes, ref, watch } from "vue";
+import React, { useState, useEffect, useRef } from "react";
+import type { ShapeType, SizeType } from "../const/types";
 
-import { skeletonProps } from './types';
+export interface SkeletonAvatarConfig {
+  size?: SizeType;
+  shape?: ShapeType;
+}
 
-export type SkeletonProps = ExtractPropTypes<typeof skeletonProps>;
+export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
+  animated?: boolean;
+  loading?: boolean;
+  delay?: number;
+  title?: number;
+  rows?: number;
+  avatar?: boolean | SkeletonAvatarConfig;
+  children?: React.ReactNode;
+}
 
-const Skeleton = defineComponent({
-  name: "Skeleton",
-  props: skeletonProps,
-  setup(ps, { slots }) {
-    const show = ref(ps.loading);
-    const timer = ref();
-    watch(
-      () => ps.loading,
-      (v) => {
-        if (v) {
-          show.value = v;
-        } else {
-          clearTimeout(timer.value);
-          timer.value = setTimeout(() => {
-            show.value = v;
-          }, ps.delay);
-        }
-      }
-    );
+const Skeleton: React.FC<SkeletonProps> = ({
+  animated = false,
+  loading = false,
+  delay = 500,
+  title = 35,
+  rows = 3,
+  avatar,
+  children,
+  className = "",
+  ...rest
+}) => {
+  const [show, setShow] = useState(loading);
+  const timer = useRef<NodeJS.Timeout | null>(null);
 
-    const renderAvatar = () => {
-      const { avatar } = ps;
-      if (!avatar) return null;
-      let size = "large",
-        shape = "circle";
-      if (typeof avatar == "object") {
-        if (avatar.size) size = avatar.size;
-        if (avatar.shape) shape = avatar.shape;
-      }
-      let props = {
-        class: [
-          "k-skeleton-avatar",
-          {
-            "k-skeleton-avatar-lg": size == "large",
-            "k-skeleton-avatar-sm": size == "small",
-            "k-skeleton-avatar-circle": shape == "circle",
-            "k-skeleton-avatar-square": shape == "square",
-          },
-        ],
-      };
-      return (
-        <div class="k-skeleton-header">
-          <span {...props}></span>
-        </div>
-      );
-    };
-    const renderContent = () => {
-      const { title, rows } = ps;
-      let lines = new Array(rows).fill("");
-      return (
-        <div class="k-skeleton-content">
-          {title > 0 ? <div class="k-skeleton-title" style={`width:${title}%`}></div> : null}
-          <ul class="k-skeleton-paragraph">
-            {lines.map(() => (
-              <li />
-            ))}
-          </ul>
-        </div>
-      );
-    };
-
+  useEffect(() => {
+    if (loading) {
+      setShow(true);
+    } else {
+      if (timer.current) clearTimeout(timer.current);
+      timer.current = setTimeout(() => {
+        setShow(false);
+      }, delay);
+    }
     return () => {
-      let { animated } = ps;
-
-      let props = {
-        class: [
-          "k-skeleton",
-          {
-            "k-skeleton-animated": animated,
-          },
-        ],
-      };
-      let nodeAvatar = renderAvatar();
-      let nodeContent = renderContent();
-      let child = slots.default?.();
-      return <div {...props}>{child && !show.value ? child : [nodeAvatar, nodeContent]}</div>;
+      if (timer.current) clearTimeout(timer.current);
     };
-  },
-});
+  }, [loading, delay]);
+
+  const renderAvatar = () => {
+    if (!avatar) return null;
+    let size = "large";
+    let shape = "circle";
+    if (typeof avatar === "object") {
+      if (avatar.size) size = avatar.size;
+      if (avatar.shape) shape = avatar.shape;
+    }
+    const avatarClasses = [
+      "k-skeleton-avatar",
+      size === "large" ? "k-skeleton-avatar-lg" : "",
+      size === "small" ? "k-skeleton-avatar-sm" : "",
+      shape === "circle" ? "k-skeleton-avatar-circle" : "",
+      shape === "square" ? "k-skeleton-avatar-square" : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    return (
+      <div className="k-skeleton-header">
+        <span className={avatarClasses} />
+      </div>
+    );
+  };
+
+  const renderContent = () => {
+    const lines = new Array(rows).fill("");
+    return (
+      <div className="k-skeleton-content">
+        {title > 0 ? (
+          <div className="k-skeleton-title" style={{ width: `${title}%` }} />
+        ) : null}
+        <ul className="k-skeleton-paragraph">
+          {lines.map((_, i) => (
+            <li key={i} />
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
+  const classes = [
+    "k-skeleton",
+    animated ? "k-skeleton-animated" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <div className={classes} {...rest}>
+      {children && !show ? children : [renderAvatar(), renderContent()]}
+    </div>
+  );
+};
+
 export default Skeleton;
