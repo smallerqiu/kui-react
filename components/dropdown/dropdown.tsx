@@ -1,251 +1,281 @@
-import {
-  type ExtractPropTypes,
-  type PropType,
-  Transition,
-  cloneVNode,
-  defineComponent,
-  nextTick,
-  onBeforeMount,
-  onMounted,
-  provide,
-  ref,
-  watch,
-} from "vue";
-
-import type { BooleanType, DropPlacementsType, TriggerType } from "../const/types";
-import resize from "../directives/resize";
-import { transfer } from "../directives/transfer";
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { createPortal } from "react-dom";
+import type { DropPlacementsType, TriggerType } from "../const/types";
 import { setPlacement } from "../utils/placement";
-import { getChildren } from "../utils/vnode";
+import { getChildren } from "../utils/react-node";
 
-export const dropdownProps = {
-  trigger: {
-    type: String as PropType<TriggerType>,
-    default: "hover",
-  },
-  disabled: Boolean as BooleanType,
-  arrow: { type: Boolean as BooleanType, default: false },
-  show: Boolean as BooleanType,
-  placement: {
-    type: String as PropType<DropPlacementsType>,
-    default: "bottom-left",
-  },
-  target: Object,
-  onOpenChange: {
-    type: Function as PropType<(opened: boolean) => void>,
-  },
+export interface DropdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "show"> {
+  trigger?: TriggerType;
+  disabled?: boolean;
+  arrow?: boolean;
+  show?: boolean;
+  placement?: DropPlacementsType;
+  target?: React.RefObject<any>;
+  onOpenChange?: (opened: boolean) => void;
+  overlay?: React.ReactNode;
+  children?: React.ReactNode;
+}
+
+export const DropdownContext = React.createContext<{
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+} | null>(null);
+
+const Dropdown: React.FC<DropdownProps> = ({
+  trigger = "hover",
+  disabled = false,
+  arrow = false,
+  show = false,
+  placement = "bottom-left",
+  target,
+  onOpenChange,
+  overlay,
+  children,
+  className = "",
+  style,
+  ...rest
+}) => {
+  const [visible, setVisible] = useState(show);
+  const [rendered, setRendered] = useState(show);
+
+  const localRefSelection = useRef<HTMLElement>(null);
+  const refPopper = useRef<HTMLDivElement>(null);
+
+  const [currentPlacement, setCurrentPlacement] = useState(placement);
+  const [transOrigin, setTransOrigin] = useState("bottom");
+  const [left, setLeft] = useState(0);
+  const [top, setTop] = useState(0);
+
+  const showTimer = useRef<NodeJS.Timeout | null>(null);
+
+  const refSelection = target || localRefSelection;
+
+  useEffect(() => {
+    setVisible(show);
+    if (show) {
+      setRendered(true);
+    }
+  }, [show]);
+
+  const updatePosition = (e?: MouseEvent) => {
+    if (!refPopper.current) return;
+    const targetElement = refSelection.current;
+    if (!targetElement) return;
+
+    const position = e ? { x: e.clientX, y: e.clientY } : null;
+
+    const placementObj = { value: currentPlacement };
+    const originObj = { value: transOrigin };
+    const topObj = { value: top };
+    const leftObj = { value: left };
+
+    setPlacement({
+      refSelection: targetElement,
+      position,
+      refPopper: refPopper.current,
+      currentPlacement: placementObj,
+      transOrigin: originObj,
+      top: topObj,
+      left: leftObj,
+    });
+
+    setCurrentPlacement(placementObj.value as DropPlacementsType);
+    setTransOrigin(originObj.value);
+    setTop(topObj.value);
+    setLeft(leftObj.value);
+  };
+
+  useEffect(() => {
+    if (visible) {
+      updatePosition();
+    }
+  }, [visible, placement]);
+
+  useEffect(() => {
+    if (!visible) return;
+    const targetElement = refSelection.current;
+    if (!targetElement) return;
+    const observer = new ResizeObserver(() => {
+      updatePosition();
+    });
+    observer.observe(targetElement);
+    return () => {
+      observer.disconnect();
+    };
+  }, [visible]);
+
+  const outsideClick = (e: MouseEvent) => {
+    const targetElement = refSelection.current;
+    if (!refPopper.current) return;
+    const clickedEl = e.target as HTMLElement;
+
+    if (
+      (!refPopper.current.contains(clickedEl) && targetElement && !targetElement.contains(clickedEl)) ||
+      (trigger === "contextmenu" && !refPopper.current.contains(clickedEl))
+    ) {
+      setVisible(false);
+      onOpenChange?.(false);
+    }
+  };
+
+  useEffect(() => {
+    if (visible) {
+      document.addEventListener("click", outsideClick);
+    } else {
+      document.removeEventListener("click", outsideClick);
+    }
+    return () => {
+      document.removeEventListener("click", outsideClick);
+    };
+  }, [visible, trigger]);
+
+  const clearPopTimer = () => {
+    if (showTimer.current) {
+      clearTimeout(showTimer.current);
+      showTimer.current = null;
+    }
+  };
+
+  const openChange = (opened: boolean, e?: MouseEvent) => {
+    if (!rendered && opened) {
+      setRendered(true);
+    }
+    setVisible(opened);
+    onOpenChange?.(opened);
+    if (opened) {
+      setTimeout(() => updatePosition(e), 0);
+    }
+  };
+
+  const mouseEnterEvent = () => {
+    if (disabled) return;
+    if (trigger === "hover") {
+      clearPopTimer();
+      openChange(true);
+    }
+  };
+
+  const mouseLeaveEvent = () => {
+    if (disabled) return;
+    if (trigger === "hover") {
+      clearPopTimer();
+      showTimer.current = setTimeout(() => {
+        openChange(false);
+      }, 300);
+    }
+  };
+
+  const clickEvent = (e: React.MouseEvent) => {
+    if (disabled) return;
+    if (trigger === "click") {
+      openChange(!visible);
+    }
+  };
+
+  const contextmenuEvent = (e: React.MouseEvent) => {
+    if (disabled) return;
+    if (trigger === "contextmenu") {
+      e.preventDefault();
+      openChange(true, e.nativeEvent);
+    }
+  };
+
+  const childList = getChildren(children);
+  const firstChild = childList.length === 1 ? childList[0] : <span>{childList}</span>;
+
+  const triggerProps: Record<string, any> = {};
+  if (!target) {
+    triggerProps.onClick = (e: React.MouseEvent) => {
+      clickEvent(e);
+      if (React.isValidElement(firstChild) && firstChild.props.onClick) {
+        firstChild.props.onClick(e);
+      }
+    };
+    triggerProps.onMouseEnter = (e: React.MouseEvent) => {
+      mouseEnterEvent();
+      if (React.isValidElement(firstChild) && firstChild.props.onMouseEnter) {
+        firstChild.props.onMouseEnter(e);
+      }
+    };
+    triggerProps.onMouseLeave = (e: React.MouseEvent) => {
+      mouseLeaveEvent();
+      if (React.isValidElement(firstChild) && firstChild.props.onMouseLeave) {
+        firstChild.props.onMouseLeave(e);
+      }
+    };
+    triggerProps.onContextMenu = (e: React.MouseEvent) => {
+      contextmenuEvent(e);
+      if (React.isValidElement(firstChild) && firstChild.props.onContextMenu) {
+        firstChild.props.onContextMenu(e);
+      }
+    };
+  }
+
+  const triggerNode = React.isValidElement(firstChild) ? (
+    React.cloneElement(firstChild as React.ReactElement, {
+      ref: refSelection,
+      ...triggerProps,
+    })
+  ) : (
+    <span ref={refSelection as any} {...triggerProps}>
+      {firstChild}
+    </span>
+  );
+
+  const popperClasses = [
+    "k-dropdown",
+    arrow ? "k-dropdown-has-arrow" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const overlayNode =
+    rendered && overlay ? (
+      <div
+        ref={refPopper}
+        style={
+          {
+            left: `${left}px`,
+            top: `${top}px`,
+            transformOrigin: transOrigin,
+            display: visible ? undefined : "none",
+            ...style,
+          } as React.CSSProperties
+        }
+        className={popperClasses}
+        onClick={() => openChange(false)}
+        onMouseEnter={clearPopTimer}
+        onMouseLeave={mouseLeaveEvent}
+        {...(rest as any)}
+      >
+        <div className="k-dropdown-content">
+          <div className="k-dropdown-body">{overlay}</div>
+          {arrow && (
+            <div className="k-dropdown-arrow">
+              <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
+                <path
+                  d="M24,0.97087 L24,1.97087 C20,1.97087 18.5,2.97087 16.5,4.97087 C14.5,6.97087 14,7.97087 12,7.97087 C10,7.97087 9.5,6.97087 7.5,4.97087 C5.5,2.97087 4,1.97087 0,1.97087 L0,0.97087 L24,0.97087 Z"
+                  id="ot"
+                />
+                <path
+                  d="M24,0 L24,1 C20.032328,1 18.1576594,1.985435 16.1576594,3.985435 C14.1576594,5.985435 13.3847825,7 12,7 C10.6152175,7 9.81306952,5.985435 7.81306952,3.985435 C5.81306952,1.985435 4.0114261,1 0,1 L0,0 L24,0 Z"
+                  id="in"
+                  stroke="currentcolor"
+                />
+              </svg>
+            </div>
+          )}
+        </div>
+      </div>
+    ) : null;
+
+  return (
+    <DropdownContext.Provider value={{ onMouseEnter: mouseEnterEvent, onMouseLeave: mouseLeaveEvent }}>
+      {triggerNode}
+      {overlayNode && createPortal(overlayNode, document.body)}
+    </DropdownContext.Provider>
+  );
 };
 
-export type DropdownProps = ExtractPropTypes<typeof dropdownProps>;
-
-const Dropdown = defineComponent({
-  name: "Dropdown",
-  directives: {
-    transfer,
-    resize,
-  },
-  props: dropdownProps,
-  setup(props, { slots, emit, attrs }) {
-    const visible = ref(props.show);
-    const refSelection = ref<HTMLElement | null>(null);
-    const currentPlacement = ref(props.placement);
-    const transOrigin = ref("bottom");
-    const refPopper = ref<HTMLElement | null>(null);
-    const left = ref(0);
-    const top = ref(0);
-    const rendered = ref(false);
-    const showTimer = ref<NodeJS.Timeout>();
-    provide("dropdown", true);
-    onMounted(() => {
-      if (props.show) {
-        toggle(true);
-      }
-    });
-    onBeforeMount(() => {
-      document.removeEventListener("click", outsideClick);
-    });
-    const clearPopTimer = () => clearTimeout(showTimer.value);
-    provide("clearPopTimer", clearPopTimer);
-
-    watch(
-      () => props.placement,
-      (v) => {
-        currentPlacement.value = v;
-        updatePosition();
-      }
-    );
-    watch(
-      () => props.show,
-      (v) => {
-        toggle(v);
-      }
-    );
-
-    const outsideClick = (e: PointerEvent) => {
-      const ctx = (refSelection.value as any)?.$el || refSelection.value;
-      if (!refPopper.value) return;
-      const target = e.target as HTMLElement;
-      if (
-        (!refPopper.value.contains(target) && ctx && !ctx.contains(target)) ||
-        (props.trigger == "contextmenu" && !refPopper.value.contains(target))
-      ) {
-        openChange(false);
-      }
-    };
-    const updatePosition = (e?: MouseEvent) => {
-      const position = e ? { x: e.clientX, y: e.clientY } : null;
-      nextTick(() => {
-        setPlacement({
-          refSelection,
-          position,
-          refPopper,
-          currentPlacement,
-          transOrigin,
-          top,
-          left,
-        });
-      });
-    };
-
-    const openChange = (opened?: boolean) => {
-      visible.value = opened;
-      emit("openChange", opened);
-    };
-    const toggle = (open?: boolean, e?: MouseEvent) => {
-      if (open) {
-        if (!rendered.value) {
-          rendered.value = true;
-          document.addEventListener("click", outsideClick);
-          nextTick(() => {
-            openChange(true);
-            emit("update:show", true);
-            updatePosition(e);
-          });
-        } else {
-          emit("update:show", true);
-          updatePosition(e);
-          openChange(true);
-        }
-      } else {
-        openChange(false);
-        emit("update:show", false);
-      }
-    };
-    const hidePopper = () => {
-      openChange(false);
-    };
-    provide("dropdown-menu-selected", hidePopper);
-
-    const clickEvent = () => {
-      if (props.disabled) {
-        return;
-      }
-      if (props.trigger == "click") {
-        toggle(true);
-      }
-    };
-    const mouseLeaveEvent = () => {
-      if (props.disabled) {
-        return;
-      }
-      if (props.trigger == "hover") {
-        showTimer.value = setTimeout(() => {
-          toggle(false);
-        }, 300);
-      }
-    };
-    const mouseEnterEvent = () => {
-      if (props.disabled) {
-        return;
-      }
-      if (props.trigger == "hover") {
-        clearTimeout(showTimer.value);
-        toggle(true);
-      }
-    };
-    const contextmenuEvent = (e: MouseEvent) => {
-      if (props.disabled) {
-        return;
-      }
-      if (props.trigger == "contextmenu") {
-        e.preventDefault();
-        toggle(true, e);
-      }
-    };
-
-    provide("dropdown-trigger-in", mouseEnterEvent);
-    provide("dropdown-trigger-out", mouseLeaveEvent);
-    return () => {
-      const _props = {
-        ref: refPopper,
-        style: {
-          left: `${left.value}px`,
-          top: `${top.value}px`,
-          transformOrigin: transOrigin.value,
-        },
-        "k-placement": currentPlacement.value,
-        class: ["k-dropdown", { "k-dropdown-has-arrow": props.arrow }],
-
-        onClick: (e: MouseEvent) => {
-          toggle(false, e);
-        },
-        onMouseenter: () => {
-          clearTimeout(showTimer.value);
-        },
-        onMouseleave: () => {
-          if (props.trigger == "hover") {
-            showTimer.value = setTimeout(() => {
-              toggle(false);
-            }, 300);
-          }
-        },
-      };
-      const overlay =
-        rendered.value && slots.overlay ? (
-          <Transition name="k-dropdown">
-            <div v-transfer={true} v-resize={updatePosition} v-show={visible.value} {..._props}>
-              <div class={`k-dropdown-content`}>
-                <div class={`k-dropdown-body`}>{slots.overlay?.()}</div>
-                {props.arrow ? (
-                  <div class={`k-dropdown-arrow`}>
-                    <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
-                      <path
-                        d="M24,0.97087 L24,1.97087 C20,1.97087 18.5,2.97087 16.5,4.97087 C14.5,6.97087 14,7.97087 12,7.97087 C10,7.97087 9.5,6.97087 7.5,4.97087 C5.5,2.97087 4,1.97087 0,1.97087 L0,0.97087 L24,0.97087 Z"
-                        id="ot"
-                      />
-                      <path
-                        d="M24,0 L24,1 C20.032328,1 18.1576594,1.985435 16.1576594,3.985435 C14.1576594,5.985435 13.3847825,7 12,7 C10.6152175,7 9.81306952,5.985435 7.81306952,3.985435 C5.81306952,1.985435 4.0114261,1 0,1 L0,0 L24,0 Z"
-                        id="in"
-                        stroke="currentcolor"
-                      />
-                    </svg>
-                  </div>
-                ) : null}
-              </div>
-            </div>
-          </Transition>
-        ) : null;
-
-      let nodes = getChildren(slots.default?.());
-      const pp = props.target
-        ? {}
-        : {
-            onClick: clickEvent,
-            onMouseenter: mouseEnterEvent,
-            onMouseleave: mouseLeaveEvent,
-            onContextmenu: contextmenuEvent,
-          };
-      const ctxNode = cloneVNode(
-        nodes.length == 1 ? nodes[0] : <span>{nodes}</span>,
-        {
-          ref: refSelection,
-          ...attrs,
-          ...pp,
-        },
-        true
-      );
-      return [ctxNode, overlay];
-    };
-  },
-});
 export default Dropdown;

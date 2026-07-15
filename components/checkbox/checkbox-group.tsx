@@ -1,109 +1,109 @@
-import { computed, defineComponent, ref, watch, type ExtractPropTypes, type PropType } from "vue";
-import type { BooleanType, DirectionType, SizeType, ThemeType } from "../const/types";
-import { getChildren } from "../utils/vnode";
+import React, { useState, useEffect } from "react";
+import type { DirectionType, SizeType, ThemeType } from "../const/types";
 import Checkbox, { type ChangeEvent } from "./checkbox";
 
 export interface CheckboxOption {
   label?: string;
-  value?: string | number;
+  value?: any;
   disabled?: boolean;
   [key: string]: any;
 }
 
-const checkboxGroupProps = {
-  modelValue: {
-    type: Array as PropType<any[]>,
-    default: () => [],
-  },
-  theme: { type: String as PropType<ThemeType>, default: "fill" },
-  disabled: Boolean as BooleanType,
-  options: Array as PropType<CheckboxOption[]>,
-  direction: {
-    type: String as PropType<DirectionType>,
-    default: "horizontal",
-  },
-  size: {
-    type: String as PropType<SizeType>,
-  },
-  onChange: {
-    type: Function as PropType<(value: any[]) => void>,
-  },
-};
+export interface CheckboxGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+  value?: any[];
+  defaultValue?: any[];
+  theme?: ThemeType;
+  disabled?: boolean;
+  options?: CheckboxOption[];
+  direction?: DirectionType;
+  size?: SizeType;
+  onChange?: (value: any[]) => void;
+  children?: React.ReactNode;
+}
 
-export type CheckboxGroupProps = ExtractPropTypes<typeof checkboxGroupProps>;
+export interface CheckboxGroupContextValue {
+  value?: any[];
+  disabled?: boolean;
+  theme?: ThemeType;
+  size?: SizeType;
+  onChange?: (e: ChangeEvent) => void;
+}
 
-const CheckboxGroup = defineComponent({
-  name: "CheckboxGroup",
-  props: checkboxGroupProps,
-  setup(props, { slots, emit }) {
-    const currentValue = ref(props.modelValue);
+export const CheckboxGroupContext = React.createContext<CheckboxGroupContextValue | null>(null);
 
-    watch(
-      () => props.modelValue,
-      (val) => {
-        currentValue.value = val;
+const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
+  value,
+  defaultValue = [],
+  theme = "fill",
+  disabled = false,
+  options,
+  direction = "horizontal",
+  size,
+  onChange,
+  children,
+  className = "",
+  ...rest
+}) => {
+  const [currentValue, setCurrentValue] = useState<any[]>(value !== undefined ? value : defaultValue);
+
+  useEffect(() => {
+    if (value !== undefined) {
+      setCurrentValue(value);
+    }
+  }, [value]);
+
+  const handleCheckboxChange = (event: ChangeEvent) => {
+    const { checked, value: val } = event;
+    const nextValue = [...currentValue];
+    const index = nextValue.indexOf(val);
+
+    if (checked) {
+      if (index === -1) {
+        nextValue.push(val);
       }
-    );
-
-    const onChange = ({ value }: ChangeEvent) => {
-      const val = [...currentValue.value];
-      const index = val.indexOf(value);
-
+    } else {
       if (index > -1) {
-        val.splice(index, 1);
-      } else {
-        val.push(value);
+        nextValue.splice(index, 1);
       }
-      emit("update:modelValue", val);
-      emit("change", val);
-    };
+    }
 
-    const optionsData = computed(() => {
-      const { options } = props;
-      if (options && options.length > 0) {
-        return options;
-      }
+    if (value === undefined) {
+      setCurrentValue(nextValue);
+    }
+    onChange?.(nextValue);
+  };
 
-      const data: any[] = [];
-      const children = getChildren(slots.default?.());
+  const classes = [
+    "k-checkbox-group",
+    direction === "vertical" ? "k-checkbox-group-vertical" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
-      children.forEach((child: any) => {
-        if (child?.props) {
-          const { label, value, disabled } = child.props;
-          // Try to resolve label from slots if not a prop
-          const resolvedLabel = label || child.children?.default?.()?.[0]?.children || value;
-          data.push({
-            value,
-            disabled,
-            label: resolvedLabel,
-          });
-        }
-      });
-      return data;
-    });
-
-    return () => {
-      const { direction, disabled, theme, size } = props;
-
-      const rootProps = {
-        class: ["k-checkbox-group", { "k-checkbox-group-vertical": direction === "vertical" }],
-      };
-
-      const nodes = optionsData.value.map((option) => (
+  const content =
+    options && options.length > 0 ? (
+      options.map((option) => (
         <Checkbox
           key={option.value}
           label={option.label}
           value={option.value}
-          checked={currentValue.value.indexOf(option.value) > -1}
           disabled={disabled || option.disabled}
-          theme={theme}
-          size={size}
-          onChange={onChange}
         />
-      ));
+      ))
+    ) : (
+      children
+    );
 
-      return <div {...rootProps}>{nodes}</div>;
-    };
-  },
-});
+  return (
+    <CheckboxGroupContext.Provider
+      value={{ value: currentValue, disabled, theme, size, onChange: handleCheckboxChange }}
+    >
+      <div className={classes} {...rest}>
+        {content}
+      </div>
+    </CheckboxGroupContext.Provider>
+  );
+};
+
 export default CheckboxGroup;

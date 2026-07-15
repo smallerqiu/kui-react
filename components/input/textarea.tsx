@@ -1,71 +1,69 @@
-import {
-  defineComponent,
-  ref,
-  watch,
-  type DefineComponent,
-  type ExtractPropTypes,
-  type PropType,
-  type TextareaHTMLAttributes,
-} from "vue";
-import type { BooleanType, ShapeType, SizeType, ThemeType } from "../const/types";
+import React, { useState, useEffect } from "react";
+import type { ShapeType, SizeType, ThemeType } from "../const/types";
 
-const textAreaProps = {
-  value: [String, Number, Object, Array] as PropType<any>,
-  modelValue: [String, Number, Object, Array] as PropType<any>,
-  theme: { type: String as PropType<ThemeType>, default: "fill" },
-  shape: { type: String as PropType<ShapeType> },
-  size: String as PropType<SizeType>,
-  placeholder: String,
-  rows: { type: Number, default: 2 },
-  disabled: Boolean as BooleanType,
-  // readonly: Boolean as BooleanType,
-  onChange: { type: Function as PropType<(value: string) => void> },
+export interface TextAreaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> {
+  value?: any;
+  defaultValue?: any;
+  theme?: ThemeType;
+  shape?: ShapeType;
+  size?: SizeType;
+  onChange?: (value: string) => void;
+}
+
+const TextArea: React.FC<TextAreaProps> = ({
+  value,
+  defaultValue = "",
+  theme = "fill",
+  shape,
+  size,
+  placeholder,
+  rows = 2,
+  disabled = false,
+  onChange,
+  className = "",
+  onInput,
+  ...rest
+}) => {
+  const [currentValue, setCurrentValue] = useState(value !== undefined ? value : defaultValue);
+
+  useEffect(() => {
+    if (value !== undefined) {
+      setCurrentValue(value);
+    }
+  }, [value]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const v = e.target.value;
+    if (value === undefined) {
+      setCurrentValue(v);
+    }
+    onChange?.(v);
+    onInput?.(e as any);
+  };
+
+  const classes = [
+    "k-textarea",
+    theme === "fill" ? "k-textarea-fill" : "",
+    theme === "outline" ? "k-textarea-outline" : "",
+    size === "small" ? "k-textarea-sm" : "",
+    shape === "square" ? "k-textarea-square" : "",
+    size === "large" ? "k-textarea-lg" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <textarea
+      placeholder={placeholder}
+      rows={rows}
+      className={classes}
+      disabled={disabled}
+      value={currentValue ?? ""}
+      onChange={handleChange}
+      {...rest}
+    />
+  );
 };
 
-export type TextAreaProps = Partial<ExtractPropTypes<typeof textAreaProps>> &
-  Omit<TextareaHTMLAttributes, "onChange">;
-
-const TextArea = defineComponent({
-  name: "TextArea",
-  props: textAreaProps,
-  setup(props, { attrs, emit }) {
-    const currentValue = ref(props.modelValue ?? props.value);
-
-    watch(
-      () => props.modelValue,
-      (v) => {
-        currentValue.value = v;
-      }
-    );
-
-    const handleChange = (e: Event) => {
-      const { value } = e.target as HTMLInputElement;
-      emit("update:modelValue", value);
-      emit("change", value);
-    };
-
-    return () => {
-      const { theme, disabled, size, shape, placeholder, rows } = props;
-      const rootProps = {
-        ...attrs,
-        placeholder,
-        rows,
-        class: [
-          "k-textarea",
-          {
-            [`k-textarea-fill`]: theme === "fill",
-            [`k-textarea-outline`]: theme === "outline",
-            "k-textarea-sm": size === "small",
-            "k-textarea-square": shape === "square",
-            "k-textarea-lg": size === "large",
-          },
-        ],
-        disabled,
-        value: currentValue.value,
-        onInput: handleChange,
-      };
-      return <textarea {...rootProps} />;
-    };
-  },
-});
-export default TextArea as DefineComponent<TextAreaProps>;
+export default TextArea;

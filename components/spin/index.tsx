@@ -1,61 +1,75 @@
-import type { ExtractPropTypes, PropType } from "vue";
-import { defineComponent, ref, watch } from "vue";
+import React, { useEffect, useState, useRef } from "react";
 import type { SizeType, SpinModeType } from "../const/types.ts";
 
-export const spinProps = {
-  modelValue: { type: Boolean, default: true },
-  delay: { type: Number, default: 500 },
-  size: {
-    type: String as PropType<SizeType>,
-  },
-  mode: {
-    type: String as PropType<SpinModeType>,
-    default: "rotate",
-  },
+export interface SpinProps extends React.HTMLAttributes<HTMLDivElement> {
+  spinning?: boolean;
+  delay?: number;
+  size?: SizeType;
+  mode?: SpinModeType;
+  children?: React.ReactNode;
+}
+
+const Spin: React.FC<SpinProps> = ({
+  spinning: spinningProp = true,
+  delay = 500,
+  size,
+  mode = "rotate",
+  children,
+  className = "",
+  ...rest
+}) => {
+  const [spinning, setSpinning] = useState(spinningProp);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (spinningProp) {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+      setSpinning(true);
+    } else {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+      timerRef.current = setTimeout(() => {
+        setSpinning(false);
+        timerRef.current = null;
+      }, delay);
+    }
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [spinningProp, delay]);
+
+  const spinClasses = [
+    spinning ? "k-spin-loading" : "",
+    mode && spinning ? `k-spin-${mode}` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const rootClasses = [
+    "k-spin",
+    size === "large" ? "k-spin-lg" : "",
+    size === "small" ? "k-spin-sm" : "",
+    children == null ? "k-spin-only" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const spinNode = <div className={spinClasses} />;
+
+  return (
+    <div className={rootClasses} {...rest}>
+      {spinNode}
+      {children}
+    </div>
+  );
 };
 
-export type SpinProps = ExtractPropTypes<typeof spinProps>;
-
-const Spin = defineComponent({
-  name: "Spin",
-  props: spinProps,
-  setup(props, { slots }) {
-    const spinning = ref(props.modelValue);
-    let timer: NodeJS.Timeout;
-    watch(
-      () => props.modelValue,
-      (nv) => {
-        if (nv) {
-          spinning.value = nv;
-        } else {
-          clearTimeout(timer);
-          timer = setTimeout(() => {
-            spinning.value = nv;
-          }, props.delay);
-        }
-      }
-    );
-    return () => {
-      let { mode, size } = props;
-      const classes = [
-        {
-          [`k-spin-loading`]: spinning.value,
-
-          [`k-spin-${mode}`]: mode && spinning.value,
-        },
-      ];
-      const children = slots.default?.();
-      const root = [
-        "k-spin",
-        {
-          [`k-spin-lg`]: size == "large",
-          [`k-spin-sm`]: size == "small",
-          [`k-spin-only`]: children == null,
-        },
-      ];
-      const spin = <div class={classes} />;
-      return <div class={root}>{[spin, children]}</div>;
-    };
-  },
-});
 export default Spin;

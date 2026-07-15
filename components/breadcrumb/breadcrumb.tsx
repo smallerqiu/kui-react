@@ -1,28 +1,27 @@
-import { defineComponent, provide, type ExtractPropTypes, type PropType } from "vue";
+import React, { createContext } from "react";
 
-const breadcrumbProps = {
-  separator: { type: [String, Object] as PropType<string | any>, default: "/" },
+export interface BreadcrumbProps extends React.HTMLAttributes<HTMLElement> {
+  separator?: React.ReactNode;
+  children?: React.ReactNode;
+}
+
+export const BreadcrumbContext = createContext<React.ReactNode>("/");
+
+const Breadcrumb: React.FC<BreadcrumbProps> = ({
+  separator = "/",
+  children,
+  className = "",
+  ...rest
+}) => {
+  const classes = ["k-breadcrumb", className].filter(Boolean).join(" ");
+
+  return (
+    <BreadcrumbContext.Provider value={separator}>
+      <nav className={classes} {...rest}>
+        <ol>{children}</ol>
+      </nav>
+    </BreadcrumbContext.Provider>
+  );
 };
 
-export type BreadcrumbProps = ExtractPropTypes<typeof breadcrumbProps>;
-const Breadcrumb = defineComponent({
-  name: "Breadcrumb",
-  props: breadcrumbProps,
-  setup(props, { slots }) {
-    // 提供分隔符给子组件 BreadcrumbItem
-    provide("separator", slots.separator?.() || props.separator);
-
-    return () => {
-      const rootProps = {
-        class: "k-breadcrumb",
-      };
-
-      return (
-        <nav {...rootProps}>
-          <ol>{slots.default?.()}</ol>
-        </nav>
-      );
-    };
-  },
-});
 export default Breadcrumb;

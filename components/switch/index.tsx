@@ -1,88 +1,93 @@
+import React, { useState, useEffect } from "react";
 import { Loading } from "kui-icons";
-import type { ExtractPropTypes, PropType } from "vue";
-import { defineComponent, ref, watch } from "vue";
-import type { BooleanType, SizeType, ValueType } from "../const/types";
+import type { SizeType, ValueType } from "../const/types";
 import Icon from "../icon";
 import { getValueWithType } from "../utils/checked";
 
-export const switchProps = {
-  checked: {
-    type: Boolean as BooleanType,
-    default: false,
-  },
-  valueType: { type: String as PropType<ValueType>, default: "boolean" },
-  modelValue: { type: [String, Number, Boolean] as PropType<string | number | boolean> },
-  type: String,
-  disabled: Boolean as BooleanType,
-  loading: Boolean as BooleanType,
-  size: {
-    type: String as PropType<SizeType>,
-  },
-  trueText: String,
-  falseText: String,
-  onChange: Function as PropType<(value: boolean) => void>,
+export interface SwitchProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onChange"> {
+  checked?: boolean;
+  valueType?: ValueType;
+  type?: string;
+  disabled?: boolean;
+  loading?: boolean;
+  size?: SizeType;
+  trueText?: string;
+  falseText?: string;
+  checkedChildren?: React.ReactNode;
+  unCheckedChildren?: React.ReactNode;
+  onChange?: (value: boolean | number | string) => void;
+}
+
+const Switch: React.FC<SwitchProps> = ({
+  checked = false,
+  valueType = "boolean",
+  type,
+  disabled = false,
+  loading = false,
+  size,
+  trueText,
+  falseText,
+  checkedChildren,
+  unCheckedChildren,
+  onChange,
+  className = "",
+  onClick,
+  ...rest
+}) => {
+  const [localChecked, setLocalChecked] = useState(checked);
+
+  useEffect(() => {
+    setLocalChecked(checked);
+  }, [checked]);
+
+  const change = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (disabled || loading) {
+      return;
+    }
+    const nextChecked = !localChecked;
+    setLocalChecked(nextChecked);
+
+    const val = getValueWithType(nextChecked, valueType);
+    onChange?.(val);
+    onClick?.(e);
+  };
+
+  const classes = [
+    "k-switch",
+    localChecked ? "k-switch-checked" : "",
+    disabled || loading ? "k-switch-disabled" : "",
+    type ? `k-switch-${type}` : "",
+    size === "small" ? "k-switch-sm" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const loadNode = loading ? <Icon spin type={Loading} className="k-switch-loading" /> : null;
+
+  const currentCheckedChildren = checkedChildren || trueText;
+  const currentUnCheckedChildren = unCheckedChildren || falseText;
+
+  const showInner = size !== "small" && (currentCheckedChildren || currentUnCheckedChildren);
+
+  const textNode = showInner ? (
+    <span className="k-switch-inner">
+      {localChecked ? currentCheckedChildren : currentUnCheckedChildren}
+    </span>
+  ) : null;
+
+  return (
+    <button
+      className={classes}
+      onClick={change}
+      disabled={disabled || loading}
+      type="button"
+      {...rest}
+    >
+      {textNode}
+      {loadNode}
+    </button>
+  );
 };
 
-export type SwitchProps = ExtractPropTypes<typeof switchProps>;
-
-const Switch = defineComponent({
-  name: "KSwitch",
-  props: switchProps,
-  setup(props, { slots, emit }) {
-    const isChecked = ref(props.modelValue || props.checked);
-    watch(
-      () => props.modelValue,
-      (nv) => {
-        isChecked.value = nv == 1;
-      }
-    );
-    watch(
-      () => props.checked,
-      (nv) => {
-        isChecked.value = nv;
-      }
-    );
-    const change = () => {
-      if (props.disabled) {
-        return false;
-      }
-      const checked = !isChecked.value;
-      isChecked.value = checked;
-      const value = getValueWithType(checked, props.valueType);
-
-      emit("update:modelValue", value);
-      emit("update:checked", checked);
-      emit("change", value);
-    };
-
-    return () => {
-      const { type, trueText, falseText, disabled, loading, size } = props;
-      const classes = [
-        "k-switch",
-        {
-          ["k-switch-checked"]: isChecked.value,
-          ["k-switch-disabled"]: disabled || loading,
-          [`k-switch-${type}`]: !!type,
-          ["k-switch-sm"]: props.size == "small",
-        },
-      ];
-      const children = slots.checked?.() || trueText || slots.unchecked?.() || falseText;
-      const loadNode = loading ? <Icon spin type={Loading} class="k-switch-loading" /> : null;
-
-      const textNode =
-        size != "small" && children ? (
-          <span class="k-switch-inner">
-            {isChecked.value ? slots.checked?.() || trueText : slots.unchecked?.() || falseText}
-          </span>
-        ) : null;
-
-      return (
-        <button class={classes} onClick={change} disabled={disabled || loading} type="button">
-          {textNode}
-          {loadNode}
-        </button>
-      );
-    };
-  },
-});
 export default Switch;

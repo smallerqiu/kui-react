@@ -1,69 +1,65 @@
-import { defineComponent, type ExtractPropTypes, type PropType } from "vue";
-import type { BooleanType } from "../const/types";
+import React from "react";
 
-const inputBoxProps = {
-  multiple: Boolean as BooleanType,
-  disabled: Boolean as BooleanType,
-  size: String,
-  type: String,
-  theme: String,
-  shape: String,
-  inputType: String,
-  value: [String, Number, Object] as PropType<string | number | any>,
-  showPassword: Boolean as BooleanType,
-  inputRef: Object as PropType<any>,
-  // htmlAttrs: { type: Object as PropType<any>, default: () => ({}) },
+export interface InputBoxProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  multiple?: boolean;
+  disabled?: boolean;
+  size?: string;
+  theme?: string;
+  shape?: string;
+  inputType?: string;
+  value?: any;
+  showPassword?: boolean;
+  inputRef?: React.Ref<HTMLInputElement>;
+}
+
+const InputBox: React.FC<InputBoxProps> = ({
+  multiple,
+  disabled,
+  size,
+  type,
+  theme,
+  shape,
+  inputType,
+  value,
+  showPassword,
+  inputRef,
+  className = "",
+  onFocus,
+  onBlur,
+  onInput,
+  ...rest
+}) => {
+  let currentType = type;
+  if (showPassword === true && currentType === "password") {
+    currentType = "text";
+  }
+
+  const classes = [
+    !multiple ? `k-${inputType}` : "",
+    multiple ? `k-${inputType}-text` : "",
+    disabled ? `k-${inputType}-disabled` : "",
+    size === "small" && !multiple ? `k-${inputType}-sm` : "",
+    size === "large" && !multiple ? `k-${inputType}-lg` : "",
+    theme !== "solid" && !multiple && theme ? `k-${inputType}-${theme}` : "",
+    shape === "circle" && !multiple ? `k-${inputType}-circle` : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <input
+      ref={inputRef}
+      className={classes}
+      disabled={disabled}
+      type={currentType}
+      value={value ?? ""}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      onInput={onInput}
+      {...rest}
+    />
+  );
 };
 
-export type InputBoxProps = ExtractPropTypes<typeof inputBoxProps>;
-
-export default defineComponent({
-  name: "InputBox",
-  props: inputBoxProps,
-  setup(props, { emit, attrs }) {
-    const handleInput = (e: Event) => {
-      emit("update:value", e);
-    };
-    const handleFocus = (e: FocusEvent) => {
-      emit("focus", e);
-    };
-    const handleBlur = (e: FocusEvent) => {
-      emit("blur", e);
-    };
-    return () => {
-      const { disabled, multiple, size, theme, shape, inputType } = props;
-      let type = props.type;
-
-      if (props.showPassword === true && type === "password") {
-        type = "text";
-      }
-
-      const inputProps = {
-        ref: props.inputRef,
-        ...attrs,
-        // ...props.htmlAttrs,
-        class: [
-          {
-            [`k-${inputType}`]: !multiple,
-            [`k-${inputType}-text`]: multiple,
-            [`k-${inputType}-disabled`]: disabled,
-            [`k-${inputType}-sm`]: size === "small" && !multiple,
-            [`k-${inputType}-lg`]: size === "large" && !multiple,
-            [`k-${inputType}-${theme}`]: theme !== "solid" && !multiple && theme,
-            [`k-${inputType}-circle`]: shape === "circle" && !multiple,
-          },
-          // props.htmlAttrs.class,
-        ],
-        disabled,
-        type,
-        single: true,
-        value: props.value,
-        onFocus: handleFocus,
-        onBlur: handleBlur,
-        onInput: handleInput,
-      };
-
-      return <input {...inputProps} />;
-    };
-  },
-});
+export default InputBox;

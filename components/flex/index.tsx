@@ -1,6 +1,6 @@
-import type { CSSProperties, ExtractPropTypes, PropType } from "vue";
-import { defineComponent, provide } from "vue";
-import { type BooleanType, type SizeType } from "../const/types";
+import React from "react";
+import type { SizeType } from "../const/types";
+import { SizeContext } from "../config/size-context";
 
 export type FlexSizeType = SizeType | number | (string | number)[];
 export type FlexAlignType = "start" | "flex-start" | "end" | "flex-end" | "center" | "baseline";
@@ -11,57 +11,58 @@ export type FlexJustifyType =
   | "space-between"
   | "space-around"
   | "space-evenly";
-export const flexProps = {
-  align: {
-    type: String as PropType<FlexAlignType>,
-  },
-  justify: {
-    type: String as PropType<FlexJustifyType>,
-  },
-  vertical: Boolean as BooleanType,
-  wrap: Boolean as BooleanType,
-  size: {
-    type: [String, Number, Array] as PropType<FlexSizeType>,
-  },
+
+export interface FlexProps extends React.HTMLAttributes<HTMLDivElement> {
+  align?: FlexAlignType;
+  justify?: FlexJustifyType;
+  vertical?: boolean;
+  wrap?: boolean;
+  size?: FlexSizeType;
+  children?: React.ReactNode;
+}
+
+const Flex: React.FC<FlexProps> = ({
+  align,
+  justify,
+  vertical = false,
+  wrap = false,
+  size,
+  children,
+  className = "",
+  style,
+  ...rest
+}) => {
+  const currentAlign = !vertical && !align ? "center" : align;
+
+  const flexStyle: React.CSSProperties = { ...style };
+
+  const classes = [
+    "k-flex",
+    vertical ? "k-flex-vertical" : "",
+    wrap ? "k-flex-wrap" : "",
+    currentAlign ? `k-flex-align-${currentAlign}` : "",
+    justify ? `k-flex-justify-${justify}` : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  if (Array.isArray(size)) {
+    flexStyle.gap = `${size[1]}px ${size[0]}px`;
+  } else if (typeof size === "string" && /small|medium|large/.test(size)) {
+    const sizes: Record<string, number> = { small: 8, medium: 16, large: 24, default: 16 };
+    flexStyle.gap = `${sizes[size]}px`;
+  } else if (size !== undefined && size !== null) {
+    flexStyle.gap = `${size}px`;
+  }
+
+  return (
+    <SizeContext.Provider value={typeof size === "string" ? (size as SizeType) : undefined}>
+      <div className={classes} style={flexStyle} {...rest}>
+        {children}
+      </div>
+    </SizeContext.Provider>
+  );
 };
-
-export type FlexProps = ExtractPropTypes<typeof flexProps>;
-
-const Flex = defineComponent({
-  name: "Flex",
-  props: flexProps,
-  setup(props, { slots }) {
-    provide("size", props.size as any);
-
-    return () => {
-      let { align, justify, vertical, size, wrap } = props as any;
-      align = !vertical && !align ? "center" : align;
-
-      const _props: any = {
-        style: {} as CSSProperties,
-        class: [
-          "k-flex",
-          {
-            [`k-flex-vertical`]: vertical,
-            [`k-flex-wrap`]: wrap,
-            [`k-flex-align-${align}`]: align,
-            [`k-flex-justify-${justify}`]: justify,
-          },
-        ],
-      };
-
-      if (Array.isArray(size)) {
-        _props.style = { gap: `${size[1]}px ${size[0]}px` } as CSSProperties;
-      } else if (/small|medium|large/.test(size)) {
-        const sizes: Record<string, number> = { small: 8, medium: 16, large: 24, default: 16 };
-        _props.style.gap = sizes[size] + "px";
-      } else if (size !== undefined && size !== null) {
-        _props.style.gap = `${size}px`;
-      }
-
-      return <div {..._props}>{slots.default?.()}</div>;
-    };
-  },
-});
 
 export default Flex;

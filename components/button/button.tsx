@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useImperativeHandle } from "react";
 import { Loading } from "kui-icons";
 import type { BooleanType, ButtonType, ShapeType, SizeType, ThemeType } from "../const/types";
 import { colors } from "../const/var";
@@ -22,7 +22,7 @@ export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonE
   target?: string;
 }
 
-const Button: React.FC<ButtonProps> = ({
+const Button = React.forwardRef<any, ButtonProps>(({
   htmlType = "button",
   icon,
   block = false,
@@ -39,7 +39,7 @@ const Button: React.FC<ButtonProps> = ({
   className = "",
   onClick,
   ...rest
-}) => {
+}, ref) => {
   const buttonGroup = useContext(ButtonGroupContext);
   const parentSize = useContext(SizeContext);
 
@@ -110,7 +110,7 @@ const Button: React.FC<ButtonProps> = ({
 
   if (type === "link" && href && !disabled) {
     return (
-      <a href={href} target={target} {...(commonProps as any)}>
+      <a href={href} target={target} ref={ref} {...(commonProps as any)}>
         {childNodes}
       </a>
     );
@@ -120,11 +120,14 @@ const Button: React.FC<ButtonProps> = ({
     <button
       type={htmlType}
       disabled={disabled || loading}
+      ref={ref}
       {...commonProps}
     >
       {childNodes}
     </button>
   );
-};
+});
+
+Button.displayName = "Button";
 
 export default Button;

@@ -1,68 +1,71 @@
+import React, { useRef } from "react";
 import { Ellipsis } from "kui-icons";
-import { defineComponent, type ExtractPropTypes, type PropType, ref } from "vue";
 import Button from "../button/button";
 import ButtonGroup from "../button/button-group";
-
-import {
-  type BooleanType,
-  type DropPlacementsType,
-  type ShapeType,
-  type SizeType,
-} from "../const/types";
+import type { DropPlacementsType, ShapeType, SizeType } from "../const/types";
 import { type IconType } from "../icon";
 import Dropdown from "./dropdown";
 import TriggerButton from "./trigger";
 
-export const dropdownButtonProps = {
-  size: String as PropType<SizeType>,
-  shape: String as PropType<ShapeType>,
-  disabled: Boolean as BooleanType,
-  icon: Array as PropType<IconType[]>,
-  theme: String,
-  arrow: Boolean as BooleanType,
-  placement: { type: String as PropType<DropPlacementsType>, default: "bottom-right" },
-  onClick: Function as PropType<(e: MouseEvent) => void>,
-};
-export type DropdownButtonProps = ExtractPropTypes<typeof dropdownButtonProps>;
+export interface DropdownButtonProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onClick"> {
+  size?: SizeType;
+  shape?: ShapeType;
+  disabled?: boolean;
+  icon?: IconType[];
+  theme?: string;
+  arrow?: boolean;
+  placement?: DropPlacementsType;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  overlay?: React.ReactNode;
+  children?: React.ReactNode;
+}
 
-const DropdownButton = defineComponent({
-  name: "DropdownButton",
-  props: dropdownButtonProps,
-  setup(props, { slots, emit }) {
-    const refTrigger = ref();
-    return () => {
-      return (
-        <Dropdown
-          arrow={props.arrow}
-          placement={props.placement}
-          target={refTrigger}
-          disabled={props.disabled}
-          v-slots={{
-            default: () => (
-              <ButtonGroup class="k-dropdown-button" size={props.size} shape={props.shape}>
-                <Button
-                  disabled={props.disabled}
-                  onClick={(e) => {
-                    emit("click", e);
-                  }}
-                >
-                  {slots.default?.()}
-                </Button>
-                <TriggerButton
-                  disabled={props.disabled}
-                  ref={refTrigger}
-                  icon={!slots.icon ? Ellipsis : undefined}
-                  class="k-dropdown-trigger"
-                >
-                  {slots.icon?.()}
-                </TriggerButton>
-              </ButtonGroup>
-            ),
-            overlay: () => slots.overlay?.(),
-          }}
-        ></Dropdown>
-      );
-    };
-  },
-});
+const DropdownButton: React.FC<DropdownButtonProps> = ({
+  size,
+  shape,
+  disabled = false,
+  icon,
+  theme,
+  arrow = false,
+  placement = "bottom-right",
+  onClick,
+  overlay,
+  children,
+  className = "",
+  ...rest
+}) => {
+  const refTrigger = useRef<any>(null);
+
+  const triggerNode = (
+    <ButtonGroup className="k-dropdown-button" size={size} shape={shape}>
+      <Button
+        disabled={disabled}
+        onClick={onClick}
+      >
+        {children}
+      </Button>
+      <TriggerButton
+        disabled={disabled}
+        ref={refTrigger}
+        icon={!icon ? Ellipsis : icon}
+        className="k-dropdown-trigger"
+      />
+    </ButtonGroup>
+  );
+
+  return (
+    <Dropdown
+      arrow={arrow}
+      placement={placement}
+      target={refTrigger}
+      disabled={disabled}
+      overlay={overlay}
+      className={className}
+      {...rest}
+    >
+      {triggerNode}
+    </Dropdown>
+  );
+};
+
 export default DropdownButton;

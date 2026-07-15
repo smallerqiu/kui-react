@@ -1,77 +1,78 @@
-import { defineComponent, ref, watch, type ExtractPropTypes, type PropType } from "vue";
-import { Button } from "../button";
-import type { BooleanType, ShapeType, SizeType } from "../const/types";
+import React, { useContext } from "react";
+import Button from "../button";
+import type { ShapeType, SizeType } from "../const/types";
 import type { IconType } from "../icon";
+import { RadioGroupContext } from "./radio-group";
 import type { ChangeEvent } from "./types";
 
-export const radioButtonProps = {
-  modelValue: { type: [Boolean], default: false },
-  label: { type: String },
-  value: { type: [String, Number] },
-  theme: String,
-  disabled: Boolean as BooleanType,
-  checked: Boolean as BooleanType,
-  icon: Array as PropType<IconType[]>,
-  size: {
-    type: String as PropType<SizeType>,
-  },
-  shape: {
-    type: String as PropType<ShapeType>,
-  },
-  onChange: Function as PropType<(event: ChangeEvent) => void>,
-};
+export interface RadioButtonProps extends Omit<React.HTMLAttributes<HTMLButtonElement>, "onChange"> {
+  label?: string;
+  value?: any;
+  theme?: string;
+  disabled?: boolean;
+  checked?: boolean;
+  icon?: IconType[];
+  size?: SizeType;
+  shape?: ShapeType;
+  onChange?: (event: ChangeEvent) => void;
+  children?: React.ReactNode;
+}
 
-export type RadioButtonProps = ExtractPropTypes<typeof radioButtonProps>;
+const RadioButton = React.forwardRef<any, RadioButtonProps>(({
+  label,
+  value,
+  theme,
+  disabled = false,
+  checked = false,
+  icon,
+  size,
+  shape,
+  onChange,
+  children,
+  ...rest
+}, ref) => {
+  const group = useContext(RadioGroupContext);
+  const isGroup = !!group;
 
-const RadioButton = defineComponent({
-  name: "RadioButton",
-  props: radioButtonProps,
-  setup(props, { slots, emit, attrs }) {
-    const isChecked = ref(props.modelValue || props.checked);
-    watch(
-      () => props.modelValue,
-      (v) => {
-        isChecked.value = v;
-      }
-    );
-    watch(
-      () => props.checked,
-      (v) => {
-        isChecked.value = v;
-      }
-    );
+  const groupChecked = isGroup ? group.value === value : false;
+  const isChecked = isGroup ? groupChecked : checked;
+  const currentDisabled = disabled || (isGroup && group.disabled);
+  const currentTheme = isGroup && group.theme ? group.theme : theme;
+  const currentSize = isGroup && group.size ? group.size : size;
+  const currentShape = isGroup && group.shape ? group.shape : shape;
 
-    const labelText = props.label || slots.default?.();
-    const handleClick = (e: Event) => {
-      if (props.disabled || isChecked.value) return;
+  const labelText = label || children || String(value);
 
-      const checked = !isChecked.value;
-
-      isChecked.value = checked;
-      emit("change", {
-        checked: checked,
-        value: props.value,
-        label: labelText,
-      } as ChangeEvent);
-      emit("update:modelValue", checked);
-      e.preventDefault();
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (currentDisabled || isChecked) return;
+    const nextChecked = true;
+    const eventObj: ChangeEvent = {
+      checked: nextChecked,
+      value: value,
+      label: typeof labelText === "string" ? labelText : "",
     };
+    onChange?.(eventObj);
+    group?.onChange?.(eventObj);
+    e.preventDefault();
+  };
 
-    return () => {
-      const buttonProps: Record<string, any> = {
-        // ...props,
-        disabled: props.disabled,
-        size: props.size,
-        icon: props.icon,
-        theme: props.theme,
-        shape: props.shape,
-        type: isChecked.value ? "primary" : "default",
-        ...attrs,
-        onClick: handleClick,
-      };
-
-      return <Button {...buttonProps}>{labelText}</Button>;
-    };
-  },
+  return (
+    <Button
+      ref={ref}
+      disabled={currentDisabled}
+      size={currentSize}
+      icon={icon}
+      theme={currentTheme as any}
+      shape={currentShape}
+      type={isChecked ? "primary" : "default"}
+      onClick={handleClick as any}
+      {...(rest as any)}
+    >
+      {labelText}
+    </Button>
+  );
 });
+
+RadioButton.displayName = "RadioButton";
+
 export default RadioButton;

@@ -1,54 +1,49 @@
-import { defineComponent, type ExtractPropTypes, type PropType } from "vue";
-import type { BooleanType } from "../const/types";
+import React from "react";
 import Icon, { type IconType } from "../icon";
 
-const cardProps = {
-  bordered: { type: Boolean as BooleanType, default: false },
-  title: String,
-  icon: [Array] as PropType<IconType[]>,
-};
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  bordered?: boolean;
+  title?: React.ReactNode;
+  icon?: IconType[];
+  extra?: React.ReactNode;
+  children?: React.ReactNode;
+}
 
-export type CardProps = ExtractPropTypes<typeof cardProps>;
+const Card: React.FC<CardProps> = ({
+  bordered = false,
+  title,
+  icon,
+  extra,
+  children,
+  className = "",
+  ...rest
+}) => {
+  const iconNode = icon ? <Icon type={icon} className="k-card-title-icon" /> : null;
+  const titleNode = typeof title === "string" ? <span className="k-card-title">{title}</span> : title;
+  const extraNode = extra ? <div className="k-card-extra">{extra}</div> : null;
 
-const Card = defineComponent({
-  name: "Card",
-  props: cardProps,
-  setup(props, { slots, attrs }) {
-    return () => {
-      const { title, icon, bordered } = props;
+  const showHead = !!(titleNode || extraNode || iconNode);
 
-      const extraSlot = slots.extra?.();
-      const titleSlot = slots.title?.();
-      const selfSlot = slots.default?.();
+  const classes = [
+    "k-card",
+    bordered ? "k-card-bordered" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
-      const extraNode = extraSlot ? <div class="k-card-extra">{extraSlot}</div> : null;
-      const iconNode = icon ? <Icon type={icon} class="k-card-title-icon" /> : null;
-      const titleNode = title ? <span class="k-card-title">{title}</span> : titleSlot || null;
-
-      const rootProps = {
-        ...attrs,
-        class: [
-          "k-card",
-          {
-            "k-card-bordered": bordered,
-          },
-        ],
-      };
-
-      return (
-        <div {...rootProps}>
-          {titleNode && (
-            <div class="k-card-head">
-              {iconNode}
-              {titleNode}
-              {extraNode}
-            </div>
-          )}
-          {selfSlot ? <div class="k-card-body k-scroll">{selfSlot}</div> : null}
+  return (
+    <div className={classes} {...rest}>
+      {showHead && (
+        <div className="k-card-head">
+          {iconNode}
+          {titleNode}
+          {extraNode}
         </div>
-      );
-    };
-  },
-}) 
+      )}
+      {children ? <div className="k-card-body k-scroll">{children}</div> : null}
+    </div>
+  );
+};
 
 export default Card;

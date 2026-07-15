@@ -1,89 +1,120 @@
-import type { CSSProperties, ExtractPropTypes, PropType } from "vue";
-import { cloneVNode, defineComponent, h, provide } from "vue";
-import { type BooleanType, type SizeType } from "../const/types";
-import { getChildren } from "../utils/vnode";
-export const spaceProps = {
-  align: {
-    type: String as PropType<"start" | "end" | "center" | "baseline">,
-  },
-  vertical: Boolean as BooleanType,
-  wrap: { type: Boolean as BooleanType, default: false },
-  block: Boolean as BooleanType,
-  compact: Boolean as BooleanType,
-  size: {
-    type: [String, Number, Array] as PropType<SizeType | number | (number | string)[]>,
-  },
+import React, { useContext } from "react";
+import type { SizeType } from "../const/types";
+import { getChildren } from "../utils/react-node";
+import { SizeContext } from "../config/size-context";
+
+export interface SpaceProps extends React.HTMLAttributes<HTMLDivElement> {
+  align?: "start" | "end" | "center" | "baseline";
+  vertical?: boolean;
+  wrap?: boolean;
+  block?: boolean;
+  compact?: boolean;
+  size?: SizeType | number | (number | string)[];
+  split?: React.ReactNode;
+  children?: React.ReactNode;
+}
+
+const Space: React.FC<SpaceProps> = ({
+  align,
+  vertical = false,
+  wrap = false,
+  block = false,
+  compact = false,
+  size,
+  split,
+  children,
+  className = "",
+  style,
+  ...rest
+}) => {
+  const parentSize = useContext(SizeContext);
+  const currentSize = size || parentSize;
+
+  const childList = getChildren(children);
+
+  const currentAlign = !vertical && !align ? "center" : align;
+
+  const spaceStyle: React.CSSProperties = { ...style };
+  const classes = [
+    "k-space",
+    vertical ? "k-space-vertical" : "",
+    compact ? "k-space-compact" : "",
+    wrap ? "k-space-wrap" : "",
+    block ? "k-space-block" : "",
+    currentAlign ? `k-space-align-${currentAlign}` : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  if (!compact) {
+    if (Array.isArray(currentSize)) {
+      spaceStyle.gap = `${currentSize[1]}px ${currentSize[0]}px`;
+    } else if (typeof currentSize === "string") {
+      const sizes: Record<string, number> = { small: 8, medium: 16, large: 24, default: 16 };
+      spaceStyle.gap = `${sizes[currentSize] || 16}px`;
+    } else if (typeof currentSize === "number") {
+      spaceStyle.gap = `${currentSize}px`;
+    } else if (!currentSize) {
+      spaceStyle.gap = "8px";
+    }
+  }
+
+  const vNodes: React.ReactNode[] = [];
+  const pre = vertical ? "vertical-" : "";
+
+  for (let i = 0; i < childList.length; i++) {
+    const itemClasses = [
+      i === 0 ? `k-space-${pre}first-item` : "",
+      i > 0 && i < childList.length - 1 ? `k-space-${pre}item` : "",
+      i === childList.length - 1 ? `k-space-${pre}last-item` : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    const p: Record<string, any> = {
+      className: itemClasses,
+    };
+
+    if (typeof currentSize === "string") {
+      p.size = currentSize;
+    }
+
+    const item = childList[i];
+    const key = React.isValidElement(item) ? (item.key ?? `item-${i}`) : `item-${i}`;
+
+    const child = compact ? (
+      React.isValidElement(item) ? (
+        React.cloneElement(item as React.ReactElement, { key, ...p })
+      ) : (
+        <span key={key} {...p}>
+          {item}
+        </span>
+      )
+    ) : (
+      <div key={key} {...p}>
+        {item}
+      </div>
+    );
+
+    vNodes.push(child);
+
+    if (split && i < childList.length - 1) {
+      vNodes.push(
+        <React.Fragment key={`split-${i}`}>
+          {split}
+        </React.Fragment>
+      );
+    }
+  }
+
+  return (
+    <SizeContext.Provider value={typeof currentSize === "string" ? (currentSize as SizeType) : undefined}>
+      <div className={classes} style={spaceStyle} {...rest}>
+        {vNodes}
+      </div>
+    </SizeContext.Provider>
+  );
 };
 
-export type SpaceProps = ExtractPropTypes<typeof spaceProps>;
-
-const Space = defineComponent({
-  name: "Space",
-  props: spaceProps,
-  setup(props, { slots, attrs }) {
-    provide("size", props.size);
-    return () => {
-      const size = props.size;
-      let children = getChildren(slots.default?.());
-
-      // console.log(children);
-      const split = slots.split?.();
-
-      const align = !props.vertical && !props.align ? "center" : props.align;
-
-      const style: CSSProperties = {};
-      const cls = [
-        "k-space",
-        {
-          [`k-space-vertical`]: props.vertical,
-          [`k-space-compact`]: props.compact,
-          [`k-space-wrap`]: props.wrap,
-          [`k-space-block`]: props.block,
-          [`k-space-align-${align}`]: align,
-        },
-      ];
-      if (!props.compact) {
-        if (Array.isArray(size)) {
-          style.gap = `${size[1]}px ${size[0]}px`;
-        } else if (typeof size === "string") {
-          const sizes = { small: 8, medium: 16, large: 24, default: 16 };
-          style.gap = `${sizes[size]}px`;
-        } else if (typeof size === "number") {
-          style.gap = `${size}px`;
-        } else if (!size) {
-          style.gap = `8px`;
-        }
-      }
-      const _props = {
-        ...attrs,
-        style,
-        class: cls,
-      };
-
-      const vNodes = [];
-      for (let i = 0; i < children.length; i++) {
-        const pre = props.vertical ? "vertical-" : "";
-        const p: Record<string, any> = {
-          class: {
-            [`k-space-${pre}first-item`]: i === 0,
-            [`k-space-${pre}item`]: i > 0 && i < children.length - 1,
-            [`k-space-${pre}last-item`]: i === children.length - 1,
-          },
-        };
-        if (typeof size === "string") {
-          p.size = size;
-        }
-        const child = props.compact
-          ? cloneVNode(children[i], p, true, true)
-          : h("div", p, [children[i]]);
-        vNodes.push(child);
-        if (split && i < children.length - 1) {
-          vNodes.push(split);
-        }
-      }
-      // console.log(vNodes);
-      return <div {..._props}>{...vNodes}</div>;
-    };
-  },
-});
 export default Space;

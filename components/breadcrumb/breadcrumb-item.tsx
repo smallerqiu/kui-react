@@ -1,45 +1,55 @@
-import { defineComponent, inject, type ExtractPropTypes, type PropType } from "vue";
+import React, { useContext } from "react";
 import Icon, { type IconType } from "../icon";
+import { BreadcrumbContext } from "./breadcrumb";
 
-const breadcrumbItemProps = {
-  href: String,
-  icon: [Array] as PropType<IconType[]>,
+export interface BreadcrumbItemProps extends React.HTMLAttributes<HTMLLIElement> {
+  href?: string;
+  icon?: IconType[] | React.ReactNode;
+  children?: React.ReactNode;
+}
+
+const BreadcrumbItem: React.FC<BreadcrumbItemProps> = ({
+  href,
+  icon,
+  children,
+  className = "",
+  onClick,
+  ...rest
+}) => {
+  const separator = useContext(BreadcrumbContext);
+
+  const renderIcon = () => {
+    if (!icon) return null;
+    if (React.isValidElement(icon) || typeof icon === "string") {
+      return icon;
+    }
+    if (Array.isArray(icon)) {
+      return <Icon type={icon as IconType[]} />;
+    }
+    return null;
+  };
+
+  const classes = ["k-breadcrumb-item", className].filter(Boolean).join(" ");
+
+  const content = (
+    <>
+      {renderIcon()}
+      {children}
+    </>
+  );
+
+  return (
+    <li className={classes} onClick={onClick} {...rest}>
+      {href ? (
+        <a className="k-breadcrumb-link" href={href}>
+          {content}
+        </a>
+      ) : (
+        <span className="k-breadcrumb-link">{content}</span>
+      )}
+      <span className="k-breadcrumb-separator">{separator}</span>
+    </li>
+  );
 };
 
-export type BreadcrumbItemProps = ExtractPropTypes<typeof breadcrumbItemProps>;
-
-const BreadcrumbItem = defineComponent({
-  name: "BreadcrumbItem",
-  props: breadcrumbItemProps,
-  setup(props, { slots, emit }) {
-    const separator = inject("separator", null);
-
-    return () => {
-      const iconNode = slots.icon ? slots.icon() : props.icon ? <Icon type={props.icon} /> : null;
-
-      const itemProps = {
-        class: "k-breadcrumb-item",
-        onClick: (e: MouseEvent) => emit("click", e),
-      };
-
-      const linkProps = {
-        class: "k-breadcrumb-link",
-        href: props.href,
-      };
-
-      const content = [iconNode, slots.default?.()];
-
-      return (
-        <li {...itemProps}>
-          {props.href ? (
-            <a {...linkProps}>{content}</a>
-          ) : (
-            <span class="k-breadcrumb-link">{content}</span>
-          )}
-          <span class="k-breadcrumb-separator">{separator}</span>
-        </li>
-      );
-    };
-  },
-});
 export default BreadcrumbItem;

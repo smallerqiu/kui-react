@@ -1,29 +1,48 @@
-import { defineComponent, inject, type PropType } from "vue";
+import React, { useContext } from "react";
 import Button from "../button/button";
 import type { BooleanType } from "../const/types";
 import { type IconType } from "../icon";
-export default defineComponent({
-  name: "TriggerButton",
-  props: {
-    icon: Array as PropType<IconType[]>,
-    disabled: Boolean as BooleanType,
-  },
-  setup(ps, { attrs, slots }) {
-    const mouseEnterEvent = inject<() => void>("dropdown-trigger-in");
-    const mouseLeaveEvent = inject<() => void>("dropdown-trigger-out");
-    // console.log(mouseEnterEvent);
-    return () => {
-      return (
-        <Button
-          icon={ps.icon}
-          disabled={ps.disabled}
-          {...attrs}
-          onMouseenter={() => mouseEnterEvent?.()}
-          onMouseleave={() => mouseLeaveEvent?.()}
-        >
-          {slots.default?.()}
-        </Button>
-      );
-    };
-  },
+import { DropdownContext } from "./dropdown";
+
+export interface TriggerButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  icon?: IconType[];
+  disabled?: boolean;
+}
+
+const TriggerButton = React.forwardRef<any, TriggerButtonProps>(({
+  icon,
+  disabled = false,
+  children,
+  onMouseEnter,
+  onMouseLeave,
+  ...rest
+}, ref) => {
+  const dropdown = useContext(DropdownContext);
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
+    dropdown?.onMouseEnter?.();
+    onMouseEnter?.(e);
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
+    dropdown?.onMouseLeave?.();
+    onMouseLeave?.(e);
+  };
+
+  return (
+    <Button
+      ref={ref}
+      icon={icon}
+      disabled={disabled}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      {...(rest as any)}
+    >
+      {children}
+    </Button>
+  );
 });
+
+TriggerButton.displayName = "TriggerButton";
+
+export default TriggerButton;
