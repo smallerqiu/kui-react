@@ -9,7 +9,8 @@ import {
 } from "vue";
 import type { BooleanType, ShapeType, SizeType, ThemeType } from "../const/types";
 
-export const textAreaProps = {
+const textAreaProps = {
+  value: [String, Number, Object, Array] as PropType<any>,
   modelValue: [String, Number, Object, Array] as PropType<any>,
   theme: { type: String as PropType<ThemeType>, default: "fill" },
   shape: { type: String as PropType<ShapeType> },
@@ -28,7 +29,7 @@ const TextArea = defineComponent({
   name: "TextArea",
   props: textAreaProps,
   setup(props, { attrs, emit }) {
-    const currentValue = ref(props.modelValue);
+    const currentValue = ref(props.modelValue ?? props.value);
 
     watch(
       () => props.modelValue,

@@ -36,7 +36,7 @@ export interface SelectOption {
   value: string | number;
   disabled?: boolean;
 }
-export const selectProps = {
+const selectProps = {
   placeholder: String,
   size: {
     type: String as PropType<SizeType>,
@@ -327,12 +327,16 @@ const Select = defineComponent({
             nextTick(() => {
               visible.value = true;
               emit("openChange", true);
-              updatePosition();
+              nextTick(() => {
+                updatePosition();
+              });
             });
           } else {
             visible.value = true;
             emit("openChange", true);
-            updatePosition();
+            nextTick(() => {
+              updatePosition();
+            });
           }
           emit("search", e);
         }, 500);

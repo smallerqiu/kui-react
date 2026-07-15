@@ -18,7 +18,7 @@ import type { BooleanType } from "../const/types";
 import { transfer } from "../directives/transfer";
 import zhCN from "../locale/zh-CN";
 
-export const modalProps = {
+const modalProps = {
   modelValue: Boolean as BooleanType,
   title: String,
   okText: String,
@@ -243,11 +243,13 @@ const Modal = defineComponent({
         );
       }
 
-      const style = {
-        width: typeof width === "number" ? `${width}px` : width,
-        top: `${currentTop.value}px`,
-        left: `${left.value}px`,
-      };
+      const style = props.maximized
+        ? null
+        : {
+            width: typeof width === "number" ? `${width}px` : width,
+            top: `${currentTop.value}px`,
+            left: `${left.value}px`,
+          };
       const classes = [
         "k-modal",
         {

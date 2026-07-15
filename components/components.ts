@@ -113,6 +113,9 @@ export type { PopconfirmProps } from "./popconfirm";
 export { default as Progress } from "./progress";
 export type { ProgressProps, ProgressStatus, ProgressStroke, ProgressType } from "./progress";
 
+export { default as QRCode } from "./qrcode";
+export type { QRCodeErrorLevel, QRCodeProps, QRCodeStatus } from "./qrcode";
+
 export { Radio, RadioButton, RadioGroup } from "./radio";
 export type { RadioButtonProps, RadioGroupProps, RadioOption, RadioProps } from "./radio";
 
@@ -142,6 +145,9 @@ export type { SpinProps } from "./spin";
 export { default as KSwitch } from "./switch";
 export type { SwitchProps } from "./switch";
 
+export { Splitter, SplitterPanel } from "./splitter";
+export type { SplitterPanelProps, SplitterProps } from "./splitter";
+
 export { default as Table } from "./table";
 export type { Column, SortState, TableProps } from "./table";
 
@@ -169,8 +175,8 @@ export type { ColProps, RowProps } from "./row-col";
 export { default as Upload } from "./upload";
 export type { UploadChangeEvent, UploadContext, UploadFile, UploadProps } from "./upload";
 
-export { Splitter, SplitterPanel } from "./splitter";
-export type { SplitterPanelProps, SplitterProps } from "./splitter";
+export { default as Watermark } from "./watermark";
+export type { WatermarkLayoutType, WatermarkProps } from "./watermark";
 
 export { default as theme } from "./utils/theme";
 

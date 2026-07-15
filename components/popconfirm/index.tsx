@@ -21,7 +21,7 @@ import zhCN from "../locale/zh-CN";
 import { setPlacement } from "../utils/placement";
 import { getChildren } from "../utils/vnode";
 
-export const popconfirmProps = {
+const popconfirmProps = {
   dark: Boolean as BooleanType,
   show: Boolean as BooleanType,
   title: [String, Number, Object, Array],
@@ -117,12 +117,16 @@ const Popconfirm = defineComponent({
         document.addEventListener("click", outsideClick);
         nextTick(() => {
           updateShow(true);
-          updatePosition();
+          nextTick(() => {
+            updatePosition();
+          });
         });
       } else {
         clearTimeout(showTimer.value);
         updateShow(true);
-        updatePosition();
+        nextTick(() => {
+          updatePosition();
+        });
       }
     };
 

@@ -18,7 +18,7 @@ import type { PlacementsType } from "../const/types";
 
 export type PoptipProps = ExtractPropTypes<typeof poptipProps>;
 
-export const poptipProps = {
+const poptipProps = {
   dark: Boolean,
   show: Boolean,
   title: [String, Number, Object, Array],
@@ -110,12 +110,16 @@ const Poptip = defineComponent({
         document.addEventListener("click", outsideClick);
         nextTick(() => {
           updateShow(true);
-          updatePosition();
+          nextTick(() => {
+            updatePosition();
+          });
         });
       } else {
         clearTimeout(showTimer.value);
         updateShow(true);
-        updatePosition();
+        nextTick(() => {
+          updatePosition();
+        });
       }
     };
     const hide = () => {

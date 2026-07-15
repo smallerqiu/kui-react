@@ -22,7 +22,7 @@ import {
 } from "vue";
 import type { BooleanType, DropPlacementsType, SizeType } from "../const/types";
 type ColorMode = "hex" | "rgb" | "hsl";
-export const colorPickerProps = {
+const colorPickerProps = {
   modelValue: String,
   disabled: Boolean as BooleanType,
   disabledAlpha: Boolean as BooleanType,
@@ -128,11 +128,15 @@ const ColorPicker = defineComponent({
           document.addEventListener("click", outsideClick);
           nextTick(() => {
             openChange(true);
-            updatePopPosition();
+            nextTick(() => {
+              updatePopPosition();
+            });
           });
         } else {
           openChange(true);
-          updatePopPosition();
+          nextTick(() => {
+            updatePopPosition();
+          });
         }
       } else {
         openChange(false);
