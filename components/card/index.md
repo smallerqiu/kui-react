@@ -8,15 +8,15 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 通过 `title` 和 `icon` 可设置标题和图标
 
-[边框](./demo/border.vue)
+[边框](./demo/border.tsx)
 
 - `bordered` 可以设置是否显示边框
 
-[边框和标题](./demo/notitle.vue)
+[边框和标题](./demo/notitle.tsx)
 
 - 通过 `bordered` 属性控制边框，通过 `title` 属性控制标题。
 

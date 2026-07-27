@@ -8,15 +8,15 @@ The most basic card container, can carry text, lists, images, paragraphs, often 
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - Set the title and icon via `title` and `icon`.
 
-[Border](./demo/border.vue)
+[Border](./demo/border.tsx)
 
 - Use `bordered` to control whether the border is displayed.
 
-[Border and Title](./demo/notitle.vue)
+[Border and Title](./demo/notitle.tsx)
 
 - Control the border with the `bordered` property and the title with the `title` property.
 

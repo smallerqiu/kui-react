@@ -6,11 +6,11 @@
 - 当需要自由拖拽调整各区域大小。
 - 当需要指定区域的最大最小宽高时。
 
-[基本用法](./demo/basic.vue?show=vertical)
+[基本用法](./demo/basic.tsx)
 
 - 初始化面板大小，面板大小限制。
 
-[垂直方向](./demo/vertical.vue?show=vertical)
+[垂直方向](./demo/vertical.tsx)
 
 - 使用垂直布局。
 

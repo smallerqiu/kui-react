@@ -6,11 +6,11 @@
 - When you need to freely drag and adjust the size of each area.
 - When you need to specify the maximum and minimum width or height of an area.
 
-[Basic Usage](./demo/basic.vue?show=vertical)
+[Basic Usage](./demo/basic.tsx)
 
 - Initialize panel size, panel size limit.
 
-[Vertical direction](./demo/vertical.vue?show=vertical)
+[Vertical direction](./demo/vertical.tsx)
 
 - Use vertical layout.
 
