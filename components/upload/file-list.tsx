@@ -1,108 +1,40 @@
 import { CircleCheck, CircleX, FileText, Info, X } from "kui-icons";
-import { defineComponent, type ExtractPropTypes, type PropType } from "vue";
+import type { ReactNode } from "react";
 import { Button } from "../button";
-import type { BooleanType } from "../const/types";
 import Icon from "../icon";
 import Progress from "../progress";
 import Tooltip from "../tooltip";
 import type { UploadFile } from "./index";
 
-export const uploadFileListProps = {
-  showUploadList: { type: Boolean as BooleanType, default: true },
-  locale: Object as PropType<any>,
-  type: {
-    type: String as PropType<"list" | "picture">,
-    default: "list",
-    validator: (val: string) => ["list", "picture"].indexOf(val) >= 0,
-  },
-  fileList: { type: Array as PropType<UploadFile[]>, default: () => [] },
-  disabled: Boolean as BooleanType,
-};
-
-export type UploadFileListProps = ExtractPropTypes<typeof uploadFileListProps>;
-
-export default defineComponent({
-  name: "UploadFileList",
-  props: uploadFileListProps,
-  setup(props, { emit, slots }) {
-    const getPreview = (item: any) => {
-      if (item.preview) return <img src={item.preview} alt="" />;
-      if (item.url) return <img src={item.url} alt="" />;
-      return null;
-    };
-
-    const handleRemove = (index: number, item: UploadFile) => {
-      if (props.disabled) return;
-      emit("remove", { index, file: item });
-    };
-
-    return () => {
-      const { showUploadList, type, fileList, locale } = props;
-      const isPicture = type === "picture";
-
-      if (!showUploadList && !isPicture) return null;
-
-      return (showUploadList && !isPicture) || isPicture ? (
-        <div class={`k-upload-${isPicture ? "picture" : "file"}-list`}>
-          {fileList.map((item, i) => {
-            const statusText =
-              item.status === "success"
-                ? locale?.k.upload.successful
-                : item.errorText || locale?.k.upload.failed;
-            return (
-              <div
-                class={[`k-upload-file-${type}-item`, `k-upload-file-status-${item.status}`]}
-                key={item.uid || i}
-              >
-                <div class={`k-upload-${isPicture ? "picture" : "file"}-preview`}>
-                  {getPreview(item) || <Icon type={FileText} strokeWidth={1} size={30} />}
-                </div>
-                <div class="k-upload-file-item-info">
-                  {!isPicture ? (
-                    <div class="k-upload-file-main">
-                      <span class="k-upload-file-name">{item.filename}</span>
-                      <span class="k-upload-file-size">{item.size}</span>
-                    </div>
-                  ) : null}
-                  {item.status !== "waiting" && (
-                    <div class="k-upload-file-status">
-                      {item.status === "uploading" ? (
-                        <Progress
-                          percent={item.percent}
-                          type={`${isPicture ? "circle" : "line"}`}
-                          size="small"
-                          showInfo={false}
-                          status="active"
-                          strokeWidth={15}
-                        />
-                      ) : statusText && !isPicture ? (
-                        <div class="k-upload-file-status-text">
-                          <Icon type={item.status == "success" ? CircleCheck : CircleX} />
-                          {statusText}
-                        </div>
-                      ) : null}
-
-                      {isPicture && item.status === "error" && (
-                        <Tooltip title={statusText} placement="bottom">
-                          <Icon type={Info} />
-                        </Tooltip>
-                      )}
-                    </div>
-                  )}
-                </div>
-                <Button
-                  type="text"
-                  size="small"
-                  icon={X}
-                  class={`k-upload-file-${isPicture ? "picture" : "item"}-remove`}
-                  onClick={() => handleRemove(i, item)}
-                />
-              </div>
-            );
-          })}
-          {isPicture && slots.selector?.()}
+export interface UploadFileListProps {
+  showUploadList?: boolean;
+  locale?: any;
+  type?: "list" | "picture";
+  fileList?: UploadFile[];
+  disabled?: boolean;
+  selector?: ReactNode;
+  onRemove?: (index: number, file: UploadFile) => void;
+}
+export default function FileList({ showUploadList = true, locale, type = "list", fileList = [], disabled, selector, onRemove }: UploadFileListProps) {
+  const picture = type === "picture";
+  if (!showUploadList && !picture) return null;
+  return <div className={`k-upload-${picture ? "picture" : "file"}-list`}>
+    {fileList.map((item, index) => {
+      const statusText = item.status === "success" ? locale?.k.upload.successful : item.errorText || locale?.k.upload.failed;
+      const preview = item.preview || item.url;
+      return <div key={item.uid ?? index} className={[`k-upload-file-${type}-item`, `k-upload-file-status-${item.status}`].join(" ")}>
+        <div className={`k-upload-${picture ? "picture" : "file"}-preview`}>{preview ? <img src={preview} alt="" /> : <Icon type={FileText} strokeWidth={1} size={30} />}</div>
+        <div className="k-upload-file-item-info">
+          {!picture && <div className="k-upload-file-main"><span className="k-upload-file-name">{item.filename}</span><span className="k-upload-file-size">{item.size}</span></div>}
+          {item.status !== "waiting" && <div className="k-upload-file-status">
+            {item.status === "uploading" ? <Progress percent={item.percent} type={picture ? "circle" : "line"} size="small" showInfo={false} status="active" strokeWidth={15} />
+              : statusText && !picture ? <div className="k-upload-file-status-text"><Icon type={item.status === "success" ? CircleCheck : CircleX} />{statusText}</div>
+                : picture && item.status === "error" ? <Tooltip title={statusText} placement="bottom"><Icon type={Info} /></Tooltip> : null}
+          </div>}
         </div>
-      ) : null;
-    };
-  },
-});
+        <Button type="text" size="small" icon={X} disabled={disabled} className={`k-upload-file-${picture ? "picture" : "item"}-remove`} onClick={() => onRemove?.(index, item)} />
+      </div>;
+    })}
+    {picture && selector}
+  </div>;
+}

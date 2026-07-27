@@ -1,336 +1,90 @@
 import { v4 as uuid } from "uuid";
-import {
-  computed,
-  defineComponent,
-  inject,
-  reactive,
-  ref,
-  watch,
-  type ExtractPropTypes,
-  type PropType,
-} from "vue";
-import type { BooleanType, UploadStatusType } from "../const/types";
-import { type IconType } from "../icon";
+import { forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState, type HTMLAttributes } from "react";
+import { ConfigContext } from "../config";
+import type { UploadStatusType } from "../const/types";
+import type { IconType } from "../icon";
 import zhCN from "../locale/zh-CN";
 import FileList from "./file-list";
 import Selector from "./selector";
 
 export interface UploadFile {
-  uid?: string;
-  url?: string;
-  filename?: string;
-  size?: string;
-  status?: UploadStatusType;
-  percent?: number;
-  preview?: string | null;
-  response?: any;
-  errorText?: string;
-  xhr?: XMLHttpRequest;
+  uid?: string; url?: string; filename?: string; size?: string; status?: UploadStatusType;
+  percent?: number; preview?: string | null; response?: any; errorText?: string; xhr?: XMLHttpRequest;
 }
-
-export const uploadProps = {
-  method: { type: String, default: "post" },
-  name: { type: String, default: "file" },
-  action: { type: String, required: true as const },
-  type: {
-    type: String as PropType<"list" | "picture">,
-    default: "list",
-  },
-  data: { type: Object as PropType<Record<string, any>>, default: () => ({}) },
-  disabled: Boolean as BooleanType,
-  directory: Boolean as BooleanType,
-  multiple: Boolean as BooleanType,
-  accept: String,
-  headers: Object as PropType<Record<string, string>>,
-  showUploadList: { type: Boolean as BooleanType, default: true },
-  transformFile: Function as PropType<(file: File) => Promise<File>>,
-  fileList: { type: Array as PropType<UploadFile[]>, default: () => [] },
-  autoTrigger: { type: Boolean as BooleanType, default: true },
-  limit: Number,
-  minSize: Number, // KB
-  maxSize: Number, // KB
-  uploadText: String,
-  uploadSubText: String,
-  uploadIcon: Array as PropType<IconType[]>,
-  draggable: Boolean as BooleanType,
-  onChange: Function as PropType<(event: UploadChangeEvent) => void>,
-  onRemove: Function as PropType<(event: UploadChangeEvent) => void>,
-  onSelectFiles: Function as PropType<(files: UploadFile[]) => void>,
-  onExceed: Function as PropType<() => void>,
-  onSizeError: Function as PropType<(event: UploadChangeEvent) => void>,
-  onBeforeUpload: Function as PropType<(item: UploadFile, file: File) => void>,
-};
-
-export type UploadProps = ExtractPropTypes<typeof uploadProps>;
-
-export interface UploadChangeEvent {
-  file: UploadFile;
-  fileList: UploadFile[];
+export interface UploadChangeEvent { file: UploadFile; fileList: UploadFile[] }
+export interface UploadRef { upload: () => void }
+export interface UploadProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "onSelect"> {
+  method?: string; name?: string; action: string; type?: "list" | "picture"; data?: Record<string, any>;
+  disabled?: boolean; directory?: boolean; multiple?: boolean; accept?: string; headers?: Record<string, string>;
+  showUploadList?: boolean; transformFile?: (file: File) => Promise<File>; fileList?: UploadFile[];
+  autoTrigger?: boolean; limit?: number; minSize?: number; maxSize?: number; uploadText?: string;
+  uploadSubText?: string; uploadIcon?: IconType[]; draggable?: boolean;
+  onChange?: (event: UploadChangeEvent) => void; onRemove?: (event: UploadChangeEvent) => void;
+  onSelectFiles?: (files: UploadFile[]) => void; onExceed?: () => void; onSizeError?: (event: UploadChangeEvent) => void;
+  onBeforeUpload?: (item: UploadFile, file: File) => void | boolean;
 }
+export type UploadContext = UploadProps & UploadRef;
 
-export interface UploadContext extends UploadProps {
-  upload: () => void;
-}
+const formatSize = (size: number) => size < 1024 ? `${size}B` : size < 1024 ** 2 ? `${(size / 1024).toFixed(2)}KB` : size < 1024 ** 3 ? `${(size / 1024 ** 2).toFixed(2)}MB` : `${(size / 1024 ** 3).toFixed(2)}GB`;
 
-const Upload = defineComponent({
-  name: "Upload",
-  props: uploadProps,
-  setup(props, { emit, slots, expose }) {
-    const injectedLocale = inject<any>("locale", zhCN);
-    const locale = computed(() => {
-      return injectedLocale?.value || injectedLocale || zhCN;
-    });
-
-    const innerFileList = ref<UploadFile[]>([...(props.fileList || [])]);
-    const uploadTemp = reactive<Record<string, File>>({});
-
-    // Watch for fileList changes
-    watch(
-      () => props.fileList,
-      (newVal) => {
-        innerFileList.value = [...(newVal || [])];
-      },
-      { deep: true }
-    );
-
-    const formatFileSize = (fileSize: number) => {
-      if (fileSize <= 0) return "0B";
-      const k = 1024;
-      if (fileSize < k) {
-        return fileSize + "B";
-      } else if (fileSize < k * k) {
-        return (fileSize / k).toFixed(2) + "KB";
-      } else if (fileSize < k * k * k) {
-        return (fileSize / (k * k)).toFixed(2) + "MB";
-      } else {
-        return (fileSize / (k * k * k)).toFixed(2) + "GB";
+const Upload = forwardRef<UploadRef, UploadProps>(function Upload({
+  method = "post", name = "file", action, type = "list", data = {}, disabled, directory, multiple, accept, headers,
+  showUploadList = true, transformFile, fileList, autoTrigger = true, limit, minSize, maxSize, uploadText,
+  uploadSubText, uploadIcon, draggable, onChange, onRemove, onSelectFiles, onExceed, onSizeError, onBeforeUpload,
+  className, children, ...rest
+}, ref) {
+  const { locale } = useContext(ConfigContext);
+  const messages = locale ?? zhCN;
+  const [files, setFiles] = useState<UploadFile[]>(fileList ?? []);
+  const filesRef = useRef(files); filesRef.current = files;
+  const pendingRef = useRef(new Map<string, File>());
+  useEffect(() => { if (fileList) setFiles([...fileList]); }, [fileList]);
+  useEffect(() => () => {
+    filesRef.current.forEach((item) => { item.xhr?.abort(); if (item.preview) URL.revokeObjectURL(item.preview); });
+  }, []);
+  const update = (item: UploadFile, callback = onChange) => {
+    const next = [...filesRef.current]; filesRef.current = next; setFiles(next); callback?.({ file: item, fileList: next });
+  };
+  const send = async (item: UploadFile, original: File) => {
+    if (onBeforeUpload?.(item, original) === false) return;
+    const file = transformFile ? await transformFile(original) : original;
+    const body = new FormData(); body.append(name, file); Object.entries(data).forEach(([key, value]) => body.append(key, value));
+    const xhr = new XMLHttpRequest(); item.xhr = xhr; xhr.open(method, action);
+    Object.entries(headers ?? {}).forEach(([key, value]) => xhr.setRequestHeader(key, value));
+    const fail = () => { item.status = "error"; if (item.uid) pendingRef.current.delete(item.uid); update(item); };
+    xhr.upload.onloadstart = () => { item.status = "uploading"; update(item); };
+    xhr.upload.onprogress = (event) => { if (event.lengthComputable) { item.percent = event.loaded / event.total * 100; update(item); } };
+    xhr.onerror = fail;
+    xhr.onreadystatechange = () => { if (xhr.readyState !== 4) return; if (xhr.status >= 200 && xhr.status < 300) {
+      item.status = "success"; item.percent = 100; try { item.response = JSON.parse(xhr.responseText); } catch { item.response = xhr.responseText; }
+      if (item.uid) pendingRef.current.delete(item.uid); update(item);
+    } else fail(); };
+    xhr.send(body);
+  };
+  const select = (selected: FileList) => {
+    const accepted = [...selected].filter((file) => file.name !== ".DS_Store");
+    let exceeded = false;
+    for (const file of accepted) {
+      if (limit && filesRef.current.length >= limit) { exceeded = true; continue; }
+      const item: UploadFile = { uid: uuid(), filename: file.name, size: formatSize(file.size), status: "waiting", percent: 0, preview: file.type.startsWith("image/") ? URL.createObjectURL(file) : null };
+      const kb = file.size / 1024;
+      filesRef.current = [...filesRef.current, item]; setFiles(filesRef.current);
+      if ((minSize != null && kb < minSize) || (maxSize != null && kb > maxSize)) {
+        item.status = "error"; item.errorText = messages?.k.upload.errorFileSize; update(item); onSizeError?.({ file: item, fileList: filesRef.current }); continue;
       }
-    };
-
-    const triggerUpdate = (fileItem: UploadFile) => {
-      emit("update:fileList", innerFileList.value);
-      emit("change", { file: fileItem, fileList: innerFileList.value });
-    };
-
-    const onSelectFiles = (files: FileList | File[]) => {
-      const { limit, minSize, maxSize } = props;
-      const fileArray = Array.from(files).filter((f) => f.name !== ".DS_Store");
-
-      fileArray.forEach((file, index) => {
-        const currentCount = innerFileList.value.length;
-        if (limit && currentCount >= limit) {
-          if (index === 0) emit("exceed");
-          return;
-        }
-
-        const item: UploadFile = {
-          uid: uuid(),
-          filename: file.name,
-          size: formatFileSize(file.size),
-          status: "waiting",
-          percent: 0,
-          preview: null,
-        };
-
-        if (file.type?.startsWith("image/")) {
-          const isImageByName = (name = "") =>
-            /\.(png|jpe?g|gif|webp|bmp|ico|svg|avif|apng)$/i.test(name);
-          if (isImageByName(file.name)) {
-            item.preview = window.URL.createObjectURL(file);
-          }
-        }
-
-        const fileSizeInKB = file.size / 1024;
-        if (
-          (minSize !== undefined && minSize >= 0 && fileSizeInKB < minSize) ||
-          (maxSize !== undefined && maxSize >= 0 && fileSizeInKB > maxSize)
-        ) {
-          item.errorText = locale.value?.k.upload.errorFileSize;
-          item.status = "error";
-          innerFileList.value.push(item);
-          triggerUpdate(item);
-          emit("sizeError", { file: item, fileList: innerFileList.value });
-          return;
-        }
-
-        handleSelect({ item, file });
-      });
-
-      emit("selectFiles", innerFileList.value);
-    };
-
-    const handleSelect = ({ item, file }: { item: UploadFile; file: File }) => {
-      innerFileList.value.push(item);
-      const reactiveItem = innerFileList.value.find((x) => x.uid === item.uid);
-      if (!reactiveItem) return;
-      if (reactiveItem.uid) uploadTemp[reactiveItem.uid] = file;
-      triggerUpdate(reactiveItem);
-
-      if (props.autoTrigger) uploadFile(reactiveItem, file);
-    };
-
-    const handleRemove = ({ index }: { index: number; file: UploadFile }) => {
-      const item = innerFileList.value[index];
-      if (!item) return;
-
-      if (item.xhr) item.xhr.abort();
-
-      innerFileList.value.splice(index, 1);
-      item.uid && delete uploadTemp[item.uid];
-
-      if (item.preview) window.URL.revokeObjectURL(item.preview);
-
-      emit("update:fileList", innerFileList.value);
-      emit("remove", { file: item, fileList: innerFileList.value });
-    };
-
-    const upload = () => {
-      if (!props.autoTrigger && !props.disabled) {
-        Object.keys(uploadTemp).forEach((uid) => {
-          const item = innerFileList.value.find((x) => x.uid === uid);
-          const file = uploadTemp[uid];
-          if (item && file && item.status === "waiting") uploadFile(item, file);
-        });
-      }
-    };
-
-    const uploadFile = (item: UploadFile, file: File) => {
-      emit("beforeUpload", item, file);
-      if (props.transformFile) {
-        props.transformFile(file).then((res) => {
-          toUpload(item, res);
-        });
-      } else {
-        toUpload(item, file);
-      }
-    };
-
-    const toUpload = (item: UploadFile, file: File) => {
-      const { action, name, headers, data } = props;
-      const formdata = new FormData();
-      formdata.append(name, file);
-
-      if (data) {
-        Object.keys(data).forEach((k) => formdata.append(k, data[k]));
-      }
-
-      const xhr = new XMLHttpRequest();
-      item.xhr = xhr;
-
-      xhr.open("post", action);
-      if (headers) {
-        for (const k in headers) {
-          xhr.setRequestHeader(k, headers[k]);
-        }
-      }
-
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            item.status = "success";
-            item.percent = 100;
-            try {
-              item.response = JSON.parse(xhr.responseText);
-            } catch (e) {
-              item.response = xhr.responseText;
-            }
-            item.uid && delete uploadTemp[item.uid];
-            triggerUpdate(item);
-          } else {
-            handleError();
-          }
-        }
-      };
-
-      xhr.upload.onloadstart = () => {
-        item.status = "uploading";
-        triggerUpdate(item);
-      };
-
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          item.percent = (event.loaded / event.total) * 100;
-        }
-      };
-
-      const handleError = () => {
-        item.status = "error";
-        item.uid && delete uploadTemp[item.uid];
-        triggerUpdate(item);
-      };
-
-      xhr.onerror = handleError;
-      xhr.send(formdata);
-    };
-
-    expose({ upload });
-
-    return () => {
-      const {
-        type,
-        showUploadList,
-        uploadIcon,
-        name,
-        accept,
-        multiple,
-        directory,
-        limit,
-        uploadText,
-        uploadSubText,
-        draggable,
-        disabled,
-      } = props;
-      const isPicture = type === "picture";
-
-      const selectorProps = {
-        type,
-        disabled,
-        name,
-        accept,
-        multiple,
-        directory,
-        limit,
-        uploadText,
-        uploadSubText,
-        draggable,
-        fileList: innerFileList.value,
-        uploadIcon,
-        locale: locale.value,
-        onSelect: onSelectFiles,
-      };
-      const SelectorNode = (
-        <Selector
-          key="selector"
-          {...selectorProps}
-          v-slots={{ default: () => slots.default?.() }}
-        />
-      );
-      const fileListProps = {
-        type,
-        fileList: innerFileList.value,
-        showUploadList,
-        disabled,
-        locale: locale.value,
-        onRemove: handleRemove,
-      };
-      const FileListNode = (
-        <FileList key="filelist" {...fileListProps} v-slots={{ selector: () => SelectorNode }} />
-      );
-      return (
-        <div
-          class={[
-            "k-upload",
-            {
-              "k-upload-disabled": disabled,
-              "k-upload-picture": isPicture,
-              "k-upload-drag": draggable,
-            },
-          ]}
-        >
-          {!isPicture ? [SelectorNode, FileListNode] : FileListNode}
-        </div>
-      );
-    };
-  },
+      pendingRef.current.set(item.uid!, file); update(item); if (autoTrigger) void send(item, file);
+    }
+    if (exceeded) onExceed?.(); onSelectFiles?.(filesRef.current);
+  };
+  const upload = () => { if (!disabled) pendingRef.current.forEach((file, uid) => { const item = filesRef.current.find((entry) => entry.uid === uid); if (item?.status === "waiting") void send(item, file); }); };
+  useImperativeHandle(ref, () => ({ upload }));
+  const remove = (index: number, item: UploadFile) => {
+    if (disabled) return; item.xhr?.abort(); if (item.uid) pendingRef.current.delete(item.uid); if (item.preview) URL.revokeObjectURL(item.preview);
+    filesRef.current = filesRef.current.filter((_, position) => position !== index); setFiles(filesRef.current); onRemove?.({ file: item, fileList: filesRef.current });
+  };
+  const selector = <Selector disabled={disabled} name={name} accept={accept} multiple={multiple} directory={directory} limit={limit} uploadText={uploadText} uploadSubText={uploadSubText} draggable={draggable} fileList={files} uploadIcon={uploadIcon} type={type} locale={messages} onSelect={select}>{children}</Selector>;
+  return <div {...rest} className={["k-upload", disabled && "k-upload-disabled", type === "picture" && "k-upload-picture", draggable && "k-upload-drag", className].filter(Boolean).join(" ")}>
+    {type !== "picture" && selector}<FileList type={type} fileList={files} showUploadList={showUploadList} disabled={disabled} locale={messages} onRemove={remove} selector={selector} />
+  </div>;
 });
 export default Upload;

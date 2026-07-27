@@ -1,59 +1,45 @@
-import { defineComponent, ref, TransitionGroup, type TransitionProps } from "vue";
-import { getTransitionProp } from "../base/transition";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import Content, { type ContentProps } from "./content";
-let count = 0;
-function getUuid() {
-  const timestamp = Date.now();
-  return `k-message-${timestamp}-${count++}`;
+
+interface NoticeItem extends ContentProps { key: string }
+export interface NoticeContainerApi {
+  show: (options: ContentProps) => () => void;
+  clean: () => void;
 }
-export default defineComponent({
-  props: { type: String },
-  setup(ps, { expose }) {
-    const options = ref<any[]>([]);
+let count = 0;
 
-    const show = (option: ContentProps) => {
-      let { duration = 3.5, onClose, closable, noticeType } = option;
-      const key = getUuid();
-      let timer: NodeJS.Timeout | undefined = undefined;
-      let callback = () => {
-        typeof onClose === "function" && onClose();
-        options.value = options.value.filter((item) => item.key !== key);
-        clearTimeout(timer);
-      };
-      duration > 0 && (timer = setTimeout(callback, duration * 1000));
-      if ((closable === true && noticeType == "message") || noticeType == "notice") {
-        option.onClose = () => callback();
-      }
-      options.value.push({ ...option, key });
-
+const Container = forwardRef<NoticeContainerApi, { type: "message" | "notice" }>(function Container({ type }, ref) {
+  const [items, setItems] = useState<NoticeItem[]>([]);
+  const timersRef = useRef(new Map<string, ReturnType<typeof setTimeout>>());
+  const close = (key: string, callback?: () => void) => {
+    const timer = timersRef.current.get(key);
+    if (timer) clearTimeout(timer);
+    timersRef.current.delete(key);
+    setItems((current) => current.filter((item) => item.key !== key));
+    callback?.();
+  };
+  const clean = () => {
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current.clear();
+    setItems([]);
+  };
+  useImperativeHandle(ref, () => ({
+    show(options) {
+      const key = `k-${type}-${Date.now()}-${count++}`;
+      const callback = () => close(key, options.onClose);
+      const item = { ...options, noticeType: type, key, onClose: callback };
+      setItems((current) => [...current, item]);
+      const duration = options.duration ?? 3.5;
+      if (duration > 0) timersRef.current.set(key, setTimeout(callback, duration * 1000));
       return callback;
-    };
-    const clean = () => {
-      options.value = [];
-    };
-
-    expose({ show, clean });
-
-    return () => {
-      const { type } = ps;
-
-      let transitionProps = { name: `k-${type}-slide`, class: `k-${type}` } as TransitionProps;
-      if (type == "notice") {
-        const p = getTransitionProp(`k-${type}-slide`);
-        delete p.onEnter;
-        delete p.onBeforeEnter;
-        transitionProps = { ...p, ...transitionProps };
-      }
-
-      let children = options.value.map((item) => {
-        let props = { ...item };
-        return <Content {...props} />;
-      });
-      return (
-        <TransitionGroup tag="div" {...transitionProps}>
-          {...children}
-        </TransitionGroup>
-      );
-    };
-  },
+    },
+    clean,
+  }));
+  useEffect(() => clean, []);
+  return (
+    <div className={`k-${type}`}>
+      {items.map((item) => <div key={item.key} className={`k-${type}-slide-enter-active`}><Content {...item} /></div>)}
+    </div>
+  );
 });
+export default Container;

@@ -1,127 +1,47 @@
 import { Plus } from "kui-icons";
-import { defineComponent, ref, type ExtractPropTypes, type PropType } from "vue";
-import type { BooleanType } from "../const/types";
-import Icon from "../icon";
+import { useRef, useState, type DragEvent, type HTMLAttributes } from "react";
+import Icon, { type IconType } from "../icon";
 import type { UploadFile } from "./index";
 
-export const selectorProps = {
-  disabled: Boolean as BooleanType,
-  name: { type: String, default: "file" },
-  accept: String,
-  multiple: Boolean as BooleanType,
-  directory: Boolean as BooleanType,
-  limit: Number,
-  uploadText: String,
-  uploadSubText: String,
-  draggable: Boolean as BooleanType,
-  locale: Object as PropType<any>,
-  fileList: Array as PropType<UploadFile[]>,
-  uploadIcon: [String, Object, Array] as PropType<any>,
-  type: {
-    type: String as PropType<"list" | "picture">,
-    default: "list",
-    validator: (val: string) => ["list", "picture"].indexOf(val) >= 0,
-  },
-};
+export interface SelectorProps extends Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> {
+  disabled?: boolean;
+  name?: string;
+  accept?: string;
+  multiple?: boolean;
+  directory?: boolean;
+  limit?: number;
+  uploadText?: string;
+  uploadSubText?: string;
+  draggable?: boolean;
+  locale?: any;
+  fileList?: UploadFile[];
+  uploadIcon?: IconType[];
+  type?: "list" | "picture";
+  onSelect?: (files: FileList) => void;
+}
 
-export type SelectorProps = ExtractPropTypes<typeof selectorProps>;
-
-export default defineComponent({
-  name: "Selector",
-  props: selectorProps,
-  setup(props, { emit, slots }) {
-    const dragOver = ref(false);
-    const uploadFileRef = ref<HTMLInputElement | null>(null);
-
-    const onDragEnter = (e: DragEvent) => {
-      dragOver.value = true;
-      e.preventDefault();
-    };
-    const onDragLeave = () => {
-      dragOver.value = false;
-    };
-
-    const selectFiles = (e: Event | DragEvent) => {
-      const files = (e as DragEvent).dataTransfer
-        ? (e as DragEvent).dataTransfer?.files
-        : (e.target as HTMLInputElement).files;
-      if (files && files.length > 0) emit("select", files);
-      if (e.target) (e.target as HTMLInputElement).value = "";
-      e.preventDefault();
-      dragOver.value = false;
-    };
-
-    const onDrop = (e: DragEvent) => {
-      selectFiles(e);
-    };
-
-    const onDragOver = (e: DragEvent) => {
-      e.stopPropagation();
-      e.preventDefault();
-      dragOver.value = true;
-    };
-
-    const triggerSelect = () => {
-      if (props.disabled) return;
-      uploadFileRef.value?.click();
-    };
-
-    return () => {
-      const {
-        name,
-        accept,
-        multiple,
-        directory,
-        limit,
-        disabled,
-        uploadText,
-        uploadSubText,
-        draggable,
-        uploadIcon,
-        type,
-        fileList,
-        locale,
-      } = props;
-      const isPicture = type === "picture";
-      const isLimitExceeded = !!(limit && fileList && fileList.length >= limit);
-      const showSelector = !isPicture || !isLimitExceeded;
-      if (!showSelector) return null;
-
-      let addProps = {
-        class: ["k-upload-add", { "k-upload-drag-over": dragOver.value }],
-        onDragenter: draggable ? onDragEnter : undefined,
-        onDrop: draggable ? onDrop : undefined,
-        onDragover: draggable ? onDragOver : undefined,
-        onDragleave: draggable ? onDragLeave : undefined,
-        onClick: triggerSelect,
-      };
-
-      return showSelector ? (
-        <div class="k-upload-select">
-          <div {...addProps}>
-            <input
-              type="file"
-              class="k-upload-file"
-              {...({ webkitdirectory: directory ? "true" : undefined } as any)}
-              name={name}
-              accept={accept}
-              disabled={disabled}
-              multiple={multiple}
-              onChange={selectFiles}
-              ref={uploadFileRef}
-            />
-            {isPicture || draggable ? <Icon type={uploadIcon || Plus} /> : slots.default?.()}
-            {(isPicture || (draggable && uploadText)) && (
-              <span class="k-upload-text">{uploadText}</span>
-            )}
-            {draggable && uploadSubText && (
-              <span class="k-upload-sub-text">
-                {dragOver.value ? locale?.k.upload.releaseToUpload : uploadSubText}
-              </span>
-            )}
-          </div>
-        </div>
-      ) : null;
-    };
-  },
-});
+export default function Selector({
+  disabled, name = "file", accept, multiple, directory, limit, uploadText, uploadSubText,
+  draggable, locale, fileList = [], uploadIcon, type = "list", onSelect, children,
+}: SelectorProps) {
+  const [dragOver, setDragOver] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  if (type === "picture" && limit && fileList.length >= limit) return null;
+  const select = (files: FileList | null) => { if (files?.length) onSelect?.(files); setDragOver(false); };
+  const drop = (event: DragEvent) => { event.preventDefault(); if (!disabled) select(event.dataTransfer.files); };
+  return <div className="k-upload-select"><div
+    className={["k-upload-add", dragOver && "k-upload-drag-over"].filter(Boolean).join(" ")}
+    onClick={() => !disabled && inputRef.current?.click()}
+    onDragEnter={draggable ? (event) => { event.preventDefault(); setDragOver(true); } : undefined}
+    onDragOver={draggable ? (event) => { event.preventDefault(); setDragOver(true); } : undefined}
+    onDragLeave={draggable ? () => setDragOver(false) : undefined}
+    onDrop={draggable ? drop : undefined}
+  >
+    <input ref={inputRef} type="file" className="k-upload-file" name={name} accept={accept} disabled={disabled} multiple={multiple}
+      {...({ webkitdirectory: directory ? "" : undefined } as any)}
+      onChange={(event) => { select(event.target.files); event.target.value = ""; }} />
+    {type === "picture" || draggable ? <Icon type={uploadIcon ?? Plus} /> : children}
+    {(type === "picture" || (draggable && uploadText)) && <span className="k-upload-text">{uploadText}</span>}
+    {draggable && uploadSubText && <span className="k-upload-sub-text">{dragOver ? locale?.k.upload.releaseToUpload : uploadSubText}</span>}
+  </div></div>;
+}

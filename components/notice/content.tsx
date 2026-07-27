@@ -1,77 +1,39 @@
 import { CircleAlert, CircleCheck, CircleX, Info, Loading, X } from "kui-icons";
-import { defineComponent, type ExtractPropTypes, type PropType } from "vue";
+import type { ReactNode } from "react";
 import { Button } from "../button";
-import type { BooleanType, NoticeType } from "../const/types";
+import type { NoticeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
 
-export const contentProps = {
-  type: { type: String as PropType<NoticeType> },
-  title: String,
-  content: [String, Object],
-  icon: Array as PropType<IconType[]>,
-  color: String,
-  duration: Number,
-  closable: Boolean as BooleanType,
-  onClose: Function as PropType<() => void>,
-  noticeType: { type: String as PropType<"message" | "notice">, default: "message" },
-};
+export interface ContentProps {
+  type?: NoticeType;
+  title?: ReactNode;
+  content?: ReactNode;
+  icon?: IconType[];
+  color?: string;
+  duration?: number;
+  closable?: boolean;
+  onClose?: () => void;
+  noticeType?: "message" | "notice";
+}
+const icons = { info: Info, error: CircleX, success: CircleCheck, warning: CircleAlert, loading: Loading };
 
-export type ContentProps = ExtractPropTypes<typeof contentProps>;
-
-export default defineComponent({
-  props: contentProps,
-  setup(props, { emit }) {
-    const onClose = () => {
-      emit("close");
-    };
-    return () => {
-      let { noticeType, type, content, title, closable, icon, color } = props;
-      let icons = {
-        info: Info,
-        error: CircleX,
-        success: CircleCheck,
-        warning: CircleAlert,
-        loading: Loading,
-      };
-      const AlertIcon = icon ? icon : type ? icons[type] : null;
-      const classes = [
-        `k-${noticeType}-box`,
-        {
-          [`k-${noticeType}-${type}`]: type,
-          "k-notice-has-icon": AlertIcon,
-        },
-      ];
-
-      const children = [];
-      if (AlertIcon) {
-        children.push(
-          <Icon
-            type={AlertIcon}
-            color={color}
-            class={`k-${noticeType}-icon`}
-            spin={type == "loading"}
-          />
-        );
-      }
-      if (noticeType == "message") {
-        children.push(<span>{content}</span>);
-        if (closable) {
-          children.push(
-            <Button class="k-message-close" size="small" type="text" icon={X} onClick={onClose} />
-          );
-        }
-      } else {
-        children.push(<div class="k-notice-title">{title}</div>);
-        children.push(<div class="k-notice-desc">{content}</div>);
-        children.push(
-          <Button class="k-notice-close" size="small" type="text" icon={X} onClick={onClose} />
-        );
-      }
-      return (
-        <div class={classes}>
-          <div class={`k-${noticeType}-content`}>{...children}</div>
-        </div>
-      );
-    };
-  },
-});
+export default function Content({
+  noticeType = "message", type, content, title, closable, icon, color, onClose,
+}: ContentProps) {
+  const alertIcon = icon ?? (type ? icons[type] : undefined);
+  return (
+    <div className={[`k-${noticeType}-box`, type && `k-${noticeType}-${type}`, alertIcon && "k-notice-has-icon"].filter(Boolean).join(" ")}>
+      <div className={`k-${noticeType}-content`}>
+        {alertIcon && <Icon type={alertIcon} color={color} className={`k-${noticeType}-icon`} spin={type === "loading"} />}
+        {noticeType === "message" ? <>
+          <span>{content}</span>
+          {closable && <Button className="k-message-close" size="small" type="text" icon={X} onClick={onClose} />}
+        </> : <>
+          <div className="k-notice-title">{title}</div>
+          <div className="k-notice-desc">{content}</div>
+          <Button className="k-notice-close" size="small" type="text" icon={X} onClick={onClose} />
+        </>}
+      </div>
+    </div>
+  );
+}
