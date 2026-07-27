@@ -160,8 +160,8 @@ const InputNumber: React.FC<InputNumberProps> = ({
       readOnly={readOnly}
       clearable={false}
       placeholder={placeholder}
-      suffix={suffix}
-      prefix={prefix}
+      suffix={suffixSlot || suffix}
+      prefix={prefixSlot || prefix}
       size={size || parentSize}
       icon={icon}
       shape={shape}
@@ -170,8 +170,6 @@ const InputNumber: React.FC<InputNumberProps> = ({
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
       controls={controlsNode}
-      suffixSlot={suffixSlot}
-      prefixSlot={prefixSlot}
     />
   );
 };

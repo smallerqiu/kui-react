@@ -1,95 +1,10 @@
-import Color, { type ColorObject } from "color";
-import { defineComponent, onMounted, reactive, ref, watch, type PropType } from "vue";
+import Color, { type ColorInstance, type ColorObject } from "color";
+import { useEffect, useRef, type MouseEvent as ReactMouseEvent } from "react";
 import { clamp } from "../utils/share";
-export default defineComponent({
-  name: "Paint",
-  props: {
-    hue: { type: Number, default: 0 },
-    modelValue: { type: [String, Object] as PropType<any>, required: true },
-    onUpdateRGB: Function as PropType<(color: ColorObject) => void>,
-  },
-  setup(props, { emit }) {
-    const refPaint = ref<HTMLCanvasElement | null>(null);
-    const dotPos = reactive({ x: 0, y: 0 });
-
-    const renderPaint = () => {
-      const canvas = refPaint.value;
-      if (!canvas) return;
-      const ctx = canvas.getContext("2d", { willReadFrequently: true });
-      if (!ctx) return;
-
-      const { width, height } = canvas;
-      ctx.fillStyle = `hsl(${props.hue}, 100%, 50%)`;
-      ctx.fillRect(0, 0, width, height);
-
-      const whiteGrad = ctx.createLinearGradient(0, 0, width, 0);
-      whiteGrad.addColorStop(0, "#fff");
-      whiteGrad.addColorStop(1, "rgba(255,255,255,0)");
-      ctx.fillStyle = whiteGrad;
-      ctx.fillRect(0, 0, width, height);
-
-      const blackGrad = ctx.createLinearGradient(0, 0, 0, height);
-      blackGrad.addColorStop(0, "rgba(0,0,0,0)");
-      blackGrad.addColorStop(1, "#000");
-      ctx.fillStyle = blackGrad;
-      ctx.fillRect(0, 0, width, height);
-    };
-
-    const updatePos = () => {
-      const hsv = Color(props.modelValue).hsv().object();
-      dotPos.x = (hsv.s / 100) * 234 - 7;
-      dotPos.y = (1 - hsv.v / 100) * 136 - 7;
-    };
-
-    const handleMove = (e: MouseEvent) => {
-      const canvas = refPaint.value;
-      if (!canvas) return;
-      const { width, height, left, top } = canvas.getBoundingClientRect();
-      const x = clamp(e.clientX - left, 0, width);
-      const y = clamp(e.clientY - top, 0, height);
-
-      const s = (x / width) * 100;
-      const v = (1 - y / height) * 100;
-      const color = Color().hsv(props.hue, s, v);
-      emit("updateRGB", color.rgb().object());
-    };
-
-    const onMouseDown = (e: MouseEvent) => {
-      handleMove(e);
-      document.addEventListener("mousemove", handleMove);
-      document.addEventListener(
-        "mouseup",
-        () => {
-          document.removeEventListener("mousemove", handleMove);
-        },
-        { once: true }
-      );
-    };
-
-    watch([() => props.hue, () => props.modelValue], () => {
-      renderPaint();
-      updatePos();
-    });
-
-    onMounted(() => {
-      renderPaint();
-      updatePos();
-    });
-
-    return () => (
-      <div class="k-color-picker-paint-container">
-        <canvas
-          class="k-color-picker-paint"
-          width={234}
-          height={136}
-          ref={refPaint}
-          onMousedown={onMouseDown}
-        />
-        <span
-          class="k-color-picker-paint-dot"
-          style={{ left: `${dotPos.x}px`, top: `${dotPos.y}px` }}
-        />
-      </div>
-    );
-  },
-});
+export interface PaintProps { hue?: number; value: string | ColorInstance; onUpdateRGB?: (color: ColorObject) => void }
+export default function Paint({ hue = 0, value, onUpdateRGB }: PaintProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null); const hsv = Color(value).hsv().object();
+  useEffect(() => { const canvas = canvasRef.current, context = canvas?.getContext("2d"); if (!canvas || !context) return; context.fillStyle = `hsl(${hue},100%,50%)`; context.fillRect(0,0,canvas.width,canvas.height); const white = context.createLinearGradient(0,0,canvas.width,0); white.addColorStop(0,"#fff"); white.addColorStop(1,"rgba(255,255,255,0)"); context.fillStyle=white; context.fillRect(0,0,canvas.width,canvas.height); const black=context.createLinearGradient(0,0,0,canvas.height); black.addColorStop(0,"rgba(0,0,0,0)"); black.addColorStop(1,"#000"); context.fillStyle=black; context.fillRect(0,0,canvas.width,canvas.height); }, [hue]);
+  const start = (event: ReactMouseEvent) => { const move = (x: number,y: number) => { const rect=canvasRef.current!.getBoundingClientRect(); const saturation=clamp(x-rect.left,0,rect.width)/rect.width*100; const brightness=(1-clamp(y-rect.top,0,rect.height)/rect.height)*100; onUpdateRGB?.(Color().hsv(hue,saturation,brightness).rgb().object()); }; move(event.clientX,event.clientY); const mousemove=(item:MouseEvent)=>move(item.clientX,item.clientY); const up=()=>{document.removeEventListener("mousemove",mousemove);document.removeEventListener("mouseup",up);};document.addEventListener("mousemove",mousemove);document.addEventListener("mouseup",up); };
+  return <div className="k-color-picker-paint-container"><canvas className="k-color-picker-paint" width={234} height={136} ref={canvasRef} onMouseDown={start} /><span className="k-color-picker-paint-dot" style={{ left: hsv.s / 100 * 234 - 7, top: (1 - hsv.v / 100) * 136 - 7 }} /></div>;
+}

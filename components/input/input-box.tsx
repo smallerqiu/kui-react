@@ -1,6 +1,6 @@
 import React from "react";
 
-export interface InputBoxProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputBoxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
   multiple?: boolean;
   disabled?: boolean;
   size?: string;

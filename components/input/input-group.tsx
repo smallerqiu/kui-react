@@ -49,7 +49,7 @@ const InputGroup: React.FC<InputGroupProps> = ({
 
   if (compact && childList.length > 0) {
     processedChildren = childList.map((child, i) => {
-      if (React.isValidElement(child)) {
+      if (React.isValidElement<{ className?: string }>(child)) {
         const itemClass = [
           child.props.className || "",
           i === 0 ? "k-input-group-first-item" : "",

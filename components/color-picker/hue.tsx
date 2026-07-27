@@ -1,78 +1,20 @@
-import { defineComponent, onBeforeUnmount, onMounted, ref, watch, type PropType } from "vue";
+import { useEffect, useRef, type MouseEvent as ReactMouseEvent } from "react";
 import { clamp } from "../utils/share";
-export default defineComponent({
-  name: "Hue",
-  props: {
-    hue: { type: Number, default: 0 },
-    onUpdateHue: Function as PropType<(hue: number) => void>,
-  },
-  setup(props, { emit }) {
-    const dotPos = ref(0);
-    const refPaint = ref<HTMLCanvasElement | null>(null);
-    const isMousePressed = ref(false);
-
-    const renderPaint = () => {
-      const canvas = refPaint.value;
-      if (!canvas) return;
-      const ctx = canvas.getContext("2d", { willReadFrequently: true });
-      if (!ctx) return;
-
-      const { width, height } = canvas;
-      const gradient = ctx.createLinearGradient(0, 0, width, 0);
-      for (let i = 0; i <= 360; i += 10) {
-        gradient.addColorStop(i / 360, `hsl(${i}, 100%, 50%)`);
-      }
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
-    };
-
-    const updatePos = () => {
-      // 190 是 CSS 中定义的宽度，减去圆点宽度的一半
-      dotPos.value = (props.hue / 360) * 190 - 7;
-    };
-
-    const handleMove = (e: MouseEvent) => {
-      const canvas = refPaint.value;
-      if (!canvas) return;
-      const { width, left } = canvas.getBoundingClientRect();
-      const x = clamp(e.clientX - left, 0, width);
-      const newHue = (x / width) * 360;
-      emit("updateHue", Math.round(newHue));
-    };
-
-    const onMouseUp = () => {
-      isMousePressed.value = false;
-      document.removeEventListener("mousemove", handleMove);
-      document.removeEventListener("mouseup", onMouseUp);
-    };
-
-    const onMouseDown = (e: MouseEvent) => {
-      isMousePressed.value = true;
-      handleMove(e);
-      document.addEventListener("mousemove", handleMove);
-      document.addEventListener("mouseup", onMouseUp);
-      e.preventDefault();
-    };
-
-    watch(() => props.hue, updatePos);
-    onMounted(() => {
-      renderPaint();
-      updatePos();
-    });
-
-    onBeforeUnmount(onMouseUp);
-
-    return () => (
-      <div class="k-color-picker-slider-hue">
-        <canvas
-          class="k-color-picker-hue"
-          width={190}
-          height={8}
-          ref={refPaint}
-          onMousedown={onMouseDown}
-        />
-        <span class="k-color-picker-hue-dot" style={{ left: `${dotPos.value}px` }} />
-      </div>
-    );
-  },
-});
+export interface HueProps { hue?: number; onUpdateHue?: (hue: number) => void }
+export default function Hue({ hue = 0, onUpdateHue }: HueProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const canvas = canvasRef.current, context = canvas?.getContext("2d"); if (!canvas || !context) return;
+    const gradient = context.createLinearGradient(0, 0, canvas.width, 0);
+    for (let value = 0; value <= 360; value += 10) gradient.addColorStop(value / 360, `hsl(${value},100%,50%)`);
+    context.fillStyle = gradient; context.fillRect(0, 0, canvas.width, canvas.height);
+  }, []);
+  const start = (event: ReactMouseEvent) => {
+    const move = (clientX: number) => { const rect = canvasRef.current!.getBoundingClientRect(); onUpdateHue?.(Math.round(clamp(clientX - rect.left, 0, rect.width) / rect.width * 360)); };
+    move(event.clientX);
+    const mousemove = (item: MouseEvent) => move(item.clientX);
+    const up = () => { document.removeEventListener("mousemove", mousemove); document.removeEventListener("mouseup", up); };
+    document.addEventListener("mousemove", mousemove); document.addEventListener("mouseup", up);
+  };
+  return <div className="k-color-picker-slider-hue"><canvas className="k-color-picker-hue" width={190} height={8} ref={canvasRef} onMouseDown={start} /><span className="k-color-picker-hue-dot" style={{ left: hue / 360 * 190 - 7 }} /></div>;
+}

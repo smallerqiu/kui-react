@@ -1,258 +1,137 @@
 import Color from "color";
 import { toCanvas, type QRCodeRenderersOptions } from "qrcode";
-import {
-  computed,
-  defineComponent,
-  inject,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-  type CSSProperties,
-  type ExtractPropTypes,
-  type PropType,
-} from "vue";
+import { forwardRef, useCallback, useContext, useEffect, useImperativeHandle, useRef, type HTMLAttributes, type ReactNode } from "react";
 import { Button } from "../button";
-import type { BooleanType } from "../const/types";
+import { ConfigContext } from "../config";
 import zhCN from "../locale/zh-CN";
 import Spin from "../spin";
+
 export type QRCodeStatus = "active" | "loading" | "expired" | "scanned";
 export type QRCodeErrorLevel = "L" | "M" | "Q" | "H";
-const qrCodeProps = {
-  value: { type: String, required: true },
-  size: { type: Number, default: 160 },
-  colorDark: { type: String, default: "var(--kui-color-reverse)" },
-  colorLight: { type: String, default: "var(--kui-color-bg)" },
-  bordered: { type: Boolean as BooleanType, default: true },
-  status: {
-    type: String as PropType<QRCodeStatus>,
-    default: "active",
-  },
-  logo: { type: String, default: "" },
-  logoSize: { type: Number },
-  margin: { type: Number, default: 0 },
-  logoRadius: { type: Number, default: 4 },
-  logoBorder: { type: Boolean as BooleanType, default: true },
-  errorLevel: { type: String as PropType<QRCodeErrorLevel>, default: "M" },
-};
-export type QRCodeProps = ExtractPropTypes<typeof qrCodeProps>;
+export interface QRCodeRef { download: (fileName?: string) => void }
+export interface QRCodeProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+  value: string;
+  size?: number;
+  colorDark?: string;
+  colorLight?: string;
+  bordered?: boolean;
+  status?: QRCodeStatus;
+  logo?: string;
+  logoSize?: number;
+  margin?: number;
+  logoRadius?: number;
+  logoBorder?: boolean;
+  errorLevel?: QRCodeErrorLevel;
+  loadingContent?: ReactNode;
+  expiredContent?: ReactNode;
+  scannedContent?: ReactNode;
+  onRefresh?: () => void;
+}
 
-const QRCode = defineComponent({
-  name: "QRCode",
-  props: qrCodeProps,
-  emits: ["refresh"],
-  setup(props, { emit, slots, expose }) {
-    const canvasRef = ref<HTMLCanvasElement | null>(null);
-    let rootObserver: MutationObserver | null = null;
+const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode({
+  value,
+  size = 160,
+  colorDark = "var(--kui-color-reverse)",
+  colorLight = "var(--kui-color-bg)",
+  bordered = true,
+  status = "active",
+  logo = "",
+  logoSize,
+  margin = 0,
+  logoRadius = 4,
+  logoBorder = true,
+  errorLevel = "M",
+  loadingContent,
+  expiredContent,
+  scannedContent,
+  onRefresh,
+  className,
+  style,
+  ...rest
+}, ref) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const drawIdRef = useRef(0);
+  const { locale } = useContext(ConfigContext);
+  const messages = (locale ?? zhCN)?.k?.qrcode;
 
-    const injectedLocale = inject<Record<string, any>>("locale", zhCN);
-    const locale = computed(() => {
-      return injectedLocale instanceof Object && "value" in injectedLocale
-        ? injectedLocale.value
-        : injectedLocale;
-    });
+  const resolveColor = (input: string) => {
+    if (!input.trim().startsWith("var(")) return input;
+    const element = document.createElement("span");
+    element.style.color = input;
+    document.body.appendChild(element);
+    const computed = getComputedStyle(element).color;
+    element.remove();
+    try { return Color(computed).hex(); } catch { return "#000000"; }
+  };
 
-    const initThemeObserver = () => {
-      const rootEl = document.documentElement;
-
-      rootObserver = new MutationObserver((mutations) => {
-        for (const mutation of mutations) {
-          if (mutation.type === "attributes" && mutation.attributeName === "theme-mode") {
-            drawQRCode();
-            break;
-          }
-        }
-      });
-
-      rootObserver.observe(rootEl, {
-        attributes: true,
-        attributeFilter: ["theme-mode"], // 只对 theme-mode 敏感，性能损耗几乎为 0
-      });
+  const draw = useCallback(async () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const drawId = ++drawIdRef.current;
+    const ratio = window.devicePixelRatio || 1;
+    const dark = resolveColor(colorDark);
+    const light = resolveColor(colorLight);
+    const memory = document.createElement("canvas");
+    const options: QRCodeRenderersOptions = {
+      width: size * ratio,
+      margin,
+      color: { dark, light },
+      errorCorrectionLevel: errorLevel,
     };
-    const parseCssVariable = (colorStr: string): string => {
-      if (colorStr.trim().startsWith("var(")) {
-        const tempDiv = document.createElement("div");
-        tempDiv.style.color = colorStr;
-        document.body.appendChild(tempDiv);
-        let computedColor = window.getComputedStyle(tempDiv).color;
-        computedColor = Color(computedColor).hex();
-        document.body.removeChild(tempDiv);
-        return computedColor || "#000000";
-      }
-      return colorStr;
-    };
-
-    // 适配与 Logo 异步渲染
-    const drawQRCode = async () => {
-      if (!canvasRef.value) return;
-
-      const canvas = canvasRef.value;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-
-      const { size, value, logo, logoRadius, logoBorder, errorLevel } = props;
-      const ratio = window.devicePixelRatio || 1;
-
-      // 设置 Canvas 物理分辨率（抗锯齿高清拉伸）
+    try {
+      await toCanvas(memory, value || " ", options);
+      if (drawId !== drawIdRef.current) return;
       canvas.width = size * ratio;
       canvas.height = size * ratio;
-      ctx.scale(ratio, ratio);
-
-      try {
-        const realDark = parseCssVariable(props.colorDark);
-        const realLight = parseCssVariable(props.colorLight);
-        // 利用 qrcode 库将矩阵直接渲染到当前画布上
-        const options: QRCodeRenderersOptions = {
-          width: size,
-          margin: props.margin,
-          color: {
-            dark: realDark,
-            light: realLight,
-          },
-          errorCorrectionLevel: errorLevel,
-        };
-
-        // 预渲染到一个临时的内存 canvas 中，再复制过来，避免多次缩放失真
-        const memCanvas = document.createElement("canvas");
-        await toCanvas(memCanvas, value || " ", options);
-        ctx.drawImage(memCanvas, 0, 0, size, size);
-
-        // 如果配置了 Logo，开始二次合成
-        if (logo) {
-          const img = new Image();
-          img.crossOrigin = "anonymous";
-          img.src = logo;
-          img.onload = () => {
-            // 计算 Logo 的最终尺寸
-            const computedLogoSize = props.logoSize || size * 0.22;
-            const x = (size - computedLogoSize) / 2;
-            const y = (size - computedLogoSize) / 2;
-
-            ctx.save();
-
-            // 如果开启了保护边框，先画一层白底隔离带，防止二维码格子戳进 Logo 导致视觉杂乱
-            if (logoBorder) {
-              ctx.fillStyle = realLight;
-              // 稍微比 Logo 大一圈作为外边框
-              const borderSize = computedLogoSize + 6;
-              const bx = (size - borderSize) / 2;
-              const by = (size - borderSize) / 2;
-
-              ctx.beginPath();
-              ctx.roundRect(bx, by, borderSize, borderSize, logoRadius + 2);
-              ctx.fill();
-            }
-
-            // 裁剪画布，为 Logo 挖出完美的圆角
-            ctx.beginPath();
-            ctx.roundRect(x, y, computedLogoSize, computedLogoSize, logoRadius);
-            ctx.clip();
-
-            // 正式把 Logo 画到正中心
-            ctx.drawImage(img, x, y, computedLogoSize, computedLogoSize);
-            ctx.restore();
-          };
+      const context = canvas.getContext("2d");
+      if (!context) return;
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(memory, 0, 0, canvas.width, canvas.height);
+      if (!logo) return;
+      const image = new Image();
+      image.crossOrigin = "anonymous";
+      image.onload = () => {
+        if (drawId !== drawIdRef.current) return;
+        const finalSize = (logoSize ?? size * 0.22) * ratio;
+        const x = (canvas.width - finalSize) / 2;
+        const y = (canvas.height - finalSize) / 2;
+        context.save();
+        if (logoBorder) {
+          const border = finalSize + 6 * ratio;
+          context.fillStyle = light;
+          context.beginPath();
+          context.roundRect((canvas.width - border) / 2, (canvas.height - border) / 2, border, border, (logoRadius + 2) * ratio);
+          context.fill();
         }
-      } catch (err) {
-        console.error("二维码生成失败: ", err);
-      }
-    };
-
-    const download = (fileName = "qrcode.png") => {
-      if (!canvasRef.value) return;
-      const url = canvasRef.value.toDataURL("image/png");
-      const a = document.createElement("a");
-      a.download = fileName;
-      a.href = url;
-      a.click();
-    };
-
-    watch(
-      () => [
-        props.value,
-        props.size,
-        props.colorDark,
-        props.colorLight,
-        props.logo,
-        props.status,
-        props.margin,
-        props.errorLevel,
-      ],
-      () => {
-        if (props.status === "active") {
-          drawQRCode();
-        }
-      },
-      { deep: true }
-    );
-    expose({ download });
-
-    onMounted(() => {
-      // if (props.status === "active")
-      drawQRCode();
-      initThemeObserver();
-    });
-    onBeforeUnmount(() => {
-      if (rootObserver) {
-        rootObserver.disconnect();
-      }
-    });
-    // 遮罩层状态机渲染（Loading、已失效等）
-    const renderMask = () => {
-      if (props.status === "active") return null;
-
-      return (
-        <div class="k-qrcode-mask">
-          {props.status === "loading" && (
-            <div class="k-qrcode-loading-wrapper">
-              {slots.loading
-                ? slots.loading()
-                : [<Spin size="small" />, <span>{locale.value?.k.qrcode.loading}</span>]}
-            </div>
-          )}
-          {props.status === "expired" && (
-            <div class="k-qrcode-expired-wrapper" onClick={() => emit("refresh")}>
-              {slots.expired ? (
-                slots.expired()
-              ) : (
-                <>
-                  <div class="k-qrcode-expired">{locale.value?.k.qrcode.expired}</div>
-                  <Button size="small" type="text">
-                    {locale.value?.k.qrcode.refresh}
-                  </Button>
-                </>
-              )}
-            </div>
-          )}
-          {props.status === "scanned" && (
-            <div class="k-qrcode-scanned-wrapper">
-              {slots.scanned ? slots.scanned() : <>{locale.value?.k.qrcode.scanned}</>}
-            </div>
-          )}
-        </div>
-      );
-    };
-
-    return () => {
-      const wrapperStyle: CSSProperties = {
-        width: `${props.size}px`,
-        height: `${props.size}px`,
+        context.beginPath(); context.roundRect(x, y, finalSize, finalSize, logoRadius * ratio); context.clip();
+        context.drawImage(image, x, y, finalSize, finalSize); context.restore();
       };
+      image.src = logo;
+    } catch (error) { console.error("Failed to render QR code", error); }
+  }, [colorDark, colorLight, errorLevel, logo, logoBorder, logoRadius, logoSize, margin, size, value]);
 
-      return (
-        <div
-          style={wrapperStyle}
-          class={["k-qrcode", { "k-qrcode-borderless": props.bordered === false }]}
-        >
-          <canvas
-            ref={canvasRef}
-            style={{ width: `${props.size}px`, height: `${props.size}px`, display: "block" }}
-          />
-          {renderMask()}
-        </div>
-      );
-    };
-  },
+  useEffect(() => { void draw(); }, [draw]);
+  useEffect(() => {
+    const observer = new MutationObserver((records) => {
+      if (records.some((record) => record.attributeName === "theme-mode")) void draw();
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["theme-mode"] });
+    return () => observer.disconnect();
+  }, [draw]);
+  useImperativeHandle(ref, () => ({
+    download(fileName = "qrcode.png") {
+      const anchor = document.createElement("a");
+      anchor.download = fileName; anchor.href = canvasRef.current?.toDataURL("image/png") ?? ""; anchor.click();
+    },
+  }));
+
+  return <div {...rest} className={["k-qrcode", !bordered && "k-qrcode-borderless", className].filter(Boolean).join(" ")} style={{ ...style, width: size, height: size }}>
+    <canvas ref={canvasRef} style={{ width: size, height: size, display: "block" }} />
+    {status !== "active" && <div className="k-qrcode-mask">
+      {status === "loading" && <div className="k-qrcode-loading-wrapper">{loadingContent ?? <><Spin size="small" /> <span>{messages?.loading}</span></>}</div>}
+      {status === "expired" && <div className="k-qrcode-expired-wrapper" onClick={onRefresh}>{expiredContent ?? <><div className="k-qrcode-expired">{messages?.expired}</div><Button size="small" type="text">{messages?.refresh}</Button></>}</div>}
+      {status === "scanned" && <div className="k-qrcode-scanned-wrapper">{scannedContent ?? messages?.scanned}</div>}
+    </div>}
+  </div>;
 });
-
 export default QRCode;

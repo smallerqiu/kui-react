@@ -131,7 +131,7 @@ const Input = React.forwardRef<InputRef, InputProps>(({
       setCurrentValue(v);
     }
     onChange?.(v);
-    onInput?.(e);
+    onInput?.(e as unknown as React.InputEvent<HTMLInputElement>);
   };
 
   const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {

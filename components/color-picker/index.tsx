@@ -1,339 +1,98 @@
-import Color, { type ColorObject } from "color";
-import resize from "../directives/resize";
-import { transfer } from "../directives/transfer";
-import { setPlacement } from "../utils/placement";
-import { cloneNodes } from "../utils/vnode";
+import Color, { type ColorInstance, type ColorObject } from "color";
+import { cloneElement, isValidElement, useEffect, useRef, useState, type HTMLAttributes, type ReactElement, type ReactNode } from "react";
+import { createPortal } from "react-dom";
+import type { DropPlacementsType, SizeType } from "../const/types";
 import Alpha from "./alpha";
 import Hue from "./hue";
-import Mode from "./mode";
+import Mode, { type ColorMode } from "./mode";
 import Paint from "./paint";
 import Presets from "./presets";
 
-import {
-  defineComponent,
-  type ExtractPropTypes,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  type PropType,
-  ref,
-  Transition,
-  watch,
-} from "vue";
-import type { BooleanType, DropPlacementsType, SizeType } from "../const/types";
-type ColorMode = "hex" | "rgb" | "hsl";
-const colorPickerProps = {
-  modelValue: String,
-  disabled: Boolean as BooleanType,
-  disabledAlpha: Boolean as BooleanType,
-  showText: Boolean as BooleanType,
-  placement: {
-    type: String as PropType<DropPlacementsType>,
-    default: "bottom-left",
-  },
-  trigger: {
-    type: String as PropType<"hover" | "click">,
-    default: "click",
-  },
-  size: {
-    type: String as PropType<SizeType>,
-  },
-  mode: {
-    type: String as PropType<ColorMode>,
-    default: "hex",
-  },
-  presets: {
-    type: Array as PropType<string[]>,
-  },
-  onChange: { type: Function as PropType<(color: string) => void> },
-  onUpdateMode: { type: Function as PropType<(mode: ColorMode) => void> },
-  onOpenChange: { type: Function as PropType<(open: boolean) => void> },
-};
+export interface ColorPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
+  value?: string;
+  defaultValue?: string;
+  modelValue?: string;
+  disabled?: boolean;
+  disabledAlpha?: boolean;
+  showText?: boolean;
+  placement?: DropPlacementsType;
+  trigger?: "hover" | "click";
+  size?: SizeType;
+  mode?: ColorMode;
+  presets?: string[];
+  onChange?: (color: string) => void;
+  onUpdateMode?: (mode: ColorMode) => void;
+  onOpenChange?: (open: boolean) => void;
+  children?: ReactNode;
+}
 
-export type ColorPickerProps = ExtractPropTypes<typeof colorPickerProps>;
-
-const ColorPicker = defineComponent({
-  name: "ColorPicker",
-  directives: {
-    transfer,
-    resize,
-  },
-  props: colorPickerProps,
-
-  setup(props, { emit, slots }) {
-    const currentMode = ref(props.mode);
-    const currentColor = ref(props.modelValue || "#000000ff");
-    const visible = ref(false);
-    const refPopper = ref();
-    const refSelection = ref();
-    const left = ref(0);
-    const top = ref(0);
-    const currentPlacement = ref(props.placement);
-    const transOrigin = ref("bottom");
-    const rendered = ref(false);
-    const currentAlpha = ref(1);
-    const currentHue = ref(0);
-    const hideTimer = ref();
-
-    watch(
-      () => props.modelValue,
-      (v) => {
-        currentColor.value = v || "#000000ff";
-      }
-    );
-    onMounted(() => {
-      if (props.modelValue) {
-        currentAlpha.value = Color(props.modelValue).alpha();
-        currentHue.value = Color(props.modelValue).hue();
-      }
-    });
-    onBeforeUnmount(() => {
-      document.removeEventListener("click", outsideClick);
-    });
-    const updatePopPosition = () => {
-      nextTick(() => {
-        setPlacement({
-          refSelection,
-          refPopper,
-          currentPlacement,
-          transOrigin,
-          top,
-          left,
-        });
-      });
-    };
-    const outsideClick = (e: MouseEvent) => {
-      const ctx = refSelection.value?.$el || refSelection.value;
-      if (
-        refPopper.value &&
-        !refPopper.value.contains(e.target) &&
-        ctx &&
-        !ctx.contains(e.target)
-      ) {
-        clearTimeout(hideTimer.value);
-        hideTimer.value = setTimeout(() => openChange(false), 200);
-      }
-    };
-    const openChange = (opened: boolean) => {
-      visible.value = opened;
-      emit("openChange", opened);
-    };
-    const toggle = (open: boolean) => {
-      if (props.disabled) {
-        return false;
-      }
-      if (open) {
-        if (!rendered.value) {
-          rendered.value = true;
-          document.addEventListener("click", outsideClick);
-          nextTick(() => {
-            openChange(true);
-            nextTick(() => {
-              updatePopPosition();
-            });
-          });
-        } else {
-          openChange(true);
-          nextTick(() => {
-            updatePopPosition();
-          });
-        }
-      } else {
-        openChange(false);
-      }
-    };
-
-    const getColor = () => {
-      let text = "";
-      const color = Color(currentColor.value);
-      if (currentMode.value == "hex") {
-        text = color.alpha() < 1 ? color.hexa() : color.hex();
-      } else if (currentMode.value == "rgb") {
-        text = color.rgb().string(0);
-      } else if (currentMode.value == "hsl") {
-        text = color.hsl().string(0);
-      }
-      return text;
-    };
-    const renderTriggerText = () => {
-      let text = getColor();
-      return props.showText ? <div class="k-color-picker-trigger-text">{text}</div> : null;
-    };
-    const onUpdate = (color: any) => {
-      currentColor.value = color;
-      const value = getColor();
-      emit("update:modelValue", value);
-      emit("change", value);
-    };
-
-    const onUpdateRGB = ({ r, g, b }: ColorObject) => {
-      const color = Color({ r, g, b, alpha: currentAlpha.value });
-      onUpdate(color.rgb());
-    };
-    const onUpdateHue = (hue: number) => {
-      currentHue.value = hue;
-      const value = Color(currentColor.value).hue(hue).rgb();
-      onUpdate(value);
-    };
-
-    const onUpdateAlpha = (a: number) => {
-      currentAlpha.value = a;
-      const value = Color(currentColor.value).alpha(a).rgb();
-      onUpdate(value);
-    };
-    const onUpdateMode = (mode: ColorMode) => {
-      currentMode.value = mode;
-      onUpdate(currentColor.value);
-      emit("update:mode", mode);
-      setTimeout(() => {
-        clearTimeout(hideTimer.value);
-      }, 0);
-    };
-    const updateColorValue = (color: any) => {
-      // console.log(color.string(), currentAlpha.value);
-      currentAlpha.value = color.alpha();
-      currentColor.value = color;
-      currentHue.value = color.hue();
-      onUpdate(color);
-    };
-    const updateColor = (color: any) => {
-      currentAlpha.value = color.alpha();
-      currentHue.value = color.hue();
-      updateColorValue(color.rgb());
-    };
-    const renderDrop = () => {
-      if (!rendered.value) return null;
-      const _props = {
-        ref: refPopper,
-        "k-placement": currentPlacement.value,
-        class: [
-          "k-color-picker-dropdown",
-          {
-            "k-color-picker-disabled-alpha": props.disabledAlpha,
-          },
-        ],
-        style: {
-          left: `${left.value}px`,
-          top: `${top.value}px`,
-          transformOrigin: transOrigin.value,
-        },
-        onMouseenter: () => {
-          clearTimeout(hideTimer.value);
-        },
-      };
-
-      // let [r, g, b] = hslToRgb(color.H, color.S, color.L);
-      return (
-        <Transition name="k-color-picker">
-          <div v-transfer={true} v-show={visible.value} {..._props}>
-            <div class="k-color-picker-body">
-              <Paint
-                hue={currentHue.value}
-                modelValue={currentColor.value}
-                onUpdateRGB={onUpdateRGB}
-              />
-              <div class="k-color-picker-bar">
-                <div class="k-color-picker-avatar">
-                  <div
-                    class="k-color-picker-avatar-inner"
-                    style={`background-color:${currentColor.value}`}
-                  ></div>
-                </div>
-                <div class="k-color-picker-bar-box">
-                  <Hue hue={currentHue.value} onUpdateHue={onUpdateHue} />
-                  {!props.disabledAlpha ? (
-                    <Alpha modelValue={currentColor.value} onUpdateAlpha={onUpdateAlpha} />
-                  ) : null}
-                </div>
-              </div>
-              <Mode
-                mode={currentMode.value}
-                modelValue={currentColor.value}
-                disabledAlpha={props.disabledAlpha}
-                onUpdateMode={onUpdateMode}
-                onUpdateColorValue={updateColorValue}
-              />
-              <Presets
-                onUpdateColor={updateColor}
-                modelValue={props.presets}
-                color={currentColor.value}
-              />
-            </div>
-            <div class={`k-color-picker-arrow`}>
-              <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
-                <path
-                  id="ot"
-                  d="m24,0.97087l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
-                />
-                <path
-                  stroke="currentcolor"
-                  id="in"
-                  d="m24,0l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
-                />
-              </svg>
-            </div>
-          </div>
-        </Transition>
-      );
-    };
-
-    const onMouseleave = () => {
-      if (props.disabled) {
-        return;
-      }
-      if (props.trigger == "hover") {
-        hideTimer.value = setTimeout(() => {
-          toggle(false);
-        }, 300);
-      }
-    };
-
-    return () => {
-      let drop = renderDrop();
-      let style = [
-        "k-color-picker",
-        {
-          "k-color-picker-opened": visible.value,
-          "k-color-picker-disabled": props.disabled,
-          "k-color-picker-sm": props.size == "small",
-          "k-color-picker-lg": props.size == "large",
-        },
-      ];
-      const triggerClick = props.trigger == "click";
-      return slots.default ? (
-        <span>
-          {cloneNodes(
-            slots.default(),
-            {
-              ref: refSelection,
-              onClick: () => triggerClick && toggle(!visible.value),
-              onMouseenter: () => !triggerClick && toggle(true),
-              onMouseleave: onMouseleave,
-            },
-            true
-          )}
-          {drop}
-        </span>
-      ) : (
-        <div class={style} ref={refSelection} v-resize={updatePopPosition}>
-          <div
-            class="k-color-picker-selection"
-            onMouseenter={() => !triggerClick && toggle(true)}
-            onMouseleave={onMouseleave}
-            onClick={() => triggerClick && toggle(!visible.value)}
-          >
-            <div class="k-color-picker-color">
-              <div
-                class="k-color-picker-color-inner"
-                style={`background-color:${currentColor.value}`}
-              ></div>
-            </div>
-            {renderTriggerText()}
-          </div>
-          {drop}
-        </div>
-      );
-    };
-  },
-});
-export default ColorPicker;
+export default function ColorPicker({
+  value,
+  defaultValue,
+  modelValue,
+  disabled = false,
+  disabledAlpha = false,
+  showText = false,
+  placement = "bottom-left",
+  trigger = "click",
+  size,
+  mode: modeProp = "hex",
+  presets,
+  onChange,
+  onUpdateMode,
+  onOpenChange,
+  className,
+  children,
+  ...rest
+}: ColorPickerProps) {
+  const controlled = value ?? modelValue;
+  const [innerColor, setInnerColor] = useState(defaultValue ?? controlled ?? "#000000ff");
+  const [mode, setMode] = useState<ColorMode>(modeProp);
+  const [open, setOpen] = useState(false);
+  const [position, setPosition] = useState({ left: 0, top: 0 });
+  const triggerRef = useRef<HTMLElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const currentValue = controlled ?? innerColor;
+  const color = Color(currentValue);
+  const format = (next: ColorInstance) => mode === "hex" ? next.alpha() < 1 ? next.hexa() : next.hex() : mode === "rgb" ? next.rgb().string(0) : next.hsl().string(0);
+  const update = (next: ColorInstance) => { const formatted = format(next); if (controlled === undefined) setInnerColor(formatted); onChange?.(formatted); };
+  const updatePosition = () => {
+    const rect = triggerRef.current?.getBoundingClientRect(); if (!rect) return;
+    const dropdownWidth = popoverRef.current?.offsetWidth ?? 260; const dropdownHeight = popoverRef.current?.offsetHeight ?? 330;
+    const left = placement.endsWith("right") ? rect.right - dropdownWidth : placement.endsWith("center") ? rect.left + (rect.width-dropdownWidth)/2 : rect.left;
+    const top = placement.startsWith("top") ? rect.top - dropdownHeight - 8 : rect.bottom + 8;
+    setPosition({ left: Math.max(8, left), top: Math.max(8, top) });
+  };
+  const setVisible = (next: boolean) => { if (disabled) return; setOpen(next); onOpenChange?.(next); if (next) requestAnimationFrame(updatePosition); };
+  useEffect(() => setMode(modeProp), [modeProp]);
+  useEffect(() => {
+    if (!open) return;
+    const outside = (event: MouseEvent) => { if (!popoverRef.current?.contains(event.target as Node) && !triggerRef.current?.contains(event.target as Node)) setVisible(false); };
+    document.addEventListener("mousedown", outside); window.addEventListener("resize", updatePosition); window.addEventListener("scroll", updatePosition, true);
+    return () => { document.removeEventListener("mousedown", outside); window.removeEventListener("resize", updatePosition); window.removeEventListener("scroll", updatePosition, true); };
+  }, [open, disabled, placement]);
+  const hoverProps = trigger === "hover" ? {
+    onMouseEnter: () => { if (hideTimerRef.current) clearTimeout(hideTimerRef.current); setVisible(true); },
+    onMouseLeave: () => { hideTimerRef.current = setTimeout(() => setVisible(false), 300); },
+  } : { onClick: () => setVisible(!open) };
+  const triggerNode = children && isValidElement(children)
+    ? cloneElement(children as ReactElement<any>, { ...hoverProps, ref: triggerRef })
+    : <div {...rest} ref={triggerRef as React.RefObject<HTMLDivElement>} className={["k-color-picker", open && "k-color-picker-opened", disabled && "k-color-picker-disabled", size === "small" && "k-color-picker-sm", size === "large" && "k-color-picker-lg", className].filter(Boolean).join(" ")} {...hoverProps}>
+      <div className="k-color-picker-selection"><div className="k-color-picker-color"><div className="k-color-picker-color-inner" style={{ backgroundColor: color.string() }} /></div>{showText && <div className="k-color-picker-trigger-text">{format(color)}</div>}</div>
+    </div>;
+  const dropdown = open && createPortal(<div
+    ref={popoverRef}
+    data-placement={placement}
+    className={["k-color-picker-dropdown", disabledAlpha && "k-color-picker-disabled-alpha"].filter(Boolean).join(" ")}
+    style={{ position: "fixed", left: position.left, top: position.top }}
+    onMouseEnter={() => hideTimerRef.current && clearTimeout(hideTimerRef.current)}
+    onMouseLeave={trigger === "hover" ? () => { hideTimerRef.current = setTimeout(() => setVisible(false), 300); } : undefined}
+  ><div className="k-color-picker-body">
+    <Paint hue={color.hue()} value={color} onUpdateRGB={(rgb: ColorObject) => update(Color({ ...rgb, alpha: color.alpha() }).rgb())} />
+    <div className="k-color-picker-bar"><div className="k-color-picker-avatar"><div className="k-color-picker-avatar-inner" style={{ backgroundColor: color.string() }} /></div><div className="k-color-picker-bar-box"><Hue hue={color.hue()} onUpdateHue={(hue) => update(color.hue(hue).rgb())} />{!disabledAlpha && <Alpha value={color} onUpdateAlpha={(alpha) => update(color.alpha(alpha).rgb())} />}</div></div>
+    <Mode mode={mode} value={color} disabledAlpha={disabledAlpha} onUpdateMode={(next) => { setMode(next); onUpdateMode?.(next); }} onUpdateColorValue={update} />
+    <Presets presets={presets} color={color} onUpdateColor={update} />
+  </div><div className="k-color-picker-arrow"><svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8"><path d="m24,.97v1c-4,0-5.5,1-7.5,3s-2.5,3-4.5,3-2.5-1-4.5-3S4,1.97,0,1.97v-1z" /></svg></div></div>, document.body);
+  return <>{triggerNode}{dropdown}</>;
+}

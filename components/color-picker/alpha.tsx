@@ -1,91 +1,10 @@
-import Color from "color";
-import { defineComponent, onBeforeUnmount, onMounted, ref, watch, type PropType } from "vue";
+import Color, { type ColorInstance } from "color";
+import { useEffect, useRef, type MouseEvent as ReactMouseEvent } from "react";
 import { clamp } from "../utils/share";
-
-export default defineComponent({
-  name: "Alpha",
-  props: {
-    modelValue: { type: [String, Object] as PropType<any>, required: true },
-    onUpdateAlpha: Function as PropType<(alpha: number) => void>,
-  },
-  setup(props, { emit }) {
-    const dotPos = ref(0);
-    const refPaint = ref<HTMLCanvasElement | null>(null);
-    const isMousePressed = ref(false);
-
-    const renderPaint = () => {
-      const canvas = refPaint.value;
-      if (!canvas) return;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-
-      const { width, height } = canvas;
-      const gradient = ctx.createLinearGradient(0, 0, width, 0);
-      const c = Color(props.modelValue).rgb();
-      gradient.addColorStop(0, `rgba(${c.red()}, ${c.green()}, ${c.blue()}, 0)`);
-      gradient.addColorStop(1, `rgba(${c.red()}, ${c.green()}, ${c.blue()}, 1)`);
-
-      ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
-    };
-
-    const updatePos = () => {
-      const a = Color(props.modelValue).alpha();
-      dotPos.value = a * 190 - 7;
-    };
-
-    const handleMove = (e: MouseEvent) => {
-      const canvas = refPaint.value;
-      if (!canvas) return;
-      const { width, left } = canvas.getBoundingClientRect();
-      const x = clamp(e.clientX - left, 0, width);
-      const alpha = parseFloat((x / width).toFixed(2));
-      emit("updateAlpha", alpha);
-    };
-
-    const onMouseDown = (e: MouseEvent) => {
-      isMousePressed.value = true;
-      handleMove(e);
-      document.addEventListener("mousemove", handleMove);
-      document.addEventListener("mouseup", onMouseUp);
-    };
-
-    const onMouseUp = () => {
-      isMousePressed.value = false;
-      document.removeEventListener("mousemove", handleMove);
-      document.removeEventListener("mouseup", onMouseUp);
-    };
-
-    watch(
-      () => props.modelValue,
-      () => {
-        renderPaint();
-        updatePos();
-      }
-    );
-
-    onMounted(() => {
-      renderPaint();
-      updatePos();
-    });
-
-    onBeforeUnmount(onMouseUp);
-
-    return () => (
-      <div class="k-color-picker-alpha-box">
-        <canvas
-          class="k-color-picker-alpha"
-          width={190}
-          height={8}
-          ref={refPaint}
-          onMousedown={onMouseDown}
-        />
-        <span
-          class="k-color-picker-alpha-dot"
-          style={{ left: `${dotPos.value}px`, backgroundColor: props.modelValue }}
-        />
-      </div>
-    );
-  },
-});
+export interface AlphaProps { value: string | ColorInstance; onUpdateAlpha?: (alpha: number) => void }
+export default function Alpha({ value, onUpdateAlpha }: AlphaProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null); const color = Color(value);
+  useEffect(() => { const canvas = canvasRef.current, context = canvas?.getContext("2d"); if (!canvas || !context) return; const rgb = color.rgb().object(); const gradient = context.createLinearGradient(0, 0, canvas.width, 0); gradient.addColorStop(0, `rgba(${rgb.r},${rgb.g},${rgb.b},0)`); gradient.addColorStop(1, `rgba(${rgb.r},${rgb.g},${rgb.b},1)`); context.clearRect(0,0,canvas.width,canvas.height); context.fillStyle = gradient; context.fillRect(0,0,canvas.width,canvas.height); }, [color.hex()]);
+  const start = (event: ReactMouseEvent) => { const move = (x: number) => { const rect = canvasRef.current!.getBoundingClientRect(); onUpdateAlpha?.(Number((clamp(x - rect.left, 0, rect.width) / rect.width).toFixed(2))); }; move(event.clientX); const mousemove = (item: MouseEvent) => move(item.clientX); const up = () => { document.removeEventListener("mousemove", mousemove); document.removeEventListener("mouseup", up); }; document.addEventListener("mousemove", mousemove); document.addEventListener("mouseup", up); };
+  return <div className="k-color-picker-alpha-box"><canvas className="k-color-picker-alpha" width={190} height={8} ref={canvasRef} onMouseDown={start} /><span className="k-color-picker-alpha-dot" style={{ left: color.alpha() * 190 - 7, backgroundColor: color.string() }} /></div>;
+}

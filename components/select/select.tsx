@@ -212,8 +212,9 @@ const Select: React.FC<SelectProps> = ({
 
     childList.forEach((child: any) => {
       if (React.isValidElement(child)) {
-        const { label, value: val, disabled: d } = child.props as any;
-        const resolvedLabel = label || child.props.children || val;
+        const childProps = child.props as any;
+        const { label, value: val, disabled: d } = childProps;
+        const resolvedLabel = label || childProps.children || val;
         data.push({
           value: val,
           disabled: d,

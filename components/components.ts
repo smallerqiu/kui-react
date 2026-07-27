@@ -114,7 +114,7 @@ export { default as Progress } from "./progress";
 export type { ProgressProps, ProgressStatus, ProgressStroke, ProgressType } from "./progress";
 
 export { default as QRCode } from "./qrcode";
-export type { QRCodeErrorLevel, QRCodeProps, QRCodeStatus } from "./qrcode";
+export type { QRCodeErrorLevel, QRCodeProps, QRCodeRef, QRCodeStatus } from "./qrcode";
 
 export { Radio, RadioButton, RadioGroup } from "./radio";
 export type { RadioButtonProps, RadioGroupProps, RadioOption, RadioProps } from "./radio";
