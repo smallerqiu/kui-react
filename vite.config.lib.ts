@@ -25,7 +25,7 @@ export default defineConfig({
       compress: { drop_console: true, drop_debugger: true },
     },
     rollupOptions: {
-      external: ["react", "dayjs"],
+      external: ["react", "react-dom", "react-dom/client", "dayjs"],
       output: {
         exports: "named",
         globals: { react: "React", dayjs: "dayjs" },

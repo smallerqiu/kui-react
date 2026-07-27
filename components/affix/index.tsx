@@ -1,142 +1,96 @@
-import type { CSSProperties, ExtractPropTypes, PropType } from "vue";
-import { defineComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import resize from "../directives/resize";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type HTMLAttributes,
+  type ReactNode,
+} from "react";
 
-const affixProps = {
-  offsetTop: { type: Number, default: 0 },
-  offsetBottom: Number,
-  target: {
-    type: Function as PropType<() => any>,
-    default: () => {
-      return typeof window !== "undefined" ? window : null;
-    },
-  },
-  onChange: {
-    type: Function as PropType<(affixed: boolean) => void>,
-  },
-};
+export interface AffixProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
+  children?: ReactNode;
+  offsetTop?: number;
+  offsetBottom?: number;
+  target?: () => HTMLElement | Window | null;
+  onChange?: (affixed: boolean) => void;
+}
 
-export type AffixProps = ExtractPropTypes<typeof affixProps>;
+export default function Affix({
+  children,
+  offsetTop = 0,
+  offsetBottom,
+  target = () => (typeof window === "undefined" ? null : window),
+  onChange,
+  className,
+  style,
+  ...rest
+}: AffixProps) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const fixedRef = useRef(false);
+  const [fixed, setFixed] = useState(false);
+  const [affixStyle, setAffixStyle] = useState<CSSProperties>({});
+  const [placeholderStyle, setPlaceholderStyle] = useState<CSSProperties>({});
 
-const Affix = defineComponent({
-  name: "Affix",
-  directives: { resize },
-  props: affixProps,
-  setup(props, { slots, emit }) {
-    const affixRef = ref<HTMLElement>();
+  const updatePosition = useCallback(() => {
+    const element = wrapperRef.current;
+    const scrollTarget = target();
+    if (!element || !scrollTarget || typeof window === "undefined") return;
 
-    const fixed = ref(false);
-    const styles = ref<CSSProperties>({});
-    const placeholderStyles = ref<CSSProperties>({});
-    let resizeObserver: ResizeObserver | null = null;
-    let target: HTMLElement | Window | null = null;
+    const rect = element.getBoundingClientRect();
+    const isWindow = scrollTarget === window;
+    const targetRect = isWindow
+      ? { top: 0, bottom: window.innerHeight }
+      : (scrollTarget as HTMLElement).getBoundingClientRect();
 
-    const getTarget = () => {
-      const res = props.target?.();
-      return res?.value || res;
-    };
-
-    const updatePosition = () => {
-      if (!affixRef.value || !target) return;
-      const rect = affixRef.value.getBoundingClientRect();
-      const isWindow = target === window;
-      const targetRect = !isWindow
-        ? (target as HTMLElement).getBoundingClientRect()
-        : { top: 0, bottom: window.innerHeight };
-      let isFixed = false;
-
-      if (props.offsetBottom !== undefined) {
-        const offset = targetRect.bottom - rect.bottom - props.offsetBottom;
-        if (offset <= 0) {
-          isFixed = true;
-          styles.value = {
-            position: "fixed",
-            bottom: `${window.innerHeight - targetRect.bottom + props.offsetBottom}px`,
-            width: `${rect.width}px`,
-          };
-        } else {
-          isFixed = false;
-          styles.value = {};
-        }
-      } else {
-        const offset = rect.top - targetRect.top - (props.offsetTop || 0);
-        if (offset <= 0) {
-          isFixed = true;
-          styles.value = {
-            position: "fixed",
-            top: `${targetRect.top + (props.offsetTop || 0)}px`,
-            width: `${rect.width}px`,
-          };
-        } else {
-          isFixed = false;
-          styles.value = {};
-        }
+    let nextFixed: boolean;
+    let nextStyle: CSSProperties = {};
+    if (offsetBottom !== undefined) {
+      nextFixed = targetRect.bottom - rect.bottom - offsetBottom <= 0;
+      if (nextFixed) {
+        nextStyle = {
+          position: "fixed",
+          bottom: window.innerHeight - targetRect.bottom + offsetBottom,
+          width: rect.width,
+        };
       }
-
-      placeholderStyles.value = isFixed
-        ? { height: `${rect.height}px`, width: `${rect.width}px` }
-        : {};
-      if (fixed.value !== isFixed) {
-        fixed.value = isFixed;
-        emit("change", isFixed);
+    } else {
+      nextFixed = rect.top - targetRect.top - offsetTop <= 0;
+      if (nextFixed) {
+        nextStyle = { position: "fixed", top: targetRect.top + offsetTop, width: rect.width };
       }
-    };
+    }
 
-    const removeEventListeners = () => {
-      target?.removeEventListener("scroll", updatePosition);
-      window.removeEventListener("resize", updatePosition);
-      resizeObserver?.disconnect();
-      resizeObserver = null;
-    };
+    setAffixStyle(nextStyle);
+    setPlaceholderStyle(nextFixed ? { height: rect.height, width: rect.width } : {});
+    if (fixedRef.current !== nextFixed) {
+      fixedRef.current = nextFixed;
+      setFixed(nextFixed);
+      onChange?.(nextFixed);
+    }
+  }, [offsetBottom, offsetTop, onChange, target]);
 
-    const addEventListeners = () => {
-      target = getTarget();
-      if (!target) return;
-
-      target.addEventListener("scroll", updatePosition);
-      window.addEventListener("resize", updatePosition);
-
-      if (target !== window && "ResizeObserver" in window) {
-        resizeObserver = new ResizeObserver(updatePosition);
-        resizeObserver.observe(target as HTMLElement);
-      }
-      updatePosition();
-    };
-
-    onBeforeUnmount(() => {
-      removeEventListeners();
-    });
-
-    onMounted(() => {
-      nextTick(addEventListeners);
-    });
-
-    watch(
-      () => [props.offsetTop, props.offsetBottom, props.target],
-      () => {
-        removeEventListeners();
-        nextTick(addEventListeners);
-      }
-    );
-
+  useEffect(() => {
+    const scrollTarget = target();
+    if (!scrollTarget || typeof window === "undefined") return;
+    scrollTarget.addEventListener("scroll", updatePosition, { passive: true });
+    window.addEventListener("resize", updatePosition);
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updatePosition);
+    if (scrollTarget !== window) observer?.observe(scrollTarget as HTMLElement);
+    observer?.observe(wrapperRef.current!);
+    updatePosition();
     return () => {
-      const wrapperProps = {
-        ref: affixRef,
-        style: placeholderStyles.value,
-      };
-
-      const innerProps = {
-        style: styles.value,
-        class: ["k-affix", { "k-affix-fixed": fixed.value }],
-      };
-
-      return (
-        <div {...wrapperProps} v-resize={updatePosition}>
-          <div {...innerProps}>{slots.default?.()}</div>
-        </div>
-      );
+      scrollTarget.removeEventListener("scroll", updatePosition);
+      window.removeEventListener("resize", updatePosition);
+      observer?.disconnect();
     };
-  },
-});
+  }, [target, updatePosition]);
 
-export default Affix;
+  return (
+    <div {...rest} ref={wrapperRef} style={{ ...style, ...placeholderStyle }}>
+      <div className={["k-affix", fixed && "k-affix-fixed", className].filter(Boolean).join(" ")} style={affixStyle}>
+        {children}
+      </div>
+    </div>
+  );
+}

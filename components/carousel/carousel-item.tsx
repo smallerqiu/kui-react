@@ -1,27 +1,24 @@
-import { defineComponent, inject, type CSSProperties, type Ref } from "vue";
+import { createContext, useContext, type HTMLAttributes } from "react";
 
-const CarouselItem = defineComponent({
-  name: "CarouselItem",
-  setup(_, { slots }) {
-    const width = inject<Ref<number>>("width");
-    const height = inject<number>("height");
+export interface CarouselContextValue {
+  width: number;
+  height: number;
+  vertical: boolean;
+}
 
-    return () => {
-      const styles: CSSProperties = {
-        width: width?.value ? `${width.value}px` : undefined,
-        height: height ? `${height}px` : undefined,
-      };
+export const CarouselContext = createContext<CarouselContextValue>({ width: 0, height: 256, vertical: false });
 
-      /**
-       * Using property spread to avoid "no-inline-styles" warnings.
-       */
-      const itemProps = {
-        class: "k-carousel-item",
-        style: styles,
-      };
+export interface CarouselItemProps extends HTMLAttributes<HTMLDivElement> {}
 
-      return <div {...itemProps}>{slots.default?.()}</div>;
-    };
-  },
-});
-export default CarouselItem;
+export default function CarouselItem({ className, style, children, ...rest }: CarouselItemProps) {
+  const { width, height, vertical } = useContext(CarouselContext);
+  return (
+    <div
+      {...rest}
+      className={["k-carousel-item", className].filter(Boolean).join(" ")}
+      style={{ ...style, width: vertical ? undefined : width || undefined, height }}
+    >
+      {children}
+    </div>
+  );
+}

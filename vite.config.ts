@@ -29,6 +29,10 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] }),
     dts({
+      // The repository still contains legacy Vue documentation examples. They
+      // are not library sources and must not make the declaration generator
+      // switch to its Vue processor.
+      processor: "ts",
       insertTypesEntry: true,
       tsconfigPath: "./tsconfig.app.json",
       outDirs: "./types/",
@@ -54,7 +58,7 @@ export default defineConfig({
     },
     minify: false,
     rollupOptions: {
-      external: ["react", "dayjs"],
+      external: ["react", "react-dom", "react-dom/client", "dayjs"],
       output: {
         exports: "named",
         globals: { react: "React", dayjs: "dayjs" },

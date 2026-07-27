@@ -1,78 +1,86 @@
-import type { CSSProperties, DefineComponent, ExtractPropTypes, HTMLAttributes } from "vue";
-import { computed, defineComponent, provide, ref } from "vue";
-import type { BooleanType } from "../const/types";
-import { GRID_KEY, useBreakpoint } from "./useBreakpoint";
+import { useCallback, useMemo, useRef, type CSSProperties, type HTMLAttributes } from "react";
+import { GridContext, useBreakpoint, type Breakpoint, type ResponsiveValue } from "./useBreakpoint";
 
-const gridProps = {
-  cols: { type: [Number, String, Object], default: 24 },
-  rows: { type: [Number, String, Object], default: "auto" },
-  autoRows: { type: String, default: "auto" },
-  xGap: { type: [Number, String, Object], default: 0 },
-  yGap: { type: [Number, String, Object], default: 0 },
-  itemMinWidth: { type: Number },
-  align: { type: String },
-  justify: { type: String },
-  debug: { type: Boolean as BooleanType },
-};
-export type GridProps = Partial<ExtractPropTypes<typeof gridProps>> & HTMLAttributes;
+type GridDimension = number | string;
 
-const Grid = defineComponent({
-  name: "Grid",
-  props: gridProps,
-  setup(props, { slots }) {
-    const gridRef = ref();
-    const breakpoint = useBreakpoint(gridRef);
+export interface GridProps extends HTMLAttributes<HTMLDivElement> {
+  cols?: ResponsiveValue<GridDimension>;
+  rows?: ResponsiveValue<GridDimension>;
+  autoRows?: string;
+  xGap?: ResponsiveValue<GridDimension>;
+  yGap?: ResponsiveValue<GridDimension>;
+  itemMinWidth?: number;
+  align?: CSSProperties["alignItems"];
+  justify?: CSSProperties["justifyItems"];
+  debug?: boolean;
+}
 
-    const resolveResponsive = (val: any, fallback: any) => {
-      if (val === undefined) return fallback;
-      if (typeof val !== "object") return val;
-      const order = ["xxl", "xl", "lg", "md", "sm", "xs"];
-      const currentIndex = order.indexOf(breakpoint?.value || "md");
+const order: Breakpoint[] = ["xxl", "xl", "lg", "md", "sm", "xs"];
 
-      for (let i = currentIndex; i < order.length; i++) {
-        const key = order[i];
-        if (val[key] !== undefined) return val[key];
+export default function Grid({
+  cols = 24,
+  rows = "auto",
+  autoRows = "auto",
+  xGap = 0,
+  yGap = 0,
+  itemMinWidth,
+  align,
+  justify,
+  debug = false,
+  className,
+  style,
+  children,
+  ...rest
+}: GridProps) {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const breakpoint = useBreakpoint(gridRef);
+
+  const resolveResponsive = useCallback(
+    <T,>(value: ResponsiveValue<T> | undefined, fallback: T): T => {
+      if (value === undefined) return fallback;
+      if (typeof value !== "object" || value === null) return value as T;
+      const responsive = value as Partial<Record<Breakpoint, T>>;
+      const current = order.indexOf(breakpoint);
+      for (let index = current; index < order.length; index++) {
+        const candidate = responsive[order[index]];
+        if (candidate !== undefined) return candidate;
       }
       return fallback;
-    };
+    },
+    [breakpoint],
+  );
 
-    provide(GRID_KEY, { breakpoint, resolveResponsive });
+  const activeCols = resolveResponsive(cols, 24);
+  const activeRows = resolveResponsive(rows, "auto");
+  const parseGap = (value: GridDimension) => (typeof value === "number" ? `${value}px` : value);
+  const gridStyle: CSSProperties = {
+    ...style,
+    gridTemplateColumns: itemMinWidth
+      ? `repeat(auto-fill, minmax(${itemMinWidth}px, 1fr))`
+      : typeof activeCols === "number"
+        ? `repeat(${activeCols}, minmax(0, 1fr))`
+        : activeCols,
+    gridTemplateRows:
+      typeof activeRows === "number" ? `repeat(${activeRows}, minmax(0, 1fr))` : activeRows,
+    columnGap: parseGap(resolveResponsive(xGap, 0)),
+    rowGap: parseGap(resolveResponsive(yGap, 0)),
+    gridAutoRows: autoRows,
+    alignItems: align,
+    justifyItems: justify,
+  };
+  if (debug && typeof activeCols === "number") {
+    gridStyle.backgroundImage = `repeating-linear-gradient(to right, rgba(255,0,0,.05) 0, rgba(255,0,0,.05) ${100 / activeCols}%, transparent ${100 / activeCols}%, transparent ${200 / activeCols}%)`;
+  }
+  const context = useMemo(
+    () => ({ breakpoint, resolveResponsive }),
+    [breakpoint, resolveResponsive],
+  );
 
-    const gridStyle = computed(() => {
-      const activeCols = resolveResponsive(props.cols, 24);
-      const activeRows = resolveResponsive(props.rows, "auto");
-      const activeXGap = resolveResponsive(props.xGap, 0);
-      const activeYGap = resolveResponsive(props.yGap, 0);
-      const parseGap = (val: number | string) => (typeof val === "number" ? `${val}px` : val);
-
-      const style: CSSProperties = {
-        gridTemplateColumns: props.itemMinWidth
-          ? `repeat(auto-fill, minmax(${props.itemMinWidth}px, 1fr))`
-          : typeof activeCols === "number"
-            ? `repeat(${activeCols}, minmax(0, 1fr))`
-            : activeCols,
-        gridTemplateRows:
-          typeof activeRows === "number" ? `repeat(${activeRows}, minmax(0, 1fr))` : activeRows,
-        columnGap: parseGap(activeXGap),
-        rowGap: parseGap(activeYGap),
-        gridAutoRows: props.autoRows,
-        alignItems: props.align,
-        justifyItems: props.justify,
-      };
-      if (props.debug && typeof activeCols === "number") {
-        style.backgroundImage = `repeating-linear-gradient(to right, rgba(255,0,0,0.05) 0, rgba(255,0,0,0.05) ${100 / activeCols}%, transparent ${100 / activeCols}%, transparent ${200 / activeCols}%)`;
-      }
-      return style;
-    });
-    const gridProps = {
-      class: "k-grid",
-      style: gridStyle.value,
-      ref: gridRef,
-    };
-    return () => {
-      return <div {...gridProps}>{slots.default?.()}</div>;
-    };
-  },
-});
-
-export default Grid as DefineComponent<GridProps>;
+  return (
+    <GridContext.Provider value={context}>
+      <div {...rest} ref={gridRef} className={["k-grid", className].filter(Boolean).join(" ")} style={gridStyle}>
+        {children}
+      </div>
+    </GridContext.Provider>
+  );
+}

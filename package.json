@@ -5,10 +5,14 @@
   "main": "dist/k-ui.js",
   "style": "dist/k-ui.css",
   "scripts": {
-    "test": "node build/dev.js",
-    "start": "cross-env NODE_ENV=development webpack-dev-server  --config build/webpack.dev.conf.js",
-    "build:docs": "cross-env NODE_ENV=production node build/build.js docs",
-    "build": "cross-env NODE_ENV=production node build/build.js "
+    "dev": "vite --config vite.config.docs.ts",
+    "start": "npm run dev",
+    "typecheck": "tsc -b",
+    "build:es": "vite build --config vite.config.ts",
+    "build:cjs": "vite build --config vite.config.lib.ts",
+    "build:css": "vite build --config vite.config.css.ts",
+    "build:docs": "vite build --config vite.config.docs.ts",
+    "build": "npm run typecheck && npm run build:es && npm run build:cjs && npm run build:css"
   },
   "repository": {
     "type": "git",
@@ -53,6 +57,7 @@
     "@rolldown/plugin-babel": "^0.2.3",
     "@types/babel__core": "^7.20.5",
     "@types/node": "^25.9.5",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.4",
@@ -69,6 +74,7 @@
     "markdown-it-anchor": "^9.2.1",
     "prettier": "^3.9.6",
     "prop-types": "^15.8.1",
+    "qrcode": "^1.5.4",
     "react-router": "^7.18.1",
     "sucrase": "^3.35.1",
     "terser": "^5.49.0",

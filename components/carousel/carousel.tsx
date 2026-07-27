@@ -1,225 +1,146 @@
 import { ArrowLeft, ArrowRight } from "kui-icons";
 import {
-  Fragment,
-  computed,
-  defineComponent,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  provide,
-  ref,
-  watch,
+  Children,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
   type CSSProperties,
-  type ExtractPropTypes,
-  type VNode,
-} from "vue";
-import type { BooleanType } from "../const/types";
-import resizeDir from "../directives/resize";
+  type HTMLAttributes,
+} from "react";
 import Icon from "../icon";
+import { CarouselContext } from "./carousel-item";
 
-const carouselProps = {
-  modelValue: { type: Number, default: 0 },
-  loop: { type: Boolean as BooleanType, default: true },
-  autoplay: Boolean as BooleanType,
-  delay: { type: Number, default: 3000 },
-  height: { type: Number, default: 256 },
-  vertical: Boolean,
-  dots: { type: Boolean as BooleanType, default: true },
-};
+export interface CarouselRef {
+  next: () => void;
+  prev: () => void;
+  goTo: (index: number) => void;
+}
 
-export type CarouselProps = ExtractPropTypes<typeof carouselProps>;
+export interface CarouselProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
+  value?: number;
+  defaultValue?: number;
+  modelValue?: number;
+  loop?: boolean;
+  autoplay?: boolean;
+  delay?: number;
+  height?: number;
+  vertical?: boolean;
+  dots?: boolean;
+  onChange?: (index: number) => void;
+}
 
-const Carousel = defineComponent({
-  name: "Carousel",
-  directives: { resize: resizeDir },
-  props: carouselProps,
-  setup(props, { slots, emit, expose, attrs }) {
-    const currentIndex = ref(props.modelValue);
-    const posIndex = ref(props.loop ? props.modelValue + 1 : props.modelValue);
-    const autoTimer = ref<ReturnType<typeof setInterval> | null>(null);
-    const width = ref(0);
-    const animate = ref(props.modelValue <= 0);
-    const playing = ref(false);
-    const carouselRef = ref<HTMLElement | null>(null);
-
-    provide("width", width);
-    provide("height", props.height);
-
-    const flatten = (nodes: VNode[]): VNode[] => {
-      let result: VNode[] = [];
-      nodes.forEach((vnode) => {
-        if (vnode.type === Fragment && Array.isArray(vnode.children)) {
-          result.push(...flatten(vnode.children as VNode[]));
-        } else {
-          result.push(vnode);
-        }
-      });
-      return result;
-    };
-
-    const children = computed(() => {
-      const raw = slots.default?.() || [];
-      return flatten(raw);
-    });
-
-    watch(
-      () => props.modelValue,
-      (val) => {
-        currentIndex.value = val;
-      }
-    );
-
-    watch(
-      () => children.value.length,
-      (newLen, oldLen) => {
-        if (newLen !== oldLen) {
-          currentIndex.value = 0;
-          posIndex.value = props.loop ? 1 : 0;
-        }
-      }
-    );
-
-    const autoToPlay = () => {
-      if (!props.autoplay) return;
-      if (autoTimer.value) clearInterval(autoTimer.value);
-      autoTimer.value = setInterval(() => {
-        change("right");
-      }, props.delay);
-    };
-
-    const change = (type: "left" | "right") => {
-      animate.value = true;
-      const len = children.value.length;
-      if (len === 0) return;
-
-      const total = props.loop ? len + 2 : len;
-      let index = posIndex.value;
-      let nextCurrent = currentIndex.value;
-
-      if (type === "right") {
-        index = (index + 1) % total;
-        nextCurrent = props.loop ? (nextCurrent + 1) % len : index;
-      } else {
-        index = (index - 1 + total) % total;
-        nextCurrent = props.loop ? (nextCurrent - 1 + len) % len : index;
-      }
-
-      posIndex.value = index;
-      currentIndex.value = nextCurrent;
-      emit("update:value", currentIndex.value);
-
-      setTimeout(() => {
-        playing.value = false;
-        if (props.loop) {
-          if (posIndex.value === total - 1) {
-            animate.value = false;
-            posIndex.value = 1;
-          }
-          if (posIndex.value === 0) {
-            animate.value = false;
-            posIndex.value = total - 2;
-          }
-        }
-      }, 501);
-      autoToPlay();
-    };
-
-    const toSwitch = (type: "left" | "right") => {
-      if (autoTimer.value) clearInterval(autoTimer.value);
-      if (playing.value) return;
-      playing.value = true;
-      change(type);
-    };
-
-    const goTo = (index: number) => {
-      if (autoTimer.value) clearInterval(autoTimer.value);
-      animate.value = true;
-      currentIndex.value = index;
-      posIndex.value = props.loop ? index + 1 : index;
-      emit("update:value", index);
-      autoToPlay();
-    };
-
-    const resize = () => {
-      if (!carouselRef.value) return;
-      animate.value = false;
-      width.value = carouselRef.value.offsetWidth;
-      // height.value = carouselRef.value.offsetHeight;
-    };
-
-    expose({ next: () => toSwitch("right"), prev: () => toSwitch("left"), goTo });
-
-    onMounted(() => {
-      nextTick(() => {
-        resize();
-        autoToPlay();
-      });
-    });
-
-    onBeforeUnmount(() => {
-      if (autoTimer.value) clearInterval(autoTimer.value);
-    });
-
-    return () => {
-      const items = children.value;
-      const len = items.length;
-      if (len === 0) return null;
-
-      const { vertical, dots, autoplay } = props;
-      const newChildren = props.loop ? [items[len - 1], ...items, items[0]] : items;
-      const activeIndex = Math.max(0, Math.min(len - 1, currentIndex.value));
-
-      const offsetX = !vertical ? posIndex.value * width.value : 0;
-      const offsetY = vertical ? posIndex.value * props.height : 0;
-
-      const wrapperProps = {
-        class: "k-carousel-wrapper",
-        style: {
-          transform: `translate3d(-${offsetX}px, -${offsetY}px, 0)`,
-          width: !vertical ? `${newChildren.length * width.value}px` : undefined,
-          height: vertical ? `${newChildren.length * props.height}px` : undefined,
-          transitionDuration: !animate.value ? "0s" : undefined,
-        } as CSSProperties,
-      };
-
-      const rootProps = {
-        ...attrs,
-        style: {
-          height: props.height + "px",
-        } as CSSProperties,
-        ref: carouselRef,
-        class: ["k-carousel", { "k-carousel-vertical": vertical }],
-        onMouseEnter: () => autoTimer.value && clearInterval(autoTimer.value),
-        onMouseLeave: () => autoplay && autoToPlay(),
-      };
-
-      return (
-        <div {...rootProps} v-resize={resize}>
-          <div {...wrapperProps}>{newChildren}</div>
-          {!vertical && (
-            <>
-              <span class="k-carousel-arrow-left" onClick={() => toSwitch("left")}>
-                <Icon type={ArrowLeft} />
-              </span>
-              <span class="k-carousel-arrow-right" onClick={() => toSwitch("right")}>
-                <Icon type={ArrowRight} />
-              </span>
-            </>
-          )}
-          {dots && (
-            <ul class="k-carousel-dots">
-              {items.map((_, i) => (
-                <li
-                  key={i}
-                  class={{ "k-carousel-dots-active": activeIndex === i }}
-                  onClick={() => goTo(i)}
-                />
-              ))}
-            </ul>
-          )}
-        </div>
-      );
-    };
+const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
+  {
+    value,
+    defaultValue,
+    modelValue,
+    loop = true,
+    autoplay = false,
+    delay = 3000,
+    height = 256,
+    vertical = false,
+    dots = true,
+    onChange,
+    className,
+    style,
+    children,
+    ...rest
   },
+  ref,
+) {
+  const items = Children.toArray(children);
+  const controlled = value ?? modelValue;
+  const [innerIndex, setInnerIndex] = useState(controlled ?? defaultValue ?? 0);
+  const [width, setWidth] = useState(0);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const current = Math.max(0, Math.min(items.length - 1, controlled ?? innerIndex));
+
+  useEffect(() => {
+    const element = rootRef.current;
+    if (!element) return;
+    const update = () => setWidth(element.offsetWidth);
+    update();
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(update);
+    observer?.observe(element);
+    return () => observer?.disconnect();
+  }, []);
+
+  const goTo = (index: number) => {
+    if (!items.length) return;
+    const next = loop
+      ? ((index % items.length) + items.length) % items.length
+      : Math.max(0, Math.min(items.length - 1, index));
+    if (controlled === undefined) setInnerIndex(next);
+    onChange?.(next);
+  };
+
+  const stop = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = null;
+  };
+  const play = () => {
+    stop();
+    if (autoplay && items.length > 1) timerRef.current = setInterval(() => goTo(current + 1), delay);
+  };
+
+  useEffect(() => {
+    play();
+    return stop;
+  }, [autoplay, current, delay, items.length]);
+
+  useImperativeHandle(ref, () => ({
+    next: () => goTo(current + 1),
+    prev: () => goTo(current - 1),
+    goTo,
+  }));
+
+  if (!items.length) return null;
+  const wrapperStyle: CSSProperties = {
+    transform: vertical
+      ? `translate3d(0, -${current * height}px, 0)`
+      : `translate3d(-${current * width}px, 0, 0)`,
+    width: vertical ? undefined : items.length * width,
+    height: vertical ? items.length * height : height,
+  };
+
+  return (
+    <CarouselContext.Provider value={{ width, height, vertical }}>
+      <div
+        {...rest}
+        ref={rootRef}
+        className={["k-carousel", vertical && "k-carousel-vertical", className].filter(Boolean).join(" ")}
+        style={{ ...style, height }}
+        onMouseEnter={stop}
+        onMouseLeave={play}
+      >
+        <div className="k-carousel-wrapper" style={wrapperStyle}>{items}</div>
+        {!vertical && items.length > 1 && (
+          <>
+            <span className="k-carousel-arrow-left" onClick={() => goTo(current - 1)}>
+              <Icon type={ArrowLeft} />
+            </span>
+            <span className="k-carousel-arrow-right" onClick={() => goTo(current + 1)}>
+              <Icon type={ArrowRight} />
+            </span>
+          </>
+        )}
+        {dots && (
+          <ul className="k-carousel-dots">
+            {items.map((_, index) => (
+              <li
+                key={index}
+                className={current === index ? "k-carousel-dots-active" : undefined}
+                onClick={() => goTo(index)}
+              />
+            ))}
+          </ul>
+        )}
+      </div>
+    </CarouselContext.Provider>
+  );
 });
+
 export default Carousel;

@@ -1,46 +1,44 @@
-import type { Ref } from "vue";
-import { onMounted, onUnmounted, readonly, ref } from "vue";
-// const screens = {
-//   xs: "(max-width: 575px)",
-//   sm: "(min-width: 576px)",
-//   md: "(min-width: 768px)",
-//   lg: "(min-width: 992px)",
-//   xl: "(min-width: 1200px)",
-//   xxl: "(min-width: 1600px)",
-// };
-const breakpointMap: Record<number, string> = {
-  0: "xs",
-  576: "sm",
-  768: "md",
-  992: "lg",
-  1200: "xl",
-  1600: "xxl",
-};
-export const GRID_KEY = Symbol("GRID_KEY");
+import { createContext, useEffect, useState, type RefObject } from "react";
 
-export function useBreakpoint(elRef: Ref<HTMLElement | null>): Ref<string> | null {
-  if (typeof window === "undefined") return null;
-  const active = ref("md");
-  let rafId: number | null = null;
+export type Breakpoint = "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
 
-  const observer = new ResizeObserver((entries) => {
-    if (rafId) cancelAnimationFrame(rafId);
-    rafId = requestAnimationFrame(() => {
-      const width = entries[0].contentRect.width;
-      const sortedPoints = Object.keys(breakpointMap)
-        .map(Number)
-        .sort((a, b) => b - a);
-      for (const point of sortedPoints) {
-        if (width >= point) {
-          active.value = breakpointMap[point];
-          break;
-        }
-      }
+const breakpointMap: Array<[number, Breakpoint]> = [
+  [1600, "xxl"],
+  [1200, "xl"],
+  [992, "lg"],
+  [768, "md"],
+  [576, "sm"],
+  [0, "xs"],
+];
+
+export interface GridContextValue {
+  breakpoint: Breakpoint;
+  resolveResponsive: <T>(value: ResponsiveValue<T> | undefined, fallback: T) => T;
+}
+
+export type ResponsiveValue<T> = T | Partial<Record<Breakpoint, T>>;
+export const GridContext = createContext<GridContextValue | null>(null);
+
+export function useBreakpoint(elementRef: RefObject<HTMLElement | null>): Breakpoint {
+  const [active, setActive] = useState<Breakpoint>("md");
+
+  useEffect(() => {
+    const element = elementRef.current;
+    if (!element || typeof ResizeObserver === "undefined") return;
+    let frame = 0;
+    const observer = new ResizeObserver(([entry]) => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const match = breakpointMap.find(([width]) => entry.contentRect.width >= width);
+        setActive(match?.[1] ?? "xs");
+      });
     });
-  });
+    observer.observe(element);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
+  }, [elementRef]);
 
-  onMounted(() => elRef.value && observer.observe(elRef.value));
-  onUnmounted(() => observer.disconnect());
-
-  return readonly(active);
+  return active;
 }

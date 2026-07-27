@@ -1,81 +1,72 @@
 import { ArrowUp } from "kui-icons";
-import {
-  defineComponent,
-  ref,
-  Transition,
-  type CSSProperties,
-  type ExtractPropTypes,
-  type PropType,
-} from "vue";
-import { scroll } from "../directives/scroll";
+import { useEffect, useState, type CSSProperties, type HTMLAttributes, type MouseEvent } from "react";
 import Icon from "../icon";
 
-const backTopProps = {
-  height: { type: Number, default: 100 },
-  right: Number,
-  bottom: Number,
-  target: {
-    type: Function as PropType<() => HTMLElement | null>,
-    default: () => {
-      return typeof document !== "undefined" ? document.body : null;
-    },
-  },
-  onClick: Function as PropType<(e: MouseEvent) => void>,
-};
+export interface BackTopProps extends Omit<HTMLAttributes<HTMLDivElement>, "onClick"> {
+  height?: number;
+  right?: number;
+  bottom?: number;
+  target?: () => HTMLElement | null;
+  onClick?: (event: MouseEvent<HTMLDivElement>) => void;
+}
 
-export type BackTopProps = ExtractPropTypes<typeof backTopProps>;
+export default function BackTop({
+  height = 100,
+  right,
+  bottom,
+  target = () => (typeof document === "undefined" ? null : document.body),
+  onClick,
+  children,
+  className,
+  style,
+  ...rest
+}: BackTopProps) {
+  const [visible, setVisible] = useState(false);
 
-const BackTop = defineComponent({
-  name: "BackTop",
-  directives: { scroll },
-  props: backTopProps,
-  setup(props, { emit, slots }) {
-    const visible = ref(false);
-
-    const onScroll = () => {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const scrollTarget = target();
+    const eventTarget: HTMLElement | Window =
+      !scrollTarget || scrollTarget === document.body || scrollTarget === document.documentElement
+        ? window
+        : scrollTarget;
+    const update = () => {
       const scrollTop =
-        document.body.scrollTop || document.documentElement.scrollTop || window.scrollY;
-      visible.value = scrollTop >= props.height;
+        eventTarget === window
+          ? window.scrollY || document.documentElement.scrollTop || document.body.scrollTop
+          : (eventTarget as HTMLElement).scrollTop;
+      setVisible(scrollTop >= height);
     };
+    eventTarget.addEventListener("scroll", update, { passive: true });
+    update();
+    return () => eventTarget.removeEventListener("scroll", update);
+  }, [height, target]);
 
-    const handleClick = (e: MouseEvent) => {
-      emit("click", e);
-      props.target?.()?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    };
+  const handleClick = (event: MouseEvent<HTMLDivElement>) => {
+    onClick?.(event);
+    if (event.defaultPrevented) return;
+    const scrollTarget = target();
+    if (!scrollTarget || scrollTarget === document.body || scrollTarget === document.documentElement) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      scrollTarget.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
-    return () => {
-      let children = slots.default?.();
-
-      if (!children || children.length === 0) {
-        children = [
-          <div class="k-back-top-content">
-            <Icon type={ArrowUp} />
-          </div>,
-        ];
-      }
-
-      const styles: CSSProperties = {
-        bottom: props.bottom !== undefined ? `${props.bottom}px` : undefined,
-        right: props.right !== undefined ? `${props.right}px` : undefined,
-      };
-
-      const rootProps = {
-        class: "k-back-top",
-        style: styles,
-        onClick: handleClick,
-      };
-
-      return (
-        <Transition name="k-back-top-fade">
-          <div {...rootProps} v-show={visible.value} v-scroll={onScroll}>
-            {children}
-          </div>
-        </Transition>
-      );
-    };
-  },
-});
-export default BackTop;
+  if (!visible) return null;
+  const rootStyle: CSSProperties = { ...style, bottom, right };
+  return (
+    <div
+      {...rest}
+      className={["k-back-top", "k-back-top-fade-enter-active", className].filter(Boolean).join(" ")}
+      style={rootStyle}
+      onClick={handleClick}
+    >
+      {children ?? (
+        <div className="k-back-top-content">
+          <Icon type={ArrowUp} />
+        </div>
+      )}
+    </div>
+  );
+}

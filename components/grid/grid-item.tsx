@@ -1,64 +1,48 @@
-import type { CSSProperties, DefineComponent, ExtractPropTypes, HTMLAttributes } from "vue";
-import { computed, defineComponent, inject } from "vue";
-import { GRID_KEY } from "./useBreakpoint";
+import { useContext, type CSSProperties, type HTMLAttributes } from "react";
+import { GridContext, type ResponsiveValue } from "./useBreakpoint";
 
-const gridItemProps = {
-  span: { type: [Number, String, Object], default: 1 }, // 跨越几列
-  rowSpan: { type: [Number, String, Object], default: 1 }, // 跨越几行
-  offset: { type: [Number, Object], default: 0 }, // 左侧偏移（通过 grid-column-start 实现）
-  suffix: { type: Boolean, default: false }, // 是否作为末尾填充
-};
+type ItemDimension = number | string;
 
-export type GridItemProps = Partial<ExtractPropTypes<typeof gridItemProps>> & HTMLAttributes;
-
-interface GridContext {
-  resolveResponsive: (span: GridItemProps["span"], defaultValue: number) => number;
+export interface GridItemProps extends HTMLAttributes<HTMLDivElement> {
+  span?: ResponsiveValue<ItemDimension>;
+  rowSpan?: ResponsiveValue<ItemDimension>;
+  offset?: ResponsiveValue<number>;
+  suffix?: boolean;
 }
 
-const GridItem = defineComponent({
-  name: "GridItem",
-  props: gridItemProps,
-  setup(props, { slots }) {
-    const context: GridContext | undefined = inject(GRID_KEY);
-    const itemStyle = computed(() => {
-      if (!context) return {};
+export default function GridItem({
+  span = 1,
+  rowSpan = 1,
+  offset = 0,
+  suffix = false,
+  className,
+  style,
+  children,
+  ...rest
+}: GridItemProps) {
+  const context = useContext(GridContext);
+  const currentSpan = context?.resolveResponsive(span, 1) ?? 1;
+  const currentRowSpan = context?.resolveResponsive(rowSpan, 1) ?? 1;
+  const currentOffset = context?.resolveResponsive(offset, 0) ?? 0;
+  const itemStyle: CSSProperties = { ...style };
 
-      const s = context.resolveResponsive(props.span, 1);
-      const rs = context.resolveResponsive(props.rowSpan, 1);
-      const o = context.resolveResponsive(props.offset, 0);
-      if (s === 0) return { display: "none" };
-      const styles: CSSProperties = {};
-      if (s !== 1) {
-        styles.gridColumn = `span ${s} / span ${s}`;
-      }
+  if (currentSpan === 0) itemStyle.display = "none";
+  else if (currentSpan !== 1) itemStyle.gridColumn = `span ${currentSpan} / span ${currentSpan}`;
+  if (currentOffset > 0) {
+    itemStyle.gridColumnStart = `span ${Number(currentSpan) + currentOffset}`;
+    if (currentSpan === 1) itemStyle.gridColumnEnd = "span 1";
+  }
+  if (currentRowSpan !== 1) {
+    itemStyle.gridRow = `span ${currentRowSpan} / span ${currentRowSpan}`;
+  }
+  if (suffix) {
+    itemStyle.gridColumnStart = "-1";
+    itemStyle.justifySelf = "end";
+  }
 
-      if (o > 0) {
-        styles.gridColumnStart = `span ${s + o}`;
-        if (s === 1) {
-          styles.gridColumnEnd = `span 1`;
-        }
-      }
-      if (rs !== 1) {
-        styles.gridRow = `span ${rs} / span ${rs}`;
-      }
-
-      if (props.suffix) {
-        styles.gridColumnStart = "-1";
-        styles.justifySelf = "end";
-      }
-
-      return styles;
-    });
-
-    const itemProps = {
-      class: "k-grid-item",
-      style: itemStyle.value,
-    };
-
-    return () => {
-      return <div {...itemProps}>{slots.default?.()}</div>;
-    };
-  },
-});
-
-export default GridItem as DefineComponent<GridItemProps>;
+  return (
+    <div {...rest} className={["k-grid-item", className].filter(Boolean).join(" ")} style={itemStyle}>
+      {children}
+    </div>
+  );
+}
