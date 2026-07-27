@@ -1,6 +1,15 @@
 import Color from "color";
 import { toCanvas, type QRCodeRenderersOptions } from "qrcode";
-import { forwardRef, useCallback, useContext, useEffect, useImperativeHandle, useRef, type HTMLAttributes, type ReactNode } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  type HTMLAttributes,
+  type ReactNode,
+} from "react";
 import { Button } from "../button";
 import { ConfigContext } from "../config";
 import zhCN from "../locale/zh-CN";
@@ -8,7 +17,9 @@ import Spin from "../spin";
 
 export type QRCodeStatus = "active" | "loading" | "expired" | "scanned";
 export type QRCodeErrorLevel = "L" | "M" | "Q" | "H";
-export interface QRCodeRef { download: (fileName?: string) => void }
+export interface QRCodeRef {
+  download: (fileName?: string) => void;
+}
 export interface QRCodeProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
   value: string;
   size?: number;
@@ -28,27 +39,30 @@ export interface QRCodeProps extends Omit<HTMLAttributes<HTMLDivElement>, "child
   onRefresh?: () => void;
 }
 
-const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode({
-  value,
-  size = 160,
-  colorDark = "var(--kui-color-reverse)",
-  colorLight = "var(--kui-color-bg)",
-  bordered = true,
-  status = "active",
-  logo = "",
-  logoSize,
-  margin = 0,
-  logoRadius = 4,
-  logoBorder = true,
-  errorLevel = "M",
-  loadingContent,
-  expiredContent,
-  scannedContent,
-  onRefresh,
-  className,
-  style,
-  ...rest
-}, ref) {
+const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
+  {
+    value,
+    size = 160,
+    colorDark = "var(--kui-color-reverse)",
+    colorLight = "var(--kui-color-bg)",
+    bordered = true,
+    status = "active",
+    logo = "",
+    logoSize,
+    margin = 0,
+    logoRadius = 4,
+    logoBorder = true,
+    errorLevel = "M",
+    loadingContent,
+    expiredContent,
+    scannedContent,
+    onRefresh,
+    className,
+    style,
+    ...rest
+  },
+  ref
+) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const drawIdRef = useRef(0);
   const { locale } = useContext(ConfigContext);
@@ -61,7 +75,11 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode({
     document.body.appendChild(element);
     const computed = getComputedStyle(element).color;
     element.remove();
-    try { return Color(computed).hex(); } catch { return "#000000"; }
+    try {
+      return Color(computed).hex();
+    } catch {
+      return "#000000";
+    }
   };
 
   const draw = useCallback(async () => {
@@ -100,38 +118,98 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode({
           const border = finalSize + 6 * ratio;
           context.fillStyle = light;
           context.beginPath();
-          context.roundRect((canvas.width - border) / 2, (canvas.height - border) / 2, border, border, (logoRadius + 2) * ratio);
+          context.roundRect(
+            (canvas.width - border) / 2,
+            (canvas.height - border) / 2,
+            border,
+            border,
+            (logoRadius + 2) * ratio
+          );
           context.fill();
         }
-        context.beginPath(); context.roundRect(x, y, finalSize, finalSize, logoRadius * ratio); context.clip();
-        context.drawImage(image, x, y, finalSize, finalSize); context.restore();
+        context.beginPath();
+        context.roundRect(x, y, finalSize, finalSize, logoRadius * ratio);
+        context.clip();
+        context.drawImage(image, x, y, finalSize, finalSize);
+        context.restore();
       };
       image.src = logo;
-    } catch (error) { console.error("Failed to render QR code", error); }
-  }, [colorDark, colorLight, errorLevel, logo, logoBorder, logoRadius, logoSize, margin, size, value]);
+    } catch (error) {
+      console.error("Failed to render QR code", error);
+    }
+  }, [
+    colorDark,
+    colorLight,
+    errorLevel,
+    logo,
+    logoBorder,
+    logoRadius,
+    logoSize,
+    margin,
+    size,
+    value,
+  ]);
 
-  useEffect(() => { void draw(); }, [draw]);
+  useEffect(() => {
+    void draw();
+  }, [draw]);
   useEffect(() => {
     const observer = new MutationObserver((records) => {
       if (records.some((record) => record.attributeName === "theme-mode")) void draw();
     });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["theme-mode"] });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["theme-mode"],
+    });
     return () => observer.disconnect();
   }, [draw]);
   useImperativeHandle(ref, () => ({
     download(fileName = "qrcode.png") {
       const anchor = document.createElement("a");
-      anchor.download = fileName; anchor.href = canvasRef.current?.toDataURL("image/png") ?? ""; anchor.click();
+      anchor.download = fileName;
+      anchor.href = canvasRef.current?.toDataURL("image/png") ?? "";
+      anchor.click();
     },
   }));
 
-  return <div {...rest} className={["k-qrcode", !bordered && "k-qrcode-borderless", className].filter(Boolean).join(" ")} style={{ ...style, width: size, height: size }}>
-    <canvas ref={canvasRef} style={{ width: size, height: size, display: "block" }} />
-    {status !== "active" && <div className="k-qrcode-mask">
-      {status === "loading" && <div className="k-qrcode-loading-wrapper">{loadingContent ?? <><Spin size="small" /> <span>{messages?.loading}</span></>}</div>}
-      {status === "expired" && <div className="k-qrcode-expired-wrapper" onClick={onRefresh}>{expiredContent ?? <><div className="k-qrcode-expired">{messages?.expired}</div><Button size="small" type="text">{messages?.refresh}</Button></>}</div>}
-      {status === "scanned" && <div className="k-qrcode-scanned-wrapper">{scannedContent ?? messages?.scanned}</div>}
-    </div>}
-  </div>;
+  return (
+    <div
+      {...rest}
+      className={["k-qrcode", !bordered && "k-qrcode-borderless", className]
+        .filter(Boolean)
+        .join(" ")}
+      style={{ ...style, width: size, height: size }}
+    >
+      <canvas ref={canvasRef} style={{ width: size, height: size, display: "block" }} />
+      {status !== "active" && (
+        <div className="k-qrcode-mask">
+          {status === "loading" && (
+            <div className="k-qrcode-loading-wrapper">
+              {loadingContent ?? (
+                <>
+                  <Spin size="small" /> <span>{messages?.loading}</span>
+                </>
+              )}
+            </div>
+          )}
+          {status === "expired" && (
+            <div className="k-qrcode-expired-wrapper" onClick={onRefresh}>
+              {expiredContent ?? (
+                <>
+                  <div className="k-qrcode-expired">{messages?.expired}</div>
+                  <Button size="small" type="text">
+                    {messages?.refresh}
+                  </Button>
+                </>
+              )}
+            </div>
+          )}
+          {status === "scanned" && (
+            <div className="k-qrcode-scanned-wrapper">{scannedContent ?? messages?.scanned}</div>
+          )}
+        </div>
+      )}
+    </div>
+  );
 });
 export default QRCode;

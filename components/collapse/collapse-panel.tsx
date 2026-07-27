@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
 import { ChevronUp } from "kui-icons";
+import React, { useEffect, useRef, useState } from "react";
 import Icon from "../icon";
 
 export interface CollapsePanelProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -40,11 +40,7 @@ const CollapsePanel: React.FC<CollapsePanelProps> = ({
     }
   };
 
-  const classes = [
-    "k-collapse-item",
-    expanded ? "k-collapse-item-active" : "",
-    className,
-  ]
+  const classes = ["k-collapse-item", expanded ? "k-collapse-item-active" : "", className]
     .filter(Boolean)
     .join(" ");
 
@@ -56,10 +52,7 @@ const CollapsePanel: React.FC<CollapsePanelProps> = ({
         {extra ? <span className="k-collapse-extra">{extra}</span> : null}
       </div>
       {rendered ? (
-        <div
-          className="k-collapse-content"
-          style={{ display: expanded ? undefined : "none" }}
-        >
+        <div className="k-collapse-content" style={{ display: expanded ? undefined : "none" }}>
           <div className="k-collapse-content-box">{children}</div>
         </div>
       ) : null}

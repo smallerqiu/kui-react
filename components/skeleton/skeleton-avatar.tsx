@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { ShapeType, SizeType } from "../const/types";
 
 export interface SkeletonAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -32,14 +32,18 @@ const SkeletonAvatar: React.FC<SkeletonAvatarProps> = ({
       if (timer.current) clearTimeout(timer.current);
       timer.current = setTimeout(() => setShow(false), delay);
     }
-    return () => { if (timer.current) clearTimeout(timer.current); };
+    return () => {
+      if (timer.current) clearTimeout(timer.current);
+    };
   }, [loading, delay]);
 
   const wrapperClasses = [
     "k-skeleton k-skeleton-ele",
     animated ? "k-skeleton-animated" : "",
     className,
-  ].filter(Boolean).join(" ");
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const innerStyle: React.CSSProperties = {};
   if (!isNaN(Number(size)) && typeof size === "number") {
@@ -55,7 +59,9 @@ const SkeletonAvatar: React.FC<SkeletonAvatarProps> = ({
     size === "large" ? "k-skeleton-avatar-lg" : "",
     size === "small" ? "k-skeleton-avatar-sm" : "",
     shape && shape !== "round" ? `k-skeleton-avatar-${shape}` : "",
-  ].filter(Boolean).join(" ");
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div className={wrapperClasses} {...rest}>

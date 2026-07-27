@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
-import { createPortal } from "react-dom";
 import { X } from "kui-icons";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "../button";
+import { ConfigContext } from "../config";
 import { getMousePoint } from "../config/context";
 import zhCN from "../locale/zh-CN";
-import { ConfigContext } from "../config";
 
 export interface ModalProps {
   className?: string;
@@ -192,14 +192,17 @@ const Modal: React.FC<ModalProps> = ({
 
   let contentNode = content;
   if (!contentNode) {
-    const footerContent = footer === true
-      ? (footerSlot || (
-          <>
-            <Button onClick={cancel}>{cancelLabel}</Button>
-            <Button onClick={ok} type="primary" loading={loading}>{okLabel}</Button>
-          </>
-        ))
-      : footer;
+    const footerContent =
+      footer === true
+        ? footerSlot || (
+            <>
+              <Button onClick={cancel}>{cancelLabel}</Button>
+              <Button onClick={ok} type="primary" loading={loading}>
+                {okLabel}
+              </Button>
+            </>
+          )
+        : footer;
 
     contentNode = (
       <div className="k-modal-content" tabIndex={0}>
@@ -212,18 +215,18 @@ const Modal: React.FC<ModalProps> = ({
           </div>
         )}
         <div className="k-modal-body">{children}</div>
-        {footer !== false && (
-          <div className="k-modal-footer">{footerContent}</div>
-        )}
+        {footer !== false && <div className="k-modal-footer">{footerContent}</div>}
       </div>
     );
   }
 
-  const modalStyle: React.CSSProperties | null = maximized ? null : {
-    width: typeof width === "number" ? `${width}px` : width,
-    top: `${topPos}px`,
-    left: draggable ? `${leftPos}px` : undefined,
-  };
+  const modalStyle: React.CSSProperties | null = maximized
+    ? null
+    : {
+        width: typeof width === "number" ? `${width}px` : width,
+        top: `${topPos}px`,
+        left: draggable ? `${leftPos}px` : undefined,
+      };
 
   const classes = [
     "k-modal",
@@ -232,18 +235,15 @@ const Modal: React.FC<ModalProps> = ({
     maximized ? "k-modal-maximized" : "",
     centered ? "k-modal-centered" : "",
     footer !== null ? "k-modal-has-footer" : "",
-  ].filter(Boolean).join(" ");
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   if (!rendered) return null;
 
   const modalEl = (
     <div className={classes}>
-      {mask && (
-        <div
-          className="k-modal-mask"
-          style={{ display: visible ? undefined : "none" }}
-        />
-      )}
+      {mask && <div className="k-modal-mask" style={{ display: visible ? undefined : "none" }} />}
       <div
         className="k-modal-wrap"
         tabIndex={-1}

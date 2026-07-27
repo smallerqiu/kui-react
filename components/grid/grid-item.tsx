@@ -41,7 +41,11 @@ export default function GridItem({
   }
 
   return (
-    <div {...rest} className={["k-grid-item", className].filter(Boolean).join(" ")} style={itemStyle}>
+    <div
+      {...rest}
+      className={["k-grid-item", className].filter(Boolean).join(" ")}
+      style={itemStyle}
+    >
       {children}
     </div>
   );

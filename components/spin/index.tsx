@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { SizeType, SpinModeType } from "../const/types.ts";
 
 export interface SpinProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -45,10 +45,7 @@ const Spin: React.FC<SpinProps> = ({
     };
   }, [spinningProp, delay]);
 
-  const spinClasses = [
-    spinning ? "k-spin-loading" : "",
-    mode && spinning ? `k-spin-${mode}` : "",
-  ]
+  const spinClasses = [spinning ? "k-spin-loading" : "", mode && spinning ? `k-spin-${mode}` : ""]
     .filter(Boolean)
     .join(" ");
 

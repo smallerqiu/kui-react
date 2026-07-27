@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
 import { Star as StarIcon } from "kui-icons";
+import React from "react";
 import Icon from "../icon";
 import Tooltip from "../tooltip";
 
@@ -47,21 +47,13 @@ const Star: React.FC<StarProps> = ({
 
   const iconType = typeof icon === "function" ? icon(index) : icon;
   const reverse = symbolReverseFill || !iconType;
-  const characterNode =
-    (typeof character === "function" ? character(index) : character) || (
-      <Icon
-        type={iconType || StarIcon}
-        size={size}
-        reverseFill={reverse}
-        strokeWidth={strokeWidth}
-      />
-    );
+  const characterNode = (typeof character === "function" ? character(index) : character) || (
+    <Icon type={iconType || StarIcon} size={size} reverseFill={reverse} strokeWidth={strokeWidth} />
+  );
 
-  const classes = [
-    "k-star",
-    full ? "k-star-full" : "",
-    half ? "k-star-half" : "",
-  ].filter(Boolean).join(" ");
+  const classes = ["k-star", full ? "k-star-full" : "", half ? "k-star-half" : ""]
+    .filter(Boolean)
+    .join(" ");
 
   const frontStyle: React.CSSProperties = {
     width: disabled && percent !== undefined ? `${percent}%` : undefined,
@@ -73,7 +65,9 @@ const Star: React.FC<StarProps> = ({
       onClick={(e) => handleEvent(e, "C")}
       onMouseMove={(e) => handleEvent(e, "M")}
     >
-      <span className="k-star-front" style={frontStyle}>{characterNode}</span>
+      <span className="k-star-front" style={frontStyle}>
+        {characterNode}
+      </span>
       <span className="k-star-back">{characterNode}</span>
     </span>
   );

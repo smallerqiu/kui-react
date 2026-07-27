@@ -1,4 +1,11 @@
-import { forwardRef, useState, type CSSProperties, type KeyboardEvent, type MouseEvent, type TouchEvent } from "react";
+import {
+  forwardRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent,
+  type MouseEvent,
+  type TouchEvent,
+} from "react";
 import Tooltip from "../tooltip";
 
 export interface ThumbProps {
@@ -31,7 +38,7 @@ const Thumb = forwardRef<HTMLDivElement, ThumbProps>(function Thumb(
     onDragStart,
     onKeyDown,
   },
-  ref,
+  ref
 ) {
   const [hovered, setHovered] = useState(false);
   const percent = max === min ? 0 : Math.max(0, Math.min(100, ((value - min) / (max - min)) * 100));
@@ -61,10 +68,23 @@ const Thumb = forwardRef<HTMLDivElement, ThumbProps>(function Thumb(
         aria-valuenow={value}
         aria-disabled={disabled}
         tabIndex={disabled ? undefined : 0}
-        className={["k-slider-thumb", dragging && "is-dragging", size === "small" && "k-slider-thumb-sm"].filter(Boolean).join(" ")}
+        className={[
+          "k-slider-thumb",
+          dragging && "is-dragging",
+          size === "small" && "k-slider-thumb-sm",
+        ]
+          .filter(Boolean)
+          .join(" ")}
         style={style}
-        onMouseDown={(event) => { event.preventDefault(); event.stopPropagation(); if (!disabled) onDragStart?.(event); }}
-        onTouchStart={(event) => { event.stopPropagation(); if (!disabled) onDragStart?.(event); }}
+        onMouseDown={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          if (!disabled) onDragStart?.(event);
+        }}
+        onTouchStart={(event) => {
+          event.stopPropagation();
+          if (!disabled) onDragStart?.(event);
+        }}
         onKeyDown={onKeyDown}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}

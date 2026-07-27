@@ -5,4 +5,8 @@ import App from "./App";
 import "./assets/css/demo.less";
 import "./assets/css/index.less";
 
-createRoot(document.getElementById("app")!).render(<StrictMode><App /></StrictMode>);
+createRoot(document.getElementById("app")!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);

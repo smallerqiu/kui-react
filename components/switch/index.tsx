@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
 import { Loading } from "kui-icons";
+import React, { useEffect, useState } from "react";
 import type { SizeType, ValueType } from "../const/types";
 import Icon from "../icon";
 import { getValueWithType } from "../utils/checked";
 
-export interface SwitchProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onChange"> {
+export interface SwitchProps extends Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  "onChange"
+> {
   checked?: boolean;
   valueType?: ValueType;
   type?: string;

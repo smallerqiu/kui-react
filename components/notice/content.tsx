@@ -15,24 +15,70 @@ export interface ContentProps {
   onClose?: () => void;
   noticeType?: "message" | "notice";
 }
-const icons = { info: Info, error: CircleX, success: CircleCheck, warning: CircleAlert, loading: Loading };
+const icons = {
+  info: Info,
+  error: CircleX,
+  success: CircleCheck,
+  warning: CircleAlert,
+  loading: Loading,
+};
 
 export default function Content({
-  noticeType = "message", type, content, title, closable, icon, color, onClose,
+  noticeType = "message",
+  type,
+  content,
+  title,
+  closable,
+  icon,
+  color,
+  onClose,
 }: ContentProps) {
   const alertIcon = icon ?? (type ? icons[type] : undefined);
   return (
-    <div className={[`k-${noticeType}-box`, type && `k-${noticeType}-${type}`, alertIcon && "k-notice-has-icon"].filter(Boolean).join(" ")}>
+    <div
+      className={[
+        `k-${noticeType}-box`,
+        type && `k-${noticeType}-${type}`,
+        alertIcon && "k-notice-has-icon",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
       <div className={`k-${noticeType}-content`}>
-        {alertIcon && <Icon type={alertIcon} color={color} className={`k-${noticeType}-icon`} spin={type === "loading"} />}
-        {noticeType === "message" ? <>
-          <span>{content}</span>
-          {closable && <Button className="k-message-close" size="small" type="text" icon={X} onClick={onClose} />}
-        </> : <>
-          <div className="k-notice-title">{title}</div>
-          <div className="k-notice-desc">{content}</div>
-          <Button className="k-notice-close" size="small" type="text" icon={X} onClick={onClose} />
-        </>}
+        {alertIcon && (
+          <Icon
+            type={alertIcon}
+            color={color}
+            className={`k-${noticeType}-icon`}
+            spin={type === "loading"}
+          />
+        )}
+        {noticeType === "message" ? (
+          <>
+            <span>{content}</span>
+            {closable && (
+              <Button
+                className="k-message-close"
+                size="small"
+                type="text"
+                icon={X}
+                onClick={onClose}
+              />
+            )}
+          </>
+        ) : (
+          <>
+            <div className="k-notice-title">{title}</div>
+            <div className="k-notice-desc">{content}</div>
+            <Button
+              className="k-notice-close"
+              size="small"
+              type="text"
+              icon={X}
+              onClick={onClose}
+            />
+          </>
+        )}
       </div>
     </div>
   );

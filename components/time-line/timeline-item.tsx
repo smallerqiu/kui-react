@@ -24,7 +24,9 @@ export default function TimeLineItem({
   return (
     <li {...rest} className={["k-time-line-item", className].filter(Boolean).join(" ")}>
       <div
-        className={["k-time-line-dot", custom && "k-time-line-dot-custom"].filter(Boolean).join(" ")}
+        className={["k-time-line-dot", custom && "k-time-line-dot-custom"]
+          .filter(Boolean)
+          .join(" ")}
         style={dotStyle}
       >
         {dot ?? (icon ? <Icon type={icon} /> : <span className="k-time-line-head" />)}

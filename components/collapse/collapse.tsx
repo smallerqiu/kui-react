@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { getChildren } from "../utils/react-node";
-import CollapsePanel from "./collapse-panel";
 
 export interface CollapseProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
   openKeys?: (string | number)[];
@@ -41,11 +40,7 @@ const Collapse: React.FC<CollapseProps> = ({
     onChange?.(key);
   };
 
-  const classes = [
-    "k-collapse",
-    sample ? "k-collapse-sample" : "",
-    className,
-  ]
+  const classes = ["k-collapse", sample ? "k-collapse-sample" : "", className]
     .filter(Boolean)
     .join(" ");
 

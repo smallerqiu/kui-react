@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { DropPlacementsType, TriggerType } from "../const/types";
 import { setPlacement } from "../utils/placement";
@@ -110,7 +110,9 @@ const Dropdown: React.FC<DropdownProps> = ({
     const clickedEl = e.target as HTMLElement;
 
     if (
-      (!refPopper.current.contains(clickedEl) && targetElement && !targetElement.contains(clickedEl)) ||
+      (!refPopper.current.contains(clickedEl) &&
+        targetElement &&
+        !targetElement.contains(clickedEl)) ||
       (trigger === "contextmenu" && !refPopper.current.contains(clickedEl))
     ) {
       setVisible(false);
@@ -222,11 +224,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     </span>
   );
 
-  const popperClasses = [
-    "k-dropdown",
-    arrow ? "k-dropdown-has-arrow" : "",
-    className,
-  ]
+  const popperClasses = ["k-dropdown", arrow ? "k-dropdown-has-arrow" : "", className]
     .filter(Boolean)
     .join(" ");
 
@@ -271,7 +269,9 @@ const Dropdown: React.FC<DropdownProps> = ({
     ) : null;
 
   return (
-    <DropdownContext.Provider value={{ onMouseEnter: mouseEnterEvent, onMouseLeave: mouseLeaveEvent }}>
+    <DropdownContext.Provider
+      value={{ onMouseEnter: mouseEnterEvent, onMouseLeave: mouseLeaveEvent }}
+    >
       {triggerNode}
       {overlayNode && createPortal(overlayNode, document.body)}
     </DropdownContext.Provider>

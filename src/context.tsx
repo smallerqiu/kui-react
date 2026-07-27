@@ -7,5 +7,10 @@ export interface DocsContextValue {
   changeLang: () => void;
 }
 
-export const DocsContext = createContext<DocsContextValue>({ lang: "en", locale: {}, t: (key) => key, changeLang: () => undefined });
+export const DocsContext = createContext<DocsContextValue>({
+  lang: "en",
+  locale: {},
+  t: (key) => key,
+  changeLang: () => undefined,
+});
 export const useDocs = () => useContext(DocsContext);

@@ -14,10 +14,22 @@ export const createInstance = (type: "message" | "notice"): NoticeInstance => {
   document.body.appendChild(container);
   const root = createRoot(container);
   let api: NoticeContainerApi | null = null;
-  flushSync(() => root.render(<Container type={type} ref={(value) => { api = value; }} />));
+  flushSync(() =>
+    root.render(
+      <Container
+        type={type}
+        ref={(value) => {
+          api = value;
+        }}
+      />
+    )
+  );
   return {
     show: (options) => api?.show(options) ?? (() => undefined),
     clean: () => api?.clean(),
-    destroy: () => { root.unmount(); container.remove(); },
+    destroy: () => {
+      root.unmount();
+      container.remove();
+    },
   };
 };

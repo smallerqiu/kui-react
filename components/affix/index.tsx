@@ -75,7 +75,8 @@ export default function Affix({
     if (!scrollTarget || typeof window === "undefined") return;
     scrollTarget.addEventListener("scroll", updatePosition, { passive: true });
     window.addEventListener("resize", updatePosition);
-    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updatePosition);
+    const observer =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updatePosition);
     if (scrollTarget !== window) observer?.observe(scrollTarget as HTMLElement);
     observer?.observe(wrapperRef.current!);
     updatePosition();
@@ -88,7 +89,10 @@ export default function Affix({
 
   return (
     <div {...rest} ref={wrapperRef} style={{ ...style, ...placeholderStyle }}>
-      <div className={["k-affix", fixed && "k-affix-fixed", className].filter(Boolean).join(" ")} style={affixStyle}>
+      <div
+        className={["k-affix", fixed && "k-affix-fixed", className].filter(Boolean).join(" ")}
+        style={affixStyle}
+      >
         {children}
       </div>
     </div>

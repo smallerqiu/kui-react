@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
-import { createPortal } from "react-dom";
 import { X } from "kui-icons";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "../button";
+import { ConfigContext } from "../config";
 import type { DrawerPlacementsType } from "../const/types";
 import zhCN from "../locale/zh-CN";
-import { ConfigContext } from "../config";
 
 export interface DrawerProps {
   open?: boolean;
@@ -121,7 +121,9 @@ const Drawer: React.FC<DrawerProps> = ({
       {footerSlot || (
         <>
           <Button onClick={cancel}>{cancelLabel}</Button>
-          <Button type="primary" onClick={ok} loading={loading}>{okLabel}</Button>
+          <Button type="primary" onClick={ok} loading={loading}>
+            {okLabel}
+          </Button>
         </>
       )}
     </div>
@@ -148,7 +150,9 @@ const Drawer: React.FC<DrawerProps> = ({
     hasFooter ? "k-drawer-has-footer" : "",
     isBody ? "k-drawer-to-body" : "",
     !mask ? "k-drawer-no-mask" : "",
-  ].filter(Boolean).join(" ");
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   if (!rendered) return null;
 
@@ -156,16 +160,14 @@ const Drawer: React.FC<DrawerProps> = ({
     <div className={classes}>
       {mask && (
         <div
-          className={["k-drawer-mask", isBody ? "k-drawer-mask-to-body" : ""].filter(Boolean).join(" ")}
+          className={["k-drawer-mask", isBody ? "k-drawer-mask-to-body" : ""]
+            .filter(Boolean)
+            .join(" ")}
           style={{ display: visible ? undefined : "none" }}
           onClick={maskClosable ? close : undefined}
         />
       )}
-      <div
-        className="k-drawer-wrap"
-        tabIndex={-1}
-        style={{ display: opened ? undefined : "none" }}
-      >
+      <div className="k-drawer-wrap" tabIndex={-1} style={{ display: opened ? undefined : "none" }}>
         <div
           className="k-drawer-box"
           style={{

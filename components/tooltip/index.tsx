@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { PlacementsType } from "../const/types";
 import { colors } from "../const/var";
@@ -144,45 +144,44 @@ const Tooltip: React.FC<TooltipProps> = ({
       : color
     : undefined;
 
-  const overlayNode =
-    rendered ? (
-      <div
-        ref={refPopper}
-        className={[
-          `k-${preCls}`,
-          color && !isColor(color) ? `k-${preCls}-${color}` : "",
-          isColor(color) ? `k-${preCls}-has-color` : "",
-          `k-${preCls}-has-arrow`,
-        ]
-          .filter(Boolean)
-          .join(" ")}
-        style={{
-          left: `${left}px`,
-          top: `${top}px`,
-          transformOrigin: transOrigin,
-          display: visible ? undefined : "none",
-          width: width ? (typeof width === "number" ? `${width}px` : width) : undefined,
-        }}
-        onMouseEnter={() => {
-          if (hideTimer.current) clearTimeout(hideTimer.current);
-          if (!disabled) updateShow(true);
-        }}
-        onMouseLeave={() => {
-          showTimer.current = setTimeout(() => {
-            if (!show) updateShow(false);
-          }, 300);
-        }}
-      >
-        <div className={`k-${preCls}-content`} style={{ backgroundColor: bgColor }}>
-          <div className={`k-${preCls}-title`}>{title}</div>
-          <div className={`k-${preCls}-arrow`}>
-            <svg style={{ fill: arrowFill }} viewBox="0 0 24 7">
-              <path d="M24 0V1C20 1 18.5 2 16.5 4C14.5 6 14 7 12 7C10 7 9.5 6 7.5 4C5.5 2 4 1 0 1V0H24Z" />
-            </svg>
-          </div>
+  const overlayNode = rendered ? (
+    <div
+      ref={refPopper}
+      className={[
+        `k-${preCls}`,
+        color && !isColor(color) ? `k-${preCls}-${color}` : "",
+        isColor(color) ? `k-${preCls}-has-color` : "",
+        `k-${preCls}-has-arrow`,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      style={{
+        left: `${left}px`,
+        top: `${top}px`,
+        transformOrigin: transOrigin,
+        display: visible ? undefined : "none",
+        width: width ? (typeof width === "number" ? `${width}px` : width) : undefined,
+      }}
+      onMouseEnter={() => {
+        if (hideTimer.current) clearTimeout(hideTimer.current);
+        if (!disabled) updateShow(true);
+      }}
+      onMouseLeave={() => {
+        showTimer.current = setTimeout(() => {
+          if (!show) updateShow(false);
+        }, 300);
+      }}
+    >
+      <div className={`k-${preCls}-content`} style={{ backgroundColor: bgColor }}>
+        <div className={`k-${preCls}-title`}>{title}</div>
+        <div className={`k-${preCls}-arrow`}>
+          <svg style={{ fill: arrowFill }} viewBox="0 0 24 7">
+            <path d="M24 0V1C20 1 18.5 2 16.5 4C14.5 6 14 7 12 7C10 7 9.5 6 7.5 4C5.5 2 4 1 0 1V0H24Z" />
+          </svg>
         </div>
       </div>
-    ) : null;
+    </div>
+  ) : null;
 
   return (
     <>

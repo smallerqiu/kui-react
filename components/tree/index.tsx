@@ -1,12 +1,26 @@
 import { ChevronRight, CircleMinus, CirclePlus } from "kui-icons";
-import { useMemo, useRef, useState, type DragEvent, type HTMLAttributes, type ReactNode } from "react";
+import {
+  useMemo,
+  useRef,
+  useState,
+  type DragEvent,
+  type HTMLAttributes,
+  type ReactNode,
+} from "react";
 import { Button } from "../button";
 import Checkbox, { type ChangeEvent } from "../checkbox";
 import Icon from "../icon";
 import { buildTree, updateParentIndeterminate, type TreeNode } from "./utils";
 
-export interface TreeExpandEvent { key: string; expanded: boolean; node: TreeNode }
-export interface TreeProps extends Omit<HTMLAttributes<HTMLDivElement>, "onSelect" | "onDragStart" | "onDragEnter" | "onDragLeave" | "onDrop" | "onDragEnd"> {
+export interface TreeExpandEvent {
+  key: string;
+  expanded: boolean;
+  node: TreeNode;
+}
+export interface TreeProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onSelect" | "onDragStart" | "onDragEnter" | "onDragLeave" | "onDrop" | "onDragEnd"
+> {
   data?: TreeNode[];
   selectedKeys?: string[];
   defaultSelectedKeys?: string[];
@@ -42,15 +56,47 @@ export interface TreeProps extends Omit<HTMLAttributes<HTMLDivElement>, "onSelec
 export type { BuildTreeOptions, TreeNode } from "./utils";
 
 const findRaw = (nodes: TreeNode[], key: string): TreeNode | undefined => {
-  for (const node of nodes) { if (node.key === key) return node; const child = node.children && findRaw(node.children, key); if (child) return child; }
+  for (const node of nodes) {
+    if (node.key === key) return node;
+    const child = node.children && findRaw(node.children, key);
+    if (child) return child;
+  }
 };
 
 export default function Tree({
-  data = [], selectedKeys, defaultSelectedKeys = [], expandedKeys, defaultExpandedKeys = [], checkedKeys,
-  defaultCheckedKeys = [], directory, checkable, draggable, showLine, showIcon = true, showExtra,
-  multiple, checkStrictly, selectAsCheck, queryKey, renderTitle, renderExtra, onExpand,
-  onExpandedKeysChange, onCheck, onCheckedKeysChange, onSelect, onSelectedKeysChange,
-  onDragStart, onDragEnter, onDragLeave, onDrop, onDragEnd, loadData, className, ...rest
+  data = [],
+  selectedKeys,
+  defaultSelectedKeys = [],
+  expandedKeys,
+  defaultExpandedKeys = [],
+  checkedKeys,
+  defaultCheckedKeys = [],
+  directory,
+  checkable,
+  draggable,
+  showLine,
+  showIcon = true,
+  showExtra,
+  multiple,
+  checkStrictly,
+  selectAsCheck,
+  queryKey,
+  renderTitle,
+  renderExtra,
+  onExpand,
+  onExpandedKeysChange,
+  onCheck,
+  onCheckedKeysChange,
+  onSelect,
+  onSelectedKeysChange,
+  onDragStart,
+  onDragEnter,
+  onDragLeave,
+  onDrop,
+  onDragEnd,
+  loadData,
+  className,
+  ...rest
 }: TreeProps) {
   const [innerSelected, setInnerSelected] = useState(defaultSelectedKeys);
   const [innerExpanded, setInnerExpanded] = useState(defaultExpandedKeys);
@@ -62,75 +108,245 @@ export default function Tree({
   const selected = selectedKeys ?? innerSelected;
   const expanded = expandedKeys ?? innerExpanded;
   const checked = checkedKeys ?? innerChecked;
-  const flat = useMemo(() => buildTree({ data, selectedKeys: selected, expandedKeys: expanded, checkedKeys: checked, hasLoad: !!loadData, checkable, checkStrictly }), [data, selected, expanded, checked, loadData, checkable, checkStrictly, version]);
+  const flat = useMemo(
+    () =>
+      buildTree({
+        data,
+        selectedKeys: selected,
+        expandedKeys: expanded,
+        checkedKeys: checked,
+        hasLoad: !!loadData,
+        checkable,
+        checkStrictly,
+      }),
+    [data, selected, expanded, checked, loadData, checkable, checkStrictly, version]
+  );
   const byKey = useMemo(() => new Map(flat.map((node) => [node.key, node])), [flat]);
 
-  const commitExpanded = (keys: string[]) => { if (!expandedKeys) setInnerExpanded(keys); onExpandedKeysChange?.(keys); };
+  const commitExpanded = (keys: string[]) => {
+    if (!expandedKeys) setInnerExpanded(keys);
+    onExpandedKeysChange?.(keys);
+  };
   const expand = async (node: TreeNode) => {
     if (node.isLeaf || loadingKeys.has(node.key)) return;
     let nextExpanded = !expanded.includes(node.key);
     if (nextExpanded && loadData && !node.children?.length) {
       setLoadingKeys((current) => new Set(current).add(node.key));
-      try { await loadData(findRaw(data, node.key) ?? node); setVersion((value) => value + 1); }
-      finally { setLoadingKeys((current) => { const next = new Set(current); next.delete(node.key); return next; }); }
+      try {
+        await loadData(findRaw(data, node.key) ?? node);
+        setVersion((value) => value + 1);
+      } finally {
+        setLoadingKeys((current) => {
+          const next = new Set(current);
+          next.delete(node.key);
+          return next;
+        });
+      }
     }
-    const keys = nextExpanded ? [...expanded, node.key] : expanded.filter((key) => key !== node.key);
-    commitExpanded(keys); onExpand?.({ key: node.key, expanded: nextExpanded, node });
+    const keys = nextExpanded
+      ? [...expanded, node.key]
+      : expanded.filter((key) => key !== node.key);
+    commitExpanded(keys);
+    onExpand?.({ key: node.key, expanded: nextExpanded, node });
   };
-  const commitChecked = (keys: string[]) => { if (!checkedKeys) setInnerChecked(keys); onCheckedKeysChange?.(keys); };
+  const commitChecked = (keys: string[]) => {
+    if (!checkedKeys) setInnerChecked(keys);
+    onCheckedKeysChange?.(keys);
+  };
   const toggleCheck = (event: ChangeEvent, node: TreeNode) => {
     if (node.disabled) return;
-    const states = new Map(flat.map((item) => [item.key, { checked: checked.includes(item.key), indeterminate: false }]));
+    const states = new Map(
+      flat.map((item) => [item.key, { checked: checked.includes(item.key), indeterminate: false }])
+    );
     states.get(node.key)!.checked = event.checked;
     if (!checkStrictly) {
-      const updateChildren = (parent: string) => flat.filter((item) => item.parentKey === parent).forEach((child) => { if (!child.disabled) { states.get(child.key)!.checked = event.checked; updateChildren(child.key); } });
+      const updateChildren = (parent: string) =>
+        flat
+          .filter((item) => item.parentKey === parent)
+          .forEach((child) => {
+            if (!child.disabled) {
+              states.get(child.key)!.checked = event.checked;
+              updateChildren(child.key);
+            }
+          });
       updateChildren(node.key);
-      flat.forEach((item) => { item.checked = states.get(item.key)!.checked; item.indeterminate = false; });
-      [...flat].reverse().forEach((item) => { if (item.parentKey) updateParentIndeterminate(flat, item.parentKey); });
+      flat.forEach((item) => {
+        item.checked = states.get(item.key)!.checked;
+        item.indeterminate = false;
+      });
+      [...flat].reverse().forEach((item) => {
+        if (item.parentKey) updateParentIndeterminate(flat, item.parentKey);
+      });
     }
-    const keys = flat.filter((item) => checkStrictly ? states.get(item.key)!.checked : item.checked).map((item) => item.key);
-    commitChecked(keys); onCheck?.(node, event.checked, keys);
+    const keys = flat
+      .filter((item) => (checkStrictly ? states.get(item.key)!.checked : item.checked))
+      .map((item) => item.key);
+    commitChecked(keys);
+    onCheck?.(node, event.checked, keys);
   };
   const selectNode = (node: TreeNode) => {
     if (node.disabled) return;
     if (selectAsCheck) return toggleCheck({ checked: !checked.includes(node.key) }, node);
-    const keys = multiple ? selected.includes(node.key) ? selected.filter((key) => key !== node.key) : [...selected, node.key] : selected.includes(node.key) ? [] : [node.key];
-    if (!selectedKeys) setInnerSelected(keys); onSelectedKeysChange?.(keys); onSelect?.(node, keys);
+    const keys = multiple
+      ? selected.includes(node.key)
+        ? selected.filter((key) => key !== node.key)
+        : [...selected, node.key]
+      : selected.includes(node.key)
+        ? []
+        : [node.key];
+    if (!selectedKeys) setInnerSelected(keys);
+    onSelectedKeysChange?.(keys);
+    onSelect?.(node, keys);
   };
   const moveRawNode = (dragKey: string, targetKey: string) => {
     let moved: TreeNode | undefined;
-    const remove = (nodes: TreeNode[]): boolean => { const index = nodes.findIndex((item) => item.key === dragKey); if (index >= 0) { moved = nodes.splice(index, 1)[0]; return true; } return nodes.some((item) => item.children && remove(item.children)); };
-    remove(data); const target = findRaw(data, targetKey); if (moved && target) (target.children ??= []).push(moved);
-    if (!expanded.includes(targetKey)) commitExpanded([...expanded, targetKey]); setVersion((value) => value + 1);
+    const remove = (nodes: TreeNode[]): boolean => {
+      const index = nodes.findIndex((item) => item.key === dragKey);
+      if (index >= 0) {
+        moved = nodes.splice(index, 1)[0];
+        return true;
+      }
+      return nodes.some((item) => item.children && remove(item.children));
+    };
+    remove(data);
+    const target = findRaw(data, targetKey);
+    if (moved && target) (target.children ??= []).push(moved);
+    if (!expanded.includes(targetKey)) commitExpanded([...expanded, targetKey]);
+    setVersion((value) => value + 1);
   };
   const visible = flat.filter((node) => {
     if (queryKey?.trim() && !String(node.title ?? "").includes(queryKey)) return false;
-    let current = node; while (current.parentKey) { const parent = byKey.get(current.parentKey); if (!parent?.expanded) return false; current = parent; } return true;
+    let current = node;
+    while (current.parentKey) {
+      const parent = byKey.get(current.parentKey);
+      if (!parent?.expanded) return false;
+      current = parent;
+    }
+    return true;
   });
 
-  return <div {...rest} className={["k-tree", showLine && "k-tree-show-line", directory && "k-tree-directory", className].filter(Boolean).join(" ")}><div className="k-tree-node-list">
-    {visible.map((node, index) => <div
-      key={node.key || index}
-      className={["k-tree-item", node.disabled && "k-tree-item-disabled", dropKey === node.key && "k-tree-item-drop", !showExtra && "k-tree-item-extra-hidden", directory && selected.includes(node.key) && "k-tree-item-selected"].filter(Boolean).join(" ")}
-      onClick={directory ? () => { selectNode(node); void expand(node); } : undefined}
+  return (
+    <div
+      {...rest}
+      className={[
+        "k-tree",
+        showLine && "k-tree-show-line",
+        directory && "k-tree-directory",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
-      {node.visiblePrefixes?.map((line, prefix) => <span key={prefix} className={line ? "k-tree-indent-line" : "k-tree-indent-empty"} />)}
-      {!node.isLeaf ? <span className={["k-tree-arrow", expanded.includes(node.key) && "k-tree-arrow-open"].filter(Boolean).join(" ")} onClick={(event) => { event.stopPropagation(); void expand(node); }}><Button size="small" type="text" loading={loadingKeys.has(node.key)} icon={showLine ? expanded.includes(node.key) ? CircleMinus : CirclePlus : ChevronRight} /></span> : <span className="k-tree-arrow-placeholder" />}
-      {checkable && <Checkbox checked={checked.includes(node.key)} indeterminate={!!node.indeterminate} disabled={node.disabled} onChange={(event) => toggleCheck(event, node)} />}
-      <span
-        className={["k-tree-title", selected.includes(node.key) && "k-tree-title-selected"].filter(Boolean).join(" ")}
-        draggable={draggable && !node.disabled}
-        onClick={!directory ? () => selectNode(node) : undefined}
-        onDragStart={(event) => { if (!draggable || node.disabled) return; dragRef.current = node; event.dataTransfer.effectAllowed = "move"; onDragStart?.(node, event); }}
-        onDragOver={(event) => { if (draggable) { event.preventDefault(); event.dataTransfer.dropEffect = "move"; } }}
-        onDragEnter={(event) => { if (draggable && dragRef.current?.key !== node.key && !node.disabled) { event.preventDefault(); setDropKey(node.key); onDragEnter?.(node, event); } }}
-        onDragLeave={(event) => { if (dropKey === node.key) setDropKey(undefined); onDragLeave?.(node, event); }}
-        onDrop={(event) => { const dragNode = dragRef.current; if (!draggable || !dragNode || dragNode.key === node.key || node.disabled) return; event.preventDefault(); moveRawNode(dragNode.key, node.key); setDropKey(undefined); onDrop?.({ dragNode, dropNode: node }, event); dragRef.current = null; }}
-        onDragEnd={(event) => { setDropKey(undefined); dragRef.current = null; onDragEnd?.(node, event); }}
-      >
-        {node.icon && showIcon && <Icon type={node.icon} className="k-tree-icon" />}{renderTitle?.(node) ?? node.title}
-      </span>
-      {renderExtra && <span className="k-tree-item-extra">{renderExtra(node)}</span>}
-    </div>)}
-  </div></div>;
+      <div className="k-tree-node-list">
+        {visible.map((node, index) => (
+          <div
+            key={node.key || index}
+            className={[
+              "k-tree-item",
+              node.disabled && "k-tree-item-disabled",
+              dropKey === node.key && "k-tree-item-drop",
+              !showExtra && "k-tree-item-extra-hidden",
+              directory && selected.includes(node.key) && "k-tree-item-selected",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            onClick={
+              directory
+                ? () => {
+                    selectNode(node);
+                    void expand(node);
+                  }
+                : undefined
+            }
+          >
+            {node.visiblePrefixes?.map((line, prefix) => (
+              <span key={prefix} className={line ? "k-tree-indent-line" : "k-tree-indent-empty"} />
+            ))}
+            {!node.isLeaf ? (
+              <span
+                className={["k-tree-arrow", expanded.includes(node.key) && "k-tree-arrow-open"]
+                  .filter(Boolean)
+                  .join(" ")}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  void expand(node);
+                }}
+              >
+                <Button
+                  size="small"
+                  type="text"
+                  loading={loadingKeys.has(node.key)}
+                  icon={
+                    showLine
+                      ? expanded.includes(node.key)
+                        ? CircleMinus
+                        : CirclePlus
+                      : ChevronRight
+                  }
+                />
+              </span>
+            ) : (
+              <span className="k-tree-arrow-placeholder" />
+            )}
+            {checkable && (
+              <Checkbox
+                checked={checked.includes(node.key)}
+                indeterminate={!!node.indeterminate}
+                disabled={node.disabled}
+                onChange={(event) => toggleCheck(event, node)}
+              />
+            )}
+            <span
+              className={["k-tree-title", selected.includes(node.key) && "k-tree-title-selected"]
+                .filter(Boolean)
+                .join(" ")}
+              draggable={draggable && !node.disabled}
+              onClick={!directory ? () => selectNode(node) : undefined}
+              onDragStart={(event) => {
+                if (!draggable || node.disabled) return;
+                dragRef.current = node;
+                event.dataTransfer.effectAllowed = "move";
+                onDragStart?.(node, event);
+              }}
+              onDragOver={(event) => {
+                if (draggable) {
+                  event.preventDefault();
+                  event.dataTransfer.dropEffect = "move";
+                }
+              }}
+              onDragEnter={(event) => {
+                if (draggable && dragRef.current?.key !== node.key && !node.disabled) {
+                  event.preventDefault();
+                  setDropKey(node.key);
+                  onDragEnter?.(node, event);
+                }
+              }}
+              onDragLeave={(event) => {
+                if (dropKey === node.key) setDropKey(undefined);
+                onDragLeave?.(node, event);
+              }}
+              onDrop={(event) => {
+                const dragNode = dragRef.current;
+                if (!draggable || !dragNode || dragNode.key === node.key || node.disabled) return;
+                event.preventDefault();
+                moveRawNode(dragNode.key, node.key);
+                setDropKey(undefined);
+                onDrop?.({ dragNode, dropNode: node }, event);
+                dragRef.current = null;
+              }}
+              onDragEnd={(event) => {
+                setDropKey(undefined);
+                dragRef.current = null;
+                onDragEnd?.(node, event);
+              }}
+            >
+              {node.icon && showIcon && <Icon type={node.icon} className="k-tree-icon" />}
+              {renderTitle?.(node) ?? node.title}
+            </span>
+            {renderExtra && <span className="k-tree-item-extra">{renderExtra(node)}</span>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }

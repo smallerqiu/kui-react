@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
 import { ChevronsLeft, ChevronsRight, ChevronUp, Ellipsis } from "kui-icons";
+import React, { useContext, useEffect, useState } from "react";
+import { ConfigContext } from "../config";
 import type { SizeType, ThemeType } from "../const/types";
 import Icon from "../icon";
 import InputNumber from "../input-number";
 import zhCN from "../locale/zh-CN";
-import { ConfigContext } from "../config";
 import Select from "../select/select";
 
 export interface PageProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
@@ -117,7 +117,9 @@ const Page: React.FC<PageProps> = ({
     const items: React.ReactNode[] = array.map((p, i) => (
       <li
         key={i}
-        className={["k-pager-item", page === p ? "k-pager-item-active" : ""].filter(Boolean).join(" ")}
+        className={["k-pager-item", page === p ? "k-pager-item-active" : ""]
+          .filter(Boolean)
+          .join(" ")}
         onClick={() => toPage(p)}
       >
         <span>{p}</span>
@@ -160,7 +162,9 @@ const Page: React.FC<PageProps> = ({
     theme === "fill" ? "k-page-fill" : "",
     disabled ? "k-page-disabled" : "",
     className,
-  ].filter(Boolean).join(" ");
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const sizeOptions = sizeData.map((s) => ({
     value: s,
@@ -180,10 +184,9 @@ const Page: React.FC<PageProps> = ({
       <ul className="k-pager">
         {/* Prev */}
         <li
-          className={[
-            "k-pager-item k-pager-prev",
-            currentPage === 1 ? "k-pager-item-disabled" : "",
-          ].filter(Boolean).join(" ")}
+          className={["k-pager-item k-pager-prev", currentPage === 1 ? "k-pager-item-disabled" : ""]
+            .filter(Boolean)
+            .join(" ")}
           onClick={prePage}
         >
           <Icon type={ChevronUp} />
@@ -192,7 +195,9 @@ const Page: React.FC<PageProps> = ({
         {/* First page */}
         {pageCount > 0 && (
           <li
-            className={["k-pager-item", currentPage === 1 ? "k-pager-item-active" : ""].filter(Boolean).join(" ")}
+            className={["k-pager-item", currentPage === 1 ? "k-pager-item-active" : ""]
+              .filter(Boolean)
+              .join(" ")}
             onClick={() => toPage(1)}
           >
             <span>1</span>
@@ -205,7 +210,9 @@ const Page: React.FC<PageProps> = ({
         {/* Last page */}
         {pageCount > 1 && (
           <li
-            className={["k-pager-item", currentPage === pageCount ? "k-pager-item-active" : ""].filter(Boolean).join(" ")}
+            className={["k-pager-item", currentPage === pageCount ? "k-pager-item-active" : ""]
+              .filter(Boolean)
+              .join(" ")}
             onClick={() => toPage(pageCount)}
           >
             <span>{pageCount}</span>
@@ -217,7 +224,9 @@ const Page: React.FC<PageProps> = ({
           className={[
             "k-pager-item k-pager-next",
             currentPage === pageCount ? "k-pager-item-disabled" : "",
-          ].filter(Boolean).join(" ")}
+          ]
+            .filter(Boolean)
+            .join(" ")}
           onClick={goNextPage}
         >
           <Icon type={ChevronUp} />

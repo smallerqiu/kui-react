@@ -1,6 +1,6 @@
 import React from "react";
 import type { MenuOptionsProps } from "./menu";
-import { MenuItem, RecursiveMenu, SubMenu } from "./menu";
+import { RecursiveMenu } from "./menu";
 
 interface RecursiveMenuProps {
   item: MenuOptionsProps;

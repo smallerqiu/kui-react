@@ -1,5 +1,5 @@
-import React, { useContext, useState, useEffect } from "react";
 import { Check } from "kui-icons";
+import React, { useContext, useEffect, useState } from "react";
 import type { SizeType, ThemeType, ValueType } from "../const/types";
 import Icon from "../icon";
 import { CheckboxGroupContext } from "./checkbox-group";

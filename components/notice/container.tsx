@@ -1,14 +1,19 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import Content, { type ContentProps } from "./content";
 
-interface NoticeItem extends ContentProps { key: string }
+interface NoticeItem extends ContentProps {
+  key: string;
+}
 export interface NoticeContainerApi {
   show: (options: ContentProps) => () => void;
   clean: () => void;
 }
 let count = 0;
 
-const Container = forwardRef<NoticeContainerApi, { type: "message" | "notice" }>(function Container({ type }, ref) {
+const Container = forwardRef<NoticeContainerApi, { type: "message" | "notice" }>(function Container(
+  { type },
+  ref
+) {
   const [items, setItems] = useState<NoticeItem[]>([]);
   const timersRef = useRef(new Map<string, ReturnType<typeof setTimeout>>());
   const close = (key: string, callback?: () => void) => {
@@ -38,7 +43,11 @@ const Container = forwardRef<NoticeContainerApi, { type: "message" | "notice" }>
   useEffect(() => clean, []);
   return (
     <div className={`k-${type}`}>
-      {items.map((item) => <div key={item.key} className={`k-${type}-slide-enter-active`}><Content {...item} /></div>)}
+      {items.map((item) => (
+        <div key={item.key} className={`k-${type}-slide-enter-active`}>
+          <Content {...item} />
+        </div>
+      ))}
     </div>
   );
 });

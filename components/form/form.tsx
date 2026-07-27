@@ -10,7 +10,9 @@ import {
 import type { DirectionType, ShapeType, SizeType, ThemeType } from "../const/types";
 import type { ColProps, FormRule } from "./types";
 
-export interface FormSubmitEvent { valid: boolean }
+export interface FormSubmitEvent {
+  valid: boolean;
+}
 export interface FormItemHandle {
   prop: string;
   rules?: FormRule | FormRule[];
@@ -41,7 +43,10 @@ export interface FormExpose {
   test: (key: string) => boolean | undefined;
   submit: () => void;
 }
-export interface FormProps extends Omit<FormHTMLAttributes<HTMLFormElement>, "onSubmit" | "onReset" | "onChange"> {
+export interface FormProps extends Omit<
+  FormHTMLAttributes<HTMLFormElement>,
+  "onSubmit" | "onReset" | "onChange"
+> {
   layout?: DirectionType;
   model?: Record<string, any>;
   name?: string;
@@ -58,31 +63,37 @@ export interface FormProps extends Omit<FormHTMLAttributes<HTMLFormElement>, "on
 }
 
 const getByPath = (object: Record<string, any>, path: string) => {
-  const keys = path.replace(/\[(\w+)\]/g, ".$1").replace(/^\./, "").split(".");
+  const keys = path
+    .replace(/\[(\w+)\]/g, ".$1")
+    .replace(/^\./, "")
+    .split(".");
   let parent: any = object;
   for (let index = 0; index < keys.length - 1; index++) parent = parent?.[keys[index]];
   const key = keys.at(-1)!;
   return { parent, key, value: parent?.[key] };
 };
 
-const Form = forwardRef<FormExpose, FormProps>(function Form({
-  layout = "horizontal",
-  model = {},
-  name,
-  labelCol,
-  wrapperCol,
-  rules,
-  size,
-  theme,
-  shape,
-  disabled,
-  onSubmit,
-  onReset,
-  onChange,
-  className,
-  children,
-  ...rest
-}, ref) {
+const Form = forwardRef<FormExpose, FormProps>(function Form(
+  {
+    layout = "horizontal",
+    model = {},
+    name,
+    labelCol,
+    wrapperCol,
+    rules,
+    size,
+    theme,
+    shape,
+    disabled,
+    onSubmit,
+    onReset,
+    onChange,
+    className,
+    children,
+    ...rest
+  },
+  ref
+) {
   const itemsRef = useRef(new Map<string, FormItemHandle>());
   const setValue = (path: string, value: any) => {
     const { parent, key } = getByPath(model, path);
@@ -114,13 +125,25 @@ const Form = forwardRef<FormExpose, FormProps>(function Form({
     },
     submit,
   }));
-  const context = useMemo<FormContextValue>(() => ({
-    model, rules, layout, name, size, shape, theme, disabled, labelCol, wrapperCol,
-    getValue: (path) => getByPath(model, path).value,
-    setValue,
-    register: (item) => itemsRef.current.set(item.prop, item),
-    unregister: (prop) => itemsRef.current.delete(prop),
-  }), [model, rules, layout, name, size, shape, theme, disabled, labelCol, wrapperCol, onChange]);
+  const context = useMemo<FormContextValue>(
+    () => ({
+      model,
+      rules,
+      layout,
+      name,
+      size,
+      shape,
+      theme,
+      disabled,
+      labelCol,
+      wrapperCol,
+      getValue: (path) => getByPath(model, path).value,
+      setValue,
+      register: (item) => itemsRef.current.set(item.prop, item),
+      unregister: (prop) => itemsRef.current.delete(prop),
+    }),
+    [model, rules, layout, name, size, shape, theme, disabled, labelCol, wrapperCol, onChange]
+  );
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -131,9 +154,20 @@ const Form = forwardRef<FormExpose, FormProps>(function Form({
       <form
         {...rest}
         id={name}
-        className={["k-form", `k-form-${layout}`, size === "large" && "k-form-lg", size === "small" && "k-form-sm", className].filter(Boolean).join(" ")}
+        className={[
+          "k-form",
+          `k-form-${layout}`,
+          size === "large" && "k-form-lg",
+          size === "small" && "k-form-sm",
+          className,
+        ]
+          .filter(Boolean)
+          .join(" ")}
         onSubmit={handleSubmit}
-        onReset={(event) => { event.preventDefault(); reset(); }}
+        onReset={(event) => {
+          event.preventDefault();
+          reset();
+        }}
         autoComplete="off"
       >
         {children}

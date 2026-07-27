@@ -48,7 +48,7 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
     children,
     ...rest
   },
-  ref,
+  ref
 ) {
   const items = Children.toArray(children);
   const controlled = value ?? modelValue;
@@ -83,7 +83,8 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
   };
   const play = () => {
     stop();
-    if (autoplay && items.length > 1) timerRef.current = setInterval(() => goTo(current + 1), delay);
+    if (autoplay && items.length > 1)
+      timerRef.current = setInterval(() => goTo(current + 1), delay);
   };
 
   useEffect(() => {
@@ -111,12 +112,16 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
       <div
         {...rest}
         ref={rootRef}
-        className={["k-carousel", vertical && "k-carousel-vertical", className].filter(Boolean).join(" ")}
+        className={["k-carousel", vertical && "k-carousel-vertical", className]
+          .filter(Boolean)
+          .join(" ")}
         style={{ ...style, height }}
         onMouseEnter={stop}
         onMouseLeave={play}
       >
-        <div className="k-carousel-wrapper" style={wrapperStyle}>{items}</div>
+        <div className="k-carousel-wrapper" style={wrapperStyle}>
+          {items}
+        </div>
         {!vertical && items.length > 1 && (
           <>
             <span className="k-carousel-arrow-left" onClick={() => goTo(current - 1)}>

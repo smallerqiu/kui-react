@@ -27,11 +27,7 @@ const TabPanel: React.FC<TabPanelProps> = ({
   const isActive = activeKey === tabKey;
   return (
     <div
-      className={[
-        "k-tabs-tabpanel",
-        isActive ? "k-tabs-tabpanel-active" : "",
-        className,
-      ]
+      className={["k-tabs-tabpanel", isActive ? "k-tabs-tabpanel-active" : "", className]
         .filter(Boolean)
         .join(" ")}
       {...rest}

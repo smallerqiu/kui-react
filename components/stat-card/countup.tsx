@@ -56,5 +56,11 @@ export default function CountUpNumber({
     if (countRef.current) countRef.current.options.decimalPlaces = precision;
   }, [precision]);
 
-  return <span {...rest} ref={elementRef} className={["k-stat-countup-number", className].filter(Boolean).join(" ")} />;
+  return (
+    <span
+      {...rest}
+      ref={elementRef}
+      className={["k-stat-countup-number", className].filter(Boolean).join(" ")}
+    />
+  );
 }

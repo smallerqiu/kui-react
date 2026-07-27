@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
+import { SizeContext } from "../config/size-context";
 import type { SizeType, ThemeType } from "../const/types";
 import { getChildren } from "../utils/react-node";
-import { SizeContext } from "../config/size-context";
 
 export interface InputGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   block?: boolean;
@@ -68,7 +68,9 @@ const InputGroup: React.FC<InputGroupProps> = ({
   }
 
   return (
-    <SizeContext.Provider value={typeof currentSize === "string" ? (currentSize as SizeType) : undefined}>
+    <SizeContext.Provider
+      value={typeof currentSize === "string" ? (currentSize as SizeType) : undefined}
+    >
       <div className={classes} style={rootStyle} {...rest}>
         {processedChildren}
       </div>

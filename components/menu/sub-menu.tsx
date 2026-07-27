@@ -1,6 +1,6 @@
 import React from "react";
-import { MenuContext, SubMenu as SubMenuComponent } from "./menu";
 import type { SubMenuProps } from "./menu";
+import { SubMenu as SubMenuComponent } from "./menu";
 
 // Re-export SubMenu separately for backwards-compat named imports
 const SubMenu: React.FC<SubMenuProps> = (props) => {

@@ -1,6 +1,60 @@
 import { useState } from "react";
 import { Button } from "../../button";
 import Flex, { type FlexAlignType, type FlexJustifyType } from "../index";
-const justifyOptions: FlexJustifyType[] = ["flex-start", "center", "flex-end", "space-between", "space-around", "space-evenly"];
+const justifyOptions: FlexJustifyType[] = [
+  "flex-start",
+  "center",
+  "flex-end",
+  "space-between",
+  "space-around",
+  "space-evenly",
+];
 const alignOptions: FlexAlignType[] = ["flex-start", "center", "flex-end"];
-export default function Align() { const [justify, setJustify] = useState<FlexJustifyType>("flex-start"); const [align, setAlign] = useState<FlexAlignType>("flex-start"); return <Flex vertical size="small" align="start"><span>Justify</span><Flex wrap size="small">{justifyOptions.map((item) => <Button size="small" key={item} type={justify === item ? "primary" : "default"} onClick={() => setJustify(item)}>{item}</Button>)}</Flex><span>Align</span><Flex size="small">{alignOptions.map((item) => <Button size="small" key={item} type={align === item ? "primary" : "default"} onClick={() => setAlign(item)}>{item}</Button>)}</Flex><Flex align={align} justify={justify} style={{ width: "100%", height: 120, border: "1px solid var(--kui-color-bg-2)", borderRadius: 5 }}>{Array.from({ length: 4 }, (_, index) => <Button key={index}>Button</Button>)}</Flex></Flex>; }
+export default function Align() {
+  const [justify, setJustify] = useState<FlexJustifyType>("flex-start");
+  const [align, setAlign] = useState<FlexAlignType>("flex-start");
+  return (
+    <Flex vertical size="small" align="start">
+      <span>Justify</span>
+      <Flex wrap size="small">
+        {justifyOptions.map((item) => (
+          <Button
+            size="small"
+            key={item}
+            type={justify === item ? "primary" : "default"}
+            onClick={() => setJustify(item)}
+          >
+            {item}
+          </Button>
+        ))}
+      </Flex>
+      <span>Align</span>
+      <Flex size="small">
+        {alignOptions.map((item) => (
+          <Button
+            size="small"
+            key={item}
+            type={align === item ? "primary" : "default"}
+            onClick={() => setAlign(item)}
+          >
+            {item}
+          </Button>
+        ))}
+      </Flex>
+      <Flex
+        align={align}
+        justify={justify}
+        style={{
+          width: "100%",
+          height: 120,
+          border: "1px solid var(--kui-color-bg-2)",
+          borderRadius: 5,
+        }}
+      >
+        {Array.from({ length: 4 }, (_, index) => (
+          <Button key={index}>Button</Button>
+        ))}
+      </Flex>
+    </Flex>
+  );
+}

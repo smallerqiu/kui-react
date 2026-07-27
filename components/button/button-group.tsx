@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import type { ShapeType, SizeType } from "../const/types";
 import { SizeContext } from "../config/size-context";
+import type { ShapeType, SizeType } from "../const/types";
 
 export interface ButtonGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: SizeType;

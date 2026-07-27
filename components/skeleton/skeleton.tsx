@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { ShapeType, SizeType } from "../const/types";
 
 export interface SkeletonAvatarConfig {
@@ -73,9 +73,7 @@ const Skeleton: React.FC<SkeletonProps> = ({
     const lines = new Array(rows).fill("");
     return (
       <div className="k-skeleton-content">
-        {title > 0 ? (
-          <div className="k-skeleton-title" style={{ width: `${title}%` }} />
-        ) : null}
+        {title > 0 ? <div className="k-skeleton-title" style={{ width: `${title}%` }} /> : null}
         <ul className="k-skeleton-paragraph">
           {lines.map((_, i) => (
             <li key={i} />
@@ -85,11 +83,7 @@ const Skeleton: React.FC<SkeletonProps> = ({
     );
   };
 
-  const classes = [
-    "k-skeleton",
-    animated ? "k-skeleton-animated" : "",
-    className,
-  ]
+  const classes = ["k-skeleton", animated ? "k-skeleton-animated" : "", className]
     .filter(Boolean)
     .join(" ");
 

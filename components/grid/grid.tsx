@@ -47,7 +47,7 @@ export default function Grid({
       }
       return fallback;
     },
-    [breakpoint],
+    [breakpoint]
   );
 
   const activeCols = resolveResponsive(cols, 24);
@@ -73,12 +73,17 @@ export default function Grid({
   }
   const context = useMemo(
     () => ({ breakpoint, resolveResponsive }),
-    [breakpoint, resolveResponsive],
+    [breakpoint, resolveResponsive]
   );
 
   return (
     <GridContext.Provider value={context}>
-      <div {...rest} ref={gridRef} className={["k-grid", className].filter(Boolean).join(" ")} style={gridStyle}>
+      <div
+        {...rest}
+        ref={gridRef}
+        className={["k-grid", className].filter(Boolean).join(" ")}
+        style={gridStyle}
+      >
         {children}
       </div>
     </GridContext.Provider>

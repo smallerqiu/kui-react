@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import type { ShapeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
-import { AvatarGroupContext } from "./avatar-group";
 import { getChildren } from "../utils/react-node";
+import { AvatarGroupContext } from "./avatar-group";
 
 export interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   icon?: IconType[];
@@ -81,7 +81,9 @@ const Avatar: React.FC<AvatarProps> = ({
   const hasIcon = childList.some((c: any) => {
     if (React.isValidElement(c)) {
       const childType = c.type;
-      return childType === Icon || (typeof childType === "object" && (childType as any)?.name === "Icon");
+      return (
+        childType === Icon || (typeof childType === "object" && (childType as any)?.name === "Icon")
+      );
     }
     return false;
   });

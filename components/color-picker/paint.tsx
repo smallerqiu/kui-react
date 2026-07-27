@@ -1,10 +1,60 @@
 import Color, { type ColorInstance, type ColorObject } from "color";
 import { useEffect, useRef, type MouseEvent as ReactMouseEvent } from "react";
 import { clamp } from "../utils/share";
-export interface PaintProps { hue?: number; value: string | ColorInstance; onUpdateRGB?: (color: ColorObject) => void }
+export interface PaintProps {
+  hue?: number;
+  value: string | ColorInstance;
+  onUpdateRGB?: (color: ColorObject) => void;
+}
 export default function Paint({ hue = 0, value, onUpdateRGB }: PaintProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null); const hsv = Color(value).hsv().object();
-  useEffect(() => { const canvas = canvasRef.current, context = canvas?.getContext("2d"); if (!canvas || !context) return; context.fillStyle = `hsl(${hue},100%,50%)`; context.fillRect(0,0,canvas.width,canvas.height); const white = context.createLinearGradient(0,0,canvas.width,0); white.addColorStop(0,"#fff"); white.addColorStop(1,"rgba(255,255,255,0)"); context.fillStyle=white; context.fillRect(0,0,canvas.width,canvas.height); const black=context.createLinearGradient(0,0,0,canvas.height); black.addColorStop(0,"rgba(0,0,0,0)"); black.addColorStop(1,"#000"); context.fillStyle=black; context.fillRect(0,0,canvas.width,canvas.height); }, [hue]);
-  const start = (event: ReactMouseEvent) => { const move = (x: number,y: number) => { const rect=canvasRef.current!.getBoundingClientRect(); const saturation=clamp(x-rect.left,0,rect.width)/rect.width*100; const brightness=(1-clamp(y-rect.top,0,rect.height)/rect.height)*100; onUpdateRGB?.(Color().hsv(hue,saturation,brightness).rgb().object()); }; move(event.clientX,event.clientY); const mousemove=(item:MouseEvent)=>move(item.clientX,item.clientY); const up=()=>{document.removeEventListener("mousemove",mousemove);document.removeEventListener("mouseup",up);};document.addEventListener("mousemove",mousemove);document.addEventListener("mouseup",up); };
-  return <div className="k-color-picker-paint-container"><canvas className="k-color-picker-paint" width={234} height={136} ref={canvasRef} onMouseDown={start} /><span className="k-color-picker-paint-dot" style={{ left: hsv.s / 100 * 234 - 7, top: (1 - hsv.v / 100) * 136 - 7 }} /></div>;
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const hsv = Color(value).hsv().object();
+  useEffect(() => {
+    const canvas = canvasRef.current,
+      context = canvas?.getContext("2d");
+    if (!canvas || !context) return;
+    context.fillStyle = `hsl(${hue},100%,50%)`;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    const white = context.createLinearGradient(0, 0, canvas.width, 0);
+    white.addColorStop(0, "#fff");
+    white.addColorStop(1, "rgba(255,255,255,0)");
+    context.fillStyle = white;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    const black = context.createLinearGradient(0, 0, 0, canvas.height);
+    black.addColorStop(0, "rgba(0,0,0,0)");
+    black.addColorStop(1, "#000");
+    context.fillStyle = black;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+  }, [hue]);
+  const start = (event: ReactMouseEvent) => {
+    const move = (x: number, y: number) => {
+      const rect = canvasRef.current!.getBoundingClientRect();
+      const saturation = (clamp(x - rect.left, 0, rect.width) / rect.width) * 100;
+      const brightness = (1 - clamp(y - rect.top, 0, rect.height) / rect.height) * 100;
+      onUpdateRGB?.(Color().hsv(hue, saturation, brightness).rgb().object());
+    };
+    move(event.clientX, event.clientY);
+    const mousemove = (item: MouseEvent) => move(item.clientX, item.clientY);
+    const up = () => {
+      document.removeEventListener("mousemove", mousemove);
+      document.removeEventListener("mouseup", up);
+    };
+    document.addEventListener("mousemove", mousemove);
+    document.addEventListener("mouseup", up);
+  };
+  return (
+    <div className="k-color-picker-paint-container">
+      <canvas
+        className="k-color-picker-paint"
+        width={234}
+        height={136}
+        ref={canvasRef}
+        onMouseDown={start}
+      />
+      <span
+        className="k-color-picker-paint-dot"
+        style={{ left: (hsv.s / 100) * 234 - 7, top: (1 - hsv.v / 100) * 136 - 7 }}
+      />
+    </div>
+  );
 }

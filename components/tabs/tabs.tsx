@@ -1,11 +1,5 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useMemo,
-} from "react";
 import { ChevronLeft, ChevronRight, X } from "kui-icons";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Icon from "../icon";
 import { getChildren } from "../utils/react-node";
 
@@ -45,9 +39,10 @@ const Tabs: React.FC<TabsProps> = ({
   const childList = getChildren(children);
 
   // Determine initial active key from first panel if not provided
-  const firstKey = childList.length > 0 && React.isValidElement(childList[0])
-    ? (childList[0].key as string)
-    : undefined;
+  const firstKey =
+    childList.length > 0 && React.isValidElement(childList[0])
+      ? (childList[0].key as string)
+      : undefined;
 
   const [activeKey, setActiveKey] = useState<string | number | undefined>(
     value !== undefined ? value : firstKey
@@ -65,38 +60,44 @@ const Tabs: React.FC<TabsProps> = ({
     }
   }, [value]);
 
-  const updateInkBarPosition = useCallback((index: number) => {
-    if (!card && !sample && inkBarRef.current && navRef.current) {
-      const nav = navRef.current.children[index] as HTMLElement;
-      if (nav) {
-        inkBarRef.current.style.width = `${nav.offsetWidth}px`;
-        inkBarRef.current.style.transform = `translate3d(${nav.offsetLeft}px, 0px, 0px)`;
+  const updateInkBarPosition = useCallback(
+    (index: number) => {
+      if (!card && !sample && inkBarRef.current && navRef.current) {
+        const nav = navRef.current.children[index] as HTMLElement;
+        if (nav) {
+          inkBarRef.current.style.width = `${nav.offsetWidth}px`;
+          inkBarRef.current.style.transform = `translate3d(${nav.offsetLeft}px, 0px, 0px)`;
+        }
       }
-    }
-  }, [card, sample]);
+    },
+    [card, sample]
+  );
 
-  const resetActivePosition = useCallback((index: number) => {
-    const navEl = navRef.current;
-    const navBoxEl = navBoxRef.current;
-    const navScrollEl = navScrollRef.current;
-    if (!navEl || !navBoxEl || !navScrollEl) return;
+  const resetActivePosition = useCallback(
+    (index: number) => {
+      const navEl = navRef.current;
+      const navBoxEl = navBoxRef.current;
+      const navScrollEl = navScrollRef.current;
+      if (!navEl || !navBoxEl || !navScrollEl) return;
 
-    const target = navEl.children[index] as HTMLElement;
-    if (!target) return;
+      const target = navEl.children[index] as HTMLElement;
+      if (!target) return;
 
-    const clientWidth = navBoxEl.clientWidth;
-    let navLeft = navOffsetLeft;
-    const { offsetLeft, offsetWidth } = target;
+      const clientWidth = navBoxEl.clientWidth;
+      let navLeft = navOffsetLeft;
+      const { offsetLeft, offsetWidth } = target;
 
-    if (navLeft + offsetLeft < 0) {
-      navLeft = -offsetLeft;
-    } else if (clientWidth - navLeft < offsetLeft + offsetWidth) {
-      navLeft -= offsetLeft + offsetWidth + navLeft - clientWidth + 2;
-    }
+      if (navLeft + offsetLeft < 0) {
+        navLeft = -offsetLeft;
+      } else if (clientWidth - navLeft < offsetLeft + offsetWidth) {
+        navLeft -= offsetLeft + offsetWidth + navLeft - clientWidth + 2;
+      }
 
-    setNavOffsetLeft(navLeft);
-    navScrollEl.style.transform = `translate3d(${navLeft}px,0,0)`;
-  }, [navOffsetLeft]);
+      setNavOffsetLeft(navLeft);
+      navScrollEl.style.transform = `translate3d(${navLeft}px,0,0)`;
+    },
+    [navOffsetLeft]
+  );
 
   const updateNav = useCallback(() => {
     const navBoxEl = navBoxRef.current;
@@ -123,9 +124,7 @@ const Tabs: React.FC<TabsProps> = ({
       setPrevBtnDisabled(navLeft === 0);
       navScrollEl.style.transform = `translate3d(${navLeft}px,0,0)`;
 
-      const idx = childList.findIndex(
-        (c) => React.isValidElement(c) && c.key === activeKey
-      );
+      const idx = childList.findIndex((c) => React.isValidElement(c) && c.key === activeKey);
       if (idx >= 0) {
         resetActivePosition(idx);
         updateInkBarPosition(idx);
@@ -136,9 +135,7 @@ const Tabs: React.FC<TabsProps> = ({
 
   // Recalculate on active change
   useEffect(() => {
-    const idx = childList.findIndex(
-      (c) => React.isValidElement(c) && c.key === activeKey
-    );
+    const idx = childList.findIndex((c) => React.isValidElement(c) && c.key === activeKey);
     setCurrentIndex(idx);
     if (idx >= 0) {
       setTimeout(() => {
@@ -250,10 +247,7 @@ const Tabs: React.FC<TabsProps> = ({
     <div className={classes} {...rest}>
       <div className="k-tabs-bar">
         <div
-          className={[
-            "k-tabs-nav-container",
-            scrollable ? "k-tabs-nav-container-scroll" : "",
-          ]
+          className={["k-tabs-nav-container", scrollable ? "k-tabs-nav-container-scroll" : ""]
             .filter(Boolean)
             .join(" ")}
         >

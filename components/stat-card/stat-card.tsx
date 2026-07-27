@@ -39,11 +39,21 @@ export default function StatCard({
   ...rest
 }: StatCardProps) {
   return (
-    <div {...rest} className={["k-stat-card", bordered && "k-stat-card-bordered", className].filter(Boolean).join(" ")}>
+    <div
+      {...rest}
+      className={["k-stat-card", bordered && "k-stat-card-bordered", className]
+        .filter(Boolean)
+        .join(" ")}
+    >
       {title != null && <div className="k-stat-card-title">{title}</div>}
       <div className="k-stat-card-items">
         {items.map((item, index) => (
-          <div key={index} className={["k-stat-card-item", reverse && "k-stat-card-item-reverse"].filter(Boolean).join(" ")}>
+          <div
+            key={index}
+            className={["k-stat-card-item", reverse && "k-stat-card-item-reverse"]
+              .filter(Boolean)
+              .join(" ")}
+          >
             <div className="k-stat-card-item-value">
               <StatNumber
                 value={item.value}

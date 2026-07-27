@@ -8,7 +8,10 @@ export interface TimelineProps extends HTMLAttributes<HTMLUListElement> {
 
 export default function TimeLine({ mode = "left", className, children, ...rest }: TimelineProps) {
   return (
-    <ul {...rest} className={["k-time-line", `k-time-line-${mode}`, className].filter(Boolean).join(" ")}>
+    <ul
+      {...rest}
+      className={["k-time-line", `k-time-line-${mode}`, className].filter(Boolean).join(" ")}
+    >
       {children}
     </ul>
   );

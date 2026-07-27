@@ -27,7 +27,9 @@ export default function RollUp({
       .split("");
   const offset = (number: number) =>
     format(number).map((character) =>
-      /\d/.test(character) ? String(Number(character) > 5 ? Number(character) - 5 : Number(character) + 5) : character,
+      /\d/.test(character)
+        ? String(Number(character) > 5 ? Number(character) - 5 : Number(character) + 5)
+        : character
     );
   const [characters, setCharacters] = useState(() => offset(current));
 
@@ -38,7 +40,10 @@ export default function RollUp({
   }, [current, precision]);
 
   return (
-    <div {...rest} className={["k-stat-roll-number-container", className].filter(Boolean).join(" ")}>
+    <div
+      {...rest}
+      className={["k-stat-roll-number-container", className].filter(Boolean).join(" ")}
+    >
       {characters.map((character, index) => (
         <div key={index} className="k-stat-roll-number-slot">
           {/\d/.test(character) ? (
@@ -50,9 +55,13 @@ export default function RollUp({
                 willChange: "transform",
               }}
             >
-              {numbers.map((number) => <span key={number}>{number}</span>)}
+              {numbers.map((number) => (
+                <span key={number}>{number}</span>
+              ))}
             </div>
-          ) : <span className="k-stat-roll-number-separator">{character}</span>}
+          ) : (
+            <span className="k-stat-roll-number-separator">{character}</span>
+          )}
         </div>
       ))}
     </div>

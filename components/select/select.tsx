@@ -1,12 +1,7 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useMemo,
-  useContext,
-} from "react";
-import { createPortal } from "react-dom";
 import { ChevronDown, CircleX, Loading, X } from "kui-icons";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { ConfigContext } from "../config";
 import Empty from "../empty";
 import Icon, { type IconType } from "../icon";
 import zhCN from "../locale/zh-CN";
@@ -14,14 +9,8 @@ import { isEmpty } from "../utils/number";
 import { setPlacement } from "../utils/placement";
 import { getChildren } from "../utils/react-node";
 import Option, { type OptionSelectEvent } from "./option";
-import { ConfigContext } from "../config";
 
-import type {
-  DropPlacementsType,
-  ShapeType,
-  SizeType,
-  ThemeType,
-} from "../const/types";
+import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 
 export interface SelectOption {
   label: string | number;
@@ -29,7 +18,10 @@ export interface SelectOption {
   disabled?: boolean;
 }
 
-export interface SelectProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "onSelect"> {
+export interface SelectProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange" | "onSelect"
+> {
   placeholder?: string;
   size?: SizeType;
   placement?: DropPlacementsType;
@@ -99,11 +91,7 @@ const Select: React.FC<SelectProps> = ({
   const [visible, setVisible] = useState(false);
   const [rendered, setRendered] = useState(false);
   const [currentValue, setCurrentValue] = useState<any[]>(
-    multiple
-      ? ((initialValue || []) as any[])
-      : isEmpty(initialValue)
-        ? []
-        : [initialValue]
+    multiple ? ((initialValue || []) as any[]) : isEmpty(initialValue) ? [] : [initialValue]
   );
 
   const [queryInputVisible, setQueryInputVisible] = useState(false);
@@ -229,9 +217,8 @@ const Select: React.FC<SelectProps> = ({
     const key = queryKey;
     const filter = filterable && key.trim() !== "";
     return filter
-      ? optionsData.filter((item) =>
-          String(item.label).toLowerCase().includes(key.toLowerCase())
-        ).length
+      ? optionsData.filter((item) => String(item.label).toLowerCase().includes(key.toLowerCase()))
+          .length
       : optionsData.length;
   }, [optionsData, queryKey, filterable]);
 
@@ -279,11 +266,7 @@ const Select: React.FC<SelectProps> = ({
         setActiveIndex(index);
         scrollOptionIntoView(index);
         e.preventDefault();
-      } else if (
-        e.key === "Enter" &&
-        activeIndex >= 0 &&
-        (ctxFocused || queryInputFocused)
-      ) {
+      } else if (e.key === "Enter" && activeIndex >= 0 && (ctxFocused || queryInputFocused)) {
         const filtered = filterOptions();
         const item = filtered[activeIndex];
         if (item) {
@@ -439,7 +422,7 @@ const Select: React.FC<SelectProps> = ({
     if (value === undefined && modelValue === undefined) {
       setCurrentValue(nextValue);
     }
-    onChange?.(multiple ? nextValue : undefined as any);
+    onChange?.(multiple ? nextValue : (undefined as any));
     clearQuery();
   };
 
@@ -488,9 +471,7 @@ const Select: React.FC<SelectProps> = ({
     const key = queryKey;
     const filter = filterable && key.trim() !== "";
     return filter
-      ? optionsData.filter((item) =>
-          String(item.label).toLowerCase().includes(key.toLowerCase())
-        )
+      ? optionsData.filter((item) => String(item.label).toLowerCase().includes(key.toLowerCase()))
       : optionsData;
   };
 
@@ -528,11 +509,7 @@ const Select: React.FC<SelectProps> = ({
     }
   };
 
-  const showClear =
-    clearable &&
-    !disabled &&
-    !isEmpty(currentValue) &&
-    !isEmpty(labelText);
+  const showClear = clearable && !disabled && !isEmpty(currentValue) && !isEmpty(labelText);
 
   const renderOverlay = () => {
     if (!rendered) return null;
@@ -571,10 +548,7 @@ const Select: React.FC<SelectProps> = ({
         ) : optionNodes.length ? (
           <ul>{optionNodes}</ul>
         ) : (
-          <Empty
-            onClick={emptyClick}
-            description={emptyText || locale?.k?.select?.emptyText}
-          />
+          <Empty onClick={emptyClick} description={emptyText || locale?.k?.select?.emptyText} />
         )}
       </div>
     );

@@ -9,6 +9,29 @@ import AppHeader from "../components/app-header";
 import { useDocs } from "../context";
 
 export default function Home() {
-  const { lang, t } = useDocs(); const start = `/guide/quick-started${lang === "en" ? "-en" : ""}`;
-  return <Layout className="index"><AppHeader /><section className="index-content"><h1>Kui React</h1><p className="desc">{t("index.desc")}</p><div className="btn-content"><Link to={start}><Button className="start" type="link" size="large">{t("index.btn_quick_start")}<Icon type={ArrowRight} /></Button></Link><Link to={start}><Button size="large" className="btn-install" type="link">Install Kui React</Button></Link></div></section><AppFooter /></Layout>;
+  const { lang, t } = useDocs();
+  const start = `/guide/quick-started${lang === "en" ? "-en" : ""}`;
+  return (
+    <Layout className="index">
+      <AppHeader />
+      <section className="index-content">
+        <h1>Kui React</h1>
+        <p className="desc">{t("index.desc")}</p>
+        <div className="btn-content">
+          <Link to={start}>
+            <Button className="start" type="link" size="large">
+              {t("index.btn_quick_start")}
+              <Icon type={ArrowRight} />
+            </Button>
+          </Link>
+          <Link to={start}>
+            <Button size="large" className="btn-install" type="link">
+              Install Kui React
+            </Button>
+          </Link>
+        </div>
+      </section>
+      <AppFooter />
+    </Layout>
+  );
 }

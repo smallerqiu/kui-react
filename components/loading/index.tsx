@@ -66,7 +66,10 @@ function LoadingBar({ ref, height = 2 }: LoadingProps & { ref?: React.Ref<Loadin
   const lineStyle: CSSProperties = { width: `${percent}%`, height };
   return (
     <div className="k-loading-container" style={{ height }}>
-      <div className={["k-loading-line", isError && "k-loading-line-error"].filter(Boolean).join(" ")} style={lineStyle} />
+      <div
+        className={["k-loading-line", isError && "k-loading-line-error"].filter(Boolean).join(" ")}
+        style={lineStyle}
+      />
     </div>
   );
 }
@@ -88,8 +91,8 @@ function ensureInstance(props?: LoadingProps) {
         ref={(value) => {
           instance = value;
         }}
-      />,
-    ),
+      />
+    )
   );
   return instance;
 }

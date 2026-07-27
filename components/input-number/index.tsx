@@ -1,10 +1,10 @@
 import Big from "big.js";
 import { ChevronDown, ChevronUp } from "kui-icons";
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { SizeContext } from "../config/size-context";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
 import Input from "../input/input";
-import { SizeContext } from "../config/size-context";
 import { isValidBig, normalize } from "../utils/number";
 
 export interface InputNumberProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
@@ -125,8 +125,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
   const stepAction = (type: "up" | "down") => {
     if (disabled || readOnly) return;
     const current = isValidBig(innerValue) ? innerValue : 0;
-    const next =
-      type === "up" ? new Big(current).plus(step) : new Big(current).minus(step);
+    const next = type === "up" ? new Big(current).plus(step) : new Big(current).minus(step);
     triggerUpdate(next.toFixed());
   };
 

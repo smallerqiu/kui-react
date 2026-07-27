@@ -1,11 +1,6 @@
-import React, { useState } from "react";
 import { X } from "kui-icons";
-import {
-  type ColorType,
-  type ShapeType,
-  type SizeType,
-  type ThemeType,
-} from "../const/types";
+import React, { useState } from "react";
+import { type ColorType, type ShapeType, type SizeType, type ThemeType } from "../const/types";
 import { colors } from "../const/var";
 import Icon from "../icon";
 import { isColor } from "../utils/color";

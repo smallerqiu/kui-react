@@ -1,2 +1,41 @@
-import { Grid, GridItem } from "../index"; import "./demo.css";
-export default function FixedRows(){return <Grid cols={4} rows="auto 1fr auto" style={{height:400,border:"1px solid var(--kui-color-border)",borderRadius:12,overflow:"hidden"}}><GridItem span={4} className="grid-center" style={{padding:8,background:"var(--kui-color-bg-3)"}}>Header (100% Width)</GridItem><GridItem className="grid-center" style={{padding:8,background:"var(--kui-color-bg-4)"}}>Menu</GridItem><GridItem span={3} className="grid-center" style={{padding:8,background:"var(--kui-color-bg-2)"}}>Main Content</GridItem><GridItem span={4} className="grid-center" style={{padding:8,background:"var(--kui-color-bg-3)"}}>Footer</GridItem></Grid>}
+import { Grid, GridItem } from "../index";
+import "./demo.css";
+export default function FixedRows() {
+  return (
+    <Grid
+      cols={4}
+      rows="auto 1fr auto"
+      style={{
+        height: 400,
+        border: "1px solid var(--kui-color-border)",
+        borderRadius: 12,
+        overflow: "hidden",
+      }}
+    >
+      <GridItem
+        span={4}
+        className="grid-center"
+        style={{ padding: 8, background: "var(--kui-color-bg-3)" }}
+      >
+        Header (100% Width)
+      </GridItem>
+      <GridItem className="grid-center" style={{ padding: 8, background: "var(--kui-color-bg-4)" }}>
+        Menu
+      </GridItem>
+      <GridItem
+        span={3}
+        className="grid-center"
+        style={{ padding: 8, background: "var(--kui-color-bg-2)" }}
+      >
+        Main Content
+      </GridItem>
+      <GridItem
+        span={4}
+        className="grid-center"
+        style={{ padding: 8, background: "var(--kui-color-bg-3)" }}
+      >
+        Footer
+      </GridItem>
+    </Grid>
+  );
+}

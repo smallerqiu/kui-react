@@ -1,5 +1,5 @@
-import React from "react";
 import { Check } from "kui-icons";
+import React from "react";
 import Icon from "../icon";
 
 export interface OptionSelectEvent {

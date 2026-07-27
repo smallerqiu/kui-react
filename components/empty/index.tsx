@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
 import { Inbox } from "kui-icons";
+import React, { useContext } from "react";
+import { ConfigContext } from "../config";
 import Icon from "../icon";
 import zhCN from "../locale/zh-CN";
-import { ConfigContext } from "../config";
 
 export interface EmptyProps extends React.HTMLAttributes<HTMLDivElement> {
   description?: string | boolean | React.ReactNode;
@@ -34,12 +34,17 @@ const Empty: React.FC<EmptyProps> = ({
         src={image as string}
         className="k-empty-image"
         style={imageStyle}
-        alt={typeof description === "string" ? description : locale?.k?.empty?.description || "Empty state image"}
+        alt={
+          typeof description === "string"
+            ? description
+            : locale?.k?.empty?.description || "Empty state image"
+        }
       />
     );
   };
 
-  const descriptionText = typeof description === "string" ? description : locale?.k?.empty?.description;
+  const descriptionText =
+    typeof description === "string" ? description : locale?.k?.empty?.description;
   const descriptionNode =
     description !== false ? (
       <p className="k-empty-description">

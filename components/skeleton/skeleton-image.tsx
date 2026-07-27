@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
 import { Images } from "kui-icons";
+import React, { useEffect, useRef, useState } from "react";
 import Icon from "../icon";
 
 export interface SkeletonImageProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -31,14 +31,18 @@ const SkeletonImage: React.FC<SkeletonImageProps> = ({
       if (timer.current) clearTimeout(timer.current);
       timer.current = setTimeout(() => setShow(false), delay);
     }
-    return () => { if (timer.current) clearTimeout(timer.current); };
+    return () => {
+      if (timer.current) clearTimeout(timer.current);
+    };
   }, [loading, delay]);
 
   const wrapperClasses = [
     "k-skeleton k-skeleton-ele",
     animated ? "k-skeleton-animated" : "",
     className,
-  ].filter(Boolean).join(" ");
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const innerStyle: React.CSSProperties = {};
   if (radius) innerStyle.borderRadius = `${radius}px`;

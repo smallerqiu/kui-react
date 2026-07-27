@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
-import { createPortal } from "react-dom";
 import { CircleQuestionMark } from "kui-icons";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Button from "../button/button";
+import { ConfigContext } from "../config";
 import type { PlacementsType } from "../const/types";
 import Icon from "../icon";
 import zhCN from "../locale/zh-CN";
-import { ConfigContext } from "../config";
 import { setPlacement } from "../utils/placement";
 import { getChildren } from "../utils/react-node";
 
@@ -153,11 +153,9 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   const overlayNode = rendered ? (
     <div
       ref={refPopper}
-      className={[
-        `k-${preCls}`,
-        `k-${preCls}-has-arrow`,
-        dark ? `k-${preCls}-dark` : "",
-      ].filter(Boolean).join(" ")}
+      className={[`k-${preCls}`, `k-${preCls}-has-arrow`, dark ? `k-${preCls}-dark` : ""]
+        .filter(Boolean)
+        .join(" ")}
       style={{
         left: `${left}px`,
         top: `${top}px`,

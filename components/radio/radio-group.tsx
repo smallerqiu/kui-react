@@ -1,11 +1,5 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import type {
-  DirectionType,
-  RadioType,
-  ShapeType,
-  SizeType,
-  ThemeType,
-} from "../const/types";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import type { DirectionType, RadioType, ShapeType, SizeType, ThemeType } from "../const/types";
 import type { IconType } from "../icon";
 import Radio from "./radio";
 import RadioButton from "./radio-button";

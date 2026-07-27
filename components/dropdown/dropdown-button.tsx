@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
 import { Ellipsis } from "kui-icons";
+import React, { useRef } from "react";
 import Button from "../button/button";
 import ButtonGroup from "../button/button-group";
 import type { DropPlacementsType, ShapeType, SizeType } from "../const/types";
@@ -38,10 +38,7 @@ const DropdownButton: React.FC<DropdownButtonProps> = ({
 
   const triggerNode = (
     <ButtonGroup className="k-dropdown-button" size={size} shape={shape}>
-      <Button
-        disabled={disabled}
-        onClick={onClick}
-      >
+      <Button disabled={disabled} onClick={onClick}>
         {children}
       </Button>
       <TriggerButton

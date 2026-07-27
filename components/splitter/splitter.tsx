@@ -7,8 +7,8 @@ import {
   useRef,
   useState,
   type HTMLAttributes,
-  type MouseEvent as ReactMouseEvent,
   type ReactElement,
+  type MouseEvent as ReactMouseEvent,
 } from "react";
 import type { DirectionType } from "../const/types";
 import type { SplitterPanelProps } from "./splitter-panel";
@@ -42,7 +42,9 @@ export function Splitter({
   const limitsRef = useRef({ min: [] as number[], max: [] as number[] });
   const dragRef = useRef<number | null>(null);
   const [sizes, setSizes] = useState<number[]>([]);
-  const panels = Children.toArray(children).filter(isValidElement) as ReactElement<SplitterPanelProps>[];
+  const panels = Children.toArray(children).filter(
+    isValidElement
+  ) as ReactElement<SplitterPanelProps>[];
 
   const initialize = useCallback(() => {
     const container = containerRef.current;
@@ -85,12 +87,17 @@ export function Splitter({
       const active = dragRef.current;
       const rect = container.getBoundingClientRect();
       const position =
-        (direction === "horizontal" ? moveEvent.clientX - rect.left : moveEvent.clientY - rect.top) -
+        (direction === "horizontal"
+          ? moveEvent.clientX - rect.left
+          : moveEvent.clientY - rect.top) -
         active * 4;
       const pairTotal = sizesRef.current[active] + sizesRef.current[active + 1];
       const offset = sizesRef.current.slice(0, active).reduce((sum, value) => sum + value, 0);
       let first = position - offset;
-      first = Math.max(limitsRef.current.min[active], Math.min(limitsRef.current.max[active], first));
+      first = Math.max(
+        limitsRef.current.min[active],
+        Math.min(limitsRef.current.max[active], first)
+      );
       first = Math.min(first, pairTotal - limitsRef.current.min[active + 1]);
       const next = [...sizesRef.current];
       next[active] = first;
@@ -112,14 +119,24 @@ export function Splitter({
   };
 
   return (
-    <div {...rest} ref={containerRef} className={["k-splitter", `is-${direction}`, className].filter(Boolean).join(" ")}>
+    <div
+      {...rest}
+      ref={containerRef}
+      className={["k-splitter", `is-${direction}`, className].filter(Boolean).join(" ")}
+    >
       {panels.map((panel, index) => (
         <Fragment key={panel.key ?? index}>
-          <div className="k-splitter-item" style={{ flexBasis: sizes[index], flexGrow: 0, flexShrink: 0 }}>
+          <div
+            className="k-splitter-item"
+            style={{ flexBasis: sizes[index], flexGrow: 0, flexShrink: 0 }}
+          >
             {panel}
           </div>
           {index < panels.length - 1 && (
-            <div className="k-splitter-resizer" onMouseDown={(event) => handleMouseDown(index, event)} />
+            <div
+              className="k-splitter-resizer"
+              onMouseDown={(event) => handleMouseDown(index, event)}
+            />
           )}
         </Fragment>
       ))}

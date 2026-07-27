@@ -41,7 +41,7 @@ const Icon = forwardRef<HTMLElement, IconProps>(function Icon(
     onClick,
     ...rest
   },
-  ref,
+  ref
 ) {
   const iconStyle: CSSProperties = {
     ...style,
@@ -66,7 +66,9 @@ const Icon = forwardRef<HTMLElement, IconProps>(function Icon(
             pathStyle.fill = "currentColor";
             pathStyle.stroke = "none";
           }
-          return <path key={`${item.d}-${index}`} d={item.d} style={{ ...pathStyle, strokeWidth }} />;
+          return (
+            <path key={`${item.d}-${index}`} d={item.d} style={{ ...pathStyle, strokeWidth }} />
+          );
         })}
       </svg>
     </i>

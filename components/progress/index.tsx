@@ -1,5 +1,5 @@
-import React from "react";
 import { Check, CircleCheck, CircleX, X } from "kui-icons";
+import React from "react";
 import type { SizeType } from "../const/types";
 import Icon from "../icon";
 
@@ -106,7 +106,13 @@ const Progress: React.FC<ProgressProps> = ({
     return (
       <svg viewBox={`0 0 ${100} ${100}`}>
         <path strokeWidth={strokeWidth} d={d} fill="none" style={ds} className="k-progress-inner" />
-        <path strokeWidth={strokeWidth} d={d} fill="none" style={bgStyle} className="k-progress-bg" />
+        <path
+          strokeWidth={strokeWidth}
+          d={d}
+          fill="none"
+          style={bgStyle}
+          className="k-progress-bg"
+        />
       </svg>
     );
   };

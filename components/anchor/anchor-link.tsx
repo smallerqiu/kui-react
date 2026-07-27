@@ -6,7 +6,14 @@ export interface AnchorLinkProps extends Omit<AnchorHTMLAttributes<HTMLAnchorEle
   title?: ReactNode;
 }
 
-export default function AnchorLink({ href, title, className, children, onClick, ...rest }: AnchorLinkProps) {
+export default function AnchorLink({
+  href,
+  title,
+  className,
+  children,
+  onClick,
+  ...rest
+}: AnchorLinkProps) {
   const context = useContext(AnchorContext);
   useEffect(() => {
     context?.registerLink(href);
@@ -14,7 +21,11 @@ export default function AnchorLink({ href, title, className, children, onClick, 
   }, [context, href]);
 
   return (
-    <div className={["k-anchor-link", context?.activeLink === href && "k-anchor-link-active"].filter(Boolean).join(" ")}>
+    <div
+      className={["k-anchor-link", context?.activeLink === href && "k-anchor-link-active"]
+        .filter(Boolean)
+        .join(" ")}
+    >
       <a
         {...rest}
         href={href}

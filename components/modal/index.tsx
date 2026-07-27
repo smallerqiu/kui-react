@@ -17,7 +17,9 @@ export interface ModalApiProps {
   onCancel?: () => void;
   type?: ToastType;
 }
-export interface ModalInstance { destroy: () => void }
+export interface ModalInstance {
+  destroy: () => void;
+}
 
 const instances = new Set<ModalInstance>();
 recordMousePoint();
@@ -31,7 +33,9 @@ function showModal(props: ModalApiProps): ModalInstance {
     destroy() {
       if (destroyed) return;
       destroyed = true;
-      root.unmount(); container.remove(); instances.delete(instance);
+      root.unmount();
+      container.remove();
+      instances.delete(instance);
     },
   };
   flushSync(() => root.render(<Toast {...props} onDestroy={instance.destroy} />));

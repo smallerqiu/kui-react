@@ -47,15 +47,20 @@ export default function Anchor({
 
   const getContainer = useCallback((): HTMLElement | Window => {
     if (typeof window === "undefined" || !container) return window;
-    if (typeof container === "string") return document.querySelector<HTMLElement>(container) ?? window;
+    if (typeof container === "string")
+      return document.querySelector<HTMLElement>(container) ?? window;
     return container;
   }, [container]);
 
   const updateInk = useCallback(() => {
-    const node = wrapperRef.current?.querySelector<HTMLElement>(".k-anchor-link-active > .k-anchor-link-title");
-    setInkStyle(node
-      ? { top: node.parentElement!.offsetTop + 4, height: node.clientHeight, opacity: 1 }
-      : { top: 0, height: 0, opacity: 0 });
+    const node = wrapperRef.current?.querySelector<HTMLElement>(
+      ".k-anchor-link-active > .k-anchor-link-title"
+    );
+    setInkStyle(
+      node
+        ? { top: node.parentElement!.offsetTop + 4, height: node.clientHeight, opacity: 1 }
+        : { top: 0, height: 0, opacity: 0 }
+    );
   }, []);
 
   useEffect(updateInk, [activeLink, updateInk]);
@@ -63,7 +68,8 @@ export default function Anchor({
   const updateActive = useCallback(() => {
     if (clickScrollingRef.current || typeof window === "undefined") return;
     const scrollContainer = getContainer();
-    const containerTop = scrollContainer === window ? 0 : (scrollContainer as HTMLElement).getBoundingClientRect().top;
+    const containerTop =
+      scrollContainer === window ? 0 : (scrollContainer as HTMLElement).getBoundingClientRect().top;
     const targets = [...linksRef.current]
       .map((link) => {
         const element = document.querySelector<HTMLElement>(link);
@@ -92,39 +98,58 @@ export default function Anchor({
     };
   }, [getContainer, updateActive]);
 
-  const scrollTo = useCallback((link: string) => {
-    const target = document.querySelector<HTMLElement>(link);
-    if (!target) return;
-    clickScrollingRef.current = true;
-    setActiveLink(link);
-    onClick?.(link);
-    const scrollContainer = getContainer();
-    if (scrollContainer === window) {
-      window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offsetTop, behavior: "smooth" });
-    } else {
-      const element = scrollContainer as HTMLElement;
-      element.scrollTo({
-        top: target.getBoundingClientRect().top - element.getBoundingClientRect().top + element.scrollTop - offsetTop,
-        behavior: "smooth",
-      });
-    }
-    if (unlockTimerRef.current) clearTimeout(unlockTimerRef.current);
-    unlockTimerRef.current = setTimeout(() => {
-      clickScrollingRef.current = false;
-      updateInk();
-    }, 600);
-  }, [getContainer, offsetTop, onClick, updateInk]);
+  const scrollTo = useCallback(
+    (link: string) => {
+      const target = document.querySelector<HTMLElement>(link);
+      if (!target) return;
+      clickScrollingRef.current = true;
+      setActiveLink(link);
+      onClick?.(link);
+      const scrollContainer = getContainer();
+      if (scrollContainer === window) {
+        window.scrollTo({
+          top: target.getBoundingClientRect().top + window.scrollY - offsetTop,
+          behavior: "smooth",
+        });
+      } else {
+        const element = scrollContainer as HTMLElement;
+        element.scrollTo({
+          top:
+            target.getBoundingClientRect().top -
+            element.getBoundingClientRect().top +
+            element.scrollTop -
+            offsetTop,
+          behavior: "smooth",
+        });
+      }
+      if (unlockTimerRef.current) clearTimeout(unlockTimerRef.current);
+      unlockTimerRef.current = setTimeout(() => {
+        clickScrollingRef.current = false;
+        updateInk();
+      }, 600);
+    },
+    [getContainer, offsetTop, onClick, updateInk]
+  );
 
-  const context = useMemo<AnchorContextValue>(() => ({
-    activeLink,
-    registerLink: (link) => linksRef.current.add(link),
-    unregisterLink: (link) => linksRef.current.delete(link),
-    scrollTo,
-  }), [activeLink, scrollTo]);
+  const context = useMemo<AnchorContextValue>(
+    () => ({
+      activeLink,
+      registerLink: (link) => linksRef.current.add(link),
+      unregisterLink: (link) => linksRef.current.delete(link),
+      scrollTo,
+    }),
+    [activeLink, scrollTo]
+  );
 
   return (
     <AnchorContext.Provider value={context}>
-      <div {...rest} ref={wrapperRef} className={["k-anchor-wrapper", affix && "k-anchor-affix", className].filter(Boolean).join(" ")}>
+      <div
+        {...rest}
+        ref={wrapperRef}
+        className={["k-anchor-wrapper", affix && "k-anchor-affix", className]
+          .filter(Boolean)
+          .join(" ")}
+      >
         <div className="k-anchor">
           <span className="k-anchor-ink-ball" style={inkStyle} />
           {children}

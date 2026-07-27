@@ -1,5 +1,11 @@
 import { ArrowUp } from "kui-icons";
-import { useEffect, useState, type CSSProperties, type HTMLAttributes, type MouseEvent } from "react";
+import {
+  useEffect,
+  useState,
+  type CSSProperties,
+  type HTMLAttributes,
+  type MouseEvent,
+} from "react";
 import Icon from "../icon";
 
 export interface BackTopProps extends Omit<HTMLAttributes<HTMLDivElement>, "onClick"> {
@@ -46,7 +52,11 @@ export default function BackTop({
     onClick?.(event);
     if (event.defaultPrevented) return;
     const scrollTarget = target();
-    if (!scrollTarget || scrollTarget === document.body || scrollTarget === document.documentElement) {
+    if (
+      !scrollTarget ||
+      scrollTarget === document.body ||
+      scrollTarget === document.documentElement
+    ) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       scrollTarget.scrollTo({ top: 0, behavior: "smooth" });
@@ -58,7 +68,9 @@ export default function BackTop({
   return (
     <div
       {...rest}
-      className={["k-back-top", "k-back-top-fade-enter-active", className].filter(Boolean).join(" ")}
+      className={["k-back-top", "k-back-top-fade-enter-active", className]
+        .filter(Boolean)
+        .join(" ")}
       style={rootStyle}
       onClick={handleClick}
     >

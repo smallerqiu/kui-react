@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { ShapeType, SizeType } from "../const/types";
 
 export interface SkeletonButtonProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -34,7 +34,9 @@ const SkeletonButton: React.FC<SkeletonButtonProps> = ({
       if (timer.current) clearTimeout(timer.current);
       timer.current = setTimeout(() => setShow(false), delay);
     }
-    return () => { if (timer.current) clearTimeout(timer.current); };
+    return () => {
+      if (timer.current) clearTimeout(timer.current);
+    };
   }, [loading, delay]);
 
   const wrapperClasses = [
@@ -42,7 +44,9 @@ const SkeletonButton: React.FC<SkeletonButtonProps> = ({
     animated ? "k-skeleton-animated" : "",
     block ? "k-skeleton-block" : "",
     className,
-  ].filter(Boolean).join(" ");
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const innerStyle: React.CSSProperties = {};
   if (width) innerStyle.width = `${width}px`;
@@ -52,7 +56,9 @@ const SkeletonButton: React.FC<SkeletonButtonProps> = ({
     size === "large" ? "k-skeleton-btn-lg" : "",
     size === "small" ? "k-skeleton-btn-sm" : "",
     shape && shape !== "round" ? `k-skeleton-btn-${shape}` : "",
-  ].filter(Boolean).join(" ");
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div className={wrapperClasses} {...rest}>

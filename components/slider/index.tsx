@@ -10,7 +10,10 @@ import {
 import { SizeContext } from "../config/size-context";
 import Thumb from "./thumb";
 
-export interface SliderProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
+export interface SliderProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onChange" | "defaultValue"
+> {
   value?: number | number[];
   defaultValue?: number | number[];
   modelValue?: number | number[];
@@ -61,7 +64,9 @@ export default function Slider({
   const thumbRefs = useRef<Array<HTMLDivElement | null>>([]);
   const [dragging, setDragging] = useState(-1);
 
-  const markValues = Object.keys(marks ?? {}).map(Number).sort((a, b) => a - b);
+  const markValues = Object.keys(marks ?? {})
+    .map(Number)
+    .sort((a, b) => a - b);
   const snap = (raw: number) => {
     const clamped = Math.max(min, Math.min(max, raw));
     const candidates = [...markValues];
@@ -70,7 +75,15 @@ export default function Slider({
       candidates.push(min + step * count);
     }
     if (!candidates.length) return clamped;
-    return Math.max(min, Math.min(max, candidates.reduce((best, item) => Math.abs(item - clamped) < Math.abs(best - clamped) ? item : best)));
+    return Math.max(
+      min,
+      Math.min(
+        max,
+        candidates.reduce((best, item) =>
+          Math.abs(item - clamped) < Math.abs(best - clamped) ? item : best
+        )
+      )
+    );
   };
   const normalize = (next: number | number[]) =>
     range
@@ -86,7 +99,9 @@ export default function Slider({
 
   const valueFromPoint = (clientX: number, clientY: number) => {
     const rect = railRef.current!.getBoundingClientRect();
-    const ratio = vertical ? (rect.bottom - clientY) / rect.height : (clientX - rect.left) / rect.width;
+    const ratio = vertical
+      ? (rect.bottom - clientY) / rect.height
+      : (clientX - rect.left) / rect.width;
     const logical = reverse ? 1 - ratio : ratio;
     return snap(min + Math.max(0, Math.min(1, logical)) * (max - min));
   };
@@ -124,7 +139,11 @@ export default function Slider({
     moveThumb(Math.abs(next - values[0]) <= Math.abs(next - values[1]) ? 0 : 1, next);
   };
   const handleKey = (event: KeyboardEvent<HTMLDivElement>, index: number) => {
-    const direction = ["ArrowRight", "ArrowUp"].includes(event.key) ? 1 : ["ArrowLeft", "ArrowDown"].includes(event.key) ? -1 : 0;
+    const direction = ["ArrowRight", "ArrowUp"].includes(event.key)
+      ? 1
+      : ["ArrowLeft", "ArrowDown"].includes(event.key)
+        ? -1
+        : 0;
     if (!direction || disabled) return;
     event.preventDefault();
     const values = range ? [...(current as number[])] : [current as number];
@@ -132,47 +151,84 @@ export default function Slider({
     moveThumb(index, snap(values[index] + direction * amount));
     requestAnimationFrame(() => thumbRefs.current[index]?.focus());
   };
-  const percent = (number: number) => max === min ? 0 : ((number - min) / (max - min)) * 100;
-  const values = range ? current as number[] : [current as number];
+  const percent = (number: number) => (max === min ? 0 : ((number - min) / (max - min)) * 100);
+  const values = range ? (current as number[]) : [current as number];
   const first = range ? percent(values[0]) : 0;
   const last = percent(values[values.length - 1]);
   const trackStyle: CSSProperties = vertical
-    ? reverse ? { top: `${first}%`, height: `${last - first}%` } : { bottom: `${first}%`, height: `${last - first}%` }
-    : reverse ? { right: `${first}%`, width: `${last - first}%` } : { left: `${first}%`, width: `${last - first}%` };
+    ? reverse
+      ? { top: `${first}%`, height: `${last - first}%` }
+      : { bottom: `${first}%`, height: `${last - first}%` }
+    : reverse
+      ? { right: `${first}%`, width: `${last - first}%` }
+      : { left: `${first}%`, width: `${last - first}%` };
 
   return (
-    <div {...rest} className={["k-slider", disabled && "k-slider-disabled", vertical && "k-slider-vertical", reverse && "k-slider-reverse", className].filter(Boolean).join(" ")}>
+    <div
+      {...rest}
+      className={[
+        "k-slider",
+        disabled && "k-slider-disabled",
+        vertical && "k-slider-vertical",
+        reverse && "k-slider-reverse",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
       <div className="k-slider-bar">
         <div className="k-slider-rail" ref={railRef} onClick={handleRailClick} />
         {included && <div className="k-slider-track" style={trackStyle} />}
-        {marks && <div className="k-slider-marks">
-          {markValues.map((mark) => {
-            const active = range ? mark >= values[0] && mark <= values[1] : mark <= values[0];
-            const position: CSSProperties = vertical
-              ? reverse ? { top: `${percent(mark)}%` } : { bottom: `${percent(mark)}%` }
-              : reverse ? { right: `${percent(mark)}%` } : { left: `${percent(mark)}%` };
-            return <div key={mark} className="k-slider-mark-item" style={position}>
-              <span className={["k-slider-mark-dot", active && "is-active"].filter(Boolean).join(" ")} />
-              <div className={["k-slider-mark-text", active && "is-active"].filter(Boolean).join(" ")}>{marks[mark]}</div>
-            </div>;
-          })}
-        </div>}
-        {values.map((number, index) => <Thumb
-          key={index}
-          ref={(element) => { thumbRefs.current[index] = element; }}
-          value={number}
-          min={min}
-          max={max}
-          size={size}
-          vertical={vertical}
-          reverse={reverse}
-          disabled={disabled}
-          tooltipVisible={tooltipVisible}
-          tipFormatter={tipFormatter}
-          dragging={dragging === index}
-          onDragStart={() => startDrag(index)}
-          onKeyDown={(event) => handleKey(event, index)}
-        />)}
+        {marks && (
+          <div className="k-slider-marks">
+            {markValues.map((mark) => {
+              const active = range ? mark >= values[0] && mark <= values[1] : mark <= values[0];
+              const position: CSSProperties = vertical
+                ? reverse
+                  ? { top: `${percent(mark)}%` }
+                  : { bottom: `${percent(mark)}%` }
+                : reverse
+                  ? { right: `${percent(mark)}%` }
+                  : { left: `${percent(mark)}%` };
+              return (
+                <div key={mark} className="k-slider-mark-item" style={position}>
+                  <span
+                    className={["k-slider-mark-dot", active && "is-active"]
+                      .filter(Boolean)
+                      .join(" ")}
+                  />
+                  <div
+                    className={["k-slider-mark-text", active && "is-active"]
+                      .filter(Boolean)
+                      .join(" ")}
+                  >
+                    {marks[mark]}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+        {values.map((number, index) => (
+          <Thumb
+            key={index}
+            ref={(element) => {
+              thumbRefs.current[index] = element;
+            }}
+            value={number}
+            min={min}
+            max={max}
+            size={size}
+            vertical={vertical}
+            reverse={reverse}
+            disabled={disabled}
+            tooltipVisible={tooltipVisible}
+            tipFormatter={tipFormatter}
+            dragging={dragging === index}
+            onDragStart={() => startDrag(index)}
+            onKeyDown={(event) => handleKey(event, index)}
+          />
+        ))}
       </div>
     </div>
   );

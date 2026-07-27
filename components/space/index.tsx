@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
+import { SizeContext } from "../config/size-context";
 import type { SizeType } from "../const/types";
 import { getChildren } from "../utils/react-node";
-import { SizeContext } from "../config/size-context";
 
 export interface SpaceProps extends React.HTMLAttributes<HTMLDivElement> {
   align?: "start" | "end" | "center" | "baseline";
@@ -100,16 +100,14 @@ const Space: React.FC<SpaceProps> = ({
     vNodes.push(child);
 
     if (split && i < childList.length - 1) {
-      vNodes.push(
-        <React.Fragment key={`split-${i}`}>
-          {split}
-        </React.Fragment>
-      );
+      vNodes.push(<React.Fragment key={`split-${i}`}>{split}</React.Fragment>);
     }
   }
 
   return (
-    <SizeContext.Provider value={typeof currentSize === "string" ? (currentSize as SizeType) : undefined}>
+    <SizeContext.Provider
+      value={typeof currentSize === "string" ? (currentSize as SizeType) : undefined}
+    >
       <div className={classes} style={spaceStyle} {...rest}>
         {vNodes}
       </div>

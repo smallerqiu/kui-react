@@ -1,15 +1,8 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useContext,
-  createContext,
-} from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { DirectionType } from "../const/types";
 import Icon, { type IconType } from "../icon";
 import { setPlacement } from "../utils/placement";
-import { getChildren } from "../utils/react-node";
 
 // ─────────────────────────────────────────
 // Shared Context
@@ -239,10 +232,7 @@ export const SubMenu: React.FC<SubMenuProps> = ({
     style: {} as React.CSSProperties,
   };
 
-  const isPopupMode =
-    ctx.mode === "horizontal" ||
-    ctx.mode === "vertical" ||
-    ctx.inlineCollapsed;
+  const isPopupMode = ctx.mode === "horizontal" || ctx.mode === "vertical" || ctx.inlineCollapsed;
 
   if (ctx.mode === "inline" && !ctx.inlineCollapsed) {
     titleProps.onClick = () => {
@@ -267,9 +257,7 @@ export const SubMenu: React.FC<SubMenuProps> = ({
 
   // Popup overlay (for horizontal/vertical/collapsed modes)
   const leftWithOffset =
-    (ctx.mode === "horizontal" && keyPath.length) || ctx.mode === "vertical"
-      ? left + 3
-      : left;
+    (ctx.mode === "horizontal" && keyPath.length) || ctx.mode === "vertical" ? left + 3 : left;
 
   const popperNode = rendered ? (
     <div
@@ -334,9 +322,7 @@ export const SubMenu: React.FC<SubMenuProps> = ({
             createPortal(popperNode, document.body)}
         </>
       )}
-      {ctx.mode === "horizontal" &&
-        popperNode &&
-        createPortal(popperNode, document.body)}
+      {ctx.mode === "horizontal" && popperNode && createPortal(popperNode, document.body)}
     </li>
   );
 };

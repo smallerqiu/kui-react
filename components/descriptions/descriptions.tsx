@@ -21,17 +21,33 @@ interface CellProps {
 const Cell: React.FC<CellProps> = ({ label, span = 1, type, bordered, layout, children }) => {
   if (bordered && layout !== "vertical") {
     if (type === "label") {
-      return <th className="k-descriptions-item-label" colSpan={span}>{label}</th>;
+      return (
+        <th className="k-descriptions-item-label" colSpan={span}>
+          {label}
+        </th>
+      );
     }
-    return <td className="k-descriptions-item-content" colSpan={span}>{children}</td>;
+    return (
+      <td className="k-descriptions-item-content" colSpan={span}>
+        {children}
+      </td>
+    );
   }
 
   if (layout === "vertical") {
     if (bordered) {
       if (type === "label") {
-        return <th className="k-descriptions-item-label" colSpan={span}>{label}</th>;
+        return (
+          <th className="k-descriptions-item-label" colSpan={span}>
+            {label}
+          </th>
+        );
       }
-      return <td className="k-descriptions-item-content" colSpan={span}>{children}</td>;
+      return (
+        <td className="k-descriptions-item-content" colSpan={span}>
+          {children}
+        </td>
+      );
     }
     if (type === "label") {
       return (
@@ -104,10 +120,19 @@ const Descriptions: React.FC<DescriptionsProps> = ({
 
     if (isVertical) {
       currentRow.push(
-        <Cell key={`l-${index}`} label={label} span={span} type="label" layout={layout} bordered={bordered} />
+        <Cell
+          key={`l-${index}`}
+          label={label}
+          span={span}
+          type="label"
+          layout={layout}
+          bordered={bordered}
+        />
       );
       currentContentRow.push(
-        <Cell key={`c-${index}`} span={span} layout={layout} bordered={bordered}>{content}</Cell>
+        <Cell key={`c-${index}`} span={span} layout={layout} bordered={bordered}>
+          {content}
+        </Cell>
       );
       currentSpanSum += span;
 
@@ -122,11 +147,15 @@ const Descriptions: React.FC<DescriptionsProps> = ({
       if (bordered) {
         currentRow.push(
           <Cell key={`l-${index}`} label={label} bordered={bordered} span={1} type="label" />,
-          <Cell key={`c-${index}`} span={span * 2 - 1} bordered={bordered}>{content}</Cell>
+          <Cell key={`c-${index}`} span={span * 2 - 1} bordered={bordered}>
+            {content}
+          </Cell>
         );
       } else {
         currentRow.push(
-          <Cell key={`i-${index}`} label={label} span={span}>{content}</Cell>
+          <Cell key={`i-${index}`} label={label} span={span}>
+            {content}
+          </Cell>
         );
       }
       currentSpanSum += span;

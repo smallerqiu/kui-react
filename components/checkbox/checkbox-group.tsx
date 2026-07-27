@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import type { DirectionType, SizeType, ThemeType } from "../const/types";
 import Checkbox, { type ChangeEvent } from "./checkbox";
 
@@ -9,7 +9,10 @@ export interface CheckboxOption {
   [key: string]: any;
 }
 
-export interface CheckboxGroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
+export interface CheckboxGroupProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange" | "defaultValue"
+> {
   value?: any[];
   defaultValue?: any[];
   theme?: ThemeType;
@@ -44,7 +47,9 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   className = "",
   ...rest
 }) => {
-  const [currentValue, setCurrentValue] = useState<any[]>(value !== undefined ? value : defaultValue);
+  const [currentValue, setCurrentValue] = useState<any[]>(
+    value !== undefined ? value : defaultValue
+  );
 
   useEffect(() => {
     if (value !== undefined) {
@@ -82,18 +87,16 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
     .join(" ");
 
   const content =
-    options && options.length > 0 ? (
-      options.map((option) => (
-        <Checkbox
-          key={option.value}
-          label={option.label}
-          value={option.value}
-          disabled={disabled || option.disabled}
-        />
-      ))
-    ) : (
-      children
-    );
+    options && options.length > 0
+      ? options.map((option) => (
+          <Checkbox
+            key={option.value}
+            label={option.label}
+            value={option.value}
+            disabled={disabled || option.disabled}
+          />
+        ))
+      : children;
 
   return (
     <CheckboxGroupContext.Provider

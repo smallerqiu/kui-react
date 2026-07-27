@@ -6,7 +6,14 @@ export interface SplitterPanelProps extends HTMLAttributes<HTMLDivElement> {
   max?: number | string;
 }
 
-export function SplitterPanel({ className, children, size: _, min: __, max: ___, ...rest }: SplitterPanelProps) {
+export function SplitterPanel({
+  className,
+  children,
+  size: _,
+  min: __,
+  max: ___,
+  ...rest
+}: SplitterPanelProps) {
   return (
     <div {...rest} className={["k-splitter-panel", className].filter(Boolean).join(" ")}>
       {children}

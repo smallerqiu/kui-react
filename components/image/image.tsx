@@ -1,5 +1,15 @@
 import { Image as ImageIcon, Loading } from "kui-icons";
-import { forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState, type CSSProperties, type HTMLAttributes, type MouseEvent } from "react";
+import {
+  forwardRef,
+  useContext,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+  type CSSProperties,
+  type HTMLAttributes,
+  type MouseEvent,
+} from "react";
 import Icon from "../icon";
 import { ImageGroupContext } from "./group";
 import createInstance, { type ImagePreviewInstance } from "./instance";
@@ -26,10 +36,28 @@ export interface ImageProps extends Omit<HTMLAttributes<HTMLDivElement>, "onSwit
   onSwitch?: (index: number) => void;
 }
 
-const KImage = forwardRef<ImageRef, ImageProps>(function KImage({
-  alt, src, type, origin, height, width, placeholder, data, imgStyle, showPanel,
-  onClose, onSwitch, className, style, children, onClick, ...rest
-}, ref) {
+const KImage = forwardRef<ImageRef, ImageProps>(function KImage(
+  {
+    alt,
+    src,
+    type,
+    origin,
+    height,
+    width,
+    placeholder,
+    data,
+    imgStyle,
+    showPanel,
+    onClose,
+    onSwitch,
+    className,
+    style,
+    children,
+    onClick,
+    ...rest
+  },
+  ref
+) {
   const group = useContext(ImageGroupContext);
   const previewRef = useRef<ImagePreviewInstance | null>(null);
   const [loading, setLoading] = useState(false);
@@ -39,13 +67,32 @@ const KImage = forwardRef<ImageRef, ImageProps>(function KImage({
 
   useEffect(() => {
     let active = true;
-    if (!src) { setFailed(true); setImageUrl(placeholder); return; }
+    if (!src) {
+      setFailed(true);
+      setImageUrl(placeholder);
+      return;
+    }
     setLoading(true);
-    loadImage(src,
-      () => { if (active) { setLoading(false); setFailed(false); setImageUrl(src); } },
-      () => { if (active) { setLoading(false); setFailed(true); setImageUrl(placeholder); } },
+    loadImage(
+      src,
+      () => {
+        if (active) {
+          setLoading(false);
+          setFailed(false);
+          setImageUrl(src);
+        }
+      },
+      () => {
+        if (active) {
+          setLoading(false);
+          setFailed(true);
+          setImageUrl(placeholder);
+        }
+      }
     );
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [placeholder, src]);
   useEffect(() => {
     if (!previewSource) return;
@@ -57,7 +104,13 @@ const KImage = forwardRef<ImageRef, ImageProps>(function KImage({
   const show = (options: ImagePreviewProps = {}) => {
     if (!previewSource || failed || loading) return;
     const previewProps: ImagePreviewProps = {
-      src: previewSource, type, data, showPanel, onClose, onSwitch, ...options,
+      src: previewSource,
+      type,
+      data,
+      showPanel,
+      onClose,
+      onSwitch,
+      ...options,
     };
     if (group) group.show(previewProps);
     else {
@@ -67,16 +120,33 @@ const KImage = forwardRef<ImageRef, ImageProps>(function KImage({
   };
   useImperativeHandle(ref, () => ({
     show,
-    destroy: () => { previewRef.current?.destroy(); previewRef.current = null; },
+    destroy: () => {
+      previewRef.current?.destroy();
+      previewRef.current = null;
+    },
     togglePanel: () => group?.togglePanel() ?? previewRef.current?.togglePanel(),
   }));
-  const dimension = (value?: string | number) => typeof value === "number" ? `${value}px` : value;
-  const handleClick = (event: MouseEvent<HTMLDivElement>) => { onClick?.(event); if (!event.defaultPrevented) show(); };
+  const dimension = (value?: string | number) => (typeof value === "number" ? `${value}px` : value);
+  const handleClick = (event: MouseEvent<HTMLDivElement>) => {
+    onClick?.(event);
+    if (!event.defaultPrevented) show();
+  };
   return (
-    <div {...rest} className={["k-image", className].filter(Boolean).join(" ")} style={{ ...style, width: dimension(width), height: dimension(height) }} onClick={handleClick}>
-      {loading ? <div className="k-image-loading"><Icon type={Loading} spin className="k-image-loading-icon" /></div>
-        : failed && !imageUrl ? <Icon type={ImageIcon} className="k-image-error" />
-          : <img className="k-image-img" alt={alt} src={imageUrl} style={imgStyle} />}
+    <div
+      {...rest}
+      className={["k-image", className].filter(Boolean).join(" ")}
+      style={{ ...style, width: dimension(width), height: dimension(height) }}
+      onClick={handleClick}
+    >
+      {loading ? (
+        <div className="k-image-loading">
+          <Icon type={Loading} spin className="k-image-loading-icon" />
+        </div>
+      ) : failed && !imageUrl ? (
+        <Icon type={ImageIcon} className="k-image-error" />
+      ) : (
+        <img className="k-image-img" alt={alt} src={imageUrl} style={imgStyle} />
+      )}
       {children}
     </div>
   );

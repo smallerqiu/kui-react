@@ -6,7 +6,11 @@ export interface CarouselContextValue {
   vertical: boolean;
 }
 
-export const CarouselContext = createContext<CarouselContextValue>({ width: 0, height: 256, vertical: false });
+export const CarouselContext = createContext<CarouselContextValue>({
+  width: 0,
+  height: 256,
+  vertical: false,
+});
 
 export interface CarouselItemProps extends HTMLAttributes<HTMLDivElement> {}
 

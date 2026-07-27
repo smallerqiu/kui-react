@@ -19,16 +19,13 @@ const Card: React.FC<CardProps> = ({
   ...rest
 }) => {
   const iconNode = icon ? <Icon type={icon} className="k-card-title-icon" /> : null;
-  const titleNode = typeof title === "string" ? <span className="k-card-title">{title}</span> : title;
+  const titleNode =
+    typeof title === "string" ? <span className="k-card-title">{title}</span> : title;
   const extraNode = extra ? <div className="k-card-extra">{extra}</div> : null;
 
   const showHead = !!(titleNode || extraNode || iconNode);
 
-  const classes = [
-    "k-card",
-    bordered ? "k-card-bordered" : "",
-    className,
-  ]
+  const classes = ["k-card", bordered ? "k-card-bordered" : "", className]
     .filter(Boolean)
     .join(" ");
 
