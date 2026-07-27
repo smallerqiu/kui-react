@@ -27,7 +27,6 @@ export default defineConfig(({ mode }) => {
       alias: {
         "@": path.resolve(__dirname, "/"),
         "kui-react": path.resolve(__dirname, "./components"),
-        react: `http://localhost:7005/js/react/react.esm-browser${isProd ? ".prod" : ""}.js`,
         // "kui-icons": `${import.meta.env.VITE_APP_IMPORT_URL}/js/kui-icons.esm.js`,
       },
       extensions: [".js", ".ts", ".jsx", ".tsx", ".json", "md"],
@@ -37,14 +36,6 @@ export default defineConfig(({ mode }) => {
       sourcemap: false,
       minify: "terser",
       rollupOptions: {
-        external: [
-          "react",
-          "kui-react",
-          "kui-icons",
-          "dayjs",
-          "dayjs/locale/zh-cn",
-          "dayjs/locale/de",
-        ],
         output: {
           entryFileNames: "js/[name]-[hash].js",
           chunkFileNames: "js/[name]-[hash].js",
@@ -79,7 +70,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     optimizeDeps: {
-      exclude: ["react", "kui-react"],
+      exclude: ["kui-react"],
     },
   };
 });

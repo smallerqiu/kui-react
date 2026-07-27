@@ -1,5 +1,4 @@
 import fs from "fs";
-import hashId from "hash-sum";
 import hljs from "highlight.js";
 import MarkdownIt from "markdown-it";
 import anchor from "markdown-it-anchor";
@@ -32,70 +31,32 @@ export default function vitePluginKuiMd(): Plugin {
     transform(code, id) {
       if (!id.endsWith(".md")) return null;
 
-      const demoImports: string[] = [];
-      let demoCount = 0;
-
-      // \[(.*?)\]\((.*?\.vue)\) : 匹配 [标题](./路径.vue)
-      // \s*\n\s*-\s+(.*)       : 匹配换行后的横杠及其后面的描述内容
-      // const demoReg = /\[(.*?)\]\((.*?\.vue)(?:\?show=(.*?))?\)\s*\n\s*-\s+(.*)/g;
       const demoReg = /\[(.*?)\]\((.*?\.vue)(?:\?show=(.*?))?\)\s*\n((?:\s*-\s+.*(?:\n|$))+)/g;
 
       let processedMarkdown = code.replace(
         demoReg,
-        (_, title, src, direction = "horizontal", descBlock) => {
-          const componentName = `KuiDemo${demoCount++}`;
-          const _id = "k-" + hashId(id);
-
+        (_, title, src, _direction = "horizontal", descBlock) => {
           const absolutePath = path.resolve(path.dirname(id), src);
-          let demoCode = fs.readFileSync(absolutePath, "utf-8").trim();
-          let highlighted = hljs.highlight(demoCode, {
-            language: "html",
-          }).value;
-
-          highlighted = highlighted.replace(/{{/g, "&#123;&#123;").replace(/}}/g, "&#125;&#125;");
-
-          demoImports.push(`import ${componentName} from '${src}';`);
-
+          const demoCode = fs.readFileSync(absolutePath, "utf-8").trim();
+          const highlighted = hljs.highlight(demoCode, { language: "html" }).value;
           const renderedDescription = markdown.render(descBlock.replace(/-/g, ""));
-          return `
-<Demo id="${_id}" direction="${direction}">
-    <template #title>${title}</template>
-    <template #component><${componentName} /></template>
-    <template #code><pre><code class="hljs language-js">${highlighted.replace(/\n/g, "<br>")}</code></pre></template>
-    <template #description>
-      ${renderedDescription.trim().replace(/\n/g, "<br>")}
-    </template>
-</Demo>\n`;
+          return `<section class="markdown-body k-demo-container"><div class="k-desc"><div class="k-desc-content"><h3>${markdown.utils.escapeHtml(title)}</h3>${renderedDescription}</div></div><div class="k-code-box"><pre><code class="hljs language-html">${highlighted}</code></pre></div></section>`;
         }
       );
 
       const jsxReg = /\[(.*?)\]\((.*?\.tsx)\)/g;
-
-      processedMarkdown = processedMarkdown.replace(jsxReg, (_, __, src) => {
-        // console.log(t, src);
-        const componentName = `KuiDemo${demoCount++}`;
-        demoImports.push(`import ${componentName} from '${src}';`);
-        return `<${componentName} />`;
+      processedMarkdown = processedMarkdown.replace(jsxReg, (_, title, src) => {
+        const absolutePath = path.resolve(path.dirname(id), src);
+        const highlighted = hljs.highlight(fs.readFileSync(absolutePath, "utf-8"), { language: "tsx" }).value;
+        return `<section class="markdown-body k-demo-container"><h3>${markdown.utils.escapeHtml(title)}</h3><pre><code class="hljs language-tsx">${highlighted}</code></pre></section>`;
       });
 
       // fs.writeFileSync(path.join(__dirname, "demo.md"), processedMarkdown);
       const mainHtml = markdown.render(processedMarkdown);
-      const result = `
-<template>
-  <div class="markdown-body">
-    ${mainHtml}
-  </div>
-</template>
-
-<script setup>
-import { message } from "kui-vue";
-${demoImports.join("\n")}
-const copy = (text) => {
-  navigator.clipboard.writeText(text);
-  message.success("Copied.");
-};
-</script>`;
-      // fs.writeFileSync(path.join(__dirname, "demo.html"), result);
+      const result = `import { createElement } from "react";
+export default function MarkdownPage() {
+  return createElement("div", { className: "markdown-body", dangerouslySetInnerHTML: { __html: ${JSON.stringify(mainHtml)} } });
+}`;
       return { code: result, map: null };
     },
   };
