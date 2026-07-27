@@ -14,12 +14,12 @@ const placements: DropPlacementsType[] = [
 const overlay = (
   <Menu>
     <MenuItem>
-      <a target="_blank" rel="noreferrer" href="https://www.chuchur.com/">
+      <a target="_blank" rel="noreferrer" href="https://react.chuchur.com/">
         1st menu item
       </a>
     </MenuItem>
     <MenuItem>
-      <a target="_blank" rel="noreferrer" href="https://www.k-ui.cn/">
+      <a target="_blank" rel="noreferrer" href="https://react.k-ui.cn/">
         2nd menu item
       </a>
     </MenuItem>

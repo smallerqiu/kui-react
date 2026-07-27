@@ -8,8 +8,7 @@ export const generateWebTypesConfig = (componentNames: string[]) => {
 
   // 构造 web-types 基础结构
   const webTypes = {
-    $schema:
-      "https://raw.githubusercontent.com/JetBrains/web-types/master/schema/web-types.json",
+    $schema: "https://raw.githubusercontent.com/JetBrains/web-types/master/schema/web-types.json",
     name: "kui-react",
     version: pkg.version,
     "description-markup": "markdown",
@@ -17,9 +16,7 @@ export const generateWebTypesConfig = (componentNames: string[]) => {
     contributions: {
       html: {
         elements: componentNames.map((name) => {
-          const kebabName = name
-            .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
-            .toLowerCase();
+          const kebabName = name.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
           const propsName = `${name}Props`;
 
           const propList = getPropsData(entryFilePath, propsName, name);
@@ -29,8 +26,8 @@ export const generateWebTypesConfig = (componentNames: string[]) => {
             source: {
               symbol: name,
             },
-            description: `Kui Vue component: ${name}`,
-            "doc-url": `https://k-ui.cn/components/${kebabName}`,
+            description: `Kui React component: ${name}`,
+            "doc-url": `https://react.k-ui.cn/components/${kebabName}`,
             attributes: propList.map((p) => ({
               name: p.name,
               description: p.description,
@@ -50,12 +47,7 @@ export const generateWebTypesConfig = (componentNames: string[]) => {
   const distDir = path.resolve(__dirname, "../../vetur");
   if (!fs.existsSync(distDir)) fs.mkdirSync(distDir, { recursive: true });
 
-  fs.writeFileSync(
-    path.resolve(distDir, "web-types.json"),
-    JSON.stringify(webTypes, null, 2),
-  );
+  fs.writeFileSync(path.resolve(distDir, "web-types.json"), JSON.stringify(webTypes, null, 2));
 
-  console.log(
-    "\x1b[32m Web-types config generated successfully in /vetur directory.\x1b[0m",
-  );
+  console.log("\x1b[32m Web-types config generated successfully in /vetur directory.\x1b[0m");
 };

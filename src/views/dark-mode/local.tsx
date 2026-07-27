@@ -15,7 +15,6 @@ import {
   Icon,
   Input,
   InputNumber,
-  KSwitch as Switch,
   Layout,
   Menu,
   Option,
@@ -24,6 +23,7 @@ import {
   Select,
   Sider,
   Space,
+  KSwitch as Switch,
   Tag,
   TextArea,
   type ShapeType,
@@ -41,7 +41,7 @@ const sideItems = [
     {
       key: "4",
       title: (
-        <a href="https://k-ui.cn" target="_blank" rel="noreferrer">
+        <a href="https://react.k-ui.cn" target="_blank" rel="noreferrer">
           Navigation - Link
         </a>
       ),

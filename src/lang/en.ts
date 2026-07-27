@@ -1,6 +1,6 @@
 export default {
   index: {
-    desc: "A set of desktop UI component library based on Vue.js",
+    desc: "A set of desktop UI component library based on React.js",
     btn_quick_start: "Quick Started",
   },
   text: {

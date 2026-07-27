@@ -1,117 +1,138 @@
 <p align="center">
-    <a href="https://k-ui.cn">
-        <img width="100" src="https://cdn.chuchur.com/img/logo-kui.svg">
-    </a>
+  <a href="https://react.k-ui.cn">
+    <img width="100" src="https://cdn.chuchur.com/img/logo-kui.svg" alt="KUI Logo">
+  </a>
 </p>
-<h1 align="center">
-   Kui for Vue
-</h1>
+
+<h1 align="center">React KUI</h1>
 
 <div align="center">
 
-Lightweight Desktop UI Component Library for Vue.js
+A desktop UI component library built with React 19 and TypeScript
 
-[![kui-vue](https://img.shields.io/npm/v/kui-vue.svg?style=flat-square)](https://www.npmjs.org/package/kui-vue)
-[![NPM downloads](http://img.shields.io/npm/dm/kui-vue.svg?style=flat-square)](https://npmjs.org/package/kui-vue)
-[![NPM downloads](https://img.shields.io/npm/dt/kui-vue.svg?style=flat-square)](https://npmjs.org/package/kui-vue)
-![JS gzip size](http://img.badgesize.io/https://unpkg.com/kui-vue/dist/index.js?compression=gzip&label=gzip%20size:%20JS&style=flat-square)
-![CSS gzip size](http://img.badgesize.io/https://unpkg.com/kui-vue/style/index.css?compression=gzip&label=gzip%20size:%20CSS&style=flat-square)
+[![npm version](https://img.shields.io/npm/v/react-kui.svg?style=flat-square)](https://www.npmjs.com/package/react-kui)
+[![npm downloads](https://img.shields.io/npm/dm/react-kui.svg?style=flat-square)](https://www.npmjs.com/package/react-kui)
+[![license](https://img.shields.io/npm/l/react-kui.svg?style=flat-square)](./LICENSE)
 
-![theme](demo.png)
-
-English | [简体中文](README.zh-CN.md)
+English · [简体中文](README.zh-CN.md)
 
 </div>
 
-# Documentation
+![React KUI theme preview](demo.png)
 
-- [Quick Start](https://k-ui.cn/guide/quick-started)
-- [Components Overview](https://k-ui.cn/guide/components)
-- [Dark Mode](https://k-ui.cn/guide/dark-mode)
-- [Icons](https://k-ui.cn/components/icons)
-- [Internationalization](https://k-ui.cn/guide/language)
-- [CHANGELOG](https://k-ui.cn/guide/change-log)
+## Features
 
-# Features
+- Built for React 19 with modern React APIs
+- Written in TypeScript with complete component type declarations
+- 50+ desktop components covering general, layout, navigation, form, data display, and feedback scenarios
+- Theme customization, dark mode, and multiple component sizes
+- Built-in internationalization support and multilingual resources
+- On-demand component usage for modern frontend toolchains such as Vite
+- Support for modern browsers and Electron
 
-- Up to 50 high-quality Components.
-- Internationalization Support for Dozens of Languages.
-- Develop with TypeScript
-- Supports Vue.js 3.x
-- Supports SSR
-- Supports [Nuxt.js](https://nuxtjs.org/)
-- Supports Electron
+## Documentation
 
-# Install
+- [Quick Start](https://react.k-ui.cn/guide/quick-started-en)
+- [Components Overview](https://react.k-ui.cn/guide/components-en)
+- [Dark Mode](https://react.k-ui.cn/guide/dark-mode-en)
+- [Internationalization](https://react.k-ui.cn/guide/language-en)
+- [Changelog](https://react.k-ui.cn/guide/change-log-en)
 
-```bash
-npm install kui-vue --save
-```
+## Installation
 
-```bash
-npm add kui-vue
-```
+Using pnpm:
 
 ```bash
-yarn add kui-vue
+pnpm add react-kui kui-icons
 ```
+
+You can also use npm, Yarn, or Bun:
 
 ```bash
-bun add kui-vue
+npm install react-kui kui-icons
+yarn add react-kui kui-icons
+bun add react-kui kui-icons
 ```
 
-Using a script tag for global use:
+`react` and `react-dom` are peer dependencies. Your application should use React 19.
 
-```html
-<!-- import stylesheet -->
-<link rel="stylesheet" href="//unpkg.com/kui-vue/style/index.css" />
-<!-- import kui -->
-<script src="//unpkg.com/kui-vue"></script>
+## Quick Start
+
+Import the library stylesheet in your application entry, then use components directly:
+
+```tsx
+import { createRoot } from "react-dom/client";
+import { Button, Space, message } from "react-kui";
+import "react-kui/style/index.css";
+
+function App() {
+  return (
+    <Space>
+      <Button type="primary" onClick={() => message.success("Hello React KUI!")}>
+        Primary
+      </Button>
+      <Button>Default</Button>
+    </Space>
+  );
+}
+
+createRoot(document.getElementById("root")!).render(<App />);
 ```
 
-# Usage
+Component props and events include TypeScript types and editor autocompletion:
 
-```html
-<template>
-  <div>
-    <k-button type="primary" @click="test">Primary</k-button>
-  </div>
-</template>
-<script setup lang="ts">
-  import { message } from "kui-vue";
-  const test = () => {
-    message.info("Hello kui !");
-  };
-</script>
+```tsx
+import { Cascader, type CascaderOption, type CascaderValue } from "react-kui";
+import { useState } from "react";
+
+const options: CascaderOption[] = [
+  {
+    value: "california",
+    label: "California",
+    children: [{ value: "san-francisco", label: "San Francisco" }],
+  },
+];
+
+export default function Demo() {
+  const [value, setValue] = useState<CascaderValue>([]);
+  return <Cascader value={value} options={options} onChange={setValue} />;
+}
 ```
 
-# 👌 Platform Support
-
-Kui supports all major modern browsers.
-
-| [<img alt="chrome" height="24px" src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/chrome/chrome.png" />](https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/chrome/chrome.png)<br>chrome | [<img alt="firefox" height="24px" src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/firefox/firefox.png" />](https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/firefox/firefox.png)<br>firefox | [<img alt="safari" height="24px" src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/safari/safari.png" />](https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/safari/safari.png)<br>safari | [<img alt="IE/Edge" height="24px" src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/edge/edge.png" />](https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/edge/edge.png)<br> IE/Edge | [<img alt="electron" height="24px" src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/electron/electron.png" />](https://cdnjs.cloudflare.com/ajax/libs/browser-logos/70.4.0/electron/electron.png)<br>Electron |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| latest 2 versions                                                                                                                                                                                                 | latest 2 versions                                                                                                                                                                                                       | latest 2 versions                                                                                                                                                                                                 | Edge                                                                                                                                                                                                         | latest 2 versions                                                                                                                                                                                                             |
-
-# Local Development
-
-Clone the repository locally:
+## Local Development
 
 ```bash
-$ git clone git@github.com:smallerqiu/kui-vue.git
-$ cd kui-vue
-$ npm install
-$ npm start
+git clone git@github.com:smallerqiu/kui-react.git
+cd kui-react
+pnpm install
+pnpm dev
 ```
 
-Open the browser to visit http://127.0.0.1:7005
+The documentation development server runs at [http://localhost:7006](http://localhost:7006) by default.
 
-# Ecosystem Links
+Common commands:
 
-[Kui for react](https://react.k-ui.cn)
+```bash
+pnpm dev          # Start the documentation development server
+pnpm typecheck    # Run TypeScript checks
+pnpm build:docs   # Build the documentation site
+pnpm build        # Build the component library and styles
+```
 
-# License
+## Browser Support
 
-[MIT](http://opensource.org/licenses/MIT)
+React KUI supports the latest two versions of major modern browsers, including Chrome, Edge, Firefox, and Safari. Internet Explorer is not supported.
 
-Copyright (c) 2017-present, Qiu
+## Contributing
+
+Issues and pull requests are welcome. Before submitting code, please ensure that the type checks and relevant builds pass.
+
+- [GitHub repository](https://github.com/smallerqiu/kui-react)
+- [Gitee repository](https://gitee.com/chuchur/kui-react)
+- [Issue tracker](https://gitee.com/chuchur/kui-react/issues)
+
+## License
+
+[MIT](./LICENSE)
+
+Copyright © 2017-present Qiu

@@ -14,7 +14,7 @@ export default function Custom() {
   return (
     <Space vertical block>
       <QRCode
-        value="https://k-ui.cn"
+        value="https://react.k-ui.cn"
         size={size}
         colorDark={color}
         errorLevel={level}

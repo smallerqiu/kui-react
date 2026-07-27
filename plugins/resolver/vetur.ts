@@ -142,7 +142,7 @@ export const generateVeturConfig = (componentNames: string[]) => {
 
     // 写入 tags.json 定义
     tags[kebabName] = {
-      description: `Kui Vue component: ${name}`,
+      description: `Kui React component: ${name}`,
       attributes: propList.map((p) => p.name),
     };
 

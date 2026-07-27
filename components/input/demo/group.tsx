@@ -31,11 +31,11 @@ export default function Group() {
         <Input style={{ width: "30%" }} value="28398987" />
       </InputGroup>
       <InputGroup size="small">
-        <Input style={{ width: "calc(100% - 200px)" }} value="https://k-ui.cn" />
+        <Input style={{ width: "calc(100% - 200px)" }} value="https://react.k-ui.cn" />
         <Button type="primary">Submit</Button>
       </InputGroup>
       <InputGroup>
-        <Input style={{ width: "calc(100% - 200px)" }} value="https://k-ui.cn" />
+        <Input style={{ width: "calc(100% - 200px)" }} value="https://react.k-ui.cn" />
         <Button type="primary">Submit</Button>
       </InputGroup>
       <InputGroup>

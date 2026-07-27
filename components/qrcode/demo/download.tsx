@@ -5,7 +5,7 @@ import Poptip from "../../poptip";
 import Space from "../../space";
 import QRCode, { type QRCodeRef } from "../index";
 export default function Download() {
-  const [url, setUrl] = useState("https://k-ui.cn"),
+  const [url, setUrl] = useState("https://react.k-ui.cn"),
     ref = useRef<QRCodeRef>(null);
   return (
     <Space vertical>

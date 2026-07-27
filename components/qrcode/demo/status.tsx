@@ -2,7 +2,7 @@ import { useState } from "react";
 import Space from "../../space";
 import QRCode, { type QRCodeStatus } from "../index";
 export default function Status() {
-  const [url, setUrl] = useState("https://k-ui.cn"),
+  const [url, setUrl] = useState("https://react.k-ui.cn"),
     [status, setStatus] = useState<QRCodeStatus>("expired");
   const refresh = () => {
     setStatus("loading");

@@ -1,6 +1,6 @@
 export default {
   index: {
-    desc: "一套基于Vue.js的桌面UI组件库",
+    desc: "一套基于React.js的桌面UI组件库",
     btn_quick_start: "快速上手",
   },
   text: {

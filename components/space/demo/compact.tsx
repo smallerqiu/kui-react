@@ -10,7 +10,7 @@ export default function Compact() {
         <Input style={{ width: "50%" }} value="28398987" readOnly />
       </Space>
       <Space compact block>
-        <Input style={{ width: "calc(100% - 100px)" }} value="https://k-ui.cn" readOnly />
+        <Input style={{ width: "calc(100% - 100px)" }} value="https://react.k-ui.cn" readOnly />
         <Button type="primary">Submit</Button>
       </Space>
       <Space compact block>
