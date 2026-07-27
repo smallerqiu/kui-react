@@ -1,10 +1,16 @@
 import { useState } from "react";
-import { Checkbox } from "../../checkbox";
-import type { ShapeType, SizeType } from "../../const/types";
-import { RadioGroup } from "../../radio";
-import Slider from "../../slider";
-import Space from "../../space";
-import { SkeletonAvatar, SkeletonButton, SkeletonImage, SkeletonText } from "../index";
+import {
+  Checkbox,
+  type ShapeType,
+  type SizeType,
+  RadioGroup,
+  Slider,
+  Space,
+  SkeletonAvatar,
+  SkeletonButton,
+  SkeletonImage,
+  SkeletonText,
+} from "react-kui";
 const sizes = [
     { label: "Small", value: "small" },
     { label: "Default", value: undefined },
@@ -30,8 +36,16 @@ export default function Items() {
   return (
     <>
       <Space size={15}>
-        <Checkbox checked={animated} onChange={setAnimated} label="Animated" />
-        <Checkbox checked={block} onChange={setBlock} label="Button block" />
+        <Checkbox
+          checked={animated}
+          onChange={(event) => setAnimated(event.checked)}
+          label="Animated"
+        />
+        <Checkbox
+          checked={block}
+          onChange={(event) => setBlock(event.checked)}
+          label="Button block"
+        />
         Size: <RadioGroup options={sizes} value={size} onChange={setSize} type="button" />
       </Space>
       <br />

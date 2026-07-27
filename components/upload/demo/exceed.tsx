@@ -1,8 +1,6 @@
 import { Upload as UploadIcon } from "kui-icons";
 import { useState } from "react";
-import { Button } from "../../button";
-import message from "../../message";
-import Upload from "../index";
+import { Button, message, Upload } from "react-kui";
 import { action, headers } from "./shared";
 const limit = 2;
 export default function Exceed() {

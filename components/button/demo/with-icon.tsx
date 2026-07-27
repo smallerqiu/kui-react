@@ -1,7 +1,5 @@
 import { ChevronDown, Power, Search } from "kui-icons";
-import Icon from "../../icon";
-import Space from "../../space";
-import { Button } from "../index";
+import { Icon, Space, Button } from "react-kui";
 export default function WithIcon() {
   return (
     <Space wrap>

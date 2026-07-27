@@ -1,5 +1,4 @@
-import message from "../../message";
-import type { UploadChangeEvent } from "../index";
+import { message, type UploadChangeEvent } from "react-kui";
 export const action = "https://www.chuchur.com/api/upload/image";
 export const headers = { authorization: "here is token" };
 export const handleChange = (event: UploadChangeEvent) => {

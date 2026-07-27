@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import message from "../../message";
-import Tree, { type TreeNode } from "../index";
+import { Button, message, Tree, type TreeNode } from "react-kui";
 const data: TreeNode[] = [
   {
     title: "tree 1",

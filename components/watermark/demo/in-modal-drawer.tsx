@@ -1,10 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import Drawer from "../../drawer";
-import Flex from "../../flex";
-import Modal from "../../modal";
-import Space from "../../space";
-import Watermark from "../index";
+import { Button, Drawer, Flex, Modal, Space, Watermark } from "react-kui";
 const content = ["审批专用", "张三 2026-07-10", "IP: 192.168.1.100"],
   body = (
     <Flex style={{ backgroundColor: "#f5f5f510", height: 500 }} align="center" justify="center">

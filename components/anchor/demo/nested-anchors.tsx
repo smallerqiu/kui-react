@@ -1,4 +1,4 @@
-import { Anchor, AnchorLink } from "../index";
+import { Anchor, AnchorLink } from "react-kui";
 export default function Nested() {
   return (
     <div

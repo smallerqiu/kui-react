@@ -1,7 +1,6 @@
 import { Heart } from "kui-icons";
 import { useState } from "react";
-import Space from "../../space";
-import Rate from "../index";
+import { Space, Rate } from "react-kui";
 export default function Basic() {
   const [value, setValue] = useState(3);
   return (

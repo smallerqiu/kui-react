@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
-import type { TreeNode } from "../../tree";
-import TreeSelect from "../index";
+import { type TreeNode, TreeSelect } from "react-kui";
 const insert = (nodes: TreeNode[], key: string, children: TreeNode[]): boolean => {
   for (const node of nodes) {
     if (node.key === key) {

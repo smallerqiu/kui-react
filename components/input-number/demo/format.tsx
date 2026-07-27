@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Space from "../../space";
-import InputNumber from "../index";
+import { Space, InputNumber } from "react-kui";
 export default function Format() {
   const [n, setN] = useState(0.1),
     [n1, setN1] = useState(0.1),

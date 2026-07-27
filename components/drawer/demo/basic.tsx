@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import Space from "../../space";
-import Drawer from "../index";
+import { Button, Space, Drawer } from "react-kui";
 const Body = () => (
   <>
     <p>something ...</p>

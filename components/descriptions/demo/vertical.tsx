@@ -1,4 +1,4 @@
-import { Descriptions } from "../index";
+import { Descriptions } from "react-kui";
 import { BasicItems } from "./content";
 export default function Vertical() {
   return (

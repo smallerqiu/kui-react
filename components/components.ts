@@ -26,7 +26,7 @@ export { default as Card } from "./card";
 export type { CardProps } from "./card";
 
 export { Carousel, CarouselItem } from "./carousel";
-export type { CarouselProps } from "./carousel";
+export type { CarouselProps, CarouselRef } from "./carousel";
 
 export { Checkbox, CheckboxGroup } from "./checkbox";
 export type { ChangeEvent, CheckboxGroupProps, CheckboxOption, CheckboxProps } from "./checkbox";
@@ -38,7 +38,7 @@ export { default as ColorPicker } from "./color-picker";
 export type { ColorPickerProps } from "./color-picker";
 
 export { default as DatePicker } from "./date-picker";
-export type { DatePickerProps } from "./date-picker";
+export type { DatePickerInput, DatePickerProps } from "./date-picker";
 
 export { Descriptions, DescriptionsItem } from "./descriptions";
 export type { DescriptionsItemProps, DescriptionsProps } from "./descriptions";
@@ -56,8 +56,14 @@ export { default as Empty } from "./empty";
 export type { EmptyProps } from "./empty";
 
 export { Form, FormItem } from "./form";
-export type { FormContext, FormItemProps, FormProps, FormSubmitEvent } from "./form";
-export type { FormRule } from "./form/types";
+export type {
+  FormContext,
+  FormExpose,
+  FormItemProps,
+  FormProps,
+  FormRule,
+  FormSubmitEvent,
+} from "./form";
 
 export { default as Flex } from "./flex";
 export type { FlexAlignType, FlexJustifyType, FlexProps, FlexSizeType } from "./flex";
@@ -66,7 +72,7 @@ export { Grid, GridItem } from "./grid";
 export type { GridItemProps, GridProps } from "./grid";
 
 export { ImageGroup, KImage } from "./image";
-export type { ImageGroupProps, ImageProps } from "./image";
+export type { ImageGroupProps, ImageProps, ImageRef } from "./image";
 
 export { default as Icon } from "./icon";
 export type { IconProps, IconType } from "./icon";
@@ -176,10 +182,16 @@ export { Col, Row } from "./row-col";
 export type { ColProps, RowProps } from "./row-col";
 
 export { default as Upload } from "./upload";
-export type { UploadChangeEvent, UploadContext, UploadFile, UploadProps } from "./upload";
+export type {
+  UploadChangeEvent,
+  UploadContext,
+  UploadFile,
+  UploadProps,
+  UploadRef,
+} from "./upload";
 
 export { default as Watermark } from "./watermark";
-export type { WatermarkLayoutType, WatermarkProps } from "./watermark";
+export type { WatermarkLayoutType, WatermarkProps, WatermarkTextItem } from "./watermark";
 
 export { default as theme } from "./utils/theme";
 

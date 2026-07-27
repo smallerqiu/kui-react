@@ -1,5 +1,4 @@
-import Space from "../../space";
-import { Col, Row, type RowProps } from "../index";
+import { Space, Col, Row, type RowProps } from "react-kui";
 const values: NonNullable<RowProps["justify"]>[] = [
   "start",
   "center",

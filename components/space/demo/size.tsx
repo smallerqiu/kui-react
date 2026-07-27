@@ -1,5 +1,4 @@
-import { Button } from "../../button";
-import Space from "../index";
+import { Button, Space } from "react-kui";
 export default function SizeDemo() {
   return (
     <Space vertical>

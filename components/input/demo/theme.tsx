@@ -1,10 +1,6 @@
 import { Search } from "kui-icons";
 import { useState } from "react";
-import { Checkbox } from "../../checkbox";
-import type { ShapeType } from "../../const/types";
-import message from "../../message";
-import Space from "../../space";
-import { Input, TextArea } from "../index";
+import { Checkbox, type ShapeType, message, Space, Input, TextArea } from "react-kui";
 export default function Theme() {
   const [circle, setCircle] = useState(false);
   const shape: ShapeType | undefined = circle ? "circle" : undefined;
@@ -14,7 +10,7 @@ export default function Theme() {
   };
   return (
     <Space vertical block>
-      <Checkbox checked={circle} label="Circle" onChange={setCircle} />
+      <Checkbox checked={circle} label="Circle" onChange={(event) => setCircle(event.checked)} />
       <Input placeholder="Please input" shape={shape} />
       <Input placeholder="Disabled" disabled shape={shape} />
       <Input placeholder="Please input" icon={Search} shape={shape} />

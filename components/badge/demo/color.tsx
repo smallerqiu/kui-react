@@ -1,5 +1,4 @@
-import Space from "../../space";
-import Badge from "../index";
+import { Space, Badge } from "react-kui";
 const custom = ["#c20", "#39f", "#e3f", "#6c0"];
 const colors = [
   "pink",

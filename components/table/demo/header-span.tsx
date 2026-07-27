@@ -1,4 +1,4 @@
-import Table, { type Column } from "../index";
+import { Table, type Column } from "react-kui";
 const data = Array.from({ length: 10 }, (_, i) => ({
   key: i,
   name: "John Brown",

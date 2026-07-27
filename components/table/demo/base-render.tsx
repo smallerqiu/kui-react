@@ -1,10 +1,5 @@
 import { Moon, Sun } from "kui-icons";
-import { Button } from "../../button";
-import Icon from "../../icon";
-import { modal } from "../../modal";
-import Space from "../../space";
-import Tag from "../../tag";
-import Table, { type Column } from "../index";
+import { Button, Icon, modal, Space, Tag, Table, type Column } from "react-kui";
 import { people, type Person } from "./data";
 const columns: Column<Person>[] = [
   { title: "Name", key: "name" },

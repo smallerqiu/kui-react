@@ -1,12 +1,17 @@
 import { useRef, useState } from "react";
-import { Button } from "../../button";
-import { Input } from "../../input";
-import message from "../../message";
-import Modal from "../../modal";
-import Space from "../../space";
-import Tag from "../../tag";
-import { Form, FormItem, type FormExpose, type FormSubmitEvent } from "../index";
-import type { FormRule } from "../types";
+import {
+  Button,
+  Input,
+  message,
+  Modal,
+  Space,
+  Tag,
+  Form,
+  FormItem,
+  type FormExpose,
+  type FormSubmitEvent,
+  type FormRule,
+} from "react-kui";
 const labelCol = { span: 6 },
   wrapperCol = { span: 16 };
 export default function WithModal() {

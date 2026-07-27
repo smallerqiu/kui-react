@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import Space from "../../space";
-import Modal from "../index";
+import { Button, Space, Modal } from "react-kui";
 
 const text = `A long time ago, In a beautiful kingdom,
 there lived a young king and queen,

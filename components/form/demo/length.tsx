@@ -1,11 +1,17 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import { CheckboxGroup } from "../../checkbox";
-import { Input, TextArea } from "../../input";
-import message from "../../message";
-import { Option, Select } from "../../select";
-import { Form, FormItem, type FormSubmitEvent } from "../index";
-import type { FormRule } from "../types";
+import {
+  Button,
+  CheckboxGroup,
+  Input,
+  TextArea,
+  message,
+  Option,
+  Select,
+  Form,
+  FormItem,
+  type FormSubmitEvent,
+  type FormRule,
+} from "react-kui";
 const initial = {
   number: "",
   text: "",

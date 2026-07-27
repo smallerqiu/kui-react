@@ -1,5 +1,4 @@
-import Divider from "../../divider";
-import Space from "../index";
+import { Divider, Space } from "react-kui";
 export default function Split() {
   return (
     <Space split={<Divider type="vertical" />}>

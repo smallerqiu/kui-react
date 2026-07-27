@@ -1,9 +1,5 @@
 import { useRef, useState } from "react";
-import { Button } from "../../button";
-import { Input } from "../../input";
-import message from "../../message";
-import { Form, FormItem, type FormExpose } from "../index";
-import type { FormRule } from "../types";
+import { Button, Input, message, Form, FormItem, type FormExpose, type FormRule } from "react-kui";
 const labelCol = { span: 5 },
   wrapperCol = { span: 16 };
 export default function CustomValid() {

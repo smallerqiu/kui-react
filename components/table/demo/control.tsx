@@ -1,13 +1,16 @@
 import { Moon, Sun } from "kui-icons";
 import { useState } from "react";
-import { Button } from "../../button";
-import type { SizeType } from "../../const/types";
-import Icon from "../../icon";
-import { RadioGroup } from "../../radio";
-import Space from "../../space";
-import Switch from "../../switch";
-import Tag from "../../tag";
-import Table, { type Column } from "../index";
+import {
+  Button,
+  type SizeType,
+  Icon,
+  RadioGroup,
+  Space,
+  KSwitch as Switch,
+  Tag,
+  Table,
+  type Column,
+} from "react-kui";
 import { people, type Person } from "./data";
 export default function Control() {
   const [size, setSize] = useState<SizeType>("medium"),
@@ -53,11 +56,11 @@ export default function Control() {
           type="button"
           options={["large", "medium", "small"].map((value) => ({ value, label: value }))}
         />
-        Border: <Switch checked={bordered} onChange={setBordered} />
-        Loading: <Switch checked={loading} onChange={setLoading} />
-        Checkbox: <Switch checked={checkable} onChange={setCheckable} />
-        Empty: <Switch checked={empty} onChange={setEmpty} />
-        Striped: <Switch checked={striped} onChange={setStriped} />
+        Border: <Switch checked={bordered} onChange={(value) => setBordered(Boolean(value))} />
+        Loading: <Switch checked={loading} onChange={(value) => setLoading(Boolean(value))} />
+        Checkbox: <Switch checked={checkable} onChange={(value) => setCheckable(Boolean(value))} />
+        Empty: <Switch checked={empty} onChange={(value) => setEmpty(Boolean(value))} />
+        Striped: <Switch checked={striped} onChange={(value) => setStriped(Boolean(value))} />
       </Space>
       <Table
         data={empty ? [] : people}

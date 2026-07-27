@@ -43,5 +43,5 @@ Content area that can be collapsed/expanded.
 | Property | Description                             | Type   | Default |
 | -------- | --------------------------------------- | ------ | ------- |
 | title    | The title of the currently active panel | string | -       |
-| key      | The key required by Vue                 | string | -       |
+| key      | Unique identifier of the panel          | string | -       |
 | extra    | Card title extension                    | slot   | -       |

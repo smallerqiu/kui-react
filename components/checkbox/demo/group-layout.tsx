@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { RadioGroup } from "../../radio";
-import Space from "../../space";
-import { CheckboxGroup } from "../index";
+import { RadioGroup, Space, CheckboxGroup } from "react-kui";
 const types = [
   { label: "Vertical", value: "vertical" },
   { label: "Horizontal", value: "horizontal" },

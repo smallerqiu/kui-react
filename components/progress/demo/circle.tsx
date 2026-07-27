@@ -1,4 +1,4 @@
-import Progress from "../index";
+import { Progress } from "react-kui";
 export default function Circle() {
   return (
     <>

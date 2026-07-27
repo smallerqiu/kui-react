@@ -1,4 +1,4 @@
-import Watermark from "../index";
+import { Watermark } from "react-kui";
 export default function Basic() {
   return (
     <div className="salary-card" style={{ width: "100%", height: 500 }}>

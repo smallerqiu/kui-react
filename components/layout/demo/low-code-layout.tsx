@@ -1,6 +1,5 @@
 import { Files, GitBranch, Search } from "kui-icons";
-import Icon from "../../icon";
-import Layout, { Content, Footer, Header, Sider } from "../index";
+import { Icon, Layout, Content, Footer, Header, Sider } from "react-kui";
 import "./demo.css";
 export default function LowCode() {
   return (

@@ -1,10 +1,5 @@
 import { CircleAlert } from "kui-icons";
-import { Button } from "../../button";
-import Flex from "../../flex";
-import Icon from "../../icon";
-import { modal } from "../../modal";
-import Tooltip from "../../tooltip";
-import Table, { type Column } from "../index";
+import { Button, Flex, Icon, modal, Tooltip, Table, type Column } from "react-kui";
 const data = [
   { key: "0", name: "Li Lei", age: 32, address: "Wu Han Guanggu No. 328" },
   { key: "1", name: "Liu Hao", age: 28, address: "Wu Han Hongshan No. 128" },

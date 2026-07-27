@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Menu from "../index";
+import { Menu } from "react-kui";
 import { items } from "./data";
 export default function Vertical() {
   const [current, setCurrent] = useState(["1-1"]);

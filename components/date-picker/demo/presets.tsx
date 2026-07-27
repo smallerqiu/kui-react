@@ -1,8 +1,6 @@
 import dayjs from "dayjs";
 import { useState } from "react";
-import { Button } from "../../button";
-import Space from "../../space";
-import DatePicker, { type DatePickerInput } from "../index";
+import { Button, Space, DatePicker, type DatePickerInput } from "react-kui";
 const p1 = [
   { label: "Yesterday", value: () => dayjs().add(-1, "d") },
   { label: "7 days ago", value: () => dayjs().add(-7, "d") },

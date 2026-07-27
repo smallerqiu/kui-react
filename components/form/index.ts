@@ -7,4 +7,5 @@ export type {
   FormSubmitEvent,
 } from "./form";
 export type { FormItemProps } from "./form-item";
+export type { FormRule } from "./types";
 export { Form, FormItem };

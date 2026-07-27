@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import Space from "../../space";
-import { KImage } from "../index";
+import { Button, Space, KImage } from "react-kui";
 export default function Errors() {
   const [src, setSrc] = useState("https://cdn.chuchur.com/upload/demo/test_300.jpg");
   return (

@@ -31,8 +31,6 @@ export default {
     language: "多语言",
     change_log: "更新日志",
     dark_mode: "暗黑模式",
-    docs_v4: "v4.x 文档(for vue3)",
-    docs_v3: "v3.x 文档(for vue2)",
     docs_v2: "v2.x 文档",
     docs_react: "For React 文档",
   },

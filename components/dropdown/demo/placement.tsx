@@ -1,8 +1,4 @@
-import { Button } from "../../button";
-import type { DropPlacementsType } from "../../const/types";
-import { Menu, MenuItem } from "../../menu";
-import Space from "../../space";
-import { Dropdown } from "../index";
+import { Button, type DropPlacementsType, Menu, MenuItem, Space, Dropdown } from "react-kui";
 const placements: DropPlacementsType[] = [
   "bottom-left",
   "bottom",

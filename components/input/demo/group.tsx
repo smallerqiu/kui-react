@@ -1,12 +1,16 @@
 import { Copy } from "kui-icons";
-import { Button } from "../../button";
-import DatePicker from "../../date-picker";
-import InputNumber from "../../input-number";
-import { Option, Select } from "../../select";
-import Space from "../../space";
-import Tooltip from "../../tooltip";
-import TreeSelect from "../../tree-select";
-import { Input, InputGroup } from "../index";
+import {
+  Button,
+  DatePicker,
+  InputNumber,
+  Option,
+  Select,
+  Space,
+  Tooltip,
+  TreeSelect,
+  Input,
+  InputGroup,
+} from "react-kui";
 const treeData = [
   {
     title: "fruit",

@@ -1,7 +1,4 @@
-import { Button } from "../../button";
-import message from "../../message";
-import Space from "../../space";
-import { modal } from "../index";
+import { Button, message, Space, modal } from "react-kui";
 
 const confirm = () =>
   modal.confirm({

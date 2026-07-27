@@ -1,8 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import { Radio, RadioGroup } from "../../radio";
-import Space from "../../space";
-import Drawer, { type DrawerPlacementsType } from "../index";
+import { Button, Radio, RadioGroup, Space, Drawer, type DrawerPlacementsType } from "react-kui";
 const placements: DrawerPlacementsType[] = ["left", "top", "right", "bottom"];
 export default function Custom() {
   const [open, setOpen] = useState(false),

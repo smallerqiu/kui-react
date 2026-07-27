@@ -1,6 +1,4 @@
-import { Button } from "../../button";
-import Space from "../../space";
-import Poptip from "../index";
+import { Button, Space, Poptip } from "react-kui";
 
 const content = (
   <>

@@ -1,6 +1,4 @@
-import { Button } from "../../button";
-import { Content, Footer, Header, Layout, Sider } from "../../layout";
-import { Grid, GridItem } from "../index";
+import { Button, Content, Footer, Header, Layout, Sider, Grid, GridItem } from "react-kui";
 import "./demo.css";
 export default function Architecture() {
   return (

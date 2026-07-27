@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import Layout, { Content, Header, Sider } from "../index";
+import { Button, Layout, Content, Header, Sider } from "react-kui";
 import "./demo.css";
 export default function Workbench() {
   const [detail, setDetail] = useState(true);

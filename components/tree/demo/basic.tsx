@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Tree from "../index";
+import { Tree } from "react-kui";
 import { expanded, treeData } from "./data";
 export default function Basic() {
   const [keys, setKeys] = useState(expanded);

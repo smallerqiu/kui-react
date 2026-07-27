@@ -1,4 +1,4 @@
-import Divider from "../index";
+import { Divider } from "react-kui";
 export default function WithText() {
   return (
     <div>

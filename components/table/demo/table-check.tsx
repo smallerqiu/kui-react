@@ -1,7 +1,5 @@
 import { useState } from "react";
-import Space from "../../space";
-import Tag from "../../tag";
-import Table, { type Column } from "../index";
+import { Space, Tag, Table, type Column } from "react-kui";
 import { basicColumns, people, type Person } from "./data";
 const columns: Column<Person>[] = [
   ...basicColumns.map((column) =>

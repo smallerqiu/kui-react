@@ -1,5 +1,5 @@
 // Transition utility for React components
-// Provides CSS-based transition helpers similar to Vue's Transition component
+// Provides CSS-based transition helpers similar to React Transition component
 
 export interface TransitionCallbacks {
   onBeforeEnter?: (el: HTMLElement) => void;

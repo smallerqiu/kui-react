@@ -1,7 +1,5 @@
 import { Heart } from "kui-icons";
-import Icon from "../../icon";
-import Space from "../../space";
-import { Avatar } from "../index";
+import { Icon, Space, Avatar } from "react-kui";
 
 export default function Types() {
   return (

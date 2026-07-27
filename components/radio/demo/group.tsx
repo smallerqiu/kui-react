@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import Space from "../../space";
-import { Radio, RadioGroup } from "../index";
+import { Space, Radio, RadioGroup } from "react-kui";
 const initial = ["Apple", "Orange", "Banana", "Pear", "Grape"].map((label) => ({
   label,
   value: label.toLowerCase(),

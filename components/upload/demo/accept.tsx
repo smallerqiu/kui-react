@@ -1,7 +1,5 @@
 import { Image, Upload as UploadIcon, Video } from "kui-icons";
-import { Button } from "../../button";
-import Space from "../../space";
-import Upload from "../index";
+import { Button, Space, Upload } from "react-kui";
 import { action, handleChange, headers } from "./shared";
 const choices = [
   { accept: "image/*", icon: Image, label: "Upload Image" },

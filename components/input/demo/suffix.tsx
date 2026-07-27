@@ -1,14 +1,6 @@
 import { CircleQuestionMark, Gift, Search, User } from "kui-icons";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "../../button";
-import Icon from "../../icon";
-import message from "../../message";
-import { Select } from "../../select";
-import Space from "../../space";
-import Tag from "../../tag";
-import Tooltip from "../../tooltip";
-import TreeSelect from "../../tree-select";
-import { Input } from "../index";
+import { Button, Icon, message, Select, Space, Tag, Tooltip, TreeSelect, Input } from "react-kui";
 const protocols = [
     { label: "http", value: "http" },
     { label: "https", value: "https" },

@@ -1,6 +1,5 @@
 import { Download, Gamepad2, Heart, Mail, Shirt } from "kui-icons";
-import { Button } from "../../button";
-import Space from "../index";
+import { Button, Space } from "react-kui";
 export default function CompactVertical() {
   const icons = [Download, Gamepad2, Heart, Mail, Shirt];
   return (

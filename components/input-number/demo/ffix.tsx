@@ -1,9 +1,5 @@
 import { CircleQuestionMark, LogoYen, UserPlus } from "kui-icons";
-import { Button } from "../../button";
-import Divider from "../../divider";
-import Space from "../../space";
-import Tooltip from "../../tooltip";
-import InputNumber from "../index";
+import { Button, Divider, Space, Tooltip, InputNumber } from "react-kui";
 export default function Affix() {
   return (
     <>

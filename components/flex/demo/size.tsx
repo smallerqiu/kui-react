@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import type { SizeType } from "../../const/types";
-import Flex, { type FlexSizeType } from "../index";
+import { Button, type SizeType, Flex, type FlexSizeType } from "react-kui";
 export default function SizeDemo() {
   const [size, setSize] = useState<FlexSizeType>("small");
   const [custom, setCustom] = useState(false);

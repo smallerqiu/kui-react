@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import Space from "../../space";
-import { Option, Select } from "../index";
+import { Space, Option, Select } from "react-kui";
 import { data as initial } from "./data";
 export default function Basic() {
   const [value1, setValue1] = useState<any>(2),

@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Space from "../../space";
-import { Checkbox, CheckboxGroup } from "../index";
+import { Space, Checkbox, CheckboxGroup } from "react-kui";
 const options = ["Beijing", "Shenzhen", "Shanghai", "Guangzhou", "Wuhan"].map((label) => ({
   label,
   value: label.toLowerCase(),

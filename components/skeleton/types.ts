@@ -1,4 +1,3 @@
-// React-compatible Skeleton types (replaces Vue PropType-based types.ts)
 import type { ShapeType, SizeType } from "../const/types";
 
 export interface SkeletonBaseProps {

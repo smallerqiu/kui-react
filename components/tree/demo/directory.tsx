@@ -12,10 +12,7 @@ import {
   Trash,
 } from "kui-icons";
 import { useRef, useState } from "react";
-import { Button } from "../../button";
-import Checkbox from "../../checkbox";
-import Space from "../../space";
-import Tree, { type TreeNode } from "../index";
+import { Button, Checkbox, Space, Tree, type TreeNode } from "react-kui";
 const initial: TreeNode[] = [
   {
     title: "src",
@@ -150,7 +147,12 @@ export default function Directory() {
     <div>
       <Space wrap>
         {controls.map(([label, value, set]) => (
-          <Checkbox key={label} checked={value} onChange={set} label={label} />
+          <Checkbox
+            key={label}
+            checked={value}
+            onChange={(event) => set(event.checked)}
+            label={label}
+          />
         ))}
       </Space>
       <br />

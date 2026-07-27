@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Space from "../../space";
-import { Input, TextArea } from "../index";
+import { Space, Input, TextArea } from "react-kui";
 export default function Basic() {
   const [value, setValue] = useState("");
   return (

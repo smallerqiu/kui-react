@@ -1,5 +1,4 @@
-import Space from "../../space";
-import Slider from "../index";
+import { Space, Slider } from "react-kui";
 export default function Vertical() {
   return (
     <Space style={{ height: 300 }} block size={35}>

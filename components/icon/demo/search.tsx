@@ -1,7 +1,7 @@
 import * as icons from "kui-icons";
 import { useMemo, useState } from "react";
-import { copyToClipboard } from "../../utils/share";
-import Icon, { type IconType } from "../index";
+import { copyToClipboard } from "react-kui/utils/share";
+import { Icon, type IconType } from "react-kui";
 import "./search.less";
 import { tags } from "./tags";
 

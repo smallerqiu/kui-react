@@ -1,4 +1,4 @@
-import { Breadcrumb, BreadcrumbItem } from "../index";
+import { Breadcrumb, BreadcrumbItem } from "react-kui";
 export default function Basic() {
   return (
     <>

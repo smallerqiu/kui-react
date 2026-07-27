@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import Poptip from "../index";
+import { Button, Poptip } from "react-kui";
 
 export default function CloseInside() {
   const [show, setShow] = useState(false);

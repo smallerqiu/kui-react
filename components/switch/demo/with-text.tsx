@@ -1,7 +1,5 @@
 import { Check, LogoApple, LogoMicrosoft, Plane, Wifi, X } from "kui-icons";
-import Icon from "../../icon";
-import Space from "../../space";
-import Switch from "../index";
+import { Icon, Space, KSwitch as Switch } from "react-kui";
 export default function WithText() {
   return (
     <Space vertical align="start">

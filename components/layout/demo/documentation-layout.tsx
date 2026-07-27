@@ -1,4 +1,4 @@
-import Layout, { Content, Header, Sider } from "../index";
+import { Layout, Content, Header, Sider } from "react-kui";
 import "./demo.css";
 export default function Documentation() {
   return (

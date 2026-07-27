@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Radio, RadioGroup } from "../../radio";
-import Switch from "../../switch";
-import Spin from "../index";
+import { Radio, RadioGroup, KSwitch as Switch, Spin } from "react-kui";
 type Mode = "bounce" | "flip" | "rotate" | "zoom";
 export default function Mode() {
   const [spinning, setSpinning] = useState(false),

@@ -62,9 +62,9 @@ Dropdown selector.
 
 ## Option API
 
-| Property | Description                                                                                                                    | Type           | Default |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------- | ------- |
-| key      | Same meaning as value. If Vue requires this setting, this value should be the same as value, then value setting can be omitted | string, number | -       |
-| value    | Option value, used for filtering by default, required                                                                          | string, number | -       |
-| label    | Option display content                                                                                                         | string, number | -       |
-| disabled | Whether current item is disabled                                                                                               | bool           | false   |
+| Property | Description                                           | Type           | Default |
+| -------- | ----------------------------------------------------- | -------------- | ------- |
+| key      | Same meaning as value.                                | string, number | -       |
+| value    | Option value, used for filtering by default, required | string, number | -       |
+| label    | Option display content                                | string, number | -       |
+| disabled | Whether current item is disabled                      | bool           | false   |

@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import Space from "../../space";
-import { Avatar } from "../index";
+import { Button, Space, Avatar } from "react-kui";
 
 const userList = ["K", "Zhang", "Mr Qiu", "Jack cheng", "Jone Blue"];
 const colorList = ["#3a95ff", "#00bb5d", "#ff3300", "#ffa500"];

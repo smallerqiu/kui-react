@@ -1,6 +1,5 @@
 import { ArrowDownFromLine, Search } from "kui-icons";
-import Space from "../../space";
-import TreeSelect from "../index";
+import { Space, TreeSelect } from "react-kui";
 const data = [{ title: "tree 1", key: "0-1", children: [{ title: "tree 1-1", key: "1-1" }] }];
 export default function Theme() {
   return (

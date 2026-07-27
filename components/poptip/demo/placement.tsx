@@ -1,7 +1,4 @@
-import { Button } from "../../button";
-import Flex from "../../flex";
-import Space from "../../space";
-import Poptip from "../index";
+import { Button, Flex, Space, Poptip } from "react-kui";
 
 const tip = "See the light through the mist!";
 const item = (placement: Parameters<typeof Poptip>[0]["placement"], label: string) => (

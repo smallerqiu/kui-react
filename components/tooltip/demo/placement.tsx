@@ -1,7 +1,4 @@
-import { Button } from "../../button";
-import Flex from "../../flex";
-import Space from "../../space";
-import Tooltip from "../index";
+import { Button, Flex, Space, Tooltip } from "react-kui";
 const title = "Title";
 const item = (placement: Parameters<typeof Tooltip>[0]["placement"], label: string) => (
   <Tooltip key={placement} placement={placement} title={title}>

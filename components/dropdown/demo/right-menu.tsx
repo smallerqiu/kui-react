@@ -1,7 +1,5 @@
 import { File, LogOut, Save, Scissors, SquarePen } from "kui-icons";
-import { Menu, MenuDivider, MenuItem, type MenuSelectEvent } from "../../menu";
-import message from "../../message";
-import { Dropdown } from "../index";
+import { Menu, MenuDivider, MenuItem, type MenuSelectEvent, message, Dropdown } from "react-kui";
 const overlay = (
   <Menu onSelect={({ key }: MenuSelectEvent) => message.info("Click on item " + key)}>
     <MenuItem key="news" icon={File}>

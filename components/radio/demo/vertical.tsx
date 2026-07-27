@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Space from "../../space";
-import { RadioGroup } from "../index";
+import { Space, RadioGroup } from "react-kui";
 const directions = [
     { label: "Vertical", value: "vertical" },
     { label: "Horizontal", value: "horizontal" },

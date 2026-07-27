@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Checkbox from "../../checkbox";
-import Tree, { type TreeNode } from "../index";
+import { Checkbox, Tree, type TreeNode } from "react-kui";
 const data: TreeNode[] = [
   {
     title: "tree 1",
@@ -32,7 +31,7 @@ export default function Checkable() {
     [expanded, setExpanded] = useState(["1-1", "1-1-2", "1-2", "0-1"]);
   return (
     <>
-      <Checkbox checked={strict} onChange={setStrict}>
+      <Checkbox checked={strict} onChange={(event) => setStrict(event.checked)}>
         父子节点不关联
       </Checkbox>
       <br />

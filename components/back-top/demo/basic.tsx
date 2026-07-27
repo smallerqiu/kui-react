@@ -1,4 +1,4 @@
-import BackTop from "../index";
+import { BackTop } from "react-kui";
 export default function Basic() {
   return (
     <div>

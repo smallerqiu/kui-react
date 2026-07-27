@@ -1,19 +1,27 @@
 import { useEffect, useRef, useState } from "react";
-import { Button } from "../../button";
-import { Checkbox, CheckboxGroup } from "../../checkbox";
-import type { SizeType } from "../../const/types";
-import DatePicker from "../../date-picker";
-import { Input, TextArea } from "../../input";
-import InputNumber from "../../input-number";
-import message from "../../message";
-import { Radio, RadioGroup } from "../../radio";
-import Rate from "../../rate";
-import { Option, Select } from "../../select";
-import Slider from "../../slider";
-import Switch from "../../switch";
-import TreeSelect from "../../tree-select";
-import { Form, FormItem, type FormExpose } from "../index";
-import type { FormRule } from "../types";
+import {
+  Button,
+  Checkbox,
+  CheckboxGroup,
+  type SizeType,
+  DatePicker,
+  Input,
+  TextArea,
+  InputNumber,
+  message,
+  Radio,
+  RadioGroup,
+  Rate,
+  Option,
+  Select,
+  Slider,
+  KSwitch as Switch,
+  TreeSelect,
+  Form,
+  FormItem,
+  type FormExpose,
+  type FormRule,
+} from "react-kui";
 const treeData = [
   {
     title: "food",

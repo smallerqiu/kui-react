@@ -1,6 +1,4 @@
-import { Button } from "../../button";
-import Space from "../../space";
-import loading from "../index";
+import { Button, Space, loading } from "react-kui";
 export default function Basic() {
   return (
     <Space wrap>

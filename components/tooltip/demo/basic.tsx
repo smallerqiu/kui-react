@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Tooltip from "../index";
+import { Tooltip } from "react-kui";
 export default function Basic() {
   const [clicked, setClicked] = useState(false);
   return (

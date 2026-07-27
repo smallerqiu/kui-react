@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import Space from "../../space";
-import Upload, { type UploadFile } from "../index";
+import { Button, Space, Upload, type UploadFile } from "react-kui";
 import { action, headers } from "./shared";
 const initial: UploadFile[] = [
   {

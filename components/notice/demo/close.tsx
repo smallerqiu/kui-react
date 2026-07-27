@@ -1,8 +1,5 @@
 import { useRef } from "react";
-import { Button } from "../../button";
-import message from "../../message";
-import Space from "../../space";
-import notice from "../index";
+import { Button, message, Space, notice } from "react-kui";
 export default function Close() {
   const count = useRef(0);
   return (

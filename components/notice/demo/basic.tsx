@@ -1,6 +1,4 @@
-import { Button } from "../../button";
-import Space from "../../space";
-import notice from "../index";
+import { Button, Space, notice } from "react-kui";
 export default function Basic() {
   return (
     <Space vertical>

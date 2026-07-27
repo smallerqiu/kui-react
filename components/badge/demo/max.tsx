@@ -1,5 +1,4 @@
-import Space from "../../space";
-import Badge from "../index";
+import { Space, Badge } from "react-kui";
 const values: Array<{ count: string | number; maxCount?: number }> = [
   { count: 99 },
   { count: 100 },

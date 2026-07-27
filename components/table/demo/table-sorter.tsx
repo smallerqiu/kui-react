@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import Table, { type Column, type SortState } from "../index";
+import { Table, type Column, type SortState } from "react-kui";
 interface Row {
   key: string;
   name: string;

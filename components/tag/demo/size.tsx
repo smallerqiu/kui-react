@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { RadioGroup } from "../../radio";
-import Space from "../../space";
-import Tag from "../index";
+import { RadioGroup, Space, Tag } from "react-kui";
 const sizes = [
     { label: "Large", value: "large" },
     { label: "Medium", value: "medium" },

@@ -1,5 +1,4 @@
-import Space from "../../space";
-import Badge, { type BadgeStatusType } from "../index";
+import { Space, Badge, type BadgeStatusType } from "react-kui";
 const statuses: BadgeStatusType[] = ["success", "error", "default", "warning"];
 export default function Status() {
   return (

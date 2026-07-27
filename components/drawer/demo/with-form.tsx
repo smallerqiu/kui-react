@@ -1,14 +1,21 @@
 import { House } from "kui-icons";
 import { useRef, useState } from "react";
-import { Button } from "../../button";
-import { Checkbox, CheckboxGroup } from "../../checkbox";
-import { Form, FormItem, type FormExpose } from "../../form";
-import Input, { TextArea } from "../../input";
-import InputNumber from "../../input-number";
-import message from "../../message";
-import { Radio, RadioGroup } from "../../radio";
-import Space from "../../space";
-import Drawer from "../index";
+import {
+  Button,
+  Checkbox,
+  CheckboxGroup,
+  Form,
+  FormItem,
+  type FormExpose,
+  Input,
+  TextArea,
+  InputNumber,
+  message,
+  Radio,
+  RadioGroup,
+  Space,
+  Drawer,
+} from "react-kui";
 const rules = {
   input: [{ required: true }],
   number: [{ required: true }],

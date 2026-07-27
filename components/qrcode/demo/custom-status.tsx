@@ -1,10 +1,6 @@
 import { CircleCheck } from "kui-icons";
 import { useState } from "react";
-import { Button } from "../../button";
-import Icon from "../../icon";
-import Space from "../../space";
-import Spin from "../../spin";
-import QRCode, { type QRCodeStatus } from "../index";
+import { Button, Icon, Space, Spin, QRCode, type QRCodeStatus } from "react-kui";
 export default function CustomStatus() {
   const [url, setUrl] = useState("https://react.k-ui.cn"),
     [status, setStatus] = useState<QRCodeStatus>("expired");

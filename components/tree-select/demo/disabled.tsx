@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Space from "../../space";
-import TreeSelect from "../index";
+import { Space, TreeSelect } from "react-kui";
 import { expandedKeys, data as source } from "./data";
 const data = structuredClone(source);
 data[0].children![0].disabled = true;

@@ -1,10 +1,6 @@
 import { Heart, Star } from "kui-icons";
 import { useState } from "react";
-import { Checkbox } from "../../checkbox";
-import { Grid, GridItem } from "../../grid";
-import Icon from "../../icon";
-import Space from "../../space";
-import { StatCard, type StatNumberItem } from "../index";
+import { Checkbox, Grid, GridItem, Icon, Space, StatCard, type StatNumberItem } from "react-kui";
 const items = [
   { value: 5872, desc: "Number of orders" },
   { value: 9873672, desc: "Total Order Amount", prefix: "￥" },

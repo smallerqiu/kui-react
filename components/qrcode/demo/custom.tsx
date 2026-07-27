@@ -1,10 +1,14 @@
 import { useState } from "react";
-import ColorPicker from "../../color-picker";
-import { Radio, RadioGroup } from "../../radio";
-import Slider from "../../slider";
-import Space from "../../space";
-import Switch from "../../switch";
-import QRCode, { type QRCodeErrorLevel } from "../index";
+import {
+  ColorPicker,
+  Radio,
+  RadioGroup,
+  Slider,
+  Space,
+  KSwitch as Switch,
+  QRCode,
+  type QRCodeErrorLevel,
+} from "react-kui";
 export default function Custom() {
   const [color, setColor] = useState("#4CAF50"),
     [size, setSize] = useState(100),

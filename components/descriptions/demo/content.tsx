@@ -1,5 +1,4 @@
-import Badge from "../../badge";
-import { DescriptionsItem } from "../index";
+import { Badge, DescriptionsItem } from "react-kui";
 export function BasicItems() {
   return (
     <>

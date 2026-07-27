@@ -1,7 +1,6 @@
 import { LogoApple } from "kui-icons";
 import { useState } from "react";
-import Space from "../../space";
-import { RadioGroup } from "../index";
+import { Space, RadioGroup } from "react-kui";
 const dates = [
     { label: "1 week", value: 0 },
     { label: "1 month", value: 1 },

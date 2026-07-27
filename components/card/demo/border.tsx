@@ -1,5 +1,5 @@
 import { Heart } from "kui-icons";
-import Card from "../index";
+import { Card } from "react-kui";
 export default function Border() {
   return (
     <div className="demo-view-fill">

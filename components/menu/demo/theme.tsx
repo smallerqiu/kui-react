@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Switch from "../../switch";
-import Menu from "../index";
+import { KSwitch as Switch, Menu } from "react-kui";
 import { items } from "./data";
 export default function Theme() {
   const [dark, setDark] = useState(true),
@@ -8,7 +7,12 @@ export default function Theme() {
     [openKeys, setOpenKeys] = useState(["sub2"]);
   return (
     <div style={{ width: 256 }}>
-      <Switch trueText="dark" falseText="light" checked={dark} onChange={setDark} />
+      <Switch
+        trueText="dark"
+        falseText="light"
+        checked={dark}
+        onChange={(value) => setDark(Boolean(value))}
+      />
       <br />
       <br />
       <Menu

@@ -1,6 +1,5 @@
 import { Cloud, Heart, House } from "kui-icons";
-import Space from "../../space";
-import { Breadcrumb, BreadcrumbItem } from "../index";
+import { Space, Breadcrumb, BreadcrumbItem } from "react-kui";
 const Items = () => (
   <>
     <BreadcrumbItem href="/" icon={House} />

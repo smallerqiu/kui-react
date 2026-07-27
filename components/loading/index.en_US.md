@@ -76,4 +76,4 @@ export default axiosInstance;
 | finish   | Finish loading           | () => void              | -       |
 | error    | Loading error            | () => void              | -       |
 | update   | Manually update progress | (percent:number)=> void | -       |
-| destroy  | vue's $.destroy()        | () => void              | -       |
+| destroy  | Destroy loading       | () => void              | -       |

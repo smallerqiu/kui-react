@@ -1,10 +1,6 @@
 import { ArrowDown, ArrowUp } from "kui-icons";
 import { useState } from "react";
-import { Button } from "../../button";
-import Card from "../../card";
-import Icon from "../../icon";
-import Space from "../../space";
-import { StatNumber } from "../index";
+import { Button, Card, Icon, Space, StatNumber } from "react-kui";
 export default function WithCard() {
   const [value, setValue] = useState(Math.random() * 100000);
   return (

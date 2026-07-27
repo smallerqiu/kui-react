@@ -1,7 +1,4 @@
-import Divider from "../../divider";
-import Space from "../../space";
-import Tag from "../../tag";
-import Tooltip from "../index";
+import { Divider, Space, Tag, Tooltip } from "react-kui";
 const custom = ["#c20", "#39f", "#e3f", "#6c0"],
   colors = [
     "pink",

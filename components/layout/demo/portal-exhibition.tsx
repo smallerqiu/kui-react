@@ -1,5 +1,4 @@
-import { Button } from "../../button";
-import Layout, { Content, Footer, Header } from "../index";
+import { Button, Layout, Content, Footer, Header } from "react-kui";
 import "./demo.css";
 export default function Portal() {
   return (

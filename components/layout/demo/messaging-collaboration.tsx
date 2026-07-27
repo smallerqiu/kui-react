@@ -1,6 +1,5 @@
 import { Send } from "kui-icons";
-import { Button } from "../../button";
-import Layout, { Content, Footer, Header, Sider } from "../index";
+import { Button, Layout, Content, Footer, Header, Sider } from "react-kui";
 import "./demo.css";
 export default function Messaging() {
   return (

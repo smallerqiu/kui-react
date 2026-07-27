@@ -1,8 +1,5 @@
 import { ChevronDown } from "kui-icons";
-import { Button } from "../../button";
-import Icon from "../../icon";
-import { Menu, type MenuSelectEvent } from "../../menu";
-import { Dropdown } from "../index";
+import { Button, Icon, Menu, type MenuSelectEvent, Dropdown } from "react-kui";
 const items = [
   { key: "1-1", title: "1st menu item" },
   { key: "1-2", title: "2nd menu item" },

@@ -1,4 +1,4 @@
-import type { TreeNode } from "../../tree";
+import { type TreeNode } from "react-kui";
 export const expandedKeys = ["0-1", "1-1", "1-1-2", "1-2"];
 export const data: TreeNode[] = [
   {

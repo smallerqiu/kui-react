@@ -1,7 +1,6 @@
 import { PanelLeftClose, PanelLeftOpen } from "kui-icons";
 import { useState } from "react";
-import { Button } from "../../button";
-import Menu from "../index";
+import { Button, Menu } from "react-kui";
 import { items } from "./data";
 export default function Collapsed() {
   const [collapsed, setCollapsed] = useState(false),

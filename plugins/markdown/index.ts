@@ -33,7 +33,7 @@ export default function vitePluginKuiMd(): Plugin {
 
       const liveDemos: Array<{ component: string; title: string; source: string }> = [];
 
-      const demoReg = /\[(.*?)\]\((.*?\.vue)(?:\?show=(.*?))?\)\s*\n((?:\s*-\s+.*(?:\n|$))+)/g;
+      const demoReg = /\[(.*?)\]\((.*?\.tsx)(?:\?show=(.*?))?\)\s*\n((?:\s*-\s+.*(?:\n|$))+)/g;
 
       let processedMarkdown = code.replace(
         demoReg,
@@ -57,11 +57,16 @@ export default function vitePluginKuiMd(): Plugin {
       // fs.writeFileSync(path.join(__dirname, "demo.md"), processedMarkdown);
       const mainHtml = markdown.render(processedMarkdown);
       const parts = mainHtml.split(/KUI_LIVE_DEMO_(\d+)/g);
-      const imports = liveDemos.map((demo, index) => `import LiveDemo${index} from ${JSON.stringify(demo.component)};`).join("\n");
-      const children = parts.map((part, index) => index % 2 === 0
-        ? `createElement("div", { key: ${index}, dangerouslySetInnerHTML: { __html: ${JSON.stringify(part)} } })`
-        : `createElement(Demo, { key: ${index}, title: ${JSON.stringify(liveDemos[Number(part)].title)}, source: ${JSON.stringify(liveDemos[Number(part)].source)} }, createElement(LiveDemo${Number(part)}))`
-      ).join(",\n");
+      const imports = liveDemos
+        .map((demo, index) => `import LiveDemo${index} from ${JSON.stringify(demo.component)};`)
+        .join("\n");
+      const children = parts
+        .map((part, index) =>
+          index % 2 === 0
+            ? `createElement("div", { key: ${index}, dangerouslySetInnerHTML: { __html: ${JSON.stringify(part)} } })`
+            : `createElement(Demo, { key: ${index}, title: ${JSON.stringify(liveDemos[Number(part)].title)}, source: ${JSON.stringify(liveDemos[Number(part)].source)} }, createElement(LiveDemo${Number(part)}))`
+        )
+        .join(",\n");
       const result = `import { createElement } from "react";
 import Demo from "/src/components/demo/demo.tsx";
 ${imports}

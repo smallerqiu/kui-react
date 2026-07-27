@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
-import Space from "../../space";
-import DatePicker from "../index";
+import { Space, DatePicker } from "react-kui";
 const disabledDate = (current: Date) => current < dayjs().endOf("day").toDate();
 const before = (hour: number, minute: number) => (date: Date) => {
   const target = new Date(date);

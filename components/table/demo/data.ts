@@ -1,4 +1,4 @@
-import type { Column } from "../index";
+import { type Column } from "react-kui";
 export interface Person {
   key: string;
   name: string;

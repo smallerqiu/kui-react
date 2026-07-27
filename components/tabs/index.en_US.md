@@ -60,7 +60,7 @@ Provide peer areas to accommodate and display large chunks of content, keeping t
 
 | Property | Description                    | Type   | Default |
 | -------- | ------------------------------ | ------ | ------- |
-| key      | Key value required by Vue      | string | -       |
+| key      | Unique identifier of the panel | string | -       |
 | title    | Text displayed in tab header   | string | -       |
 | icon     | Icon displayed in tab header   | string | -       |
 | disabled | Whether tab is disabled        | bool   | false   |

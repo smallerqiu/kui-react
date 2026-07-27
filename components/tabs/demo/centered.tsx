@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TabPanel, Tabs } from "../index";
+import { TabPanel, Tabs } from "react-kui";
 export default function Centered() {
   const [value, setValue] = useState("1");
   return (

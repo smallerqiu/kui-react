@@ -1,6 +1,4 @@
-import { Button } from "../../button";
-import Space from "../../space";
-import ColorPicker from "../index";
+import { Button, Space, ColorPicker } from "react-kui";
 const placements = [
   "bottom-left",
   "bottom",

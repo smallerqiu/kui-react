@@ -1,7 +1,6 @@
 import { ArrowDown, Search } from "kui-icons";
 import { useState } from "react";
-import Space from "../../space";
-import { Select } from "../index";
+import { Space, Select } from "react-kui";
 const options = ["Apple", "Orange", "Banana", "Pear"].map((label, index) => ({
   label,
   value: String(index + 1),

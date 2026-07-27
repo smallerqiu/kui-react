@@ -1,10 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import DatePicker from "../../date-picker";
-import { Input } from "../../input";
-import { RadioGroup } from "../../radio";
-import { Option, Select } from "../../select";
-import { Form, FormItem } from "../index";
+import { Button, DatePicker, Input, RadioGroup, Option, Select, Form, FormItem } from "react-kui";
 export default function Align() {
   const [layout, setLayout] = useState<any>("horizontal");
   return (

@@ -69,10 +69,10 @@ export default axiosInstance;
 
 ## Loading API
 
-| 属性    | 说明             | 类型                    | 默认值 |
-| ------- | ---------------- | ----------------------- | ------ |
-| start   | 开始加载         | () => void              | -      |
-| finish  | 完成加载         | () => void              | -      |
-| error   | 加载错误         | () => void              | -      |
-| update  | 手动更新进度     | (percent:number)=> void | -      |
-| destroy | vue的$.destroy() | () => void              | -      |
+| 属性    | 说明         | 类型                    | 默认值 |
+| ------- | ------------ | ----------------------- | ------ |
+| start   | 开始加载     | () => void              | -      |
+| finish  | 完成加载     | () => void              | -      |
+| error   | 加载错误     | () => void              | -      |
+| update  | 手动更新进度 | (percent:number)=> void | -      |
+| destroy | 销毁加载     | () => void              | -      |

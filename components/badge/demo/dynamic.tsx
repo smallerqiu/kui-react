@@ -1,11 +1,6 @@
 import { Bell } from "kui-icons";
 import { useState } from "react";
-import { Button, ButtonGroup } from "../../button";
-import Divider from "../../divider";
-import Icon from "../../icon";
-import Space from "../../space";
-import Switch from "../../switch";
-import Badge from "../index";
+import { Button, ButtonGroup, Divider, Icon, Space, KSwitch as Switch, Badge } from "react-kui";
 export default function Dynamic() {
   const [show, setShow] = useState(true);
   const [count, setCount] = useState(5);

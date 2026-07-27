@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import Space from "../../space";
-import { StatNumber } from "../index";
+import { Button, Space, StatNumber } from "react-kui";
 export default function Basic() {
   const [value, setValue] = useState(Math.random() * 100000);
   return (

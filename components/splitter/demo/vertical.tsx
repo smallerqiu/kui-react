@@ -1,5 +1,4 @@
-import Flex from "../../flex";
-import { Splitter, SplitterPanel } from "../index";
+import { Flex, Splitter, SplitterPanel } from "react-kui";
 const Panel = ({ children }: { children: string }) => (
   <Flex align="center" justify="center" style={{ height: "100%", color: "#888" }}>
     {children}

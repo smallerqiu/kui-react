@@ -1,6 +1,5 @@
 import { Search } from "kui-icons";
-import { Button } from "../../button";
-import Space from "../index";
+import { Button, Space } from "react-kui";
 export default function Basic() {
   return (
     <Space>

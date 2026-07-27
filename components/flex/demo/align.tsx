@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import Flex, { type FlexAlignType, type FlexJustifyType } from "../index";
+import { Button, Flex, type FlexAlignType, type FlexJustifyType } from "react-kui";
 const justifyOptions: FlexJustifyType[] = [
   "flex-start",
   "center",

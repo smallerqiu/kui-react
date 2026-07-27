@@ -1,9 +1,6 @@
 import { Save } from "kui-icons";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "../../button";
-import Input from "../../input";
-import Space from "../../space";
-import Modal from "../index";
+import { Button, Input, Space, Modal } from "react-kui";
 
 export default function Custom() {
   const [open, setOpen] = useState<number | null>(null);

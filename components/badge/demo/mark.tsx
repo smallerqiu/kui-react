@@ -1,5 +1,4 @@
-import Space from "../../space";
-import Badge from "../index";
+import { Space, Badge } from "react-kui";
 export default function Mark() {
   return (
     <Space>

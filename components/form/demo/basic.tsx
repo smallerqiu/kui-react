@@ -1,17 +1,25 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import { Checkbox, CheckboxGroup } from "../../checkbox";
-import type { ShapeType, SizeType, ThemeType } from "../../const/types";
-import DatePicker from "../../date-picker";
-import { Input, TextArea } from "../../input";
-import InputNumber from "../../input-number";
-import { RadioGroup } from "../../radio";
-import { Option, Select } from "../../select";
-import Slider from "../../slider";
-import Space from "../../space";
-import Switch from "../../switch";
-import TreeSelect from "../../tree-select";
-import { Form, FormItem } from "../index";
+import {
+  Button,
+  Checkbox,
+  CheckboxGroup,
+  type ShapeType,
+  type SizeType,
+  type ThemeType,
+  DatePicker,
+  Input,
+  TextArea,
+  InputNumber,
+  RadioGroup,
+  Option,
+  Select,
+  Slider,
+  Space,
+  KSwitch as Switch,
+  TreeSelect,
+  Form,
+  FormItem,
+} from "react-kui";
 const treeData = [
   {
     title: "food",
@@ -30,7 +38,11 @@ export default function Basic() {
   return (
     <>
       <Space>
-        <Checkbox checked={disabled} onChange={setDisabled} label="Form disabled" />
+        <Checkbox
+          checked={disabled}
+          onChange={(event) => setDisabled(event.checked)}
+          label="Form disabled"
+        />
       </Space>
       <Form
         labelCol={{ span: 5 }}

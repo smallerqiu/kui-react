@@ -1,5 +1,4 @@
-import Space from "../../space";
-import { Col, Row } from "../index";
+import { Space, Col, Row } from "react-kui";
 export default function Basic() {
   return (
     <Space block vertical className="demo-grid">

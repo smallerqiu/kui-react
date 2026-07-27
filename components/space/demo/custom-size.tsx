@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import Space from "../index";
+import { Button, Space } from "react-kui";
 export default function CustomSize() {
   const [size, setSize] = useState(12);
   return (

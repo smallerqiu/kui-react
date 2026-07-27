@@ -1,5 +1,4 @@
-import Space from "../../space";
-import { KImage } from "../index";
+import { Space, KImage } from "react-kui";
 export default function Basic() {
   return (
     <Space wrap vertical>

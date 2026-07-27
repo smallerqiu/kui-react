@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Cascader, Space, type CascaderOption, type CascaderValue } from "../..";
+import { Cascader, Space, type CascaderOption, type CascaderValue } from "react-kui";
 
 const areaOptions: CascaderOption[] = [
   {

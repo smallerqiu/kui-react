@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Space from "../../space";
-import Page from "../index";
+import { Space, Page } from "react-kui";
 
 export default function Size() {
   const [page, setPage] = useState(1);

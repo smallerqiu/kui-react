@@ -1,8 +1,5 @@
 import { useState } from "react";
-import type { SizeType } from "../../const/types";
-import { RadioGroup } from "../../radio";
-import Space from "../../space";
-import TreeSelect from "../index";
+import { type SizeType, RadioGroup, Space, TreeSelect } from "react-kui";
 import { data, expandedKeys } from "./data";
 const sizes = [
   { value: "large", label: "Large" },

@@ -1,9 +1,6 @@
 import { Lock, User } from "kui-icons";
 import { useState } from "react";
-import { Button } from "../../button";
-import message from "../../message";
-import Space from "../../space";
-import { Input } from "../index";
+import { Button, message, Space, Input } from "react-kui";
 export default function WithIcon() {
   const [visible, setVisible] = useState(true);
   const search = (value: string) => {

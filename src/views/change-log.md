@@ -1,12 +1,11 @@
 # 更新日志
 
-![kui](https://img.shields.io/npm/v/kui-vue.svg?style=flat-square)
+![react-kui](https://img.shields.io/npm/v/react-kui.svg?style=flat-square)
 
-4.x 版本支持 `Vue3`, 基于 `Vue2` 的文档请参阅 <https://v3.k-ui.cn>
-遇到问题,请在 [Github](https://github.com/smallerqiu/kui-vue/issues) 提issue
+3.x 版本支持 `React 19` ,遇到问题,请在 [Github](https://github.com/smallerqiu/react-kui/issues) 提issue
 
 ```bash
-npm install kui-vue@latest --registry=http://registry.npmjs.org
+npm install react-kui@latest --registry=http://registry.npmjs.org
 ```
 
 vite 好像有缓存, 可手动清除
@@ -15,146 +14,86 @@ vite 好像有缓存, 可手动清除
 rm -rf node_modules/.vite
 ```
 
-## 5.3.1
+### 3.0.0
 
-`2026-7-17`
+- 基于`React 19`整体重构, 对标 `kui-vue`
 
-- `message` 组件新增grouping属性.相同 grouping ,只弹出一个提示消息.
+### 2.0.0
 
-## 5.3.0
+- 整体重构
+- 修复若干bug，完善若干体验
+- 整体对标 `kui-vue`
 
-`2026-7-13`
+### 1.0.8
 
-- 新增`QRCode` 二维码 组件
-- 新增`Watermark` 水印 组件
-- 修复 `Modal` 最大化问题
-- 修复 `Page` 分页器默认值问题
-- 修复 `Dropdown` 下拉定位问题
-- 修复 `Image` 拖动问题
-- 修复 `Input` 一些属性问题
+`2018-8-8`
 
-## 5.2.3
+- 图标库升级到4.3.0，使用更加规范，有效区分了ios和安卓粗细线条
+- 修复`Message`，`Notice`组件关闭时卡顿的问题
+- 修复 `Row`，`Col`组件`gutter`的bug
+- 完善部分组件的动画切换，更加流畅
+- `Input` 组件新增`iconAlign`属性，可以控制图标显示位置
+- 修复`TimeLine`组件图标不显示问题
+- 修复`Poptip`组件位置显示问题
+- 修复`Tooltip`组件位置显示问题
+- 修复`Tabs`组件滚动问题
+- `Tabs`新增`animated`属性控制切换动画
+- 去调了一部分组件多余的事件绑定
+- 文档可以搜索组件
 
-`2026-6-8`
+### 1.0.7
 
-- 修复`Select` 过滤不显示Label的问题
+`2018-7-15`
 
-## 5.2.2
+- 完善所有组件自定义style和className的问题
+- 优化`Row` 和 `Col` 子组件
 
-`2026-5-18`
+### 1.0.6
 
-- 修复`Input`,`Textarea` 只读属性问题
-- 修复`Modal` 宽度问题
-- 修复`Tag` class 属性异常问题
+`2018-7-14`
 
-## 5.2.1
+- 修复组件引用的问题
 
-`2026-5-10`
+### 1.0.5
 
-- `Table` 插槽增强
-- `Form` 子组件异常问题
+`2018-7-13`
 
-## 5.2.0
+- 修复编译问题
 
-`2026-5-9`
+### 1.0.4
 
-- 表单组件移除`value` 属性, 使用 `modelValue`
-- `Modal`,`Select` 等组件新增 `onOpenChange` 事件,展开或打开窗口时触发
-- `Input` 等组件新增 `onClear` 事件,清空值时触发
-- 组件`onChange` 事件将返回组件当前值.
-- 修复`Form` 规则验证问题.
+`2018-7-12`
 
-## 5.1.0
+- Menu组件细节优化和一些调整
 
-`2026-5-4`
+### 1.0.3
 
-- 新增`Splitter` 组件
-- `CheckBox`,`Switch` 组件优化,支持输出`bool`(true / false), `number`(0 / 1)
-- `message` 新增 `loading`函数
-- `RadioGroup` 优化
-- 表单验证优化
-- 一些组件属性`light` 值改为 `fill`
+`2018-7-11`
 
-## 5.0.1
+- 编译优化
 
-`2026-4-28`
+### 1.0.2
 
-- TS 增强
+`2018-7-11`
 
-## 5.0.0
+- 修复Breadcrumb组件自定义style的问题
+- 新增Layout一系列布局组件
 
-`2026-4-27`
+### 1.0.1
 
-- 基于TypeScript重构了所有组件
-- ⚠️5.x 版本使用新的图标库
+`2018-7-10`
 
-## 4.0.3
+- 修复React 16.x 版本下部分组件ref传递错误的问题
+- 修复DatePicker特定情况下换行的bug
 
-`2026-3-5`
+### 1.0.0
 
-- 修复 Select 多语言问题
-- 优化 Menu 细节
-- 修复主题切换时闪烁问题
+`2018-7-1 `
 
-## 4.0.2
+- 1.0发布，转入公测
 
-`2026-3-2`
+### 0.0.1
 
-- 修复对 Nuxt.js 的兼容问题
-- 修复 Drawer 关闭问题。
-- 优化 Slider 组件(两端对齐)。
-- 新增 Anchor, AnchorLink 组件。
-- 新增 AvatarGroup 组件。
-- 修复 Carousel (v-for bugs)。
-- 完善 POP 一系列组件。
-
-## 4.0.1
-
-`2026-2-8`
-
-- 新增Grid 组件。
-- 优化StatCard组件
-
-## 4.0
-
-`2026-2-4`
-
-- 支持Vue3，后续基于Vue2的3.x 版本不再维护。
-- 整体重构了所有组件
-
-## 3.6.10
-
-`2026-2-1`
-
-- 细节优化调整
-
-## 3.6.9
-
-`2026-1-25`
-
-- Page 的页码属性由current改为page
-- Image 调整,增加页签
-- Slider 隐藏提示修复
-- 其它细节优化
-
-### More
-
-- 更多更新日志，请查看[V3版本](https://v3.k-ui.cn/log)
-
-## 2.3.5
-
-`2019-10-17`
-
-- 👏 优化 `Modal` 关闭动画
-- 🐞 修复 `Select` 组件表单验证的问题
-- 💪 完善 `Table` `row-click` 冒泡不执行的问题
-
-## More
-
-- 更多更新日志，请查看[V2版本](https://v2.k-ui.cn/#/log)
-
-## 1.0.0
-
-`2017-12-10`
+`2018-5-27`
 
 👏 🚩着手开发

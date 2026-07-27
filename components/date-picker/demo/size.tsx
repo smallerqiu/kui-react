@@ -1,8 +1,5 @@
 import { useState } from "react";
-import type { SizeType } from "../../const/types";
-import { RadioGroup } from "../../radio";
-import Space from "../../space";
-import DatePicker from "../index";
+import { type SizeType, RadioGroup, Space, DatePicker } from "react-kui";
 const options = [
   { value: "large", label: "Large" },
   { value: "medium", label: "Medium" },

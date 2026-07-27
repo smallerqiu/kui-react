@@ -1,6 +1,6 @@
 import { ArrowDown, Search } from "kui-icons";
 import { useState } from "react";
-import { Cascader, Space, type CascaderOption, type CascaderValue } from "../..";
+import { Cascader, Space, type CascaderOption, type CascaderValue } from "react-kui";
 
 const simpleOptions: CascaderOption[] = [
   {

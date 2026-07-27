@@ -1,11 +1,17 @@
 import { Trash2 } from "kui-icons";
 import { useRef, useState } from "react";
-import { Button } from "../../button";
-import { Input } from "../../input";
-import message from "../../message";
-import { Col, Row } from "../../row-col";
-import { Option, Select } from "../../select";
-import { Form, FormItem, type FormExpose } from "../index";
+import {
+  Button,
+  Input,
+  message,
+  Col,
+  Row,
+  Option,
+  Select,
+  Form,
+  FormItem,
+  type FormExpose,
+} from "react-kui";
 export default function DynamicValid() {
   const ref = useRef<FormExpose>(null),
     count = useRef(2);

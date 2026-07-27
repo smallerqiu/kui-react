@@ -1,5 +1,4 @@
-import Space from "../../space";
-import { Button } from "../index";
+import { Space, Button } from "react-kui";
 export default function Theme() {
   return (
     <Space vertical>

@@ -1,6 +1,4 @@
-import message from "../../message";
-import Space from "../../space";
-import { Input, TextArea } from "../index";
+import { message, Space, Input, TextArea } from "react-kui";
 const fire = (type: string) => (event: unknown) => {
   message.info(type);
   console.log(type, event);

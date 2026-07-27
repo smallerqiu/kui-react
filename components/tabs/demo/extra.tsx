@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import { TabPanel, Tabs } from "../index";
+import { Button, TabPanel, Tabs } from "react-kui";
 export default function Extra() {
   const [value, setValue] = useState("1");
   return (

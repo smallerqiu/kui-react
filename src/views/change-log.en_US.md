@@ -1,158 +1,99 @@
 # Changelog
 
-Version 4.x supports `Vue 3`. For Vue 2-based documentation, please refer to <https://v3.k-ui.cn>.
-If you encounter any issues, please submit them via [Github](https://github.com/smallerqiu/kui-vue/issues).
+![react-kui](https://img.shields.io/npm/v/react-kui.svg?style=flat-square)
+
+Version 3.x supports `React 19`. If you encounter any issues, please submit an issue on https://github.com/smallerqiu/react-kui/issues.
 
 ```bash
-npm install kui-vue@latest --registry=http://registry.npmjs.org
+npm install react-kui@latest --registry=http://registry.npmjs.org
 ```
 
-Vite might have caching; you can clear it manually if needed.
+Vite seems to cache builds—you can manually clear it:
 
 ```bash
 rm -rf node_modules/.vite
 ```
 
-## 5.3.1
+### 3.0.0
 
-`2026-7-17`
+- Complete refactor based on `React 19`, aligned with `kui-vue`
 
-- The `message` component now supports the `grouping` property. Messages sharing the same `grouping` value will be merged into a single notification.
+### 2.0.0
 
-## 5.3.0
+- Full refactor
+- Fixed multiple bugs and improved overall user experience
+- Aligned feature set with `kui-vue`
 
-`2026-7-13`
+### 1.0.8
 
-- Added `QRCode` component
-- Added `Watermark` component
-- Fixed maximization issue in `Modal`
-- Fixed default value issue in `Page` pagination
-- Fixed dropdown positioning issue in `Dropdown`
-- Fixed image dragging issue in `Image`
-- Fixed several attribute issues in `Input`
+`2018-08-08`
 
-## 5.2.3
+- Upgraded icon library to v4.3.0 for standardized usage, clearly distinguishing iOS and Android line weights
+- Fixed stuttering issues when closing `Message` and `Notice` components
+- Fixed the `gutter` bug in `Row` and `Col` components
+- Improved animation transitions across several components for smoother performance
+- Added `iconAlign` prop to the `Input` component to control icon positioning
+- Fixed icon display issue in the `TimeLine` component
+- Fixed positioning issue in the `Poptip` component
+- Fixed positioning issue in the `Tooltip` component
+- Fixed scrolling issue in the `Tabs` component
+- Added `animated` prop to `Tabs` to control transition animations
+- Removed unnecessary event bindings across various components
+- Enabled component search in documentation
 
-`2026-6-8`
+### 1.0.7
 
-- Fix the issue where `Select` filtering does not display the Label
+`2018-07-15`
 
-## 5.2.2
+- Resolved custom `style` and `className` handling across all components
+- Optimized `Row` and `Col` child components
 
-`2026-5-18`
+### 1.0.6
 
-- Fixed the read-only attribute issue for `Input` and `Textarea`
-- Fixed the width issue for `Modal`
-- Fixed the abnormal `class` attribute issue for `Tag`
+`2018-07-14`
 
-## 5.2.1
+- Fixed component import issues
 
-`2026-5-10`
+### 1.0.5
 
-- Enhanced `Table` slot functionality
-- `Form` child component exception issue
+`2018-07-13`
 
-## 5.2.0
+- Fixed build/compilation issues
 
-`2026-5-9`
+### 1.0.4
 
-- The form component removes the `value` property and uses `modelValue` instead.
-- Components like `Modal` and `Select` now have an `onOpenChange` event, which triggers when the window is opened or expanded.
-- Components like `Input` now include an `onClear` event, which triggers when the value is cleared.
-- The `onChange` event of components will now return the current value of the component.
-- Fixed a `Form` rule validation issue.
+`2018-07-12`
 
-## 5.1.0
+- Refined details and made adjustments to the Menu component
 
-`2026-5-4`
+### 1.0.3
 
-- Added `Splitter` component
-- Optimized `CheckBox` and `Switch` components to support outputting `bool` (true/false) and `number` (0/1)
-- Added `loading` function to `message`
-- Improved `RadioGroup`
-- Form validation enhancements
-- Changed the `light` property to `fill` for some components
+`2018-07-11`
 
-## 5.0.1
+- Build optimization
 
-`2026-4-28`
+### 1.0.2
 
-- TS Enhancement
+`2018-07-11`
 
-## 5.0.0
+- Fixed custom `style` issue in the Breadcrumb component
+- Added a full suite of Layout components
 
-`2026-4-27`
+### 1.0.1
 
-- Refactored all components based on TypeScript
-- ⚠️Version 5.x uses a new icon library
+`2018-07-10`
 
-## 4.0.3
+- Fixed incorrect `ref` propagation in certain components under React 16.x
+- Fixed line-wrapping bug in DatePicker under specific conditions
 
-`2026-3-5`
+### 1.0.0
 
-- Fixed multilingual issues in Select
-- Optimized Menu details
-- Fixed flickering issue during theme switching
+`2018-07-01`
 
-## 4.0.2
+- Version 1.0 released; entered public beta
 
-`2026-3-2`
+### 0.0.1
 
-- Fix compatibility issues with Nuxt.js
-- Fixed the issue with Drawer closing.
-- Optimized the Slider component (justified alignment).
-- Added new Anchor and AnchorLink components.
-- Added new AvatarGroup component.
-- Fixed Carousel (v-for bugs).
-- Enhanced the POP series of components.
+`2018-05-27`
 
-## 4.0.1
-
-`2026-2-8`
-
-- Added new Grid component.
-- Optimized the StatCard component.
-
-## 4.0
-
-`2026-2-4`
-
-- Added support for Vue 3. Subsequent maintenance for the Vue 2-based 3.x version has ceased.
-- Completely refactored all components.
-
-## 3.6.10
-
-`2026-2-1`
-
-- Minor optimizations and adjustments.
-
-## 3.6.9
-
-`2026-1-25`
-
-- Changed the `Page` component's current page property name from `current` to `page`.
-- Adjusted the Image component; added tabs.
-- Fixed the hidden tooltip issue for the Slider component.
-- Other minor optimizations.
-
-### More
-
-- For more changelog entries, please check the https://v3.k-ui.cn/log.
-
-## 2.3.5
-
-`2019-10-17`
-
-- 👏👏 Optimized the `Modal` close animation.
-- 🐞🐞🐞 Fixed an issue with form validation for the `Select` component.
-- 💪💪 Fixed an issue where the `Table` component's `row-click` event did not bubble up properly.
-
-## More
-
-- For more changelog entries, please check the https://v2.k-ui.cn/#/log.
-
-## 1.0.0
-
-`2017-12-10`
-
-👏👏 🚩🚩🚩 Initial development started.
+👏 🚩 Development initiated

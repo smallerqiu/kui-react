@@ -1,6 +1,5 @@
 import { useRef } from "react";
-import { Button } from "../../button";
-import message from "../index";
+import { Button, message } from "react-kui";
 export default function Loading() {
   const count = useRef(0);
   return (

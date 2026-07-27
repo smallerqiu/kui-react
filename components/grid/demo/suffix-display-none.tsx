@@ -1,5 +1,4 @@
-import { Button } from "../../button";
-import { Grid, GridItem } from "../index";
+import { Button, Grid, GridItem } from "react-kui";
 import "./demo.css";
 export default function SuffixDisplay() {
   return (

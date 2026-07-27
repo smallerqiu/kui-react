@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import Space from "../../space";
-import Switch from "../index";
+import { Button, Space, KSwitch as Switch } from "react-kui";
 export default function Disabled() {
   const [checked, setChecked] = useState(false),
     [disabled, setDisabled] = useState(false);

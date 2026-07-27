@@ -1,14 +1,12 @@
 import { useState } from "react";
-import Checkbox from "../../checkbox";
-import Space from "../../space";
-import TreeSelect from "../index";
+import { Checkbox, Space, TreeSelect } from "react-kui";
 import { data, expandedKeys } from "./data";
 export default function Checkable() {
   const [value, setValue] = useState<Array<string | number>>([]),
     [strict, setStrict] = useState(false);
   return (
     <Space vertical>
-      <Checkbox checked={strict} onChange={setStrict}>
+      <Checkbox checked={strict} onChange={(event) => setStrict(event.checked)}>
         TreeCheckStrictly
       </Checkbox>
       <TreeSelect

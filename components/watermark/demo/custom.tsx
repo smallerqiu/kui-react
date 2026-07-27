@@ -1,11 +1,16 @@
 import { useState } from "react";
-import ColorPicker from "../../color-picker";
-import Input from "../../input";
-import { Radio, RadioGroup } from "../../radio";
-import { Col, Row } from "../../row-col";
-import Slider from "../../slider";
-import Space from "../../space";
-import Watermark, { type WatermarkLayoutType } from "../index";
+import {
+  ColorPicker,
+  Input,
+  Radio,
+  RadioGroup,
+  Col,
+  Row,
+  Slider,
+  Space,
+  Watermark,
+  type WatermarkLayoutType,
+} from "react-kui";
 export default function Custom() {
   const [content, setContent] = useState("Kui React"),
     [color, setColor] = useState("rgba(100, 100, 100, 0.3)"),

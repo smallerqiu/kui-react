@@ -1,6 +1,5 @@
 import { User } from "kui-icons";
-import Space from "../../space";
-import { Button, ButtonGroup } from "../index";
+import { Space, Button, ButtonGroup } from "react-kui";
 export default function Group() {
   return (
     <Space>

@@ -1,7 +1,4 @@
-import { Button } from "../../button";
-import Flex from "../../flex";
-import Space from "../../space";
-import Popconfirm from "../index";
+import { Button, Flex, Space, Popconfirm } from "react-kui";
 const title = "Are you sure to delete this task?";
 const item = (placement: Parameters<typeof Popconfirm>[0]["placement"], label: string) => (
   <Popconfirm key={placement} placement={placement} title={title}>

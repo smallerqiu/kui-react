@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Space from "../../space";
-import DatePicker from "../index";
+import { Space, DatePicker } from "react-kui";
 export default function Basic() {
   const [year, setYear] = useState("2025"),
     [month, setMonth] = useState("2025-10"),

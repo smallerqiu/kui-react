@@ -1,6 +1,4 @@
-import Flex from "../../flex";
-import Space from "../../space";
-import { Button } from "../index";
+import { Flex, Space, Button } from "react-kui";
 const Buttons = ({ disabled = false }) => (
   <Space vertical>
     <Button disabled={disabled} type="primary">

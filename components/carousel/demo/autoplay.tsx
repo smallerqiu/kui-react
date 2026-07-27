@@ -1,7 +1,5 @@
 import { useRef } from "react";
-import Button from "../../button/button";
-import Space from "../../space";
-import { Carousel, CarouselItem, type CarouselRef } from "../index";
+import { Button, Space, Carousel, CarouselItem, type CarouselRef } from "react-kui";
 const itemStyle = {
   color: "#fff",
   background: "var(--kui-color-primary)",

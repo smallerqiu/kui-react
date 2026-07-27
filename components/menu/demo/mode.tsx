@@ -1,8 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import type { DirectionType } from "../../const/types";
-import Space from "../../space";
-import Menu from "../index";
+import { Button, type DirectionType, Space, Menu } from "react-kui";
 import { items } from "./data";
 export default function Mode() {
   const [current, setCurrent] = useState(["1-1"]),

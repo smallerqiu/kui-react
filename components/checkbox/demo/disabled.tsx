@@ -1,7 +1,5 @@
 import { useState } from "react";
-import Button from "../../button/button";
-import Space from "../../space";
-import { Checkbox, CheckboxGroup } from "../index";
+import { Button, Space, Checkbox, CheckboxGroup } from "react-kui";
 const options = ["Apple", "Orange", "Banana", "Pear", "Grape"].map((label) => ({
   label,
   value: label.toLowerCase(),

@@ -1,9 +1,6 @@
 import { Heart, Star } from "kui-icons";
 import { useRef } from "react";
-import Icon from "../../icon";
-import message from "../../message";
-import Space from "../../space";
-import { KImage, type ImageRef } from "../index";
+import { Icon, message, Space, KImage, type ImageRef } from "react-kui";
 export default function Extra() {
   const ref = useRef<ImageRef>(null),
     toggle = () => ref.current?.togglePanel();

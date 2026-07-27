@@ -1,8 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import { InputGroup } from "../../input";
-import Space from "../../space";
-import InputNumber from "../index";
+import { Button, InputGroup, Space, InputNumber } from "react-kui";
 export default function Basic() {
   const [value, setValue] = useState(1),
     change = (v: number | undefined) => setValue(v ?? 0);

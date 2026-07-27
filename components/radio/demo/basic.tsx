@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import Space from "../../space";
-import { Radio, RadioGroup } from "../index";
+import { Button, Space, Radio, RadioGroup } from "react-kui";
 const items = [
   { label: "Apple", value: "apple" },
   { label: "Orange", value: "orange" },

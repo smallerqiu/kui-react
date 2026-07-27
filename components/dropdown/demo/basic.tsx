@@ -1,6 +1,4 @@
-import { Button } from "../../button";
-import { Menu, MenuItem } from "../../menu";
-import { Dropdown } from "../index";
+import { Button, Menu, MenuItem, Dropdown } from "react-kui";
 const overlay = (
   <Menu>
     <MenuItem>

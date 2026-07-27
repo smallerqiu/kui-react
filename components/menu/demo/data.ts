@@ -1,5 +1,5 @@
 import { Heart, Mail, Settings, Table } from "kui-icons";
-import type { MenuOptionsProps } from "../index";
+import { type MenuOptionsProps } from "react-kui";
 export const items: MenuOptionsProps[] = [
   { key: "1-1", icon: Mail, title: "Option 1" },
   { key: "1-2", icon: Table, title: "Option 2" },

@@ -1,7 +1,5 @@
 import { useState } from "react";
-import Space from "../../space";
-import Switch from "../../switch";
-import Slider from "../index";
+import { Space, KSwitch as Switch, Slider } from "react-kui";
 export default function Basic() {
   const [v, setV] = useState(10),
     [v1, setV1] = useState(30),
@@ -10,7 +8,7 @@ export default function Basic() {
   return (
     <Space style={{ maxWidth: 520 }} vertical block>
       <code>
-        Disabled: <Switch checked={disabled} onChange={setDisabled} />
+        Disabled: <Switch checked={disabled} onChange={(value) => setDisabled(Boolean(value))} />
       </code>
       <code>value: {v}</code>
       <Slider value={v} onChange={(x) => setV(x as number)} step={1} disabled={disabled} />

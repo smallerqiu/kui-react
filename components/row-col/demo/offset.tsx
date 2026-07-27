@@ -1,5 +1,4 @@
-import Space from "../../space";
-import { Col, Row } from "../index";
+import { Space, Col, Row } from "react-kui";
 export default function Offset() {
   return (
     <Space vertical block className="demo-grid">

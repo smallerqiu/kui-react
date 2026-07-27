@@ -1,8 +1,6 @@
 import { Download } from "kui-icons";
 import { useState } from "react";
-import type { SizeType } from "../../const/types";
-import Space from "../../space";
-import { Button } from "../index";
+import { type SizeType, Space, Button } from "react-kui";
 export default function SizeDemo() {
   const [size, setSize] = useState<SizeType>("medium");
   return (

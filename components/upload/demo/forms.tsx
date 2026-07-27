@@ -1,10 +1,16 @@
 import { Camera, Upload as UploadIcon } from "kui-icons";
 import { useRef, useState } from "react";
-import { Button } from "../../button";
-import { Form, FormItem, type FormExpose, type FormSubmitEvent } from "../../form";
-import { Input } from "../../input";
-import message from "../../message";
-import Upload, { type UploadChangeEvent } from "../index";
+import {
+  Button,
+  Form,
+  FormItem,
+  type FormExpose,
+  type FormSubmitEvent,
+  Input,
+  message,
+  Upload,
+  type UploadChangeEvent,
+} from "react-kui";
 import { action, headers } from "./shared";
 const urlOf = ({ file }: UploadChangeEvent) =>
   file.response?.url ?? file.url ?? file.filename ?? "";

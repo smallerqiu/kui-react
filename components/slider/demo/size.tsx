@@ -1,7 +1,5 @@
 import { useState } from "react";
-import Space from "../../space";
-import Switch from "../../switch";
-import Slider from "../index";
+import { Space, KSwitch as Switch, Slider } from "react-kui";
 export default function Size() {
   const [disabled, setDisabled] = useState(false),
     [v1, setV1] = useState(80),
@@ -10,7 +8,7 @@ export default function Size() {
     <Space style={{ maxWidth: 520 }} vertical block>
       <style>{`.slider-demo-custom .k-slider-track{background:linear-gradient(270deg,green 5.56%,orange)}`}</style>
       <code>
-        Disabled: <Switch checked={disabled} onChange={setDisabled} />
+        Disabled: <Switch checked={disabled} onChange={(value) => setDisabled(Boolean(value))} />
       </code>
       <Slider
         value={v1}

@@ -1,8 +1,6 @@
 import { Upload as UploadIcon } from "kui-icons";
 import { useRef, useState } from "react";
-import { Button } from "../../button";
-import Space from "../../space";
-import Upload, { type UploadFile, type UploadRef } from "../index";
+import { Button, Space, Upload, type UploadFile, type UploadRef } from "react-kui";
 import { action, headers } from "./shared";
 export default function Custom() {
   const ref = useRef<UploadRef>(null),

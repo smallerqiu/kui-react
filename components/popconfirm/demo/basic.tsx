@@ -1,5 +1,4 @@
-import message from "../../message";
-import Popconfirm from "../index";
+import { message, Popconfirm } from "react-kui";
 export default function Basic() {
   return (
     <Popconfirm

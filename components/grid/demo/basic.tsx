@@ -1,4 +1,4 @@
-import { Grid, GridItem } from "../index";
+import { Grid, GridItem } from "react-kui";
 import "./demo.css";
 export default function Basic() {
   return (

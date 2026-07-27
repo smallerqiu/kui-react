@@ -1,7 +1,5 @@
 import { useState } from "react";
-import message from "../../message";
-import Space from "../../space";
-import Page from "../index";
+import { message, Space, Page } from "react-kui";
 
 export default function Basic() {
   const [page, setPage] = useState(1);

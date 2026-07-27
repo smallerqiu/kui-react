@@ -1,7 +1,5 @@
 import { LogoKui } from "kui-icons";
-import message from "../../message";
-import Space from "../../space";
-import { Input } from "../index";
+import { message, Space, Input } from "react-kui";
 export default function Size() {
   return (
     <Space vertical block>

@@ -1,6 +1,6 @@
 import { Heart, Mail, Settings } from "kui-icons";
 import { useState } from "react";
-import Menu, { type MenuOptionsProps } from "../index";
+import { Menu, type MenuOptionsProps } from "react-kui";
 const items: MenuOptionsProps[] = [
   { title: "Navigation One", key: "1", icon: Mail },
   { title: "Navigation Two", key: "2", icon: Heart, disabled: true },

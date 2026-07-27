@@ -1,5 +1,4 @@
-import Space from "../../space";
-import { TextArea } from "../index";
+import { Space, TextArea } from "react-kui";
 export default function Textarea() {
   return (
     <Space vertical block>

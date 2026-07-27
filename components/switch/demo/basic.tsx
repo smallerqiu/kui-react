@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import Space from "../../space";
-import Switch from "../index";
+import { Button, Space, KSwitch as Switch } from "react-kui";
 export default function Basic() {
   const [v1, setV1] = useState(true),
     [v2, setV2] = useState(true),

@@ -1,4 +1,4 @@
-import Watermark from "../index";
+import { Watermark } from "react-kui";
 export default function Image() {
   return (
     <Watermark

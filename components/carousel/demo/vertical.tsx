@@ -1,4 +1,4 @@
-import { Carousel, CarouselItem } from "../index";
+import { Carousel, CarouselItem } from "react-kui";
 const itemStyle = {
   color: "#fff",
   background: "var(--kui-color-primary)",

@@ -60,7 +60,7 @@
 
 | 属性     | 说明                | 类型   | 默认值 |
 | -------- | ------------------- | ------ | ------ |
-| key      | vue需要的key值      | string | -      |
+| key      | TabPanel 的唯一标识 | string | -      |
 | title    | 选项卡头显示文字    | string | -      |
 | icon     | 选项卡头显示的图标  | string | -      |
 | disabled | tab是否被禁用       | bool   | false  |

@@ -1,12 +1,6 @@
 import { ArrowDown, ArrowUp, Moon, Sun, Trash2 } from "kui-icons";
 import { useState } from "react";
-import { Button } from "../../button";
-import Icon from "../../icon";
-import message from "../../message";
-import { modal } from "../../modal";
-import Space from "../../space";
-import Tag from "../../tag";
-import Table, { type Column } from "../index";
+import { Button, Icon, message, modal, Space, Tag, Table, type Column } from "react-kui";
 import { people, type Person } from "./data";
 export default function Basic() {
   const [data, setData] = useState([...people]);

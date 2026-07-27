@@ -1,7 +1,5 @@
 import { Plus } from "kui-icons";
-import { Button } from "../../button";
-import Space from "../../space";
-import Empty from "../index";
+import { Button, Space, Empty } from "react-kui";
 export default function Custom() {
   return (
     <Space vertical block>

@@ -1,5 +1,5 @@
 import { Upload as UploadIcon } from "kui-icons";
-import Upload from "../index";
+import { Upload } from "react-kui";
 import { action, handleChange, headers } from "./shared";
 export default function Draggable() {
   return (

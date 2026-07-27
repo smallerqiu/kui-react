@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Space from "../../space";
-import { Select } from "../index";
+import { Space, Select } from "react-kui";
 import { fruits } from "./data";
 const options = fruits.map((value) => ({ label: value, value }));
 export default function Filterable() {

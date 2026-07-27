@@ -1,5 +1,4 @@
-import Space from "../../space";
-import Slider from "../index";
+import { Space, Slider } from "react-kui";
 export default function Marks() {
   return (
     <Space style={{ maxWidth: 520 }} vertical block>

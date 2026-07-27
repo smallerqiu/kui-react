@@ -1,10 +1,5 @@
 import { useRef, useState } from "react";
-import { Button } from "../../button";
-import { Input } from "../../input";
-import message from "../../message";
-import Popconfirm from "../../popconfirm";
-import Space from "../../space";
-import Table, { type Column } from "../index";
+import { Button, Input, message, Popconfirm, Space, Table, type Column } from "react-kui";
 interface Row {
   key: string;
   name: string;

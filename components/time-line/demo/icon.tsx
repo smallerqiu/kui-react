@@ -1,5 +1,5 @@
 import { Hammer, Ribbon } from "kui-icons";
-import { TimeLine, TimeLineItem } from "../index";
+import { TimeLine, TimeLineItem } from "react-kui";
 export default function WithIcon() {
   return (
     <TimeLine>

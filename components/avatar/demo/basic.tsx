@@ -1,5 +1,4 @@
-import Space from "../../space";
-import { Avatar } from "../index";
+import { Space, Avatar } from "react-kui";
 
 export default function Basic() {
   return (

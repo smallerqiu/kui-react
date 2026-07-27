@@ -1,8 +1,5 @@
 import { useRef, useState } from "react";
-import { Button } from "../../button";
-import { RadioGroup } from "../../radio";
-import Space from "../../space";
-import Drawer, { type DrawerPlacementsType } from "../index";
+import { Button, RadioGroup, Space, Drawer, type DrawerPlacementsType } from "react-kui";
 const options = ["left", "top", "right", "bottom"].map((value) => ({ label: value, value }));
 export default function Target() {
   const [open, setOpen] = useState(false),

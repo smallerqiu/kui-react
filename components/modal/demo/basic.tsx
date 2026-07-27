@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import Space from "../../space";
-import Modal from "../index";
+import { Button, Space, Modal } from "react-kui";
 
 export default function Basic() {
   const [visible, setVisible] = useState(false);

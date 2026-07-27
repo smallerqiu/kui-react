@@ -1,4 +1,4 @@
-import { Grid, GridItem } from "../index";
+import { Grid, GridItem } from "react-kui";
 export default function FooterStrategy() {
   return (
     <Grid cols={{ xs: 1, sm: 2, md: 5 }} yGap={30}>

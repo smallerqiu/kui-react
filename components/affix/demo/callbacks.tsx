@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import Affix from "../index";
+import { Button, Affix } from "react-kui";
 export default function Callbacks() {
   const [fixed, setFixed] = useState(false);
   return (

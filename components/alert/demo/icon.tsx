@@ -1,7 +1,5 @@
 import { useState } from "react";
-import Checkbox from "../../checkbox";
-import Space from "../../space";
-import Alert from "../index";
+import { Checkbox, Space, Alert } from "react-kui";
 
 export default function WithIcon() {
   const [bordered, setBordered] = useState(true);

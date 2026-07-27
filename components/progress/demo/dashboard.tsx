@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { RadioGroup } from "../../radio";
-import Slider from "../../slider";
-import Progress, { type ProgressStroke } from "../index";
+import { RadioGroup, Slider, Progress, type ProgressStroke } from "react-kui";
 const caps = [
   { label: "Butt", value: "butt" },
   { label: "Round", value: "round" },

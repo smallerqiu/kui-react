@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { RadioGroup } from "../../radio";
-import Space from "../../space";
-import { Select } from "../index";
+import { RadioGroup, Space, Select } from "react-kui";
 import { data } from "./data";
 const sizes = ["large", "medium", "small"].map((value) => ({ label: value, value }));
 export default function Size() {

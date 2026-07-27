@@ -1,6 +1,5 @@
 import { Heart, Wifi, WifiHigh, WifiLow, WifiOff, WifiZero } from "kui-icons";
-import Space from "../../space";
-import Rate from "../index";
+import { Space, Rate } from "react-kui";
 const icons = [WifiOff, WifiZero, WifiLow, WifiHigh, Wifi];
 export default function Character() {
   return (

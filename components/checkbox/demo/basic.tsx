@@ -1,7 +1,5 @@
 import { useState } from "react";
-import Button from "../../button/button";
-import Space from "../../space";
-import { Checkbox } from "../index";
+import { Button, Space, Checkbox } from "react-kui";
 export default function Basic() {
   const [checked, setChecked] = useState(true),
     [value1, setValue1] = useState(true),

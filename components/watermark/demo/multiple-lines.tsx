@@ -1,4 +1,4 @@
-import Watermark, { type WatermarkTextItem } from "../index";
+import { Watermark, type WatermarkTextItem } from "react-kui";
 const content: WatermarkTextItem[] = [
   { text: "绝密文件 禁止外传", fontSize: 18, fontWeight: "bold", color: "rgba(239, 68, 68, 0.16)" },
   { text: "研发架构部 · 内部资产", fontSize: 14, color: "rgba(100, 116, 139, 0.12)" },

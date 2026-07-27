@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Space from "../../space";
-import { Col, Row } from "../index";
+import { Space, Col, Row } from "react-kui";
 export default function Gutter() {
   const [h, setH] = useState(8);
   const [v, setV] = useState(8);

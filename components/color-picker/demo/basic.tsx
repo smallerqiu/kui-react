@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Space from "../../space";
-import ColorPicker from "../index";
+import { Space, ColorPicker } from "react-kui";
 export default function Basic() {
   const [color, setColor] = useState("#3a95ff"),
     [hex, setHex] = useState("#3a95ff"),

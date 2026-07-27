@@ -1,9 +1,6 @@
 import { Bookmark } from "kui-icons";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "../../button";
-import Input from "../../input";
-import Space from "../../space";
-import Tag from "../index";
+import { Button, Input, Space, Tag } from "react-kui";
 export default function Dynamic() {
   const [tags, setTags] = useState(["Apple", "Banana", "Cat", "Dog"]),
     [showInput, setShowInput] = useState(false),

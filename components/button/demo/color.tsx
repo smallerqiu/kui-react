@@ -1,5 +1,4 @@
-import Flex from "../../flex";
-import { Button } from "../index";
+import { Flex, Button } from "react-kui";
 const colors = [
   "default",
   "red",

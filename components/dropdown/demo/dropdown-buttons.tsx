@@ -1,9 +1,14 @@
 import { UserPlus } from "kui-icons";
-import { Button } from "../../button";
-import Icon from "../../icon";
-import { Menu, MenuItem, type MenuSelectEvent } from "../../menu";
-import Space from "../../space";
-import { Dropdown, DropdownButton } from "../index";
+import {
+  Button,
+  Icon,
+  Menu,
+  MenuItem,
+  type MenuSelectEvent,
+  Space,
+  Dropdown,
+  DropdownButton,
+} from "react-kui";
 const handleMenuClick = (e: MenuSelectEvent) => console.log("click", e);
 const overlay = (
   <Menu onSelect={handleMenuClick}>

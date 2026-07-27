@@ -1,5 +1,4 @@
-import Space from "../../space";
-import Spin from "../index";
+import { Space, Spin } from "react-kui";
 export default function Basic() {
   return (
     <Space>

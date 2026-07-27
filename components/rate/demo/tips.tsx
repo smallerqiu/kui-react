@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Space from "../../space";
-import Rate from "../index";
+import { Space, Rate } from "react-kui";
 const descriptions = ["terrible", "bad", "normal", "good", "wonderful"];
 export default function Tips() {
   const [value, setValue] = useState(3);

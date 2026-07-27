@@ -1,5 +1,4 @@
-import { Button } from "../../button";
-import Table, { type Column } from "../index";
+import { Button, Table, type Column } from "react-kui";
 const middle: Column[] = [];
 const values: Record<string, string> = {};
 for (let i = 0; i < 20; i++) {

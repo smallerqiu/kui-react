@@ -1,4 +1,4 @@
-import { TimeLine, TimeLineItem } from "../index";
+import { TimeLine, TimeLineItem } from "react-kui";
 export default function Basic() {
   return (
     <TimeLine>

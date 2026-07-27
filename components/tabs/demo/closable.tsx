@@ -1,7 +1,6 @@
 import { Plus } from "kui-icons";
 import { useState } from "react";
-import { Button } from "../../button";
-import { TabPanel, Tabs } from "../index";
+import { Button, TabPanel, Tabs } from "react-kui";
 interface Pane {
   key: string;
   title: string;

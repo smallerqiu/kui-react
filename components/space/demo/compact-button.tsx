@@ -1,6 +1,5 @@
 import { Download, Gamepad2, Heart, Mail, Shirt } from "kui-icons";
-import { Button } from "../../button";
-import Space from "../index";
+import { Button, Space } from "react-kui";
 const iconButtons = [Download, Gamepad2, Heart, Mail, Shirt];
 export default function CompactButton() {
   return (

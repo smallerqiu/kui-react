@@ -1,6 +1,5 @@
 import { LogoQq, LogoWechat, LogoX, LogoYoutube } from "kui-icons";
-import Space from "../../space";
-import Tag from "../index";
+import { Space, Tag } from "react-kui";
 export default function WithIcon() {
   return (
     <Space wrap>

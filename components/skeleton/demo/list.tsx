@@ -1,8 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Avatar } from "../../avatar";
-import { Button } from "../../button";
-import Space from "../../space";
-import { Skeleton } from "../index";
+import { Avatar, Button, Space, Skeleton } from "react-kui";
 const item = {
   name: "KUI Design",
   intro: "KUI is a desktop UI component library based on React",

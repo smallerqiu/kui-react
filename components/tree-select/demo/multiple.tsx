@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Space from "../../space";
-import TreeSelect from "../index";
+import { Space, TreeSelect } from "react-kui";
 import { data, expandedKeys } from "./data";
 export default function Multiple() {
   const [value1, setValue1] = useState<Array<string | number>>(["0-1", "1-1"]),

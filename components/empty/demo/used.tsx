@@ -1,6 +1,4 @@
-import { Select } from "../../select";
-import Space from "../../space";
-import Table, { type Column } from "../../table";
+import { Select, Space, Table, type Column } from "react-kui";
 const columns: Column[] = [
   { title: "Name", key: "name" },
   { title: "Age", key: "age" },

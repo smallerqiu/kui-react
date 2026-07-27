@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import Flex from "../index";
+import { Button, Flex } from "react-kui";
 export default function Wrap() {
   const [x, setX] = useState(12);
   const [y, setY] = useState(15);

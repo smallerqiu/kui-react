@@ -14,10 +14,7 @@ export const getLocaleEntries = () => {
   files.forEach((file) => {
     if (file.endsWith(".ts") || file.endsWith(".js")) {
       const name = file.replace(/\.(ts|js)$/, "");
-      entries[`locale/${name}`] = path.resolve(
-        __dirname,
-        `components/locale/${file}`,
-      );
+      entries[`locale/${name}`] = path.resolve(__dirname, `components/locale/${file}`);
     }
   });
   return entries;
@@ -29,9 +26,9 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] }),
     dts({
-      // The repository still contains legacy Vue documentation examples. They
+      // The repository still contains legacy React documentation examples. They
       // are not library sources and must not make the declaration generator
-      // switch to its Vue processor.
+      // switch to its React processor.
       processor: "ts",
       insertTypesEntry: true,
       tsconfigPath: "./tsconfig.app.json",

@@ -1,7 +1,5 @@
 import { useState } from "react";
-import Input from "../../input";
-import Space from "../../space";
-import QRCode from "../index";
+import { Input, Space, QRCode } from "react-kui";
 export default function Basic() {
   const [value, setValue] = useState("https://react.k-ui.cn");
   return (

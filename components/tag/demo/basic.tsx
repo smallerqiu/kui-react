@@ -1,5 +1,4 @@
-import Space from "../../space";
-import Tag from "../index";
+import { Space, Tag } from "react-kui";
 export default function Basic() {
   return (
     <Space wrap>

@@ -1,5 +1,4 @@
-import Space from "../../space";
-import { ImageGroup, KImage } from "../index";
+import { Space, ImageGroup, KImage } from "react-kui";
 const data = [
   "https://cdn.chuchur.com/upload/cat/cat1.jpg",
   "https://cdn.chuchur.com/upload/cat/cat2.webp",

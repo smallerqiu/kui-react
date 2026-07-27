@@ -1,7 +1,4 @@
-import { Button } from "../../button";
-import message from "../../message";
-import Space from "../../space";
-import Popconfirm from "../index";
+import { Button, message, Space, Popconfirm } from "react-kui";
 const ok = () => message.success("Clicked on ok"),
   cancel = () => message.info("Clicked on cancel");
 export default function Local() {

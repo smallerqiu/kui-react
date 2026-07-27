@@ -1,7 +1,6 @@
 import { Minus, Plus } from "kui-icons";
 import { useState } from "react";
-import { Button, ButtonGroup } from "../../button";
-import Progress from "../index";
+import { Button, ButtonGroup, Progress } from "react-kui";
 const getColor = (v: number) =>
   v >= 80 ? "#f79e08" : v >= 50 ? "#c7b98d" : v >= 30 ? "#bdc78d" : "";
 const strength = (v: number) => (v < 30 ? "Empty" : v < 50 ? "Weak" : v < 80 ? "Normal" : "Strong");

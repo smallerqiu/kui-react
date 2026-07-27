@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../button";
-import { RadioGroup } from "../../radio";
-import { Descriptions } from "../index";
+import { Button, RadioGroup, Descriptions } from "react-kui";
 import { BasicItems, DetailedItems } from "./content";
 const types = [
   { label: "Large", value: "medium" },

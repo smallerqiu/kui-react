@@ -1,6 +1,4 @@
-import { Button } from "../../button";
-import Flex from "../../flex";
-import Space from "../index";
+import { Button, Flex, Space } from "react-kui";
 export default function Align() {
   return (
     <Flex className="demo-space-align" wrap size="small">

@@ -1,8 +1,5 @@
 import { ChevronDown } from "kui-icons";
-import { Button } from "../../button";
-import Icon from "../../icon";
-import { Menu, MenuDivider, MenuItem } from "../../menu";
-import { Dropdown } from "../index";
+import { Button, Icon, Menu, MenuDivider, MenuItem, Dropdown } from "react-kui";
 const overlay = (
   <Menu>
     <MenuItem>

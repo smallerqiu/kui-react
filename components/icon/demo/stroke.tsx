@@ -1,5 +1,5 @@
 import { ChevronRight, ChevronsRight } from "kui-icons";
-import Icon from "../index";
+import { Icon } from "react-kui";
 export default function Stroke() {
   return (
     <div>

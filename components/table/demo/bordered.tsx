@@ -1,4 +1,4 @@
-import Table, { type Column } from "../index";
+import { Table, type Column } from "react-kui";
 const data = [
   { key: "0", fullname: "Li Lei", price: 18990, address: "Wu Han Guanggu No. 328" },
   { key: "1", fullname: "Liu Hao", price: 23900, address: "Wu Han Hongshan No. 128" },

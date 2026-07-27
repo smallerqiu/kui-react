@@ -1,5 +1,4 @@
-import Space from "../../space";
-import Alert from "../index";
+import { Space, Alert } from "react-kui";
 
 export default function Basic() {
   return (
