@@ -16,13 +16,7 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 7006,
     },
-    plugins: [
-      reactMarkdown(),
-      react(),
-      babel({ presets: [reactCompilerPreset()] }),
-
-      banner(),
-    ],
+    plugins: [reactMarkdown(), react(), babel({ presets: [reactCompilerPreset()] }), banner()],
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "/"),
@@ -43,16 +37,10 @@ export default defineConfig(({ mode }) => {
             if (assetInfo.name && assetInfo.name.endsWith(".css")) {
               return "css/[name]-[hash][extname]";
             }
-            if (
-              assetInfo.name &&
-              /\.(png|jpe?g|gif|svg|webp|avif|ico)$/.test(assetInfo.name)
-            ) {
+            if (assetInfo.name && /\.(png|jpe?g|gif|svg|webp|avif|ico)$/.test(assetInfo.name)) {
               return "img/[name]-[hash][extname]";
             }
-            if (
-              assetInfo.name &&
-              /\.(woff2?|eot|ttf|otf)$/.test(assetInfo.name)
-            ) {
+            if (assetInfo.name && /\.(woff2?|eot|ttf|otf)$/.test(assetInfo.name)) {
               return "fonts/[name]-[hash][extname]";
             }
             return "assets/[name]-[hash][extname]";

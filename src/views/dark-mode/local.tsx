@@ -1,4 +1,6 @@
 import { ChevronLeft, ChevronRight, Heart, House, LogoKui, Mail, Settings } from "kui-icons";
+// import {} from 'react-kui';
+
 import { useState } from "react";
 import { Breadcrumb, BreadcrumbItem } from "../../../components/breadcrumb";
 import { Button } from "../../../components/button";
@@ -10,7 +12,7 @@ import Icon from "../../../components/icon";
 import { Input, TextArea } from "../../../components/input";
 import InputNumber from "../../../components/input-number";
 import Layout, { Content, Footer, Sider } from "../../../components/layout";
-import Menu from "../../../components/menu";
+import { Menu } from "../../../components/menu";
 import Page from "../../../components/page";
 import { RadioGroup } from "../../../components/radio";
 import { Option, Select } from "../../../components/select";
@@ -72,7 +74,7 @@ export default function LocalDark() {
             <BreadcrumbItem>List</BreadcrumbItem>
             <BreadcrumbItem>App</BreadcrumbItem>
           </Breadcrumb>
-          <div {...({ "theme-mode": dark ? "dark" : "light" } as any)} className="local-dark-panel">
+          <div {...{ "theme-mode": dark ? "dark" : "light" }} className="local-dark-panel">
             <Space vertical block>
               <Menu
                 mode="horizontal"
