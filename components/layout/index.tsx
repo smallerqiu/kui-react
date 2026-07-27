@@ -114,4 +114,4 @@ Layout.Content = Content;
 Layout.Sider = Sider;
 
 export default Layout;
-export { Content, Footer, Header, Sider };
+export { Content, Footer, Header, Layout, Sider };

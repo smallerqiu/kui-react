@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import Button from "../button";
+import { Button } from "../button";
 import type { ShapeType, SizeType } from "../const/types";
 import type { IconType } from "../icon";
 import { RadioGroupContext } from "./radio-group";
