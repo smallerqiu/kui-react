@@ -11,35 +11,35 @@ Provide peer areas to accommodate and display large chunks of content, keeping t
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue?show=vertical)
+[Basic Usage](./demo/basic.tsx)
 
 - The first item is selected by default.
 
-[Disabled](./demo/disabled.vue?show=vertical)
+[Disabled](./demo/disabled.tsx)
 
 - Disable a specific tab.
 
-[Centered](./demo/centered.vue?show=vertical)
+[Centered](./demo/centered.tsx)
 
 - Tabs are centered.
 
-[Icon](./demo/icon.vue?show=vertical)
+[Icon](./demo/icon.tsx)
 
 - Tabs with icons.
 
-[Extra Content](./demo/extra.vue?show=vertical)
+[Extra Content](./demo/extra.tsx)
 
 - You can add extra operations to the right of the tabs.
 
-[Card-style Tabs](./demo/card.vue?show=vertical)
+[Card-style Tabs](./demo/card.tsx)
 
 - Another style of tabs.
 
-[Add and Close Tabs](./demo/closable.vue?show=vertical)
+[Add and Close Tabs](./demo/closable.tsx)
 
 - Only card-style tabs support adding and closing options. Use `closable={false}` to disable closing.
 
-[Minimalist Tabs](./demo/sample.vue?show=vertical)
+[Minimalist Tabs](./demo/sample.tsx)
 
 - Simple card presentation mode.
 
