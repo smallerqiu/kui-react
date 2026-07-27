@@ -39,31 +39,31 @@ export default {
 };
 ```
 
-[Typical Form](./demo/basic.vue?show=vertical)
+[Typical Form](./demo/basic.tsx?show=vertical)
 
 - Includes various form items, such as input fields, selectors, switches, radio buttons, checkboxes, etc.
 
-[Alignment](./demo/align.vue?show=vertical)
+[Alignment](./demo/align.tsx?show=vertical)
 
 - Choose the best label alignment based on specific goals and constraints.
 
-[Form Validation](./demo/valid.vue?show=vertical)
+[Form Validation](./demo/valid.tsx?show=vertical)
 
 - Help users discover and correct errors as early as possible, while preventing mistakes.
 
-[Auxiliary Validation](./demo/length.vue?show=vertical)
+[Auxiliary Validation](./demo/length.tsx?show=vertical)
 
 - Validate certain data types.
 
-[Multi-form Linkage](./demo/withmodal.vue?show=vertical)
+[Multi-form Linkage](./demo/withmodal.tsx?show=vertical)
 
 - Outside the Form, submit the form via `submit` from the outside. Conversely, it's recommended to use `<Button htmlType="submit" />` to call the native submission logic.
 
-[Custom Validation Rules](./demo/customvalid.vue?show=vertical)
+[Custom Validation Rules](./demo/customvalid.tsx?show=vertical)
 
 - Use custom validation rules to complete form validation.
 
-[Dynamic Validation Rules](./demo/dynamicvalid.vue?show=vertical)
+[Dynamic Validation Rules](./demo/dynamicvalid.tsx?show=vertical)
 
 - Execute different validation rules based on different conditions.
 

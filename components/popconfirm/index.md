@@ -10,15 +10,15 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 最简单的用法。
 
-[国际化](./demo/local.vue)
+[国际化](./demo/local.tsx)
 
 - 使用 `okText` 和 `cancelText` 自定义按钮文字。
 
-[位置](./demo/placement.vue)
+[位置](./demo/placement.tsx)
 
 - 通过 `placement`控制方向, 位置有十二个方向。
 

@@ -9,23 +9,23 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 默认可以同时展开一个或者多个面板
 
-[手风琴](./demo/accordion.vue)
+[手风琴](./demo/accordion.tsx)
 
 - 设置 `accordion` 只允许同时展开一个面板
 
-[嵌套面板](./demo/nesting.vue)
+[嵌套面板](./demo/nesting.tsx)
 
 - 嵌套折叠面板。
 
-[额外节点](./demo/extra.vue)
+[额外节点](./demo/extra.tsx)
 
 - 可以同时展开多个面板。
 
-[简洁模式](./demo/sample.vue)
+[简洁模式](./demo/sample.tsx)
 
 - 设置 `sample` 呈现没有边框的简洁样式。
 

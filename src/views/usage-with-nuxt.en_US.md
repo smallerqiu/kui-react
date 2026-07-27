@@ -1,41 +1,32 @@
-# Support for Nuxt.js
+# Server-side Rendering
 
-## Nuxt Initialization
+KUI React can be used with React server-rendering frameworks. This example uses the Next.js App Router.
+
+## Install
 
 ```bash
-$ npm create nuxt@latest kui-demo
-#or
-$ npm create nuxt@latest kui-demo
+pnpm add react-kui kui-icons
 ```
 
-Choose `minimal – Minimal setup for Nuxt 4`, where `minimal` includes only the most basic Nuxt 4 configuration
+Import the global stylesheet from the root layout:
 
-For more details, please visit <https://nuxt.com/>
+```tsx
+// app/layout.tsx
+import "react-kui/style/index.css";
 
-## Plugins Configuration
-
-Create a new `plugins` directory in the root `app`, then create a `kui.ts` file inside the `plugins` directory and write the following content:
-
-```js
-// /app/plugins/kui.ts
-import { defineNuxtPlugin } from '#app'
-import Kui from 'kui-vue'
-import 'kui-vue/style/index.css'
-
-export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.use(Kui)
-})
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return <html lang="en"><body>{children}</body></html>;
+}
 ```
 
-Then modify the `nuxt.config.ts` file in the root directory and update the configuration as follows:
+Use interactive components from a Client Component:
 
-```js
-export default defineNuxtConfig({
-  compatibilityDate: "2025-07-15",
-  devtools: { enabled: true },
-  ... // Others config
-  plugins: ["~/plugins/kui.ts"],  // add
-});
+```tsx
+"use client";
+
+import { Button } from "react-kui";
+
+export default function Demo() {
+  return <Button type="primary">KUI React</Button>;
+}
 ```
-
-At this point, the configuration is complete。

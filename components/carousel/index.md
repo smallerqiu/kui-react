@@ -10,15 +10,15 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 最简单的用法,可以通过 `value(v-model)` 指定初始值
 
-[垂直](./demo/vertical.vue)
+[垂直](./demo/vertical.tsx)
 
 - 通过设置 `vertical` 呈现垂直模式,此时不显示左右箭头
 
-[自动播放](./demo/autoplay.vue)
+[自动播放](./demo/autoplay.tsx)
 
 - 通过设置 `autoplay` ，可实现定时自动播放，通过 `delay` 设置间隔播放时间，默认 `3000` ，单位毫秒
 

@@ -9,6 +9,7 @@ import {
   type CSSProperties,
   type HTMLAttributes,
   type MouseEvent,
+  type ReactNode,
 } from "react";
 import Icon from "../icon";
 import { ImageGroupContext } from "./group";
@@ -32,6 +33,8 @@ export interface ImageProps extends Omit<HTMLAttributes<HTMLDivElement>, "onSwit
   data?: string[];
   imgStyle?: CSSProperties;
   showPanel?: boolean;
+  tools?: ReactNode;
+  panel?: ReactNode;
   onClose?: () => void;
   onSwitch?: (index: number) => void;
 }
@@ -48,6 +51,8 @@ const KImage = forwardRef<ImageRef, ImageProps>(function KImage(
     data,
     imgStyle,
     showPanel,
+    tools,
+    panel,
     onClose,
     onSwitch,
     className,
@@ -108,6 +113,8 @@ const KImage = forwardRef<ImageRef, ImageProps>(function KImage(
       type,
       data,
       showPanel,
+      tools,
+      panel,
       onClose,
       onSwitch,
       ...options,

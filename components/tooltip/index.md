@@ -10,15 +10,15 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 最简单的用法，浮层的大小由内容区域决定。
 
-[位置](./demo/placement.vue)
+[位置](./demo/placement.tsx)
 
 - 通过 `placement`控制方向, 位置有十二个方向。
 
-[多彩文字提示](./demo/color.vue)
+[多彩文字提示](./demo/color.tsx)
 
 - 多种预设色彩的文字提示样式，用作不同场景使用。
 

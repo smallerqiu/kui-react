@@ -1,5 +1,5 @@
 import { ChevronUp } from "kui-icons";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Icon from "../icon";
 
 export interface CollapsePanelProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -23,8 +23,6 @@ const CollapsePanel: React.FC<CollapsePanelProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(active);
   const [rendered, setRendered] = useState(active);
-  const contentRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     setRendered(true);
     // Use a small delay to trigger the CSS transition after mount

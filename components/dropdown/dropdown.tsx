@@ -167,7 +167,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     }
   };
 
-  const clickEvent = (e: React.MouseEvent) => {
+  const clickEvent = () => {
     if (disabled) return;
     if (trigger === "click") {
       openChange(!visible);
@@ -183,12 +183,13 @@ const Dropdown: React.FC<DropdownProps> = ({
   };
 
   const childList = getChildren(children);
-  const firstChild = childList.length === 1 ? childList[0] : <span>{childList}</span>;
+  const firstChild = (childList.length === 1 ? childList[0] : <span>{childList}</span>) as
+    React.ReactElement<Record<string, any>>;
 
   const triggerProps: Record<string, any> = {};
   if (!target) {
     triggerProps.onClick = (e: React.MouseEvent) => {
-      clickEvent(e);
+      clickEvent();
       if (React.isValidElement(firstChild) && firstChild.props.onClick) {
         firstChild.props.onClick(e);
       }
@@ -214,7 +215,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   }
 
   const triggerNode = React.isValidElement(firstChild) ? (
-    React.cloneElement(firstChild as React.ReactElement, {
+    React.cloneElement(firstChild, {
       ref: refSelection,
       ...triggerProps,
     })

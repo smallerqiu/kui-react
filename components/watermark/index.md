@@ -9,23 +9,23 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue?show=vertical)
+[基本用法](./demo/basic.tsx?show=vertical)
 
 - 最简单的用法。
 
-[图片水印](./demo/image.vue?show=vertical)
+[图片水印](./demo/image.tsx?show=vertical)
 
 - 通过 `image` 指定图片地址。为保证图片高清且不被拉伸，请设置 width 和 height, 并上传至少两倍的宽高的 logo 图片地址。
 
-[多行文字水印](./demo/multiple-lines.vue?show=vertical)
+[多行文字水印](./demo/multiple-lines.tsx?show=vertical)
 
 - 通过 content 设置字符串和 WatermarkText 组成的数组指定多行文字水印内容，并可单独调整每行文字样式。
 
-[Modal 与 Drawer 中使用](./demo/in-modal-drawer.vue)
+[Modal 与 Drawer 中使用](./demo/in-modal-drawer.tsx)
 
 - 在 Modal 与 Drawer 中使用。
 
-[自定义配置](./demo/custom.vue?show=vertical)
+[自定义配置](./demo/custom.tsx?show=vertical)
 
 - 通过自定义参数配置预览水印效果。
 

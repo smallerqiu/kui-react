@@ -6,7 +6,7 @@ import { getValueWithType } from "../utils/checked";
 
 export interface SwitchProps extends Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
-  "onChange"
+  "onChange" | "type"
 > {
   checked?: boolean;
   valueType?: ValueType;

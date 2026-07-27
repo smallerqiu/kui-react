@@ -9,19 +9,19 @@ Warning prompts to display information that needs attention.
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - Control the display type via `type`.
 
-[Icon](./demo/icon.vue)
+[Icon](./demo/icon.tsx)
 
 - Use `showIcon` to control whether the icon is displayed.
 
-[Closable](./demo/close.vue)
+[Closable](./demo/close.tsx)
 
 - Use `closable` to control whether the close button is displayed, with smooth and natural closing animation.
 
-[Custom Icon](./demo/custom-icon.vue)
+[Custom Icon](./demo/custom-icon.tsx)
 
 - Use `showIcon` to control whether the icon is displayed.
 

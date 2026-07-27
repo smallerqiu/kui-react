@@ -1,0 +1,21 @@
+import { Carousel, CarouselItem } from "../index";
+const itemStyle = {
+  color: "#fff",
+  background: "var(--kui-color-primary)",
+  justifyContent: "center",
+  alignItems: "center",
+  fontSize: 30,
+  fontWeight: 700,
+  display: "flex",
+} as const;
+export default function Basic() {
+  return (
+    <Carousel defaultValue={2} loop autoplay height={300}>
+      {[1, 2, 3].map((value) => (
+        <CarouselItem key={value} style={itemStyle}>
+          {value}
+        </CarouselItem>
+      ))}
+    </Carousel>
+  );
+}

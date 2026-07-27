@@ -1,0 +1,45 @@
+import { useRef, useState } from "react";
+import type { TreeNode } from "../../tree";
+import TreeSelect from "../index";
+const insert = (nodes: TreeNode[], key: string, children: TreeNode[]): boolean => {
+  for (const node of nodes) {
+    if (node.key === key) {
+      node.children = children;
+      return true;
+    }
+    if (node.children && insert(node.children, key, children)) return true;
+  }
+  return false;
+};
+export default function Sync() {
+  const [data, setData] = useState<TreeNode[]>([
+      { title: "Expand to load", key: "0-0" },
+      { title: "Expand to load", key: "0-1" },
+      { title: "Tree Node", isLeaf: true, key: "0-2" },
+    ]),
+    [expanded, setExpanded] = useState<string[]>([]),
+    count = useRef(0);
+  const loadData = (node: TreeNode) =>
+    new Promise<void>((resolve) => {
+      count.current += 1;
+      setTimeout(() => {
+        const next = structuredClone(data);
+        insert(next, node.key, [
+          { title: "Child Node", isLeaf: count.current >= 2, key: `${node.key}-0` },
+          { title: "Child Node", isLeaf: count.current >= 3, key: `${node.key}-1` },
+        ]);
+        setData(next);
+        resolve();
+      }, 1000);
+    });
+  return (
+    <TreeSelect
+      treeData={data}
+      treeLoadData={loadData}
+      treeExpandedKeys={expanded}
+      onTreeExpandedKeysChange={setExpanded}
+      onTreeExpand={console.log}
+      block
+    />
+  );
+}

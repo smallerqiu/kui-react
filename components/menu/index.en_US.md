@@ -8,31 +8,31 @@ The navigation menu is the soul of a website. Users rely on navigation to jump b
 
 ## Examples
 
-[Top Navigation](./demo/basic.vue?show=vertical)
+[Top Navigation](./demo/basic.tsx?show=vertical)
 
 - Horizontal top navigation menu.
 
-[Inline Menu](./demo/inline.vue?show=vertical)
+[Inline Menu](./demo/inline.tsx?show=vertical)
 
 - Vertical menu, with submenus embedded within the menu area.
 
-[Expand Only Current Parent Menu](./demo/accordion.vue?show=vertical)
+[Expand Only Current Parent Menu](./demo/accordion.tsx?show=vertical)
 
 - Clicking a menu item collapses all other expanded menus, keeping the menu focused and clean.
 
-[Vertical Menu](./demo/vertical.vue?show=vertical)
+[Vertical Menu](./demo/vertical.tsx?show=vertical)
 
 - Submenus appear as popups.
 
-[Theme](./demo/theme.vue?show=vertical)
+[Theme](./demo/theme.tsx?show=vertical)
 
 - Two built-in themes: `light|dark`, defaulting to `light`.
 
-[Switch Menu Type](./demo/mode.vue?show=vertical)
+[Switch Menu Type](./demo/mode.tsx?show=vertical)
 
 - Demonstrates dynamic mode switching.
 
-[Collapsible Inline Menu](./demo/collapsed.vue?show=vertical)
+[Collapsible Inline Menu](./demo/collapsed.tsx?show=vertical)
 
 - Inline menus can be collapsed/expanded.
 

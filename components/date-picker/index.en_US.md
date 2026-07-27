@@ -8,39 +8,39 @@ When the user needs to input a date, they can click the standard input box to po
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - Select or manually input a date. Use `v-model` for two-way data binding.
 
-[Output Type](./demo/value-type.vue)
+[Output Type](./demo/value-type.tsx)
 
 - Specify the output type via `valueType`.
 
-[Date Range](./demo/range.vue)
+[Date Range](./demo/range.tsx)
 
 - Supports date and time range selection. It's recommended to use `startDate` and `endDate` for values.
 
-[Disabled Dates and Times](./demo/disabled-date.vue)
+[Disabled Dates and Times](./demo/disabled-date.tsx)
 
 - Use `disabledDate` and `disabledTime` to disable selecting specific dates and times, respectively.
 
-[Disabled and Non-editable](./demo/disabled.vue)
+[Disabled and Non-editable](./demo/disabled.tsx)
 
 - The disabled, non-editable, and non-clearable states of the picker.
 
-[Preset Ranges](./demo/presets.vue)
+[Preset Ranges](./demo/presets.tsx)
 
 - You can preset common date ranges to improve user experience.
 
-[Weird Theme](./demo/theme.vue)
+[Weird Theme](./demo/theme.tsx)
 
 - Strange things.
 
-[Size](./demo/size.vue)
+[Size](./demo/size.tsx)
 
 - Use `small` and `large` to set the size of the picker.
 
-[Multi-language](./demo/lang.vue)
+[Multi-language](./demo/lang.tsx)
 
 - DatePicker supports multiple languages,Default English, depending on `dayjs`.
 

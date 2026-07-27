@@ -17,7 +17,7 @@ if (body.hasAttribute("theme-mode")) {
 
 ## 示例
 
-[切换主题](./mode.vue)
+[切换主题](./mode.tsx)
 
 - 简单的切换例子, 开箱即用
 
@@ -88,6 +88,6 @@ monitor.addEventListener("change", matchMode);
 
 > 注意: 局部暗色/亮色对弹出层不生效
 
-[局部暗色](./local.vue?show=vertical)
+[局部暗色](./local.tsx?show=vertical)
 
 - 通过设置顶层元素的 `theme-mode` 属性来控制局暗色模式

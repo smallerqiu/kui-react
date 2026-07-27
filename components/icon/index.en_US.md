@@ -9,18 +9,18 @@ npm install --save kui-icons
 
 Use
 
-```html
-<template>
-  <Icon :type="Heart" />
-</template>
-<script setup lang="ts">
-  import { Heart } from "kui-icons";
-</script>
+```tsx
+import { Heart } from "kui-icons";
+import Icon from "react-kui/components/icon";
+
+export default function Demo() {
+  return <Icon type={Heart} />;
+}
 ```
 
 [IconList](./demo/search.tsx)
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - You can set the icon's type, size, and color via the `type`, `size`, and `color` attributes, respectively. You can also use the `spin` attribute to achieve a rotating animation effect.
 

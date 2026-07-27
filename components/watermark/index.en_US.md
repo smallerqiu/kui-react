@@ -9,23 +9,23 @@ Add a watermark to a specific area of the page.
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue?show=vertical)
+[Basic Usage](./demo/basic.tsx?show=vertical)
 
 - The simplest usage.
 
-[Image watermark](./demo/image.vue?show=vertical)
+[Image watermark](./demo/image.tsx?show=vertical)
 
 - Specify the image source via the `image` prop. To ensure high definition and prevent distortion, please set the `width` and `height`, and upload an image (e.g., a logo) at least twice the display dimensions.
 
-[Multi-line text watermark](./demo/multiple-lines.vue?show=vertical)
+[Multi-line text watermark](./demo/multiple-lines.tsx?show=vertical)
 
 - Set multi-line text content by passing a string or an array composed of `WatermarkText` objects via `content`. Styles can be adjusted independently for each line.
 
-[Used in Modals and Drawers](./demo/in-modal-drawer.vue)
+[Used in Modals and Drawers](./demo/in-modal-drawer.tsx)
 
 - Using watermarks within Modals and Drawers.
 
-[Custom Configuration](./demo/custom.vue?show=vertical)
+[Custom Configuration](./demo/custom.tsx?show=vertical)
 
 - Preview the watermark effect by configuring custom parameters.
 

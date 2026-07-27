@@ -8,39 +8,39 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 选择或者手动输入日期,通过 `v-model` 进行数据双向绑定
 
-[输出类型](./demo/value-type.vue)
+[输出类型](./demo/value-type.tsx)
 
 - 通过 `valueType` 指定输出类型
 
-[时间区域](./demo/range.vue)
+[时间区域](./demo/range.tsx)
 
 - 支持时间日期区间选择。取值建议用 `startDate` , `endDate`
 
-[不可选择日期和时间](./demo/disabled-date.vue)
+[不可选择日期和时间](./demo/disabled-date.tsx)
 
 - 可用 `disabledDate` 和 `disabledTime` 分别禁止选择部分日期和时间.
 
-[禁用和不可编辑](./demo/disabled.vue)
+[禁用和不可编辑](./demo/disabled.tsx)
 
 - 选择框的不可用 、 不可编辑, 不可清除 状态。
 
-[预设范围](./demo/presets.vue)
+[预设范围](./demo/presets.tsx)
 
 - 可以预设常用的日期范围以提高用户体验。。
 
-[奇葩的主题](./demo/theme.vue)
+[奇葩的主题](./demo/theme.tsx)
 
 - 奇奇怪怪的东西
 
-[尺寸](./demo/size.vue)
+[尺寸](./demo/size.tsx)
 
 - 通过 `small` ,`large` 来设置选择框的大小呈现
 
-[多语言](./demo/lang.vue)
+[多语言](./demo/lang.tsx)
 
 - DatePicker 支持多语言。默认英语,依赖 `dayjs`.
 

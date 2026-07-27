@@ -1,41 +1,32 @@
-# 服务端渲染的支持
+# 服务端渲染支持
 
-## Nuxt 初始化
+KUI React 可用于 React 的服务端渲染框架。以下以 Next.js App Router 为例。
+
+## 安装
 
 ```bash
-$ npm create nuxt@latest kui-demo
-#or
-$ npm create nuxt@latest kui-demo
+pnpm add react-kui kui-icons
 ```
 
-选择 `minimal – Minimal setup for Nuxt 4` ,`minimal` 只包含最基础的 Nuxt 4 配置
+在根布局中引入全局样式：
 
-更多详情请参阅 <https://nuxt.com/>
+```tsx
+// app/layout.tsx
+import "react-kui/style/index.css";
 
-## Plugins 配置
-
-在根目录 `app` 新建`plugins`目录，在`plugins`目录新建`kui.ts`，写入以下内容：
-
-```js
-// plugins/kui.ts
-import { defineNuxtPlugin } from '#app'
-import Kui from 'kui-vue'
-import 'kui-vue/style/index.css'
-
-export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.use(Kui)
-})
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return <html lang="zh-CN"><body>{children}</body></html>;
+}
 ```
 
-然后修改根目录`nuxt.config.ts`，修改配置文件，如下
+包含浏览器交互的组件应在 Client Component 中使用：
 
-```js
-export default defineNuxtConfig({
-  compatibilityDate: "2025-07-15",
-  devtools: { enabled: true },
-  ... // 其他配置
-  plugins: ["~/plugins/kui.ts"],  // 添加
-});
+```tsx
+"use client";
+
+import { Button } from "react-kui";
+
+export default function Demo() {
+  return <Button type="primary">KUI React</Button>;
+}
 ```
-
-至此，配置完成。

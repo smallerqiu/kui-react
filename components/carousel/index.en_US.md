@@ -10,15 +10,15 @@ A set of rotating/carousel areas.
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - The simplest usage. You can specify the initial value via `value (v-model)`.
 
-[Vertical](./demo/vertical.vue)
+[Vertical](./demo/vertical.tsx)
 
 - Enable vertical mode by setting `vertical`. In this mode, left and right arrows are hidden.
 
-[Autoplay](./demo/autoplay.vue)
+[Autoplay](./demo/autoplay.tsx)
 
 - Enable timed autoplay by setting `autoplay`. Use `delay` to set the interval. The default is `3000` milliseconds.
 

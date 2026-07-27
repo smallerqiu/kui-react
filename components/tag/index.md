@@ -9,23 +9,23 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 通过 `closeable` 显示关闭按钮，点击隐藏标签，触发 `close` 回调
 
-[尺寸和形状](./demo/size.vue)
+[尺寸和形状](./demo/size.tsx)
 
 - 通过 `size` 可控尺寸 ,
 
-[图标](./demo/icon.vue)
+[图标](./demo/icon.tsx)
 
 - 可以设置 icon 属性，或者直接在 Tag 内使用 Icon 组件。
 
-[多彩标签](./demo/color.vue)
+[多彩标签](./demo/color.tsx)
 
 - 多种预设色彩的标签样式，用作不同场景使用。如果预设值不能满足你的需求，可以设置为具体的色值。
 
-[动态添加和删除](./demo/dynamic.vue)
+[动态添加和删除](./demo/dynamic.tsx)
 
 - 通过 `closeable` 显示关闭按钮
 

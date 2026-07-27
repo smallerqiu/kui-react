@@ -8,31 +8,31 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 最简单的用法。
 
-[多选](./demo/multiple.vue)
+[多选](./demo/multiple.tsx)
 
 - 多选的树选择。
 
-[可勾选](./demo/checkable.vue)
+[可勾选](./demo/checkable.tsx)
 
 - 使用勾选框实现多选功能。
 
-[禁用](./demo/disabled.vue)
+[禁用](./demo/disabled.tsx)
 
 - 禁用状态
 
-[异步加载](./demo/sync.vue)
+[异步加载](./demo/sync.tsx)
 
 - 点击展开节点，动态加载数据。
 
-[尺寸](./demo/size.vue)
+[尺寸](./demo/size.tsx)
 
 - 选择框的尺寸有：`small`、`default`、`large`。
 
-[奇葩的定义](./demo/theme.vue)
+[奇葩的定义](./demo/theme.tsx)
 
 - 一些奇奇怪怪的东西
 

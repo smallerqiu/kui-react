@@ -1,0 +1,21 @@
+import { useState } from "react";
+import Switch from "../../switch";
+import Spin from "../index";
+export default function Container() {
+  const [spinning, setSpinning] = useState(false);
+  return (
+    <div>
+      <Spin spinning={spinning}>
+        <div style={{ padding: "100px 50px" }}>
+          See the light through the mist.
+          <br />
+          See the light through the mist.
+        </div>
+      </Spin>
+      <br />
+      <br />
+      Loading state：
+      <Switch checked={spinning} onChange={(value) => setSpinning(Boolean(value))} />
+    </div>
+  );
+}

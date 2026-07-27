@@ -8,23 +8,23 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 最简单的用法。
 
-[不同的状态](./demo/status.vue)
+[不同的状态](./demo/status.tsx)
 
 - 可以通过 status 的值控制二维码的状态，提供了 active、expired、loading、scanned 四个值。
 
-[自定义属性](./demo/custom.vue)
+[自定义属性](./demo/custom.tsx)
 
 - 可以通过一些自定义属性来自定义二维码展示方式。
 
-[卡片和下载](./demo/download.vue)
+[卡片和下载](./demo/download.tsx)
 
 - 在卡片中展示, 和下载二维码。
 
-[自定义状态](./demo/custom-status.vue)
+[自定义状态](./demo/custom-status.tsx)
 
 - 自定义状态展示。
 

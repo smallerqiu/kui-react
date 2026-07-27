@@ -77,7 +77,7 @@ const Cell: React.FC<CellProps> = ({ label, span = 1, type, bordered, layout, ch
   );
 };
 
-export interface DescriptionsProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface DescriptionsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   bordered?: boolean;
   column?: number;
   layout?: DirectionType;

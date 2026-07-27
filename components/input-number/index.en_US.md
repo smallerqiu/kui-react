@@ -8,19 +8,19 @@ When standard numerical values need to be obtained.
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - Basic usage. The `keyboard` attribute can control keyboard behavior.
 
-[High-Precision Decimals / Formatted Display](./demo/format.vue)
+[High-Precision Decimals / Formatted Display](./demo/format.tsx)
 
 - Format numbers using `formatter` to display data with specific meaning, often used in conjunction with `parser`.
 
-[Extension, Prefix and Suffix](./demo/ffix.vue)
+[Extension, Prefix and Suffix](./demo/ffix.tsx)
 
 - suffix, prefix extension
 
-[Size](./demo/size.vue)
+[Size](./demo/size.tsx)
 
 - `large` for large size, `small` for small size
 

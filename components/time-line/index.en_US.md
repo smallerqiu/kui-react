@@ -11,15 +11,15 @@ When an operation takes a long time to complete, display the current progress an
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - `TimeLine` must contain `TimeLineItem`.
 
-[Icon](./demo/icon.vue)
+[Icon](./demo/icon.tsx)
 
 - Set the `icon` and `color` properties on `TimeLineItem` to change the icon display.
 
-[Display Direction](./demo/mode.vue)
+[Display Direction](./demo/mode.tsx)
 
 - Specify the `mode` to change the display direction.
 

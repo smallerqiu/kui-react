@@ -12,19 +12,19 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - `Notice` 的基本用法
 
-[带图标的提醒](./demo/types.vue)
+[带图标的提醒](./demo/types.tsx)
 
 - 通过调用不同的方法，可展示不同的类型
 
-[自定义图标](./demo/icon.vue)
+[自定义图标](./demo/icon.tsx)
 
 - 自定义图标
 
-[自定义时长](./demo/close.vue)
+[自定义时长](./demo/close.tsx)
 
 - 可以自定义配置，其中 `duration` 来控制自动关闭时长,默认 `3s`
 

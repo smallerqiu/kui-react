@@ -9,27 +9,27 @@ Dropdown selector.
 
 ## Examples
 
-[Single Selection](./demo/basic.vue)
+[Single Selection](./demo/basic.tsx)
 
 - Use `v-model` for two-way data binding.
 
-[Multiple Selection](./demo/multiple.vue)
+[Multiple Selection](./demo/multiple.tsx)
 
 - Set the `multiple` value to present multi-select mode.
 
-[Disabled and Non-clearable](./demo/disabled.vue)
+[Disabled and Non-clearable](./demo/disabled.tsx)
 
 - Use `v-model` for two-way data binding.
 
-[Filtering and Searching](./demo/filterable.vue)
+[Filtering and Searching](./demo/filterable.tsx)
 
 - Set the `filterable` value to present filtering mode. > `filterable` and `onSearch` cannot be used simultaneously; search results will be filtered.
 
-[Size](./demo/size.vue)
+[Size](./demo/size.tsx)
 
 - Control component size via `width` and `size`.
 
-[Weird Definition](./demo/theme.vue)
+[Weird Definition](./demo/theme.tsx)
 
 - Some strange things.
 

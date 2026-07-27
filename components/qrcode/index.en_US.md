@@ -8,23 +8,23 @@ A component that converts text into QR codes, supporting custom colors and logo 
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - The simplest usage.
 
-[Different states](./demo/status.vue)
+[Different states](./demo/status.tsx)
 
 - Control the QR code state via the `status` prop. Supported values: `active`, `expired`, `loading`, and `scanned`.
 
-[Custom Properties](./demo/custom.vue)
+[Custom Properties](./demo/custom.tsx)
 
 - Customize the QR code display using various configurable properties.
 
-[Cards and Downloads](./demo/download.vue)
+[Cards and Downloads](./demo/download.tsx)
 
 - Display the QR code within a card and enable downloading.
 
-[Custom Status](./demo/custom-status.vue)
+[Custom Status](./demo/custom-status.tsx)
 
 - Customize the display for different status states.
 

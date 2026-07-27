@@ -9,19 +9,19 @@ Placeholder display for empty states.
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - Simple display.
 
-[Custom](./demo/custom.vue)
+[Custom](./demo/custom.tsx)
 
 - Customize the image, description, and extra content.
 
-[Default Display](./demo/used.vue)
+[Default Display](./demo/used.tsx)
 
 - Will be displayed by default in the above components.
 
-[No Description](./demo/nodesc.vue)
+[No Description](./demo/nodesc.tsx)
 
 - Display without description.
 

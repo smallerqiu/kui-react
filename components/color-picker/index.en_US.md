@@ -8,19 +8,19 @@ Freely output colors.
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - Click to open the color panel.
 
-[Size / Disabled](./demo/size.vue)
+[Size / Disabled](./demo/size.tsx)
 
 - `small` for small size, `large` for large size.
 
-[Custom Trigger](./demo/custom-trigger.vue)
+[Custom Trigger](./demo/custom-trigger.tsx)
 
 - Customize the trigger for the color panel.
 
-[Popup Placement](./demo/placement.vue)
+[Popup Placement](./demo/placement.tsx)
 
 - Supports 6 popup placements. If there is not enough space above, the panel will automatically appear below.
 

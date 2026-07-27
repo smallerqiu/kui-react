@@ -9,23 +9,23 @@ Content area that can be collapsed/expanded.
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - By default, one or multiple panels can be expanded at the same time.
 
-[Accordion](./demo/accordion.vue)
+[Accordion](./demo/accordion.tsx)
 
 - Set `accordion` to allow only one panel to be expanded at a time.
 
-[Nested Panels](./demo/nesting.vue)
+[Nested Panels](./demo/nesting.tsx)
 
 - Nested collapse panels.
 
-[Extra Nodes](./demo/extra.vue)
+[Extra Nodes](./demo/extra.tsx)
 
 - Multiple panels can be expanded simultaneously.
 
-[Simple Mode](./demo/sample.vue)
+[Simple Mode](./demo/sample.tsx)
 
 - Set `sample` to display a borderless, minimal style.
 

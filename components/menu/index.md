@@ -8,31 +8,31 @@
 
 ## 代码演示
 
-[顶部导航](./demo/basic.vue?show=vertical)
+[顶部导航](./demo/basic.tsx?show=vertical)
 
 - 水平的顶部导航菜单。
 
-[内嵌菜单](./demo/inline.vue?show=vertical)
+[内嵌菜单](./demo/inline.tsx?show=vertical)
 
 - 垂直菜单，子菜单内嵌在菜单区域。
 
-[只展开当前父级菜单](./demo/accordion.vue?show=vertical)
+[只展开当前父级菜单](./demo/accordion.tsx?show=vertical)
 
 - 点击菜单，收起其他展开的所有菜单，保持菜单聚焦简洁。
 
-[垂直菜单](./demo/vertical.vue?show=vertical)
+[垂直菜单](./demo/vertical.tsx?show=vertical)
 
 - 子菜单是弹出的形式。
 
-[主题](./demo/theme.vue?show=vertical)
+[主题](./demo/theme.tsx?show=vertical)
 
 - 内建了两套主题 `light|dark`，默认 `light`。
 
-[切换菜单类型](./demo/mode.vue?show=vertical)
+[切换菜单类型](./demo/mode.tsx?show=vertical)
 
 - 展示动态切换模式。
 
-[缩起内嵌菜单](./demo/collapsed.vue?show=vertical)
+[缩起内嵌菜单](./demo/collapsed.tsx?show=vertical)
 
 - 内嵌菜单可以被缩起/展开。
 

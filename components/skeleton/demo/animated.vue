@@ -1,3 +1,0 @@
-<template>
-  <Skeleton animated />
-</template>

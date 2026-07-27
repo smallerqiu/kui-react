@@ -9,23 +9,23 @@
 
 ## 代码演示
 
-[普通提示](./demo/basic.vue)
+[普通提示](./demo/basic.tsx)
 
 - 信息提醒反馈。
 
-[自定图标](./demo/icon.vue)
+[自定图标](./demo/icon.tsx)
 
 - 自定图标。
 
-[提示类型](./demo/types.vue)
+[提示类型](./demo/types.tsx)
 
 - 通过 `type` 来设置提示类型
 
-[加载中](./demo/loading.vue)
+[加载中](./demo/loading.tsx)
 
 - 进行全局 loading，异步自行移除。
 
-[自定义时长](./demo/close.vue)
+[自定义时长](./demo/close.tsx)
 
 - 可以自定义配置，其中 `duration` 来控制自动关闭时长,默认 `3s` , `closable` 显示关闭按钮
 

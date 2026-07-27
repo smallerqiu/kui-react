@@ -1,0 +1,32 @@
+import { useState } from "react";
+import Space from "../../space";
+import DatePicker, { type DatePickerInput } from "../index";
+export default function ValueType() {
+  const [v1, s1] = useState<DatePickerInput>("2025-11-30"),
+    [v2, s2] = useState<DatePickerInput>("2025/11/30"),
+    [v3, s3] = useState<DatePickerInput>(new Date()),
+    [v4, s4] = useState<DatePickerInput>(Date.now()),
+    [v5, s5] = useState<DatePickerInput>(Math.floor(Date.now() / 1000));
+  const row = (
+    label: string,
+    value: DatePickerInput,
+    set: (v: DatePickerInput) => void,
+    props: Record<string, unknown>
+  ) => (
+    <>
+      <code>
+        {label}, value: {String(value)}
+      </code>
+      <DatePicker {...props} value={value} onChange={(v) => set(v as DatePickerInput)} />
+    </>
+  );
+  return (
+    <Space wrap vertical>
+      {row("string", v1, s1, { valueType: "string" })}
+      {row("format", v2, s2, { format: "YYYY/MM/DD" })}
+      {row("date", v3, s3, { valueType: "date" })}
+      {row("timestamp", v4, s4, { valueType: "timestamp" })}
+      {row("unix", v5, s5, { valueType: "unix" })}
+    </Space>
+  );
+}

@@ -4,19 +4,19 @@
 
 ## 代码演示
 
-[基本](./demo/basic.vue)
+[基本](./demo/basic.tsx)
 
 - 头像有三种尺寸，两种形状可选。
 
-[类型](./demo/types.vue)
+[类型](./demo/types.tsx)
 
 - 支持三种类型：图片、Icon 以及字符，其中 Icon 和字符型可以自定义图标颜色及背景色。
 
-[带徽标和分组](./demo/badge-group.vue)
+[带徽标和分组](./demo/badge-group.tsx)
 
 - 通常用于消息提示和头像组合展现。
 
-[自动调整字符大小](./demo/change.vue)
+[自动调整字符大小](./demo/change.tsx)
 
 - 对于字符型的头像，当字符串较长时，字体大小可以根据头像宽度自动调整。
 

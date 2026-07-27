@@ -8,31 +8,31 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 基本用法
 
-[尺寸/自定义](./demo/size.vue)
+[尺寸/自定义](./demo/size.tsx)
 
 - size 可以控制操作杆的大小
 
-[受控](./demo/with-number.vue)
+[受控](./demo/with-number.tsx)
 
 - 受控和 Input 同步。
 
-[自定义提示](./demo/formatter.vue)
+[自定义提示](./demo/formatter.tsx)
 
 - 使用 tipFormatter 可以设置 Tooltip 的显示的格式。 当 tooltipVisible 为 true 时，将始终显示 ToolTip；反之则始终不显示，即使在拖动、移入时也是如此。
 
-[带标签的](./demo/marks.vue?show=vertical)
+[带标签的](./demo/marks.tsx?show=vertical)
 
 - 使用 marks 属性标注滑块的刻度，使用 value 指定滑块位置。
 
-[垂直](./demo/vertical.vue?show=vertical)
+[垂直](./demo/vertical.tsx?show=vertical)
 
 - 垂直方向的 Slider。
 
-[反向](./demo/reverse.vue?show=vertical)
+[反向](./demo/reverse.tsx?show=vertical)
 
 - 设置 `reverse` 可以将滑动条置反。
 

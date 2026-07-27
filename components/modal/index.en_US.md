@@ -9,23 +9,23 @@ Modal dialog box.
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - Use `v-model` for two-way data binding.
 
-[Custom](./demo/custom.vue)
+[Custom](./demo/custom.tsx)
 
 - Custom `Modal`.
 
-[Other Properties](./demo/more.vue)
+[Other Properties](./demo/more.tsx)
 
 - When the footer is not needed, set `footer` to `null`.
 
-[Global Mode](./demo/global.vue)
+[Global Mode](./demo/global.tsx)
 
 - Use global mode.
 
-[Confirmation Dialog](./demo/confirm.vue)
+[Confirmation Dialog](./demo/confirm.tsx)
 
 - A global confirmation dialog that can be closed asynchronously.
 

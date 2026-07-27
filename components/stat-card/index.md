@@ -8,15 +8,15 @@
 
 ## 代码演示
 
-[卡片展示](./demo/card.vue?show=vertical)
+[卡片展示](./demo/card.tsx?show=vertical)
 
 - 用于 Dashboard 场景 , 结合 `Grid` 可以很好的适配多种设备.
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 只展示数字
 
-[组合展示](./demo/with-card.vue)
+[组合展示](./demo/with-card.tsx)
 
 - 结合`Card` 组件展示更多自定义数据
 

@@ -9,23 +9,23 @@ Globally display operation feedback information.
 
 ## Examples
 
-[Normal Prompt](./demo/basic.vue)
+[Normal Prompt](./demo/basic.tsx)
 
 - Informational feedback prompt.
 
-[Custom Icon](./demo/icon.vue)
+[Custom Icon](./demo/icon.tsx)
 
 - Custom icon.
 
-[Prompt Types](./demo/types.vue)
+[Prompt Types](./demo/types.tsx)
 
 - Set the prompt type via `type`.
 
-[Loading](./demo/loading.vue)
+[Loading](./demo/loading.tsx)
 
 - Perform a global loading and remove it asynchronously.
 
-[Custom Duration](./demo/close.vue)
+[Custom Duration](./demo/close.tsx)
 
 - Can be custom configured. Use `duration` to control the auto-close duration (default `3s`). Use `closable` to show a close button.
 

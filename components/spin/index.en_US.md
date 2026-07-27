@@ -8,15 +8,15 @@ When part of the page is waiting for asynchronous data or being rendered, approp
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - A simple loading state.
 
-[Card Loading](./demo/container.vue)
+[Card Loading](./demo/container.tsx)
 
 - You can directly embed content into Spin to turn an existing container into a loading state.
 
-[Spin Type](./demo/mode.vue)
+[Spin Type](./demo/mode.tsx)
 
 - You can directly embed content into Spin to turn an existing container into a loading state.
 

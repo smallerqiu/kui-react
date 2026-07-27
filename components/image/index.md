@@ -9,19 +9,19 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 简单的展示。
 
-[容错处理](./demo/errors.vue)
+[容错处理](./demo/errors.tsx)
 
 - 加载失败显示图像占位符。
 
-[照片墙](./demo/group.vue)
+[照片墙](./demo/group.tsx)
 
 - 点击左右切换按钮可以预览多张图片。
 
-[扩展](./demo/extra.vue)
+[扩展](./demo/extra.tsx)
 
 - 可以扩展自定工具和面板。
 

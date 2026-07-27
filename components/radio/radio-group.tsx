@@ -153,7 +153,7 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
       ));
     }
     return React.Children.map(children, (child) => {
-      if (React.isValidElement(child)) {
+      if (React.isValidElement<{ value?: any }>(child)) {
         const val = child.props.value;
         return React.cloneElement(child, {
           ref: (el: any) => setItemRef(el, val),

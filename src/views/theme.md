@@ -1,31 +1,23 @@
 # 定制主题
 
-设计规范上支持一定程度的样式定制，以满足业务和品牌上多样化的视觉需求，包括但不限于主色、圆角、边框和部分组件的视觉定制。
+KUI React 使用 CSS 变量描述主色、圆角、边框与背景等设计令牌。可在应用样式中覆盖变量：
 
-<p>
-  <img src="https://k-ui.cn/img/theme.jpg" class="demo-theme"/>
-</p>
+```css
+:root {
+  --kui-color-primary: #3a95ff;
+  --kui-border-radius: 6px;
+}
 
-## 覆盖定制
-
-通过覆盖less变量来定制主题
-新建一个less 文件 如：'assets/styles/custom.less',写下如下内容：
-
-```less
-//引入 styles
-@import "~kui-vue/components/styles/index.less";
-
-// 重新定义变量
-@main: #3a95ff; //主色
-// 所有的变量在 ~kui-vue/components/styles/color.less 中定义
+[theme-mode="dark"] {
+  --kui-color-bg: #141414;
+}
 ```
 
-然后在入口文件 main.js 内导入这个 less 文件即可：
+在 React 入口引入组件库样式与自定义样式：
 
-```js
-import Vue from "vue";
-import kui from "kui-vue";
-import "assets/styles/custom.less";
-
-Vue.use(kui);
+```tsx
+import "react-kui/style/index.css";
+import "./styles/custom.css";
 ```
+
+运行时明暗主题切换请参阅“暗色模式”指南。

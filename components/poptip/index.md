@@ -10,19 +10,19 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 最简单的用法，浮层的大小由内容区域决定。
 
-[触发模式](./demo/trigger.vue)
+[触发模式](./demo/trigger.tsx)
 
 - 通过 `trigger`来控制触发模式, 鼠标移入 `hover`、点击 `click`。
 
-[从浮层内关闭](./demo/closeinside.vue)
+[从浮层内关闭](./demo/closeinside.tsx)
 
 - 使用 `v-model` 属性控制浮层显示。
 
-[位置](./demo/placement.vue)
+[位置](./demo/placement.tsx)
 
 - 通过 `placement`控制方向, 位置有十二个方向。
 

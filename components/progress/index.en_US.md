@@ -11,27 +11,27 @@ When an operation takes a long time to complete, display the current progress an
 
 ## Examples
 
-[Progress Bar](./demo/basic.vue)
+[Progress Bar](./demo/basic.tsx)
 
 - A standard progress bar.
 
-[Circular Progress](./demo/circle.vue)
+[Circular Progress](./demo/circle.tsx)
 
 - A circular progress bar.
 
-[Dashboard-style Progress Bar](./demo/dashboard.vue)
+[Dashboard-style Progress Bar](./demo/dashboard.tsx)
 
 - Dashboard-style progress bar. Adjust the gap size via `gapDegree`. Use `strokeLinecap="square|round"` to adjust the shape of the progress bar's edges.
 
-[Dynamic Display](./demo/dynamic.vue)
+[Dynamic Display](./demo/dynamic.tsx)
 
 - A moving progress bar is a good progress bar.
 
-[Color and Format](./demo/color.vue)
+[Color and Format](./demo/color.tsx)
 
 - Customize color and format.
 
-[Size](./demo/size.vue)
+[Size](./demo/size.tsx)
 
 - Suitable for placement in narrower areas.
 

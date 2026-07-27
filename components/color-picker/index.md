@@ -8,19 +8,19 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 点击打开颜色面板
 
-[尺寸大小 / 不可用](./demo/size.vue)
+[尺寸大小 / 不可用](./demo/size.tsx)
 
 - `small` 为小尺寸， `large` 为大尺寸
 
-[自定义触发器](./demo/custom-trigger.vue)
+[自定义触发器](./demo/custom-trigger.tsx)
 
 - 自定义颜色面板的触发器。
 
-[弹出位置](./demo/placement.vue)
+[弹出位置](./demo/placement.tsx)
 
 - 支持 6 个弹出位置 , 如果上面的空间不够，色盘会自动在下面展示
 

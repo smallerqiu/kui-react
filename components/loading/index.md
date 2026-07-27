@@ -8,33 +8,26 @@
 
 ## 示例
 
-模拟路由加载
+在异步操作前后控制加载进度：
 
-```js
-// # router.js
-import { createRouter, createWebHistory } from "vue-router";
-import { loading } from 'kui-vue'
+```tsx
+import loading from "react-kui/components/loading";
 
-const router = createRouter({
-  ....
-})
-router.beforeEach((to, from, next) => {
-  Loading.start();
-  next();
-});
-
-router.afterEach(route => {
-  Loading.finish();
-});
-
-export default router;
+async function loadData() {
+  loading.start();
+  try {
+    await fetch("/api/data");
+  } finally {
+    loading.finish();
+  }
+}
 ```
 
 如果你使用的是 `axios`.
 
 ```js
 import axios from "axios";
-import { loading } from "kui-vue";
+import loading from "react-kui/components/loading";
 
 const axiosInstance = axios.create({
   baseURL: "/api", // 你的 API 地址
@@ -70,7 +63,7 @@ export default axiosInstance;
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 最简单的用法。
 

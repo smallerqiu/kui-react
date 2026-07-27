@@ -11,27 +11,27 @@
 
 ## 代码演示
 
-[进度条](./demo/basic.vue)
+[进度条](./demo/basic.tsx)
 
 - 标准的进度条。
 
-[进度圈](./demo/circle.vue)
+[进度圈](./demo/circle.tsx)
 
 - 圆形的进度条。
 
-[盘仪表进度条](./demo/dashboard.vue)
+[盘仪表进度条](./demo/dashboard.tsx)
 
 - 盘仪表进度条。可通过`gapDegree`调节缺口大小。`strokeLinecap="square|round"` 可以调整进度条边缘的形状。
 
-[动态展示](./demo/dynamic.vue)
+[动态展示](./demo/dynamic.tsx)
 
 - 会动的进度条才是好进度条。
 
-[颜色和格式](./demo/color.vue)
+[颜色和格式](./demo/color.tsx)
 
 - 自定义颜色和自定义格式。
 
-[尺寸](./demo/size.vue)
+[尺寸](./demo/size.tsx)
 
 - 适合放在较狭窄的区域内。
 

@@ -154,6 +154,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
 
   return (
     <Input
+      {...(rest as React.ComponentProps<typeof Input>)}
       value={displayValue}
       disabled={disabled}
       readOnly={readOnly}

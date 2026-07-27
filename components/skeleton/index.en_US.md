@@ -11,31 +11,31 @@ Provide a placeholder graphic combination at positions where content needs to be
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue?show=vertical)
+[Basic Usage](./demo/basic.tsx?show=vertical)
 
 - The simplest placeholder effect.
 
-[Combination](./demo/group.vue?show=vertical)
+[Combination](./demo/group.tsx?show=vertical)
 
 - You can configure the number of skeleton screen paragraphs to better approximate the real rendering effect. The first line will be rendered as a paragraph start of 35% length.
 
-[Animation Effect](./demo/animated.vue?show=vertical)
+[Animation Effect](./demo/animated.tsx?show=vertical)
 
 - Show animation effect.
 
-[Child Component](./demo/child.vue?show=vertical)
+[Child Component](./demo/child.tsx?show=vertical)
 
 - Loading placeholder includes child components.
 
-[List](./demo/list.vue?show=vertical)
+[List](./demo/list.tsx?show=vertical)
 
 - Use loading placeholders in list components.
 
-[Button/Avatar/Image](./demo/items.vue?show=vertical)
+[Button/Avatar/Image](./demo/items.tsx?show=vertical)
 
 - Skeleton buttons, avatars, and images.
 
-[Custom](./demo/custom.vue?show=vertical)
+[Custom](./demo/custom.tsx?show=vertical)
 
 - Custom effect.
 

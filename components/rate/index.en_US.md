@@ -9,15 +9,15 @@ Rating component.
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - The simplest usage.
 
-[Text Display / Allow Clear](./demo/tips.vue)
+[Text Display / Allow Clear](./demo/tips.tsx)
 
 - Add text display to the rating component.
 
-[Other Characters](./demo/character.vue)
+[Other Characters](./demo/character.tsx)
 
 - Stars can be replaced with other characters, such as letters, numbers, font icons, or even Chinese characters.
 

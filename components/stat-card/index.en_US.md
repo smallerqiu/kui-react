@@ -8,15 +8,15 @@ Can be used in BI/Dashboard scenarios, business backend oriented, intuitive.
 
 ## Examples
 
-[Card Display](./demo/card.vue?show=vertical)
+[Card Display](./demo/card.tsx?show=vertical)
 
 - Used in Dashboard scenarios. Combined with `Grid`, it can adapt well to various devices.
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - Display Numbers Only
 
-[Combination Display](./demo/with-card.vue)
+[Combination Display](./demo/with-card.tsx)
 
 - Show more custom data combined with the `Card` component
 

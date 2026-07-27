@@ -17,7 +17,7 @@ if (body.hasAttribute("theme-mode")) {
 
 ## Example
 
-[Switch Theme](./mode.vue)
+[Switch Theme](./mode.tsx)
 
 - A simple toggle example, ready to use out of the box
 
@@ -88,6 +88,6 @@ Add the 'theme-mode=dark' or 'theme-mode=light' attribute to the top-level eleme
 
 > Note: Local dark/light mode does not apply to pop-up layers.
 
-[Local darkening](./local.vue?show=vertical)
+[Local darkening](./local.tsx?show=vertical)
 
 - Control local dark mode by setting the `theme-mode` attribute of the top-level element

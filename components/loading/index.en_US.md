@@ -12,29 +12,23 @@ Simulate route loading
 
 ```js
 // # router.js
-import { createRouter, createWebHistory } from "vue-router";
-import { loading } from 'kui-vue'
+import loading from "react-kui/components/loading";
 
-const router = createRouter({
-  ....
-})
-router.beforeEach((to, from, next) => {
-  Loading.start();
-  next();
-});
-
-router.afterEach(route => {
-  Loading.finish();
-});
-
-export default router;
+async function loadData() {
+  loading.start();
+  try {
+    await fetch("/api/data");
+  } finally {
+    loading.finish();
+  }
+}
 ```
 
 If you are using `axios`.
 
 ```js
 import axios from "axios";
-import { loading } from "kui-vue";
+import loading from "react-kui/components/loading";
 
 const axiosInstance = axios.create({
   baseURL: "/api", // Your API address
@@ -70,7 +64,7 @@ export default axiosInstance;
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - The simplest usage.
 

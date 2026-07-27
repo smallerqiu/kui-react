@@ -6,31 +6,31 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 最简单的用法，展示可选中，默认展开功能。
 
-[可勾选](./demo/checkable.vue)
+[可勾选](./demo/checkable.tsx)
 
 - 设置属性 `checkable` 可以对节点进行勾选。
 
-[扩展节点](./demo/custom-render.vue)
+[扩展节点](./demo/custom-render.tsx)
 
 - 节点的扩展节点
 
-[禁用节点](./demo/disabled.vue)
+[禁用节点](./demo/disabled.tsx)
 
 - 设置属性 `disabled` 可以禁用节点。
 
-[异步加载](./demo/sync.vue)
+[异步加载](./demo/sync.tsx)
 
 - 点击展开节点，动态加载数据 , `isLeaf=true` 表示当前节点是叶子节点,不会有子集
 
-[自定义图标](./demo/icon.vue)
+[自定义图标](./demo/icon.tsx)
 
 - 可以针对不同的节点定制图标。
 
-[群控](./demo/directory.vue?show=vertical)
+[群控](./demo/directory.tsx?show=vertical)
 
 - 展示目录、连接线、拖动、复选框、图标、扩展
 

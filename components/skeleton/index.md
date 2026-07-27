@@ -11,31 +11,31 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue?show=vertical)
+[基本用法](./demo/basic.tsx?show=vertical)
 
 - 最简单的占位效果。
 
-[组合](./demo/group.vue?show=vertical)
+[组合](./demo/group.tsx?show=vertical)
 
 - 可以配置骨架屏段落数量，以便更接近真实渲染效果。首行会被渲染一个长度 35% 的段首。
 
-[动画效果](./demo/animated.vue?show=vertical)
+[动画效果](./demo/animated.tsx?show=vertical)
 
 - 显示动画效果。
 
-[子组件](./demo/child.vue?show=vertical)
+[子组件](./demo/child.tsx?show=vertical)
 
 - 加载占位图包含子组件。
 
-[列表](./demo/list.vue?show=vertical)
+[列表](./demo/list.tsx?show=vertical)
 
 - 在列表组件中使用加载占位符。
 
-[按钮/头像/图像](./demo/items.vue?show=vertical)
+[按钮/头像/图像](./demo/items.tsx?show=vertical)
 
 - 骨架按钮、头像、和图像。
 
-[自定义](./demo/custom.vue?show=vertical)
+[自定义](./demo/custom.tsx?show=vertical)
 
 - 自定义效果。
 

@@ -8,31 +8,31 @@ When users need to select within a numerical range/custom range, it can be conti
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - Basic usage.
 
-[Size/Custom](./demo/size.vue)
+[Size/Custom](./demo/size.tsx)
 
 - `size` can control the size of the handle.
 
-[Controlled](./demo/with-number.vue)
+[Controlled](./demo/with-number.tsx)
 
 - Controlled and synchronized with Input.
 
-[Custom Tooltip](./demo/formatter.vue)
+[Custom Tooltip](./demo/formatter.tsx)
 
 - Use `tipFormatter` to set the display format of the Tooltip. When `tooltipVisible` is true, the Tooltip will always be shown; when false, it will never be shown, even during dragging or hovering.
 
-[With Labels](./demo/marks.vue?show=vertical)
+[With Labels](./demo/marks.tsx?show=vertical)
 
 - Use the `marks` attribute to mark slider ticks, and use `value` to specify the slider position.
 
-[Vertical](./demo/vertical.vue?show=vertical)
+[Vertical](./demo/vertical.tsx?show=vertical)
 
 - Vertical Slider.
 
-[Reverse](./demo/reverse.vue?show=vertical)
+[Reverse](./demo/reverse.tsx?show=vertical)
 
 - Set `reverse` to invert the slider.
 

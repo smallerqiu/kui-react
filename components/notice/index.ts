@@ -28,10 +28,22 @@ const notice: NoticeApi = {
     noticeInstance ??= createInstance("notice");
     return noticeInstance.show({ ...options, noticeType: "notice" });
   },
-  destroy() { noticeInstance?.clean(); noticeInstance?.destroy(); noticeInstance = null; },
-  info(options) { return this.open({ ...options, type: "info" }); },
-  success(options) { return this.open({ ...options, type: "success" }); },
-  warning(options) { return this.open({ ...options, type: "warning" }); },
-  error(options) { return this.open({ ...options, type: "error" }); },
+  destroy() {
+    noticeInstance?.clean();
+    noticeInstance?.destroy();
+    noticeInstance = null;
+  },
+  info(options) {
+    return this.open({ ...options, type: "info" });
+  },
+  success(options) {
+    return this.open({ ...options, type: "success" });
+  },
+  warning(options) {
+    return this.open({ ...options, type: "warning" });
+  },
+  error(options) {
+    return this.open({ ...options, type: "error" });
+  },
 };
 export default notice;

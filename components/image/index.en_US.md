@@ -9,19 +9,19 @@ Previewable images.
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - Simple display.
 
-[Error Handling](./demo/errors.vue)
+[Error Handling](./demo/errors.tsx)
 
 - Show an image placeholder on load failure.
 
-[Photo Wall](./demo/group.vue)
+[Photo Wall](./demo/group.tsx)
 
 - Click the left/right buttons to preview multiple images.
 
-[Extension](./demo/extra.vue)
+[Extension](./demo/extra.tsx)
 
 - Can extend custom tools and panels.
 

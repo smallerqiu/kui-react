@@ -9,23 +9,23 @@ Small labels for marking and categorization.
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - Use `closeable` to show a close button. Clicking hides the tag and triggers the `close` callback.
 
-[Size and Shape](./demo/size.vue)
+[Size and Shape](./demo/size.tsx)
 
 - Control size via `size`.
 
-[Icon](./demo/icon.vue)
+[Icon](./demo/icon.tsx)
 
 - You can set the `icon` attribute or directly use the Icon component inside the Tag.
 
-[Colorful Tags](./demo/color.vue)
+[Colorful Tags](./demo/color.tsx)
 
 - Multiple preset tag colors for different scenarios. If the presets don't meet your needs, you can set a specific color value.
 
-[Dynamic Add and Remove](./demo/dynamic.vue)
+[Dynamic Add and Remove](./demo/dynamic.tsx)
 
 - Use `closeable` to show a close button.
 

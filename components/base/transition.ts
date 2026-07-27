@@ -10,7 +10,7 @@ export interface TransitionCallbacks {
   onAfterLeave?: (el: HTMLElement) => void;
 }
 
-export function getTransitionProp(name: string): TransitionCallbacks {
+export function getTransitionProp(_name: string): TransitionCallbacks {
   return {
     onBeforeEnter(el: HTMLElement) {
       el.style.overflow = "hidden";
@@ -57,7 +57,7 @@ export function getTransitionProp(name: string): TransitionCallbacks {
   };
 }
 
-export function getTransitionHorProp(name: string): TransitionCallbacks {
+export function getTransitionHorProp(_name: string): TransitionCallbacks {
   return {
     onBeforeEnter(el: HTMLElement) {
       el.style.overflow = "hidden";

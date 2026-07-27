@@ -10,15 +10,15 @@ Can be used to replace the system default `title` prompt, providing a text expla
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - The simplest usage. The size of the floating layer is determined by the content area.
 
-[Position](./demo/placement.vue)
+[Position](./demo/placement.tsx)
 
 - Control the direction via `placement`. There are twelve available positions.
 
-[Colorful Text Tips](./demo/color.vue)
+[Colorful Text Tips](./demo/color.tsx)
 
 - Multiple preset colors for text tips, used in different scenarios.
 

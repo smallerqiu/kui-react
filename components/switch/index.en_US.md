@@ -9,23 +9,23 @@ Switch selector.
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - Can use `v-model` for two-way data binding.
 
-[Text / Icon](./demo/with-text.vue)
+[Text / Icon](./demo/with-text.tsx)
 
 - Use `true-text` and `false-text` to set the text displayed when selected and unselected. Use the `slot` `(checked|unchecked)` to control the content.
 
-[Disabled / Controllable](./demo/disabled.vue)
+[Disabled / Controllable](./demo/disabled.tsx)
 
 - Use the `disabled` attribute to set whether the component is disabled.
 
-[Two Sizes](./demo/size.vue)
+[Two Sizes](./demo/size.tsx)
 
 - `size="small"` indicates a small switch.
 
-[Loading](./demo/loading.vue)
+[Loading](./demo/loading.tsx)
 
 - Indicates that the switch operation is still in progress.
 

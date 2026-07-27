@@ -1,0 +1,14 @@
+import Space from "../../space";
+import Badge from "../index";
+export default function Basic() {
+  return (
+    <Space size="large">
+      <Badge count={3}>
+        <div className="badge-box" />
+      </Badge>
+      <Badge count={15} color="orange">
+        <div className="badge-box" />
+      </Badge>
+    </Space>
+  );
+}

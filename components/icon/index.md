@@ -9,18 +9,18 @@ npm install --save kui-icons
 
 使用
 
-```html
-<template>
-  <Icon :type="Heart" />
-</template>
-<script setup lang="ts">
-  import { Heart } from "kui-icons";
-</script>
+```tsx
+import { Heart } from "kui-icons";
+import Icon from "react-kui/components/icon";
+
+export default function Demo() {
+  return <Icon type={Heart} />;
+}
 ```
 
 [IconList](./demo/search.tsx)
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 可以通过 `type`、`size` 、`color` 属性分别设置图标的类型、大小、颜色,也可以通过设置 `spin` 属性来实现动画旋转效果。
 

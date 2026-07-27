@@ -10,19 +10,19 @@ A floating panel that slides in from the edge of the screen.
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - Use `v-model` for two-way binding to control whether the `Drawer` is displayed. If `title` is null or false, the title is not shown.
 
-[Custom](./demo/custom.vue)
+[Custom](./demo/custom.tsx)
 
 - Use `title` to set the title, `width` to control the width, and `placement` to control the direction.
 
-[Form Mode](./demo/with-form.vue)
+[Form Mode](./demo/with-form.tsx)
 
 - Content will be presented in form mode, with a header and footer, and the footer can be customized.
 
-[Inject into Target Element](./demo/target.vue)
+[Inject into Target Element](./demo/target.tsx)
 
 - Can be expanded within the target element.
 

@@ -54,7 +54,7 @@ export interface MenuOptionsProps {
 // MenuItem
 // ─────────────────────────────────────────
 
-export interface MenuItemProps extends React.HTMLAttributes<HTMLLIElement> {
+export interface MenuItemProps extends Omit<React.HTMLAttributes<HTMLLIElement>, "title"> {
   icon?: IconType[];
   title?: React.ReactNode;
   disabled?: boolean;

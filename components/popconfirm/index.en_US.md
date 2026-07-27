@@ -10,15 +10,15 @@ Compared to the full-screen centered modal dialog box popped up by 'confirm', th
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - The simplest usage.
 
-[Internationalization](./demo/local.vue)
+[Internationalization](./demo/local.tsx)
 
 - Use `okText` and `cancelText` to customize button text.
 
-[Position](./demo/placement.vue)
+[Position](./demo/placement.tsx)
 
 - Control the direction via `placement`, with twelve available positions.
 
