@@ -4,15 +4,15 @@ It is necessary to display the anchor links available for navigation on the curr
 
 ## Examples
 
-[Basic Usage (Sidebar Navigation)](./demo/basic.vue?show=vertical)
+[Basic Usage (Sidebar Navigation)](./demo/basic.tsx)
 
 - The most common scenario: displaying a long article on the right with fixed anchor navigation on the left or right side.
 
-[Nested Anchors (Complex Document Structure)](./demo/nested-anchors.vue?show=vertical)
+[Nested Anchors (Complex Document Structure)](./demo/nested-anchors.tsx)
 
 - Suitable for documents with multi-level headings.
 
-[Specify container (positioning within a scrolling container)](./demo/within-container.vue?show=vertical)
+[Specify container (positioning within a scrolling container)](./demo/within-container.tsx)
 
 - If your page does not scroll in full screen but within a specific div.
 

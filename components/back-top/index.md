@@ -9,11 +9,11 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 默认位置距离页面右部和底部 50px，滚动至距顶端 400px 时显示。
 
-[基本用法](./demo/custom.vue)
+[基本用法](./demo/custom.tsx)
 
 - 可以自定义回到顶部按钮的样式 `bottom` 为 `100px`
 
