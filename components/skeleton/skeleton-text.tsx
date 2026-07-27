@@ -1,52 +1,58 @@
-import { type CSSProperties, defineComponent, ref, watch } from "vue";
+import React, { useState, useEffect, useRef } from "react";
+import type { SizeType } from "../const/types";
 
-import { skeletonProps } from "./types";
-const SkeletonText = defineComponent({
-  name: "SkeletonText",
-  props: skeletonProps,
-  setup(ps, { slots }) {
-    const show = ref(ps.loading);
-    const timer = ref();
-    watch(
-      () => ps.loading,
-      (v) => {
-        if (v) {
-          show.value = v;
-        } else {
-          clearTimeout(timer.value);
-          timer.value = setTimeout(() => {
-            show.value = v;
-          }, ps.delay);
-        }
-      }
-    );
-    return () => {
-      let { size, animated, width } = ps;
-      let props = {
-        class: [
-          "k-skeleton k-skeleton-ele",
-          {
-            "k-skeleton-animated": animated,
-          },
-        ],
-      };
-      let innerProps = {
-        class: [
-          "k-skeleton-text",
-          {
-            "k-skeleton-text-lg": size == "large",
-            "k-skeleton-text-sm": size == "small",
-          },
-        ],
-        style: {} as CSSProperties,
-      };
-      let child = slots.default?.();
+export interface SkeletonTextProps extends React.HTMLAttributes<HTMLDivElement> {
+  animated?: boolean;
+  loading?: boolean;
+  delay?: number;
+  width?: number;
+  size?: SizeType;
+  children?: React.ReactNode;
+}
 
-      if (width) {
-        innerProps.style.width = `${width}px`;
-      }
-      return <div {...props}>{child && !show.value ? child : <span {...innerProps}></span>}</div>;
-    };
-  },
-});
+const SkeletonText: React.FC<SkeletonTextProps> = ({
+  animated = false,
+  loading = false,
+  delay = 500,
+  width,
+  size,
+  children,
+  className = "",
+  ...rest
+}) => {
+  const [show, setShow] = useState(loading);
+  const timer = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (loading) {
+      setShow(true);
+    } else {
+      if (timer.current) clearTimeout(timer.current);
+      timer.current = setTimeout(() => setShow(false), delay);
+    }
+    return () => { if (timer.current) clearTimeout(timer.current); };
+  }, [loading, delay]);
+
+  const wrapperClasses = [
+    "k-skeleton k-skeleton-ele",
+    animated ? "k-skeleton-animated" : "",
+    className,
+  ].filter(Boolean).join(" ");
+
+  const innerStyle: React.CSSProperties = {};
+  if (width) innerStyle.width = `${width}px`;
+
+  const innerClasses = [
+    "k-skeleton-text",
+    size === "large" ? "k-skeleton-text-lg" : "",
+    size === "small" ? "k-skeleton-text-sm" : "",
+  ].filter(Boolean).join(" ");
+
+  return (
+    <div className={wrapperClasses} {...rest}>
+      {children && !show ? children : <span className={innerClasses} style={innerStyle} />}
+    </div>
+  );
+};
+
 export default SkeletonText;

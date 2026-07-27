@@ -1,202 +1,192 @@
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { createPortal } from "react-dom";
 import { X } from "kui-icons";
-import {
-  computed,
-  defineComponent,
-  inject,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  Transition,
-  watch,
-  type CSSProperties,
-  type ExtractPropTypes,
-  type PropType,
-} from "vue";
 import { Button } from "../button";
 import type { DrawerPlacementsType } from "../const/types";
-import { transfer } from "../directives/transfer";
 import zhCN from "../locale/zh-CN";
-import { toggleContainerScroll } from "../utils/vnode";
+import { ConfigContext } from "../config";
 
-export const drawerProps = {
-  modelValue: Boolean,
-  title: { type: String, default: "Title" },
-  width: { type: [Number, String] as PropType<number | string>, default: 520 },
-  height: { type: [Number, String] as PropType<number | string>, default: 520 },
-  okText: String,
-  cancelText: String,
-  placement: { type: String as PropType<DrawerPlacementsType>, default: "right" },
-  closable: { type: Boolean, default: true },
-  footer: { type: Boolean, default: true },
-  maskClosable: { type: Boolean, default: true },
-  target: { type: Function as PropType<() => HTMLElement>, default: () => document.body },
-  mask: { type: Boolean, default: true },
-  loading: { type: Boolean, default: false },
-  escKey: { type: Boolean, default: true },
-  onOk: Function as PropType<() => void>,
-  onCancel: Function as PropType<() => void>,
-  onClose: Function as PropType<() => void>,
-  onOpenChange: Function as PropType<(opened: boolean) => void>,
-};
+export interface DrawerProps {
+  open?: boolean;
+  title?: React.ReactNode;
+  width?: number | string;
+  height?: number | string;
+  okText?: string;
+  cancelText?: string;
+  placement?: DrawerPlacementsType;
+  closable?: boolean;
+  footer?: boolean;
+  maskClosable?: boolean;
+  target?: () => HTMLElement;
+  mask?: boolean;
+  loading?: boolean;
+  escKey?: boolean;
+  onOk?: () => void;
+  onCancel?: () => void;
+  onClose?: () => void;
+  onOpenChange?: (opened: boolean) => void;
+  footerSlot?: React.ReactNode;
+  children?: React.ReactNode;
+}
 
-export type DrawerProps = ExtractPropTypes<typeof drawerProps>;
+const Drawer: React.FC<DrawerProps> = ({
+  open = false,
+  title = "Title",
+  width = 520,
+  height = 520,
+  okText,
+  cancelText,
+  placement = "right",
+  closable = true,
+  footer = true,
+  maskClosable = true,
+  target = () => document.body,
+  mask = true,
+  loading = false,
+  escKey = true,
+  onOk,
+  onCancel,
+  onClose,
+  onOpenChange,
+  footerSlot,
+  children,
+}) => {
+  const config = useContext(ConfigContext);
+  const locale = config?.locale || zhCN;
 
-const Drawer = defineComponent({
-  name: "Drawer",
-  directives: { transfer },
-  props: drawerProps,
-  setup(props, { slots, emit }) {
-    const injectedLocale = inject<Record<string, any>>("locale", zhCN);
+  const [visible, setVisible] = useState(false);
+  const [opened, setOpened] = useState(false);
+  const [rendered, setRendered] = useState(false);
+  const hideTimer = useRef<NodeJS.Timeout | null>(null);
 
-    const locale = computed(() => {
-      return injectedLocale instanceof Object && "value" in injectedLocale
-        ? (injectedLocale as any).value
-        : injectedLocale;
-    });
-
-    const rendered = ref(props.modelValue);
-    const visible = ref(props.modelValue);
-    const opened = ref(props.modelValue);
-
-    watch(
-      () => props.modelValue,
-      (nv) => {
-        toggle(nv);
-      }
-    );
-
-    onMounted(() => {
-      props.escKey && document.addEventListener("keydown", escToClose);
-    });
-
-    onBeforeUnmount(() => {
-      props.escKey && document.removeEventListener("keydown", escToClose);
-      toggleContainerScroll(props.target(), false);
-    });
-
-    const toggle = (value: boolean) => {
-      if (!rendered.value && value) {
-        rendered.value = true;
-        toggle(true);
+  const toggle = (value: boolean) => {
+    if (!rendered && value) {
+      setRendered(true);
+      setTimeout(() => {
+        setVisible(true);
+        setOpened(true);
+        onOpenChange?.(true);
+      }, 0);
+    } else {
+      if (value) {
+        setVisible(true);
+        setOpened(true);
+        onOpenChange?.(true);
       } else {
-        if (value) {
-          nextTick(() => {
-            visible.value = value;
-            opened.value = value;
-            emit("update:modelValue", true);
-            emit("openChange", true);
-          });
-        } else {
-          visible.value = false;
-          setTimeout(() => {
-            opened.value = false;
-          }, 300);
-          emit("update:modelValue", false);
-          emit("openChange", false);
-        }
+        setVisible(false);
+        if (hideTimer.current) clearTimeout(hideTimer.current);
+        hideTimer.current = setTimeout(() => setOpened(false), 300);
+        onOpenChange?.(false);
       }
-    };
+    }
+  };
 
-    const escToClose = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        close();
-      }
-    };
+  const escToClose = (e: KeyboardEvent) => {
+    if (e.key === "Escape") close();
+  };
 
-    const clickMaskToClose = () => {
-      if (props.maskClosable) {
-        close();
-      }
-    };
+  useEffect(() => {
+    toggle(open);
+  }, [open]);
 
-    const cancel = () => {
-      emit("cancel");
-      toggle(false);
-    };
-
-    const close = () => {
-      emit("close");
-      toggle(false);
-    };
-
-    const ok = () => {
-      emit("ok");
-    };
-
+  useEffect(() => {
+    if (escKey) document.addEventListener("keydown", escToClose);
     return () => {
-      const { title, cancelText, okText, placement, width, height, closable, loading } = props;
-      const hasFooter = props.footer || slots.footer;
+      if (escKey) document.removeEventListener("keydown", escToClose);
+      const t = target?.();
+      if (t) t.style.overflow = "";
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+    };
+  }, [escKey]);
 
-      const cancelBtn = (
-        <Button onClick={cancel}>{cancelText || locale.value?.k?.common?.cancel}</Button>
-      );
+  const close = () => {
+    toggle(false);
+    onClose?.();
+  };
 
-      const okBtn = (
-        <Button type="primary" onClick={ok} loading={loading}>
-          {okText || locale.value?.k?.common?.ok}
-        </Button>
-      );
+  const cancel = () => {
+    onCancel?.();
+    toggle(false);
+  };
 
-      const footNode = hasFooter ? (
-        <div class="k-drawer-footer">{slots.footer ? slots.footer() : [cancelBtn, okBtn]}</div>
-      ) : null;
+  const ok = () => onOk?.();
 
-      const closeNode = closable ? (
-        <Button class="k-drawer-close" size="small" type="text" onClick={close} icon={X} />
-      ) : null;
+  const okLabel = okText || locale?.k?.common?.ok;
+  const cancelLabel = cancelText || locale?.k?.common?.cancel;
 
-      const transitionName = `k-drawer-${placement}`;
-      const target = props.target();
-      const isBody = target === document.body;
+  const hasFooter = footer || !!footerSlot;
 
-      const classes = [
-        "k-drawer",
-        `k-drawer-${placement}`,
-        { "k-drawer-has-footer": hasFooter },
-        { "k-drawer-to-body": isBody },
-        { "k-drawer-no-mask": !props.mask },
-      ];
+  const footerNode = hasFooter ? (
+    <div className="k-drawer-footer">
+      {footerSlot || (
+        <>
+          <Button onClick={cancel}>{cancelLabel}</Button>
+          <Button type="primary" onClick={ok} loading={loading}>{okLabel}</Button>
+        </>
+      )}
+    </div>
+  ) : null;
 
-      const styles: CSSProperties = {};
-      if (placement === "left" || placement === "right") {
-        styles.width = typeof width === "number" ? `${width}px` : width;
-      }
-      if (placement === "top" || placement === "bottom") {
-        styles.height = typeof height === "number" ? `${height}px` : height;
-      }
+  const closeNode = closable ? (
+    <Button className="k-drawer-close" size="small" type="text" onClick={close} icon={X} />
+  ) : null;
 
-      const maskNode = props.mask ? (
-        <Transition name="k-drawer-fade">
-          <div
-            class={["k-drawer-mask", { "k-drawer-mask-to-body": isBody }]}
-            v-show={visible.value}
-            onClick={clickMaskToClose}
-          />
-        </Transition>
-      ) : null;
-      const drawerProps = { class: "k-drawer-box", style: styles };
-      return rendered.value ? (
-        <div class={classes} v-transfer={target}>
-          {maskNode}
-          <div class="k-drawer-wrap" tabindex={-1} v-show={opened.value}>
-            <Transition name={transitionName}>
-              <div v-show={visible.value} {...drawerProps}>
-                <div class="k-drawer-content">
-                  <div class="k-drawer-header">
-                    {closeNode}
-                    <div class="k-drawer-header-inner">{title}</div>
-                  </div>
-                  <div class="k-drawer-body">{slots.default?.()}</div>
-                  {footNode}
-                </div>
-              </div>
-            </Transition>
+  const targetEl = target?.() || document.body;
+  const isBody = targetEl === document.body;
+
+  const drawerStyle: React.CSSProperties = {};
+  if (placement === "left" || placement === "right") {
+    drawerStyle.width = typeof width === "number" ? `${width}px` : width;
+  }
+  if (placement === "top" || placement === "bottom") {
+    drawerStyle.height = typeof height === "number" ? `${height}px` : height;
+  }
+
+  const classes = [
+    "k-drawer",
+    `k-drawer-${placement}`,
+    hasFooter ? "k-drawer-has-footer" : "",
+    isBody ? "k-drawer-to-body" : "",
+    !mask ? "k-drawer-no-mask" : "",
+  ].filter(Boolean).join(" ");
+
+  if (!rendered) return null;
+
+  const drawerEl = (
+    <div className={classes}>
+      {mask && (
+        <div
+          className={["k-drawer-mask", isBody ? "k-drawer-mask-to-body" : ""].filter(Boolean).join(" ")}
+          style={{ display: visible ? undefined : "none" }}
+          onClick={maskClosable ? close : undefined}
+        />
+      )}
+      <div
+        className="k-drawer-wrap"
+        tabIndex={-1}
+        style={{ display: opened ? undefined : "none" }}
+      >
+        <div
+          className="k-drawer-box"
+          style={{
+            ...drawerStyle,
+            display: visible ? undefined : "none",
+          }}
+        >
+          <div className="k-drawer-content">
+            <div className="k-drawer-header">
+              {closeNode}
+              <div className="k-drawer-header-inner">{title}</div>
+            </div>
+            <div className="k-drawer-body">{children}</div>
+            {footerNode}
           </div>
         </div>
-      ) : null;
-    };
-  },
-});
+      </div>
+    </div>
+  );
+
+  return createPortal(drawerEl, targetEl);
+};
 
 export default Drawer;

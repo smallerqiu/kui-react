@@ -1,284 +1,269 @@
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { createPortal } from "react-dom";
 import { X } from "kui-icons";
-import {
-  computed,
-  defineComponent,
-  inject,
-  nextTick,
-  onBeforeMount,
-  onMounted,
-  ref,
-  Transition,
-  watch,
-  type ExtractPropTypes,
-  type PropType,
-} from "vue";
 import { Button } from "../button";
 import { getMousePoint } from "../config/context";
-import type { BooleanType } from "../const/types";
-import { transfer } from "../directives/transfer";
 import zhCN from "../locale/zh-CN";
+import { ConfigContext } from "../config";
 
-const modalProps = {
-  modelValue: Boolean as BooleanType,
-  title: String,
-  okText: String,
-  cancelText: String,
-  width: { type: [Number, String] as PropType<number | string>, default: 520 },
-  top: { type: Number as PropType<number>, default: 100 },
-  transfer: { type: Boolean as BooleanType, default: true },
-  mask: { type: Boolean as BooleanType, default: true },
-  maskClosable: { type: Boolean as BooleanType, default: false },
-  maximized: Boolean as BooleanType,
-  centered: Boolean as BooleanType,
-  draggable: Boolean as BooleanType,
-  showClose: { type: Boolean as BooleanType, default: true },
-  loading: Boolean as BooleanType,
-  footer: { type: Boolean as BooleanType, default: true },
-  escKey: { type: Boolean as BooleanType, default: true },
-  onClose: { type: Function as PropType<() => void> },
-  onOk: { type: Function as PropType<() => void> },
-  onCancel: { type: Function as PropType<() => void> },
-  onOpenChange: { type: Function as PropType<(opened: boolean) => void> },
-};
-export type ModalProps = ExtractPropTypes<typeof modalProps>;
+export interface ModalProps {
+  open?: boolean;
+  title?: React.ReactNode;
+  okText?: string;
+  cancelText?: string;
+  width?: number | string;
+  top?: number;
+  mask?: boolean;
+  maskClosable?: boolean;
+  maximized?: boolean;
+  centered?: boolean;
+  draggable?: boolean;
+  showClose?: boolean;
+  loading?: boolean;
+  footer?: boolean | React.ReactNode;
+  escKey?: boolean;
+  onClose?: () => void;
+  onOk?: () => void;
+  onCancel?: () => void;
+  onOpenChange?: (opened: boolean) => void;
+  content?: React.ReactNode;
+  footerSlot?: React.ReactNode;
+  children?: React.ReactNode;
+}
 
-const Modal = defineComponent({
-  name: "Modal",
-  directives: { transfer },
-  props: modalProps,
-  setup(props, { slots, emit }) {
-    const visible = ref<boolean | undefined>(props.modelValue);
-    const rendered = ref(false);
-    const showInner = ref(props.modelValue);
-    const left = ref(0);
-    const currentTop = ref(props.top);
-    const isMousePressed = ref(false);
-    const mousedownIn = ref(false);
-    const startPos = ref({ x: 0, y: 0 });
-    const refModal = ref();
-    const refHeader = ref();
-    const injectedLocale = inject<Record<string, any>>("locale", zhCN);
-    const locale = computed(() => {
-      return injectedLocale instanceof Object && "value" in injectedLocale
-        ? injectedLocale.value
-        : injectedLocale;
-    });
-    const escToClose = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        close();
-      }
-    };
+const Modal: React.FC<ModalProps> = ({
+  open = false,
+  title,
+  okText,
+  cancelText,
+  width = 520,
+  top = 100,
+  mask = true,
+  maskClosable = false,
+  maximized = false,
+  centered = false,
+  draggable = false,
+  showClose = true,
+  loading = false,
+  footer = true,
+  escKey = true,
+  onClose,
+  onOk,
+  onCancel,
+  onOpenChange,
+  content,
+  footerSlot,
+  children,
+}) => {
+  const config = useContext(ConfigContext);
+  const locale = config?.locale || zhCN;
 
-    onBeforeMount(() => {
-      document.removeEventListener("mousedown", mousedown);
-      props.escKey && document.removeEventListener("keydown", escToClose);
-    });
-    onMounted(() => {
-      document.addEventListener("mousedown", mousedown);
-      props.escKey && document.addEventListener("keydown", escToClose);
+  const [visible, setVisible] = useState(false);
+  const [showInner, setShowInner] = useState(false);
+  const [rendered, setRendered] = useState(false);
+  const [leftPos, setLeftPos] = useState(0);
+  const [topPos, setTopPos] = useState(top);
+  const [isMousePressed, setIsMousePressed] = useState(false);
+  const [mousedownIn, setMousedownIn] = useState(false);
+  const startPos = useRef({ x: 0, y: 0 });
+  const refModal = useRef<HTMLDivElement>(null);
+  const refHeader = useRef<HTMLDivElement>(null);
+  const hideTimer = useRef<NodeJS.Timeout | null>(null);
 
-      if (props.modelValue) {
-        toggle(true);
-      }
-    });
-    watch(
-      () => props.modelValue,
-      (nv) => {
-        toggle(nv);
-      }
-    );
-    const getOffset = (el: HTMLElement) => {
-      return el
-        ? {
-            left: el.offsetLeft,
-            top: el.offsetTop,
+  const getOffset = (el: HTMLElement) => ({
+    left: el.offsetLeft,
+    top: el.offsetTop,
+  });
+
+  const updateOrigin = () => {
+    if (refModal.current) {
+      const { x, y } = getMousePoint();
+      const p = getOffset(refModal.current);
+      refModal.current.style.transformOrigin = `${x - p.left}px ${y - p.top}px`;
+    }
+  };
+
+  const toggle = (value: boolean) => {
+    if (!rendered && value) {
+      setRendered(true);
+      setTimeout(() => {
+        setVisible(true);
+        setShowInner(true);
+        onOpenChange?.(true);
+        setTimeout(() => {
+          if (draggable && refModal.current) {
+            setLeftPos((document.body.offsetWidth - refModal.current.offsetWidth) / 2);
           }
-        : { left: 0, top: 0 };
-    };
-
-    const toggle = (value?: boolean) => {
-      if (!rendered.value && value) {
-        rendered.value = true;
-        toggle(true);
+          updateOrigin();
+        }, 0);
+      }, 0);
+    } else {
+      if (value) {
+        setVisible(true);
+        setShowInner(true);
+        onOpenChange?.(true);
+        setTimeout(() => {
+          if (draggable && refModal.current) {
+            setLeftPos((document.body.offsetWidth - refModal.current.offsetWidth) / 2);
+          }
+          updateOrigin();
+        }, 0);
       } else {
-        if (value) {
-          nextTick(() => {
-            visible.value = value;
-            showInner.value = value;
-            emit("update:modelValue", true);
-            emit("openChange", true);
-            nextTick(() => {
-              if (props.draggable) {
-                left.value = (document.body.offsetWidth - refModal.value.offsetWidth) / 2;
-              }
-              updateOrigin();
-            });
-          });
-        } else {
-          visible.value = false;
-          setTimeout(() => {
-            showInner.value = false;
-          }, 300);
-          emit("update:modelValue", false);
-          emit("openChange", false);
-        }
+        setVisible(false);
+        if (hideTimer.current) clearTimeout(hideTimer.current);
+        hideTimer.current = setTimeout(() => setShowInner(false), 300);
+        onOpenChange?.(false);
       }
-    };
-    const updateOrigin = () => {
-      if (refModal.value) {
-        let { x, y } = getMousePoint();
-        let p = getOffset(refModal.value);
-        refModal.value.style["transform-origin"] = `${x - p.left}px ${y - p.top}px`;
-      }
-    };
-    const ok = () => {
-      emit("ok");
-    };
-    const cancel = () => {
-      toggle(false);
-      emit("cancel");
-    };
-    const close = () => {
-      toggle(false);
-      emit("close");
-    };
-    const clickMaskToClose = (e: MouseEvent) => {
-      if (
-        !props.loading &&
-        props.maskClosable &&
-        !refModal.value.contains(e.target) &&
-        !mousedownIn.value
-      ) {
-        close();
-      }
-    };
-    const mousemove = (e: MouseEvent) => {
-      if (isMousePressed.value && props.draggable) {
-        let { x, y } = startPos.value;
-        left.value += e.clientX - x;
-        currentTop.value = currentTop.value ?? 100;
-        currentTop.value += e.clientY - y;
-        startPos.value = { x: e.clientX, y: e.clientY };
-        updateOrigin();
-        e.preventDefault();
-      }
-    };
-    const mouseup = () => {
-      isMousePressed.value = false;
-      document.removeEventListener("mousemove", mousemove);
-      document.removeEventListener("mouseup", mouseup);
-    };
-    const mousedown = (e: MouseEvent) => {
-      if (
-        e.button == 0 &&
-        props.draggable === true &&
-        refHeader.value &&
-        refHeader.value.contains(e.target)
-      ) {
-        isMousePressed.value = true;
-        startPos.value = { x: e.clientX, y: e.clientY };
-        mousemove(e);
-        document.addEventListener("mousemove", mousemove);
-        document.addEventListener("mouseup", mouseup);
-      }
+    }
+  };
 
-      mousedownIn.value = visible.value && refModal.value && refModal.value.contains(e.target);
-    };
+  useEffect(() => {
+    toggle(open);
+  }, [open]);
 
+  // Dragging
+  const mousemove = (e: MouseEvent) => {
+    if (isMousePressed && draggable) {
+      const { x, y } = startPos.current;
+      setLeftPos((prev) => prev + e.clientX - x);
+      setTopPos((prev) => (prev ?? 100) + e.clientY - y);
+      startPos.current = { x: e.clientX, y: e.clientY };
+      updateOrigin();
+      e.preventDefault();
+    }
+  };
+
+  const mouseup = () => {
+    setIsMousePressed(false);
+    document.removeEventListener("mousemove", mousemove);
+    document.removeEventListener("mouseup", mouseup);
+  };
+
+  const handleMouseDown = (e: MouseEvent) => {
+    if (
+      e.button === 0 &&
+      draggable &&
+      refHeader.current &&
+      refHeader.current.contains(e.target as Node)
+    ) {
+      setIsMousePressed(true);
+      startPos.current = { x: e.clientX, y: e.clientY };
+      document.addEventListener("mousemove", mousemove);
+      document.addEventListener("mouseup", mouseup);
+    }
+    setMousedownIn(visible && !!refModal.current?.contains(e.target as Node));
+  };
+
+  const close = () => {
+    toggle(false);
+    onClose?.();
+  };
+
+  const escToClose = (e: KeyboardEvent) => {
+    if (e.key === "Escape") close();
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleMouseDown);
+    if (escKey) document.addEventListener("keydown", escToClose);
     return () => {
-      let { draggable, width } = props;
-
-      //mask
-      let maskNode = null;
-      if (props.mask) {
-        maskNode = (
-          <Transition name="k-modal-fade">
-            <div class="k-modal-mask" v-show={visible.value} />
-          </Transition>
-        );
-      }
-      let okText = props.okText || locale.value?.k.common.ok;
-      let cancelText = props.cancelText || locale.value?.k.common.cancel;
-      //content
-      let contentNode: any = slots.content?.();
-      if (!contentNode) {
-        const contents = [];
-        props.showClose &&
-          contents.push(
-            <Button
-              icon={X}
-              size="small"
-              onClick={close}
-              class="k-modal-close"
-              type="text"
-            ></Button>
-          );
-        props.title !== null &&
-          contents.push(
-            <div class="k-modal-header" ref={refHeader}>
-              <div class="k-modal-header-inner">{props.title}</div>
-            </div>
-          );
-        contents.push(<div class="k-modal-body">{slots.default?.()}</div>);
-
-        //footer
-        if (props.footer) {
-          let footer = slots.footer?.();
-          if (!footer) {
-            footer = [
-              <Button onClick={cancel}>{cancelText}</Button>,
-              <Button onClick={ok} type="primary" loading={props.loading}>
-                {okText}
-              </Button>,
-            ];
-          }
-          const footerNode = footer ? <div class="k-modal-footer">{footer}</div> : null;
-
-          contents.push(footerNode);
-        }
-        contentNode = (
-          <div class="k-modal-content" tabindex="0">
-            {contents}
-          </div>
-        );
-      }
-
-      const style = props.maximized
-        ? null
-        : {
-            width: typeof width === "number" ? `${width}px` : width,
-            top: `${currentTop.value}px`,
-            left: `${left.value}px`,
-          };
-      const classes = [
-        "k-modal",
-        {
-          "k-modal-draggable": draggable,
-          "k-modal-maximized": props.maximized,
-          "k-modal-centered": props.centered,
-          "k-modal-has-footer": props.footer !== null,
-        },
-      ];
-      return rendered.value ? (
-        <div class={classes} v-transfer={props.transfer}>
-          {maskNode}
-          <div
-            class="k-modal-wrap"
-            tabindex="-1"
-            role="dialog"
-            v-show={showInner.value}
-            onClick={clickMaskToClose}
-          >
-            <Transition name="k-modal-zoom">
-              <div class="k-modal-inner" ref={refModal} v-show={visible.value} style={style}>
-                {contentNode}
-                <div tabindex="0"></div>
-              </div>
-            </Transition>
-          </div>
-        </div>
-      ) : null;
+      document.removeEventListener("mousedown", handleMouseDown);
+      if (escKey) document.removeEventListener("keydown", escToClose);
+      if (hideTimer.current) clearTimeout(hideTimer.current);
     };
-  },
-});
+  }, [visible, draggable, escKey, maskClosable, loading]);
+
+  const ok = () => onOk?.();
+  const cancel = () => {
+    toggle(false);
+    onCancel?.();
+  };
+
+  const clickMaskToClose = (e: React.MouseEvent) => {
+    if (!loading && maskClosable && !refModal.current?.contains(e.target as Node) && !mousedownIn) {
+      close();
+    }
+  };
+
+  const okLabel = okText || locale?.k?.common?.ok;
+  const cancelLabel = cancelText || locale?.k?.common?.cancel;
+
+  let contentNode = content;
+  if (!contentNode) {
+    const footerContent = footer === true
+      ? (footerSlot || (
+          <>
+            <Button onClick={cancel}>{cancelLabel}</Button>
+            <Button onClick={ok} type="primary" loading={loading}>{okLabel}</Button>
+          </>
+        ))
+      : footer;
+
+    contentNode = (
+      <div className="k-modal-content" tabIndex={0}>
+        {showClose && (
+          <Button icon={X} size="small" onClick={close} className="k-modal-close" type="text" />
+        )}
+        {title !== undefined && (
+          <div className="k-modal-header" ref={refHeader}>
+            <div className="k-modal-header-inner">{title}</div>
+          </div>
+        )}
+        <div className="k-modal-body">{children}</div>
+        {footer !== false && (
+          <div className="k-modal-footer">{footerContent}</div>
+        )}
+      </div>
+    );
+  }
+
+  const modalStyle: React.CSSProperties | null = maximized ? null : {
+    width: typeof width === "number" ? `${width}px` : width,
+    top: `${topPos}px`,
+    left: draggable ? `${leftPos}px` : undefined,
+  };
+
+  const classes = [
+    "k-modal",
+    draggable ? "k-modal-draggable" : "",
+    maximized ? "k-modal-maximized" : "",
+    centered ? "k-modal-centered" : "",
+    footer !== null ? "k-modal-has-footer" : "",
+  ].filter(Boolean).join(" ");
+
+  if (!rendered) return null;
+
+  const modalEl = (
+    <div className={classes}>
+      {mask && (
+        <div
+          className="k-modal-mask"
+          style={{ display: visible ? undefined : "none" }}
+        />
+      )}
+      <div
+        className="k-modal-wrap"
+        tabIndex={-1}
+        role="dialog"
+        style={{ display: showInner ? undefined : "none" }}
+        onClick={clickMaskToClose}
+      >
+        <div
+          ref={refModal}
+          className="k-modal-inner"
+          style={{
+            ...(modalStyle || {}),
+            display: visible ? undefined : "none",
+          }}
+        >
+          {contentNode}
+          <div tabIndex={0} />
+        </div>
+      </div>
+    </div>
+  );
+
+  return createPortal(modalEl, document.body);
+};
+
 export default Modal;

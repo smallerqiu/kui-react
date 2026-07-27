@@ -1,196 +1,179 @@
 import Big from "big.js";
 import { ChevronDown, ChevronUp } from "kui-icons";
-import {
-  computed,
-  defineComponent,
-  inject,
-  ref,
-  watch,
-  type ExtractPropTypes,
-  type PropType,
-} from "vue";
-import { type BooleanType, type ShapeType, type SizeType, type ThemeType } from "../const/types";
+import React, { useState, useEffect, useRef, useContext } from "react";
+import type { ShapeType, SizeType, ThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
-import { Input } from "../input";
+import Input from "../input/input";
+import { SizeContext } from "../config/size-context";
 import { isValidBig, normalize } from "../utils/number";
 
-const inputNumberProps = {
-  modelValue: [Number, String] as PropType<number | string>,
-  min: { type: Number, default: -Infinity },
-  max: { type: Number, default: Infinity },
-  step: { type: Number, default: 1 },
-  precision: Number,
-  formatter: Function as PropType<(value: string | number) => string>,
-  parser: Function as PropType<(value: string) => string | number>,
-  disabled: Boolean as BooleanType,
-  readonly: Boolean as BooleanType,
-  controls: { type: Boolean as BooleanType, default: true },
-  suffix: String,
-  prefix: String,
-  theme: { type: String as PropType<ThemeType>, default: "fill" },
-  shape: { type: String as PropType<ShapeType> },
-  icon: [Array] as PropType<IconType[]>,
-  size: {
-    type: String as PropType<SizeType>,
-  },
-  placeholder: String,
-  onChange: Function as PropType<(value: number) => void>,
+export interface InputNumberProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+  value?: number | string;
+  min?: number;
+  max?: number;
+  step?: number;
+  precision?: number;
+  formatter?: (value: string | number) => string;
+  parser?: (value: string) => string | number;
+  disabled?: boolean;
+  readOnly?: boolean;
+  controls?: boolean;
+  suffix?: string;
+  prefix?: string;
+  theme?: ThemeType;
+  shape?: ShapeType;
+  icon?: IconType[];
+  size?: SizeType;
+  placeholder?: string;
+  onChange?: (value: number | undefined) => void;
+  suffixSlot?: React.ReactNode;
+  prefixSlot?: React.ReactNode;
+}
+
+const InputNumber: React.FC<InputNumberProps> = ({
+  value,
+  min = -Infinity,
+  max = Infinity,
+  step = 1,
+  precision,
+  formatter,
+  parser,
+  disabled = false,
+  readOnly = false,
+  controls = true,
+  suffix,
+  prefix,
+  theme = "fill",
+  shape,
+  icon,
+  size,
+  placeholder,
+  onChange,
+  suffixSlot,
+  prefixSlot,
+  className = "",
+  ...rest
+}) => {
+  const parentSize = useContext(SizeContext);
+  const [innerValue, setInnerValue] = useState(normalize(value, precision));
+  const [userInput, setUserInput] = useState<string | null>(null);
+
+  useEffect(() => {
+    const next = normalize(value, precision);
+    if (next !== innerValue) {
+      setInnerValue(next);
+    }
+  }, [value, precision]);
+
+  const clamp = (val: string | number): string => {
+    if (!isValidBig(val)) {
+      return val === "" ? "" : innerValue;
+    }
+    try {
+      let b = new Big(val);
+      if (max !== Infinity && b.gt(max)) b = new Big(max);
+      if (min !== -Infinity && b.lt(min)) b = new Big(min);
+      return precision !== undefined ? b.toFixed(precision) : b.toFixed();
+    } catch {
+      return innerValue;
+    }
+  };
+
+  const emitValue = (v: number | undefined) => {
+    onChange?.(v);
+  };
+
+  const displayValue = (() => {
+    if (userInput !== null) return userInput;
+    if (innerValue === "") return "";
+    return formatter ? formatter(innerValue) : innerValue;
+  })();
+
+  const triggerUpdate = (val: string | number) => {
+    const parsed = parser ? parser(String(val)) : val;
+    const clampedStr = clamp(String(parsed));
+    setInnerValue(clampedStr);
+    setUserInput(null);
+    const output = clampedStr === "" ? undefined : Number(clampedStr);
+    emitValue(output);
+  };
+
+  const handleInput = (val: string) => {
+    setUserInput(val);
+    const parsed = parser ? parser(val) : val;
+    if (val === "") {
+      setInnerValue("");
+      emitValue(undefined);
+      return;
+    }
+    if (isValidBig(parsed)) {
+      const bigVal = new Big(parsed);
+      const normalizedStr = bigVal.toFixed();
+      setInnerValue(normalizedStr);
+      emitValue(Number(normalizedStr));
+      if (formatter) {
+        const formatted = formatter(normalizedStr);
+        if (formatted !== userInput) setUserInput(formatted);
+      }
+    }
+  };
+
+  const handleBlur = () => {
+    triggerUpdate(userInput !== null ? userInput : innerValue);
+  };
+
+  const stepAction = (type: "up" | "down") => {
+    if (disabled || readOnly) return;
+    const current = isValidBig(innerValue) ? innerValue : 0;
+    const next =
+      type === "up" ? new Big(current).plus(step) : new Big(current).minus(step);
+    triggerUpdate(next.toFixed());
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      stepAction("up");
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      stepAction("down");
+    }
+  };
+
+  const controlsNode =
+    controls && !readOnly && !disabled ? (
+      <div className="k-input-number-controls">
+        <span className="k-input-number-control" onClick={() => stepAction("up")}>
+          <Icon type={ChevronUp} />
+        </span>
+        <span className="k-input-number-control" onClick={() => stepAction("down")}>
+          <Icon type={ChevronDown} />
+        </span>
+      </div>
+    ) : undefined;
+
+  return (
+    <Input
+      value={displayValue}
+      disabled={disabled}
+      readOnly={readOnly}
+      clearable={false}
+      placeholder={placeholder}
+      suffix={suffix}
+      prefix={prefix}
+      size={size || parentSize}
+      icon={icon}
+      shape={shape}
+      theme={theme}
+      onChange={handleInput}
+      onBlur={handleBlur}
+      onKeyDown={handleKeyDown}
+      controls={controlsNode}
+      suffixSlot={suffixSlot}
+      prefixSlot={prefixSlot}
+    />
+  );
 };
-
-export type InputNumberProps = ExtractPropTypes<typeof inputNumberProps>;
-
-const InputNumber = defineComponent({
-  inheritAttrs: false,
-  name: "InputNumber",
-  props: inputNumberProps,
-
-  setup(props, { slots, attrs, emit }) {
-    const parentSize = inject<SizeType | undefined>("size", undefined);
-    const innerValue = ref("");
-    const userInput = ref<string | null>(null);
-
-    const clamp = (val: string | number) => {
-      if (!isValidBig(val)) {
-        return val === "" ? "" : innerValue.value;
-      }
-
-      try {
-        let b = new Big(val);
-
-        if (props.max !== Infinity && b.gt(props.max)) b = new Big(props.max);
-        if (props.min !== -Infinity && b.lt(props.min)) b = new Big(props.min);
-
-        return props.precision !== undefined ? b.toFixed(props.precision) : b.toFixed();
-      } catch (e) {
-        return innerValue.value;
-      }
-    };
-
-    watch(
-      () => props.modelValue,
-      (val) => {
-        const next = normalize(val, props.precision);
-        if (next !== innerValue.value) {
-          innerValue.value = next;
-        }
-      },
-      { immediate: true }
-    );
-
-    const emitValue = (value: number | undefined) => {
-      emit("update:modelValue", value);
-      emit("change", value);
-    };
-
-    const displayValue = computed(() => {
-      if (userInput.value !== null) return userInput.value;
-
-      if (innerValue.value === "") return "";
-      return props.formatter ? props.formatter(innerValue.value) : innerValue.value;
-    });
-
-    const triggerUpdate = (val: string | number) => {
-      const parsed = props.parser ? props.parser(String(val)) : val;
-      const clampedStr = clamp(String(parsed));
-      innerValue.value = clampedStr;
-      userInput.value = null;
-
-      const output = clampedStr === "" ? undefined : Number(clampedStr);
-      emitValue(output);
-    };
-
-    const handleInput = (val: string) => {
-      userInput.value = val;
-      const parsed = props.parser ? props.parser(val) : val;
-      if (val === "") {
-        innerValue.value = "";
-        emitValue(undefined);
-        return;
-      }
-
-      if (isValidBig(parsed)) {
-        const bigVal = new Big(parsed);
-        const normalizedStr = bigVal.toFixed();
-
-        innerValue.value = normalizedStr;
-        emitValue(Number(normalizedStr));
-
-        if (props.formatter) {
-          const formatted = props.formatter(normalizedStr);
-          if (formatted !== userInput.value) {
-            userInput.value = formatted;
-          }
-        }
-      }
-    };
-
-    const handleBlur = (event: FocusEvent) => {
-      triggerUpdate(userInput.value !== null ? userInput.value : innerValue.value);
-      emit("blur", event);
-    };
-
-    const stepAction = (type: "up" | "down") => {
-      if (props.disabled || props.readonly) return;
-
-      const current = isValidBig(innerValue.value) ? innerValue.value : 0;
-      const next =
-        type === "up" ? new Big(current).plus(props.step) : new Big(current).minus(props.step);
-
-      triggerUpdate(next.toFixed());
-    };
-
-    return () => {
-      const inputProps = {
-        ...attrs,
-        modelValue: displayValue.value,
-        disabled: props.disabled,
-        readonly: props.readonly,
-        clearable: false,
-        placeholder: props.placeholder,
-        suffix: props.suffix,
-        prefix: props.prefix,
-        size: props.size || parentSize,
-        icon: props.icon,
-        shape: props.shape,
-        theme: props.theme,
-        inputType: "input-number",
-        "onUpdate:modelValue": handleInput,
-        onBlur: handleBlur,
-        onKeydown: (e: KeyboardEvent) => {
-          if (e.key === "ArrowUp") {
-            e.preventDefault();
-            stepAction("up");
-          }
-          if (e.key === "ArrowDown") {
-            e.preventDefault();
-            stepAction("down");
-          }
-        },
-      };
-      const controls =
-        props.controls && !props.readonly && !props.disabled ? (
-          <div class="k-input-number-controls">
-            <span class="k-input-number-control" onClick={() => stepAction("up")}>
-              <Icon type={ChevronUp} />
-            </span>
-            <span class="k-input-number-control" onClick={() => stepAction("down")}>
-              <Icon type={ChevronDown} />
-            </span>
-          </div>
-        ) : null;
-
-      return (
-        <Input
-          {...inputProps}
-          v-slots={{
-            suffix: () => slots.suffix?.(),
-            prefix: () => slots.prefix?.(),
-            controls: () => controls,
-          }}
-        />
-      );
-    };
-  },
-});
 
 export default InputNumber;

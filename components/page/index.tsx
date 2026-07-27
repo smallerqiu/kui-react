@@ -1,326 +1,267 @@
+import React, { useState, useEffect, useContext } from "react";
 import { ChevronsLeft, ChevronsRight, ChevronUp, Ellipsis } from "kui-icons";
-import {
-  computed,
-  defineComponent,
-  inject,
-  ref,
-  watch,
-  type ExtractPropTypes,
-  type PropType,
-} from "vue";
-import type { BooleanType, SizeType, ThemeType } from "../const/types";
+import type { SizeType, ThemeType } from "../const/types";
 import Icon from "../icon";
 import InputNumber from "../input-number";
 import zhCN from "../locale/zh-CN";
-import { Select } from "../select";
+import { ConfigContext } from "../config";
+import Select from "../select/select";
 
-export const pageProps = {
-  disabled: Boolean as BooleanType,
-  showSizer: Boolean as BooleanType,
-  showTotal: { type: Boolean as BooleanType, default: true },
-  showElevator: Boolean as BooleanType,
-  theme: { type: String as PropType<ThemeType>, default: "fill" },
-  sizeData: { type: Array as PropType<number[]>, default: () => [10, 15, 20, 30, 40] },
-  size: {
-    type: String as PropType<SizeType>,
-  },
-  total: { default: 0, type: Number },
-  pageSize: { default: 10, type: Number },
-  page: { default: 1, type: Number },
-  onChange: {
-    type: Function as PropType<(page: number, pageSize: number) => void>,
-  },
-};
-export type PageProps = ExtractPropTypes<typeof pageProps>;
+export interface PageProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+  disabled?: boolean;
+  showSizer?: boolean;
+  showTotal?: boolean;
+  showElevator?: boolean;
+  theme?: ThemeType;
+  sizeData?: number[];
+  size?: SizeType;
+  total?: number;
+  pageSize?: number;
+  page?: number;
+  onChange?: (page: number, pageSize: number) => void;
+}
 
-const Page = defineComponent({
-  name: "Page",
-  props: pageProps,
-  setup(props, { emit }) {
-    const nextPageGroup = ref(false);
-    const prevPageGroup = ref(false);
-    const pageCount = ref(Math.ceil(props.total / props.pageSize) || 1);
-    const defaultPage = ref(props.page);
-    const defaultPageSize = ref(props.pageSize);
-    const injectedLocale = inject<Record<string, any>>("locale", zhCN);
+const Page: React.FC<PageProps> = ({
+  disabled = false,
+  showSizer = false,
+  showTotal = true,
+  showElevator = false,
+  theme = "fill",
+  sizeData = [10, 15, 20, 30, 40],
+  size,
+  total = 0,
+  pageSize: pageSizeProp = 10,
+  page: pageProp = 1,
+  onChange,
+  className = "",
+  ...rest
+}) => {
+  const config = useContext(ConfigContext);
+  const locale = config?.locale || zhCN;
 
-    const locale = computed(() => {
-      return injectedLocale instanceof Object && "value" in injectedLocale
-        ? injectedLocale.value
-        : injectedLocale;
-    });
-    watch(
-      () => props.pageSize,
-      (v) => {
-        defaultPageSize.value = v;
-        resetPage();
-      }
-    );
-    watch(
-      () => props.total,
-      () => {
-        resetPage();
-      }
-    );
+  const calcPageCount = (tot: number, ps: number) => Math.ceil(tot / ps) || 1;
 
-    watch(
-      () => props.page,
-      (v) => {
-        defaultPage.value = v;
-        resetPage();
-      }
-    );
+  const [currentPage, setCurrentPage] = useState(pageProp);
+  const [currentPageSize, setCurrentPageSize] = useState(pageSizeProp);
+  const [pageCount, setPageCount] = useState(calcPageCount(total, pageSizeProp));
+  const [prevHover, setPrevHover] = useState(false);
+  const [nextHover, setNextHover] = useState(false);
 
-    const resetPage = () => {
-      pageCount.value = Math.ceil(props.total / defaultPageSize.value) || 1;
-      if (defaultPage.value > pageCount.value) {
-        defaultPage.value = pageCount.value;
-      }
-    };
-    const renderPage = () => {
-      const groupCount = 7,
-        page = Number(defaultPage.value),
-        pCount = Number(pageCount.value);
-      let showPrevMore = false;
-      let showNextMore = false;
-      if (pCount > groupCount) {
-        if (page > groupCount - 3) {
-          showPrevMore = true;
-        }
-        if (page < pCount - 3) {
-          showNextMore = true;
-        }
-      }
-      const array = [];
-      if (showPrevMore && !showNextMore) {
-        const startPage = pCount - (groupCount - 2);
-        for (let i = startPage; i < pCount; i++) {
-          array.push(i);
-        }
-      } else if (!showPrevMore && showNextMore) {
-        for (let i = 2; i < groupCount; i++) {
-          array.push(i);
-        }
-      } else if (showPrevMore && showNextMore) {
-        const offset = Math.floor(groupCount / 2) - 1;
-        for (let i = page - offset; i <= page + offset; i++) {
-          array.push(i);
-        }
-      } else {
-        for (let i = 2; i < pCount; i++) {
-          array.push(i);
-        }
-      }
-      let child = array.map((p, i) => {
-        let prop = {
-          class: ["k-pager-item", { "k-pager-item-active": page == p }],
-          key: i,
-          onClick: (e: MouseEvent) => toPage(e, p),
-        };
-        return (
-          <li {...prop}>
-            <span>{p}</span>
-          </li>
-        );
-      });
+  useEffect(() => {
+    const newCount = calcPageCount(total, currentPageSize);
+    setPageCount(newCount);
+    if (currentPage > newCount) setCurrentPage(newCount);
+  }, [total, currentPageSize]);
 
-      if (showPrevMore) {
-        let p = {
-          class: "k-pager-item k-pager-more",
-          onMouseenter: () => (prevPageGroup.value = true),
-          onMouseleave: () => (prevPageGroup.value = false),
-          onClick: (e: MouseEvent) => toPage(e, defaultPage.value - 5),
-        };
-        const moreNode = (
-          <li {...p}>
-            <Icon type={prevPageGroup.value ? ChevronsLeft : Ellipsis} />
-          </li>
-        );
-        child.unshift(moreNode);
-      }
-      if (showNextMore) {
-        let p = {
-          class: "k-pager-item k-pager-more",
-          onMouseenter: () => (nextPageGroup.value = true),
-          onMouseleave: () => (nextPageGroup.value = false),
-          onClick: (e: MouseEvent) => toPage(e, defaultPage.value + 5),
-        };
-        const moreNode = (
-          <li {...p}>
-            <Icon type={nextPageGroup.value ? ChevronsRight : Ellipsis} />
-          </li>
-        );
-        child.push(moreNode);
-      }
-      return child;
-    };
-    const prePage = () => {
-      if (props.disabled) return;
-      if (defaultPage.value > 1) {
-        defaultPage.value--;
-        emit("update:page", defaultPage.value);
-        emit("change", defaultPage.value, defaultPageSize.value);
-      }
-    };
-    const nextPage = () => {
-      if (props.disabled) return;
-      if (defaultPage.value < pageCount.value) {
-        defaultPage.value++;
-        emit("update:page", defaultPage.value);
-        emit("change", defaultPage.value, defaultPageSize.value);
-      }
-    };
-    const toPage = (e: MouseEvent, page: number) => {
-      e.preventDefault();
-      if (props.disabled) return;
-      if (page == defaultPage.value) return;
-      if (page <= 1) {
-        page = 1;
-        prevPageGroup.value = false;
-      }
-      if (page >= pageCount.value) {
-        nextPageGroup.value = false;
-        page = pageCount.value;
-      }
-      defaultPage.value = page;
-      emit("update:page", page);
-      emit("change", defaultPage.value, defaultPageSize.value);
-    };
-    const changeSize = (value: any) => {
-      defaultPageSize.value = value;
-      pageCount.value = Math.ceil(props.total / defaultPageSize.value) || 1;
-      if (defaultPage.value > pageCount.value) {
-        defaultPage.value = pageCount.value;
-        emit("update:page", defaultPage.value);
-      }
-      emit("change", defaultPage.value, defaultPageSize.value);
-    };
-    const renderFirst = () => {
-      if (pageCount.value > 0) {
-        return (
+  useEffect(() => {
+    setCurrentPage(pageProp);
+  }, [pageProp]);
+
+  useEffect(() => {
+    setCurrentPageSize(pageSizeProp);
+  }, [pageSizeProp]);
+
+  const toPage = (p: number) => {
+    if (disabled) return;
+    let nextP = p;
+    if (nextP < 1) nextP = 1;
+    if (nextP > pageCount) nextP = pageCount;
+    if (nextP === currentPage) return;
+    setCurrentPage(nextP);
+    onChange?.(nextP, currentPageSize);
+  };
+
+  const prePage = () => {
+    if (!disabled && currentPage > 1) toPage(currentPage - 1);
+  };
+  const goNextPage = () => {
+    if (!disabled && currentPage < pageCount) toPage(currentPage + 1);
+  };
+
+  const changeSize = (value: any) => {
+    const newPageSize = Number(value);
+    setCurrentPageSize(newPageSize);
+    const newCount = calcPageCount(total, newPageSize);
+    setPageCount(newCount);
+    const nextPage = currentPage > newCount ? newCount : currentPage;
+    setCurrentPage(nextPage);
+    onChange?.(nextPage, newPageSize);
+  };
+
+  // Build middle page numbers
+  const renderPageItems = () => {
+    const groupCount = 7;
+    const page = currentPage;
+    const pCount = pageCount;
+    let showPrevMore = false;
+    let showNextMore = false;
+
+    if (pCount > groupCount) {
+      if (page > groupCount - 3) showPrevMore = true;
+      if (page < pCount - 3) showNextMore = true;
+    }
+
+    let array: number[] = [];
+    if (showPrevMore && !showNextMore) {
+      const startPage = pCount - (groupCount - 2);
+      for (let i = startPage; i < pCount; i++) array.push(i);
+    } else if (!showPrevMore && showNextMore) {
+      for (let i = 2; i < groupCount; i++) array.push(i);
+    } else if (showPrevMore && showNextMore) {
+      const offset = Math.floor(groupCount / 2) - 1;
+      for (let i = page - offset; i <= page + offset; i++) array.push(i);
+    } else {
+      for (let i = 2; i < pCount; i++) array.push(i);
+    }
+
+    const items: React.ReactNode[] = array.map((p, i) => (
+      <li
+        key={i}
+        className={["k-pager-item", page === p ? "k-pager-item-active" : ""].filter(Boolean).join(" ")}
+        onClick={() => toPage(p)}
+      >
+        <span>{p}</span>
+      </li>
+    ));
+
+    if (showPrevMore) {
+      items.unshift(
+        <li
+          key="prev-more"
+          className="k-pager-item k-pager-more"
+          onMouseEnter={() => setPrevHover(true)}
+          onMouseLeave={() => setPrevHover(false)}
+          onClick={() => toPage(currentPage - 5)}
+        >
+          <Icon type={prevHover ? ChevronsLeft : Ellipsis} />
+        </li>
+      );
+    }
+    if (showNextMore) {
+      items.push(
+        <li
+          key="next-more"
+          className="k-pager-item k-pager-more"
+          onMouseEnter={() => setNextHover(true)}
+          onMouseLeave={() => setNextHover(false)}
+          onClick={() => toPage(currentPage + 5)}
+        >
+          <Icon type={nextHover ? ChevronsRight : Ellipsis} />
+        </li>
+      );
+    }
+
+    return items;
+  };
+
+  const classes = [
+    "k-page",
+    size === "small" ? "k-page-sm" : "",
+    theme === "fill" ? "k-page-fill" : "",
+    disabled ? "k-page-disabled" : "",
+    className,
+  ].filter(Boolean).join(" ");
+
+  const sizeOptions = sizeData.map((s) => ({
+    value: s,
+    label: `${s}${locale?.k?.page?.pageSize || " / page"}`,
+  }));
+
+  return (
+    <div className={classes} {...rest}>
+      {showTotal ? (
+        <div className="k-page-number">
+          <span>
+            {locale?.k?.page?.total} {total} {locale?.k?.page?.items}
+          </span>
+        </div>
+      ) : null}
+
+      <ul className="k-pager">
+        {/* Prev */}
+        <li
+          className={[
+            "k-pager-item k-pager-prev",
+            currentPage === 1 ? "k-pager-item-disabled" : "",
+          ].filter(Boolean).join(" ")}
+          onClick={prePage}
+        >
+          <Icon type={ChevronUp} />
+        </li>
+
+        {/* First page */}
+        {pageCount > 0 && (
           <li
-            class={["k-pager-item", { "k-pager-item-active": defaultPage.value == 1 }]}
-            onClick={(e) => toPage(e, 1)}
+            className={["k-pager-item", currentPage === 1 ? "k-pager-item-active" : ""].filter(Boolean).join(" ")}
+            onClick={() => toPage(1)}
           >
             <span>1</span>
           </li>
-        );
-      }
-      return null;
-    };
-    const renderLast = () => {
-      let pCount = pageCount.value;
-      if (pCount > 1) {
-        return (
+        )}
+
+        {/* Middle pages */}
+        {renderPageItems()}
+
+        {/* Last page */}
+        {pageCount > 1 && (
           <li
-            class={["k-pager-item", { "k-pager-item-active": defaultPage.value == pCount }]}
-            onClick={(e) => toPage(e, pCount)}
+            className={["k-pager-item", currentPage === pageCount ? "k-pager-item-active" : ""].filter(Boolean).join(" ")}
+            onClick={() => toPage(pageCount)}
           >
-            <span>{pCount}</span>
+            <span>{pageCount}</span>
           </li>
-        );
-      }
-      return null;
-    };
-    const renderSize = () => {
-      let prop = {
-        value: defaultPageSize.value,
-        size: props.size,
-        clearable: false,
-        theme: props.theme,
-        options: props.sizeData.map((s) => {
-          return { value: s, label: `${s}${locale.value?.k.page.pageSize}` };
-        }),
-        disabled: props.disabled,
-        onChange: changeSize,
-      };
-      return props.showSizer ? <div class="k-page-sizer">{<Select {...prop} />}</div> : null;
-    };
+        )}
 
-    const renderElevator = () => {
-      let { size } = props;
-      let _props = {
-        class: "k-page-options-elevator",
-        size,
-        theme: props.theme,
-        disabled: props.disabled,
-        clearable: false,
-        // value: defaultPage.value,
-        onChange: (page?: number) => {
-          if (page == undefined) {
-            return;
-          }
+        {/* Next */}
+        <li
+          className={[
+            "k-pager-item k-pager-next",
+            currentPage === pageCount ? "k-pager-item-disabled" : "",
+          ].filter(Boolean).join(" ")}
+          onClick={goNextPage}
+        >
+          <Icon type={ChevronUp} />
+        </li>
+      </ul>
 
-          let pCount = pageCount.value;
-          if (page > pCount) page = pCount;
-          if (page < 1) page = 1;
-
-          if ((page >= 1 || page <= pCount) && defaultPage.value != page) {
-            defaultPage.value = page;
-            emit("update:page", page);
-            emit("change", page, defaultPageSize.value);
-          }
-        },
-      };
-      return props.showElevator ? (
-        <div class="k-page-options">
-          <span>{locale.value?.k.page.goto}</span>
-          <InputNumber {..._props} />
-          <span>{locale.value?.k.page.page}</span>
+      {/* Page size sizer */}
+      {showSizer && (
+        <div className="k-page-sizer">
+          <Select
+            value={currentPageSize}
+            size={size}
+            clearable={false}
+            theme={theme}
+            disabled={disabled}
+            onChange={changeSize}
+            options={sizeOptions}
+          />
         </div>
-      ) : null;
-    };
-    return () => {
-      const classes = [
-          "k-page",
-          {
-            ["k-page-sm"]: props.size == "small",
-            "k-page-fill": props.theme == "fill",
-            "k-page-disabled": props.disabled,
-          },
-        ],
-        preNode = (
-          <li
-            class={[
-              "k-pager-item k-pager-prev",
-              { "k-pager-item-disabled": defaultPage.value == 1 },
-            ]}
-            onClick={prePage}
-          >
-            <Icon type={ChevronUp} />
-          </li>
-        ),
-        nextNode = (
-          <li
-            class={[
-              "k-pager-item k-pager-next",
-              { "k-pager-item-disabled": defaultPage.value == pageCount.value },
-            ]}
-            onClick={nextPage}
-          >
-            <Icon type={ChevronUp} />
-          </li>
-        ),
-        totalNode = props.showTotal ? (
-          <div class="k-page-number">
-            <span>
-              {locale.value?.k.page.total} {props.total} {locale.value?.k.page.items}
-            </span>
-          </div>
-        ) : null,
-        pagerNode = renderPage(),
-        sizeNode = renderSize(),
-        elevatorNode = renderElevator(),
-        firstNode = renderFirst(),
-        lastNode = renderLast();
-      return (
-        <div class={classes}>
-          {totalNode}
-          <ul class="k-pager">{[preNode, firstNode, pagerNode, lastNode, nextNode]}</ul>
-          {[sizeNode, elevatorNode]}
+      )}
+
+      {/* Elevator */}
+      {showElevator && (
+        <div className="k-page-options">
+          <span>{locale?.k?.page?.goto}</span>
+          <InputNumber
+            className="k-page-options-elevator"
+            size={size}
+            theme={theme}
+            disabled={disabled}
+            onChange={(p) => {
+              if (p === undefined) return;
+              const nextP = Math.min(Math.max(p, 1), pageCount);
+              if (nextP !== currentPage) {
+                setCurrentPage(nextP);
+                onChange?.(nextP, currentPageSize);
+              }
+            }}
+          />
+          <span>{locale?.k?.page?.page}</span>
         </div>
-      );
-    };
-  },
-});
+      )}
+    </div>
+  );
+};
+
 export default Page;

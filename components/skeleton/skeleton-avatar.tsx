@@ -1,61 +1,67 @@
-import { defineComponent, ref, watch } from "vue";
+import React, { useState, useEffect, useRef } from "react";
+import type { ShapeType, SizeType } from "../const/types";
 
-import type { CSSProperties } from "vue";
+export interface SkeletonAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
+  animated?: boolean;
+  radius?: number;
+  loading?: boolean;
+  delay?: number;
+  shape?: ShapeType;
+  size?: number | SizeType;
+  children?: React.ReactNode;
+}
 
-import { skeletonProps } from "./types";
+const SkeletonAvatar: React.FC<SkeletonAvatarProps> = ({
+  animated = false,
+  radius,
+  loading = false,
+  delay = 500,
+  shape,
+  size,
+  children,
+  className = "",
+  ...rest
+}) => {
+  const [show, setShow] = useState(loading);
+  const timer = useRef<NodeJS.Timeout | null>(null);
 
-const SkeletonAvatar = defineComponent({
-  name: "SkeletonAvatar",
-  props: skeletonProps,
-  setup(props, { slots }) {
-    const show = ref(props.loading);
-    const timer = ref();
-    watch(
-      () => props.loading,
-      (v) => {
-        if (v) {
-          show.value = v;
-        } else {
-          clearTimeout(timer.value);
-          timer.value = setTimeout(() => {
-            show.value = v;
-          }, props.delay);
-        }
-      }
-    );
+  useEffect(() => {
+    if (loading) {
+      setShow(true);
+    } else {
+      if (timer.current) clearTimeout(timer.current);
+      timer.current = setTimeout(() => setShow(false), delay);
+    }
+    return () => { if (timer.current) clearTimeout(timer.current); };
+  }, [loading, delay]);
 
-    return () => {
-      let { size, animated, radius, shape } = props;
-      let _props = {
-        class: [
-          "k-skeleton k-skeleton-ele",
-          {
-            "k-skeleton-animated": animated,
-          },
-        ],
-      };
-      let innerProps = {
-        class: [
-          "k-skeleton-avatar",
-          {
-            "k-skeleton-avatar-lg": size == "large",
-            "k-skeleton-avatar-sm": size == "small",
-            [`k-skeleton-avatar-${shape}`]: shape != "round",
-          },
-        ],
-        style: {} as CSSProperties,
-      };
-      let child = slots.default?.();
+  const wrapperClasses = [
+    "k-skeleton k-skeleton-ele",
+    animated ? "k-skeleton-animated" : "",
+    className,
+  ].filter(Boolean).join(" ");
 
-      if (!isNaN(Number(size))) {
-        innerProps.style.width = `${size}px`;
-        innerProps.style.height = `${size}px`;
-      }
-      if (radius) {
-        innerProps.style["border-radius"] = `${radius}px`;
-      }
-      return <div {..._props}>{child && !show.value ? child : <span {...innerProps}></span>}</div>;
-    };
-  },
-});
+  const innerStyle: React.CSSProperties = {};
+  if (!isNaN(Number(size)) && typeof size === "number") {
+    innerStyle.width = `${size}px`;
+    innerStyle.height = `${size}px`;
+  }
+  if (radius) {
+    innerStyle.borderRadius = `${radius}px`;
+  }
+
+  const innerClasses = [
+    "k-skeleton-avatar",
+    size === "large" ? "k-skeleton-avatar-lg" : "",
+    size === "small" ? "k-skeleton-avatar-sm" : "",
+    shape && shape !== "round" ? `k-skeleton-avatar-${shape}` : "",
+  ].filter(Boolean).join(" ");
+
+  return (
+    <div className={wrapperClasses} {...rest}>
+      {children && !show ? children : <span className={innerClasses} style={innerStyle} />}
+    </div>
+  );
+};
+
 export default SkeletonAvatar;

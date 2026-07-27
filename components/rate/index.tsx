@@ -1,148 +1,137 @@
-import {
-  defineComponent,
-  ref,
-  watch,
-  type CSSProperties,
-  type ExtractPropTypes,
-  type PropType,
-} from "vue";
-import { type BooleanType, type SizeType } from "../const/types";
+import React, { useState, useEffect } from "react";
+import type { SizeType } from "../const/types";
 import type { IconType } from "../icon";
 import Star from "./star";
-export const rateProps = {
-  modelValue: { type: Number, default: 0 },
-  allowClear: { type: Boolean as BooleanType, default: true },
-  allowHalf: Boolean as BooleanType,
-  color: String,
-  size: [Number, String] as PropType<number | SizeType>,
-  showScore: Boolean as BooleanType,
-  tooltips: Array as PropType<string[]>,
-  disabled: Boolean as BooleanType,
-  count: { type: Number, default: 5 },
-  character: [String, Function] as PropType<string | ((index: number) => any)>,
-  icon: [Array, Function] as PropType<IconType[] | ((index: number) => any)>,
-  symbolReverseFill: Boolean as BooleanType,
-  strokeWidth: { type: Number, default: 1 },
-  onChange: {
-    type: Function as PropType<(value: number) => void>,
-  },
-};
 
-export type RateProps = ExtractPropTypes<typeof rateProps>;
+export interface RateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+  value?: number;
+  allowClear?: boolean;
+  allowHalf?: boolean;
+  color?: string;
+  size?: number | SizeType;
+  showScore?: boolean;
+  tooltips?: string[];
+  disabled?: boolean;
+  count?: number;
+  character?: string | ((index: number) => React.ReactNode);
+  icon?: IconType[] | ((index: number) => any);
+  symbolReverseFill?: boolean;
+  strokeWidth?: number;
+  onChange?: (value: number) => void;
+}
 
-const Rate = defineComponent({
-  name: "Rate",
-  props: rateProps,
-  setup(props, { emit }) {
-    const initValue = ref(props.modelValue);
-    const tempValue = ref<number | null>(null);
-    const cleared = ref(false);
+const Rate: React.FC<RateProps> = ({
+  value = 0,
+  allowClear = true,
+  allowHalf = false,
+  color,
+  size,
+  showScore = false,
+  tooltips = [],
+  disabled = false,
+  count = 5,
+  character,
+  icon,
+  symbolReverseFill = false,
+  strokeWidth = 1,
+  onChange,
+  className = "",
+  ...rest
+}) => {
+  const [initValue, setInitValue] = useState(value);
+  const [tempValue, setTempValue] = useState<number | null>(null);
+  const [cleared, setCleared] = useState(false);
 
-    watch(
-      () => props.modelValue,
-      (v) => {
-        initValue.value = v;
-      }
-    );
+  useEffect(() => {
+    setInitValue(value);
+  }, [value]);
 
-    const update = (t: "C" | "M", index: number, percent: number) => {
-      if (t === "M") {
-        if (cleared.value) return;
-        // mouse move
-        if (props.allowHalf) {
-          const value = index - (percent < 0.5 ? 0.5 : 0);
-          tempValue.value = value;
-        } else {
-          tempValue.value = index;
-        }
+  const update = (t: "C" | "M", index: number, percent: number) => {
+    if (t === "M") {
+      if (cleared) return;
+      if (allowHalf) {
+        setTempValue(index - (percent < 0.5 ? 0.5 : 0));
       } else {
-        // click
-        let value = index - (props.allowHalf ? (percent < 0.5 ? 0.5 : 0) : 0);
-        value = parseFloat(value.toFixed(2));
-
-        const nextValue = value === initValue.value && props.allowClear ? 0 : value;
-        initValue.value = nextValue;
-
-        if (nextValue === 0) {
-          cleared.value = true;
-          tempValue.value = null;
-        }
-        emit("update:modelValue", initValue.value);
-        emit("change", initValue.value);
+        setTempValue(index);
       }
-    };
+    } else {
+      let v = index - (allowHalf ? (percent < 0.5 ? 0.5 : 0) : 0);
+      v = parseFloat(v.toFixed(2));
 
-    const mouseLeave = () => {
-      tempValue.value = null;
-      cleared.value = false;
-    };
+      const nextValue = v === initValue && allowClear ? 0 : v;
+      setInitValue(nextValue);
 
-    return () => {
-      const tpValue = tempValue.value !== null ? tempValue.value : initValue.value;
-      let {
-        count,
-        allowHalf,
-        character,
-        disabled,
-        tooltips = [],
-        icon,
-        showScore,
-        color,
-        size,
-      } = props;
-
-      if (typeof size === "string") {
-        const sizeValue = { small: 20, medium: 24, large: 32, default: 24 };
-        size = sizeValue[size];
+      if (nextValue === 0) {
+        setCleared(true);
+        setTempValue(null);
+      } else {
+        setCleared(false);
       }
+      onChange?.(nextValue);
+    }
+  };
 
-      const stars = [];
-      let actualCount = count;
-      if (isNaN(Number(count)) || count <= 0) {
-        actualCount = 5;
-      }
-      if (actualCount > 15) actualCount = 15;
+  const mouseLeave = () => {
+    setTempValue(null);
+    setCleared(false);
+  };
 
-      for (let i = 1; i <= actualCount; i++) {
-        const mod = i - tpValue;
-        const percent = (1 - (i - tpValue)) * 100;
-        const sp = {
-          key: i,
-          allowHalf,
-          full: tpValue >= i,
-          half: mod > 0 && mod < 1,
-          icon,
-          character,
-          size: size as number | string,
-          disabled,
-          percent: percent < 100 ? percent : undefined,
-          tooltips: tooltips[i - 1],
-          index: i,
-          symbolReverseFill: props.symbolReverseFill,
-          onUpdate: update,
-        };
-        stars.push(<Star {...sp} />);
-      }
+  const tpValue = tempValue !== null ? tempValue : initValue;
 
-      const containerStyle: CSSProperties = {
-        fontSize: size + "px",
-        color: color || undefined,
-      };
+  // Normalize count
+  let actualCount = count;
+  if (isNaN(Number(count)) || count <= 0) actualCount = 5;
+  if (actualCount > 15) actualCount = 15;
 
-      const containerProps = {
-        class: ["k-rate", { "k-rate-disabled": disabled }],
-        onMouseleave: mouseLeave,
-        style: containerStyle,
-      };
+  // Resolve numeric size
+  let numSize: number | undefined;
+  if (typeof size === "string") {
+    const sizeMap: Record<string, number> = { small: 20, medium: 24, large: 32, default: 24 };
+    numSize = sizeMap[size] ?? 24;
+  } else {
+    numSize = size;
+  }
 
-      return (
-        <div {...containerProps}>
-          {stars}
-          {showScore ? <span class="k-rate-score">{initValue.value}</span> : null}
-        </div>
-      );
-    };
-  },
-});
+  const stars = [];
+  for (let i = 1; i <= actualCount; i++) {
+    const mod = i - tpValue;
+    const starPercent = (1 - (i - tpValue)) * 100;
+    stars.push(
+      <Star
+        key={i}
+        allowHalf={allowHalf}
+        full={tpValue >= i}
+        half={mod > 0 && mod < 1}
+        icon={icon}
+        character={character}
+        size={numSize}
+        disabled={disabled}
+        percent={starPercent < 100 ? starPercent : undefined}
+        tooltips={tooltips[i - 1]}
+        index={i}
+        symbolReverseFill={symbolReverseFill}
+        strokeWidth={strokeWidth}
+        onUpdate={update}
+      />
+    );
+  }
+
+  const containerStyle: React.CSSProperties = {
+    fontSize: numSize ? `${numSize}px` : undefined,
+    color: color || undefined,
+  };
+
+  return (
+    <div
+      className={["k-rate", disabled ? "k-rate-disabled" : "", className].filter(Boolean).join(" ")}
+      style={containerStyle}
+      onMouseLeave={mouseLeave}
+      {...rest}
+    >
+      {stars}
+      {showScore ? <span className="k-rate-score">{initValue}</span> : null}
+    </div>
+  );
+};
 
 export default Rate;

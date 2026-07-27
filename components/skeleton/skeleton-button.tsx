@@ -1,56 +1,64 @@
-import type { CSSProperties } from "vue";
-import { defineComponent, ref, watch } from "vue";
+import React, { useState, useEffect, useRef } from "react";
+import type { ShapeType, SizeType } from "../const/types";
 
-import { skeletonProps } from "./types";
+export interface SkeletonButtonProps extends React.HTMLAttributes<HTMLDivElement> {
+  animated?: boolean;
+  loading?: boolean;
+  delay?: number;
+  block?: boolean;
+  width?: number;
+  size?: SizeType;
+  shape?: ShapeType;
+  children?: React.ReactNode;
+}
 
-const SkeletonButton = defineComponent({
-  name: "SkeletonButton",
-  props: skeletonProps,
-  setup(props, { slots }) {
-    const show = ref(props.loading);
-    const timer = ref();
-    watch(
-      () => props.loading,
-      (v) => {
-        if (v) {
-          show.value = v;
-        } else {
-          clearTimeout(timer.value);
-          timer.value = setTimeout(() => {
-            show.value = v;
-          }, props.delay);
-        }
-      }
-    );
-    return () => {
-      let { size, animated, block, shape, width } = props;
-      let _props = {
-        class: [
-          "k-skeleton k-skeleton-ele",
-          {
-            "k-skeleton-animated": animated,
-            "k-skeleton-block": block,
-          },
-        ],
-      };
-      let innerProps = {
-        class: [
-          "k-skeleton-btn",
-          {
-            "k-skeleton-btn-lg": size == "large",
-            "k-skeleton-btn-sm": size == "small",
-            [`k-skeleton-btn-${shape}`]: shape != "round",
-          },
-        ],
-        style: {} as CSSProperties,
-      };
-      let child = slots.default?.();
+const SkeletonButton: React.FC<SkeletonButtonProps> = ({
+  animated = false,
+  loading = false,
+  delay = 500,
+  block = false,
+  width,
+  size,
+  shape,
+  children,
+  className = "",
+  ...rest
+}) => {
+  const [show, setShow] = useState(loading);
+  const timer = useRef<NodeJS.Timeout | null>(null);
 
-      if (width) {
-        innerProps.style.width = `${width}px`;
-      }
-      return <div {..._props}>{child && !show.value ? child : <span {...innerProps}></span>}</div>;
-    };
-  },
-});
+  useEffect(() => {
+    if (loading) {
+      setShow(true);
+    } else {
+      if (timer.current) clearTimeout(timer.current);
+      timer.current = setTimeout(() => setShow(false), delay);
+    }
+    return () => { if (timer.current) clearTimeout(timer.current); };
+  }, [loading, delay]);
+
+  const wrapperClasses = [
+    "k-skeleton k-skeleton-ele",
+    animated ? "k-skeleton-animated" : "",
+    block ? "k-skeleton-block" : "",
+    className,
+  ].filter(Boolean).join(" ");
+
+  const innerStyle: React.CSSProperties = {};
+  if (width) innerStyle.width = `${width}px`;
+
+  const innerClasses = [
+    "k-skeleton-btn",
+    size === "large" ? "k-skeleton-btn-lg" : "",
+    size === "small" ? "k-skeleton-btn-sm" : "",
+    shape && shape !== "round" ? `k-skeleton-btn-${shape}` : "",
+  ].filter(Boolean).join(" ");
+
+  return (
+    <div className={wrapperClasses} {...rest}>
+      {children && !show ? children : <span className={innerClasses} style={innerStyle} />}
+    </div>
+  );
+};
+
 export default SkeletonButton;
