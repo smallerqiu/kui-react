@@ -1,612 +1,162 @@
 import { ChevronDown, ChevronUp } from "kui-icons";
-import type { CSSProperties, ExtractPropTypes, PropType } from "vue";
-import { computed, defineComponent, h, onMounted, onUpdated, reactive, ref, watch } from "vue";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type HTMLAttributes, type ReactNode, type UIEvent } from "react";
 import { Checkbox, type ChangeEvent } from "../checkbox";
-import type { BooleanType, SizeType } from "../const/types";
+import type { SizeType } from "../const/types";
 import Empty from "../empty";
 import Icon from "../icon";
 import Spin from "../spin";
 
-export interface Column {
+export interface SortState { key: string; order: null | "desc" | "asc" }
+export interface Column<T = any> {
   key: string;
-  title: string;
+  title: ReactNode;
   width?: number;
   fixed?: "left" | "right";
   sorter?: boolean | ((state: SortState) => void);
-  render?: (h: any, record: any, colIndex: number, rowIndex: number, col: Column) => void;
-  colSpan?: number | ((record: any, index: number) => number);
-  rowSpan?: number | ((record: any, index: number) => number);
-  children?: Column[];
+  render?: (value: any, record: T, rowIndex: number, column: Column<T>) => ReactNode;
+  renderHeader?: (column: Column<T>, index: number) => ReactNode;
+  colSpan?: number | ((record: T, index: number) => number);
+  rowSpan?: number | ((record: T, index: number) => number);
+  children?: Column<T>[];
 }
-
-export const tableProps = {
-  data: { type: Array, default: () => [] },
-  columns: { type: Array as PropType<Column[]>, default: () => [] },
-  selectedKeys: { type: Array as PropType<string[]>, default: () => [] },
-  disabledKeys: { type: Array as PropType<string[]>, default: () => [] },
-  rowKey: { type: String, default: "key" },
-  scroll: {
-    type: Object as PropType<{ x?: number | string; y?: number | string }>,
-    default: () => ({}),
-  },
-  size: {
-    type: String as PropType<SizeType>,
-  },
-  striped: Boolean as BooleanType,
-  bordered: { type: Boolean as BooleanType, default: false },
-  checkable: Boolean as BooleanType,
-  loading: Boolean as BooleanType,
-  emptyText: String,
-  onSort: { type: Function as PropType<(state: SortState) => void> },
-  onRowClick: { type: Function as PropType<(record: any, index: number) => void> },
-  onSelect: {
-    type: Function as PropType<
-      (record: any, selected: boolean, selectedKeys: (string | number)[]) => void
-    >,
-  },
-  onSelectAll: {
-    type: Function as PropType<(selected: boolean, selectedKeys: (string | number)[]) => void>,
-  },
-};
-
-interface Matrix {
-  rowSpan: number;
-  colSpan: number;
-  show: boolean;
+export interface TableProps<T = any> extends Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> {
+  data?: T[];
+  columns?: Column<T>[];
+  selectedKeys?: Array<string | number>;
+  defaultSelectedKeys?: Array<string | number>;
+  disabledKeys?: Array<string | number>;
+  rowKey?: string | ((record: T) => string | number);
+  scroll?: { x?: number | string; y?: number | string };
+  size?: SizeType;
+  striped?: boolean;
+  bordered?: boolean;
+  checkable?: boolean;
+  loading?: boolean;
+  emptyText?: string;
+  header?: ReactNode;
+  footer?: ReactNode;
+  onSort?: (state: SortState) => void;
+  onRowClick?: (record: T, index: number) => void;
+  onSelect?: (record: T, selected: boolean, selectedKeys: Array<string | number>) => void;
+  onSelectAll?: (selected: boolean, selectedKeys: Array<string | number>) => void;
+  onSelectedKeysChange?: (selectedKeys: Array<string | number>) => void;
 }
+interface MatrixCell { rowSpan: number; colSpan: number; show: boolean }
 
-export type TableProps = ExtractPropTypes<typeof tableProps>;
+const flatten = <T,>(columns: Column<T>[]): Column<T>[] => columns.flatMap((column) => column.children?.length ? flatten(column.children) : column);
+const leafCount = <T,>(column: Column<T>): number => column.children?.length ? column.children.reduce((sum, child) => sum + leafCount(child), 0) : 1;
 
-export interface SortState {
-  key: string;
-  order: null | "desc" | "asc";
+export default function Table<T = any>({
+  data = [], columns = [], selectedKeys, defaultSelectedKeys = [], disabledKeys = [], rowKey = "key",
+  scroll = {}, size, striped, bordered = false, checkable, loading, emptyText, header, footer,
+  onSort, onRowClick, onSelect, onSelectAll, onSelectedKeysChange, className, ...rest
+}: TableProps<T>) {
+  const headerRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const controlledSelection = selectedKeys !== undefined;
+  const [innerSelected, setInnerSelected] = useState(new Set(selectedKeys ?? defaultSelectedKeys));
+  const [sort, setSort] = useState<SortState>({ key: "", order: null });
+  const [ping, setPing] = useState({ left: false, right: false });
+  const [scrollbarWidth, setScrollbarWidth] = useState(0);
+  const selected = controlledSelection ? new Set(selectedKeys) : innerSelected;
+  const leaves = useMemo(() => flatten(columns), [columns]);
+  const split = scroll.y != null;
+  const keyOf = (record: T) => typeof rowKey === "function" ? rowKey(record) : (record as any)[rowKey];
+  const isDisabled = (key: string | number) => disabledKeys.includes(key);
+
+  const headerInfo = useMemo(() => {
+    let maxDepth = 1;
+    const depth = (items: Column<T>[], level = 1) => items.forEach((item) => item.children?.length ? depth(item.children, level + 1) : maxDepth = Math.max(maxDepth, level));
+    depth(columns);
+    const rows: Array<Array<Column<T> & { headerColSpan: number; headerRowSpan: number }>> = [];
+    const visit = (items: Column<T>[], level: number) => {
+      rows[level] ??= [];
+      items.forEach((item) => {
+        rows[level].push({ ...item, headerColSpan: leafCount(item), headerRowSpan: item.children?.length ? 1 : maxDepth - level });
+        if (item.children?.length) visit(item.children, level + 1);
+      });
+    };
+    visit(columns, 0);
+    return { rows, maxDepth };
+  }, [columns]);
+
+  const fixed = useMemo(() => {
+    const styles: Record<string, CSSProperties> = {};
+    let left = checkable ? 50 : 0;
+    leaves.forEach((column) => { if (column.fixed === "left") { styles[column.key] = { position: "sticky", left, transform: "translateZ(0)" }; left += column.width ?? 150; } });
+    let right = 0;
+    [...leaves].reverse().forEach((column) => { if (column.fixed === "right") { styles[column.key] = { position: "sticky", right, transform: "translateZ(0)" }; right += column.width ?? 150; } });
+    return styles;
+  }, [checkable, leaves]);
+  const fixedClass = (column: Column<T>, index: number) => [
+    column.fixed === "left" && "k-table-cell-fix-left",
+    column.fixed === "left" && leaves[index + 1]?.fixed !== "left" && "k-table-cell-fix-left-last",
+    column.fixed === "right" && "k-table-cell-fix-right",
+    column.fixed === "right" && leaves[index - 1]?.fixed !== "right" && "k-table-cell-fix-right-first",
+    column.sorter && "k-table-cell-sorter",
+  ].filter(Boolean).join(" ");
+
+  const processed = useMemo(() => {
+    const result = [...data];
+    if (sort.key && sort.order && leaves.find((column) => column.key === sort.key)?.sorter === true) {
+      result.sort((a, b) => { const first = (a as any)[sort.key], second = (b as any)[sort.key]; if (first === second) return 0; const comparison = first > second ? 1 : -1; return sort.order === "asc" ? comparison : -comparison; });
+    }
+    return result;
+  }, [data, leaves, sort]);
+  const matrix = useMemo(() => {
+    const result: MatrixCell[][] = processed.map(() => leaves.map(() => ({ rowSpan: 1, colSpan: 1, show: true })));
+    processed.forEach((record, row) => leaves.forEach((column, col) => {
+      if (!result[row][col].show) return;
+      const rowSpan = typeof column.rowSpan === "function" ? column.rowSpan(record, row) : column.rowSpan ?? 1;
+      const colSpan = typeof column.colSpan === "function" ? column.colSpan(record, row) : column.colSpan ?? 1;
+      result[row][col] = { rowSpan, colSpan, show: true };
+      for (let r = 0; r < rowSpan; r++) for (let c = 0; c < colSpan; c++) if (r || c) { const cell = result[row + r]?.[col + c]; if (cell) cell.show = false; }
+    }));
+    return result;
+  }, [leaves, processed]);
+
+  const enabled = data.filter((record) => !isDisabled(keyOf(record)));
+  const checkedCount = enabled.filter((record) => selected.has(keyOf(record))).length;
+  const allChecked = enabled.length > 0 && checkedCount === enabled.length;
+  const indeterminate = checkedCount > 0 && checkedCount < enabled.length;
+  const commitSelection = (next: Set<string | number>) => { const keys = [...next]; if (!controlledSelection) setInnerSelected(next); onSelectedKeysChange?.(keys); return keys; };
+  const toggleAll = ({ checked }: ChangeEvent) => {
+    const next = new Set(selected); data.forEach((record) => { const key = keyOf(record); if (!isDisabled(key)) checked ? next.add(key) : next.delete(key); });
+    onSelectAll?.(checked, commitSelection(next));
+  };
+  const toggleOne = (event: ChangeEvent, record: T) => {
+    const key = keyOf(record); if (isDisabled(key)) return; const next = new Set(selected); event.checked ? next.add(key) : next.delete(key);
+    onSelect?.(record, event.checked, commitSelection(next));
+  };
+  const changeSort = (column: Column<T>) => {
+    if (!column.sorter) return; const next: SortState = { key: column.key, order: sort.key !== column.key ? "asc" : sort.order === "asc" ? "desc" : sort.order === "desc" ? null : "asc" };
+    setSort(next); if (typeof column.sorter === "function") column.sorter(next); onSort?.(next);
+  };
+  const handleScroll = (event: UIEvent<HTMLDivElement>) => {
+    const target = event.currentTarget; if (split && headerRef.current) headerRef.current.scrollLeft = target.scrollLeft;
+    const max = Math.max(0, target.scrollWidth - target.clientWidth); setPing({ left: target.scrollLeft > .5, right: target.scrollLeft < max - .5 });
+  };
+  useEffect(() => {
+    const body = bodyRef.current; if (!body) return; setScrollbarWidth(split ? body.offsetWidth - body.clientWidth - (bordered ? 1 : 0) : 0);
+  }, [bordered, data, split]);
+
+  const colgroup = (headerTable = false) => <colgroup>{checkable && <col style={{ width: 50 }} />}{leaves.map((column) => <col key={column.key} style={{ width: column.width ?? "auto", minWidth: column.width ?? 150 }} />)}{headerTable && split && <col style={{ width: scrollbarWidth }} />}</colgroup>;
+  const thead = <thead>{headerInfo.rows.map((row, rowIndex) => <tr key={rowIndex}>
+    {checkable && rowIndex === 0 && <th rowSpan={headerInfo.maxDepth} className="k-table-cell-fix-left" style={{ left: 0, zIndex: 3 }}><Checkbox checked={allChecked} indeterminate={indeterminate} onChange={toggleAll} disabled={data.length > 0 && !enabled.length} /></th>}
+    {row.map((column, index) => <th key={column.key} colSpan={column.headerColSpan} rowSpan={column.headerRowSpan} className={fixedClass(column, leaves.indexOf(column))} style={fixed[column.key]} onClick={() => changeSort(column)}><div className="k-table-header-col">{column.renderHeader?.(column, index) ?? column.title}{column.sorter && <span className="k-table-sorter"><Icon type={ChevronUp} className={["k-table-sorter-up", sort.key === column.key && sort.order === "asc" && "k-table-sorter-active"].filter(Boolean).join(" ")} /><Icon type={ChevronDown} className={["k-table-sorter-down", sort.key === column.key && sort.order === "desc" && "k-table-sorter-active"].filter(Boolean).join(" ")} /></span>}</div></th>)}
+    {split && rowIndex === 0 && <th rowSpan={headerInfo.maxDepth} className="k-table-scrollbar-patch" style={{ width: scrollbarWidth }} />}
+  </tr>)}</thead>;
+  const tbody = <tbody>{processed.map((record, rowIndex) => <tr key={keyOf(record)} onClick={() => onRowClick?.(record, rowIndex)}>
+    {checkable && <td className="k-table-cell-fix-left" style={{ width: 50, left: 0 }} onClick={(event) => event.stopPropagation()}><Checkbox checked={selected.has(keyOf(record))} disabled={isDisabled(keyOf(record))} onChange={(event) => toggleOne(event, record)} /></td>}
+    {leaves.map((column, colIndex) => { const cell = matrix[rowIndex]?.[colIndex]; if (!cell?.show) return null; const value = (record as any)[column.key]; return <td key={column.key} rowSpan={cell.rowSpan > 1 ? cell.rowSpan : undefined} colSpan={cell.colSpan > 1 ? cell.colSpan : undefined} className={fixedClass(column, colIndex)} style={fixed[column.key]}>{column.render?.(value, record, rowIndex, column) ?? value}</td>; })}
+  </tr>)}</tbody>;
+  const tableStyle: CSSProperties = { width: typeof scroll.x === "number" ? scroll.x : scroll.x, minWidth: scroll.x ? undefined : "100%", tableLayout: "fixed" };
+  const renderTable = (showHeader: boolean, showBody: boolean, headerTable = false) => <table style={tableStyle}>{colgroup(headerTable)}{showHeader && thead}{showBody && tbody}</table>;
+  const empty = !data.length || !columns.length;
+  return <div {...rest} className={["k-table", striped && "k-table-striped", size === "small" && "k-table-sm", size === "large" && "k-table-lg", bordered && "k-table-bordered", ping.left && "k-table-ping-left", ping.right && "k-table-ping-right", className].filter(Boolean).join(" ")}>
+    {header && <div className="k-table-header">{header}</div>}
+    {split && <div className="k-table-thead" ref={headerRef} style={{ overflow: "hidden" }}>{renderTable(true, false, true)}</div>}
+    <div className="k-table-body k-scroll" ref={bodyRef} style={{ overflowY: scroll.y ? "auto" : undefined, overflowX: data.length ? "auto" : "hidden", maxHeight: scroll.y }} onScroll={handleScroll}>{renderTable(!split, true)}{empty && <Empty description={emptyText} />}</div>
+    {footer && <div className="k-table-footer">{footer}</div>}{loading && <Spin />}
+  </div>;
 }
-
-const Table = defineComponent({
-  name: "Table",
-  props: tableProps,
-  setup(props, { emit, slots }) {
-    const headerWrapperRef = ref<HTMLElement>();
-    const bodyWrapperRef = ref<HTMLElement>();
-    const scrollbarWidth = ref(0);
-    const innerSelectedKeys = ref(new Set(props.selectedKeys));
-    const isSplit = computed(() => !!props.scroll.y);
-    const sortState = reactive<SortState>({ key: "", order: null });
-    const pingLeft = ref(false);
-    const pingRight = ref(false);
-
-    watch(
-      () => props.selectedKeys,
-      (val) => {
-        innerSelectedKeys.value = new Set(val);
-      }
-    );
-    const getFlattedColumns = (cols: Column[]): Column[] => {
-      const result: Column[] = [];
-      cols.forEach((col) => {
-        if (col.children && col.children.length > 0) {
-          result.push(...getFlattedColumns(col.children));
-        } else {
-          result.push(col);
-        }
-      });
-      return result;
-    };
-    const flattedColumns = computed(() => getFlattedColumns(props.columns));
-
-    const headerRows = computed(() => {
-      const rows: Column[][] = [];
-      let maxDepth = 0;
-
-      const getDepth = (cols: Column[], depth = 0) => {
-        cols.forEach((col) => {
-          if (col.children && col.children.length > 0) {
-            getDepth(col.children, depth + 1);
-          } else {
-            maxDepth = Math.max(maxDepth, depth + 1);
-          }
-        });
-      };
-      getDepth(props.columns);
-
-      const traverse = (cols: Column[], depth: number) => {
-        if (!rows[depth]) rows[depth] = [];
-        cols.forEach((col) => {
-          const cell: Column = { ...col };
-          // 计算 colSpan (叶子节点总数)
-          const getLeafCount = (c: Column): number => {
-            if (c.children && c.children.length) {
-              return c.children.reduce((acc, item) => acc + getLeafCount(item), 0);
-            }
-            return 1;
-          };
-          cell.colSpan = getLeafCount(col);
-
-          // 计算 rowSpan
-          if (col.children && col.children.length > 0) {
-            cell.rowSpan = 1;
-            traverse(col.children, depth + 1);
-          } else {
-            cell.rowSpan = maxDepth - depth;
-          }
-          rows[depth].push(cell);
-        });
-      };
-      traverse(props.columns, 0);
-      return { rows, maxDepth };
-    });
-
-    const isDisabled = (key: string) => props.disabledKeys && props.disabledKeys.includes(key);
-
-    const selectionState = computed(() => {
-      const enableData = props.data.filter((item: any) => !isDisabled(item[props.rowKey]));
-      if (enableData.length === 0) return { all: false, indeterminate: false };
-
-      const checkedCount = enableData.filter((item: any) =>
-        innerSelectedKeys.value.has(item[props.rowKey])
-      ).length;
-
-      return {
-        all: checkedCount > 0 && checkedCount === enableData.length,
-        indeterminate: checkedCount > 0 && checkedCount < enableData.length,
-      };
-    });
-
-    const fixedInfo = computed(() => {
-      const headerStyles: Record<string, CSSProperties> = {};
-      const bodyStyles: Record<string, CSSProperties> = {};
-      let leftOffset = props.checkable ? 50 : 0;
-
-      // 使用 flattedColumns
-      flattedColumns.value.forEach((col) => {
-        if (col.fixed === "left") {
-          const style: CSSProperties = {
-            position: "sticky",
-            transform: "translateZ(0)",
-            left: `${leftOffset}px`,
-          };
-          headerStyles[col.key] = style;
-          bodyStyles[col.key] = style;
-          leftOffset += col.width || 150;
-        }
-      });
-
-      let rightOffset = 0; // + scrollbarWidth.value;
-      for (let i = flattedColumns.value.length - 1; i >= 0; i--) {
-        const col = flattedColumns.value[i];
-        if (col.fixed === "right") {
-          bodyStyles[col.key] = {
-            position: "sticky",
-            right: `${rightOffset}px`,
-            transform: "translateZ(0)",
-          };
-
-          const headerRight = isSplit.value ? rightOffset + scrollbarWidth.value : rightOffset;
-
-          headerStyles[col.key] = {
-            position: "sticky",
-            right: `${headerRight}px`,
-            transform: "translateZ(0)",
-          };
-
-          rightOffset += col.width || 150;
-        }
-      }
-      return { header: headerStyles, body: bodyStyles };
-    });
-
-    const getFixedClass = (col: Column, index: number) => {
-      const cls = [];
-      if (col.fixed === "left") {
-        cls.push("k-table-cell-fix-left");
-        if (flattedColumns.value[index + 1]?.fixed !== "left")
-          cls.push("k-table-cell-fix-left-last");
-      }
-      if (col.fixed === "right") {
-        cls.push("k-table-cell-fix-right");
-        if (flattedColumns.value[index - 1]?.fixed !== "right")
-          cls.push("k-table-cell-fix-right-first");
-      }
-      if (col.sorter) cls.push("k-table-cell-sorter");
-      return cls;
-    };
-
-    let scrollRafId = 0;
-    const handleBodyScroll = (target: HTMLElement) => {
-      // const target = e?.target;
-      if (!target) return;
-      if (scrollRafId) cancelAnimationFrame(scrollRafId);
-      scrollRafId = requestAnimationFrame(() => {
-        const { scrollLeft, scrollWidth, clientWidth } = target;
-        if (isSplit.value && headerWrapperRef.value) {
-          headerWrapperRef.value.scrollLeft = scrollLeft;
-        }
-
-        // 优化边界检测，避免亚像素抖动
-        const maxScrollLeft = Math.max(0, scrollWidth - clientWidth);
-        const nextPingLeft = scrollLeft > 0.5;
-        const nextPingRight = scrollLeft < maxScrollLeft - 0.5;
-
-        if (pingLeft.value !== nextPingLeft) pingLeft.value = nextPingLeft;
-        if (pingRight.value !== nextPingRight) pingRight.value = nextPingRight;
-      });
-    };
-
-    const measureScrollbar = () => {
-      if (bodyWrapperRef.value) {
-        const width =
-          bodyWrapperRef.value.offsetWidth -
-          bodyWrapperRef.value.clientWidth -
-          (props.bordered ? 1 : 0);
-        if (scrollbarWidth.value !== width) scrollbarWidth.value = width;
-      }
-    };
-
-    onMounted(() => {
-      if (isSplit.value) {
-        measureScrollbar();
-        if (bodyWrapperRef.value) handleBodyScroll(bodyWrapperRef.value);
-      } else if (bodyWrapperRef.value) {
-        handleBodyScroll(bodyWrapperRef.value);
-      }
-    });
-
-    onUpdated(() => {
-      if (isSplit.value) measureScrollbar();
-    });
-
-    const handleSort = (col: Column) => {
-      if (!col.sorter) return;
-      if (sortState.key !== col.key) {
-        sortState.key = col.key;
-        sortState.order = "asc";
-      } else {
-        sortState.order =
-          sortState.order === "asc" ? "desc" : sortState.order === "desc" ? null : "asc";
-      }
-      if (typeof col.sorter === "function") col.sorter(sortState);
-      emit("sort", sortState);
-    };
-
-    const processedData = computed(() => {
-      let list = [...props.data];
-      if (sortState.key && sortState.order) {
-        const col = flattedColumns.value.find((c) => c.key === sortState.key);
-        if (col && col.sorter === true) {
-          list.sort((a: any, b: any) => {
-            const valA = a[sortState.key];
-            const valB = b[sortState.key];
-            if (valA === valB) return 0;
-            return sortState.order === "asc" ? (valA > valB ? 1 : -1) : valA > valB ? -1 : 1;
-          });
-        }
-      }
-      return list;
-    });
-
-    const toggleAll = ({ checked }: ChangeEvent) => {
-      const newSet = new Set(innerSelectedKeys.value);
-      props.data.forEach((item: any) => {
-        const key = item[props.rowKey];
-        if (!isDisabled(key)) {
-          checked ? newSet.add(key) : newSet.delete(key);
-        }
-      });
-      innerSelectedKeys.value = newSet;
-      const rows = Array.from(newSet);
-      emit("update:selectedKeys", rows);
-      emit("selectAll", checked, rows);
-    };
-
-    const toggleOne = (e: ChangeEvent, record: any, key: string) => {
-      if (isDisabled(key)) return;
-      const newSet = new Set(innerSelectedKeys.value);
-      newSet.has(key) ? newSet.delete(key) : newSet.add(key);
-      innerSelectedKeys.value = newSet;
-      const rows = Array.from(newSet);
-      emit("update:selectedKeys", rows);
-      emit("select", record, e.checked, rows);
-    };
-
-    const renderColGroup = (isHeader = false) => (
-      <colgroup>
-        {props.checkable && <col style={{ width: "50px", left: 0 }} />}
-        {flattedColumns.value.map((col) => (
-          <col
-            key={col.key}
-            style={{
-              width: col.width ? `${col.width}px` : "auto",
-              minWidth: col.width ? `${col.width}px` : "150px",
-            }}
-          />
-        ))}
-        {isHeader && isSplit.value && (
-          <col
-            style={{
-              width: `${scrollbarWidth.value}px`,
-              minWidth: `${scrollbarWidth.value}px`,
-            }}
-          />
-        )}
-      </colgroup>
-    );
-
-    const renderThead = () => {
-      const { rows, maxDepth } = headerRows.value;
-
-      return (
-        <thead>
-          {rows.map((row, rowIndex: number) => (
-            <tr key={rowIndex}>
-              {/* Checkbox 只在第一行渲染，并根据最大深度设置 rowSpan */}
-              {props.checkable && rowIndex === 0 && (
-                <th
-                  rowspan={maxDepth}
-                  class={["k-table-cell-fix-left", pingLeft.value && "k-table-cell-fix-left-last"]}
-                  style={{ left: 0, zIndex: 3 }} // 提高层级
-                >
-                  <Checkbox
-                    checked={selectionState.value.all}
-                    indeterminate={selectionState.value.indeterminate}
-                    onChange={toggleAll}
-                    disabled={
-                      props.data.length > 0 &&
-                      props.data.every((item: any) => isDisabled(item[props.rowKey]))
-                    }
-                  />
-                </th>
-              )}
-
-              {row.map((col: Column, idx: number) => (
-                <th
-                  key={col.key || idx}
-                  colspan={col.colSpan as number}
-                  rowspan={col.rowSpan as number}
-                  class={getFixedClass(col, idx)}
-                  style={fixedInfo.value.header[col.key]}
-                  onClick={() => handleSort(col)}
-                >
-                  <div class="k-table-header-col">
-                    {slots[`header-${col.key}`]?.({
-                      value: col.title,
-                      col,
-                      index: idx,
-                    }) || col.title}
-                    {col.sorter && (
-                      <span class="k-table-sorter">
-                        <Icon
-                          type={ChevronUp}
-                          class={[
-                            "k-table-sorter-up",
-                            sortState.key === col.key &&
-                              sortState.order === "asc" &&
-                              "k-table-sorter-active",
-                          ]}
-                        />
-                        <Icon
-                          type={ChevronDown}
-                          class={[
-                            "k-table-sorter-down",
-                            sortState.key === col.key &&
-                              sortState.order === "desc" &&
-                              "k-table-sorter-active",
-                          ]}
-                        />
-                      </span>
-                    )}
-                  </div>
-                </th>
-              ))}
-              {isSplit.value && rowIndex === 0 && (
-                <th
-                  rowspan={maxDepth}
-                  class="k-table-scrollbar-patch"
-                  style={{
-                    // padding: 0,
-                    // border: 0,
-                    width: `${scrollbarWidth.value}px`,
-                  }}
-                />
-              )}
-            </tr>
-          ))}
-        </thead>
-      );
-    };
-
-    const mergeMatrix = computed(() => {
-      const data = processedData.value;
-      const cols = flattedColumns.value;
-
-      // 结构: matrix[rowIndex][colIndex] = { rowSpan: 1, colSpan: 1, show: true }
-      const matrix: Matrix[][] = [];
-
-      if (!data.length) return matrix;
-
-      for (let i = 0; i < data.length; i++) {
-        matrix[i] = [];
-        for (let j = 0; j < cols.length; j++) {
-          matrix[i][j] = { rowSpan: 1, colSpan: 1, show: true };
-        }
-      }
-
-      for (let i = 0; i < data.length; i++) {
-        for (let j = 0; j < cols.length; j++) {
-          if (!matrix[i][j].show) continue;
-
-          const record = data[i];
-          const col: Column = cols[j];
-
-          let rowspan = 1;
-          let colspan = 1;
-
-          if (col.rowSpan) {
-            rowspan = typeof col.rowSpan === "function" ? col.rowSpan(record, i) : col.rowSpan;
-          }
-          if (col.colSpan) {
-            colspan = typeof col.colSpan === "function" ? col.colSpan(record, i) : col.colSpan;
-          }
-
-          if (rowspan === 1 && colspan === 1) continue;
-
-          matrix[i][j].rowSpan = rowspan;
-          matrix[i][j].colSpan = colspan;
-
-          for (let r = 0; r < rowspan; r++) {
-            for (let c = 0; c < colspan; c++) {
-              if (r === 0 && c === 0) continue; // 跳过自己
-
-              const targetRow = i + r;
-              const targetCol = j + c;
-
-              if (matrix[targetRow] && matrix[targetRow][targetCol]) {
-                matrix[targetRow][targetCol].show = false;
-              }
-            }
-          }
-        }
-      }
-
-      return matrix;
-    });
-
-    const renderTbody = () => (
-      <tbody>
-        {processedData.value.map((record: any, rowIndex) => {
-          const rowId = record[props.rowKey];
-          return (
-            <tr
-              key={rowId}
-              onClick={(e) => {
-                e.stopPropagation();
-                emit("rowClick", record, rowIndex);
-              }}
-            >
-              {props.checkable && (
-                <td
-                  class={["k-table-cell-fix-left", pingLeft.value && "k-table-cell-fix-left-last"]}
-                  style={{ width: "50px", left: 0 }}
-                >
-                  <Checkbox
-                    checked={innerSelectedKeys.value.has(rowId)}
-                    disabled={isDisabled(rowId)}
-                    onChange={(e) => toggleOne(e, record, rowId)}
-                  />
-                </td>
-              )}
-              {flattedColumns.value.map((col, colIndex) => {
-                const cellState = mergeMatrix.value[rowIndex]?.[colIndex];
-
-                if (!cellState || !cellState.show) return null;
-
-                const attrs: Record<string, any> = {};
-                if (cellState.rowSpan > 1) attrs.rowspan = cellState.rowSpan;
-                if (cellState.colSpan > 1) attrs.colspan = cellState.colSpan;
-                return (
-                  <td
-                    key={col.key}
-                    {...attrs}
-                    class={getFixedClass(col, colIndex)}
-                    style={fixedInfo.value.body[col.key]}
-                  >
-                    {slots[col.key]?.({
-                      record,
-                      col,
-                      colIndex,
-                      rowIndex,
-                      value: record[col.key],
-                    }) ||
-                      col.render?.(h, record, colIndex, rowIndex, col) ||
-                      record[col.key]}
-                  </td>
-                );
-              })}
-            </tr>
-          );
-        })}
-      </tbody>
-    );
-
-    const renderTable = (isHeader: boolean, isBody: boolean) => {
-      const tableStyle: CSSProperties = {
-        width:
-          props.scroll.x && typeof props.scroll.x === "number"
-            ? `${props.scroll.x}px`
-            : props.scroll.x || undefined,
-        minWidth: !props.scroll.x ? "100%" : undefined,
-        tableLayout: "fixed",
-      };
-      return (
-        <table style={tableStyle}>
-          {renderColGroup(isHeader)}
-          {isHeader && renderThead()}
-          {isBody && renderTbody()}
-        </table>
-      );
-    };
-
-    return () => {
-      const tableCls = [
-        "k-table",
-        {
-          "k-table-striped": props.striped,
-          "k-table-sm": props.size == "small",
-          "k-table-lg": props.size == "large",
-          "k-table-bordered": props.bordered,
-          "k-table-ping-left": pingLeft.value,
-          "k-table-ping-right": pingRight.value,
-        },
-      ];
-      const isEmpty = !props.data || !props.data.length || !props.columns || !props.columns.length;
-
-      // 拆分模式下的 Header
-      const splitHeader = isSplit.value && (
-        <div
-          class="k-table-thead"
-          ref={headerWrapperRef}
-          style={{
-            overflow: "hidden",
-            // paddingRight: `${scrollbarWidth.value}px`,
-          }}
-        >
-          {renderTable(true, false)}
-        </div>
-      );
-
-      // Body 容器
-      const bodyContent = (
-        <div
-          class="k-table-body k-scroll"
-          ref={bodyWrapperRef}
-          style={{
-            overflowY: props.scroll.y ? "scroll" : "auto",
-            overflowX: props.data?.length ? "auto" : "hidden",
-            maxHeight: props.scroll.y
-              ? typeof props.scroll.y === "number"
-                ? `${props.scroll.y}px`
-                : props.scroll.y
-              : undefined,
-          }}
-          onScroll={(e) => handleBodyScroll(e.target as HTMLDivElement)}
-        >
-          {renderTable(!isSplit.value, true)}
-          {isEmpty && <Empty description={props.emptyText} />}
-        </div>
-      );
-
-      return (
-        <div class={tableCls}>
-          {slots.header && <div class="k-table-header">{slots.header()}</div>}
-
-          {splitHeader}
-          {bodyContent}
-
-          {slots.footer && <div class="k-table-footer">{slots.footer()}</div>}
-          {props.loading && <Spin />}
-        </div>
-      );
-    };
-  },
-});
-
-export default Table;

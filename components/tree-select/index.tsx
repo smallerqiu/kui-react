@@ -1,628 +1,165 @@
 import { ChevronDown, CircleX, LoaderCircle, X } from "kui-icons";
-import {
-  computed,
-  defineComponent,
-  inject,
-  nextTick,
-  onBeforeMount,
-  onMounted,
-  ref,
-  Transition,
-  watch,
-  type CSSProperties,
-  type ExtractPropTypes,
-  type PropType,
-  type VNodeChild,
-} from "vue";
-import type {
-  BooleanType,
-  DropPlacementsType,
-  ShapeType,
-  SizeType,
-  ThemeType,
-} from "../const/types";
-import resize from "../directives/resize";
-import { transfer } from "../directives/transfer";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState, type ChangeEvent, type HTMLAttributes } from "react";
+import { createPortal } from "react-dom";
+import { ConfigContext } from "../config";
+import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 import Empty from "../empty";
 import Icon, { type IconType } from "../icon";
 import zhCN from "../locale/zh-CN";
-import Tree, { type TreeExpandEvent } from "../tree";
-import { buildTree, type TreeNode } from "../tree/utils";
-import { isEmpty } from "../utils/number";
-import { setPlacement } from "../utils/placement";
+import Tree, { type TreeExpandEvent, type TreeNode } from "../tree";
+import { buildTree } from "../tree/utils";
 
-type TreeSelectValue = string | string[] | null | undefined;
-type TreeSelectPlacement =
-  | "top"
-  | "top-left"
-  | "top-right"
-  | "bottom"
-  | "bottom-left"
-  | "bottom-right";
+export type TreeSelectValue = string | number | Array<string | number> | null | undefined;
 
-interface SearchEventTarget extends EventTarget {
-  value?: string;
-  style?: { width?: string };
-  focus?: () => void;
+export interface TreeSelectProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "onSelect"> {
+  placeholder?: string;
+  size?: SizeType;
+  placement?: DropPlacementsType;
+  width?: number;
+  maxTagCount?: number;
+  value?: TreeSelectValue;
+  modelValue?: TreeSelectValue;
+  clearable?: boolean;
+  filterable?: boolean;
+  block?: boolean;
+  disabled?: boolean;
+  multiple?: boolean;
+  loading?: boolean;
+  bordered?: boolean;
+  showArrow?: boolean;
+  options?: TreeNode[];
+  theme?: ThemeType;
+  emptyText?: string;
+  icon?: IconType[];
+  shape?: ShapeType;
+  arrowIcon?: IconType[];
+  treeData?: TreeNode[];
+  treeCheckable?: boolean;
+  treeShowLine?: boolean;
+  treeShowIcon?: boolean;
+  treeCheckStrictly?: boolean;
+  treeExpandedKeys?: string[];
+  treeCheckedKeys?: string[];
+  treeSelectedKeys?: string[];
+  treeExpandedAll?: boolean;
+  treeLoadData?: (node: TreeNode) => Promise<unknown>;
+  onChange?: (value: TreeSelectValue) => void;
+  onTreeSelect?: (value: string, label: string, selected: boolean) => void;
+  onSearch?: (event: ChangeEvent<HTMLInputElement>) => void;
+  onTreeExpand?: (value: TreeExpandEvent) => void;
+  onTreeExpandedKeysChange?: (keys: string[]) => void;
+  onTreeCheckedKeysChange?: (keys: string[]) => void;
+  onOpenChange?: (open: boolean) => void;
+  onClear?: () => void;
 }
 
-export const treeSelectProps = {
-  placeholder: String,
-  size: {
-    type: String as PropType<SizeType>,
-  },
-  placement: {
-    type: String as PropType<DropPlacementsType>,
-    default: "bottom-left",
-  },
-  width: Number,
-  maxTagCount: Number,
-  modelValue: [String, Number, Array] as PropType<TreeSelectValue>,
-  clearable: { type: Boolean as BooleanType, default: true },
-  filterable: Boolean as BooleanType,
-  block: Boolean as BooleanType,
-  disabled: Boolean as BooleanType,
-  multiple: Boolean as BooleanType,
-  loading: Boolean as BooleanType,
-  bordered: { type: Boolean as BooleanType, default: true },
-  showArrow: { type: Boolean as BooleanType, default: true },
-  options: Array,
-  theme: { type: String as PropType<ThemeType>, default: "fill" },
-  emptyText: String,
-  icon: [Array] as PropType<IconType[]>,
-  shape: String as PropType<ShapeType>,
-  arrowIcon: [Array] as PropType<IconType[]>,
-  treeData: Array as PropType<TreeNode[]>,
-  treeCheckable: Boolean as BooleanType,
-  treeShowLine: Boolean as BooleanType,
-  treeShowIcon: { type: Boolean as BooleanType, default: true },
-  treeCheckStrictly: Boolean as BooleanType,
-  treeExpandedKeys: Array as PropType<string[]>,
-  treeCheckedKeys: Array as PropType<string[]>,
-  treeSelectedKeys: Array as PropType<string[]>,
-  treeExpandedAll: Boolean as BooleanType,
-  treeLoadData: {
-    type: Function as PropType<(node: TreeNode) => Promise<any>>,
-  },
-  onChange: {
-    type: Function as PropType<(value: TreeSelectValue) => void>,
-  },
-  onTreeSelect: {
-    type: Function as PropType<(value: string, label: string, selected: boolean) => void>,
-  },
-  onSearch: {
-    type: Function as PropType<(e: InputEvent) => void>,
-  },
-  onTreeExpand: {
-    type: Function as PropType<(value: TreeExpandEvent) => void>,
-  },
-  onOpenChange: {
-    type: Function as PropType<(open: boolean) => void>,
-  },
+const normalize = (value: TreeSelectValue, multiple: boolean) => {
+  if (value === null || value === undefined || value === "") return [];
+  return (multiple ? (Array.isArray(value) ? value : [value]) : [Array.isArray(value) ? value[0] : value]).filter((item) => item !== undefined).map(String);
 };
 
-export type TreeSelectProps = ExtractPropTypes<typeof treeSelectProps>;
+export default function TreeSelect({
+  placeholder, size, placement = "bottom-left", width, maxTagCount, value, modelValue,
+  clearable = true, filterable, block, disabled, multiple, loading, bordered = true,
+  showArrow = true, options, theme = "fill", emptyText, icon, shape, arrowIcon = ChevronDown,
+  treeData, treeCheckable, treeShowLine, treeShowIcon = true, treeCheckStrictly,
+  treeExpandedKeys, treeCheckedKeys, treeSelectedKeys, treeExpandedAll, treeLoadData,
+  onChange, onTreeSelect, onSearch, onTreeExpand, onTreeExpandedKeysChange,
+  onTreeCheckedKeysChange, onOpenChange, onClear, className, style, ...rest
+}: TreeSelectProps) {
+  const config = useContext(ConfigContext);
+  const locale = config?.locale || zhCN;
+  const data = treeData ?? options ?? [];
+  const controlledValue = modelValue !== undefined ? modelValue : value;
+  const [innerValue, setInnerValue] = useState(() => normalize(controlledValue, !!multiple));
+  const currentValue = controlledValue !== undefined ? normalize(controlledValue, !!multiple) : innerValue;
+  const [visible, setVisible] = useState(false);
+  const [rendered, setRendered] = useState(false);
+  const [query, setQuery] = useState("");
+  const [expanded, setExpanded] = useState<string[]>(treeExpandedKeys ?? []);
+  const [checked, setChecked] = useState<string[]>(treeCheckedKeys ?? []);
+  const [position, setPosition] = useState({ left: 0, top: 0, minWidth: 0, origin: "top" });
+  const selectionRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-const TreeSelect = defineComponent({
-  name: "TreeSelect",
-  directives: {
-    transfer,
-    resize,
-  },
-  props: treeSelectProps,
-  setup(props, { emit, attrs }) {
-    const injectedLocale = inject<Record<string, any>>("locale", zhCN);
+  useEffect(() => { if (treeExpandedKeys) setExpanded(treeExpandedKeys); }, [treeExpandedKeys]);
+  useEffect(() => { if (treeCheckedKeys) setChecked(treeCheckedKeys); }, [treeCheckedKeys]);
 
-    const locale = computed(() => {
-      return injectedLocale instanceof Object && "value" in injectedLocale
-        ? injectedLocale.value
-        : injectedLocale;
-    });
+  const allNodes = useMemo(() => buildTree({ data, expandedKeys: expanded }), [data, expanded]);
+  const labels = useMemo(() => {
+    const lookup = new Map(allNodes.map((node) => [node.key, String(node.title ?? node.key)]));
+    return currentValue.map((item) => lookup.get(item) ?? item);
+  }, [allNodes, currentValue]);
 
-    const visible = ref(false);
-    const rendered = ref(false);
-    const currentValue = ref<string[]>(
-      props.multiple
-        ? ((props.modelValue || []) as string[])
-        : isEmpty(props.modelValue)
-          ? []
-          : [props.modelValue as string]
-    );
-    const queryInputVisible = ref(false);
-    const queryKey = ref("");
-    const queryInputMirrorRef = ref<HTMLElement | null>(null);
-    const minWidth = ref<string | number>("");
-    const queryInputFocused = ref(false);
-    const queryInputRef = ref<HTMLInputElement | null>(null);
-    const hasSearchEvent = !!attrs.onSearch;
-    const refPopper = ref<HTMLElement | null>(null);
-    const transOrigin = ref("bottom");
-    const refSelection = ref<HTMLElement | null>(null);
-    const left = ref(0);
-    const top = ref(0);
-    const currentPlacement = ref<TreeSelectPlacement>(props.placement);
-    const queryInputEventTimer = ref<number | undefined>(undefined);
+  const updatePosition = useCallback(() => {
+    const element = selectionRef.current;
+    if (!element) return;
+    const rect = element.getBoundingClientRect();
+    const above = placement.startsWith("top");
+    const overlayWidth = overlayRef.current?.offsetWidth ?? rect.width;
+    const overlayHeight = overlayRef.current?.offsetHeight ?? 0;
+    let left = rect.left;
+    if (placement.endsWith("right")) left = rect.right - overlayWidth;
+    else if (placement === "top" || placement === "bottom") left = rect.left + (rect.width - overlayWidth) / 2;
+    setPosition({ left: left + window.scrollX, top: (above ? rect.top - overlayHeight : rect.bottom) + window.scrollY, minWidth: rect.width, origin: above ? "bottom" : "top" });
+  }, [placement]);
 
-    const hasLoad = !!props.treeLoadData;
-    const defaultExpandedKeys = ref<string[]>(props.treeExpandedKeys || []);
-    const defaultCheckedKeys = ref<string[]>(props.treeCheckedKeys || []);
-
-    const ctxFocused = ref(false);
-
-    watch(
-      () => props.placement,
-      (v) => {
-        currentPlacement.value = v;
-        updatePosition();
-      }
-    );
-
-    watch(
-      () => props.modelValue,
-      (v) => {
-        currentValue.value = props.multiple
-          ? ((v || []) as string[])
-          : isEmpty(v)
-            ? []
-            : [v as string];
-        updatePosition();
-      }
-    );
-
-    onBeforeMount(() => {
-      document.removeEventListener("click", outsideClick);
-    });
-
-    const updatePosition = () => {
-      nextTick(() => {
-        minWidth.value = refSelection.value ? refSelection.value.offsetWidth : "";
-        setPlacement({
-          refSelection,
-          refPopper,
-          currentPlacement,
-          transOrigin,
-          top,
-          left,
-        });
-      });
+  useEffect(() => {
+    if (!visible) return;
+    updatePosition();
+    const outside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (!selectionRef.current?.contains(target) && !overlayRef.current?.contains(target)) { setVisible(false); setQuery(""); onOpenChange?.(false); }
     };
+    const reposition = () => updatePosition();
+    document.addEventListener("mousedown", outside);
+    window.addEventListener("resize", reposition);
+    window.addEventListener("scroll", reposition, true);
+    return () => { document.removeEventListener("mousedown", outside); window.removeEventListener("resize", reposition); window.removeEventListener("scroll", reposition, true); };
+  }, [visible, updatePosition, onOpenChange]);
+  useEffect(() => { if (visible) requestAnimationFrame(updatePosition); }, [visible, labels.length, updatePosition]);
 
-    onMounted(() => {
-      nextTick(() => {
-        minWidth.value = refSelection.value ? refSelection.value.offsetWidth : "";
-      });
-    });
+  const open = () => {
+    if (disabled) return;
+    const next = !visible;
+    setRendered(true); setVisible(next); onOpenChange?.(next);
+    if (next && (filterable || onSearch)) requestAnimationFrame(() => inputRef.current?.focus());
+    if (!next) setQuery("");
+  };
+  const commit = (keys: string[]) => {
+    if (controlledValue === undefined) setInnerValue(keys);
+    const result: TreeSelectValue = multiple || treeCheckable ? keys : keys[0] ?? null;
+    onChange?.(result);
+  };
+  const select = (node: TreeNode) => {
+    const exists = currentValue.includes(node.key);
+    const keys = multiple ? exists ? currentValue.filter((key) => key !== node.key) : [...currentValue, node.key] : [node.key];
+    commit(keys); onTreeSelect?.(node.key, String(node.title ?? node.key), !exists);
+    if (!multiple) { setVisible(false); onOpenChange?.(false); }
+    setQuery("");
+  };
+  const remove = (index: number) => commit(currentValue.filter((_, itemIndex) => itemIndex !== index));
+  const clear = () => { commit([]); setQuery(""); onClear?.(); };
+  const initialExpanded = treeExpandedAll ? allNodes.filter((node) => !node.isLeaf).map((node) => node.key) : undefined;
+  const selectedForTree = treeSelectedKeys ?? currentValue;
+  const checkedForTree = treeCheckedKeys ?? (treeCheckable ? currentValue : checked);
+  const placeholderText = placeholder || locale?.k?.select?.placeholder;
+  const classes = ["k-tree-select", disabled && "k-tree-select-disabled", block && "k-tree-select-block", visible && "k-tree-select-opened", !bordered && "k-tree-select-borderless", size === "large" && "k-tree-select-lg", size === "small" && "k-tree-select-sm", theme === "fill" && "k-tree-select-fill", icon && "k-tree-select-has-icon", shape === "circle" && !multiple && "k-tree-select-circle", shape === "square" && "k-tree-select-square", multiple && "k-tree-select-multiple", query && "k-tree-select-show-search", multiple && labels.length && "k-tree-select-show-tags", clearable && !disabled && currentValue.length && "k-tree-select-has-clear", className].filter(Boolean).join(" ");
+  const displayedLabels = maxTagCount && maxTagCount > 0 ? labels.slice(0, maxTagCount) : labels;
 
-    const openChange = (opened: boolean) => {
-      visible.value = opened;
-      emit("openChange", opened);
-    };
-    const outsideClick = (e: Event) => {
-      const target = e.target as Node | null;
-      const ctx = refSelection.value;
-      if (
-        refPopper.value &&
-        target &&
-        !refPopper.value.contains(target) &&
-        ctx &&
-        !ctx.contains(target)
-      ) {
-        openChange(false);
-        clearQuery();
-      }
-    };
+  const search = (event: ChangeEvent<HTMLInputElement>) => { setQuery(event.target.value); onSearch?.(event); };
+  const searchNode = (filterable || onSearch) && <div className="k-tree-select-search-wrap" onClick={(event) => event.stopPropagation()}><input ref={inputRef} className="k-tree-select-search" autoComplete="off" value={query} onChange={search} onKeyDown={(event) => { if (event.key === "Backspace" && !query && multiple && currentValue.length) remove(currentValue.length - 1); }} /><span className="k-tree-select-search-mirror">{query}</span></div>;
+  const overlay = rendered && createPortal(<div ref={overlayRef} className={["k-tree-select-dropdown", "k-scroll", multiple && "k-tree-select-dropdown-multiple", size === "small" && "k-tree-select-dropdown-sm"].filter(Boolean).join(" ")} style={{ display: visible ? undefined : "none", position: "absolute", zIndex: 1050, left: position.left, top: position.top, minWidth: position.minWidth, transformOrigin: position.origin }}>
+    {loading ? <div className="k-tree-select-loading"><Icon type={LoaderCircle} spin /><span>{locale?.k?.select?.loading}</span></div> : data.length ? <Tree data={data} checkable={treeCheckable} showLine={treeShowLine} showIcon={treeShowIcon} multiple={!!multiple || !!treeCheckable} checkStrictly={treeCheckStrictly} expandedKeys={treeExpandedKeys ?? (initialExpanded ?? expanded)} selectedKeys={selectedForTree} checkedKeys={checkedForTree} selectAsCheck={treeCheckable} loadData={treeLoadData} queryKey={query} onSelect={select} onExpand={(event) => onTreeExpand?.(event)} onExpandedKeysChange={(keys) => { setExpanded(keys); onTreeExpandedKeysChange?.(keys); }} onCheck={(_node, _value, keys) => commit(keys)} onCheckedKeysChange={(keys) => { setChecked(keys); onTreeCheckedKeysChange?.(keys); }} /> : <Empty description={emptyText || locale?.k?.select?.emptyText} />}
+  </div>, document.body);
 
-    const clearQuery = () => {
-      if (props.filterable || hasSearchEvent) {
-        setTimeout(() => {
-          queryKey.value = "";
-          if (queryInputRef.value) {
-            queryInputRef.value.value = "";
-            queryInputRef.value.style.width = "";
-          }
-          queryInputVisible.value = false;
-        }, 300);
-      }
-    };
-
-    const searchInput = (e: InputEvent) => {
-      const target = e.target as SearchEventTarget;
-      queryKey.value = target.value || "";
-      nextTick(() => {
-        if (target.style && queryInputMirrorRef.value) {
-          target.style.width = queryInputMirrorRef.value.offsetWidth + "px";
-        }
-        updatePosition();
-      });
-
-      if (hasSearchEvent) {
-        clearTimeout(queryInputEventTimer.value);
-        queryInputEventTimer.value = window.setTimeout(() => {
-          if (!rendered.value) {
-            rendered.value = true;
-            document.addEventListener("click", outsideClick);
-            nextTick(() => {
-              openChange(true);
-              updatePosition();
-            });
-          } else {
-            openChange(true);
-            updatePosition();
-          }
-          emit("search", e);
-        }, 500);
-      }
-    };
-
-    const emptyClick = () => {
-      if (queryInputVisible.value) {
-        nextTick(() => {
-          if (queryInputRef.value) {
-            queryInputRef.value.focus();
-          }
-          queryInputFocused.value = true;
-        });
-      }
-    };
-
-    const emitValue = () => {
-      const result = props.multiple ? currentValue.value : currentValue.value[0] || null;
-      emit("update:modelValue", result);
-      emit("change", result);
-    };
-
-    const removeTag = (e: MouseEvent, index: number) => {
-      if (props.disabled) return;
-      currentValue.value.splice(index, 1);
-      e.stopPropagation();
-      emitValue();
-      updatePosition();
-    };
-
-    const onClear = (e: MouseEvent) => {
-      currentValue.value = [];
-      emitValue();
-      clearQuery();
-      e.stopPropagation();
-      emit("clear");
-    };
-
-    const showQuery = () => {
-      if (props.filterable || hasSearchEvent) {
-        queryInputVisible.value = true;
-        nextTick(() => {
-          queryInputRef.value?.focus();
-          queryInputFocused.value = true;
-        });
-      }
-    };
-
-    const toggle = (show = false) => {
-      if (props.disabled) {
-        return;
-      }
-      if (hasSearchEvent) {
-        showQuery();
-        return;
-      }
-
-      if (!rendered.value) {
-        rendered.value = true;
-        document.addEventListener("click", outsideClick);
-        nextTick(() => {
-          openChange(true);
-          updatePosition();
-          showQuery();
-        });
-      } else {
-        openChange(show || !visible.value);
-        if (visible.value) {
-          updatePosition();
-          showQuery();
-        } else {
-          clearQuery();
-        }
-      }
-    };
-
-    const optionsData = computed(() => {
-      return buildTree({
-        data: props.treeData || [],
-        expandedKeys: defaultExpandedKeys.value,
-        selectedKeys: currentValue.value,
-        checkedKeys: defaultCheckedKeys.value,
-        hasLoad,
-        checkStrictly: props.treeCheckStrictly,
-      });
-    });
-
-    const labelText = computed<string[]>(() => {
-      const lookup: Record<string, string> = {};
-      optionsData.value.forEach((item: TreeNode) => {
-        lookup[String(item.key)] = item.title || item.key;
-      });
-      return currentValue.value.map((val: string) => {
-        const hit = lookup[String(val)];
-        return hit || val;
-      });
-    });
-
-    watch(
-      () => props.treeCheckedKeys,
-      (nv) => {
-        defaultCheckedKeys.value = nv || [];
-      }
-    );
-
-    watch(
-      () => props.treeExpandedKeys,
-      (nv) => {
-        defaultExpandedKeys.value = nv || [];
-      }
-    );
-
-    const onExpand = ({ key, expanded, node }: TreeExpandEvent) => {
-      const nextKeys = defaultExpandedKeys.value.slice();
-      const index = nextKeys.indexOf(key);
-      if (index > -1 && !expanded) {
-        nextKeys.splice(index, 1);
-      } else if (index === -1 && expanded) {
-        nextKeys.push(key);
-      }
-      defaultExpandedKeys.value = nextKeys;
-      emit("update:treeExpandedKeys", nextKeys.slice());
-      emit("treeExpand", { key, expanded, node });
-    };
-
-    const onCheck = (_checkedNode: TreeNode, _checked: boolean, checkedKeys: string[]) => {
-      currentValue.value = checkedKeys.slice();
-      emitValue();
-    };
-
-    const onSelect = (item: TreeNode) => {
-      const value = item.key;
-      const label = item.title;
-      let selected = true;
-
-      if (props.multiple) {
-        if (currentValue.value.indexOf(value) >= 0) {
-          selected = false;
-          currentValue.value = currentValue.value.filter((v: string) => v !== value);
-        } else {
-          currentValue.value.push(value);
-        }
-
-        updatePosition();
-        if (hasSearchEvent || props.filterable) {
-          if (queryInputRef.value) {
-            queryInputRef.value.value = "";
-          }
-          queryKey.value = "";
-          showQuery();
-        }
-      } else {
-        currentValue.value = [value];
-        openChange(false);
-        clearQuery();
-      }
-
-      emitValue();
-      emit("treeSelect", value, label, selected);
-    };
-
-    const renderTree = () => {
-      const treePropsData: Record<string, unknown> = {
-        checkable: props.treeCheckable,
-        loading: props.loading,
-        data: props.treeData,
-        multiple: props.multiple || props.treeCheckable,
-        checkStrictly: props.treeCheckStrictly,
-        expandedKeys: defaultExpandedKeys.value.slice(),
-        selectedKeys: currentValue.value.slice(),
-        checkedKeys: currentValue.value.slice(),
-        selectAsCheck: props.treeCheckable,
-        loadData: props.treeLoadData,
-        queryKey: queryKey.value,
-        onSelect,
-        onExpand,
-        onCheck,
-      };
-
-      return <Tree {...treePropsData} />;
-    };
-
-    const queryKeydown = ({ key }: KeyboardEvent) => {
-      if (key === "Backspace") {
-        if (queryKey.value === "" && props.multiple && currentValue.value.length > 0) {
-          currentValue.value = currentValue.value.slice(0, -1);
-          emitValue();
-          updatePosition();
-        }
-      }
-    };
-
-    const showClear = computed(() => {
-      return props.clearable && !props.disabled && !isEmpty(currentValue.value);
-    });
-
-    const renderOverlay = () => {
-      if (!rendered.value) return null;
-
-      const preCls = "k-tree-select";
-      const overlayProps = {
-        ref: refPopper,
-        style: {
-          minWidth: String(minWidth.value ? `${minWidth.value}px` : ""),
-          left: `${left.value}px`,
-          top: `${top.value}px`,
-          transformOrigin: transOrigin.value,
-        } as CSSProperties,
-        class: [
-          "k-tree-select-dropdown",
-          "k-scroll",
-          {
-            "k-tree-select-dropdown-multiple": props.multiple,
-            "k-tree-select-dropdown-sm": props.size === "small",
-          },
-        ],
-      };
-
-      const loadingNode = (
-        <div class="k-tree-select-loading">
-          <Icon type={LoaderCircle} spin />
-          <span>{locale.value?.k?.select?.loading}</span>
-        </div>
-      );
-
-      return (
-        <Transition name={preCls}>
-          <div v-transfer={true} v-show={visible.value} {...overlayProps}>
-            {props.loading ? (
-              loadingNode
-            ) : props.treeData && props.treeData.length ? (
-              renderTree()
-            ) : (
-              <Empty
-                onClick={emptyClick}
-                description={props.emptyText || locale.value?.k?.select?.emptyText}
-              />
-            )}
-          </div>
-        </Transition>
-      );
-    };
-
-    return () => {
-      let arrowIcon = props.arrowIcon;
-      if (arrowIcon === undefined) {
-        arrowIcon = ChevronDown;
-      }
-
-      const childNode: VNodeChild[] = [];
-
-      const queryProps = {
-        ref: queryInputRef,
-        class: "k-tree-select-search",
-        autoComplete: "off",
-        onChange: (e: Event) => e.stopPropagation(),
-        onKeydown: queryKeydown,
-        onInput: searchInput,
-        onBlur: () => {
-          if (!visible.value) {
-            queryInputVisible.value = false;
-          }
-        },
-      };
-
-      const queryNode = (
-        <div v-show={queryInputVisible.value} key="search" class="k-tree-select-search-wrap">
-          <input {...queryProps} />
-          <span class="k-tree-select-search-mirror" ref={queryInputMirrorRef}>
-            {queryKey.value}
-          </span>
-        </div>
-      );
-
-      const placeholderText = props.placeholder || locale.value?.k?.select?.placeholder;
-      const placeNode =
-        placeholderText && isEmpty(labelText.value) && !queryKey.value ? (
-          <div class="k-tree-select-placeholder">{placeholderText}</div>
-        ) : null;
-
-      const renderTags = () => {
-        let tags = labelText.value.map((label: string, i: number) => {
-          return (
-            <span class="k-tree-select-tag" key={String(label)}>
-              {label}
-              <Icon type={X} onClick={(e: MouseEvent) => removeTag(e, i)} />
-            </span>
-          );
-        });
-
-        if (props.maxTagCount && props.maxTagCount > 0 && tags.length > props.maxTagCount) {
-          tags = tags.slice(0, props.maxTagCount);
-          tags.push(
-            <span class="k-tree-select-tag">+{labelText.value.length - props.maxTagCount}...</span>
-          );
-        }
-
-        return tags;
-      };
-
-      const labelsNode = props.multiple ? (
-        <div class="k-tree-select-labels">
-          {renderTags()}
-          {queryNode}
-        </div>
-      ) : !isEmpty(labelText.value) ? (
-        <div class="k-tree-select-label" v-show={queryKey.value.length == 0}>
-          {labelText.value[0]}
-        </div>
-      ) : null;
-
-      if (labelsNode) {
-        childNode.push(labelsNode);
-      }
-
-      if (placeNode) {
-        childNode.push(placeNode);
-      }
-
-      if ((props.filterable || hasSearchEvent) && !props.multiple) {
-        childNode.push(queryNode);
-      }
-
-      const styles: CSSProperties = props.width ? { width: `${props.width}px` } : {};
-      const arrowNode =
-        !hasSearchEvent && props.showArrow ? (
-          <Icon class="k-tree-select-arrow" type={arrowIcon} />
-        ) : null;
-
-      const classes = [
-        "k-tree-select",
-        {
-          "k-tree-select-disabled": props.disabled,
-          "k-tree-select-block": props.block,
-          "k-tree-select-opened": visible.value,
-          "k-tree-select-borderless": props.bordered === false,
-          "k-tree-select-lg": props.size === "large",
-          "k-tree-select-sm": props.size === "small",
-          "k-tree-select-fill": props.theme === "fill",
-          "k-tree-select-has-icon": !!props.icon,
-          "k-tree-select-circle": props.shape === "circle" && !props.multiple,
-          "k-tree-select-square": props.shape == "square",
-          "k-tree-select-multiple": props.multiple,
-          "k-tree-select-show-search": queryInputFocused.value,
-          "k-tree-select-show-tags": props.multiple && !isEmpty(labelText.value),
-          "k-tree-select-has-clear": showClear.value,
-        },
-      ];
-
-      const clearNode = showClear.value ? (
-        <Icon class="k-tree-select-clearable" type={CircleX} onClick={onClear} />
-      ) : null;
-      const treeProps = {
-        tabindex: "0",
-        class: classes,
-        style: styles,
-        onClick: () => toggle(),
-        onFocus: () => (ctxFocused.value = true),
-        onBlur: () => (ctxFocused.value = false),
-        ref: refSelection,
-      };
-      return (
-        <div {...treeProps} v-resize={updatePosition}>
-          {props.icon ? <Icon type={props.icon} class="k-tree-select-icon" /> : null}
-          <div class="k-tree-select-selection">{childNode}</div>
-          <span class="k-tree-select-suffix">
-            {arrowNode}
-            {clearNode}
-          </span>
-          {renderOverlay()}
-        </div>
-      );
-    };
-  },
-});
-
-export default TreeSelect;
+  return <><div {...rest} ref={selectionRef} tabIndex={disabled ? -1 : 0} className={classes} style={{ ...style, width: width ? `${width}px` : style?.width }} onClick={open}>
+    {icon && <Icon type={icon} className="k-tree-select-icon" />}
+    <div className="k-tree-select-selection">
+      {multiple ? <div className="k-tree-select-labels">{displayedLabels.map((label, index) => <span className="k-tree-select-tag" key={`${currentValue[index]}-${index}`}>{label}<Icon type={X} onClick={(event) => { event.stopPropagation(); remove(index); }} /></span>)}{maxTagCount && labels.length > maxTagCount ? <span className="k-tree-select-tag">+{labels.length - maxTagCount}...</span> : null}{searchNode}</div> : <>{query ? null : labels[0] && <div className="k-tree-select-label">{labels[0]}</div>}{searchNode}</>}
+      {!labels.length && !query && <div className="k-tree-select-placeholder">{placeholderText}</div>}
+    </div>
+    <span className="k-tree-select-suffix">{showArrow && !onSearch && <Icon className="k-tree-select-arrow" type={arrowIcon} />}{clearable && !disabled && currentValue.length > 0 && <Icon className="k-tree-select-clearable" type={CircleX} onClick={(event) => { event.stopPropagation(); clear(); }} />}</span>
+  </div>{overlay}</>;
+}

@@ -9,7 +9,7 @@ export interface CheckboxOption {
   [key: string]: any;
 }
 
-export interface CheckboxGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CheckboxGroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
   value?: any[];
   defaultValue?: any[];
   theme?: ThemeType;
