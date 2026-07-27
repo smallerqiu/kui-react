@@ -31,6 +31,8 @@ export default function vitePluginKuiMd(): Plugin {
     transform(code, id) {
       if (!id.endsWith(".md")) return null;
 
+      const liveDemos: Array<{ component: string; title: string; source: string }> = [];
+
       const demoReg = /\[(.*?)\]\((.*?\.vue)(?:\?show=(.*?))?\)\s*\n((?:\s*-\s+.*(?:\n|$))+)/g;
 
       let processedMarkdown = code.replace(
@@ -47,15 +49,24 @@ export default function vitePluginKuiMd(): Plugin {
       const jsxReg = /\[(.*?)\]\((.*?\.tsx)\)/g;
       processedMarkdown = processedMarkdown.replace(jsxReg, (_, title, src) => {
         const absolutePath = path.resolve(path.dirname(id), src);
-        const highlighted = hljs.highlight(fs.readFileSync(absolutePath, "utf-8"), { language: "tsx" }).value;
-        return `<section class="markdown-body k-demo-container"><h3>${markdown.utils.escapeHtml(title)}</h3><pre><code class="hljs language-tsx">${highlighted}</code></pre></section>`;
+        const index = liveDemos.length;
+        liveDemos.push({ component: src, title, source: fs.readFileSync(absolutePath, "utf-8") });
+        return `KUI_LIVE_DEMO_${index}`;
       });
 
       // fs.writeFileSync(path.join(__dirname, "demo.md"), processedMarkdown);
       const mainHtml = markdown.render(processedMarkdown);
+      const parts = mainHtml.split(/KUI_LIVE_DEMO_(\d+)/g);
+      const imports = liveDemos.map((demo, index) => `import LiveDemo${index} from ${JSON.stringify(demo.component)};`).join("\n");
+      const children = parts.map((part, index) => index % 2 === 0
+        ? `createElement("div", { key: ${index}, dangerouslySetInnerHTML: { __html: ${JSON.stringify(part)} } })`
+        : `createElement(Demo, { key: ${index}, title: ${JSON.stringify(liveDemos[Number(part)].title)}, source: ${JSON.stringify(liveDemos[Number(part)].source)} }, createElement(LiveDemo${Number(part)}))`
+      ).join(",\n");
       const result = `import { createElement } from "react";
+import Demo from "/src/components/demo/demo.tsx";
+${imports}
 export default function MarkdownPage() {
-  return createElement("div", { className: "markdown-body", dangerouslySetInnerHTML: { __html: ${JSON.stringify(mainHtml)} } });
+  return createElement("div", { className: "markdown-body" }, ${children});
 }`;
       return { code: result, map: null };
     },

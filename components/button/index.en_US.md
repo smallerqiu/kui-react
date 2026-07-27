@@ -15,39 +15,39 @@ Vue.use(Button);
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - Use the `type` property to define a `Button`.
 
-[Theme](./demo/theme.vue)
+[Theme](./demo/theme.tsx)
 
 - Use `theme` to display different appearances.
 
-[Color Variants](./demo/color.vue)
+[Color Variants](./demo/color.tsx)
 
 - Use `color` to create more button variants.
 
-[With Icon](./demo/with-icon.vue)
+[With Icon](./demo/with-icon.tsx)
 
 - Set the button icon by adding the `icon` property.
 
-[Size](./demo/size.vue)
+[Size](./demo/size.tsx)
 
 - `small` for small size, `large` for large size.
 
-[Disabled](./demo/disabled.vue)
+[Disabled](./demo/disabled.tsx)
 
 - Add the `disabled` property to make the button unavailable.
 
-[Loading State](./demo/loading.vue)
+[Loading State](./demo/loading.tsx)
 
 - Add the `loading` property to put the button in a loading state.
 
-[Block Button](./demo/block.vue)
+[Block Button](./demo/block.tsx)
 
 - The `block` property makes the button fit the width of its parent.
 
-[Button Group](./demo/group.vue)
+[Button Group](./demo/group.tsx)
 
 - Place multiple `Button` components inside `ButtonGroup` to group them.
 

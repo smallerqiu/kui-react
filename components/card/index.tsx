@@ -1,7 +1,7 @@
 import React from "react";
 import Icon, { type IconType } from "../icon";
 
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   bordered?: boolean;
   title?: React.ReactNode;
   icon?: IconType[];

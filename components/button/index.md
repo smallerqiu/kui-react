@@ -9,45 +9,44 @@
 ## 组件注册
 
 ```js
-import { Button } from "kui-vue";
-Vue.use(Button);
+import { Button } from "kui-react";
 ```
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 使用 `type` 属性来定义 `Button`。
 
-[主题](./demo/theme.vue)
+[主题](./demo/theme.tsx)
 
 - 使用 `theme` 展示不同的外观。
 
-[多彩](./demo/color.vue)
+[多彩](./demo/color.tsx)
 
 - 使用 `color` 可以衍生出更多的变体按钮。
 
-[带图标](./demo/with-icon.vue)
+[带图标](./demo/with-icon.tsx)
 
 - 通过添加 `icon` 属性 设置按钮按钮图标。
 
-[尺寸](./demo/size.vue)
+[尺寸](./demo/size.tsx)
 
 - `small` 为小尺寸， `large` 为大尺寸
 
-[禁用](./demo/disabled.vue)
+[禁用](./demo/disabled.tsx)
 
 - 通过添加 `disabled` 属性可将按钮设置为不可用状态。
 
-[加载中状态](./demo/loading.vue)
+[加载中状态](./demo/loading.tsx)
 
 - 添加 `loading` 属性即可让按钮处于加载状态
 
-[Block 按钮](./demo/block.vue)
+[Block 按钮](./demo/block.tsx)
 
 - block 属性将使按钮适合其父宽度。
 
-[按钮组合](./demo/group.vue)
+[按钮组合](./demo/group.tsx)
 
 - 将多个 `Button` 放入 `ButtonGroup` 内，可实现按钮组合的效果。
 
