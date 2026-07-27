@@ -105,7 +105,7 @@ export default function vitePluginKuiMd(): Plugin {
         })
         .join(",\n");
       const result = `import { createElement } from "react";
-import Demo from "/src/components/demo/demo.tsx";
+import Demo from "/src/components/demo";
 ${componentImports}
 ${moduleImports.join("\n")}
 export default function MarkdownPage() {
