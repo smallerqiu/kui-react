@@ -5,11 +5,10 @@ export interface OdometerOptions {
   lastDigitDelay?: number; // delay last digit in animation, in seconds, 0 to deactivate
 }
 
-const rAF =
-  window.requestAnimationFrame ||
-  function (callback) {
-    window.setTimeout(callback, 1000 / 60);
-  };
+const rAF = (callback: FrameRequestCallback) =>
+  typeof window !== "undefined" && window.requestAnimationFrame
+    ? window.requestAnimationFrame(callback)
+    : setTimeout(() => callback(Date.now()), 1000 / 60);
 
 export class Odometer implements CountUpPlugin {
   version = "1.0";

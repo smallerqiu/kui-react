@@ -1,6 +1,4 @@
-import type { ExtractPropTypes, PropType, VNode } from "vue";
-import { defineComponent } from "vue";
-import type { BooleanType } from "../const/types";
+import type { HTMLAttributes, ReactNode } from "react";
 import StatNumber from "./stat-number";
 
 export interface StatNumberItem {
@@ -8,62 +6,61 @@ export interface StatNumberItem {
   duration?: number;
   precision?: number;
   separator?: string;
-  prefix?: string | VNode;
-  suffix?: string | VNode;
-  desc?: string;
+  prefix?: ReactNode;
+  suffix?: ReactNode;
+  desc?: ReactNode;
   autoAnimate?: boolean;
   autoAnimateOnce?: boolean;
 }
 
-export const statCardProps = {
-  title: String,
-  precision: { type: Number, default: 0 },
-  items: { type: Array as PropType<StatNumberItem[]>, default: () => [] },
-  separator: String,
-  statNumberType: String as PropType<"rollup" | "countup">,
-  reverse: Boolean as BooleanType,
-  bordered: { type: Boolean as BooleanType, default: false },
-};
+export interface StatCardProps extends Omit<HTMLAttributes<HTMLDivElement>, "title" | "prefix"> {
+  title?: ReactNode;
+  precision?: number;
+  items?: StatNumberItem[];
+  separator?: string;
+  statNumberType?: "rollup" | "countup";
+  reverse?: boolean;
+  bordered?: boolean;
+  prefix?: ReactNode;
+  suffix?: ReactNode;
+}
 
-export type StatCardProps = ExtractPropTypes<typeof statCardProps>;
-
-const StatCard = defineComponent({
-  name: "StatCard",
-  props: statCardProps,
-  setup(props, { slots }) {
-    return () => {
-      return (
-        <div class={["k-stat-card", { "k-stat-card-bordered": props.bordered }]}>
-          {props.title && <div class="k-stat-card-title">{props.title}</div>}
-          <div class="k-stat-card-items">
-            {(props.items || []).map((item, index) => {
-              return (
-                <div
-                  key={index}
-                  class={["k-stat-card-item", { "k-stat-card-item-reverse": props.reverse }]}
-                >
-                  <div class="k-stat-card-item-value">
-                    <StatNumber
-                      v-slots={{
-                        prefix: () => item.prefix || slots.prefix,
-                        suffix: () => item.suffix || slots.suffix,
-                      }}
-                      modelValue={item.value}
-                      autoAnimate={item.autoAnimate}
-                      duration={item.duration}
-                      precision={item.precision !== undefined ? item.precision : props.precision}
-                      separator={item.separator !== undefined ? item.separator : props.separator}
-                      type={props.statNumberType}
-                    />
-                  </div>
-                  <div class="k-stat-card-item-desc">{item.desc}</div>
-                </div>
-              );
-            })}
+export default function StatCard({
+  title,
+  precision = 0,
+  items = [],
+  separator,
+  statNumberType = "countup",
+  reverse = false,
+  bordered = false,
+  prefix,
+  suffix,
+  className,
+  ...rest
+}: StatCardProps) {
+  return (
+    <div {...rest} className={["k-stat-card", bordered && "k-stat-card-bordered", className].filter(Boolean).join(" ")}>
+      {title != null && <div className="k-stat-card-title">{title}</div>}
+      <div className="k-stat-card-items">
+        {items.map((item, index) => (
+          <div key={index} className={["k-stat-card-item", reverse && "k-stat-card-item-reverse"].filter(Boolean).join(" ")}>
+            <div className="k-stat-card-item-value">
+              <StatNumber
+                value={item.value}
+                autoAnimate={item.autoAnimate}
+                autoAnimateOnce={item.autoAnimateOnce}
+                duration={item.duration}
+                precision={item.precision ?? precision}
+                separator={item.separator ?? separator}
+                type={statNumberType}
+                prefix={item.prefix ?? prefix}
+                suffix={item.suffix ?? suffix}
+              />
+            </div>
+            <div className="k-stat-card-item-desc">{item.desc}</div>
           </div>
-        </div>
-      );
-    };
-  },
-});
-export default StatCard;
+        ))}
+      </div>
+    </div>
+  );
+}

@@ -7,6 +7,7 @@ import zhCN from "../locale/zh-CN";
 import { ConfigContext } from "../config";
 
 export interface ModalProps {
+  className?: string;
   open?: boolean;
   title?: React.ReactNode;
   okText?: string;
@@ -32,6 +33,7 @@ export interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({
+  className,
   open = false,
   title,
   okText,
@@ -225,6 +227,7 @@ const Modal: React.FC<ModalProps> = ({
 
   const classes = [
     "k-modal",
+    className,
     draggable ? "k-modal-draggable" : "",
     maximized ? "k-modal-maximized" : "",
     centered ? "k-modal-centered" : "",

@@ -17,6 +17,7 @@ declare module "vue" {
     KButton: (typeof Comps)["Button"];
     ButtonGroup: (typeof Comps)["ButtonGroup"];
     Card: (typeof Comps)["Card"];
+    Cascader: (typeof Comps)["Cascader"];
     Carousel: (typeof Comps)["Carousel"];
     CarouselItem: (typeof Comps)["CarouselItem"];
     Checkbox: (typeof Comps)["Checkbox"];
@@ -59,6 +60,7 @@ declare module "vue" {
     Poptip: (typeof Comps)["Poptip"];
     Popconfirm: (typeof Comps)["Popconfirm"];
     Progress: (typeof Comps)["Progress"];
+    QRCode: (typeof Comps)["QRCode"];
     Radio: (typeof Comps)["Radio"];
     RadioButton: (typeof Comps)["RadioButton"];
     RadioGroup: (typeof Comps)["RadioGroup"];
@@ -91,6 +93,7 @@ declare module "vue" {
     Col: (typeof Comps)["Col"];
     Row: (typeof Comps)["Row"];
     Upload: (typeof Comps)["Upload"];
+    Watermark: (typeof Comps)["Watermark"];
   }
 }
 
@@ -99,6 +102,4 @@ declare module "*.less" {
   export default content;
 }
 
-
-export { };
-
+export {};

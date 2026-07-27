@@ -12,7 +12,7 @@ export function getChildren(children?: React.ReactNode): React.ReactNode[] {
   React.Children.forEach(children, (child) => {
     if (child == null || child === false || child === true) return;
     if (typeof child === "string" && child.trim() === "") return;
-    if (React.isValidElement(child) && child.type === React.Fragment) {
+    if (React.isValidElement<{ children?: React.ReactNode }>(child) && child.type === React.Fragment) {
       result.push(...getChildren(child.props.children));
       return;
     }

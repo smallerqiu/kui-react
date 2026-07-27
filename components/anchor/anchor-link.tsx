@@ -1,55 +1,34 @@
-import { defineComponent, inject, onBeforeUnmount, onMounted, type ExtractPropTypes } from "vue";
-import type { AnchorContext } from "./anchor";
+import { useContext, useEffect, type AnchorHTMLAttributes, type ReactNode } from "react";
+import { AnchorContext } from "./anchor";
 
-const anchorLinkProps = {
-  href: { type: String, required: true },
-  title: String,
-};
+export interface AnchorLinkProps extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "title"> {
+  href: string;
+  title?: ReactNode;
+}
 
-export type AnchorLinkProps = ExtractPropTypes<typeof anchorLinkProps>;
+export default function AnchorLink({ href, title, className, children, onClick, ...rest }: AnchorLinkProps) {
+  const context = useContext(AnchorContext);
+  useEffect(() => {
+    context?.registerLink(href);
+    return () => context?.unregisterLink(href);
+  }, [context, href]);
 
-const AnchorLink = defineComponent({
-  name: "AnchorLink",
-  props: anchorLinkProps,
-  setup(props, { slots, attrs }) {
-    const anchorContext = inject<AnchorContext | null>("kAnchor", null);
-
-    onMounted(() => {
-      props.href && anchorContext?.registerLink(props.href);
-    });
-
-    onBeforeUnmount(() => {
-      props.href && anchorContext?.unregisterLink(props.href);
-    });
-
-    const handleClick = (e: MouseEvent) => {
-      e.preventDefault();
-      props.href && anchorContext?.handleScrollTo(props.href);
-    };
-
-    return () => {
-      const active = anchorContext?.activeLink.value === props.href;
-
-      const linkWrapperProps = {
-        class: ["k-anchor-link", { "k-anchor-link-active": active }],
-      };
-
-      const linkProps = {
-        ...attrs,
-        href: props.href,
-        class: "k-anchor-link-title",
-        title: props.title,
-        onClick: handleClick,
-      };
-
-      return (
-        <div {...linkWrapperProps}>
-          <a {...linkProps}>{slots.title ? slots.title() : props.title}</a>
-          {slots.default?.()}
-        </div>
-      );
-    };
-  },
-});
-
-export default AnchorLink;
+  return (
+    <div className={["k-anchor-link", context?.activeLink === href && "k-anchor-link-active"].filter(Boolean).join(" ")}>
+      <a
+        {...rest}
+        href={href}
+        className={["k-anchor-link-title", className].filter(Boolean).join(" ")}
+        onClick={(event) => {
+          onClick?.(event);
+          if (event.defaultPrevented) return;
+          event.preventDefault();
+          context?.scrollTo(href);
+        }}
+      >
+        {title}
+      </a>
+      {children}
+    </div>
+  );
+}

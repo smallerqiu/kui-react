@@ -1,38 +1,8 @@
-import {
-  ArrowDown,
-  ArrowLeft,
-  ArrowRight,
-  ChevronLeft,
-  ChevronRight,
-  ChevronUp,
-  Image,
-  Loading,
-  Minus,
-  Plus,
-  RotateCcwSquare,
-  RotateCwSquare,
-  X,
-} from "kui-icons";
-import {
-  type CSSProperties,
-  defineComponent,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  type PropType,
-  reactive,
-  ref,
-  toRefs,
-  Transition,
-  watch,
-} from "vue";
+import { ArrowDown, ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, Image as ImageIcon, Loading, Minus, Plus, RotateCcwSquare, RotateCwSquare, X } from "kui-icons";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
 import { Button } from "../button";
 import Icon from "../icon";
 import Slider from "../slider";
-import { getChildren } from "../utils/vnode";
-
-import type { BooleanType } from "../const/types";
-import { getPosition } from "../utils/mouse";
 import { loadImage } from "./utils";
 
 export interface ImagePreviewProps {
@@ -42,462 +12,98 @@ export interface ImagePreviewProps {
   onClose?: () => void;
   onSwitch?: (index: number) => void;
   data?: string[];
+  panel?: ReactNode;
+  tools?: ReactNode;
+}
+export interface ImagePreviewApi {
+  show: (props: ImagePreviewProps) => void;
+  close: () => void;
+  togglePanel: () => void;
 }
 
-const ImagePreview = defineComponent({
-  name: "ImagePreview",
-  props: {
-    type: String,
-    src: String,
-    origin: String,
-    hasControl: Boolean as BooleanType,
-    value: Boolean as BooleanType,
-    data: { type: Array as PropType<string[]>, default: () => [] },
-    showPanel: Boolean as BooleanType,
-  },
-  setup(props, { emit, slots, expose }) {
-    const { value, type, src, origin, showPanel, data } = toRefs(props);
-    const state = reactive({
-      scale: 1,
-      data,
-      rotate: 0,
-      startPos: { x: 0, y: 0 },
-      initPos: { x: 0, y: 0 },
-      left: 0,
-      top: 0,
-      isMouseDown: false,
-      type: type.value,
-      visible: value.value,
-      src: origin.value || src.value || "",
-      loading: false,
-      error: false,
-      vertical: true,
-      isShowPanel: showPanel.value,
-      panelRight: 0,
-      touch: false,
-    });
+const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(function ImagePreview(initial, ref) {
+  const [options, setOptions] = useState(initial);
+  const [visible, setVisible] = useState(true);
+  const [scale, setScale] = useState(1);
+  const [rotate, setRotate] = useState(0);
+  const [position, setPosition] = useState({ left: 0, top: 0 });
+  const [dragging, setDragging] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [panelVisible, setPanelVisible] = useState(!!initial.showPanel);
+  const dragRef = useRef({ x: 0, y: 0 });
+  const data = options.data ?? [];
+  const src = options.src ?? "";
+  const index = data.indexOf(src);
 
-    const refImage = ref<HTMLElement>();
-    const panelRef = ref<HTMLElement>();
-    const maxScale = 10;
-    const updatePanelRight = () => {
-      state.panelRight = panelRef.value && state.isShowPanel ? panelRef.value.offsetWidth : 0;
+  const close = () => { setVisible(false); options.onClose?.(); };
+  const togglePanel = () => setPanelVisible((value) => !value);
+  useImperativeHandle(ref, () => ({
+    show(props) { setOptions((current) => ({ ...current, ...props })); setPanelVisible(!!props.showPanel); setVisible(true); },
+    close,
+    togglePanel,
+  }));
+  useEffect(() => {
+    if (!src || options.type === "media") return;
+    setLoading(true); setError(false);
+    loadImage(src, () => { setLoading(false); setError(false); }, () => { setLoading(false); setError(true); });
+  }, [options.type, src]);
+  useEffect(() => {
+    const keydown = (event: KeyboardEvent) => { if (event.key === "Escape") close(); };
+    const wheel = (event: WheelEvent) => {
+      if (!visible) return;
+      event.preventDefault();
+      setScale((value) => Math.max(1, Math.min(10, value + (event.deltaY < 0 ? 1 : -1))));
     };
-
-    const setRotate = (left?: boolean) => {
-      state.rotate = left ? state.rotate - 90 : state.rotate + 90;
-      state.vertical = !state.vertical;
-      resetPosition();
+    document.addEventListener("keydown", keydown);
+    document.addEventListener("wheel", wheel, { passive: false });
+    return () => { document.removeEventListener("keydown", keydown); document.removeEventListener("wheel", wheel); };
+  }, [visible, options.onClose]);
+  const switchImage = (offset: number) => {
+    const next = Math.max(0, Math.min(data.length - 1, index + offset));
+    if (next === index || next < 0) return;
+    setOptions((current) => ({ ...current, src: data[next] }));
+    setScale(1); setRotate(0); setPosition({ left: 0, top: 0 }); options.onSwitch?.(next);
+  };
+  const startDrag = (event: ReactMouseEvent) => {
+    if (event.button !== 0) return;
+    event.preventDefault(); setDragging(true); dragRef.current = { x: event.clientX, y: event.clientY };
+    const move = (moveEvent: MouseEvent) => {
+      setPosition((current) => ({ left: current.left + moveEvent.clientX - dragRef.current.x, top: current.top + moveEvent.clientY - dragRef.current.y }));
+      dragRef.current = { x: moveEvent.clientX, y: moveEvent.clientY };
     };
-
-    const setScale = (zoomIn?: boolean) => {
-      state.scale = zoomIn ? state.scale + 1 : state.scale - 1;
-      state.scale = zoomIn ? Math.min(state.scale, maxScale) : Math.max(1, state.scale);
-      resetPosition();
-    };
-
-    const close = () => {
-      state.visible = false;
-      emit("input", false);
-      emit("close");
-    };
-
-    const mousewheel = (e: WheelEvent) => {
-      if (!state.visible) return;
-      const { deltaY } = e;
-      setScale(deltaY < 0);
-      e.stopPropagation();
-      e.preventDefault();
-    };
-
-    const mousedown = (e: MouseEvent | TouchEvent) => {
-      if (!state.visible) return;
-
-      if (refImage.value && refImage.value.contains(e.target as HTMLElement)) {
-        if ((e as MouseEvent).button && (e as MouseEvent).button != 0) return;
-        let [x, y] = getPosition(e);
-
-        state.isMouseDown = true;
-        state.startPos = { x, y };
-        state.initPos = { x, y };
-        mousemove(e);
-        if (state.touch) {
-          document.addEventListener("touchmove", mousemove as EventListener, {
-            passive: false,
-          });
-          document.addEventListener("touchend", mouseup as EventListener, {
-            passive: false,
-          });
-        } else {
-          document.addEventListener("mousemove", mousemove as EventListener, {
-            passive: false,
-          });
-          document.addEventListener("mouseup", mouseup as EventListener, { passive: false });
-        }
-      }
-    };
-
-    const resetPosition = () => {
-      if (state.error) return;
-      const { innerHeight, innerWidth } = window;
-      const scale = state.scale;
-      const top = state.top;
-      const left = state.left;
-      const vertical = state.vertical;
-
-      if (!refImage.value) return;
-
-      let offsetWidth = refImage.value.offsetWidth;
-      let offsetHeight = refImage.value.offsetHeight;
-      let panelWidth = panelRef.value && state.isShowPanel ? panelRef.value.offsetWidth : 0;
-      let newWidth = offsetWidth;
-      let newHeight = offsetHeight;
-
-      if (!vertical) {
-        newWidth = offsetHeight;
-        newHeight = offsetWidth;
-      }
-
-      if (newWidth * scale >= innerWidth - panelWidth) {
-        let maxLeft = (newWidth * scale - (innerWidth - panelWidth)) / 2;
-        if (left >= maxLeft) {
-          state.left = maxLeft;
-        } else if (state.left < -maxLeft) {
-          state.left = -maxLeft;
-        }
-      } else {
-        state.left = 0;
-      }
-
-      if (newHeight * scale >= innerHeight) {
-        let maxTop = (newHeight * scale - innerHeight) / 2;
-        if (top >= maxTop) {
-          state.top = maxTop;
-        } else if (top < -maxTop) {
-          state.top = -maxTop;
-        }
-      } else {
-        state.top = 0;
-      }
-    };
-
-    const mouseup = () => {
-      if (!state.visible) return;
-      state.isMouseDown = false;
-      resetPosition();
-
-      if (state.touch) {
-        document.removeEventListener("touchmove", mousemove as EventListener);
-        document.removeEventListener("touchend", mouseup as EventListener);
-      } else {
-        document.removeEventListener("mousemove", mousemove as EventListener);
-        document.removeEventListener("mouseup", mouseup as EventListener);
-      }
-    };
-
-    const mousemove = (e: MouseEvent | TouchEvent) => {
-      if (!state.visible) return;
-      if (state.isMouseDown) {
-        e.preventDefault();
-        let [clientX, clientY] = getPosition(e);
-
-        const { x, y } = state.startPos;
-        state.left += clientX - x;
-        state.top += clientY - y;
-        state.startPos = { x: clientX, y: clientY };
-      }
-    };
-
-    const switchImage = (left?: boolean) => {
-      state.scale = 1;
-      const data = props.data || [];
-      const index = data.indexOf(state.src);
-      let newIndex = index;
-      newIndex = left ? newIndex - 1 : newIndex + 1;
-      newIndex = Math.max(0, newIndex);
-      newIndex = Math.min(newIndex, data.length - 1);
-
-      state.src = data[newIndex];
-
-      if ((left && index == 0) || (!left && index == data.length - 1)) return;
-      emit("switch", newIndex);
-    };
-
-    const download = () => {
-      if (!state.error) {
-        const x = new XMLHttpRequest();
-        x.open("GET", state.src, true);
-        x.responseType = "blob";
-        x.onload = function () {
-          const url = window.URL.createObjectURL(x.response);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "";
-          a.click();
-        };
-        x.send();
-      }
-    };
-
-    const togglePanel = () => {
-      state.isShowPanel = !state.isShowPanel;
-      emit("togglePanel", state.isShowPanel);
-      nextTick(() => resetPosition());
-      updatePanelRight();
-    };
-
-    const getPanel = () => {
-      const panel = getChildren(slots.panel?.());
-      if (panel.length) {
-        return (
-          <div
-            class={[
-              "k-image-preview-panel",
-              { "k-image-preview-panel-hidden": !state.isShowPanel },
-            ]}
-            ref={panelRef}
-          >
-            <span class="k-image-preview-panel-action" onClick={() => togglePanel()}>
-              <Icon type={ChevronUp} />
-            </span>
-            {panel}
-          </div>
-        );
-      }
-      return null;
-    };
-
-    watch(
-      () => props.src,
-      (src) => {
-        state.src = src || "";
-      }
-    );
-
-    watch(
-      () => props.value,
-      (value) => {
-        state.visible = value;
-        if (value) {
-          nextTick(() => {
-            updatePanelRight();
-          });
-        }
-      }
-    );
-
-    watch(
-      () => state.src,
-      (src) => {
-        if (state.type == "media" || !src) return;
-
-        state.loading = true;
-        loadImage(
-          src,
-          () => {
-            state.loading = false;
-            state.error = false;
-          },
-          () => {
-            state.loading = false;
-            state.error = true;
-          }
-        );
-      }
-    );
-
-    watch(
-      () => props.showPanel,
-      (value) => {
-        state.isShowPanel = value;
-        updatePanelRight();
-      }
-    );
-
-    onMounted(() => {
-      if (typeof window !== "undefined") {
-        const touch =
-          "ontouchstart" in window ||
-          navigator.maxTouchPoints > 0 ||
-          (window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
-        state.touch = touch;
-        const event = touch ? "touchstart" : "mousedown";
-        document.addEventListener(event, mousedown, { passive: false });
-        document.addEventListener("wheel", mousewheel, { passive: false });
-
-        document.addEventListener("keydown", escToClose);
-      }
-    });
-
-    onBeforeUnmount(() => {
-      document.removeEventListener("wheel", mousewheel);
-      document.removeEventListener("keydown", escToClose);
-    });
-
-    const show = (props: ImagePreviewProps) => {
-      if (props?.src) {
-        state.src = props.src;
-      }
-      if (props?.type) {
-        state.type = props.type;
-      }
-      state.visible = true;
-    };
-
-    const escToClose = (e: KeyboardEvent) => {
-      if (e.keyCode === 27) {
-        close();
-      }
-    };
-
-    expose({ show, close, togglePanel });
-
-    return () => {
-      const { scale, rotate, visible, src, left, top, data, loading, panelRight, type } = state;
-      const imgStyle = {
-        transform: `scale3d(${scale}, ${scale}, 1) rotate(${rotate}deg)`,
-      };
-      const moveStyle: CSSProperties = {
-        transform: `translate3d(${left}px, ${top}px, 0px)`,
-        transition: state.isMouseDown ? "0" : undefined,
-      };
-      const imgProps = {
-        class: "k-image-preview-img",
-        src,
-        style: imgStyle,
-        ref: refImage,
-      };
-
-      const tools = getChildren(slots.tool?.());
-
-      return (
-        <div class="k-image-preview-root">
-          <div class="k-image-preview" v-show={visible}>
-            <Transition name="k-image-fade">
-              <div class="k-image-preview-mask" onClick={close} v-show={visible}></div>
-            </Transition>
-            <div class="k-image-preview-wrap" style={{ right: panelRight + "px" }}>
-              <Transition name="k-image-fade">
-                <ul class="k-image-preview-control" v-show={visible}>
-                  <li class="k-image-preview-action-nav">
-                    <Button
-                      icon={ChevronLeft}
-                      type="text"
-                      disabled={!data.length || data.indexOf(src) == 0}
-                      onClick={() => switchImage(true)}
-                    />
-                    <span>
-                      {data?.indexOf(src) + 1 || 1}/{data?.length || 1}
-                    </span>
-                    <Button
-                      icon={ChevronRight}
-                      type="text"
-                      disabled={!data.length || data.indexOf(src) == data.length - 1}
-                      onClick={() => switchImage()}
-                    />
-                  </li>
-                  <li
-                    class="k-image-preview-action k-image-preview-action-rotate-left"
-                    onClick={() => setRotate(true)}
-                  >
-                    <Icon type={RotateCcwSquare} />
-                  </li>
-                  <li
-                    class="k-image-preview-action k-image-preview-action-rotate-right"
-                    onClick={() => setRotate()}
-                  >
-                    <Icon type={RotateCwSquare} />
-                  </li>
-                  <li
-                    class={[
-                      "k-image-preview-action",
-                      { "k-image-preview-action-disabled": scale <= 1 },
-                    ]}
-                    onClick={() => setScale()}
-                  >
-                    <Icon type={Minus} />
-                  </li>
-                  <li class="k-image-preview-action k-image-preview-action-scale">
-                    <Slider
-                      modelValue={state.scale}
-                      min={1}
-                      max={maxScale}
-                      size="small"
-                      tooltipVisible={false}
-                      onChange={(val) => (state.scale = val as number)}
-                    />
-                  </li>
-                  <li
-                    class={[
-                      "k-image-preview-action",
-                      { "k-image-preview-action-disabled": scale >= 5 },
-                    ]}
-                    onClick={() => setScale(true)}
-                  >
-                    <Icon type={Plus} />
-                  </li>
-                  <li class="k-image-preview-action" onClick={download}>
-                    <Icon type={ArrowDown} />
-                  </li>
-                  {tools.map((tool) => {
-                    return <li class="k-image-preview-action">{tool}</li>;
-                  })}
-                  <li class="k-image-preview-action-divider" />
-                  <li class="k-image-preview-action" onClick={close}>
-                    <Icon type={X} />
-                  </li>
-                </ul>
-              </Transition>
-
-              <div class="k-image-preview-img-wrap" style={moveStyle}>
-                {type == "media" ? (
-                  <video controls {...imgProps} v-show={visible} />
-                ) : !state.error && !state.loading ? (
-                  <img {...imgProps} v-show={visible} />
-                ) : !loading ? (
-                  <div class="k-image-preview-img-error">
-                    <Icon type={Image} />
-                  </div>
-                ) : null}
-              </div>
-              {props.data.length > 1
-                ? [
-                    <div
-                      class={[
-                        "k-image-preview-switch-left",
-                        {
-                          "k-image-preview-switch-disabled": data.indexOf(src) == 0,
-                        },
-                      ]}
-                      onClick={() => switchImage(true)}
-                    >
-                      <Icon type={ArrowLeft} />
-                    </div>,
-                    <div
-                      class={[
-                        "k-image-preview-switch-right",
-                        {
-                          "k-image-preview-switch-disabled": data.indexOf(src) == data.length - 1,
-                        },
-                      ]}
-                      onClick={() => switchImage()}
-                    >
-                      <Icon type={ArrowRight} />
-                    </div>,
-                  ]
-                : null}
-              {loading ? (
-                <div class="k-image-preview-loading">
-                  <Icon type={Loading} spin />
-                </div>
-              ) : null}
-            </div>
-            {getPanel()}
-          </div>
-        </div>
-      );
-    };
-  },
+    const up = () => { setDragging(false); document.removeEventListener("mousemove", move); document.removeEventListener("mouseup", up); };
+    document.addEventListener("mousemove", move); document.addEventListener("mouseup", up);
+  };
+  const download = async () => {
+    if (!src || error) return;
+    const response = await fetch(src); const url = URL.createObjectURL(await response.blob());
+    const anchor = document.createElement("a"); anchor.href = url; anchor.download = ""; anchor.click(); URL.revokeObjectURL(url);
+  };
+  if (!visible) return null;
+  return <div className="k-image-preview-root"><div className="k-image-preview">
+    <div className="k-image-preview-mask" onClick={close} />
+    <div className="k-image-preview-wrap" style={{ right: panelVisible && options.panel ? 320 : 0 }}>
+      <ul className="k-image-preview-control">
+        <li className="k-image-preview-action-nav"><Button icon={ChevronLeft} type="text" disabled={index <= 0} onClick={() => switchImage(-1)} /><span>{index + 1 || 1}/{data.length || 1}</span><Button icon={ChevronRight} type="text" disabled={index < 0 || index >= data.length - 1} onClick={() => switchImage(1)} /></li>
+        <li className="k-image-preview-action" onClick={() => setRotate((value) => value - 90)}><Icon type={RotateCcwSquare} /></li>
+        <li className="k-image-preview-action" onClick={() => setRotate((value) => value + 90)}><Icon type={RotateCwSquare} /></li>
+        <li className={["k-image-preview-action", scale <= 1 && "k-image-preview-action-disabled"].filter(Boolean).join(" ")} onClick={() => setScale((value) => Math.max(1, value - 1))}><Icon type={Minus} /></li>
+        <li className="k-image-preview-action k-image-preview-action-scale"><Slider value={scale} min={1} max={10} size="small" tooltipVisible={false} onChange={(value) => setScale(value as number)} /></li>
+        <li className={["k-image-preview-action", scale >= 10 && "k-image-preview-action-disabled"].filter(Boolean).join(" ")} onClick={() => setScale((value) => Math.min(10, value + 1))}><Icon type={Plus} /></li>
+        <li className="k-image-preview-action" onClick={download}><Icon type={ArrowDown} /></li>
+        {options.tools && <li className="k-image-preview-action">{options.tools}</li>}
+        <li className="k-image-preview-action-divider" /><li className="k-image-preview-action" onClick={close}><Icon type={X} /></li>
+      </ul>
+      <div className="k-image-preview-img-wrap" style={{ transform: `translate3d(${position.left}px, ${position.top}px, 0)`, transition: dragging ? "none" : undefined }}>
+        {options.type === "media" ? <video controls className="k-image-preview-img" src={src} style={{ transform: `scale3d(${scale},${scale},1) rotate(${rotate}deg)` }} onMouseDown={startDrag} />
+          : error ? <div className="k-image-preview-img-error"><Icon type={ImageIcon} /></div>
+            : !loading && <img className="k-image-preview-img" src={src} style={{ transform: `scale3d(${scale},${scale},1) rotate(${rotate}deg)` }} onMouseDown={startDrag} />}
+      </div>
+      {data.length > 1 && <><div className={["k-image-preview-switch-left", index <= 0 && "k-image-preview-switch-disabled"].filter(Boolean).join(" ")} onClick={() => switchImage(-1)}><Icon type={ArrowLeft} /></div><div className={["k-image-preview-switch-right", index >= data.length - 1 && "k-image-preview-switch-disabled"].filter(Boolean).join(" ")} onClick={() => switchImage(1)}><Icon type={ArrowRight} /></div></>}
+      {loading && <div className="k-image-preview-loading"><Icon type={Loading} spin /></div>}
+    </div>
+    {options.panel && <div className={["k-image-preview-panel", !panelVisible && "k-image-preview-panel-hidden"].filter(Boolean).join(" ")}><span className="k-image-preview-panel-action" onClick={togglePanel}><Icon type={ChevronRight} /></span>{options.panel}</div>}
+  </div></div>;
 });
-
 export default ImagePreview;

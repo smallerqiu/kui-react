@@ -1,199 +1,84 @@
-import { Image as IconImage, Loading } from "kui-icons";
-import {
-  type CSSProperties,
-  defineComponent,
-  type ExtractPropTypes,
-  inject,
-  onBeforeUnmount,
-  onMounted,
-  type PropType,
-  ref,
-  watch,
-} from "vue";
-import type { BooleanType } from "../const/types";
+import { Image as ImageIcon, Loading } from "kui-icons";
+import { forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState, type CSSProperties, type HTMLAttributes, type MouseEvent } from "react";
 import Icon from "../icon";
-import createInstance from "./instance";
+import { ImageGroupContext } from "./group";
+import createInstance, { type ImagePreviewInstance } from "./instance";
 import type { ImagePreviewProps } from "./preview";
 import { loadImage } from "./utils";
 
-interface ImageGroupContext {
-  show: (props: ImagePreviewProps, slots: any) => void;
+export interface ImageRef {
+  show: (props?: ImagePreviewProps) => void;
   destroy: () => void;
-  register: (src?: string) => void;
-  unregister: (src?: string) => void;
+  togglePanel: () => void;
+}
+export interface ImageProps extends Omit<HTMLAttributes<HTMLDivElement>, "onSwitch"> {
+  alt?: string;
+  src?: string;
+  type?: string;
+  origin?: string;
+  height?: string | number;
+  width?: string | number;
+  placeholder?: string;
+  data?: string[];
+  imgStyle?: CSSProperties;
+  showPanel?: boolean;
+  onClose?: () => void;
+  onSwitch?: (index: number) => void;
 }
 
-const imageProps = {
-  alt: String,
-  src: String,
-  type: String,
-  origin: String,
-  height: [String, Number],
-  width: [String, Number],
-  placeholder: String,
-  data: Array,
-  imgStyle: Object as PropType<CSSProperties>,
-  showPanel: Boolean as BooleanType,
-  onClose: Function as PropType<() => void>,
-  onSwitch: Function as PropType<(index: number) => void>,
-};
+const KImage = forwardRef<ImageRef, ImageProps>(function KImage({
+  alt, src, type, origin, height, width, placeholder, data, imgStyle, showPanel,
+  onClose, onSwitch, className, style, children, onClick, ...rest
+}, ref) {
+  const group = useContext(ImageGroupContext);
+  const previewRef = useRef<ImagePreviewInstance | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string>();
+  const previewSource = origin || src;
 
-export type ImageProps = ExtractPropTypes<typeof imageProps>;
-
-const KImage = defineComponent({
-  name: "KImage",
-  props: imageProps,
-  setup(props, { emit, slots, expose }) {
-    const loading = ref(false);
-    const showPlaceholder = ref(false);
-    const imageUrl = ref<string>();
-    const imgWidth = ref(0);
-    const imgHeight = ref(0);
-
-    const preview = ref();
-    const ImageGroup = inject<ImageGroupContext | null>("ImageGroup", null);
-
-    // global api
-    const togglePanel = () => {
-      const instance = ImageGroup || preview.value;
-      if (instance) {
-        instance.togglePanel();
-      }
-    };
-    // global api
-    const show = (props: ImagePreviewProps, slots: any) => {
-      if (ImageGroup) {
-        ImageGroup.show(props, slots);
-        return;
-      }
-      if (!preview.value) {
-        preview.value = createInstance({ ...props }, slots);
-      }
-      preview.value.show(props);
-    };
-
-    // global api
-    const destroy = () => {
-      if (preview.value) {
-        preview.value.destroy();
-        preview.value = null;
-      }
-      if (ImageGroup) {
-        ImageGroup.destroy();
-      }
-    };
-
-    expose({ show, destroy, togglePanel });
-
-    const showPreview = (e: MouseEvent) => {
-      const { origin, src } = props;
-      if ((!src && !origin) || showPlaceholder.value || loading.value) return;
-      const options = {
-        onClose: () => {
-          emit("close");
-          setTimeout(() => {
-            destroy();
-          }, 200);
-        },
-        onSwitch: (index: number) => {
-          emit("switch", index);
-        },
-        src: origin || src,
-        showPanel: props.showPanel,
-        type: props.type,
-      };
-      show(options, slots);
-      e.preventDefault();
-    };
-
-    const reload = () => {
-      const { src, placeholder } = props;
-      if (src) {
-        loading.value = true;
-        loadImage(
-          src,
-          ({ width, height }) => {
-            showPlaceholder.value = false;
-            loading.value = false;
-            imageUrl.value = src;
-            imgWidth.value = width;
-            imgHeight.value = height;
-          },
-          () => {
-            loading.value = false;
-            showPlaceholder.value = true;
-            imageUrl.value = placeholder;
-          }
-        );
-      } else {
-        showPlaceholder.value = true;
-        imageUrl.value = placeholder;
-      }
-    };
-
-    watch(
-      () => props.src,
-      () => {
-        reload();
-      }
+  useEffect(() => {
+    let active = true;
+    if (!src) { setFailed(true); setImageUrl(placeholder); return; }
+    setLoading(true);
+    loadImage(src,
+      () => { if (active) { setLoading(false); setFailed(false); setImageUrl(src); } },
+      () => { if (active) { setLoading(false); setFailed(true); setImageUrl(placeholder); } },
     );
+    return () => { active = false; };
+  }, [placeholder, src]);
+  useEffect(() => {
+    if (!previewSource) return;
+    group?.register(previewSource);
+    return () => group?.unregister(previewSource);
+  }, [group, previewSource]);
+  useEffect(() => () => previewRef.current?.destroy(), []);
 
-    onMounted(() => {
-      reload();
-      ImageGroup?.register(props.origin || props.src);
-    });
-
-    onBeforeUnmount(() => {
-      destroy();
-      ImageGroup?.unregister(props.origin || props.src);
-    });
-
-    return () => {
-      const { alt, width, height, imgStyle } = props;
-
-      const containerProps = {
-        style: {
-          width: width ? `${width}px` : undefined,
-          height: height ? `${height}px` : undefined,
-        },
-        class: "k-image",
-        onClick: showPreview,
-      };
-
-      const imgProps = {
-        style: imgStyle,
-        class: "k-image-img",
-        alt: alt,
-        src: imageUrl.value,
-      };
-      const nodes = [];
-
-      if (loading.value) {
-        nodes.push(
-          <div class="k-image-loading">
-            <Icon type={Loading} spin class="k-image-loading-icon" />
-          </div>
-        );
-      } else {
-        if (showPlaceholder.value) {
-          if (imageUrl.value) {
-            nodes.push(<img {...imgProps} />);
-          } else {
-            nodes.push(<Icon type={IconImage} class="k-image-error" />);
-          }
-        } else {
-          nodes.push(<img {...imgProps} />);
-        }
-      }
-
-      return (
-        <div {...containerProps}>
-          {nodes}
-          {slots.default?.()}
-        </div>
-      );
+  const show = (options: ImagePreviewProps = {}) => {
+    if (!previewSource || failed || loading) return;
+    const previewProps: ImagePreviewProps = {
+      src: previewSource, type, data, showPanel, onClose, onSwitch, ...options,
     };
-  },
+    if (group) group.show(previewProps);
+    else {
+      if (!previewRef.current) previewRef.current = createInstance(previewProps);
+      previewRef.current.show(previewProps);
+    }
+  };
+  useImperativeHandle(ref, () => ({
+    show,
+    destroy: () => { previewRef.current?.destroy(); previewRef.current = null; },
+    togglePanel: () => group?.togglePanel() ?? previewRef.current?.togglePanel(),
+  }));
+  const dimension = (value?: string | number) => typeof value === "number" ? `${value}px` : value;
+  const handleClick = (event: MouseEvent<HTMLDivElement>) => { onClick?.(event); if (!event.defaultPrevented) show(); };
+  return (
+    <div {...rest} className={["k-image", className].filter(Boolean).join(" ")} style={{ ...style, width: dimension(width), height: dimension(height) }} onClick={handleClick}>
+      {loading ? <div className="k-image-loading"><Icon type={Loading} spin className="k-image-loading-icon" /></div>
+        : failed && !imageUrl ? <Icon type={ImageIcon} className="k-image-error" />
+          : <img className="k-image-img" alt={alt} src={imageUrl} style={imgStyle} />}
+      {children}
+    </div>
+  );
 });
-
 export default KImage;

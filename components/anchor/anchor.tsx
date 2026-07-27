@@ -1,179 +1,135 @@
 import {
-  defineComponent,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  provide,
-  ref,
-  watch,
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
   type CSSProperties,
-  type ExtractPropTypes,
-  type PropType,
-  type Ref,
-} from "vue";
-import type { BooleanType } from "../const/types";
+  type HTMLAttributes,
+} from "react";
 
-// 定义 provide/inject 的接口，确保类型安全
-export interface AnchorContext {
-  activeLink: Ref<string>;
+export interface AnchorContextValue {
+  activeLink: string;
   registerLink: (link: string) => void;
   unregisterLink: (link: string) => void;
-  handleScrollTo: (link: string) => void;
+  scrollTo: (link: string) => void;
 }
 
-const anchorProps = {
-  affix: { type: Boolean as BooleanType, default: true },
-  offsetTop: { type: Number, default: 0 },
-  bounds: { type: Number, default: 5 },
-  container: [String, Object] as PropType<string | HTMLElement | Window>, // 明确支持 HTMLElement 和 Window
-  onChange: { type: Function as PropType<(activeLink: string) => void> },
-};
+export const AnchorContext = createContext<AnchorContextValue | null>(null);
 
-export type AnchorProps = ExtractPropTypes<typeof anchorProps>;
+export interface AnchorProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "onClick"> {
+  affix?: boolean;
+  offsetTop?: number;
+  bounds?: number;
+  container?: string | HTMLElement | Window;
+  onChange?: (activeLink: string) => void;
+  onClick?: (link: string) => void;
+}
 
-const Anchor = defineComponent({
-  name: "Anchor",
-  props: anchorProps,
-  setup(props, { slots, emit, attrs }) {
-    const activeLink = ref("");
-    const inkTop = ref(0);
-    const inkHeight = ref(0);
-    const links = new Set<string>(); // 明确 Set 存储的是字符串
-    const anchorRef = ref<HTMLElement | null>(null);
+export default function Anchor({
+  affix = true,
+  offsetTop = 0,
+  bounds = 5,
+  container,
+  onChange,
+  onClick,
+  className,
+  children,
+  ...rest
+}: AnchorProps) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const linksRef = useRef(new Set<string>());
+  const clickScrollingRef = useRef(false);
+  const unlockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [activeLink, setActiveLink] = useState("");
+  const [inkStyle, setInkStyle] = useState<CSSProperties>({ opacity: 0 });
 
-    // 增加一把“锁”，防止点击滚动时监听器乱动
-    let isClickScrolling = false;
+  const getContainer = useCallback((): HTMLElement | Window => {
+    if (typeof window === "undefined" || !container) return window;
+    if (typeof container === "string") return document.querySelector<HTMLElement>(container) ?? window;
+    return container;
+  }, [container]);
 
-    const getContainer = (): HTMLElement | Window => {
-      if (!props.container) return window;
-      if (typeof props.container === "string") {
-        return (document.querySelector(props.container) as HTMLElement) || window; // 如果选择器没找到，默认回退到 window
-      }
-      return props.container;
+  const updateInk = useCallback(() => {
+    const node = wrapperRef.current?.querySelector<HTMLElement>(".k-anchor-link-active > .k-anchor-link-title");
+    setInkStyle(node
+      ? { top: node.parentElement!.offsetTop + 4, height: node.clientHeight, opacity: 1 }
+      : { top: 0, height: 0, opacity: 0 });
+  }, []);
+
+  useEffect(updateInk, [activeLink, updateInk]);
+
+  const updateActive = useCallback(() => {
+    if (clickScrollingRef.current || typeof window === "undefined") return;
+    const scrollContainer = getContainer();
+    const containerTop = scrollContainer === window ? 0 : (scrollContainer as HTMLElement).getBoundingClientRect().top;
+    const targets = [...linksRef.current]
+      .map((link) => {
+        const element = document.querySelector<HTMLElement>(link);
+        return element ? { link, top: element.getBoundingClientRect().top - containerTop } : null;
+      })
+      .filter((item): item is { link: string; top: number } => item !== null)
+      .sort((a, b) => a.top - b.top);
+    let next = targets[0]?.link ?? "";
+    for (const target of targets) {
+      if (target.top <= offsetTop + bounds) next = target.link;
+      else break;
+    }
+    setActiveLink((previous) => {
+      if (next && next !== previous) onChange?.(next);
+      return next || previous;
+    });
+  }, [bounds, getContainer, offsetTop, onChange]);
+
+  useEffect(() => {
+    const scrollContainer = getContainer();
+    scrollContainer.addEventListener("scroll", updateActive, { passive: true });
+    updateActive();
+    return () => {
+      scrollContainer.removeEventListener("scroll", updateActive);
+      if (unlockTimerRef.current) clearTimeout(unlockTimerRef.current);
     };
+  }, [getContainer, updateActive]);
 
-    const updateInk = () => {
-      nextTick(() => {
-        // 查找当前激活的 a 标签
-        const activeNode = anchorRef.value?.querySelector(
-          ".k-anchor-link-active > .k-anchor-link-title"
-        );
-        if (activeNode instanceof HTMLElement) {
-          // 确保 activeNode 是 HTMLElement
-          // 这里的 offsetTop 是相对于父容器 .k-anchor 的
-          inkTop.value = activeNode.parentElement!.offsetTop + 4; // 微调对齐，使用 ! 确保非空
-          inkHeight.value = activeNode.clientHeight;
-        } else {
-          inkTop.value = 0;
-          inkHeight.value = 0;
-        }
-      });
-    };
-
-    const handleScroll = () => {
-      if (isClickScrolling) return;
-
-      const linkList = Array.from(links);
-      const container = getContainer();
-      const containerScrollTop =
-        container === window ? window.pageYOffset : (container as HTMLElement).scrollTop;
-
-      const anchorTargets = linkList
-        .map((link) => {
-          const target = document.querySelector(link) as HTMLElement;
-          return target ? { link, offsetTop: target.offsetTop } : null;
-        })
-        .filter((item): item is { link: string; offsetTop: number } => item !== null) // 类型守卫
-        .sort((a, b) => a.offsetTop - b.offsetTop);
-
-      let current = "";
-
-      for (let i = anchorTargets.length - 1; i >= 0; i--) {
-        const { link, offsetTop } = anchorTargets[i];
-        if (containerScrollTop >= offsetTop - props.offsetTop - props.bounds) {
-          current = link;
-          break;
-        }
-      }
-
-      if (current && activeLink.value !== current) {
-        activeLink.value = current;
-        emit("change", current);
-      }
-    };
-
-    // 监听 activeLink 变化即更新滑块
-    watch(activeLink, updateInk);
-
-    const handleScrollTo = (link: string) => {
-      const target = document.querySelector(link) as HTMLElement;
-      if (!target) return;
-
-      isClickScrolling = true; // 加锁
-      activeLink.value = link;
-      emit("click", link);
-
-      const container = getContainer();
-      const elementTop = target.offsetTop - props.offsetTop;
-
-      container.scrollTo({
-        top: elementTop,
+  const scrollTo = useCallback((link: string) => {
+    const target = document.querySelector<HTMLElement>(link);
+    if (!target) return;
+    clickScrollingRef.current = true;
+    setActiveLink(link);
+    onClick?.(link);
+    const scrollContainer = getContainer();
+    if (scrollContainer === window) {
+      window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offsetTop, behavior: "smooth" });
+    } else {
+      const element = scrollContainer as HTMLElement;
+      element.scrollTo({
+        top: target.getBoundingClientRect().top - element.getBoundingClientRect().top + element.scrollTop - offsetTop,
         behavior: "smooth",
       });
+    }
+    if (unlockTimerRef.current) clearTimeout(unlockTimerRef.current);
+    unlockTimerRef.current = setTimeout(() => {
+      clickScrollingRef.current = false;
+      updateInk();
+    }, 600);
+  }, [getContainer, offsetTop, onClick, updateInk]);
 
-      // 滚动结束后解锁（通常通过一个定时器或监听 scrollend）
-      setTimeout(() => {
-        isClickScrolling = false;
-        updateInk();
-      }, 600); // 略长于 smooth 动画时间
-    };
+  const context = useMemo<AnchorContextValue>(() => ({
+    activeLink,
+    registerLink: (link) => linksRef.current.add(link),
+    unregisterLink: (link) => linksRef.current.delete(link),
+    scrollTo,
+  }), [activeLink, scrollTo]);
 
-    provide<AnchorContext>("kAnchor", {
-      activeLink,
-      registerLink: (link: string) => links.add(link),
-      unregisterLink: (link: string) => links.delete(link),
-      handleScrollTo,
-    });
-
-    onMounted(() => {
-      const container = getContainer();
-      container.addEventListener("scroll", handleScroll);
-      setTimeout(handleScroll, 100); // 初始扫描
-    });
-
-    onBeforeUnmount(() => {
-      const container = getContainer();
-      container.removeEventListener("scroll", handleScroll);
-    });
-
-    return () => {
-      const wrapperProps = {
-        ...attrs,
-        class: ["k-anchor-wrapper", { "k-anchor-affix": props.affix }],
-        ref: anchorRef,
-      };
-
-      const inkBallStyles: CSSProperties = {
-        top: `${inkTop.value}px`,
-        height: `${inkHeight.value}px`,
-        opacity: activeLink.value ? 1 : 0,
-      };
-
-      const inkProps = {
-        class: "k-anchor-ink-ball",
-        style: inkBallStyles,
-      };
-
-      return (
-        <div {...wrapperProps}>
-          <div class="k-anchor">
-            <span {...inkProps} />
-            {slots.default?.()}
-          </div>
+  return (
+    <AnchorContext.Provider value={context}>
+      <div {...rest} ref={wrapperRef} className={["k-anchor-wrapper", affix && "k-anchor-affix", className].filter(Boolean).join(" ")}>
+        <div className="k-anchor">
+          <span className="k-anchor-ink-ball" style={inkStyle} />
+          {children}
         </div>
-      );
-    };
-  },
-});
-
-export default Anchor;
+      </div>
+    </AnchorContext.Provider>
+  );
+}

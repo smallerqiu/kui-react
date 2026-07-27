@@ -1,203 +1,144 @@
-import type { ExtractPropTypes, PropType } from "vue";
-import { defineComponent, nextTick, provide, reactive, ref, toRefs } from "vue";
-import type { BooleanType, DirectionType, ShapeType, SizeType, ThemeType } from "../const/types";
+import {
+  createContext,
+  forwardRef,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  type FormEvent,
+  type FormHTMLAttributes,
+} from "react";
+import type { DirectionType, ShapeType, SizeType, ThemeType } from "../const/types";
 import type { ColProps, FormRule } from "./types";
 
-export interface FormSubmitEvent {
-  valid: boolean;
+export interface FormSubmitEvent { valid: boolean }
+export interface FormItemHandle {
+  prop: string;
+  rules?: FormRule | FormRule[];
+  validate: (rules?: FormRule | FormRule[]) => boolean;
+  reset: () => void;
 }
-
-const formProps = {
-  layout: {
-    type: String as PropType<DirectionType>,
-    default: "horizontal",
-  },
-  model: Object as PropType<Record<string, any>>,
-  name: String,
-  labelCol: Object as PropType<ColProps>,
-  wrapperCol: Object as PropType<ColProps>,
-  rules: {
-    type: Object as PropType<Record<string, FormRule[]>>,
-  },
-  size: {
-    type: String as PropType<SizeType>,
-  },
-  theme: String as PropType<ThemeType>,
-  shape: String as PropType<ShapeType>,
-  disabled: Boolean as BooleanType,
-  onSubmit: {
-    type: Function as PropType<(e: FormSubmitEvent) => void>,
-  },
-  onReset: {
-    type: Function as PropType<() => void>,
-  },
-  // onChange: { //TODO
-  //   type: Function as PropType<(e: FormChangeEvent) => void>,
-  // },
-};
+export interface FormContextValue {
+  model: Record<string, any>;
+  rules?: Record<string, FormRule[]>;
+  layout: DirectionType;
+  name?: string;
+  size?: SizeType;
+  shape?: ShapeType;
+  theme?: ThemeType;
+  disabled?: boolean;
+  labelCol?: ColProps;
+  wrapperCol?: ColProps;
+  getValue: (path: string) => any;
+  setValue: (path: string, value: any) => void;
+  register: (item: FormItemHandle) => void;
+  unregister: (prop: string) => void;
+}
+export const FormContext = createContext<FormContextValue | null>(null);
 
 export interface FormExpose {
-  validate: (callback?: (result: { valid: boolean }) => void) => void;
+  validate: (callback?: (result: FormSubmitEvent) => void) => boolean;
   reset: () => void;
-  test: (key: string) => void;
-  submit: (e: FormSubmitEvent) => void;
+  test: (key: string) => boolean | undefined;
+  submit: () => void;
+}
+export interface FormProps extends Omit<FormHTMLAttributes<HTMLFormElement>, "onSubmit" | "onReset" | "onChange"> {
+  layout?: DirectionType;
+  model?: Record<string, any>;
+  name?: string;
+  labelCol?: ColProps;
+  wrapperCol?: ColProps;
+  rules?: Record<string, FormRule[]>;
+  size?: SizeType;
+  theme?: ThemeType;
+  shape?: ShapeType;
+  disabled?: boolean;
+  onSubmit?: (event: FormSubmitEvent) => void;
+  onReset?: () => void;
+  onChange?: (model: Record<string, any>) => void;
 }
 
-export type FormProps = ExtractPropTypes<typeof formProps>;
+const getByPath = (object: Record<string, any>, path: string) => {
+  const keys = path.replace(/\[(\w+)\]/g, ".$1").replace(/^\./, "").split(".");
+  let parent: any = object;
+  for (let index = 0; index < keys.length - 1; index++) parent = parent?.[keys[index]];
+  const key = keys.at(-1)!;
+  return { parent, key, value: parent?.[key] };
+};
 
-const Form = defineComponent({
-  name: "Form",
-  props: formProps,
-  setup(props, { emit, slots, expose }) {
-    const formRef = ref(null);
-    const model = props.model;
-    const formItems = ref<Record<string, any>>({});
-    // const formItems = ref<Map<string, any>>(new Map());
+const Form = forwardRef<FormExpose, FormProps>(function Form({
+  layout = "horizontal",
+  model = {},
+  name,
+  labelCol,
+  wrapperCol,
+  rules,
+  size,
+  theme,
+  shape,
+  disabled,
+  onSubmit,
+  onReset,
+  onChange,
+  className,
+  children,
+  ...rest
+}, ref) {
+  const itemsRef = useRef(new Map<string, FormItemHandle>());
+  const setValue = (path: string, value: any) => {
+    const { parent, key } = getByPath(model, path);
+    if (parent) parent[key] = value;
+    onChange?.(model);
+  };
+  const validate = (callback?: (result: FormSubmitEvent) => void) => {
+    let valid = true;
+    for (const item of itemsRef.current.values()) {
+      if (!item.validate(item.rules ?? rules?.[item.prop])) valid = false;
+    }
+    callback?.({ valid });
+    return valid;
+  };
+  const reset = () => {
+    for (const item of itemsRef.current.values()) {
+      setValue(item.prop, undefined);
+      item.reset();
+    }
+    onReset?.();
+  };
+  const submit = () => onSubmit?.({ valid: validate() });
+  useImperativeHandle(ref, () => ({
+    validate,
+    reset,
+    test: (key) => {
+      const item = itemsRef.current.get(key);
+      return item?.validate(item.rules ?? rules?.[key]);
+    },
+    submit,
+  }));
+  const context = useMemo<FormContextValue>(() => ({
+    model, rules, layout, name, size, shape, theme, disabled, labelCol, wrapperCol,
+    getValue: (path) => getByPath(model, path).value,
+    setValue,
+    register: (item) => itemsRef.current.set(item.prop, item),
+    unregister: (prop) => itemsRef.current.delete(prop),
+  }), [model, rules, layout, name, size, shape, theme, disabled, labelCol, wrapperCol, onChange]);
 
-    const { rules, size, shape, theme, disabled, layout, name, labelCol, wrapperCol } =
-      toRefs(props);
-
-    const updateMode = (prop: string, value = null) => {
-      const { o, k } = getPropByPath(model, prop);
-      // console.log(o, k, value);
-      if (o) {
-        o[k] = value;
-        emit("change", model);
-      }
-    };
-    const getValueFromProp = (path: string) => {
-      const { v } = getPropByPath(model, path);
-      // console.log("v", v);
-      return v;
-    };
-
-    const reset = () => {
-      form.cleaned = false;
-      Object.keys(formItems.value).forEach((prop) => {
-        updateMode(prop);
-        formItems.value[prop].valid = true;
-      });
-      nextTick(() => {
-        form.cleaned = true;
-      });
-      emit("reset");
-    };
-
-    const test = (key: string) => {
-      const item = formItems.value[key];
-      // const item = formItems.value.get(key);
-      if (item) {
-        const rules = item.rules || (props.rules || {})[item.prop];
-        if (rules) {
-          return item.validate(rules);
-        }
-      }
-    };
-
-    const getPropByPath = (obj: any, path: string) => {
-      // console.log("path", obj, path);
-      let tempObj = obj;
-      path = path.replace(/\[(\w+)\]/g, ".$1").replace(/^\./, "");
-      const keyArr = path.split(".");
-      let i = 0;
-      for (let len = keyArr.length; i < len - 1; ++i) {
-        if (!tempObj) break;
-        let key = keyArr[i];
-        tempObj = tempObj[key];
-      }
-      const lastKey = keyArr[keyArr.length - 1];
-      return {
-        o: tempObj,
-        k: lastKey,
-        v: tempObj ? tempObj[lastKey] : null,
-      };
-    };
-    const onSubmit = (e: SubmitEvent) => {
-      e.preventDefault();
-      submit();
-      return false;
-    };
-    const submit = () => {
-      validate(({ valid }) => {
-        emit("submit", { valid });
-      });
-    };
-
-    const validate = (callback?: (result: { valid: boolean }) => void) => {
-      let result = true;
-      Object.keys(formItems.value).forEach((key) => {
-        // let item = formItems.value.get(key);
-        let item = formItems.value[key];
-        const rules = item.rules || (props.rules || {})[item.prop];
-        if (rules) {
-          const valid = item.validate(rules);
-          if (!valid) result = false;
-        }
-      });
-
-      if (typeof callback === "function") {
-        // const modelCopy = JSON.parse(JSON.stringify(model.value || "{}"));
-        // callback({ valid: result, model: modelCopy });
-        callback({ valid: result });
-      }
-    };
-
-    const register = (item: any) => {
-      // formItems.value.set(item.prop, item);
-      formItems.value[item.prop] = item;
-    };
-    const unregister = (item: any) => {
-      delete formItems.value[item.prop];
-      // formItems.value.delete(item.prop);
-    };
-
-    expose({ validate, reset, test, submit });
-
-    const form = reactive({
-      model,
-      layout,
-      name,
-      rules,
-      disabled,
-      size,
-      shape,
-      theme,
-      getValueFromProp,
-      updateMode,
-      register,
-      unregister,
-      labelCol,
-      wrapperCol,
-      cleaned: ref(true),
-    });
-    provide("Form", form);
-
-    return () => {
-      const { layout, size, name } = props;
-
-      const classes = [
-        "k-form",
-        {
-          [`k-form-${layout}`]: layout,
-          "k-form-lg": size === "large",
-          "k-form-sm": size === "small",
-        },
-      ];
-
-      return (
-        <form
-          ref={formRef}
-          class={classes}
-          id={name}
-          onSubmit={onSubmit}
-          onReset={reset}
-          autocomplete="off"
-        >
-          {slots.default?.()}
-        </form>
-      );
-    };
-  },
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    submit();
+  };
+  return (
+    <FormContext.Provider value={context}>
+      <form
+        {...rest}
+        id={name}
+        className={["k-form", `k-form-${layout}`, size === "large" && "k-form-lg", size === "small" && "k-form-sm", className].filter(Boolean).join(" ")}
+        onSubmit={handleSubmit}
+        onReset={(event) => { event.preventDefault(); reset(); }}
+        autoComplete="off"
+      >
+        {children}
+      </form>
+    </FormContext.Provider>
+  );
 });
-
 export default Form;

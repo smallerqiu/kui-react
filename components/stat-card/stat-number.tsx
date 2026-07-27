@@ -1,59 +1,46 @@
-import type { ExtractPropTypes, PropType } from "vue";
-import { defineComponent } from "vue";
-import type { BooleanType } from "../const/types";
-import { getChildren } from "../utils/vnode";
+import type { HTMLAttributes, ReactNode } from "react";
 import CountUp from "./countup";
 
-export const statNumberProps = {
-  modelValue: {
-    type: [Number],
-    required: true,
-    default: 0,
-  },
-  separator: String,
-  duration: {
-    type: Number,
-    default: 1,
-  },
-  precision: { type: Number, default: 0 },
-  type: {
-    type: String as PropType<"rollup" | "countup">,
-    default: "countup",
-  },
-  prefix: String,
-  suffix: String,
-  autoAnimate: { type: Boolean as BooleanType, default: true },
-  autoAnimateOnce: { type: Boolean as BooleanType, default: true },
-};
+export interface StatNumberProps extends Omit<HTMLAttributes<HTMLDivElement>, "prefix"> {
+  value?: number;
+  modelValue?: number;
+  separator?: string;
+  duration?: number;
+  precision?: number;
+  type?: "rollup" | "countup";
+  prefix?: ReactNode;
+  suffix?: ReactNode;
+  autoAnimate?: boolean;
+  autoAnimateOnce?: boolean;
+}
 
-export type StatNumberProps = ExtractPropTypes<typeof statNumberProps>;
-
-const StatNumber = defineComponent({
-  name: "StatNumber",
-  props: statNumberProps,
-  setup(props, { slots }) {
-    return () => {
-      const prefixNode = props.prefix || getChildren(slots.prefix?.());
-      const suffixNode = props.suffix || getChildren(slots.suffix?.());
-      const items = {
-        modelValue: props.modelValue,
-        separator: props.separator,
-        duration: props.duration,
-        precision: props.precision,
-        type: props.type,
-        autoAnimate: props.autoAnimate,
-        autoAnimateOnce: props.autoAnimateOnce,
-      };
-
-      return (
-        <div class="k-stat-number">
-          {prefixNode?.length > 0 && <span class="k-stat-number-prefix">{prefixNode}</span>}
-          <CountUp {...items} />
-          {suffixNode?.length > 0 && <span class="k-stat-number-suffix">{suffixNode}</span>}
-        </div>
-      );
-    };
-  },
-});
-
-export default StatNumber;
+export default function StatNumber({
+  value,
+  modelValue,
+  separator,
+  duration = 1,
+  precision = 0,
+  type = "countup",
+  prefix,
+  suffix,
+  autoAnimate = true,
+  autoAnimateOnce = true,
+  className,
+  ...rest
+}: StatNumberProps) {
+  return (
+    <div {...rest} className={["k-stat-number", className].filter(Boolean).join(" ")}>
+      {prefix != null && <span className="k-stat-number-prefix">{prefix}</span>}
+      <CountUp
+        value={value ?? modelValue ?? 0}
+        separator={separator}
+        duration={duration}
+        precision={precision}
+        type={type}
+        autoAnimate={autoAnimate}
+        autoAnimateOnce={autoAnimateOnce}
+      />
+      {suffix != null && <span className="k-stat-number-suffix">{suffix}</span>}
+    </div>
+  );
+}

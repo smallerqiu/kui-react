@@ -1,72 +1,32 @@
-import {
-    defineComponent,
-    type ExtractPropTypes,
-    onUnmounted,
-    type PropType,
-    provide,
-    ref
-} from "vue";
-import createInstance from "./instance";
+import { createContext, useEffect, useMemo, useRef, type HTMLAttributes } from "react";
+import createInstance, { type ImagePreviewInstance } from "./instance";
 import type { ImagePreviewProps } from "./preview";
 
-const imageGroupProps = {
-  data: Array as PropType<string[]>,
-};
+export interface ImageGroupContextValue {
+  show: (props: ImagePreviewProps) => void;
+  register: (src: string) => void;
+  unregister: (src: string) => void;
+  togglePanel: () => void;
+}
+export const ImageGroupContext = createContext<ImageGroupContextValue | null>(null);
+export interface ImageGroupProps extends HTMLAttributes<HTMLDivElement> { data?: string[] }
 
-export type ImageGroupProps = ExtractPropTypes<typeof imageGroupProps>;
-
-const ImageGroup = defineComponent({
-  name: "ImageGroup",
-  props: imageGroupProps,
-  setup(props, { slots }) {
-    const data = ref(props.data || []);
-    const preview = ref();
-    const show = (props: ImagePreviewProps, slots: any) => {
-      if (!preview.value) {
-        props.data = data.value;
-        preview.value = createInstance({ ...props }, slots);
-      }
-      preview.value.show(props);
-    };
-    const togglePanel = () => {
-      if (preview.value) {
-        preview.value.togglePanel();
-      }
-    };
-
-    const register = (item: string) => {
-      data.value.push(item);
-    };
-
-    const unregister = (item: string) => {
-      const index = data.value.indexOf(item);
-      if (index >= 0) {
-        data.value.splice(index, 1);
-      }
-    };
-    const destroy = () => {
-      if (preview.value) {
-        preview.value.destroy();
-        preview.value = null;
-      }
-    };
-
-    provide("ImageGroup", {
-      show,
-      destroy,
-      register,
-      unregister,
-      data,
-      togglePanel,
-    });
-
-    onUnmounted(() => {
-      destroy();
-    });
-
-    return () => {
-      return <div class="k-image-group">{slots.default?.()}</div>;
-    };
-  },
-}) 
-export default ImageGroup;
+export default function ImageGroup({ data = [], className, children, ...rest }: ImageGroupProps) {
+  const sourcesRef = useRef([...data]);
+  const previewRef = useRef<ImagePreviewInstance | null>(null);
+  useEffect(() => () => previewRef.current?.destroy(), []);
+  const context = useMemo<ImageGroupContextValue>(() => ({
+    show(options) {
+      if (!previewRef.current) previewRef.current = createInstance({ ...options, data: sourcesRef.current });
+      previewRef.current.show({ ...options, data: sourcesRef.current });
+    },
+    register(src) { if (src && !sourcesRef.current.includes(src)) sourcesRef.current.push(src); },
+    unregister(src) { sourcesRef.current = sourcesRef.current.filter((item) => item !== src); },
+    togglePanel() { previewRef.current?.togglePanel(); },
+  }), []);
+  return (
+    <ImageGroupContext.Provider value={context}>
+      <div {...rest} className={["k-image-group", className].filter(Boolean).join(" ")}>{children}</div>
+    </ImageGroupContext.Provider>
+  );
+}

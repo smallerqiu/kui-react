@@ -1,122 +1,56 @@
 import { CircleAlert, CircleCheck, CircleQuestionMark, CircleX, Info } from "kui-icons";
-import { computed, defineComponent, inject, ref, type PropType } from "vue";
+import { useContext, useState } from "react";
 import { Button } from "../button";
+import { ConfigContext } from "../config";
 import Icon, { type IconType } from "../icon";
 import zhCN from "../locale/zh-CN";
 import Modal from "./modal";
-export default defineComponent({
-  name: "Toast",
-  props: {
-    title: String,
-    okText: String,
-    cancelText: String,
-    content: String,
-    color: String,
-    icon: Array as PropType<IconType[]>,
-    onOk: Function,
-    onCancel: Function,
-    type: {
-      type: String as PropType<"info" | "success" | "error" | "warning" | "confirm">,
-      default: "info",
-    },
-  },
-  setup(ps, { expose, emit }) {
-    const injectedLocale = inject<Record<string, any>>("locale", zhCN);
 
-    const locale = computed(() => {
-      return injectedLocale instanceof Object && "value" in injectedLocale
-        ? injectedLocale.value
-        : injectedLocale;
-    });
-    const loading = ref(false);
-    const visible = ref(false);
-    const isPromise = (obj: any): boolean => {
-      return typeof obj === "object" && typeof obj.then === "function";
-    };
-    const show = () => {
-      visible.value = true;
-    };
-    const hide = () => {
-      visible.value = false;
-      emit("destroy");
-    };
+export type ToastType = "info" | "success" | "error" | "warning" | "confirm";
+export interface ToastProps {
+  title?: React.ReactNode;
+  okText?: string;
+  cancelText?: string;
+  content?: React.ReactNode;
+  color?: string;
+  icon?: IconType[];
+  onOk?: () => void | Promise<unknown>;
+  onCancel?: () => void;
+  onDestroy?: () => void;
+  type?: ToastType;
+}
 
-    expose({
-      show,
-      hide,
-    });
-    const ok = () => {
-      let { onOk } = ps;
-      let fun = onOk ? onOk() : {};
-      if (isPromise(fun)) {
-        loading.value = true;
-        fun
-          .then(() => {
-            hide();
-          })
-          .catch(() => {});
-      } else {
-        hide();
+const icons = { info: Info, error: CircleX, success: CircleCheck, warning: CircleAlert, confirm: CircleQuestionMark };
+
+export default function Toast({
+  title, okText, cancelText, content, color, icon, onOk, onCancel, onDestroy, type = "info",
+}: ToastProps) {
+  const { locale } = useContext(ConfigContext);
+  const messages = (locale ?? zhCN)?.k?.common;
+  const [open, setOpen] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const hide = () => { setOpen(false); setTimeout(() => onDestroy?.(), 300); };
+  const ok = async () => {
+    try {
+      const result = onOk?.();
+      if (result && typeof (result as Promise<unknown>).then === "function") {
+        setLoading(true);
+        await result;
       }
-    };
-    const cancel = () => {
-      let { onCancel } = ps;
-      typeof onCancel == "function" && onCancel();
       hide();
-    };
-
-    return () => {
-      //icons
-      let { title, content, color, type, icon, cancelText, okText } = ps;
-      let icons = {
-        info: Info,
-        error: CircleX,
-        success: CircleCheck,
-        warning: CircleAlert,
-        confirm: CircleQuestionMark,
-      };
-      //header
-      let header = (
-        <div class="k-toast-header">
-          {type || icon ? (
-            <Icon class="k-toast-icon" type={icon || icons[type]} color={color} />
-          ) : null}
-          <div class="k-toast-title">{title}</div>
-        </div>
-      );
-
-      //body
-      let body = <div class="k-toast-content">{content}</div>;
-      //footer
-      let footerNode = [
-        <Button type="primary" loading={loading.value} onClick={ok}>
-          {okText || locale.value?.k.common.ok}
-        </Button>,
-      ];
-
-      if (type == "confirm") {
-        footerNode.unshift(
-          <Button onClick={cancel}> {cancelText || locale.value?.k.common.cancel}</Button>
-        );
-      }
-      let footer = <div class="k-toast-footer">{footerNode}</div>;
-
-      let classes = [
-        "k-modal k-toast",
-        {
-          [`k-toast-${type}`]: icons[type] != undefined,
-        },
-      ];
-      return (
-        <Modal
-          class={classes}
-          v-model={visible.value}
-          maskClosable={false}
-          v-slots={{
-            content: () => [header, body, footer],
-          }}
-        ></Modal>
-      );
-    };
-  },
-});
+    } catch { setLoading(false); }
+  };
+  const cancel = () => { onCancel?.(); hide(); };
+  const body = <>
+    <div className="k-toast-header">
+      <Icon className="k-toast-icon" type={icon ?? icons[type]} color={color} />
+      <div className="k-toast-title">{title}</div>
+    </div>
+    <div className="k-toast-content">{content}</div>
+    <div className="k-toast-footer">
+      {type === "confirm" && <Button onClick={cancel}>{cancelText ?? messages?.cancel}</Button>}
+      <Button type="primary" loading={loading} onClick={ok}>{okText ?? messages?.ok}</Button>
+    </div>
+  </>;
+  return <Modal open={open} className={["k-toast", `k-toast-${type}`].join(" ")} maskClosable={false} content={body} onClose={hide} />;
+}

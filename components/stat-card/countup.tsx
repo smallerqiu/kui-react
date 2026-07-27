@@ -1,64 +1,60 @@
-import { defineComponent, onMounted, ref, watch, type PropType } from "vue";
+import { useEffect, useRef, type HTMLAttributes } from "react";
 import { CountUp, type CountUpOptions } from "./utils/countup";
 import { Odometer } from "./utils/odometer";
-const CountUpNumber = defineComponent({
-  name: "CountUpNumber",
-  props: {
-    modelValue: {
-      type: [Number],
-      required: true,
-    },
-    separator: { type: String, default: "," },
-    duration: {
-      type: Number,
-      default: 1.2,
-    },
-    precision: { type: Number, default: 0 },
-    type: {
-      type: String as PropType<"rollup" | "countup">,
-      default: "countup",
-    },
-    autoAnimate: Boolean,
-    autoAnimateOnce: Boolean,
-  },
-  setup(props) {
-    const el = ref<HTMLElement>();
-    let countUp: CountUp;
-    onMounted(() => {
-      if (el.value) {
-        const options: CountUpOptions = {
-          duration: props.duration,
-          separator: props.separator,
-          decimalPlaces: props.precision,
-          autoAnimate: props.autoAnimate,
-          autoAnimateOnce: props.autoAnimateOnce,
-        };
-        if (props.type === "rollup") {
-          options.plugin = new Odometer({ duration: props.duration, lastDigitDelay: 0 });
-        }
-        countUp = new CountUp(el.value, props.modelValue, options);
-        countUp.start();
-      }
-    });
-    watch(
-      () => props.modelValue,
-      (newVal) => {
-        if (countUp) {
-          countUp.update(newVal);
-        }
-      }
-    );
-    watch(
-      () => props.precision,
-      (newVal) => {
-        if (countUp) {
-          countUp.options.decimalPlaces = newVal;
-        }
-      }
-    );
 
-    return () => <span class="k-stat-countup-number" ref={el}></span>;
-  },
-});
+export interface CountUpNumberProps extends HTMLAttributes<HTMLSpanElement> {
+  value?: number;
+  modelValue?: number;
+  separator?: string;
+  duration?: number;
+  precision?: number;
+  type?: "rollup" | "countup";
+  autoAnimate?: boolean;
+  autoAnimateOnce?: boolean;
+}
 
-export default CountUpNumber;
+export default function CountUpNumber({
+  value,
+  modelValue,
+  separator = ",",
+  duration = 1.2,
+  precision = 0,
+  type = "countup",
+  autoAnimate = false,
+  autoAnimateOnce = false,
+  className,
+  ...rest
+}: CountUpNumberProps) {
+  const elementRef = useRef<HTMLSpanElement>(null);
+  const countRef = useRef<CountUp | null>(null);
+  const currentValue = value ?? modelValue ?? 0;
+
+  useEffect(() => {
+    if (!elementRef.current) return;
+    const options: CountUpOptions = {
+      duration,
+      separator,
+      decimalPlaces: precision,
+      autoAnimate,
+      autoAnimateOnce,
+      plugin: type === "rollup" ? new Odometer({ duration, lastDigitDelay: 0 }) : undefined,
+    };
+    const count = new CountUp(elementRef.current, currentValue, options);
+    countRef.current = count;
+    if (!autoAnimate) count.start();
+    return () => {
+      count.onDestroy();
+      if (countRef.current === count) countRef.current = null;
+    };
+  }, [autoAnimate, autoAnimateOnce, duration, separator, type]);
+
+  useEffect(() => {
+    countRef.current?.update(currentValue);
+  }, [currentValue]);
+
+  useEffect(() => {
+    if (countRef.current) countRef.current.options.decimalPlaces = precision;
+  }, [precision]);
+
+  return <span {...rest} ref={elementRef} className={["k-stat-countup-number", className].filter(Boolean).join(" ")} />;
+}
