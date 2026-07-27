@@ -46,7 +46,6 @@ const InputBox: React.FC<InputBoxProps> = ({
   ]
     .filter(Boolean)
     .join(" ");
-
   return (
     <input
       ref={inputRef}

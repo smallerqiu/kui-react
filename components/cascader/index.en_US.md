@@ -8,7 +8,7 @@ A cascading selection box.
 - Ideal for selecting from large datasets by separating them into multiple hierarchical levels for easier navigation.
 - Offers a better user experience compared to the Select component by allowing selections to be completed within a single floating layer.
 
-## Code Demos
+## Examples
 
 [Basic](./demo/basic.tsx)
 

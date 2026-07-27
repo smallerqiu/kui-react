@@ -5,6 +5,15 @@ import anchor from "markdown-it-anchor";
 import path from "path";
 import { type Plugin } from "vite";
 
+interface LiveDemo {
+  component: string;
+  title: string;
+  source: string;
+  direction: string;
+  description: string;
+  localModules: string[];
+}
+
 export default function vitePluginKuiMd(): Plugin {
   const markdown: MarkdownIt = new MarkdownIt({
     html: true,
@@ -17,7 +26,7 @@ export default function vitePluginKuiMd(): Plugin {
     },
   }).use(anchor, {
     level: 2,
-    slugify: (string: string) => string.toLocaleLowerCase().trim().split(" ").join("-"),
+    slugify: (value: string) => value.toLocaleLowerCase().trim().split(" ").join("-"),
     permalink: anchor.permalink.headerLink(),
     permalinkClass: "anchor",
     permalinkSymbol: "#",
@@ -31,45 +40,74 @@ export default function vitePluginKuiMd(): Plugin {
     transform(code, id) {
       if (!id.endsWith(".md")) return null;
 
-      const liveDemos: Array<{ component: string; title: string; source: string }> = [];
-
-      const demoReg = /\[(.*?)\]\((.*?\.tsx)(?:\?show=(.*?))?\)\s*\n((?:\s*-\s+.*(?:\n|$))+)/g;
-
-      let processedMarkdown = code.replace(
+      const liveDemos: LiveDemo[] = [];
+      const demoReg =
+        /\[(.*?)\]\((.*?\.tsx)(?:\?show=([^)]*?))?\)(?:\s*\n((?:\s*-\s+.*(?:\n|$))+))?/g;
+      const processedMarkdown = code.replace(
         demoReg,
-        (_, title, src, _direction = "horizontal", descBlock) => {
+        (_, title: string, src: string, direction = "horizontal", descBlock = "") => {
           const absolutePath = path.resolve(path.dirname(id), src);
-          const demoCode = fs.readFileSync(absolutePath, "utf-8").trim();
-          const highlighted = hljs.highlight(demoCode, { language: "html" }).value;
-          const renderedDescription = markdown.render(descBlock.replace(/-/g, ""));
-          return `<section class="markdown-body k-demo-container"><div class="k-desc"><div class="k-desc-content"><h3>${markdown.utils.escapeHtml(title)}</h3>${renderedDescription}</div></div><div class="k-code-box"><pre><code class="hljs language-html">${highlighted}</code></pre></div></section>`;
+          const source = fs.readFileSync(absolutePath, "utf-8");
+          const localModules = Array.from(
+            source.matchAll(/(?:from\s+|import\s+)["'](\.[^"']+)["']/g),
+            (match) => match[1]
+          ).filter((specifier, index, list) => list.indexOf(specifier) === index);
+          const description = descBlock ? markdown.render(descBlock.replace(/^\s*-\s?/gm, "")) : "";
+          const index = liveDemos.length;
+          liveDemos.push({ component: src, title, source, direction, description, localModules });
+          return `KUI_LIVE_DEMO_${index}`;
         }
       );
 
-      const jsxReg = /\[(.*?)\]\((.*?\.tsx)\)/g;
-      processedMarkdown = processedMarkdown.replace(jsxReg, (_, title, src) => {
-        const absolutePath = path.resolve(path.dirname(id), src);
-        const index = liveDemos.length;
-        liveDemos.push({ component: src, title, source: fs.readFileSync(absolutePath, "utf-8") });
-        return `KUI_LIVE_DEMO_${index}`;
-      });
-
-      // fs.writeFileSync(path.join(__dirname, "demo.md"), processedMarkdown);
       const mainHtml = markdown.render(processedMarkdown);
       const parts = mainHtml.split(/KUI_LIVE_DEMO_(\d+)/g);
-      const imports = liveDemos
+      const componentImports = liveDemos
         .map((demo, index) => `import LiveDemo${index} from ${JSON.stringify(demo.component)};`)
         .join("\n");
+      const moduleImports: string[] = [];
+      liveDemos.forEach((demo, demoIndex) => {
+        demo.localModules.forEach((specifier, moduleIndex) => {
+          if (/\.(?:css|less|scss|sass)$/.test(specifier)) return;
+          const joinedSpecifier = path.posix.join(path.posix.dirname(demo.component), specifier);
+          const resolvedSpecifier = joinedSpecifier.startsWith(".")
+            ? joinedSpecifier
+            : `./${joinedSpecifier}`;
+          moduleImports.push(
+            `import * as LiveDemo${demoIndex}Module${moduleIndex} from ${JSON.stringify(resolvedSpecifier)};`
+          );
+        });
+      });
+      const moduleMaps = liveDemos.map((demo, demoIndex) => {
+        const entries = demo.localModules.map((specifier, moduleIndex) => {
+          const value = /\.(?:css|less|scss|sass)$/.test(specifier)
+            ? "{}"
+            : `LiveDemo${demoIndex}Module${moduleIndex}`;
+          return `${JSON.stringify(specifier)}: ${value}`;
+        });
+        return `{ ${entries.join(", ")} }`;
+      });
       const children = parts
-        .map((part, index) =>
-          index % 2 === 0
-            ? `createElement("div", { key: ${index}, dangerouslySetInnerHTML: { __html: ${JSON.stringify(part)} } })`
-            : `createElement(Demo, { key: ${index}, title: ${JSON.stringify(liveDemos[Number(part)].title)}, source: ${JSON.stringify(liveDemos[Number(part)].source)} }, createElement(LiveDemo${Number(part)}))`
-        )
+        .map((part, index) => {
+          if (index % 2 === 0) {
+            return `createElement("div", { key: ${index}, dangerouslySetInnerHTML: { __html: ${JSON.stringify(part)} } })`;
+          }
+          const demoIndex = Number(part);
+          const demo = liveDemos[demoIndex];
+          return `createElement(Demo, {
+            key: ${index},
+            id: ${JSON.stringify(`${path.basename(id, ".md")}-${demoIndex}`)},
+            title: ${JSON.stringify(demo.title)},
+            descriptionHtml: ${JSON.stringify(demo.description)},
+            source: ${JSON.stringify(demo.source)},
+            direction: ${JSON.stringify(demo.direction || "horizontal")},
+            modules: ${moduleMaps[demoIndex]}
+          }, createElement(LiveDemo${demoIndex}))`;
+        })
         .join(",\n");
       const result = `import { createElement } from "react";
 import Demo from "/src/components/demo/demo.tsx";
-${imports}
+${componentImports}
+${moduleImports.join("\n")}
 export default function MarkdownPage() {
   return createElement("div", { className: "markdown-body" }, ${children});
 }`;
