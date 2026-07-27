@@ -1,6 +1,4 @@
-import { Button } from "../../../components/button";
-import message from "../../../components/message";
-import theme from "../../../components/utils/theme";
+import { Button, message, theme } from "react-kui";
 export default function Mode() {
   return (
     <Button

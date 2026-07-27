@@ -1,6 +1,5 @@
 import { Link } from "react-router";
-import Card from "../../../components/card";
-import Icon from "../../../components/icon";
+import { Card, Icon } from "react-kui";
 import { useDocs } from "../../context";
 import { navData } from "../../menu";
 

@@ -1,7 +1,7 @@
 import { Copy, ListChevronsDownUp, ListChevronsUpDown } from "kui-icons";
 import { useState, type ReactNode } from "react";
-import { Button } from "../../../components/button";
-import { copyToClipboard } from "../../../components/utils/share";
+import { Button } from "react-kui";
+import { copyToClipboard } from "react-kui/utils/share";
 
 export interface DemoProps {
   title?: string;

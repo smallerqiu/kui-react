@@ -1,8 +1,6 @@
 import { ArrowRight } from "kui-icons";
 import { Link } from "react-router";
-import { Button } from "../../components/button";
-import Icon from "../../components/icon";
-import Layout from "../../components/layout";
+import { Button, Icon, Layout } from "react-kui";
 import "../assets/css/home.less";
 import AppFooter from "../components/app-footer";
 import AppHeader from "../components/app-header";

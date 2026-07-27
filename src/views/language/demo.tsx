@@ -2,27 +2,32 @@ import dayjs from "dayjs";
 import "dayjs/locale/de";
 import "dayjs/locale/zh-cn";
 import { useRef, useState } from "react";
-import { Button } from "../../../components/button";
-import ConfigProvider from "../../../components/config";
-import DatePicker from "../../../components/date-picker";
-import Drawer from "../../../components/drawer";
-import { Form, FormItem } from "../../../components/form";
-import { KImage } from "../../../components/image";
-import { Input } from "../../../components/input";
-import InputNumber from "../../../components/input-number";
-import de from "../../../components/locale/de";
-import en from "../../../components/locale/en";
-import zh from "../../../components/locale/zh-CN";
-import message from "../../../components/message";
-import Modal, { modal } from "../../../components/modal";
-import Page from "../../../components/page";
-import Popconfirm from "../../../components/popconfirm";
-import { RadioGroup } from "../../../components/radio";
-import { Select } from "../../../components/select";
-import Space from "../../../components/space";
-import Table from "../../../components/table";
-import TreeSelect from "../../../components/tree-select";
-import Upload, { type UploadFile } from "../../../components/upload";
+import {
+  Button,
+  ConfigProvider,
+  DatePicker,
+  Drawer,
+  Form,
+  FormItem,
+  Input,
+  InputNumber,
+  KImage,
+  message,
+  modal,
+  Modal,
+  Page,
+  Popconfirm,
+  RadioGroup,
+  Select,
+  Space,
+  Table,
+  TreeSelect,
+  Upload,
+  type UploadFile,
+} from "react-kui";
+import de from "react-kui/locale/de";
+import en from "react-kui/locale/en";
+import zh from "react-kui/locale/zh-CN";
 const locales = { en, zh, de },
   columns = [
     { title: "Name", key: "name" },

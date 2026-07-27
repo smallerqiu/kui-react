@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "/"),
-        "kui-react": path.resolve(__dirname, "./components"),
+        "react-kui": path.resolve(__dirname, "./components"),
         // "kui-icons": `${import.meta.env.VITE_APP_IMPORT_URL}/js/kui-icons.esm.js`,
       },
       extensions: [".js", ".ts", ".jsx", ".tsx", ".json", "md"],

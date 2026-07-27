@@ -1,11 +1,9 @@
 import { ChevronLeft, ChevronRight, Menu as MenuIcon, X } from "kui-icons";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, useLocation } from "react-router";
-import { Button } from "../../components/button";
-import Icon from "../../components/icon";
-import { Content, Layout, Sider } from "../../components/layout";
+import { Button, Content, Icon, Layout, Sider } from "react-kui";
 import { useDocs } from "../context";
-import { navData, routeData } from "../menu";
+import { navData, routeData, type RouteItem } from "../menu";
 import AppHeader from "./app-header";
 
 export default function AppLayout({ children }: { children: ReactNode }) {
@@ -16,7 +14,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const index = routeData.findIndex((item) => item.name === currentName);
   const prev = routeData[index - 1];
   const next = routeData[index + 1];
-  const pathFor = (item: any) =>
+  const pathFor = (item: RouteItem) =>
     `/${item.key === "guide" ? "guide" : "components"}/${item.name}${lang === "en" ? "-en" : ""}`;
   useEffect(() => {
     const current = routeData[index];

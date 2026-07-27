@@ -1,6 +1,4 @@
-import { KImage } from "../../../components/image";
-import Space from "../../../components/space";
-import Switch from "../../../components/switch";
+import { KImage, KSwitch as Switch, Space } from "react-kui";
 export default function SpecialComponents() {
   return (
     <Space vertical>

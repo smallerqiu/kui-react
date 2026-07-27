@@ -2,23 +2,34 @@ import { ChevronLeft, ChevronRight, Heart, House, LogoKui, Mail, Settings } from
 // import {} from 'react-kui';
 
 import { useState } from "react";
-import { Breadcrumb, BreadcrumbItem } from "../../../components/breadcrumb";
-import { Button } from "../../../components/button";
-import { CheckboxGroup } from "../../../components/checkbox";
-import type { ShapeType, SizeType, ThemeType } from "../../../components/const/types";
-import DatePicker from "../../../components/date-picker";
-import { Form, FormItem } from "../../../components/form";
-import Icon from "../../../components/icon";
-import { Input, TextArea } from "../../../components/input";
-import InputNumber from "../../../components/input-number";
-import Layout, { Content, Footer, Sider } from "../../../components/layout";
-import { Menu } from "../../../components/menu";
-import Page from "../../../components/page";
-import { RadioGroup } from "../../../components/radio";
-import { Option, Select } from "../../../components/select";
-import Space from "../../../components/space";
-import Switch from "../../../components/switch";
-import Tag from "../../../components/tag";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  Button,
+  CheckboxGroup,
+  Content,
+  DatePicker,
+  Footer,
+  Form,
+  FormItem,
+  Icon,
+  Input,
+  InputNumber,
+  KSwitch as Switch,
+  Layout,
+  Menu,
+  Option,
+  Page,
+  RadioGroup,
+  Select,
+  Sider,
+  Space,
+  Tag,
+  TextArea,
+  type ShapeType,
+  type SizeType,
+  type ThemeType,
+} from "react-kui";
 const sideItems = [
     { key: "1-1", icon: House, title: "Home" },
     { key: "1-2", icon: Heart, title: "Data statistics" },

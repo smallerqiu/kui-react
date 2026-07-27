@@ -1,4 +1,4 @@
-import { lazy, Suspense, type ComponentType } from "react";
+import { createElement, lazy, Suspense, type ComponentType, type ReactNode } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router";
 import AppLayout from "./components/app-layout";
 import Home from "./views";
@@ -6,7 +6,7 @@ import Home from "./views";
 type PageModule = { default: ComponentType };
 const componentDocs = import.meta.glob<PageModule>("../components/**/index*.md");
 const guideDocs = import.meta.glob<PageModule>("./views/**/*.md");
-const pages = new Map<string, ComponentType>();
+const pages = new Map<string, ReactNode>();
 for (const [file, loader] of [...Object.entries(componentDocs), ...Object.entries(guideDocs)]) {
   const isComponent = file.startsWith("../components/");
   const part = isComponent
@@ -15,16 +15,16 @@ for (const [file, loader] of [...Object.entries(componentDocs), ...Object.entrie
   const english = file.includes("en_US");
   pages.set(
     `/${isComponent ? "components" : "guide"}/${part}${english ? "-en" : ""}`,
-    lazy(loader)
+    createElement(lazy(loader))
   );
 }
 
 function RoutedPage() {
   const location = useLocation();
-  const Page = pages.get(location.pathname);
-  return Page ? (
+  const page = pages.get(location.pathname);
+  return page ? (
     <Suspense fallback={<div className="content-inner">Loading...</div>}>
-      <Page />
+      {page}
     </Suspense>
   ) : (
     <Navigate to="/guide/quick-started-en" replace />

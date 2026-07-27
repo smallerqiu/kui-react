@@ -2,16 +2,19 @@ import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
 import { useMemo } from "react";
 import { BrowserRouter } from "react-router";
-import ConfigProvider from "../components/config";
-import uiEn from "../components/locale/en";
-import uiZh from "../components/locale/zh-CN";
+import { ConfigProvider } from "react-kui";
+import uiEn from "react-kui/locale/en";
+import uiZh from "react-kui/locale/zh-CN";
 import { DocsContext } from "./context";
 import localEn from "./lang/en";
 import localZh from "./lang/zh";
 import AppRouter from "./router";
 
-const read = (object: any, path: string) =>
-  path.split(".").reduce((value, key) => value?.[key], object);
+const read = (object: unknown, path: string): unknown =>
+  path.split(".").reduce<unknown>((value, key) => {
+    if (typeof value !== "object" || value === null) return undefined;
+    return (value as Record<string, unknown>)[key];
+  }, object);
 
 export default function App() {
   const lang = localStorage.getItem("lang") || "en";
@@ -23,7 +26,10 @@ export default function App() {
   const context = {
     lang,
     locale,
-    t: (key: string, fallback?: string) => read(locale, key) ?? fallback ?? key,
+    t: (key: string, fallback?: string) => {
+      const value = read(locale, key);
+      return typeof value === "string" ? value : (fallback ?? key);
+    },
     changeLang: () => {
       localStorage.setItem("lang", lang === "en" ? "zh" : "en");
       window.location.reload();

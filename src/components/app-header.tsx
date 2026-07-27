@@ -1,8 +1,7 @@
 import { Languages, LogoGithub, LogoKui, Moon, Search, Sun } from "kui-icons";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { Button } from "../../components/button";
-import Icon from "../../components/icon";
+import { Button, Icon } from "react-kui";
 import { version } from "../../package.json";
 import { useDocs } from "../context";
 import { routeData } from "../menu";
@@ -69,7 +68,7 @@ export default function AppHeader() {
           <a
             target="_blank"
             className="k-btn k-btn-fill k-btn-icon-only"
-            href="https://github.com/smallerqiu/kui-react"
+            href="https://github.com/smallerqiu/react-kui"
             rel="noreferrer"
           >
             <Icon type={LogoGithub} />

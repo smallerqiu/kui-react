@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 
 export interface DocsContextValue {
   lang: string;
-  locale: Record<string, any>;
+  locale: Record<string, unknown>;
   t: (key: string, fallback?: string) => string;
   changeLang: () => void;
 }
