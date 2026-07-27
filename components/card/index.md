@@ -24,5 +24,5 @@
 | -------- | ---------------- | ------------ | ------ |
 | title    | 卡片的标题       | string、slot | -      |
 | icon     | 卡片标题的图标   | string       | -      |
-| bordered | 卡片是否显示边框 | bool      | true   |
+| bordered | 卡片是否显示边框 | bool         | true   |
 | extra    | 卡片标题扩展     | slot         | -      |

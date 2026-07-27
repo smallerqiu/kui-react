@@ -24,5 +24,5 @@ The most basic card container, can carry text, lists, images, paragraphs, often 
 | -------- | ---------------------------------- | ------------ | ------- |
 | title    | Card title                         | string, slot | -       |
 | icon     | Icon for the card title            | string       | -       |
-| bordered | Whether the card displays a border | bool      | true    |
+| bordered | Whether the card displays a border | bool         | true    |
 | extra    | Card title extension               | slot         | -       |
