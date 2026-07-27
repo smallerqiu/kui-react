@@ -10,15 +10,15 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.vue)
+[基本用法](./demo/basic.tsx)
 
 - 通过 `href` 添加跳转链接
 
-[设置图标](./demo/icon.vue)
+[设置图标](./demo/icon.tsx)
 
 - 通过 `icon` 设置图标
 
-[分隔符](./demo/separator.vue)
+[分隔符](./demo/separator.tsx)
 
 - 通过 `separator` 设置分隔符
 

@@ -10,15 +10,15 @@ Displays the current page's position in the system hierarchy and allows navigati
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - Add navigation links via `href`.
 
-[Set Icon](./demo/icon.vue)
+[Set Icon](./demo/icon.tsx)
 
 - Set the icon via `icon`.
 
-[Separator](./demo/separator.vue)
+[Separator](./demo/separator.tsx)
 
 - Set the separator via `separator`.
 

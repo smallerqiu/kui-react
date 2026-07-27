@@ -9,15 +9,15 @@ Use this feature cautiously when the visible area of the page is small to avoid 
 
 ## Examples
 
-[Basic Usage](./demo/basic.vue)
+[Basic Usage](./demo/basic.tsx)
 
 - The simplest usage.
 
-[Fixed State Change Callback](./demo/callbacks.vue)
+[Fixed State Change Callback](./demo/callbacks.tsx)
 
 - You can get whether it is fixed.
 
-[Scroll Container](./demo/container.vue)
+[Scroll Container](./demo/container.tsx)
 
 - Use `target` to set the element whose scroll event `Affix` listens to. Defaults to `window`.
 
