@@ -24,7 +24,10 @@ export default function TimeLineItem({
   const dotStyle: CSSProperties = { color };
   return (
     <li {...rest} className={clsx("k-time-line-item", className)}>
-      <div className={clsx("k-time-line-dot", custom && "k-time-line-dot-custom")} style={dotStyle}>
+      <div
+        className={clsx("k-time-line-dot", { "k-time-line-dot-custom": custom })}
+        style={dotStyle}
+      >
         {dot ?? (icon ? <Icon type={icon} /> : <span className="k-time-line-head" />)}
       </div>
       <div className="k-time-line-item-content">

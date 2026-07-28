@@ -68,7 +68,7 @@ function LoadingBar({ ref, height = 2 }: LoadingProps & { ref?: React.Ref<Loadin
   return (
     <div className="k-loading-container" style={{ height }}>
       <div
-        className={clsx("k-loading-line", isError && "k-loading-line-error")}
+        className={clsx("k-loading-line", { "k-loading-line-error": isError })}
         style={lineStyle}
       />
     </div>

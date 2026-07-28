@@ -40,13 +40,13 @@ export default function StatCard({
   ...rest
 }: StatCardProps) {
   return (
-    <div {...rest} className={clsx("k-stat-card", bordered && "k-stat-card-bordered", className)}>
+    <div {...rest} className={clsx("k-stat-card", { "k-stat-card-bordered": bordered }, className)}>
       {title != null && <div className="k-stat-card-title">{title}</div>}
       <div className="k-stat-card-items">
         {items.map((item, index) => (
           <div
             key={index}
-            className={clsx("k-stat-card-item", reverse && "k-stat-card-item-reverse")}
+            className={clsx("k-stat-card-item", { "k-stat-card-item-reverse": reverse })}
           >
             <div className="k-stat-card-item-value">
               <StatNumber

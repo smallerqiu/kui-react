@@ -113,7 +113,7 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
       <div
         {...rest}
         ref={rootRef}
-        className={clsx("k-carousel", vertical && "k-carousel-vertical", className)}
+        className={clsx("k-carousel", { "k-carousel-vertical": vertical }, className)}
         style={{ ...style, height }}
         onMouseEnter={stop}
         onMouseLeave={play}

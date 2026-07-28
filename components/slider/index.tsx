@@ -169,9 +169,11 @@ export default function Slider({
       {...rest}
       className={clsx(
         "k-slider",
-        disabled && "k-slider-disabled",
-        vertical && "k-slider-vertical",
-        reverse && "k-slider-reverse",
+        {
+          "k-slider-disabled": disabled,
+          "k-slider-vertical": vertical,
+          "k-slider-reverse": reverse,
+        },
         className
       )}
     >
@@ -191,8 +193,8 @@ export default function Slider({
                   : { left: `${percent(mark)}%` };
               return (
                 <div key={mark} className="k-slider-mark-item" style={position}>
-                  <span className={clsx("k-slider-mark-dot", active && "is-active")} />
-                  <div className={clsx("k-slider-mark-text", active && "is-active")}>
+                  <span className={clsx("k-slider-mark-dot", { "is-active": active })} />
+                  <div className={clsx("k-slider-mark-text", { "is-active": active })}>
                     {marks[mark]}
                   </div>
                 </div>

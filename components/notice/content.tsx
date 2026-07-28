@@ -37,11 +37,10 @@ export default function Content({
   const alertIcon = icon ?? (type ? icons[type] : undefined);
   return (
     <div
-      className={clsx(
-        `k-${noticeType}-box`,
-        type && `k-${noticeType}-${type}`,
-        alertIcon && "k-notice-has-icon"
-      )}
+      className={clsx(`k-${noticeType}-box`, {
+        [`k-${noticeType}-${type}`]: type,
+        "k-notice-has-icon": alertIcon,
+      })}
     >
       <div className={`k-${noticeType}-content`}>
         {alertIcon && (

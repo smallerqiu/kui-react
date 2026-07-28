@@ -43,8 +43,8 @@ const Space: React.FC<SpaceProps> = ({
       "k-space-compact": compact,
       "k-space-wrap": wrap,
       "k-space-block": block,
+      [`k-space-align-${currentAlign}`]: currentAlign,
     },
-    currentAlign ? `k-space-align-${currentAlign}` : "",
     className
   );
 
@@ -65,11 +65,11 @@ const Space: React.FC<SpaceProps> = ({
   const pre = vertical ? "vertical-" : "";
 
   for (let i = 0; i < childList.length; i++) {
-    const itemClasses = clsx(
-      i === 0 ? `k-space-${pre}first-item` : "",
-      i > 0 && i < childList.length - 1 ? `k-space-${pre}item` : "",
-      i === childList.length - 1 ? `k-space-${pre}last-item` : ""
-    );
+    const itemClasses = clsx({
+      [`k-space-${pre}first-item`]: i === 0,
+      [`k-space-${pre}item`]: i > 0 && i < childList.length - 1,
+      [`k-space-${pre}last-item`]: i === childList.length - 1,
+    });
 
     const p: Record<string, any> = {
       className: itemClasses,

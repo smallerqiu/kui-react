@@ -150,8 +150,10 @@ const Tooltip: React.FC<TooltipProps> = ({
       ref={refPopper}
       className={clsx(
         `k-${preCls}`,
-        color && !isColor(color) ? `k-${preCls}-${color}` : "",
-        isColor(color) ? `k-${preCls}-has-color` : "",
+        {
+          [`k-${preCls}-${color}`]: color && !isColor(color),
+          [`k-${preCls}-has-color`]: isColor(color),
+        },
         `k-${preCls}-has-arrow`
       )}
       style={{

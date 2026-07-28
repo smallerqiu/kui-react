@@ -51,7 +51,7 @@ const LayoutMain: React.FC<LayoutProps> = ({
 
   const classes = clsx(
     `k-${suffixCls}`,
-    (hasSider ?? siderCount > 0) ? `k-${suffixCls}-has-sider` : "",
+    { [`k-${suffixCls}-has-sider`]: hasSider ?? siderCount > 0 },
     className
   );
 

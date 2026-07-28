@@ -231,8 +231,7 @@ export default function Tree({
       {...rest}
       className={clsx(
         "k-tree",
-        showLine && "k-tree-show-line",
-        directory && "k-tree-directory",
+        { "k-tree-show-line": showLine, "k-tree-directory": directory },
         className
       )}
     >
@@ -240,13 +239,12 @@ export default function Tree({
         {visible.map((node, index) => (
           <div
             key={node.key || index}
-            className={clsx(
-              "k-tree-item",
-              node.disabled && "k-tree-item-disabled",
-              dropKey === node.key && "k-tree-item-drop",
-              !showExtra && "k-tree-item-extra-hidden",
-              directory && selected.includes(node.key) && "k-tree-item-selected"
-            )}
+            className={clsx("k-tree-item", {
+              "k-tree-item-disabled": node.disabled,
+              "k-tree-item-drop": dropKey === node.key,
+              "k-tree-item-extra-hidden": !showExtra,
+              "k-tree-item-selected": directory && selected.includes(node.key),
+            })}
             onClick={
               directory
                 ? () => {
@@ -261,7 +259,9 @@ export default function Tree({
             ))}
             {!node.isLeaf ? (
               <span
-                className={clsx("k-tree-arrow", expanded.includes(node.key) && "k-tree-arrow-open")}
+                className={clsx("k-tree-arrow", {
+                  "k-tree-arrow-open": expanded.includes(node.key),
+                })}
                 onClick={(event) => {
                   event.stopPropagation();
                   void expand(node);
@@ -292,10 +292,9 @@ export default function Tree({
               />
             )}
             <span
-              className={clsx(
-                "k-tree-title",
-                selected.includes(node.key) && "k-tree-title-selected"
-              )}
+              className={clsx("k-tree-title", {
+                "k-tree-title-selected": selected.includes(node.key),
+              })}
               draggable={draggable && !node.disabled}
               onClick={!directory ? () => selectNode(node) : undefined}
               onDragStart={(event) => {

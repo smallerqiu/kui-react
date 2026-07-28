@@ -56,7 +56,7 @@ const Icon = forwardRef<HTMLElement, IconProps>(function Icon(
     <i
       {...rest}
       ref={ref}
-      className={clsx("k-icon", spin && "k-load-loop", className)}
+      className={clsx("k-icon", { "k-load-loop": spin }, className)}
       style={iconStyle}
       onClick={handleClick}
     >

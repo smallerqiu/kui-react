@@ -296,10 +296,9 @@ export default function DatePicker({
         {Array.from({ length: 12 }, (_, index) => yearStart + index).map((year) => (
           <div
             key={year}
-            className={clsx(
-              "k-picker-year-item",
-              panelDate.year() === year && "k-picker-year-selected"
-            )}
+            className={clsx("k-picker-year-item", {
+              "k-picker-year-selected": panelDate.year() === year,
+            })}
             onClick={() => {
               const date = panelDate.year(year);
               setPanelDate(date);
@@ -319,10 +318,9 @@ export default function DatePicker({
         {months.map((label, month) => (
           <div
             key={label}
-            className={clsx(
-              "k-picker-month-item",
-              panelDate.month() === month && "k-picker-month-selected"
-            )}
+            className={clsx("k-picker-month-item", {
+              "k-picker-month-selected": panelDate.month() === month,
+            })}
             onClick={() => {
               const date = panelDate.month(month);
               setPanelDate(date);
@@ -354,16 +352,15 @@ export default function DatePicker({
           return (
             <div
               key={date.format("YYYY-MM-DD")}
-              className={clsx(
-                "k-picker-day",
-                !date.isSame(panelDate, "month") && "k-picker-day-out",
-                date.isSame(dayjs(), "day") && "k-picker-is-today",
-                selected && "k-picker-day-selected",
-                inRange && "k-picker-day-in",
-                draft[0]?.isSame(date, "day") && "k-picker-range-start",
-                draft[1]?.isSame(date, "day") && "k-picker-range-end",
-                off && "k-picker-day-disabled"
-              )}
+              className={clsx("k-picker-day", {
+                "k-picker-day-out": !date.isSame(panelDate, "month"),
+                "k-picker-is-today": date.isSame(dayjs(), "day"),
+                "k-picker-day-selected": selected,
+                "k-picker-day-in": inRange,
+                "k-picker-range-start": draft[0]?.isSame(date, "day"),
+                "k-picker-range-end": draft[1]?.isSame(date, "day"),
+                "k-picker-day-disabled": off,
+              })}
               onClick={() =>
                 choose(
                   date.hour(panelDate.hour()).minute(panelDate.minute()).second(panelDate.second())
@@ -389,11 +386,10 @@ export default function DatePicker({
               return (
                 <li
                   key={number}
-                  className={clsx(
-                    "k-picker-time-item",
-                    number === selected && "k-picker-day-selected",
-                    disabledTime(candidate.toDate()) && "k-picker-time-disabled"
-                  )}
+                  className={clsx("k-picker-time-item", {
+                    "k-picker-day-selected": number === selected,
+                    "k-picker-time-disabled": disabledTime(candidate.toDate()),
+                  })}
                   onClick={() => {
                     if (disabledTime(candidate.toDate())) return;
                     setPanelDate(candidate);
@@ -428,11 +424,10 @@ export default function DatePicker({
     createPortal(
       <div
         ref={overlayRef}
-        className={clsx(
-          "k-datepicker-overlay",
-          isRange && "k-datepicker-range",
-          hasTime && "k-datepicker-with-time"
-        )}
+        className={clsx("k-datepicker-overlay", {
+          "k-datepicker-range": isRange,
+          "k-datepicker-with-time": hasTime,
+        })}
         style={{
           display: visible ? undefined : "none",
           position: "absolute",
@@ -490,24 +485,25 @@ export default function DatePicker({
       : [placeholder || locale?.k?.datePicker?.placeholder || "Select date"];
   const classes = clsx(
     "k-datepicker",
-    visible && "k-datepicker-opened",
-    !bordered && "k-datepicker-borderless",
-    size === "small" && "k-datepicker-sm",
-    size === "large" && "k-datepicker-lg",
-    disabled && "k-datepicker-disabled",
-    theme === "fill" && "k-datepicker-fill",
-    shape === "circle" && "k-datepicker-circle",
-    shape === "square" && "k-datepicker-square",
+    {
+      "k-datepicker-opened": visible,
+      "k-datepicker-borderless": !bordered,
+      "k-datepicker-sm": size === "small",
+      "k-datepicker-lg": size === "large",
+      "k-datepicker-disabled": disabled,
+      "k-datepicker-fill": theme === "fill",
+      "k-datepicker-circle": shape === "circle",
+      "k-datepicker-square": shape === "square",
+    },
     className
   );
   return (
     <>
       <div {...rest} ref={rootRef} className={classes} style={style} tabIndex={disabled ? -1 : 0}>
         <div
-          className={clsx(
-            "k-datepicker-selection",
-            clearable && values.length && "k-datepicker-has-clear"
-          )}
+          className={clsx("k-datepicker-selection", {
+            "k-datepicker-has-clear": clearable && values.length,
+          })}
           onClick={() => !disabled && setOpen(!visible)}
         >
           {(isRange ? [0, 1] : [0]).map((index) => (

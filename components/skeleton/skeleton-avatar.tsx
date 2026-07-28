@@ -53,11 +53,11 @@ const SkeletonAvatar: React.FC<SkeletonAvatarProps> = ({
     innerStyle.borderRadius = `${radius}px`;
   }
 
-  const innerClasses = clsx(
-    "k-skeleton-avatar",
-    { "k-skeleton-avatar-lg": size === "large", "k-skeleton-avatar-sm": size === "small" },
-    shape && shape !== "round" ? `k-skeleton-avatar-${shape}` : ""
-  );
+  const innerClasses = clsx("k-skeleton-avatar", {
+    "k-skeleton-avatar-lg": size === "large",
+    "k-skeleton-avatar-sm": size === "small",
+    [`k-skeleton-avatar-${shape}`]: shape && shape !== "round",
+  });
 
   return (
     <div className={wrapperClasses} {...rest}>

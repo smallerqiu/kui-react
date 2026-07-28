@@ -24,8 +24,10 @@ class Divider extends React.Component<DividerProps> {
     const classes = clsx(
       "k-divider",
       `k-divider-${type}`,
-      { "k-divider-dashed": dashed },
-      type === "horizontal" && hasText ? `k-divider-with-text-${orientation}` : "",
+      {
+        "k-divider-dashed": dashed,
+        [`k-divider-with-text-${orientation}`]: type === "horizontal" && hasText,
+      },
       className || ""
     );
 

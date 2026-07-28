@@ -34,9 +34,12 @@ const Flex: React.FC<FlexProps> = ({
 
   const classes = clsx(
     "k-flex",
-    { "k-flex-vertical": vertical, "k-flex-wrap": wrap },
-    currentAlign ? `k-flex-align-${currentAlign}` : "",
-    justify ? `k-flex-justify-${justify}` : "",
+    {
+      "k-flex-vertical": vertical,
+      "k-flex-wrap": wrap,
+      [`k-flex-align-${currentAlign}`]: currentAlign,
+      [`k-flex-justify-${justify}`]: justify,
+    },
     className
   );
 

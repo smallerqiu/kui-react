@@ -69,11 +69,10 @@ const Thumb = forwardRef<HTMLDivElement, ThumbProps>(function Thumb(
         aria-valuenow={value}
         aria-disabled={disabled}
         tabIndex={disabled ? undefined : 0}
-        className={clsx(
-          "k-slider-thumb",
-          dragging && "is-dragging",
-          size === "small" && "k-slider-thumb-sm"
-        )}
+        className={clsx("k-slider-thumb", {
+          "is-dragging": dragging,
+          "k-slider-thumb-sm": size === "small",
+        })}
         style={style}
         onMouseDown={(event) => {
           event.preventDefault();

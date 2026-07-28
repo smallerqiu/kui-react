@@ -147,7 +147,7 @@ export default function Anchor({
       <div
         {...rest}
         ref={wrapperRef}
-        className={clsx("k-anchor-wrapper", affix && "k-anchor-affix", className)}
+        className={clsx("k-anchor-wrapper", { "k-anchor-affix": affix }, className)}
       >
         <div className="k-anchor">
           <span className="k-anchor-ink-ball" style={inkStyle} />

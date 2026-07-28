@@ -58,9 +58,12 @@ const Switch: React.FC<SwitchProps> = ({
 
   const classes = clsx(
     "k-switch",
-    { "k-switch-checked": localChecked, "k-switch-disabled": disabled || loading },
-    type ? `k-switch-${type}` : "",
-    { "k-switch-sm": size === "small" },
+    {
+      "k-switch-checked": localChecked,
+      "k-switch-disabled": disabled || loading,
+      [`k-switch-${type}`]: type,
+      "k-switch-sm": size === "small",
+    },
     className
   );
 

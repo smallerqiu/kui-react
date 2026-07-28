@@ -90,7 +90,7 @@ export default function Affix({
 
   return (
     <div {...rest} ref={wrapperRef} style={{ ...style, ...placeholderStyle }}>
-      <div className={clsx("k-affix", fixed && "k-affix-fixed", className)} style={affixStyle}>
+      <div className={clsx("k-affix", { "k-affix-fixed": fixed }, className)} style={affixStyle}>
         {children}
       </div>
     </div>

@@ -158,8 +158,7 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
         className={clsx(
           "k-form",
           `k-form-${layout}`,
-          size === "large" && "k-form-lg",
-          size === "small" && "k-form-sm",
+          { "k-form-lg": size === "large", "k-form-sm": size === "small" },
           className
         )}
         onSubmit={handleSubmit}

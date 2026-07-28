@@ -49,11 +49,11 @@ const SkeletonButton: React.FC<SkeletonButtonProps> = ({
   const innerStyle: React.CSSProperties = {};
   if (width) innerStyle.width = `${width}px`;
 
-  const innerClasses = clsx(
-    "k-skeleton-btn",
-    { "k-skeleton-btn-lg": size === "large", "k-skeleton-btn-sm": size === "small" },
-    shape && shape !== "round" ? `k-skeleton-btn-${shape}` : ""
-  );
+  const innerClasses = clsx("k-skeleton-btn", {
+    "k-skeleton-btn-lg": size === "large",
+    "k-skeleton-btn-sm": size === "small",
+    [`k-skeleton-btn-${shape}`]: shape && shape !== "round",
+  });
 
   return (
     <div className={wrapperClasses} {...rest}>

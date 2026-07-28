@@ -52,7 +52,7 @@ export default function Selector({
   return (
     <div className="k-upload-select">
       <div
-        className={clsx("k-upload-add", dragOver && "k-upload-drag-over")}
+        className={clsx("k-upload-add", { "k-upload-drag-over": dragOver })}
         onClick={() => !disabled && inputRef.current?.click()}
         onDragEnter={
           draggable

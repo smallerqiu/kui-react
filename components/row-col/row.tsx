@@ -23,9 +23,11 @@ const Row: React.FC<RowProps> = ({
 }) => {
   const classes = clsx(
     "k-row",
-    { "k-row-flex": type === "flex" },
-    justify ? `k-row-flex-${justify}` : "",
-    align ? `k-row-flex-${align}` : "",
+    {
+      "k-row-flex": type === "flex",
+      [`k-row-flex-${justify}`]: justify,
+      [`k-row-flex-${align}`]: align,
+    },
     className
   );
 

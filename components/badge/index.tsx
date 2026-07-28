@@ -42,11 +42,10 @@ const Badge: React.FC<BadgeProps> = ({
   if (isStatusType && !displayCount) {
     const isHexColor = color && /^#/.test(color);
 
-    const dotClasses = clsx(
-      "k-badge-status-dot",
-      status ? `k-badge-status-${status}` : "",
-      color && !isHexColor ? `k-badge-status-${color}` : ""
-    );
+    const dotClasses = clsx("k-badge-status-dot", {
+      [`k-badge-status-${status}`]: status,
+      [`k-badge-status-${color}`]: color && !isHexColor,
+    });
 
     const dotStyle: React.CSSProperties = {
       backgroundColor: isHexColor ? color : undefined,
@@ -67,14 +66,12 @@ const Badge: React.FC<BadgeProps> = ({
   let supNode: React.ReactNode = null;
 
   if (showSup) {
-    const supClasses = clsx(
-      {
-        "k-badge-count": !dot && displayCount !== null,
-        "k-badge-dot": dot,
-        "k-badge-no-child": !hasChildren,
-      },
-      status && !color ? `k-badge-${status}` : ""
-    );
+    const supClasses = clsx({
+      "k-badge-count": !dot && displayCount !== null,
+      "k-badge-dot": dot,
+      "k-badge-no-child": !hasChildren,
+      [`k-badge-${status}`]: status && !color,
+    });
 
     const supStyle: React.CSSProperties = {
       backgroundColor: color,

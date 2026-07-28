@@ -100,9 +100,11 @@ export const MenuItem: React.FC<MenuItemProps> = ({
     <li
       className={clsx(
         `k-${preCls}-item`,
-        active ? `k-${preCls}-item-active` : "",
-        isSelected ? `k-${preCls}-item-selected` : "",
-        disabled ? `k-${preCls}-item-disabled` : "",
+        {
+          [`k-${preCls}-item-active`]: active,
+          [`k-${preCls}-item-selected`]: isSelected,
+          [`k-${preCls}-item-disabled`]: disabled,
+        },
         className
       )}
       style={{ paddingLeft }}
@@ -294,13 +296,12 @@ export const SubMenu: React.FC<SubMenuProps> = ({
       </div>
     ) : null;
 
-  const classes = clsx(
-    `k-${preCls}`,
-    isOpened || isSelected ? `k-${preCls}-active` : "",
-    isSelected ? `k-${preCls}-selected` : "",
-    isOpened ? `k-${preCls}-opened` : "",
-    disabled ? `k-${preCls}-disabled` : ""
-  );
+  const classes = clsx(`k-${preCls}`, {
+    [`k-${preCls}-active`]: isOpened || isSelected,
+    [`k-${preCls}-selected`]: isSelected,
+    [`k-${preCls}-opened`]: isOpened,
+    [`k-${preCls}-disabled`]: disabled,
+  });
 
   return (
     <li className={classes}>
@@ -477,7 +478,7 @@ const Menu: React.FC<MenuProps> = ({
   const preCls = isDropdown ? "dropdown-menu k-scroll" : "menu";
   const cls = clsx(
     `k-${preCls} k-${preCls}-${currentMode}`,
-    collapsed ? `k-${preCls}-inline-collapsed` : "",
+    { [`k-${preCls}-inline-collapsed`]: collapsed },
     className
   );
 

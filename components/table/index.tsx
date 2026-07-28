@@ -147,17 +147,14 @@ export default function Table<T = any>({
     return styles;
   }, [checkable, leaves]);
   const fixedClass = (column: Column<T>, index: number) =>
-    clsx(
-      column.fixed === "left" && "k-table-cell-fix-left",
-      column.fixed === "left" &&
-        leaves[index + 1]?.fixed !== "left" &&
-        "k-table-cell-fix-left-last",
-      column.fixed === "right" && "k-table-cell-fix-right",
-      column.fixed === "right" &&
-        leaves[index - 1]?.fixed !== "right" &&
-        "k-table-cell-fix-right-first",
-      column.sorter && "k-table-cell-sorter"
-    );
+    clsx({
+      "k-table-cell-fix-left": column.fixed === "left",
+      "k-table-cell-fix-left-last": column.fixed === "left" && leaves[index + 1]?.fixed !== "left",
+      "k-table-cell-fix-right": column.fixed === "right",
+      "k-table-cell-fix-right-first":
+        column.fixed === "right" && leaves[index - 1]?.fixed !== "right",
+      "k-table-cell-sorter": column.sorter,
+    });
 
   const processed = useMemo(() => {
     const result = [...data];
@@ -302,17 +299,15 @@ export default function Table<T = any>({
                   <span className="k-table-sorter">
                     <Icon
                       type={ChevronUp}
-                      className={clsx(
-                        "k-table-sorter-up",
-                        sort.key === column.key && sort.order === "asc" && "k-table-sorter-active"
-                      )}
+                      className={clsx("k-table-sorter-up", {
+                        "k-table-sorter-active": sort.key === column.key && sort.order === "asc",
+                      })}
                     />
                     <Icon
                       type={ChevronDown}
-                      className={clsx(
-                        "k-table-sorter-down",
-                        sort.key === column.key && sort.order === "desc" && "k-table-sorter-active"
-                      )}
+                      className={clsx("k-table-sorter-down", {
+                        "k-table-sorter-active": sort.key === column.key && sort.order === "desc",
+                      })}
                     />
                   </span>
                 )}
@@ -385,12 +380,14 @@ export default function Table<T = any>({
       {...rest}
       className={clsx(
         "k-table",
-        striped && "k-table-striped",
-        size === "small" && "k-table-sm",
-        size === "large" && "k-table-lg",
-        bordered && "k-table-bordered",
-        ping.left && "k-table-ping-left",
-        ping.right && "k-table-ping-right",
+        {
+          "k-table-striped": striped,
+          "k-table-sm": size === "small",
+          "k-table-lg": size === "large",
+          "k-table-bordered": bordered,
+          "k-table-ping-left": ping.left,
+          "k-table-ping-right": ping.right,
+        },
         className
       )}
     >

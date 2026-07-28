@@ -155,7 +155,7 @@ const Poptip: React.FC<PoptipProps> = ({
   const overlayNode = rendered ? (
     <div
       ref={refPopper}
-      className={clsx(`k-${preCls}`, `k-${preCls}-has-arrow`, dark ? `k-${preCls}-dark` : "")}
+      className={clsx(`k-${preCls}`, `k-${preCls}-has-arrow`, { [`k-${preCls}-dark`]: dark })}
       style={{
         left: `${left}px`,
         top: `${top}px`,

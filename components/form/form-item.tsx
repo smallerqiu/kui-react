@@ -138,11 +138,10 @@ export default function FormItem({
 
   return (
     <Row
-      className={clsx(
-        "k-form-item",
-        required && "k-form-item-required",
-        !valid && "k-form-item-error"
-      )}
+      className={clsx("k-form-item", {
+        "k-form-item-required": required,
+        "k-form-item-error": !valid,
+      })}
       type="flex"
     >
       {label != null && (

@@ -58,8 +58,8 @@ const Alert: React.FC<AlertProps> = ({
 
   const classes = clsx(
     "k-alert",
-    type ? `k-alert-${type}` : "",
     {
+      [`k-alert-${type}`]: type,
       "k-alert-has-icon": showIcon,
       "k-alert-has-close": closable,
       "k-alert-bordered": bordered,

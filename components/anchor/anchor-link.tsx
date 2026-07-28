@@ -22,7 +22,9 @@ export default function AnchorLink({
   }, [context, href]);
 
   return (
-    <div className={clsx("k-anchor-link", context?.activeLink === href && "k-anchor-link-active")}>
+    <div
+      className={clsx("k-anchor-link", { "k-anchor-link-active": context?.activeLink === href })}
+    >
       <a
         {...rest}
         href={href}

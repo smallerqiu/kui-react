@@ -237,20 +237,22 @@ export default function TreeSelect({
   const placeholderText = placeholder || locale?.k?.select?.placeholder;
   const classes = clsx(
     "k-tree-select",
-    disabled && "k-tree-select-disabled",
-    block && "k-tree-select-block",
-    visible && "k-tree-select-opened",
-    !bordered && "k-tree-select-borderless",
-    size === "large" && "k-tree-select-lg",
-    size === "small" && "k-tree-select-sm",
-    theme === "fill" && "k-tree-select-fill",
-    icon && "k-tree-select-has-icon",
-    shape === "circle" && !multiple && "k-tree-select-circle",
-    shape === "square" && "k-tree-select-square",
-    multiple && "k-tree-select-multiple",
-    query && "k-tree-select-show-search",
-    multiple && labels.length && "k-tree-select-show-tags",
-    clearable && !disabled && currentValue.length && "k-tree-select-has-clear",
+    {
+      "k-tree-select-disabled": disabled,
+      "k-tree-select-block": block,
+      "k-tree-select-opened": visible,
+      "k-tree-select-borderless": !bordered,
+      "k-tree-select-lg": size === "large",
+      "k-tree-select-sm": size === "small",
+      "k-tree-select-fill": theme === "fill",
+      "k-tree-select-has-icon": icon,
+      "k-tree-select-circle": shape === "circle" && !multiple,
+      "k-tree-select-square": shape === "square",
+      "k-tree-select-multiple": multiple,
+      "k-tree-select-show-search": query,
+      "k-tree-select-show-tags": multiple && labels.length,
+      "k-tree-select-has-clear": clearable && !disabled && currentValue.length,
+    },
     className
   );
   const displayedLabels = maxTagCount && maxTagCount > 0 ? labels.slice(0, maxTagCount) : labels;
@@ -280,12 +282,10 @@ export default function TreeSelect({
     createPortal(
       <div
         ref={overlayRef}
-        className={clsx(
-          "k-tree-select-dropdown",
-          "k-scroll",
-          multiple && "k-tree-select-dropdown-multiple",
-          size === "small" && "k-tree-select-dropdown-sm"
-        )}
+        className={clsx("k-tree-select-dropdown", "k-scroll", {
+          "k-tree-select-dropdown-multiple": multiple,
+          "k-tree-select-dropdown-sm": size === "small",
+        })}
         style={{
           display: visible ? undefined : "none",
           position: "absolute",

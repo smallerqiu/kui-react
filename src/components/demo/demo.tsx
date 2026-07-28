@@ -97,14 +97,14 @@ export default function Demo({
   };
 
   return (
-    <section className={clsx("markdown-body", "k-demo-container", expanded && "k-demo-expanded")}>
+    <section className={clsx("markdown-body", "k-demo-container", { "k-demo-expanded": expanded })}>
       <div className="k-desc">
         <div className="k-desc-content">
           <h3>{title}</h3>
           {descriptionHtml && <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />}
         </div>
       </div>
-      <div className={clsx("k-demo", direction === "horizontal" && "k-demo-horizontal")}>
+      <div className={clsx("k-demo", { "k-demo-horizontal": direction === "horizontal" })}>
         <div className={`k-demo-view k-demo-view-${direction}`}>
           <div className="k-content k-scroll">
             {preview}

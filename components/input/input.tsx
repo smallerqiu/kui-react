@@ -174,14 +174,16 @@ const Input = React.forwardRef<InputRef, InputProps>(
 
     const rootClasses = clsx(
       `k-${inputType}`,
-      focused ? `k-${inputType}-focus` : "",
-      disabled ? `k-${inputType}-disabled` : "",
-      clearableShow ? `k-${inputType}-has-clear` : "",
-      currentSize === "small" ? `k-${inputType}-sm` : "",
-      currentSize === "large" ? `k-${inputType}-lg` : "",
-      theme && theme !== "outline" ? `k-${inputType}-${theme}` : "",
-      shape === "circle" ? `k-${inputType}-circle` : "",
-      shape === "square" ? `k-${inputType}-square` : "",
+      {
+        [`k-${inputType}-focus`]: focused,
+        [`k-${inputType}-disabled`]: disabled,
+        [`k-${inputType}-has-clear`]: clearableShow,
+        [`k-${inputType}-sm`]: currentSize === "small",
+        [`k-${inputType}-lg`]: currentSize === "large",
+        [`k-${inputType}-${theme}`]: theme && theme !== "outline",
+        [`k-${inputType}-circle`]: shape === "circle",
+        [`k-${inputType}-square`]: shape === "square",
+      },
       className
     );
 
@@ -210,10 +212,9 @@ const Input = React.forwardRef<InputRef, InputProps>(
         <Icon
           key="input-clear"
           type={CircleX}
-          className={clsx(
-            `k-${inputType}-clearable`,
-            !clearableShow ? `k-${inputType}-clearable-hidden` : ""
-          )}
+          className={clsx(`k-${inputType}-clearable`, {
+            [`k-${inputType}-clearable-hidden`]: !clearableShow,
+          })}
           onClick={handleClear}
         />
       );
@@ -229,7 +230,9 @@ const Input = React.forwardRef<InputRef, InputProps>(
       return (
         <InputGroup size={currentSize} theme={theme} className={className} style={style}>
           {preChildren}
-          <div className={rootClasses}>{innerChildren}</div>
+          <div className={rootClasses} data-multiple="">
+            {innerChildren}
+          </div>
           {sufChildren}
         </InputGroup>
       );
@@ -241,7 +244,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
     }
 
     return (
-      <div className={rootClasses} style={style} {...(rest as any)}>
+      <div className={rootClasses} style={style} {...(rest as any)} data-multiple="">
         {innerChildren}
       </div>
     );

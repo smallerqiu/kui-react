@@ -32,8 +32,7 @@ const Col: React.FC<ColProps> = ({
 
   const classes = clsx(
     "k-col",
-    span ? `k-col-${span}` : "",
-    offset && offset > 0 && offset <= 24 ? `k-col-offset-${offset}` : "",
+    { [`k-col-${span}`]: span, [`k-col-offset-${offset}`]: offset && offset > 0 && offset <= 24 },
     className
   );
 

@@ -46,10 +46,7 @@ const Spin: React.FC<SpinProps> = ({
     };
   }, [spinningProp, delay]);
 
-  const spinClasses = clsx(
-    { "k-spin-loading": spinning },
-    mode && spinning ? `k-spin-${mode}` : ""
-  );
+  const spinClasses = clsx({ "k-spin-loading": spinning, [`k-spin-${mode}`]: mode && spinning });
 
   const rootClasses = clsx(
     "k-spin",

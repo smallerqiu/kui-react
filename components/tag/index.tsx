@@ -47,9 +47,10 @@ const Tag: React.FC<TagProps> = ({
 
   const tagClasses = clsx(
     "k-tag",
-    { "k-tag-sm": size === "small", "k-tag-lg": size === "large" },
-    isPresetColor ? `k-tag-${color}` : "",
     {
+      "k-tag-sm": size === "small",
+      "k-tag-lg": size === "large",
+      [`k-tag-${color}`]: isPresetColor,
       "k-tag-circle": shape === "circle",
       "k-tag-square": shape === "square",
       "k-tag-has-color": isCustomColor,

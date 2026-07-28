@@ -137,10 +137,12 @@ export default function ColorPicker({
         ref={triggerRef as React.RefObject<HTMLDivElement>}
         className={clsx(
           "k-color-picker",
-          open && "k-color-picker-opened",
-          disabled && "k-color-picker-disabled",
-          size === "small" && "k-color-picker-sm",
-          size === "large" && "k-color-picker-lg",
+          {
+            "k-color-picker-opened": open,
+            "k-color-picker-disabled": disabled,
+            "k-color-picker-sm": size === "small",
+            "k-color-picker-lg": size === "large",
+          },
           className
         )}
         {...hoverProps}
@@ -162,10 +164,9 @@ export default function ColorPicker({
       <div
         ref={popoverRef}
         data-placement={placement}
-        className={clsx(
-          "k-color-picker-dropdown",
-          disabledAlpha && "k-color-picker-disabled-alpha"
-        )}
+        className={clsx("k-color-picker-dropdown", {
+          "k-color-picker-disabled-alpha": disabledAlpha,
+        })}
         style={{ position: "fixed", left: position.left, top: position.top }}
         onMouseEnter={() => hideTimerRef.current && clearTimeout(hideTimerRef.current)}
         onMouseLeave={

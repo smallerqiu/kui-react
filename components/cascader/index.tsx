@@ -176,15 +176,17 @@ export default function Cascader({
   const showClear = clearable && !disabled && hasValue;
   const classes = clsx(
     "k-cascader",
-    disabled && "k-cascader-disabled",
-    visible && "k-cascader-opened",
-    !bordered && "k-cascader-borderless",
-    shape === "circle" && "k-cascader-circle",
-    shape === "square" && "k-cascader-square",
-    theme === "fill" && "k-cascader-fill",
-    size === "large" && "k-cascader-lg",
-    size === "small" && "k-cascader-sm",
-    showClear && "k-cascader-has-clear",
+    {
+      "k-cascader-disabled": disabled,
+      "k-cascader-opened": visible,
+      "k-cascader-borderless": !bordered,
+      "k-cascader-circle": shape === "circle",
+      "k-cascader-square": shape === "square",
+      "k-cascader-fill": theme === "fill",
+      "k-cascader-lg": size === "large",
+      "k-cascader-sm": size === "small",
+      "k-cascader-has-clear": showClear,
+    },
     className
   );
 
@@ -226,7 +228,7 @@ export default function Cascader({
         createPortal(
           <div
             ref={overlayRef}
-            className={clsx("k-cascader-dropdown", size === "small" && "k-cascader-dropdown-sm")}
+            className={clsx("k-cascader-dropdown", { "k-cascader-dropdown-sm": size === "small" })}
             style={{
               display: visible ? undefined : "none",
               left: position.left,
@@ -243,14 +245,13 @@ export default function Cascader({
                       const hasChildren = !!item.children?.length;
                       return (
                         <li
-                          className={clsx(
-                            "k-cascader-dropdown-item",
-                            activePath[column]?.value === item.value &&
-                              "k-cascader-dropdown-item-active",
-                            currentValue[column] === item.value &&
-                              "k-cascader-dropdown-item-selected",
-                            item.disabled && "k-cascader-dropdown-item-disabled"
-                          )}
+                          className={clsx("k-cascader-dropdown-item", {
+                            "k-cascader-dropdown-item-active":
+                              activePath[column]?.value === item.value,
+                            "k-cascader-dropdown-item-selected":
+                              currentValue[column] === item.value,
+                            "k-cascader-dropdown-item-disabled": item.disabled,
+                          })}
                           key={item.value}
                           onClick={() => choose(item, column)}
                           onMouseEnter={() => {

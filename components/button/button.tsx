@@ -79,21 +79,19 @@ const Button = React.forwardRef<any, ButtonProps>(
 
     const classes = clsx(
       "k-btn",
-      type && !color ? `k-btn-${type}` : "",
       {
+        [`k-btn-${type}`]: type && !color,
         "k-btn-outline": theme === "outline",
         "k-btn-sm": computedSize === "small",
         "k-btn-block": block,
         "k-btn-loading": loading,
         "k-btn-icon-only": iconOnly(),
-      },
-      color && colors.includes(color as any) ? `k-btn-${color}` : "",
-      {
+        [`k-btn-${color}`]: color && colors.includes(color as any),
         "k-btn-lg": computedSize === "large",
         "k-btn-circle": computedShape === "circle",
         "k-btn-square": computedShape === "square",
+        [`k-btn-${theme}`]: theme,
       },
-      theme ? `k-btn-${theme}` : "",
       className
     );
 

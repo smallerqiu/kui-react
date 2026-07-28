@@ -36,19 +36,22 @@ const InputBox: React.FC<InputBoxProps> = ({
   }
 
   const classes = clsx(
-    !multiple ? `k-${inputType}` : "",
-    multiple ? `k-${inputType}-text` : "",
-    disabled ? `k-${inputType}-disabled` : "",
-    size === "small" && !multiple ? `k-${inputType}-sm` : "",
-    size === "large" && !multiple ? `k-${inputType}-lg` : "",
-    theme !== "solid" && !multiple && theme ? `k-${inputType}-${theme}` : "",
-    shape === "circle" && !multiple ? `k-${inputType}-circle` : "",
+    {
+      [`k-${inputType}`]: !multiple,
+      [`k-${inputType}-text`]: multiple,
+      [`k-${inputType}-disabled`]: disabled,
+      [`k-${inputType}-sm`]: size === "small" && !multiple,
+      [`k-${inputType}-lg`]: size === "large" && !multiple,
+      [`k-${inputType}-${theme}`]: theme !== "solid" && !multiple && theme,
+      [`k-${inputType}-circle`]: shape === "circle" && !multiple,
+    },
     className
   );
   return (
     <input
       ref={inputRef}
       className={classes}
+      data-single=""
       disabled={disabled}
       type={currentType}
       value={value ?? ""}

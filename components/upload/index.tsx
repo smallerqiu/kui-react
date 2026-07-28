@@ -251,9 +251,11 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
       {...rest}
       className={clsx(
         "k-upload",
-        disabled && "k-upload-disabled",
-        type === "picture" && "k-upload-picture",
-        draggable && "k-upload-drag",
+        {
+          "k-upload-disabled": disabled,
+          "k-upload-picture": type === "picture",
+          "k-upload-drag": draggable,
+        },
         className
       )}
     >
