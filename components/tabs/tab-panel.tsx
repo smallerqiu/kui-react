@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React from "react";
 
 export interface TabPanelProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -27,9 +28,7 @@ const TabPanel: React.FC<TabPanelProps> = ({
   const isActive = activeKey === tabKey;
   return (
     <div
-      className={["k-tabs-tabpanel", isActive ? "k-tabs-tabpanel-active" : "", className]
-        .filter(Boolean)
-        .join(" ")}
+      className={clsx("k-tabs-tabpanel", { "k-tabs-tabpanel-active": isActive }, className)}
       {...rest}
     >
       {children}

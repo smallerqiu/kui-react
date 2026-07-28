@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import type { HTMLAttributes, ReactNode } from "react";
 import CountUp from "./countup";
 
@@ -29,7 +30,7 @@ export default function StatNumber({
   ...rest
 }: StatNumberProps) {
   return (
-    <div {...rest} className={["k-stat-number", className].filter(Boolean).join(" ")}>
+    <div {...rest} className={clsx("k-stat-number", className)}>
       {prefix != null && <span className="k-stat-number-prefix">{prefix}</span>}
       <CountUp
         value={value ?? modelValue ?? 0}

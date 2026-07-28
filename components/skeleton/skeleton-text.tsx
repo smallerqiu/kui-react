@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
 import type { SizeType } from "../const/types";
 
@@ -35,24 +36,19 @@ const SkeletonText: React.FC<SkeletonTextProps> = ({
     };
   }, [loading, delay]);
 
-  const wrapperClasses = [
+  const wrapperClasses = clsx(
     "k-skeleton k-skeleton-ele",
-    animated ? "k-skeleton-animated" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    { "k-skeleton-animated": animated },
+    className
+  );
 
   const innerStyle: React.CSSProperties = {};
   if (width) innerStyle.width = `${width}px`;
 
-  const innerClasses = [
-    "k-skeleton-text",
-    size === "large" ? "k-skeleton-text-lg" : "",
-    size === "small" ? "k-skeleton-text-sm" : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const innerClasses = clsx("k-skeleton-text", {
+    "k-skeleton-text-lg": size === "large",
+    "k-skeleton-text-sm": size === "small",
+  });
 
   return (
     <div className={wrapperClasses} {...rest}>

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { Image as ImageIcon, Loading } from "kui-icons";
 import {
   forwardRef,
@@ -141,7 +142,7 @@ const KImage = forwardRef<ImageRef, ImageProps>(function KImage(
   return (
     <div
       {...rest}
-      className={["k-image", className].filter(Boolean).join(" ")}
+      className={clsx("k-image", className)}
       style={{ ...style, width: dimension(width), height: dimension(height) }}
       onClick={handleClick}
     >

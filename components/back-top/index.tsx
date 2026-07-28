@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ArrowUp } from "kui-icons";
 import {
   useEffect,
@@ -68,9 +69,7 @@ export default function BackTop({
   return (
     <div
       {...rest}
-      className={["k-back-top", "k-back-top-fade-enter-active", className]
-        .filter(Boolean)
-        .join(" ")}
+      className={clsx("k-back-top", "k-back-top-fade-enter-active", className)}
       style={rootStyle}
       onClick={handleClick}
     >

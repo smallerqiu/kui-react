@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import {
   forwardRef,
   useContext,
@@ -248,15 +249,13 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
   return (
     <div
       {...rest}
-      className={[
+      className={clsx(
         "k-upload",
         disabled && "k-upload-disabled",
         type === "picture" && "k-upload-picture",
         draggable && "k-upload-drag",
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+        className
+      )}
     >
       {type !== "picture" && selector}
       <FileList

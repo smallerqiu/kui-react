@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { Inbox } from "kui-icons";
 import React, { useContext } from "react";
 import { ConfigContext } from "../config";
@@ -54,7 +55,7 @@ const Empty: React.FC<EmptyProps> = ({
 
   const footerNode = children ? <div className="k-empty-footer">{children}</div> : null;
 
-  const classes = ["k-empty", className].filter(Boolean).join(" ");
+  const classes = clsx("k-empty", className);
 
   return (
     <div className={classes} {...rest}>

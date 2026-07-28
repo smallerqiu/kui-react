@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { CircleAlert, CircleCheck, CircleX, Info, Loading, X } from "kui-icons";
 import type { ReactNode } from "react";
 import { Button } from "../button";
@@ -36,13 +37,11 @@ export default function Content({
   const alertIcon = icon ?? (type ? icons[type] : undefined);
   return (
     <div
-      className={[
+      className={clsx(
         `k-${noticeType}-box`,
         type && `k-${noticeType}-${type}`,
-        alertIcon && "k-notice-has-icon",
-      ]
-        .filter(Boolean)
-        .join(" ")}
+        alertIcon && "k-notice-has-icon"
+      )}
     >
       <div className={`k-${noticeType}-content`}>
         {alertIcon && (

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ChevronsLeft, ChevronsRight, ChevronUp, Ellipsis } from "kui-icons";
 import React, { useContext, useEffect, useState } from "react";
 import { ConfigContext } from "../config";
@@ -117,9 +118,7 @@ const Page: React.FC<PageProps> = ({
     const items: React.ReactNode[] = array.map((p, i) => (
       <li
         key={i}
-        className={["k-pager-item", page === p ? "k-pager-item-active" : ""]
-          .filter(Boolean)
-          .join(" ")}
+        className={clsx("k-pager-item", { "k-pager-item-active": page === p })}
         onClick={() => toPage(p)}
       >
         <span>{p}</span>
@@ -156,15 +155,11 @@ const Page: React.FC<PageProps> = ({
     return items;
   };
 
-  const classes = [
+  const classes = clsx(
     "k-page",
-    size === "small" ? "k-page-sm" : "",
-    theme === "fill" ? "k-page-fill" : "",
-    disabled ? "k-page-disabled" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    { "k-page-sm": size === "small", "k-page-fill": theme === "fill", "k-page-disabled": disabled },
+    className
+  );
 
   const sizeOptions = sizeData.map((s) => ({
     value: s,
@@ -184,9 +179,9 @@ const Page: React.FC<PageProps> = ({
       <ul className="k-pager">
         {/* Prev */}
         <li
-          className={["k-pager-item k-pager-prev", currentPage === 1 ? "k-pager-item-disabled" : ""]
-            .filter(Boolean)
-            .join(" ")}
+          className={clsx("k-pager-item k-pager-prev", {
+            "k-pager-item-disabled": currentPage === 1,
+          })}
           onClick={prePage}
         >
           <Icon type={ChevronUp} />
@@ -195,9 +190,7 @@ const Page: React.FC<PageProps> = ({
         {/* First page */}
         {pageCount > 0 && (
           <li
-            className={["k-pager-item", currentPage === 1 ? "k-pager-item-active" : ""]
-              .filter(Boolean)
-              .join(" ")}
+            className={clsx("k-pager-item", { "k-pager-item-active": currentPage === 1 })}
             onClick={() => toPage(1)}
           >
             <span>1</span>
@@ -210,9 +203,7 @@ const Page: React.FC<PageProps> = ({
         {/* Last page */}
         {pageCount > 1 && (
           <li
-            className={["k-pager-item", currentPage === pageCount ? "k-pager-item-active" : ""]
-              .filter(Boolean)
-              .join(" ")}
+            className={clsx("k-pager-item", { "k-pager-item-active": currentPage === pageCount })}
             onClick={() => toPage(pageCount)}
           >
             <span>{pageCount}</span>
@@ -221,12 +212,9 @@ const Page: React.FC<PageProps> = ({
 
         {/* Next */}
         <li
-          className={[
-            "k-pager-item k-pager-next",
-            currentPage === pageCount ? "k-pager-item-disabled" : "",
-          ]
-            .filter(Boolean)
-            .join(" ")}
+          className={clsx("k-pager-item k-pager-next", {
+            "k-pager-item-disabled": currentPage === pageCount,
+          })}
           onClick={goNextPage}
         >
           <Icon type={ChevronUp} />

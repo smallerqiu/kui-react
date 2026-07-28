@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 export const SiderHookContext = createContext<((mounted: boolean) => void) | null>(null);
@@ -24,7 +25,7 @@ function createBasicComponent(suffixCls: string, displayName: string) {
     className = "",
     ...rest
   }) => {
-    const classes = [`k-${customSuffixCls}`, className].filter(Boolean).join(" ");
+    const classes = clsx(`k-${customSuffixCls}`, className);
     return (
       <section className={classes} {...rest}>
         {children}
@@ -48,13 +49,11 @@ const LayoutMain: React.FC<LayoutProps> = ({
     setSiderCount((prev) => (mounted ? prev + 1 : Math.max(0, prev - 1)));
   };
 
-  const classes = [
+  const classes = clsx(
     `k-${suffixCls}`,
     (hasSider ?? siderCount > 0) ? `k-${suffixCls}-has-sider` : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    className
+  );
 
   return (
     <SiderHookContext.Provider value={collectSider}>
@@ -85,7 +84,7 @@ const Sider: React.FC<SiderProps> = ({
     };
   }, [collectSider]);
 
-  const classes = [`k-${suffixCls}`, className].filter(Boolean).join(" ");
+  const classes = clsx(`k-${suffixCls}`, className);
 
   return (
     <aside className={classes} style={style} {...rest}>

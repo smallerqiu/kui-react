@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React from "react";
 import type { DirectionType } from "../const/types";
 
@@ -20,15 +21,13 @@ class Divider extends React.Component<DividerProps> {
     const hasText = !!(children || text);
     const textNode = children || text;
 
-    const classes = [
+    const classes = clsx(
       "k-divider",
       `k-divider-${type}`,
-      dashed ? "k-divider-dashed" : "",
+      { "k-divider-dashed": dashed },
       type === "horizontal" && hasText ? `k-divider-with-text-${orientation}` : "",
-      className || "",
-    ]
-      .filter(Boolean)
-      .join(" ");
+      className || ""
+    );
 
     return (
       <div className={classes} role="separator" {...rest}>

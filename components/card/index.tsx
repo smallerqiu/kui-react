@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React from "react";
 import Icon, { type IconType } from "../icon";
 
@@ -25,9 +26,7 @@ const Card: React.FC<CardProps> = ({
 
   const showHead = !!(titleNode || extraNode || iconNode);
 
-  const classes = ["k-card", bordered ? "k-card-bordered" : "", className]
-    .filter(Boolean)
-    .join(" ");
+  const classes = clsx("k-card", { "k-card-bordered": bordered }, className);
 
   return (
     <div className={classes} {...rest}>

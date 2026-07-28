@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { useCallback, useMemo, useRef, type CSSProperties, type HTMLAttributes } from "react";
 import { GridContext, useBreakpoint, type Breakpoint, type ResponsiveValue } from "./useBreakpoint";
 
@@ -78,12 +79,7 @@ export default function Grid({
 
   return (
     <GridContext.Provider value={context}>
-      <div
-        {...rest}
-        ref={gridRef}
-        className={["k-grid", className].filter(Boolean).join(" ")}
-        style={gridStyle}
-      >
+      <div {...rest} ref={gridRef} className={clsx("k-grid", className)} style={gridStyle}>
         {children}
       </div>
     </GridContext.Provider>

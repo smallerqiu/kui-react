@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import {
   createContext,
   forwardRef,
@@ -154,15 +155,13 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
       <form
         {...rest}
         id={name}
-        className={[
+        className={clsx(
           "k-form",
           `k-form-${layout}`,
           size === "large" && "k-form-lg",
           size === "small" && "k-form-sm",
-          className,
-        ]
-          .filter(Boolean)
-          .join(" ")}
+          className
+        )}
         onSubmit={handleSubmit}
         onReset={(event) => {
           event.preventDefault();

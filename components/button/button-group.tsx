@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useContext } from "react";
 import { SizeContext } from "../config/size-context";
 import type { ShapeType, SizeType } from "../const/types";
@@ -25,16 +26,16 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
   const parentSize = useContext(SizeContext);
   const currentSize = size || parentSize;
 
-  const classes = [
+  const classes = clsx(
     "k-btn-group",
-    currentSize === "small" ? "k-btn-group-sm" : "",
-    currentSize === "large" ? "k-btn-group-lg" : "",
-    shape === "circle" ? "k-btn-group-circle" : "",
-    shape === "square" ? "k-btn-group-square" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    {
+      "k-btn-group-sm": currentSize === "small",
+      "k-btn-group-lg": currentSize === "large",
+      "k-btn-group-circle": shape === "circle",
+      "k-btn-group-square": shape === "square",
+    },
+    className
+  );
 
   return (
     <ButtonGroupContext.Provider value={{ size: currentSize, shape }}>

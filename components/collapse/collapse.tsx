@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useEffect, useState } from "react";
 import { getChildren } from "../utils/react-node";
 
@@ -40,9 +41,7 @@ const Collapse: React.FC<CollapseProps> = ({
     onChange?.(key);
   };
 
-  const classes = ["k-collapse", sample ? "k-collapse-sample" : "", className]
-    .filter(Boolean)
-    .join(" ");
+  const classes = clsx("k-collapse", { "k-collapse-sample": sample }, className);
 
   const childList = getChildren(children);
 

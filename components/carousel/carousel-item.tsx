@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { createContext, useContext, type HTMLAttributes } from "react";
 
 export interface CarouselContextValue {
@@ -19,7 +20,7 @@ export default function CarouselItem({ className, style, children, ...rest }: Ca
   return (
     <div
       {...rest}
-      className={["k-carousel-item", className].filter(Boolean).join(" ")}
+      className={clsx("k-carousel-item", className)}
       style={{ ...style, width: vertical ? undefined : width || undefined, height }}
     >
       {children}

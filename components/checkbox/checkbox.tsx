@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { Check } from "kui-icons";
 import React, { useContext, useEffect, useState } from "react";
 import type { SizeType, ThemeType, ValueType } from "../const/types";
@@ -81,18 +82,18 @@ const Checkbox: React.FC<CheckboxProps> = ({
     }
   };
 
-  const rootClasses = [
+  const rootClasses = clsx(
     "k-checkbox",
-    currentTheme === "fill" ? "k-checkbox-fill" : "",
-    currentDisabled ? "k-checkbox-disabled" : "",
-    isChecked && !indeterminate ? "k-checkbox-checked" : "",
-    indeterminate && !isChecked ? "k-checkbox-indeterminate" : "",
-    currentSize === "small" ? "k-checkbox-sm" : "",
-    currentSize === "large" ? "k-checkbox-lg" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    {
+      "k-checkbox-fill": currentTheme === "fill",
+      "k-checkbox-disabled": currentDisabled,
+      "k-checkbox-checked": isChecked && !indeterminate,
+      "k-checkbox-indeterminate": indeterminate && !isChecked,
+      "k-checkbox-sm": currentSize === "small",
+      "k-checkbox-lg": currentSize === "large",
+    },
+    className
+  );
 
   const innerNode = isChecked ? <Icon type={Check} /> : null;
   const labelNode = label || children;

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { useContext, type CSSProperties, type HTMLAttributes } from "react";
 import { GridContext, type ResponsiveValue } from "./useBreakpoint";
 
@@ -41,11 +42,7 @@ export default function GridItem({
   }
 
   return (
-    <div
-      {...rest}
-      className={["k-grid-item", className].filter(Boolean).join(" ")}
-      style={itemStyle}
-    >
+    <div {...rest} className={clsx("k-grid-item", className)} style={itemStyle}>
       {children}
     </div>
   );

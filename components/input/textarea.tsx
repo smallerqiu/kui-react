@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useEffect, useState } from "react";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 
@@ -44,17 +45,17 @@ const TextArea: React.FC<TextAreaProps> = ({
     onInput?.(e as any);
   };
 
-  const classes = [
+  const classes = clsx(
     "k-textarea",
-    theme === "fill" ? "k-textarea-fill" : "",
-    theme === "outline" ? "k-textarea-outline" : "",
-    size === "small" ? "k-textarea-sm" : "",
-    shape === "square" ? "k-textarea-square" : "",
-    size === "large" ? "k-textarea-lg" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    {
+      "k-textarea-fill": theme === "fill",
+      "k-textarea-outline": theme === "outline",
+      "k-textarea-sm": size === "small",
+      "k-textarea-square": shape === "square",
+      "k-textarea-lg": size === "large",
+    },
+    className
+  );
 
   return (
     <textarea

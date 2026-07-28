@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useEffect, useState } from "react";
 import type { SizeType } from "../const/types";
 import type { IconType } from "../icon";
@@ -123,7 +124,7 @@ const Rate: React.FC<RateProps> = ({
 
   return (
     <div
-      className={["k-rate", disabled ? "k-rate-disabled" : "", className].filter(Boolean).join(" ")}
+      className={clsx("k-rate", { "k-rate-disabled": disabled }, className)}
       style={containerStyle}
       onMouseLeave={mouseLeave}
       {...rest}

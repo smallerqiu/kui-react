@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { X } from "kui-icons";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -228,16 +229,12 @@ const Modal: React.FC<ModalProps> = ({
         left: draggable ? `${leftPos}px` : undefined,
       };
 
-  const classes = [
-    "k-modal",
-    className,
-    draggable ? "k-modal-draggable" : "",
-    maximized ? "k-modal-maximized" : "",
-    centered ? "k-modal-centered" : "",
-    footer !== null ? "k-modal-has-footer" : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const classes = clsx("k-modal", className, {
+    "k-modal-draggable": draggable,
+    "k-modal-maximized": maximized,
+    "k-modal-centered": centered,
+    "k-modal-has-footer": footer !== null,
+  });
 
   if (!rendered) return null;
 

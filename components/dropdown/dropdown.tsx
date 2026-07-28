@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { DropPlacementsType, TriggerType } from "../const/types";
@@ -183,8 +184,9 @@ const Dropdown: React.FC<DropdownProps> = ({
   };
 
   const childList = getChildren(children);
-  const firstChild = (childList.length === 1 ? childList[0] : <span>{childList}</span>) as
-    React.ReactElement<Record<string, any>>;
+  const firstChild = (
+    childList.length === 1 ? childList[0] : <span>{childList}</span>
+  ) as React.ReactElement<Record<string, any>>;
 
   const triggerProps: Record<string, any> = {};
   if (!target) {
@@ -225,9 +227,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     </span>
   );
 
-  const popperClasses = ["k-dropdown", arrow ? "k-dropdown-has-arrow" : "", className]
-    .filter(Boolean)
-    .join(" ");
+  const popperClasses = clsx("k-dropdown", { "k-dropdown-has-arrow": arrow }, className);
 
   const overlayNode =
     rendered && overlay ? (

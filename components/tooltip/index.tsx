@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { PlacementsType } from "../const/types";
@@ -147,14 +148,12 @@ const Tooltip: React.FC<TooltipProps> = ({
   const overlayNode = rendered ? (
     <div
       ref={refPopper}
-      className={[
+      className={clsx(
         `k-${preCls}`,
         color && !isColor(color) ? `k-${preCls}-${color}` : "",
         isColor(color) ? `k-${preCls}-has-color` : "",
-        `k-${preCls}-has-arrow`,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+        `k-${preCls}-has-arrow`
+      )}
       style={{
         left: `${left}px`,
         top: `${top}px`,

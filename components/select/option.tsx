@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { Check } from "kui-icons";
 import React from "react";
 import Icon from "../icon";
@@ -41,15 +42,15 @@ const Option: React.FC<OptionProps> = ({
     });
   };
 
-  const classes = [
+  const classes = clsx(
     "k-select-item",
-    checked ? "k-select-item-selected" : "",
-    active ? "k-select-item-active" : "",
-    disabled ? "k-select-item-disabled" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    {
+      "k-select-item-selected": checked,
+      "k-select-item-active": active,
+      "k-select-item-disabled": disabled,
+    },
+    className
+  );
 
   return (
     <li className={classes} onClick={handleSelect} onMouseEnter={onMouseEnter} {...rest}>

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { CircleX, Eye, EyeOff, Search } from "kui-icons";
 import React, { useContext, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { SizeContext } from "../config/size-context";
@@ -171,7 +172,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
     const textInput = <InputBox {...(inputBoxProps as any)} />;
     if (!multiple) return textInput;
 
-    const rootClasses = [
+    const rootClasses = clsx(
       `k-${inputType}`,
       focused ? `k-${inputType}-focus` : "",
       disabled ? `k-${inputType}-disabled` : "",
@@ -181,10 +182,8 @@ const Input = React.forwardRef<InputRef, InputProps>(
       theme && theme !== "outline" ? `k-${inputType}-${theme}` : "",
       shape === "circle" ? `k-${inputType}-circle` : "",
       shape === "square" ? `k-${inputType}-square` : "",
-      className,
-    ]
-      .filter(Boolean)
-      .join(" ");
+      className
+    );
 
     const innerChildren: React.ReactNode[] = [];
     if (icon) {
@@ -211,12 +210,10 @@ const Input = React.forwardRef<InputRef, InputProps>(
         <Icon
           key="input-clear"
           type={CircleX}
-          className={[
+          className={clsx(
             `k-${inputType}-clearable`,
-            !clearableShow ? `k-${inputType}-clearable-hidden` : "",
-          ]
-            .filter(Boolean)
-            .join(" ")}
+            !clearableShow ? `k-${inputType}-clearable-hidden` : ""
+          )}
           onClick={handleClear}
         />
       );

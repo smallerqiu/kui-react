@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React from "react";
 import type { ShapeType } from "../const/types";
 import { getChildren } from "../utils/react-node";
@@ -38,7 +39,7 @@ const AvatarGroup: React.FC<AvatarGroupProps> = ({
     );
   }
 
-  const classes = ["k-avatar-group", className].filter(Boolean).join(" ");
+  const classes = clsx("k-avatar-group", className);
 
   return (
     <AvatarGroupContext.Provider value={{ shape, size }}>

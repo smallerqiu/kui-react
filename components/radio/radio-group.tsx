@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import type { DirectionType, RadioType, ShapeType, SizeType, ThemeType } from "../const/types";
 import type { IconType } from "../icon";
@@ -121,18 +122,18 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
     }
   };
 
-  const classes = [
+  const classes = clsx(
     "k-radio-group",
-    isButton ? "k-radio-button-group" : "",
-    changed ? "k-radio-button-changed" : "",
-    shape === "circle" ? "k-radio-group-circle" : "",
-    theme === "fill" && isButton ? "k-radio-group-fill" : "",
-    isCard && isButton ? "k-radio-group-card" : "",
-    isVertical ? "k-radio-group-vertical" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    {
+      "k-radio-button-group": isButton,
+      "k-radio-button-changed": changed,
+      "k-radio-group-circle": shape === "circle",
+      "k-radio-group-fill": theme === "fill" && isButton,
+      "k-radio-group-card": isCard && isButton,
+      "k-radio-group-vertical": isVertical,
+    },
+    className
+  );
 
   const Component = isButton ? RadioButton : Radio;
 

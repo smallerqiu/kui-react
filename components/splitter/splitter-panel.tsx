@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import type { HTMLAttributes } from "react";
 
 export interface SplitterPanelProps extends HTMLAttributes<HTMLDivElement> {
@@ -15,7 +16,7 @@ export function SplitterPanel({
   ...rest
 }: SplitterPanelProps) {
   return (
-    <div {...rest} className={["k-splitter-panel", className].filter(Boolean).join(" ")}>
+    <div {...rest} className={clsx("k-splitter-panel", className)}>
       {children}
     </div>
   );

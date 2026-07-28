@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ChevronDown, ChevronUp } from "kui-icons";
 import {
   useEffect,
@@ -146,7 +147,7 @@ export default function Table<T = any>({
     return styles;
   }, [checkable, leaves]);
   const fixedClass = (column: Column<T>, index: number) =>
-    [
+    clsx(
       column.fixed === "left" && "k-table-cell-fix-left",
       column.fixed === "left" &&
         leaves[index + 1]?.fixed !== "left" &&
@@ -155,10 +156,8 @@ export default function Table<T = any>({
       column.fixed === "right" &&
         leaves[index - 1]?.fixed !== "right" &&
         "k-table-cell-fix-right-first",
-      column.sorter && "k-table-cell-sorter",
-    ]
-      .filter(Boolean)
-      .join(" ");
+      column.sorter && "k-table-cell-sorter"
+    );
 
   const processed = useMemo(() => {
     const result = [...data];
@@ -303,21 +302,17 @@ export default function Table<T = any>({
                   <span className="k-table-sorter">
                     <Icon
                       type={ChevronUp}
-                      className={[
+                      className={clsx(
                         "k-table-sorter-up",
-                        sort.key === column.key && sort.order === "asc" && "k-table-sorter-active",
-                      ]
-                        .filter(Boolean)
-                        .join(" ")}
+                        sort.key === column.key && sort.order === "asc" && "k-table-sorter-active"
+                      )}
                     />
                     <Icon
                       type={ChevronDown}
-                      className={[
+                      className={clsx(
                         "k-table-sorter-down",
-                        sort.key === column.key && sort.order === "desc" && "k-table-sorter-active",
-                      ]
-                        .filter(Boolean)
-                        .join(" ")}
+                        sort.key === column.key && sort.order === "desc" && "k-table-sorter-active"
+                      )}
                     />
                   </span>
                 )}
@@ -388,7 +383,7 @@ export default function Table<T = any>({
   return (
     <div
       {...rest}
-      className={[
+      className={clsx(
         "k-table",
         striped && "k-table-striped",
         size === "small" && "k-table-sm",
@@ -396,10 +391,8 @@ export default function Table<T = any>({
         bordered && "k-table-bordered",
         ping.left && "k-table-ping-left",
         ping.right && "k-table-ping-right",
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+        className
+      )}
     >
       {header && <div className="k-table-header">{header}</div>}
       {split && (

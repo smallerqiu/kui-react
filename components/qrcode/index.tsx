@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import Color from "color";
 import { toCanvas, type QRCodeRenderersOptions } from "qrcode";
 import {
@@ -175,9 +176,7 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
   return (
     <div
       {...rest}
-      className={["k-qrcode", !bordered && "k-qrcode-borderless", className]
-        .filter(Boolean)
-        .join(" ")}
+      className={clsx("k-qrcode", !bordered && "k-qrcode-borderless", className)}
       style={{ ...style, width: size, height: size }}
     >
       <canvas ref={canvasRef} style={{ width: size, height: size, display: "block" }} />

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { Plus } from "kui-icons";
 import { useRef, useState, type DragEvent, type HTMLAttributes } from "react";
 import Icon, { type IconType } from "../icon";
@@ -51,7 +52,7 @@ export default function Selector({
   return (
     <div className="k-upload-select">
       <div
-        className={["k-upload-add", dragOver && "k-upload-drag-over"].filter(Boolean).join(" ")}
+        className={clsx("k-upload-add", dragOver && "k-upload-drag-over")}
         onClick={() => !disabled && inputRef.current?.click()}
         onDragEnter={
           draggable

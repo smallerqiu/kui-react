@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React from "react";
 
 export interface InputBoxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
@@ -34,7 +35,7 @@ const InputBox: React.FC<InputBoxProps> = ({
     currentType = "text";
   }
 
-  const classes = [
+  const classes = clsx(
     !multiple ? `k-${inputType}` : "",
     multiple ? `k-${inputType}-text` : "",
     disabled ? `k-${inputType}-disabled` : "",
@@ -42,10 +43,8 @@ const InputBox: React.FC<InputBoxProps> = ({
     size === "large" && !multiple ? `k-${inputType}-lg` : "",
     theme !== "solid" && !multiple && theme ? `k-${inputType}-${theme}` : "",
     shape === "circle" && !multiple ? `k-${inputType}-circle` : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    className
+  );
   return (
     <input
       ref={inputRef}

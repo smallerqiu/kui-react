@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
 import type { ShapeType, SizeType } from "../const/types";
 
@@ -52,15 +53,12 @@ const Skeleton: React.FC<SkeletonProps> = ({
       if (avatar.size) size = avatar.size;
       if (avatar.shape) shape = avatar.shape;
     }
-    const avatarClasses = [
-      "k-skeleton-avatar",
-      size === "large" ? "k-skeleton-avatar-lg" : "",
-      size === "small" ? "k-skeleton-avatar-sm" : "",
-      shape === "circle" ? "k-skeleton-avatar-circle" : "",
-      shape === "square" ? "k-skeleton-avatar-square" : "",
-    ]
-      .filter(Boolean)
-      .join(" ");
+    const avatarClasses = clsx("k-skeleton-avatar", {
+      "k-skeleton-avatar-lg": size === "large",
+      "k-skeleton-avatar-sm": size === "small",
+      "k-skeleton-avatar-circle": shape === "circle",
+      "k-skeleton-avatar-square": shape === "square",
+    });
 
     return (
       <div className="k-skeleton-header">
@@ -83,9 +81,7 @@ const Skeleton: React.FC<SkeletonProps> = ({
     );
   };
 
-  const classes = ["k-skeleton", animated ? "k-skeleton-animated" : "", className]
-    .filter(Boolean)
-    .join(" ");
+  const classes = clsx("k-skeleton", { "k-skeleton-animated": animated }, className);
 
   return (
     <div className={classes} {...rest}>

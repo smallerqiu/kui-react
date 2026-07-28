@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { forwardRef, type CSSProperties, type HTMLAttributes, type PointerEvent } from "react";
 
 export interface IconType {
@@ -55,7 +56,7 @@ const Icon = forwardRef<HTMLElement, IconProps>(function Icon(
     <i
       {...rest}
       ref={ref}
-      className={["k-icon", spin && "k-load-loop", className].filter(Boolean).join(" ")}
+      className={clsx("k-icon", spin && "k-load-loop", className)}
       style={iconStyle}
       onClick={handleClick}
     >

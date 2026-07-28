@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useContext, useEffect, useState } from "react";
 import type { SizeType, ThemeType } from "../const/types";
 import { RadioGroupContext } from "./radio-group";
@@ -73,17 +74,17 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
       }
     };
 
-    const classes = [
+    const classes = clsx(
       "k-radio",
-      currentTheme === "fill" ? "k-radio-fill" : "",
-      currentDisabled ? "k-radio-disabled" : "",
-      isChecked ? "k-radio-checked" : "",
-      currentSize === "large" ? "k-radio-lg" : "",
-      currentSize === "small" ? "k-radio-sm" : "",
-      className,
-    ]
-      .filter(Boolean)
-      .join(" ");
+      {
+        "k-radio-fill": currentTheme === "fill",
+        "k-radio-disabled": currentDisabled,
+        "k-radio-checked": isChecked,
+        "k-radio-lg": currentSize === "large",
+        "k-radio-sm": currentSize === "small",
+      },
+      className
+    );
 
     const labelNode = label || children;
 

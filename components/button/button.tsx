@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { Loading } from "kui-icons";
 import React, { useContext } from "react";
 import { SizeContext } from "../config/size-context";
@@ -76,23 +77,25 @@ const Button = React.forwardRef<any, ButtonProps>(
       return false;
     };
 
-    const classes = [
+    const classes = clsx(
       "k-btn",
       type && !color ? `k-btn-${type}` : "",
-      theme === "outline" ? "k-btn-outline" : "",
-      computedSize === "small" ? "k-btn-sm" : "",
-      block ? "k-btn-block" : "",
-      loading ? "k-btn-loading" : "",
-      iconOnly() ? "k-btn-icon-only" : "",
+      {
+        "k-btn-outline": theme === "outline",
+        "k-btn-sm": computedSize === "small",
+        "k-btn-block": block,
+        "k-btn-loading": loading,
+        "k-btn-icon-only": iconOnly(),
+      },
       color && colors.includes(color as any) ? `k-btn-${color}` : "",
-      computedSize === "large" ? "k-btn-lg" : "",
-      computedShape === "circle" ? "k-btn-circle" : "",
-      computedShape === "square" ? "k-btn-square" : "",
+      {
+        "k-btn-lg": computedSize === "large",
+        "k-btn-circle": computedShape === "circle",
+        "k-btn-square": computedShape === "square",
+      },
       theme ? `k-btn-${theme}` : "",
-      className,
-    ]
-      .filter(Boolean)
-      .join(" ");
+      className
+    );
 
     let childNodes: React.ReactNode[] = [];
     const iconType = loading ? Loading : icon;

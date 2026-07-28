@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import type { ShapeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
@@ -90,17 +91,17 @@ const Avatar: React.FC<AvatarProps> = ({
 
   const isText = childList.length === 1 && typeof childList[0] === "string";
 
-  const rootClasses = [
+  const rootClasses = clsx(
     "k-avatar",
-    sizeVal === "large" ? "k-avatar-lg" : "",
-    sizeVal === "small" ? "k-avatar-sm" : "",
-    src ? "k-avatar-image" : "",
-    icon || hasIcon ? "k-avatar-icon" : "",
-    shapeVal === "square" ? "k-avatar-square" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    {
+      "k-avatar-lg": sizeVal === "large",
+      "k-avatar-sm": sizeVal === "small",
+      "k-avatar-image": src,
+      "k-avatar-icon": icon || hasIcon,
+      "k-avatar-square": shapeVal === "square",
+    },
+    className
+  );
 
   return (
     <div ref={rootRef} className={rootClasses} style={rootStyles} {...rest}>

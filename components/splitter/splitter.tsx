@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import {
   Children,
   Fragment,
@@ -119,11 +120,7 @@ export function Splitter({
   };
 
   return (
-    <div
-      {...rest}
-      ref={containerRef}
-      className={["k-splitter", `is-${direction}`, className].filter(Boolean).join(" ")}
-    >
+    <div {...rest} ref={containerRef} className={clsx("k-splitter", `is-${direction}`, className)}>
       {panels.map((panel, index) => (
         <Fragment key={panel.key ?? index}>
           <div

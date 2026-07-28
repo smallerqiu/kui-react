@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ChevronRight, CircleMinus, CirclePlus } from "kui-icons";
 import {
   useMemo,
@@ -228,28 +229,24 @@ export default function Tree({
   return (
     <div
       {...rest}
-      className={[
+      className={clsx(
         "k-tree",
         showLine && "k-tree-show-line",
         directory && "k-tree-directory",
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+        className
+      )}
     >
       <div className="k-tree-node-list">
         {visible.map((node, index) => (
           <div
             key={node.key || index}
-            className={[
+            className={clsx(
               "k-tree-item",
               node.disabled && "k-tree-item-disabled",
               dropKey === node.key && "k-tree-item-drop",
               !showExtra && "k-tree-item-extra-hidden",
-              directory && selected.includes(node.key) && "k-tree-item-selected",
-            ]
-              .filter(Boolean)
-              .join(" ")}
+              directory && selected.includes(node.key) && "k-tree-item-selected"
+            )}
             onClick={
               directory
                 ? () => {
@@ -264,9 +261,7 @@ export default function Tree({
             ))}
             {!node.isLeaf ? (
               <span
-                className={["k-tree-arrow", expanded.includes(node.key) && "k-tree-arrow-open"]
-                  .filter(Boolean)
-                  .join(" ")}
+                className={clsx("k-tree-arrow", expanded.includes(node.key) && "k-tree-arrow-open")}
                 onClick={(event) => {
                   event.stopPropagation();
                   void expand(node);
@@ -297,9 +292,10 @@ export default function Tree({
               />
             )}
             <span
-              className={["k-tree-title", selected.includes(node.key) && "k-tree-title-selected"]
-                .filter(Boolean)
-                .join(" ")}
+              className={clsx(
+                "k-tree-title",
+                selected.includes(node.key) && "k-tree-title-selected"
+              )}
               draggable={draggable && !node.disabled}
               onClick={!directory ? () => selectNode(node) : undefined}
               onDragStart={(event) => {

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { Star as StarIcon } from "kui-icons";
 import React from "react";
 import Icon from "../icon";
@@ -51,9 +52,7 @@ const Star: React.FC<StarProps> = ({
     <Icon type={iconType || StarIcon} size={size} reverseFill={reverse} strokeWidth={strokeWidth} />
   );
 
-  const classes = ["k-star", full ? "k-star-full" : "", half ? "k-star-half" : ""]
-    .filter(Boolean)
-    .join(" ");
+  const classes = clsx("k-star", { "k-star-full": full, "k-star-half": half });
 
   const frontStyle: React.CSSProperties = {
     width: disabled && percent !== undefined ? `${percent}%` : undefined,

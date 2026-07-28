@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { X } from "kui-icons";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -144,15 +145,11 @@ const Drawer: React.FC<DrawerProps> = ({
     drawerStyle.height = typeof height === "number" ? `${height}px` : height;
   }
 
-  const classes = [
-    "k-drawer",
-    `k-drawer-${placement}`,
-    hasFooter ? "k-drawer-has-footer" : "",
-    isBody ? "k-drawer-to-body" : "",
-    !mask ? "k-drawer-no-mask" : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const classes = clsx("k-drawer", `k-drawer-${placement}`, {
+    "k-drawer-has-footer": hasFooter,
+    "k-drawer-to-body": isBody,
+    "k-drawer-no-mask": !mask,
+  });
 
   if (!rendered) return null;
 
@@ -160,9 +157,7 @@ const Drawer: React.FC<DrawerProps> = ({
     <div className={classes}>
       {mask && (
         <div
-          className={["k-drawer-mask", isBody ? "k-drawer-mask-to-body" : ""]
-            .filter(Boolean)
-            .join(" ")}
+          className={clsx("k-drawer-mask", { "k-drawer-mask-to-body": isBody })}
           style={{ display: visible ? undefined : "none" }}
           onClick={maskClosable ? close : undefined}
         />

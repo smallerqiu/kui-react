@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import {
   useCallback,
   useEffect,
@@ -89,10 +90,7 @@ export default function Affix({
 
   return (
     <div {...rest} ref={wrapperRef} style={{ ...style, ...placeholderStyle }}>
-      <div
-        className={["k-affix", fixed && "k-affix-fixed", className].filter(Boolean).join(" ")}
-        style={affixStyle}
-      >
+      <div className={clsx("k-affix", fixed && "k-affix-fixed", className)} style={affixStyle}>
         {children}
       </div>
     </div>

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useContext } from "react";
 import { SizeContext } from "../config/size-context";
 import type { SizeType, ThemeType } from "../const/types";
@@ -26,17 +27,17 @@ const InputGroup: React.FC<InputGroupProps> = ({
 
   const rootStyle: React.CSSProperties = { ...style };
 
-  const classes = [
+  const classes = clsx(
     "k-input-group",
-    compact ? "k-input-group-compact" : "",
-    block ? "k-input-group-block" : "",
-    theme === "fill" ? "k-input-group-fill" : "",
-    currentSize === "large" ? "k-input-group-lg" : "",
-    currentSize === "small" ? "k-input-group-sm" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    {
+      "k-input-group-compact": compact,
+      "k-input-group-block": block,
+      "k-input-group-fill": theme === "fill",
+      "k-input-group-lg": currentSize === "large",
+      "k-input-group-sm": currentSize === "small",
+    },
+    className
+  );
 
   if (!compact && currentSize !== undefined) {
     if (typeof currentSize === "number") {
@@ -50,14 +51,11 @@ const InputGroup: React.FC<InputGroupProps> = ({
   if (compact && childList.length > 0) {
     processedChildren = childList.map((child, i) => {
       if (React.isValidElement<{ className?: string }>(child)) {
-        const itemClass = [
-          child.props.className || "",
-          i === 0 ? "k-input-group-first-item" : "",
-          i > 0 && i < childList.length - 1 ? "k-input-group-item" : "",
-          i === childList.length - 1 ? "k-input-group-last-item" : "",
-        ]
-          .filter(Boolean)
-          .join(" ");
+        const itemClass = clsx(child.props.className || "", {
+          "k-input-group-first-item": i === 0,
+          "k-input-group-item": i > 0 && i < childList.length - 1,
+          "k-input-group-last-item": i === childList.length - 1,
+        });
         return React.cloneElement(child, {
           className: itemClass,
           key: child.key || `item-${i}`,

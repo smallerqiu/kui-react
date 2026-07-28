@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import Color, { type ColorInstance, type ColorObject } from "color";
 import {
   cloneElement,
@@ -134,16 +135,14 @@ export default function ColorPicker({
       <div
         {...rest}
         ref={triggerRef as React.RefObject<HTMLDivElement>}
-        className={[
+        className={clsx(
           "k-color-picker",
           open && "k-color-picker-opened",
           disabled && "k-color-picker-disabled",
           size === "small" && "k-color-picker-sm",
           size === "large" && "k-color-picker-lg",
-          className,
-        ]
-          .filter(Boolean)
-          .join(" ")}
+          className
+        )}
         {...hoverProps}
       >
         <div className="k-color-picker-selection">
@@ -163,9 +162,10 @@ export default function ColorPicker({
       <div
         ref={popoverRef}
         data-placement={placement}
-        className={["k-color-picker-dropdown", disabledAlpha && "k-color-picker-disabled-alpha"]
-          .filter(Boolean)
-          .join(" ")}
+        className={clsx(
+          "k-color-picker-dropdown",
+          disabledAlpha && "k-color-picker-disabled-alpha"
+        )}
         style={{ position: "fixed", left: position.left, top: position.top }}
         onMouseEnter={() => hideTimerRef.current && clearTimeout(hideTimerRef.current)}
         onMouseLeave={

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { Check, CircleCheck, CircleX, X } from "kui-icons";
 import React from "react";
 import type { SizeType } from "../const/types";
@@ -144,16 +145,13 @@ const Progress: React.FC<ProgressProps> = ({
     finalStatus = "success";
   }
 
-  const classes = [
+  const classes = clsx(
     "k-progress",
     `k-progress-${type}`,
     `k-progress-${finalStatus}`,
-    type === "line" && size === "small" ? "k-progress-sm" : "",
-    !showInfo ? "k-progress-hide-info" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    { "k-progress-sm": type === "line" && size === "small", "k-progress-hide-info": !showInfo },
+    className
+  );
 
   const pgStyle: React.CSSProperties = { ...style };
   if (type !== "line" && width !== undefined && width > 10) {

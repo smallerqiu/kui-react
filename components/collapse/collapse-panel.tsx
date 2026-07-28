@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ChevronUp } from "kui-icons";
 import React, { useEffect, useState } from "react";
 import Icon from "../icon";
@@ -38,9 +39,7 @@ const CollapsePanel: React.FC<CollapsePanelProps> = ({
     }
   };
 
-  const classes = ["k-collapse-item", expanded ? "k-collapse-item-active" : "", className]
-    .filter(Boolean)
-    .join(" ");
+  const classes = clsx("k-collapse-item", { "k-collapse-item-active": expanded }, className);
 
   return (
     <div className={classes} {...rest}>

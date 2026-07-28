@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React from "react";
 import { getChildren } from "../utils/react-node";
 
@@ -41,13 +42,11 @@ const Badge: React.FC<BadgeProps> = ({
   if (isStatusType && !displayCount) {
     const isHexColor = color && /^#/.test(color);
 
-    const dotClasses = [
+    const dotClasses = clsx(
       "k-badge-status-dot",
       status ? `k-badge-status-${status}` : "",
-      color && !isHexColor ? `k-badge-status-${color}` : "",
-    ]
-      .filter(Boolean)
-      .join(" ");
+      color && !isHexColor ? `k-badge-status-${color}` : ""
+    );
 
     const dotStyle: React.CSSProperties = {
       backgroundColor: isHexColor ? color : undefined,
@@ -68,14 +67,14 @@ const Badge: React.FC<BadgeProps> = ({
   let supNode: React.ReactNode = null;
 
   if (showSup) {
-    const supClasses = [
-      !dot && displayCount !== null ? "k-badge-count" : "",
-      dot ? "k-badge-dot" : "",
-      !hasChildren ? "k-badge-no-child" : "",
-      status && !color ? `k-badge-${status}` : "",
-    ]
-      .filter(Boolean)
-      .join(" ");
+    const supClasses = clsx(
+      {
+        "k-badge-count": !dot && displayCount !== null,
+        "k-badge-dot": dot,
+        "k-badge-no-child": !hasChildren,
+      },
+      status && !color ? `k-badge-${status}` : ""
+    );
 
     const supStyle: React.CSSProperties = {
       backgroundColor: color,
@@ -88,7 +87,7 @@ const Badge: React.FC<BadgeProps> = ({
     );
   }
 
-  const classes = ["k-badge", className].filter(Boolean).join(" ");
+  const classes = clsx("k-badge", className);
 
   return (
     <div className={classes} style={style} {...rest}>

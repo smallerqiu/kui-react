@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useContext } from "react";
 import Icon, { type IconType } from "../icon";
 import { BreadcrumbContext } from "./breadcrumb";
@@ -29,7 +30,7 @@ const BreadcrumbItem: React.FC<BreadcrumbItemProps> = ({
     return null;
   };
 
-  const classes = ["k-breadcrumb-item", className].filter(Boolean).join(" ");
+  const classes = clsx("k-breadcrumb-item", className);
 
   const content = (
     <>

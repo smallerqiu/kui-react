@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
 import type { SizeType, SpinModeType } from "../const/types.ts";
 
@@ -45,19 +46,20 @@ const Spin: React.FC<SpinProps> = ({
     };
   }, [spinningProp, delay]);
 
-  const spinClasses = [spinning ? "k-spin-loading" : "", mode && spinning ? `k-spin-${mode}` : ""]
-    .filter(Boolean)
-    .join(" ");
+  const spinClasses = clsx(
+    { "k-spin-loading": spinning },
+    mode && spinning ? `k-spin-${mode}` : ""
+  );
 
-  const rootClasses = [
+  const rootClasses = clsx(
     "k-spin",
-    size === "large" ? "k-spin-lg" : "",
-    size === "small" ? "k-spin-sm" : "",
-    children == null ? "k-spin-only" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    {
+      "k-spin-lg": size === "large",
+      "k-spin-sm": size === "small",
+      "k-spin-only": children == null,
+    },
+    className
+  );
 
   const spinNode = <div className={spinClasses} />;
 

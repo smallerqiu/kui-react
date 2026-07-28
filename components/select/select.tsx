@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ChevronDown, CircleX, Loading, X } from "kui-icons";
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -524,14 +525,10 @@ const Select: React.FC<SelectProps> = ({
         transformOrigin: transOrigin,
         display: visible ? undefined : "none",
       } as React.CSSProperties,
-      className: [
-        "k-select-dropdown",
-        "k-scroll",
-        multiple ? "k-select-dropdown-multiple" : "",
-        size === "small" ? "k-select-dropdown-sm" : "",
-      ]
-        .filter(Boolean)
-        .join(" "),
+      className: clsx("k-select-dropdown", "k-scroll", {
+        "k-select-dropdown-multiple": multiple,
+        "k-select-dropdown-sm": size === "small",
+      }),
     };
 
     const loadingNode = (
@@ -642,26 +639,26 @@ const Select: React.FC<SelectProps> = ({
   const arrowNode =
     !hasSearchEvent && showArrow ? <Icon className="k-select-arrow" type={finalArrowIcon} /> : null;
 
-  const rootClasses = [
+  const rootClasses = clsx(
     "k-select",
-    disabled ? "k-select-disabled" : "",
-    block ? "k-select-block" : "",
-    visible ? "k-select-opened" : "",
-    bordered === false ? "k-select-borderless" : "",
-    size === "large" ? "k-select-lg" : "",
-    size === "small" ? "k-select-sm" : "",
-    theme === "fill" ? "k-select-fill" : "",
-    icon ? "k-select-has-icon" : "",
-    shape === "circle" && !multiple ? "k-select-circle" : "",
-    shape === "square" ? "k-select-square" : "",
-    multiple ? "k-select-multiple" : "",
-    queryInputFocused ? "k-select-show-search" : "",
-    multiple && !isEmpty(labelText) ? "k-select-show-tags" : "",
-    showClear ? "k-select-has-clear" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    {
+      "k-select-disabled": disabled,
+      "k-select-block": block,
+      "k-select-opened": visible,
+      "k-select-borderless": bordered === false,
+      "k-select-lg": size === "large",
+      "k-select-sm": size === "small",
+      "k-select-fill": theme === "fill",
+      "k-select-has-icon": icon,
+      "k-select-circle": shape === "circle" && !multiple,
+      "k-select-square": shape === "square",
+      "k-select-multiple": multiple,
+      "k-select-show-search": queryInputFocused,
+      "k-select-show-tags": multiple && !isEmpty(labelText),
+      "k-select-has-clear": showClear,
+    },
+    className
+  );
 
   const clearNode = showClear ? (
     <Icon className="k-select-clearable" type={CircleX} onClick={onClear} />

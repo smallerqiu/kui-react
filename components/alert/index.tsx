@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { CircleAlert, CircleCheck, CircleX, Info, X } from "kui-icons";
 import React, { useState } from "react";
 import Icon, { type IconType } from "../icon";
@@ -55,17 +56,17 @@ const Alert: React.FC<AlertProps> = ({
 
   const msgNode = <div className="k-alert-message">{message || children}</div>;
 
-  const classes = [
+  const classes = clsx(
     "k-alert",
     type ? `k-alert-${type}` : "",
-    showIcon ? "k-alert-has-icon" : "",
-    closable ? "k-alert-has-close" : "",
-    bordered ? "k-alert-bordered" : "",
-    description ? "k-alert-has-description" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    {
+      "k-alert-has-icon": showIcon,
+      "k-alert-has-close": closable,
+      "k-alert-bordered": bordered,
+      "k-alert-has-description": description,
+    },
+    className
+  );
 
   return (
     <div className={classes} {...rest}>

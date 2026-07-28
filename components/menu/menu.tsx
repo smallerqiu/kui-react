@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { DirectionType } from "../const/types";
@@ -97,15 +98,13 @@ export const MenuItem: React.FC<MenuItemProps> = ({
 
   return (
     <li
-      className={[
+      className={clsx(
         `k-${preCls}-item`,
         active ? `k-${preCls}-item-active` : "",
         isSelected ? `k-${preCls}-item-selected` : "",
         disabled ? `k-${preCls}-item-disabled` : "",
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+        className
+      )}
       style={{ paddingLeft }}
       onMouseEnter={() => !disabled && setActive(true)}
       onMouseLeave={() => !disabled && setActive(false)}
@@ -295,15 +294,13 @@ export const SubMenu: React.FC<SubMenuProps> = ({
       </div>
     ) : null;
 
-  const classes = [
+  const classes = clsx(
     `k-${preCls}`,
     isOpened || isSelected ? `k-${preCls}-active` : "",
     isSelected ? `k-${preCls}-selected` : "",
     isOpened ? `k-${preCls}-opened` : "",
-    disabled ? `k-${preCls}-disabled` : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+    disabled ? `k-${preCls}-disabled` : ""
+  );
 
   return (
     <li className={classes}>
@@ -478,13 +475,11 @@ const Menu: React.FC<MenuProps> = ({
   };
 
   const preCls = isDropdown ? "dropdown-menu k-scroll" : "menu";
-  const cls = [
+  const cls = clsx(
     `k-${preCls} k-${preCls}-${currentMode}`,
     collapsed ? `k-${preCls}-inline-collapsed` : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    className
+  );
 
   const contextValue: MenuContextValue = {
     selectedKeys,

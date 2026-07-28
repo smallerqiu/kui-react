@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { useEffect, useRef, type HTMLAttributes } from "react";
 
 export interface Font {
@@ -201,7 +202,7 @@ export default function Watermark({
     <div
       {...rest}
       ref={containerRef}
-      className={["k-watermark-container", className].filter(Boolean).join(" ")}
+      className={clsx("k-watermark-container", className)}
       style={{ position: "relative", width: "100%", height: "100%", ...style }}
     >
       {children}

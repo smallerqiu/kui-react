@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { useEffect, useRef, type HTMLAttributes } from "react";
 import { CountUp, type CountUpOptions } from "./utils/countup";
 import { Odometer } from "./utils/odometer";
@@ -56,11 +57,5 @@ export default function CountUpNumber({
     if (countRef.current) countRef.current.options.decimalPlaces = precision;
   }, [precision]);
 
-  return (
-    <span
-      {...rest}
-      ref={elementRef}
-      className={["k-stat-countup-number", className].filter(Boolean).join(" ")}
-    />
-  );
+  return <span {...rest} ref={elementRef} className={clsx("k-stat-countup-number", className)} />;
 }

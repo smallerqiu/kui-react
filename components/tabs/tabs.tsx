@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ChevronLeft, ChevronRight, X } from "kui-icons";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Icon from "../icon";
@@ -200,13 +201,10 @@ const Tabs: React.FC<TabsProps> = ({
     return (
       <div
         key={key}
-        className={[
-          "k-tabs-tab",
-          key === activeKey ? "k-tabs-tab-active" : "",
-          isDisabled ? "k-tabs-tab-disabled" : "",
-        ]
-          .filter(Boolean)
-          .join(" ")}
+        className={clsx("k-tabs-tab", {
+          "k-tabs-tab-active": key === activeKey,
+          "k-tabs-tab-disabled": isDisabled,
+        })}
         onClick={() => tabClick(key, isDisabled, index)}
       >
         {icon ? <Icon type={icon} /> : null}
@@ -227,16 +225,16 @@ const Tabs: React.FC<TabsProps> = ({
     });
   });
 
-  const classes = [
+  const classes = clsx(
     "k-tabs",
-    animated && !card && !sample ? "k-tabs-animated" : "",
-    card && !sample ? "k-tabs-card" : "",
-    sample && !card ? "k-tabs-sample" : "",
-    centered ? "k-tabs-centered" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    {
+      "k-tabs-animated": animated && !card && !sample,
+      "k-tabs-card": card && !sample,
+      "k-tabs-sample": sample && !card,
+      "k-tabs-centered": centered,
+    },
+    className
+  );
 
   const paneStyle: React.CSSProperties =
     animated && !card && !sample && currentIndex >= 0
@@ -247,18 +245,13 @@ const Tabs: React.FC<TabsProps> = ({
     <div className={classes} {...rest}>
       <div className="k-tabs-bar">
         <div
-          className={["k-tabs-nav-container", scrollable ? "k-tabs-nav-container-scroll" : ""]
-            .filter(Boolean)
-            .join(" ")}
+          className={clsx("k-tabs-nav-container", { "k-tabs-nav-container-scroll": scrollable })}
         >
           {scrollable ? (
             <span
-              className={[
-                "k-tabs-tab-btn-prev",
-                prevBtnDisabled ? "k-tabs-tab-btn-prev-disabled" : "",
-              ]
-                .filter(Boolean)
-                .join(" ")}
+              className={clsx("k-tabs-tab-btn-prev", {
+                "k-tabs-tab-btn-prev-disabled": prevBtnDisabled,
+              })}
               onClick={() => scroll("left")}
             >
               <Icon type={ChevronLeft} />
@@ -274,12 +267,9 @@ const Tabs: React.FC<TabsProps> = ({
           </div>
           {scrollable ? (
             <span
-              className={[
-                "k-tabs-tab-btn-next",
-                nextBtnDisabled ? "k-tabs-tab-btn-next-disabled" : "",
-              ]
-                .filter(Boolean)
-                .join(" ")}
+              className={clsx("k-tabs-tab-btn-next", {
+                "k-tabs-tab-btn-next-disabled": nextBtnDisabled,
+              })}
               onClick={() => scroll("right")}
             >
               <Icon type={ChevronRight} />

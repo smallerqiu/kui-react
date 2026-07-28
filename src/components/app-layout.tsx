@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ChevronLeft, ChevronRight, Menu as MenuIcon, X } from "kui-icons";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, useLocation } from "react-router";
@@ -27,11 +28,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     <Layout className="root">
       <AppHeader />
       <Layout className="main">
-        <Sider
-          className={["docs-k-layout-sider", showNav && "docs-k-layout-sider-show"]
-            .filter(Boolean)
-            .join(" ")}
-        >
+        <Sider className={clsx("docs-k-layout-sider", showNav && "docs-k-layout-sider-show")}>
           <Button
             size="large"
             icon={showNav ? X : MenuIcon}

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { createContext, useEffect, useMemo, useRef, type HTMLAttributes } from "react";
 import createInstance, { type ImagePreviewInstance } from "./instance";
 import type { ImagePreviewProps } from "./preview";
@@ -38,7 +39,7 @@ export default function ImageGroup({ data = [], className, children, ...rest }: 
   );
   return (
     <ImageGroupContext.Provider value={context}>
-      <div {...rest} className={["k-image-group", className].filter(Boolean).join(" ")}>
+      <div {...rest} className={clsx("k-image-group", className)}>
         {children}
       </div>
     </ImageGroupContext.Provider>

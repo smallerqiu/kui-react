@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { Copy, ListChevronsDownUp, ListChevronsUpDown, Undo2 } from "kui-icons";
 import * as Icons from "kui-icons";
 import * as React from "react";
@@ -96,22 +97,14 @@ export default function Demo({
   };
 
   return (
-    <section
-      className={["markdown-body", "k-demo-container", expanded && "k-demo-expanded"]
-        .filter(Boolean)
-        .join(" ")}
-    >
+    <section className={clsx("markdown-body", "k-demo-container", expanded && "k-demo-expanded")}>
       <div className="k-desc">
         <div className="k-desc-content">
           <h3>{title}</h3>
           {descriptionHtml && <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />}
         </div>
       </div>
-      <div
-        className={["k-demo", direction === "horizontal" && "k-demo-horizontal"]
-          .filter(Boolean)
-          .join(" ")}
-      >
+      <div className={clsx("k-demo", direction === "horizontal" && "k-demo-horizontal")}>
         <div className={`k-demo-view k-demo-view-${direction}`}>
           <div className="k-content k-scroll">
             {preview}

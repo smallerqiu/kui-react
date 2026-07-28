@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ChevronDown, CircleX, LoaderCircle, X } from "kui-icons";
 import {
   useCallback,
@@ -234,7 +235,7 @@ export default function TreeSelect({
   const selectedForTree = treeSelectedKeys ?? currentValue;
   const checkedForTree = treeCheckedKeys ?? (treeCheckable ? currentValue : checked);
   const placeholderText = placeholder || locale?.k?.select?.placeholder;
-  const classes = [
+  const classes = clsx(
     "k-tree-select",
     disabled && "k-tree-select-disabled",
     block && "k-tree-select-block",
@@ -250,10 +251,8 @@ export default function TreeSelect({
     query && "k-tree-select-show-search",
     multiple && labels.length && "k-tree-select-show-tags",
     clearable && !disabled && currentValue.length && "k-tree-select-has-clear",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    className
+  );
   const displayedLabels = maxTagCount && maxTagCount > 0 ? labels.slice(0, maxTagCount) : labels;
 
   const search = (event: ChangeEvent<HTMLInputElement>) => {
@@ -281,14 +280,12 @@ export default function TreeSelect({
     createPortal(
       <div
         ref={overlayRef}
-        className={[
+        className={clsx(
           "k-tree-select-dropdown",
           "k-scroll",
           multiple && "k-tree-select-dropdown-multiple",
-          size === "small" && "k-tree-select-dropdown-sm",
-        ]
-          .filter(Boolean)
-          .join(" ")}
+          size === "small" && "k-tree-select-dropdown-sm"
+        )}
         style={{
           display: visible ? undefined : "none",
           position: "absolute",

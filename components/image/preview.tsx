@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import {
   ArrowDown,
   ArrowLeft,
@@ -183,12 +184,10 @@ const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(
                 <Icon type={RotateCwSquare} />
               </li>
               <li
-                className={[
+                className={clsx(
                   "k-image-preview-action",
-                  scale <= 1 && "k-image-preview-action-disabled",
-                ]
-                  .filter(Boolean)
-                  .join(" ")}
+                  scale <= 1 && "k-image-preview-action-disabled"
+                )}
                 onClick={() => setScale((value) => Math.max(1, value - 1))}
               >
                 <Icon type={Minus} />
@@ -204,12 +203,10 @@ const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(
                 />
               </li>
               <li
-                className={[
+                className={clsx(
                   "k-image-preview-action",
-                  scale >= 10 && "k-image-preview-action-disabled",
-                ]
-                  .filter(Boolean)
-                  .join(" ")}
+                  scale >= 10 && "k-image-preview-action-disabled"
+                )}
                 onClick={() => setScale((value) => Math.min(10, value + 1))}
               >
                 <Icon type={Plus} />
@@ -256,23 +253,19 @@ const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(
             {data.length > 1 && (
               <>
                 <div
-                  className={[
+                  className={clsx(
                     "k-image-preview-switch-left",
-                    index <= 0 && "k-image-preview-switch-disabled",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
+                    index <= 0 && "k-image-preview-switch-disabled"
+                  )}
                   onClick={() => switchImage(-1)}
                 >
                   <Icon type={ArrowLeft} />
                 </div>
                 <div
-                  className={[
+                  className={clsx(
                     "k-image-preview-switch-right",
-                    index >= data.length - 1 && "k-image-preview-switch-disabled",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
+                    index >= data.length - 1 && "k-image-preview-switch-disabled"
+                  )}
                   onClick={() => switchImage(1)}
                 >
                   <Icon type={ArrowRight} />
@@ -287,9 +280,10 @@ const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(
           </div>
           {options.panel && (
             <div
-              className={["k-image-preview-panel", !panelVisible && "k-image-preview-panel-hidden"]
-                .filter(Boolean)
-                .join(" ")}
+              className={clsx(
+                "k-image-preview-panel",
+                !panelVisible && "k-image-preview-panel-hidden"
+              )}
             >
               <span className="k-image-preview-panel-action" onClick={togglePanel}>
                 <Icon type={ChevronRight} />

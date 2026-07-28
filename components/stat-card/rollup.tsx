@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { useEffect, useState, type HTMLAttributes } from "react";
 
 export interface RollUpProps extends HTMLAttributes<HTMLDivElement> {
@@ -40,10 +41,7 @@ export default function RollUp({
   }, [current, precision]);
 
   return (
-    <div
-      {...rest}
-      className={["k-stat-roll-number-container", className].filter(Boolean).join(" ")}
-    >
+    <div {...rest} className={clsx("k-stat-roll-number-container", className)}>
       {characters.map((character, index) => (
         <div key={index} className="k-stat-roll-number-slot">
           {/\d/.test(character) ? (

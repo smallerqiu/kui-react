@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { useContext, useEffect, type AnchorHTMLAttributes, type ReactNode } from "react";
 import { AnchorContext } from "./anchor";
 
@@ -21,15 +22,11 @@ export default function AnchorLink({
   }, [context, href]);
 
   return (
-    <div
-      className={["k-anchor-link", context?.activeLink === href && "k-anchor-link-active"]
-        .filter(Boolean)
-        .join(" ")}
-    >
+    <div className={clsx("k-anchor-link", context?.activeLink === href && "k-anchor-link-active")}>
       <a
         {...rest}
         href={href}
-        className={["k-anchor-link-title", className].filter(Boolean).join(" ")}
+        className={clsx("k-anchor-link-title", className)}
         onClick={(event) => {
           onClick?.(event);
           if (event.defaultPrevented) return;

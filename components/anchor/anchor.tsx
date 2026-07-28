@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import {
   createContext,
   useCallback,
@@ -146,9 +147,7 @@ export default function Anchor({
       <div
         {...rest}
         ref={wrapperRef}
-        className={["k-anchor-wrapper", affix && "k-anchor-affix", className]
-          .filter(Boolean)
-          .join(" ")}
+        className={clsx("k-anchor-wrapper", affix && "k-anchor-affix", className)}
       >
         <div className="k-anchor">
           <span className="k-anchor-ink-ball" style={inkStyle} />

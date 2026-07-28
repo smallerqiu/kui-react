@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import Icon, { type IconType } from "../icon";
 
@@ -22,13 +23,8 @@ export default function TimeLineItem({
   const custom = dot != null || icon != null;
   const dotStyle: CSSProperties = { color };
   return (
-    <li {...rest} className={["k-time-line-item", className].filter(Boolean).join(" ")}>
-      <div
-        className={["k-time-line-dot", custom && "k-time-line-dot-custom"]
-          .filter(Boolean)
-          .join(" ")}
-        style={dotStyle}
-      >
+    <li {...rest} className={clsx("k-time-line-item", className)}>
+      <div className={clsx("k-time-line-dot", custom && "k-time-line-dot-custom")} style={dotStyle}>
         {dot ?? (icon ? <Icon type={icon} /> : <span className="k-time-line-head" />)}
       </div>
       <div className="k-time-line-item-content">

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { X } from "kui-icons";
 import React, { useState } from "react";
 import { type ColorType, type ShapeType, type SizeType, type ThemeType } from "../const/types";
@@ -44,21 +45,20 @@ const Tag: React.FC<TagProps> = ({
   const isPresetColor = color && colors.includes(color as any);
   const isCustomColor = color && isColor(color) && !isPresetColor;
 
-  const tagClasses = [
+  const tagClasses = clsx(
     "k-tag",
-    size === "small" ? "k-tag-sm" : "",
-    size === "large" ? "k-tag-lg" : "",
+    { "k-tag-sm": size === "small", "k-tag-lg": size === "large" },
     isPresetColor ? `k-tag-${color}` : "",
-    shape === "circle" ? "k-tag-circle" : "",
-    shape === "square" ? "k-tag-square" : "",
-    isCustomColor ? "k-tag-has-color" : "",
-    closeable ? "k-tag-closeable" : "",
-    hidden ? "k-tag-hidden" : "",
-    theme === "fill" ? "k-tag-fill" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    {
+      "k-tag-circle": shape === "circle",
+      "k-tag-square": shape === "square",
+      "k-tag-has-color": isCustomColor,
+      "k-tag-closeable": closeable,
+      "k-tag-hidden": hidden,
+      "k-tag-fill": theme === "fill",
+    },
+    className
+  );
 
   const tagStyle: React.CSSProperties = {
     backgroundColor: isCustomColor ? color : undefined,

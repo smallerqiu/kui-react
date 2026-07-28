@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import {
   useContext,
   useRef,
@@ -166,15 +167,13 @@ export default function Slider({
   return (
     <div
       {...rest}
-      className={[
+      className={clsx(
         "k-slider",
         disabled && "k-slider-disabled",
         vertical && "k-slider-vertical",
         reverse && "k-slider-reverse",
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+        className
+      )}
     >
       <div className="k-slider-bar">
         <div className="k-slider-rail" ref={railRef} onClick={handleRailClick} />
@@ -192,16 +191,8 @@ export default function Slider({
                   : { left: `${percent(mark)}%` };
               return (
                 <div key={mark} className="k-slider-mark-item" style={position}>
-                  <span
-                    className={["k-slider-mark-dot", active && "is-active"]
-                      .filter(Boolean)
-                      .join(" ")}
-                  />
-                  <div
-                    className={["k-slider-mark-text", active && "is-active"]
-                      .filter(Boolean)
-                      .join(" ")}
-                  >
+                  <span className={clsx("k-slider-mark-dot", active && "is-active")} />
+                  <div className={clsx("k-slider-mark-text", active && "is-active")}>
                     {marks[mark]}
                   </div>
                 </div>

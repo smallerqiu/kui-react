@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { useEffect, useImperativeHandle, useRef, useState, type CSSProperties } from "react";
 import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
@@ -67,7 +68,7 @@ function LoadingBar({ ref, height = 2 }: LoadingProps & { ref?: React.Ref<Loadin
   return (
     <div className="k-loading-container" style={{ height }}>
       <div
-        className={["k-loading-line", isError && "k-loading-line-error"].filter(Boolean).join(" ")}
+        className={clsx("k-loading-line", isError && "k-loading-line-error")}
         style={lineStyle}
       />
     </div>

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useContext } from "react";
 import { RowContext } from "./row";
 
@@ -29,14 +30,12 @@ const Col: React.FC<ColProps> = ({
     return flexVal;
   };
 
-  const classes = [
+  const classes = clsx(
     "k-col",
     span ? `k-col-${span}` : "",
     offset && offset > 0 && offset <= 24 ? `k-col-offset-${offset}` : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    className
+  );
 
   const colStyle: React.CSSProperties = { ...style };
 

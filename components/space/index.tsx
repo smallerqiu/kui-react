@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useContext } from "react";
 import { SizeContext } from "../config/size-context";
 import type { SizeType } from "../const/types";
@@ -35,17 +36,17 @@ const Space: React.FC<SpaceProps> = ({
   const currentAlign = !vertical && !align ? "center" : align;
 
   const spaceStyle: React.CSSProperties = { ...style };
-  const classes = [
+  const classes = clsx(
     "k-space",
-    vertical ? "k-space-vertical" : "",
-    compact ? "k-space-compact" : "",
-    wrap ? "k-space-wrap" : "",
-    block ? "k-space-block" : "",
+    {
+      "k-space-vertical": vertical,
+      "k-space-compact": compact,
+      "k-space-wrap": wrap,
+      "k-space-block": block,
+    },
     currentAlign ? `k-space-align-${currentAlign}` : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    className
+  );
 
   if (!compact) {
     if (Array.isArray(currentSize)) {
@@ -64,13 +65,11 @@ const Space: React.FC<SpaceProps> = ({
   const pre = vertical ? "vertical-" : "";
 
   for (let i = 0; i < childList.length; i++) {
-    const itemClasses = [
+    const itemClasses = clsx(
       i === 0 ? `k-space-${pre}first-item` : "",
       i > 0 && i < childList.length - 1 ? `k-space-${pre}item` : "",
-      i === childList.length - 1 ? `k-space-${pre}last-item` : "",
-    ]
-      .filter(Boolean)
-      .join(" ");
+      i === childList.length - 1 ? `k-space-${pre}last-item` : ""
+    );
 
     const p: Record<string, any> = {
       className: itemClasses,

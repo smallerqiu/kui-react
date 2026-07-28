@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React from "react";
 import type { DirectionType } from "../const/types";
 import { getChildren } from "../utils/react-node";
@@ -168,16 +169,16 @@ const Descriptions: React.FC<DescriptionsProps> = ({
     }
   });
 
-  const classes = [
+  const classes = clsx(
     "k-descriptions",
-    isVertical ? "k-descriptions-vertical" : "",
-    bordered ? "k-descriptions-bordered" : "",
-    size === "medium" ? "k-descriptions-medium" : "",
-    size === "small" ? "k-descriptions-sm" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    {
+      "k-descriptions-vertical": isVertical,
+      "k-descriptions-bordered": bordered,
+      "k-descriptions-medium": size === "medium",
+      "k-descriptions-sm": size === "small",
+    },
+    className
+  );
 
   return (
     <div className={classes} {...rest}>

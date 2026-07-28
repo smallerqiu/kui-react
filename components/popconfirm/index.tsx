@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { CircleQuestionMark } from "kui-icons";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -153,9 +154,7 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   const overlayNode = rendered ? (
     <div
       ref={refPopper}
-      className={[`k-${preCls}`, `k-${preCls}-has-arrow`, dark ? `k-${preCls}-dark` : ""]
-        .filter(Boolean)
-        .join(" ")}
+      className={clsx(`k-${preCls}`, `k-${preCls}-has-arrow`, dark ? `k-${preCls}-dark` : "")}
       style={{
         left: `${left}px`,
         top: `${top}px`,

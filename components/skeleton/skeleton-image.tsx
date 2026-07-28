@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { Images } from "kui-icons";
 import React, { useEffect, useRef, useState } from "react";
 import Icon from "../icon";
@@ -36,13 +37,11 @@ const SkeletonImage: React.FC<SkeletonImageProps> = ({
     };
   }, [loading, delay]);
 
-  const wrapperClasses = [
+  const wrapperClasses = clsx(
     "k-skeleton k-skeleton-ele",
-    animated ? "k-skeleton-animated" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    { "k-skeleton-animated": animated },
+    className
+  );
 
   const innerStyle: React.CSSProperties = {};
   if (radius) innerStyle.borderRadius = `${radius}px`;

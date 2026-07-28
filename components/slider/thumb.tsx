@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import {
   forwardRef,
   useState,
@@ -68,13 +69,11 @@ const Thumb = forwardRef<HTMLDivElement, ThumbProps>(function Thumb(
         aria-valuenow={value}
         aria-disabled={disabled}
         tabIndex={disabled ? undefined : 0}
-        className={[
+        className={clsx(
           "k-slider-thumb",
           dragging && "is-dragging",
-          size === "small" && "k-slider-thumb-sm",
-        ]
-          .filter(Boolean)
-          .join(" ")}
+          size === "small" && "k-slider-thumb-sm"
+        )}
         style={style}
         onMouseDown={(event) => {
           event.preventDefault();

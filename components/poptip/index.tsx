@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { PlacementsType } from "../const/types";
@@ -154,9 +155,7 @@ const Poptip: React.FC<PoptipProps> = ({
   const overlayNode = rendered ? (
     <div
       ref={refPopper}
-      className={[`k-${preCls}`, `k-${preCls}-has-arrow`, dark ? `k-${preCls}-dark` : ""]
-        .filter(Boolean)
-        .join(" ")}
+      className={clsx(`k-${preCls}`, `k-${preCls}-has-arrow`, dark ? `k-${preCls}-dark` : "")}
       style={{
         left: `${left}px`,
         top: `${top}px`,

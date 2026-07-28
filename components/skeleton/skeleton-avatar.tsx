@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
 import type { ShapeType, SizeType } from "../const/types";
 
@@ -37,13 +38,11 @@ const SkeletonAvatar: React.FC<SkeletonAvatarProps> = ({
     };
   }, [loading, delay]);
 
-  const wrapperClasses = [
+  const wrapperClasses = clsx(
     "k-skeleton k-skeleton-ele",
-    animated ? "k-skeleton-animated" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    { "k-skeleton-animated": animated },
+    className
+  );
 
   const innerStyle: React.CSSProperties = {};
   if (!isNaN(Number(size)) && typeof size === "number") {
@@ -54,14 +53,11 @@ const SkeletonAvatar: React.FC<SkeletonAvatarProps> = ({
     innerStyle.borderRadius = `${radius}px`;
   }
 
-  const innerClasses = [
+  const innerClasses = clsx(
     "k-skeleton-avatar",
-    size === "large" ? "k-skeleton-avatar-lg" : "",
-    size === "small" ? "k-skeleton-avatar-sm" : "",
-    shape && shape !== "round" ? `k-skeleton-avatar-${shape}` : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+    { "k-skeleton-avatar-lg": size === "large", "k-skeleton-avatar-sm": size === "small" },
+    shape && shape !== "round" ? `k-skeleton-avatar-${shape}` : ""
+  );
 
   return (
     <div className={wrapperClasses} {...rest}>

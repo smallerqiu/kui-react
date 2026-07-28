@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { Loading } from "kui-icons";
 import React, { useEffect, useState } from "react";
 import type { SizeType, ValueType } from "../const/types";
@@ -55,16 +56,13 @@ const Switch: React.FC<SwitchProps> = ({
     onClick?.(e);
   };
 
-  const classes = [
+  const classes = clsx(
     "k-switch",
-    localChecked ? "k-switch-checked" : "",
-    disabled || loading ? "k-switch-disabled" : "",
+    { "k-switch-checked": localChecked, "k-switch-disabled": disabled || loading },
     type ? `k-switch-${type}` : "",
-    size === "small" ? "k-switch-sm" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    { "k-switch-sm": size === "small" },
+    className
+  );
 
   const loadNode = loading ? <Icon spin type={Loading} className="k-switch-loading" /> : null;
 

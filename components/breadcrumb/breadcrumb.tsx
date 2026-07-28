@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { createContext } from "react";
 
 export interface BreadcrumbProps extends React.HTMLAttributes<HTMLElement> {
@@ -13,7 +14,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   className = "",
   ...rest
 }) => {
-  const classes = ["k-breadcrumb", className].filter(Boolean).join(" ");
+  const classes = clsx("k-breadcrumb", className);
 
   return (
     <BreadcrumbContext.Provider value={separator}>

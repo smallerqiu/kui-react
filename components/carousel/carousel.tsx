@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ArrowLeft, ArrowRight } from "kui-icons";
 import {
   Children,
@@ -112,9 +113,7 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
       <div
         {...rest}
         ref={rootRef}
-        className={["k-carousel", vertical && "k-carousel-vertical", className]
-          .filter(Boolean)
-          .join(" ")}
+        className={clsx("k-carousel", vertical && "k-carousel-vertical", className)}
         style={{ ...style, height }}
         onMouseEnter={stop}
         onMouseLeave={play}

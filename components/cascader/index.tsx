@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ChevronDown, ChevronRight, CircleX } from "kui-icons";
 import {
   useCallback,
@@ -173,7 +174,7 @@ export default function Cascader({
 
   const hasValue = currentValue.length > 0;
   const showClear = clearable && !disabled && hasValue;
-  const classes = [
+  const classes = clsx(
     "k-cascader",
     disabled && "k-cascader-disabled",
     visible && "k-cascader-opened",
@@ -184,10 +185,8 @@ export default function Cascader({
     size === "large" && "k-cascader-lg",
     size === "small" && "k-cascader-sm",
     showClear && "k-cascader-has-clear",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    className
+  );
 
   return (
     <>
@@ -227,9 +226,7 @@ export default function Cascader({
         createPortal(
           <div
             ref={overlayRef}
-            className={["k-cascader-dropdown", size === "small" && "k-cascader-dropdown-sm"]
-              .filter(Boolean)
-              .join(" ")}
+            className={clsx("k-cascader-dropdown", size === "small" && "k-cascader-dropdown-sm")}
             style={{
               display: visible ? undefined : "none",
               left: position.left,
@@ -246,16 +243,14 @@ export default function Cascader({
                       const hasChildren = !!item.children?.length;
                       return (
                         <li
-                          className={[
+                          className={clsx(
                             "k-cascader-dropdown-item",
                             activePath[column]?.value === item.value &&
                               "k-cascader-dropdown-item-active",
                             currentValue[column] === item.value &&
                               "k-cascader-dropdown-item-selected",
-                            item.disabled && "k-cascader-dropdown-item-disabled",
-                          ]
-                            .filter(Boolean)
-                            .join(" ")}
+                            item.disabled && "k-cascader-dropdown-item-disabled"
+                          )}
                           key={item.value}
                           onClick={() => choose(item, column)}
                           onMouseEnter={() => {

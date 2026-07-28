@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import {
   Children,
   cloneElement,
@@ -137,9 +138,11 @@ export default function FormItem({
 
   return (
     <Row
-      className={["k-form-item", required && "k-form-item-required", !valid && "k-form-item-error"]
-        .filter(Boolean)
-        .join(" ")}
+      className={clsx(
+        "k-form-item",
+        required && "k-form-item-required",
+        !valid && "k-form-item-error"
+      )}
       type="flex"
     >
       {label != null && (

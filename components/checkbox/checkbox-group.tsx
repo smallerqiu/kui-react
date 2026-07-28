@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useEffect, useState } from "react";
 import type { DirectionType, SizeType, ThemeType } from "../const/types";
 import Checkbox, { type ChangeEvent } from "./checkbox";
@@ -78,13 +79,11 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
     onChange?.(nextValue);
   };
 
-  const classes = [
+  const classes = clsx(
     "k-checkbox-group",
-    direction === "vertical" ? "k-checkbox-group-vertical" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    { "k-checkbox-group-vertical": direction === "vertical" },
+    className
+  );
 
   const content =
     options && options.length > 0

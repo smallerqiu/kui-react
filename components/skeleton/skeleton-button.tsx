@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
 import type { ShapeType, SizeType } from "../const/types";
 
@@ -39,26 +40,20 @@ const SkeletonButton: React.FC<SkeletonButtonProps> = ({
     };
   }, [loading, delay]);
 
-  const wrapperClasses = [
+  const wrapperClasses = clsx(
     "k-skeleton k-skeleton-ele",
-    animated ? "k-skeleton-animated" : "",
-    block ? "k-skeleton-block" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    { "k-skeleton-animated": animated, "k-skeleton-block": block },
+    className
+  );
 
   const innerStyle: React.CSSProperties = {};
   if (width) innerStyle.width = `${width}px`;
 
-  const innerClasses = [
+  const innerClasses = clsx(
     "k-skeleton-btn",
-    size === "large" ? "k-skeleton-btn-lg" : "",
-    size === "small" ? "k-skeleton-btn-sm" : "",
-    shape && shape !== "round" ? `k-skeleton-btn-${shape}` : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+    { "k-skeleton-btn-lg": size === "large", "k-skeleton-btn-sm": size === "small" },
+    shape && shape !== "round" ? `k-skeleton-btn-${shape}` : ""
+  );
 
   return (
     <div className={wrapperClasses} {...rest}>

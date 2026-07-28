@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React from "react";
 
 export interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -20,15 +21,13 @@ const Row: React.FC<RowProps> = ({
   style,
   ...rest
 }) => {
-  const classes = [
+  const classes = clsx(
     "k-row",
-    type === "flex" ? "k-row-flex" : "",
+    { "k-row-flex": type === "flex" },
     justify ? `k-row-flex-${justify}` : "",
     align ? `k-row-flex-${align}` : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    className
+  );
 
   const rowStyle: React.CSSProperties = { ...style };
 

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React from "react";
 import { SizeContext } from "../config/size-context";
 import type { SizeType } from "../const/types";
@@ -31,16 +32,13 @@ const Flex: React.FC<FlexProps> = ({
 
   const flexStyle: React.CSSProperties = { ...style };
 
-  const classes = [
+  const classes = clsx(
     "k-flex",
-    vertical ? "k-flex-vertical" : "",
-    wrap ? "k-flex-wrap" : "",
+    { "k-flex-vertical": vertical, "k-flex-wrap": wrap },
     currentAlign ? `k-flex-align-${currentAlign}` : "",
     justify ? `k-flex-justify-${justify}` : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    className
+  );
 
   if (Array.isArray(size)) {
     flexStyle.gap = `${size[1]}px ${size[0]}px`;
