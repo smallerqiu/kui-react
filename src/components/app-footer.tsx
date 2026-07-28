@@ -3,6 +3,10 @@ export default function AppFooter() {
     <footer className="footer">
       <span>©{new Date().getFullYear()} KUI. All rights reserved.</span>
       <a href="https://beian.miit.gov.cn" target="_blank" className="beian" rel="noreferrer">
+        <img
+          src="https://lf9-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/root-web-sites/beian.png"
+          alt=""
+        />
         粤ICP备17111365号-2
       </a>
       <span>

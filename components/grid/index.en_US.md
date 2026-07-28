@@ -29,45 +29,45 @@ The Layout and its subcomponents (Header, Sider, Content, Footer) belong to the 
 
 You can manually resize the browser window to observe the effect.
 
-[Basic Usage](./demo/basic.tsx)
+[Basic Usage](./demo/basic.tsx?show=vertical)
 
 - The `offset` logic of Grid is based on `grid-column-start`. In `dense` fill mode, `offset` might cause unexpected "gap-filling" behavior.
 
-[Dashboard Card Layout (Auto-fill + Min-Width)](./demo/auto-fill-min-width.tsx)
+[Dashboard Card Layout (Auto-fill + Min-Width)](./demo/auto-fill-min-width.tsx?show=vertical)
 
 - No need to manually set breakpoints. Rely on `itemMinWidth` to let the container automatically increase or decrease the number of columns based on its width.
 
 > When `itemMinWidth` is set, the `cols` parameter becomes ineffective. This is a content-driven layout method, perfect for image galleries or card lists, ensuring cards maintain a suitable width without becoming too crowded during container resizing.
 
-[Complex Form Responsiveness (Breakpoint Fallback)](./demo/breakpoint-fallback.tsx)
+[Complex Form Responsiveness (Breakpoint Fallback)](./demo/breakpoint-fallback.tsx?show=vertical)
 
 - The logic for finding breakpoints up or down. For example, if `md` is defined but `lg` is not, can the system correctly apply the `md` value?
 
-[Holy Grail Layout / Admin Panel (Fixed Rows & Areas)](./demo/fixed-rows-areas.tsx)
+[Holy Grail Layout / Admin Panel (Fixed Rows & Areas)](./demo/fixed-rows-areas.tsx?show=vertical)
 
 - The vertical control power of `rows` and `rowSpan`.
 
-[Responsive Hiding & Forced Sorting (Suffix & Display None)](./demo/suffix-display-none.tsx)
+[Responsive Hiding & Forced Sorting (Suffix & Display None)](./demo/suffix-display-none.tsx?show=vertical)
 
 - `span: 0` completely removes the DOM placeholder, and `suffix` spans across all dynamic items.
 
-[Image Gallery / Masonry (Bento Grid Style)](./demo/bento-en.tsx)
+[Image Gallery / Masonry (Bento Grid Style)](./demo/bento-en.tsx?show=vertical)
 
 - Asymmetric layout.
 
-[Complex Data Detail Page (Alignment & Whitespace)](./demo/align-white-space.tsx)
+[Complex Data Detail Page (Alignment & Whitespace)](./demo/align-white-space.tsx?show=vertical)
 
 - Effect of a Descriptions list, but automatically adjusts display density on different screens.
 
-[Hero Section Overlay Layout (Layering)](./demo/hero-section.tsx)
+[Hero Section Overlay Layout (Layering)](./demo/hero-section.tsx?show=vertical)
 
 - The overlapping capability of `grid-column-start` and `grid-row-start`, with text floating over a specific part of an image.
 
-[Responsive Footer / Menu (Footer Strategy)](./demo/footer-strategy.tsx)
+[Responsive Footer / Menu (Footer Strategy)](./demo/footer-strategy.tsx?show=vertical)
 
 - Extreme compression from "multi-column vertical arrangement" to "single-column folding".
 
-[Layout Hierarchy Design (Architecture)](./demo/architecture.tsx)
+[Layout Hierarchy Design (Architecture)](./demo/architecture.tsx?show=vertical)
 
 - Layer 1: Layout series — the main page skeleton (Header + Sider + Content).
 - Layer 2: Grid series — the primary 2D layout for the content area (stat cards, Bento chart matrix).

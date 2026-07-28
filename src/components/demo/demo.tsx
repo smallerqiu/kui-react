@@ -2,11 +2,18 @@ import clsx from "clsx";
 import { Copy, ListChevronsDownUp, ListChevronsUpDown, Undo2 } from "kui-icons";
 import * as Icons from "kui-icons";
 import * as React from "react";
-import { useEffect, useRef, useState, type ComponentType, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ComponentType,
+  type ReactNode,
+} from "react";
 import * as JSXRuntime from "react/jsx-runtime";
 import * as ReactKUI from "react-kui";
 import * as Share from "react-kui/utils/share";
-import { Badge, Button, Tooltip, type BadgeStatusType } from "react-kui";
+import { Badge, Button, message, Tooltip, type BadgeStatusType } from "react-kui";
 import dayjs from "dayjs";
 import { transform } from "sucrase";
 
@@ -15,6 +22,7 @@ export interface DemoProps {
   title?: string;
   descriptionHtml?: string;
   source: string;
+  highlightedSource?: string;
   direction?: string;
   modules?: Record<string, unknown>;
   children?: ReactNode;
@@ -26,6 +34,7 @@ export default function Demo({
   title,
   descriptionHtml,
   source,
+  highlightedSource,
   direction = "horizontal",
   modules = {},
   children,
@@ -40,6 +49,20 @@ export default function Demo({
   const codeRef = useRef<HTMLElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const originalSource = useRef(source);
+  const originalHighlightedSource = useRef(highlightedSource);
+
+  const setCodeNode = useCallback(
+    (node: HTMLElement | null) => {
+      codeRef.current = node;
+      if (!node) return;
+      if (highlightedSource) {
+        node.innerHTML = highlightedSource;
+      } else {
+        node.textContent = source;
+      }
+    },
+    [highlightedSource, source]
+  );
 
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
@@ -88,12 +111,25 @@ export default function Demo({
   };
 
   const restore = () => {
-    if (codeRef.current) codeRef.current.textContent = originalSource.current;
+    if (codeRef.current) {
+      if (originalHighlightedSource.current) {
+        codeRef.current.innerHTML = originalHighlightedSource.current;
+      } else {
+        codeRef.current.textContent = originalSource.current;
+      }
+    }
     compile(originalSource.current);
   };
 
   const copy = async () => {
-    await Share.copyToClipboard(codeRef.current?.innerText || originalSource.current);
+    const copied = await Share.copyToClipboard(
+      codeRef.current?.innerText || originalSource.current
+    );
+    if (copied) {
+      message.success("Copied!");
+    } else {
+      message.error("Copy failed");
+    }
   };
 
   return (
@@ -122,14 +158,15 @@ export default function Demo({
                 <Button type="text" size="small" icon={Undo2} onClick={restore} />
               </Tooltip>
             </div>
-            <pre
-              className="k-code k-scroll"
-              contentEditable
-              suppressContentEditableWarning
-              spellCheck={false}
-              onInput={scheduleCompile}
-            >
-              <code ref={codeRef}>{source}</code>
+            <pre className="k-code k-scroll">
+              <code
+                ref={setCodeNode}
+                className="hljs language-tsx"
+                contentEditable
+                suppressContentEditableWarning
+                spellCheck={false}
+                onInput={scheduleCompile}
+              />
             </pre>
           </div>
         )}

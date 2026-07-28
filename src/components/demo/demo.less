@@ -149,12 +149,6 @@
     }
   }
 
-  .k-code[contenteditable="true"] {
-    outline: none;
-    white-space: pre;
-    tab-size: 2;
-  }
-
   .k-demo-error {
     margin-top: 16px;
     padding: 10px 12px;
@@ -165,12 +159,19 @@
   }
 }
 
+.k-code code[contenteditable="true"] {
+  min-width: 100%;
+  outline: none;
+  white-space: pre;
+  tab-size: 2;
+}
+
 .k-demo-container {
   margin-bottom: 60px;
 }
 
 .k-desc-content p code {
-  padding: 0.15em .5em;
+  padding: 0.15em 0.5em;
   background-color: var(--kui-color-bg-container);
   border-radius: 4px;
   color: var(--kui-color-primary);

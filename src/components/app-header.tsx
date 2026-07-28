@@ -1,70 +1,188 @@
-import { Languages, LogoGithub, LogoKui, Moon, Search, Sun } from "kui-icons";
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router";
-import { Button, Icon } from "react-kui";
+import Color from "color";
+import { ArrowUpRight, Languages, LogoGithub, LogoKui, Moon, Search, Sun } from "kui-icons";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useLocation, useNavigate } from "react-router";
+import {
+  Button,
+  ColorPicker,
+  Divider,
+  Header,
+  Icon,
+  Menu,
+  Select,
+  Space,
+  Tooltip,
+  theme,
+  type MenuOptionsProps,
+  type MenuSelectEvent,
+} from "react-kui";
 import { version } from "../../package.json";
 import { useDocs } from "../context";
 import { routeData } from "../menu";
 
+const DEFAULT_THEME_COLOR = "#3a95ff";
+
 export default function AppHeader() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { lang, changeLang, t } = useDocs();
-  const [query, setQuery] = useState("");
-  const [dark, setDark] = useState(() => localStorage.getItem("theme-mode") === "dark");
-  useEffect(() => {
-    document.documentElement.setAttribute("theme-mode", dark ? "dark" : "light");
-    localStorage.setItem("theme-mode", dark ? "dark" : "light");
-  }, [dark]);
-  const search = (name: string) => {
-    setQuery("");
-    const item = routeData.find((entry) => entry.name === name);
-    if (item)
-      navigate(
-        `/${item.key === "guide" ? "guide" : "components"}/${name}${lang === "en" ? "-en" : ""}`
-      );
+  const [query, setQuery] = useState<string | number>("");
+  const [themeColor, setThemeColor] = useState(DEFAULT_THEME_COLOR);
+  const [themeMode, setThemeMode] = useState(() => localStorage.getItem("theme-mode") || "light");
+
+  const withLang = (path: string) => `${path}${lang === "en" ? "-en" : ""}`;
+  const externalTitle = (title: ReactNode) => (
+    <span>
+      {title} <Icon type={ArrowUpRight} />
+    </span>
+  );
+  const topMenuItems = useMemo<MenuOptionsProps[]>(
+    () => [
+      { key: "home", title: t("menu.home") },
+      { key: "components", title: t("menu.components") },
+      {
+        key: "docs",
+        title: t("menu.docs"),
+        children: [
+          { key: "/guide/quick-started", title: externalTitle(t("menu.quick_start")) },
+          {
+            key: "/guide/usage-with-nuxt",
+            title: externalTitle(t("menu.usage_with_nuxt")),
+          },
+          { key: "/guide/language", title: externalTitle(t("menu.language")) },
+          { key: "/guide/change-log", title: externalTitle(t("menu.change_log")) },
+          { key: "/guide/dark-mode", title: externalTitle(t("menu.dark_mode")) },
+          { key: "https://v4.k-ui.cn/", title: externalTitle(t("menu.docs_v4")) },
+          { key: "https://v3.k-ui.cn/", title: externalTitle(t("menu.docs_v3")) },
+          { key: "https://v2.k-ui.cn/", title: externalTitle(t("menu.docs_v2")) },
+          {
+            key: "https://react.k-ui.cn/",
+            title: externalTitle(t("menu.docs_react")),
+          },
+          { key: "https://chuchur.com/", title: externalTitle("Blog") },
+        ],
+      },
+    ],
+    [t]
+  );
+  const activeTopMenu =
+    location.pathname === "/"
+      ? ["home"]
+      : location.pathname.startsWith("/components/")
+        ? ["components"]
+        : ["docs"];
+
+  const applyThemeColor = (value: string) => {
+    const [red, green, blue] = Color(value).rgb().array();
+    let style = document.querySelector<HTMLStyleElement>('style[name="kui"]');
+    if (!style) {
+      style = document.createElement("style");
+      style.setAttribute("name", "kui");
+      document.head.appendChild(style);
+    }
+    style.textContent = `
+      body[theme-type='custom'] {
+        --kui-color-primary: rgb(${red}, ${green}, ${blue});
+        --kui-color-primary-hover: rgba(${red}, ${green}, ${blue}, .9);
+        --kui-color-primary-active: rgba(${red}, ${green}, ${blue}, .75);
+        --kui-color-primary-1: rgba(${red}, ${green}, ${blue}, .9);
+        --kui-color-primary-3: rgba(${red}, ${green}, ${blue}, .7);
+        --kui-color-primary-6: rgba(${red}, ${green}, ${blue}, .4);
+        --kui-color-primary-8: rgba(${red}, ${green}, ${blue}, .2);
+        --kui-color-primary-9: rgba(${red}, ${green}, ${blue}, .1);
+        --kui-color-item-selected: rgba(${red}, ${green}, ${blue}, .2);
+        --kui-color-outline: rgba(${red}, ${green}, ${blue}, .2);
+      }
+    `;
+    document.body.setAttribute("theme-type", "custom");
+    localStorage.setItem("themeColor", value);
+    setThemeColor(value);
   };
+
+  useEffect(() => {
+    const savedMode = localStorage.getItem("theme-mode");
+    const savedColor = localStorage.getItem("themeColor");
+    if (savedMode) {
+      document.documentElement.setAttribute("theme-mode", savedMode);
+      setThemeMode(savedMode);
+    }
+    if (savedColor) applyThemeColor(savedColor);
+  }, []);
+
+  const search = (name: string) => {
+    const item = routeData.find((entry) => entry.name === name);
+    if (!item) return;
+    navigate(withLang(`/${item.key === "guide" ? "guide" : "components"}/${item.name}`));
+    setQuery("");
+  };
+  const menuSelect = ({ key }: MenuSelectEvent) => {
+    if (key === "home") navigate("/");
+    else if (key === "components") navigate(withLang("/guide/components"));
+    else if (/^https?:\/\//.test(key)) window.open(key, "_blank", "noopener,noreferrer");
+    else navigate(withLang(key));
+  };
+
   return (
-    <header className="header">
+    <Header className="header">
       <div className="header-inner">
-        <Link className="logo" to="/">
+        <button className="logo" type="button" onClick={() => navigate("/")}>
           <Icon type={LogoKui} />
           <span className="wrap-name">
             <span className="name">Kui React</span>
             <span className="ver">v {version}</span>
           </span>
-        </Link>
+        </button>
+        <Divider type="vertical" />
         <div className="search-component">
-          <Icon type={Search} />
-          <input
-            list="component-search"
+          <Select
             value={query}
             placeholder="Search"
-            onChange={(event) => {
-              setQuery(event.target.value);
-              if (routeData.some((item) => item.name === event.target.value))
-                search(event.target.value);
+            icon={Search}
+            showArrow={false}
+            filterable
+            options={routeData.map((item) => ({
+              value: item.name,
+              label: `${item.title} ${item.sub}`,
+            }))}
+            onChange={(value) => {
+              const next = Array.isArray(value) ? value[0] : value;
+              setQuery(next ?? "");
+              if (next !== undefined) search(String(next));
             }}
           />
-          <datalist id="component-search">
-            {routeData.map((item) => (
-              <option value={item.name} key={item.name}>
-                {item.title} {item.sub}
-              </option>
-            ))}
-          </datalist>
         </div>
-        <nav className="top-menu">
-          <Link to="/">{t("menu.home")}</Link>
-          <Link to={`/guide/quick-started${lang === "en" ? "-en" : ""}`}>{t("menu.docs")}</Link>
-          <Link to={`/guide/components${lang === "en" ? "-en" : ""}`}>{t("menu.components")}</Link>
-        </nav>
-        <div className="header-actions">
-          <Button icon={Languages} onClick={changeLang} title={t("menu.langTip")} />
-          <Button
-            icon={dark ? Sun : Moon}
-            onClick={() => setDark((value) => !value)}
-            title="Switch theme"
+        <Menu
+          value={activeTopMenu}
+          mode="horizontal"
+          className="top-menu"
+          items={topMenuItems}
+          onSelect={menuSelect}
+        />
+        <Space>
+          <ColorPicker
+            value={themeColor}
+            className="theme"
+            mode="rgb"
+            style={{ marginLeft: 8 }}
+            disabledAlpha
+            onChange={applyThemeColor}
           />
+          <Tooltip title={t("menu.langTip")} placement="bottom">
+            <Button icon={Languages} onClick={changeLang} />
+          </Tooltip>
+          <Tooltip
+            title={`Switch ${themeMode === "dark" ? "light" : "dark"} theme`}
+            placement="bottom"
+          >
+            <Button
+              icon={themeMode === "dark" ? Sun : Moon}
+              onClick={(event) =>
+                theme.setThemeMode(event.nativeEvent, (isDark) =>
+                  setThemeMode(isDark ? "dark" : "light")
+                )
+              }
+            />
+          </Tooltip>
           <a
             target="_blank"
             className="k-btn k-btn-fill k-btn-icon-only"
@@ -73,8 +191,8 @@ export default function AppHeader() {
           >
             <Icon type={LogoGithub} />
           </a>
-        </div>
+        </Space>
       </div>
-    </header>
+    </Header>
   );
 }

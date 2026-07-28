@@ -9,6 +9,7 @@ interface LiveDemo {
   component: string;
   title: string;
   source: string;
+  highlightedSource: string;
   direction: string;
   description: string;
   localModules: string[];
@@ -41,26 +42,36 @@ export default function vitePluginKuiMd(): Plugin {
       if (!id.endsWith(".md")) return null;
 
       const liveDemos: LiveDemo[] = [];
-      const demoReg =
-        /\[(.*?)\]\((.*?\.tsx)(?:\?show=([^)]*?))?\)(?:\s*\n((?:\s*-\s+.*(?:\n|$))+))?/g;
+      const demoReg = /\[(.*?)\]\((.*?\.tsx)(\?[^)]*)?\)(?:\s*\n((?:\s*-\s+.*(?:\n|$))+))?/g;
       const processedMarkdown = code.replace(
         demoReg,
-        (_, title: string, src: string, direction = "horizontal", descBlock = "") => {
+        (_, title: string, src: string, query = "", descBlock = "") => {
           const absolutePath = path.resolve(path.dirname(id), src);
           const source = fs.readFileSync(absolutePath, "utf-8");
+          const highlightedSource = hljs.highlight(source, { language: "tsx" }).value;
+          const show = new URLSearchParams(query.replace(/^\?/, "")).get("show");
+          const direction = show === "vertical" ? "vertical" : "horizontal";
           const localModules = Array.from(
             source.matchAll(/(?:from\s+|import\s+)["'](\.[^"']+)["']/g),
             (match) => match[1]
           ).filter((specifier, index, list) => list.indexOf(specifier) === index);
           const description = descBlock ? markdown.render(descBlock.replace(/^\s*-\s?/gm, "")) : "";
           const index = liveDemos.length;
-          liveDemos.push({ component: src, title, source, direction, description, localModules });
-          return `KUI_LIVE_DEMO_${index}`;
+          liveDemos.push({
+            component: src,
+            title,
+            source,
+            highlightedSource,
+            direction,
+            description,
+            localModules,
+          });
+          return `\n\n<!--KUI_LIVE_DEMO_${index}-->\n\n`;
         }
       );
 
       const mainHtml = markdown.render(processedMarkdown);
-      const parts = mainHtml.split(/KUI_LIVE_DEMO_(\d+)/g);
+      const parts = mainHtml.split(/<!--KUI_LIVE_DEMO_(\d+)-->/g);
       const componentImports = liveDemos
         .map((demo, index) => `import LiveDemo${index} from ${JSON.stringify(demo.component)};`)
         .join("\n");
@@ -87,24 +98,29 @@ export default function vitePluginKuiMd(): Plugin {
         return `{ ${entries.join(", ")} }`;
       });
       const children = parts
-        .map((part, index) => {
+        .flatMap((part, index) => {
           if (index % 2 === 0) {
-            return `createElement("div", { key: ${index}, dangerouslySetInnerHTML: { __html: ${JSON.stringify(part)} } })`;
+            if (!part.trim()) return [];
+            return [`createElement(Fragment, { key: ${index} }, parse(${JSON.stringify(part)}))`];
           }
           const demoIndex = Number(part);
           const demo = liveDemos[demoIndex];
-          return `createElement(Demo, {
+          return [
+            `createElement(Demo, {
             key: ${index},
             id: ${JSON.stringify(`${path.basename(id, ".md")}-${demoIndex}`)},
             title: ${JSON.stringify(demo.title)},
             descriptionHtml: ${JSON.stringify(demo.description)},
             source: ${JSON.stringify(demo.source)},
-            direction: ${JSON.stringify(demo.direction || "horizontal")},
+            highlightedSource: ${JSON.stringify(demo.highlightedSource)},
+            direction: ${JSON.stringify(demo.direction)},
             modules: ${moduleMaps[demoIndex]}
-          }, createElement(LiveDemo${demoIndex}))`;
+          }, createElement(LiveDemo${demoIndex}))`,
+          ];
         })
         .join(",\n");
-      const result = `import { createElement } from "react";
+      const result = `import parse from "html-react-parser";
+import { createElement, Fragment } from "react";
 import Demo from "/src/components/demo";
 ${componentImports}
 ${moduleImports.join("\n")}

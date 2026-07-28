@@ -4,15 +4,15 @@ It is necessary to display the anchor links available for navigation on the curr
 
 ## Examples
 
-[Basic Usage (Sidebar Navigation)](./demo/basic.tsx)
+[Basic Usage (Sidebar Navigation)](./demo/basic.tsx?show=vertical)
 
 - The most common scenario: displaying a long article on the right with fixed anchor navigation on the left or right side.
 
-[Nested Anchors (Complex Document Structure)](./demo/nested-anchors.tsx)
+[Nested Anchors (Complex Document Structure)](./demo/nested-anchors.tsx?show=vertical)
 
 - Suitable for documents with multi-level headings.
 
-[Specify container (positioning within a scrolling container)](./demo/within-container.tsx)
+[Specify container (positioning within a scrolling container)](./demo/within-container.tsx?show=vertical)
 
 - If your page does not scroll in full screen but within a specific div.
 

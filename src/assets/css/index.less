@@ -67,6 +67,25 @@ a {
   text-decoration: none;
 }
 
+.docs-page-fade-enter-active {
+  animation: docs-page-fade 0.18s ease-out;
+}
+
+.docs-page-fade-exit-active {
+  animation: docs-page-fade 0.18s ease-in reverse;
+}
+
+@keyframes docs-page-fade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 pre,
 code {
   font-size: 14px;
@@ -116,6 +135,10 @@ code {
     }
 
     .logo {
+      border: 0;
+      padding: 0;
+      color: inherit;
+      background: transparent;
       float: left;
       width: 263px;
       min-width: 263px;

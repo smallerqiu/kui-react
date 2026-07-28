@@ -43,8 +43,8 @@ const Container = forwardRef<NoticeContainerApi, { type: "message" | "notice" }>
   useEffect(() => clean, []);
   return (
     <div className={`k-${type}`}>
-      {items.map((item) => (
-        <div key={item.key} className={`k-${type}-slide-enter-active`}>
+      {items.map(({ key, ...item }) => (
+        <div key={key} className={`k-${type}-slide-enter-active`}>
           <Content {...item} />
         </div>
       ))}

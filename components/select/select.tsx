@@ -586,7 +586,9 @@ const Select: React.FC<SelectProps> = ({
   const placeholderText = placeholder || locale?.k?.select?.placeholder;
   const placeNode =
     placeholderText && isEmpty(labelText) && !queryKey ? (
-      <div className="k-select-placeholder">{placeholderText}</div>
+      <div className="k-select-placeholder" key="placeholder">
+        {placeholderText}
+      </div>
     ) : null;
 
   const renderTags = () => {
@@ -611,12 +613,13 @@ const Select: React.FC<SelectProps> = ({
   };
 
   const labelsNode = multiple ? (
-    <div className="k-select-labels">
+    <div className="k-select-labels" key="labels">
       {renderTags()}
       {queryNode}
     </div>
   ) : (
     <div
+      key="label"
       className="k-select-label"
       style={{ display: !isEmpty(labelText) && !queryKey.length ? undefined : "none" }}
     >

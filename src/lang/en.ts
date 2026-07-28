@@ -31,6 +31,8 @@ export default {
     language: "Multi Language",
     change_log: "Change Log",
     dark_mode: "Dark Mode",
+    docs_v4: "Docs v4.x",
+    docs_v3: "Docs v3.x",
     docs_v2: "Docs v2.x",
     docs_react: "Docs For React",
   },

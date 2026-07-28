@@ -1,9 +1,13 @@
 import clsx from "clsx";
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { CSSTransition } from "react-transition-group";
 import type { DirectionType } from "../const/types";
+import { DropdownContext } from "../dropdown/dropdown";
 import Icon, { type IconType } from "../icon";
 import { setPlacement } from "../utils/placement";
+
+const EMPTY_KEYS: string[] = [];
 
 // ─────────────────────────────────────────
 // Shared Context
@@ -24,6 +28,8 @@ export interface MenuContextValue {
   keyPath: string[];
   onSelectedChange: (key: string, selected: boolean, keyPath: string[]) => void;
   onOpenChange: (key: string, opened: boolean, keyPath: string[]) => void;
+  clearPopupTimer?: () => void;
+  schedulePopupClose?: () => void;
 }
 
 export const MenuContext = createContext<MenuContextValue>({
@@ -84,12 +90,6 @@ export const MenuItem: React.FC<MenuItemProps> = ({
   const key = menuKey ?? "";
   const keyPath = ownKeyPath ?? ctx.keyPath;
   const isSelected = ctx.selectedKeys.includes(key) && !ctx.isDropdown;
-
-  useEffect(() => {
-    if (isSelected) {
-      ctx.onSelectedChange(key, true, keyPath);
-    }
-  }, []);
 
   const paddingLeft =
     (ctx.mode === "inline" || ctx.mode === "vertical") && keyPath.length && !isPopup
@@ -218,14 +218,25 @@ export const SubMenu: React.FC<SubMenuProps> = ({
     }, 200);
   };
 
+  useEffect(() => () => clearPopTimer(), []);
+
   // Inject deeper keyPath into children
   const enrichedChildren = React.Children.map(children, (child) => {
     if (!React.isValidElement(child)) return child;
-    return React.cloneElement(child as React.ReactElement<any>, {
+    const element = child as React.ReactElement<any>;
+    return React.cloneElement(element, {
+      menuKey: element.props.menuKey ?? (element.key == null ? undefined : String(element.key)),
       keyPath: childKeyPath,
       isPopup: ctx.mode !== "inline" || ctx.inlineCollapsed,
     });
   });
+
+  const childContext: MenuContextValue = {
+    ...ctx,
+    keyPath: childKeyPath,
+    clearPopupTimer: clearPopTimer,
+    schedulePopupClose: hidePopper,
+  };
 
   // Title click / hover handlers
   let titleProps: Record<string, any> = {
@@ -244,6 +255,7 @@ export const SubMenu: React.FC<SubMenuProps> = ({
     titleProps.onMouseEnter = () => {
       if (!disabled) {
         clearPopTimer();
+        ctx.clearPopupTimer?.();
         showPopper();
       }
     };
@@ -261,39 +273,66 @@ export const SubMenu: React.FC<SubMenuProps> = ({
     (ctx.mode === "horizontal" && keyPath.length) || ctx.mode === "vertical" ? left + 3 : left;
 
   const popperNode = rendered ? (
-    <div
-      ref={refPopper}
-      className={`k-${preCls}-popup`}
-      style={{
-        minWidth: ctx.mode === "horizontal" ? minWidth : undefined,
-        top: `${top}px`,
-        left: `${leftWithOffset}px`,
-        transformOrigin: transOrigin,
-        display: isOpened ? undefined : "none",
+    <CSSTransition
+      in={isOpened}
+      nodeRef={refPopper}
+      timeout={300}
+      classNames={{
+        enterActive: `k-${preCls}-popup-enter-active`,
+        exitActive: `k-${preCls}-popup-leave-active`,
       }}
-      onMouseEnter={() => {
-        clearPopTimer();
-        ctx.onOpenChange(key, true, keyPath);
-      }}
-      onMouseLeave={hidePopper}
+      unmountOnExit
     >
-      <div className={`k-${preCls}-sub`}>
-        <ul className="k-menu k-menu-vertical">{enrichedChildren}</ul>
+      <div
+        ref={refPopper}
+        className={`k-${preCls}-popup`}
+        {...({ "k-placement": currentPlacement } as React.HTMLAttributes<HTMLDivElement>)}
+        style={{
+          minWidth: ctx.mode === "horizontal" ? minWidth : undefined,
+          top: `${top}px`,
+          left: `${leftWithOffset}px`,
+          transformOrigin: transOrigin,
+        }}
+        onMouseEnter={() => {
+          clearPopTimer();
+          ctx.clearPopupTimer?.();
+          ctx.onOpenChange(key, true, keyPath);
+        }}
+        onMouseLeave={() => {
+          hidePopper();
+          ctx.schedulePopupClose?.();
+        }}
+      >
+        <div className={`k-${preCls}-sub`}>
+          <ul className="k-menu k-menu-vertical">
+            <MenuContext.Provider value={childContext}>{enrichedChildren}</MenuContext.Provider>
+          </ul>
+        </div>
       </div>
-    </div>
+    </CSSTransition>
   ) : null;
 
   // Inline sub list (shown inline when not collapsed)
+  const showInline = isOpened && !ctx.inlineCollapsed && ctx.mode !== "vertical";
+  const inlineRef = useRef<HTMLDivElement>(null);
   const inlineSubNode =
     ctx.mode !== "horizontal" ? (
-      <div
-        className={`k-${preCls}-sub`}
-        style={{
-          display: isOpened && !ctx.inlineCollapsed && ctx.mode !== "vertical" ? undefined : "none",
+      <CSSTransition
+        in={showInline}
+        nodeRef={inlineRef}
+        timeout={200}
+        classNames={{
+          enterActive: "k-collapse-slide-enter-active",
+          exitActive: "k-collapse-slide-leave-active",
         }}
+        unmountOnExit
       >
-        <ul className={`k-menu k-menu-${ctx.mode}`}>{children}</ul>
-      </div>
+        <div ref={inlineRef} className={`k-${preCls}-sub`}>
+          <ul className={`k-menu k-menu-${ctx.mode}`}>
+            <MenuContext.Provider value={childContext}>{enrichedChildren}</MenuContext.Provider>
+          </ul>
+        </div>
+      </CSSTransition>
     ) : null;
 
   const classes = clsx(`k-${preCls}`, {
@@ -392,11 +431,11 @@ export interface MenuProps extends Omit<React.HTMLAttributes<HTMLUListElement>, 
 const Menu: React.FC<MenuProps> = ({
   theme,
   mode = "vertical",
-  value = [],
+  value = EMPTY_KEYS,
   accordion = false,
   items,
   inlineCollapsed = false,
-  openKeys = [],
+  openKeys = EMPTY_KEYS,
   onSelect,
   onOpenChange,
   isDropdown = false,
@@ -404,6 +443,8 @@ const Menu: React.FC<MenuProps> = ({
   className = "",
   ...rest
 }) => {
+  const dropdown = useContext(DropdownContext);
+  const resolvedIsDropdown = isDropdown || dropdown !== null;
   const [selectedKeys, setSelectedKeys] = useState<string[]>(value);
   const [currentOpenKeys, setCurrentOpenKeys] = useState<string[]>(openKeys);
   const [currentMode, setCurrentMode] = useState<DirectionType>(mode);
@@ -468,26 +509,36 @@ const Menu: React.FC<MenuProps> = ({
       if (!opened) {
         nextOpen = currentOpenKeys.filter((x) => x !== key);
       } else {
-        nextOpen = [...currentOpenKeys, key];
+        nextOpen = currentOpenKeys.includes(key) ? currentOpenKeys : [...currentOpenKeys, key];
       }
     }
     setCurrentOpenKeys(nextOpen);
     onOpenChange?.(nextOpen);
   };
 
-  const preCls = isDropdown ? "dropdown-menu k-scroll" : "menu";
+  const preCls = resolvedIsDropdown ? "dropdown-menu" : "menu";
   const cls = clsx(
-    `k-${preCls} k-${preCls}-${currentMode}`,
-    { [`k-${preCls}-inline-collapsed`]: collapsed },
+    `k-${preCls}`,
+    `k-${preCls}-${currentMode}`,
+    { "k-scroll": resolvedIsDropdown, [`k-${preCls}-inline-collapsed`]: collapsed },
     className
   );
+
+  const renderedChildren = React.Children.map(children, (child) => {
+    if (!React.isValidElement(child)) return child;
+    const element = child as React.ReactElement<any>;
+    return React.cloneElement(element, {
+      menuKey: element.props.menuKey ?? (element.key == null ? undefined : String(element.key)),
+      keyPath: [],
+    });
+  });
 
   const contextValue: MenuContextValue = {
     selectedKeys,
     openKeys: currentOpenKeys,
     mode: currentMode,
     inlineCollapsed: collapsed,
-    isDropdown,
+    isDropdown: resolvedIsDropdown,
     accordion,
     keyPath: [],
     onSelectedChange: handleSelectedChange,
@@ -499,7 +550,7 @@ const Menu: React.FC<MenuProps> = ({
       <ul className={cls} {...({ "theme-mode": theme } as any)} {...rest}>
         {items && items.length > 0
           ? items.map((item) => <RecursiveMenu item={item} key={item.key} />)
-          : children}
+          : renderedChildren}
       </ul>
     </MenuContext.Provider>
   );

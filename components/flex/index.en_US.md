@@ -12,19 +12,19 @@
 
 ## Examples
 
-[Basic Layout](./demo/basic.tsx)
+[Basic Layout](./demo/basic.tsx?show=vertical)
 
 - The simplest usage.
 
-[Alignment](./demo/align.tsx)
+[Alignment](./demo/align.tsx?show=vertical)
 
 - Set the alignment mode.
 
-[Spacing Size](./demo/size.tsx)
+[Spacing Size](./demo/size.tsx?show=vertical)
 
 - Use `size` to set the spacing between elements. Presets include `small`, `medium`, and `large`, or you can define a custom spacing.
 
-[Set Wrapping](./demo/wrap.tsx)
+[Set Wrapping](./demo/wrap.tsx?show=vertical)
 
 - When spacing is horizontal, use `wrap` to control whether items wrap automatically. The default is `false`.
 
