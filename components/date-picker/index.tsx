@@ -1,8 +1,10 @@
 import clsx from "clsx";
-import dayjs, { type Dayjs } from "dayjs";
+import dayjs, { type Dayjs, type UnitType } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import localeData from "dayjs/plugin/localeData";
+import isBetween from "dayjs/plugin/isBetween";
 import {
+  ArrowRight,
   CalendarDays,
   ChevronLeft,
   ChevronRight,
@@ -23,13 +25,17 @@ import {
   type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
+import PopupTransition from "../base/popup-transition";
+import { Button } from "../button";
 import { ConfigContext } from "../config";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
 import zhCN from "../locale/zh-CN";
+import { setPlacement } from "../utils/placement";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(localeData);
+dayjs.extend(isBetween);
 
 export type DatePickerValueType = "date" | "timestamp" | "unix" | "string";
 export type DatePickerModeType =
@@ -71,7 +77,7 @@ export interface DatePickerProps extends Omit<
   footer?:
     | ReactNode
     | ((api: { emit: (value: DatePickerInput | DatePickerInput[]) => void }) => ReactNode);
-  onChange?: (date: unknown | unknown[], dateStr: string | string[]) => void;
+  onChange?: (date: unknown | unknown[] | null, dateStr: string | string[]) => void;
   onStartDateChange?: (value: unknown) => void;
   onEndDateChange?: (value: unknown) => void;
   onOpenChange?: (open: boolean) => void;
@@ -88,9 +94,14 @@ const defaultFormat = (mode: DatePickerModeType) =>
     dateRange: "YYYY-MM-DD",
     dateTimeRange: "YYYY-MM-DD HH:mm:ss",
   })[mode];
-const parse = (value: DatePickerInput, format: string) => {
+const parse = (value: DatePickerInput, format: string, valueType: DatePickerValueType) => {
   if (value === null || value === undefined || value === "") return null;
-  const result = typeof value === "string" ? dayjs(value, format, true) : dayjs(value);
+  const result =
+    valueType === "unix"
+      ? dayjs.unix(Number(value))
+      : typeof value === "string"
+        ? dayjs(value, format, true)
+        : dayjs(value);
   return result.isValid() ? result : null;
 };
 
@@ -129,6 +140,7 @@ export default function DatePicker({
 }: DatePickerProps) {
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
+  const localeName = locale?.name || "zh-cn";
   const fmt = format || defaultFormat(mode);
   const isRange = mode.endsWith("Range");
   const hasTime = mode === "time" || mode.includes("Time");
@@ -136,9 +148,9 @@ export default function DatePicker({
   const initial = useMemo(() => {
     const source = controlled !== undefined ? controlled : isRange ? [startDate, endDate] : null;
     return (Array.isArray(source) ? source : source == null ? [] : [source])
-      .map((item) => parse(item, fmt))
+      .map((item) => parse(item, fmt, valueType))
       .filter((item): item is Dayjs => !!item);
-  }, [controlled, startDate, endDate, isRange, fmt]);
+  }, [controlled, startDate, endDate, isRange, fmt, valueType]);
   const [inner, setInner] = useState<Dayjs[]>(initial);
   const values =
     controlled !== undefined || startDate !== undefined || endDate !== undefined ? initial : inner;
@@ -150,10 +162,14 @@ export default function DatePicker({
     mode === "year" ? "year" : mode === "month" ? "month" : mode === "time" ? "time" : "date"
   );
   const [draft, setDraft] = useState<Dayjs[]>(initial);
+  const [hoverDate, setHoverDate] = useState<Dayjs | null>(null);
+  const [timeEditSide, setTimeEditSide] = useState<"start" | "end">("start");
   const [texts, setTexts] = useState<string[]>(initial.map((item) => item.format(fmt)));
   const rootRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ left: 0, top: 0, origin: "top" });
+  const [position, setPosition] = useState({ left: 0, top: 0, origin: "left top" });
+  const [currentPlacement, setCurrentPlacement] = useState<DropPlacementsType>(placement);
+  const timeColRefs = useRef<Partial<Record<UnitType, HTMLUListElement | null>>>({});
 
   useEffect(() => {
     setDraft(values);
@@ -168,27 +184,35 @@ export default function DatePicker({
   const updatePosition = useCallback(() => {
     const root = rootRef.current;
     if (!root) return;
-    const rect = root.getBoundingClientRect();
     const overlay = overlayRef.current;
-    const above = placement.startsWith("top");
-    const w = overlay?.offsetWidth ?? rect.width;
-    const h = overlay?.offsetHeight ?? 0;
-    let left = rect.left;
-    if (placement.endsWith("right")) left = rect.right - w;
-    else if (placement === "top" || placement === "bottom") left += (rect.width - w) / 2;
-    setPosition({
-      left: left + window.scrollX,
-      top: (above ? rect.top - h : rect.bottom) + window.scrollY,
-      origin: above ? "bottom" : "top",
+    if (!overlay) return;
+    const current = { value: placement };
+    const top = { value: 0 };
+    const left = { value: 0 };
+    const origin = { value: "left top" };
+    setPlacement({
+      refSelection: root,
+      refPopper: overlay,
+      currentPlacement: current,
+      transOrigin: origin,
+      top,
+      left,
     });
+    setCurrentPlacement(current.value as DropPlacementsType);
+    setPosition({ left: left.value, top: top.value, origin: origin.value });
   }, [placement]);
   useEffect(() => {
     if (!visible) return;
     requestAnimationFrame(updatePosition);
     const outside = (event: globalThis.MouseEvent) => {
       const target = event.target as Node;
-      if (!rootRef.current?.contains(target) && !overlayRef.current?.contains(target))
+      if (!rootRef.current?.contains(target) && !overlayRef.current?.contains(target)) {
+        if (isRange && draft.length === 1) {
+          setDraft(values);
+          setTexts(values.map((item) => item.format(fmt)));
+        }
         setOpen(false);
+      }
     };
     document.addEventListener("mousedown", outside);
     window.addEventListener("resize", updatePosition);
@@ -198,7 +222,7 @@ export default function DatePicker({
       window.removeEventListener("resize", updatePosition);
       window.removeEventListener("scroll", updatePosition, true);
     };
-  }, [visible, updatePosition]);
+  }, [visible, updatePosition, isRange, draft, values, fmt]);
 
   const output = (item: Dayjs) =>
     valueType === "date"
@@ -208,7 +232,8 @@ export default function DatePicker({
         : valueType === "unix"
           ? item.unix()
           : item.format(fmt);
-  const commit = (next: Dayjs[]) => {
+  const commit = (next: Dayjs[], closePanel = false) => {
+    if (isRange && next.length === 2 && next[1].isBefore(next[0])) next = [next[1], next[0]];
     if (controlled === undefined && startDate === undefined && endDate === undefined)
       setInner(next);
     setDraft(next);
@@ -220,28 +245,32 @@ export default function DatePicker({
       onStartDateChange?.(result[0] ?? null);
       onEndDateChange?.(result[1] ?? null);
     }
+    if (closePanel) setOpen(false);
   };
   const choose = (date: Dayjs) => {
     if (disabledDate(date.toDate()) || (hasTime && disabledTime(date.toDate()))) return;
     if (isRange) {
       if (draft.length !== 1) {
-        setDraft([date]);
-        setTexts([date.format(fmt), ""]);
+        const start = date.startOf("day");
+        setDraft([start]);
+        setTexts([start.format(fmt), ""]);
       } else {
-        const next = date.isBefore(draft[0]) ? [date, draft[0]] : [draft[0], date];
-        commit(next);
-        setOpen(false);
+        const start = date.isBefore(draft[0]) ? date.startOf("day") : draft[0];
+        const end = (date.isBefore(draft[0]) ? draft[0] : date).endOf("day");
+        commit([start, end], mode !== "dateTimeRange");
       }
     } else {
-      commit([date]);
-      if (!hasTime || mode === "time") setOpen(false);
+      if (mode === "dateTime") {
+        const old = draft[0] ?? dayjs();
+        commit([date.hour(old.hour()).minute(old.minute()).second(old.second())]);
+      } else commit([date], true);
     }
   };
   const emitExternal = (next: DatePickerInput | DatePickerInput[]) => {
     const list = (Array.isArray(next) ? next : [next])
-      .map((item) => parse(item, fmt))
+      .map((item) => parse(item, fmt, valueType))
       .filter((item): item is Dayjs => !!item);
-    if (list.length) commit(list);
+    if (list.length) commit(list, true);
   };
   const clear = (event: MouseEvent) => {
     event.stopPropagation();
@@ -254,9 +283,16 @@ export default function DatePicker({
     const next = texts.slice();
     next[index] = text;
     setTexts(next);
+    const parsed = dayjs(text, fmt, localeName, true);
+    if (parsed.isValid()) {
+      const nextDraft = draft.slice();
+      nextDraft[index] = parsed;
+      setPanelDate(parsed);
+      if (!isRange || (nextDraft[0] && nextDraft[1])) commit(nextDraft);
+    } else if (!text && !isRange) commit([]);
   };
   const acceptInput = (index: number) => {
-    const parsed = parse(texts[index], fmt);
+    const parsed = parse(texts[index], fmt, valueType);
     if (!parsed) {
       setTexts(values.map((item) => item.format(fmt)));
       return;
@@ -266,28 +302,47 @@ export default function DatePicker({
     if (!isRange || next.length === 2) commit(next);
   };
 
-  const months = useMemo(() => dayjs.monthsShort(), [locale?.name]);
+  const localeInfo = useMemo(() => dayjs().locale(localeName).localeData(), [localeName]);
+  const months = useMemo(() => localeInfo.monthsShort(), [localeInfo]);
+  const isYearFirst = ["zh", "ja", "ko"].some((name) => localeName.toLowerCase().includes(name));
   const yearStart = Math.floor(panelDate.year() / 10) * 10 - 1;
   const calendar = useMemo(() => {
-    const start = panelDate.startOf("month").startOf("week");
+    const startOfMonth = panelDate.startOf("month");
+    const diff = (startOfMonth.day() - localeInfo.firstDayOfWeek() + 7) % 7;
+    const start = startOfMonth.subtract(diff, "day");
     return Array.from({ length: 42 }, (_, index) => start.add(index, "day"));
-  }, [panelDate]);
+  }, [panelDate, localeInfo]);
   const nav = (amount: number, unit: "month" | "year") =>
     setPanelDate((current) => current.add(amount, unit));
   const headerNode = (
     <div className="k-picker-header">
-      <Icon type={ChevronsLeft} onClick={() => nav(-1, "year")} />
-      <Icon type={ChevronLeft} onClick={() => nav(-1, view === "date" ? "month" : "year")} />
+      <Button icon={ChevronsLeft} type="text" onClick={() => nav(-10, "year")} />
+      {mode !== "year" && (
+        <Button icon={ChevronLeft} type="text" onClick={() => nav(-1, "month")} />
+      )}
       <span className="k-picker-header-label">
-        <span onClick={() => setView("year")}>{panelDate.year()}</span>
-        {view !== "year" && (
+        {isYearFirst && (
+          <span onClick={() => setView("year")}>
+            {panelDate.year()}
+            {locale?.k?.datePicker?.year}
+          </span>
+        )}
+        {mode !== "year" && (
           <span className="k-picker-header-month-btn" onClick={() => setView("month")}>
-            {months[panelDate.month()]}
+            {panelDate.locale(localeName).format("MMM")}
+          </span>
+        )}
+        {!isYearFirst && (
+          <span onClick={() => setView("year")}>
+            {panelDate.year()}
+            {locale?.k?.datePicker?.year}
           </span>
         )}
       </span>
-      <Icon type={ChevronRight} onClick={() => nav(1, view === "date" ? "month" : "year")} />
-      <Icon type={ChevronsRight} onClick={() => nav(1, "year")} />
+      {mode !== "year" && (
+        <Button icon={ChevronRight} type="text" onClick={() => nav(1, "month")} />
+      )}
+      <Button icon={ChevronsRight} type="text" onClick={() => nav(10, "year")} />
     </div>
   );
   const yearPanel = (
@@ -337,17 +392,30 @@ export default function DatePicker({
   const datePanel = (
     <div className="k-picker-body">
       <div className="k-picker-weekdays">
-        {dayjs.weekdaysMin().map((day) => (
+        {[
+          ...localeInfo.weekdaysMin().slice(localeInfo.firstDayOfWeek()),
+          ...localeInfo.weekdaysMin().slice(0, localeInfo.firstDayOfWeek()),
+        ].map((day) => (
           <span className="k-picker-weekday" key={day}>
             {day}
           </span>
         ))}
       </div>
-      <div className="v-dp-table">
+      <div className="v-dp-table" onMouseLeave={() => setHoverDate(null)}>
         {calendar.map((date) => {
           const selected = draft.some((item) => item.isSame(date, "day"));
-          const inRange =
-            draft.length === 2 && date.isAfter(draft[0], "day") && date.isBefore(draft[1], "day");
+          const rangeEnd = draft[1] ?? hoverDate;
+          const inRange = !!(
+            isRange &&
+            draft[0] &&
+            rangeEnd &&
+            date.isBetween(
+              draft[0].isBefore(rangeEnd) ? draft[0] : rangeEnd,
+              draft[0].isBefore(rangeEnd) ? rangeEnd : draft[0],
+              "day",
+              "[]"
+            )
+          );
           const off = disabledDate(date.toDate());
           return (
             <div
@@ -356,7 +424,7 @@ export default function DatePicker({
                 "k-picker-day-out": !date.isSame(panelDate, "month"),
                 "k-picker-is-today": date.isSame(dayjs(), "day"),
                 "k-picker-day-selected": selected,
-                "k-picker-day-in": inRange,
+                "k-picker-day-in": inRange && !selected,
                 "k-picker-range-start": draft[0]?.isSame(date, "day"),
                 "k-picker-range-end": draft[1]?.isSame(date, "day"),
                 "k-picker-day-disabled": off,
@@ -366,6 +434,7 @@ export default function DatePicker({
                   date.hour(panelDate.hour()).minute(panelDate.minute()).second(panelDate.second())
                 )
               }
+              onMouseEnter={() => isRange && setHoverDate(date)}
             >
               {date.date()}
             </div>
@@ -378,26 +447,37 @@ export default function DatePicker({
     <div className="k-picker-time-picker">
       {(["hour", "minute", "second"] as const).map((unit) => {
         const max = unit === "hour" ? 24 : 60;
-        const selected = (draft[draft.length - 1] ?? panelDate)[unit]();
+        const rangeIndex = timeEditSide === "start" ? 0 : 1;
+        const active = (mode === "dateTimeRange" ? draft[rangeIndex] : draft[0]) ?? panelDate;
+        const selected = active[unit]();
         return (
-          <ul className="k-picker-time-col" key={unit}>
+          <ul
+            className="k-picker-time-col"
+            key={unit}
+            ref={(node) => {
+              timeColRefs.current[unit] = node;
+            }}
+          >
             {Array.from({ length: max }, (_, number) => {
-              const candidate = (draft[draft.length - 1] ?? panelDate).set(unit, number);
+              const candidate = active.set(unit, number);
               return (
                 <li
                   key={number}
                   className={clsx("k-picker-time-item", {
-                    "k-picker-day-selected": number === selected,
+                    active: number === selected,
                     "k-picker-time-disabled": disabledTime(candidate.toDate()),
                   })}
                   onClick={() => {
                     if (disabledTime(candidate.toDate())) return;
+                    const next = draft.slice();
+                    if (mode === "dateTimeRange") next[rangeIndex] = candidate;
+                    else next[0] = candidate;
                     setPanelDate(candidate);
-                    if (draft.length) {
-                      const next = draft.slice();
-                      next[next.length - 1] = candidate;
-                      setDraft(next);
-                    }
+                    commit(next);
+                    timeColRefs.current[unit]?.scrollTo({
+                      top: number * 32 + 16,
+                      behavior: "smooth",
+                    });
                   }}
                 >
                   {String(number).padStart(2, "0")}
@@ -409,6 +489,16 @@ export default function DatePicker({
       })}
     </div>
   );
+  useEffect(() => {
+    if (!visible || view !== "time") return;
+    const index = mode === "dateTimeRange" && timeEditSide === "end" ? 1 : 0;
+    const active = draft[index] ?? panelDate;
+    requestAnimationFrame(() => {
+      (["hour", "minute", "second"] as const).forEach((unit) => {
+        timeColRefs.current[unit]?.scrollTo({ top: active[unit]() * 32 + 16 });
+      });
+    });
+  }, [visible, view, timeEditSide]);
   const panel =
     view === "year"
       ? yearPanel
@@ -422,60 +512,83 @@ export default function DatePicker({
   const overlay =
     rendered &&
     createPortal(
-      <div
-        ref={overlayRef}
-        className={clsx("k-datepicker-overlay", {
-          "k-datepicker-range": isRange,
-          "k-datepicker-with-time": hasTime,
-        })}
-        style={{
-          display: visible ? undefined : "none",
-          position: "absolute",
-          zIndex: 1050,
-          left: position.left,
-          top: position.top,
-          transformOrigin: position.origin,
-        }}
-      >
-        {header && <div className="k-picker-extra-header">{extra(header)}</div>}
-        <div className="k-picker-container">
+      <PopupTransition visible={visible} name="k-date-picker" nodeRef={overlayRef}>
+        <div
+          ref={overlayRef}
+          className={clsx("k-datepicker-overlay", {
+            "k-datepicker-range": isRange,
+            "k-datepicker-with-time": hasTime,
+          })}
+          {...({ mode, "k-placement": currentPlacement } as Record<string, string>)}
+          style={{
+            position: "absolute",
+            zIndex: 1050,
+            left: position.left,
+            top: position.top,
+            transformOrigin: position.origin,
+          }}
+        >
           {presets?.length ? (
             <div className="k-picker-presets">
               {presets.map((preset) => (
-                <div key={preset.label} onClick={() => emitExternal(preset.value())}>
+                <Button
+                  key={preset.label}
+                  size="small"
+                  onClick={() => emitExternal(preset.value())}
+                >
                   {preset.label}
-                </div>
+                </Button>
               ))}
             </div>
           ) : null}
-          <div>
+          <div className="k-picker-container">
+            {header && <div className="k-picker-extra-header">{extra(header)}</div>}
             {view !== "time" && headerNode}
             {panel}
             {hasTime && mode !== "time" && (
               <div className="k-picker-footer">
-                <span
-                  className="k-picker-footer-time"
-                  onClick={() => setView(view === "time" ? "date" : "time")}
-                >
-                  <Icon type={Clock} /> {view === "time" ? "Date" : "Time"}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (draft.length) {
-                      commit(draft);
-                      setOpen(false);
-                    }
-                  }}
-                >
-                  OK
-                </button>
+                {mode === "dateTimeRange" ? (
+                  <>
+                    <span
+                      className={clsx("k-picker-footer-time", {
+                        active: view === "time" && timeEditSide === "start",
+                      })}
+                      onClick={() => {
+                        setTimeEditSide("start");
+                        setView(view === "time" && timeEditSide === "start" ? "date" : "time");
+                      }}
+                    >
+                      {draft[0]?.format("HH:mm:ss") ?? "--:--:--"}
+                    </span>
+                    <span className="k-picker-footer-time-split">
+                      <Icon type={ArrowRight} />
+                    </span>
+                    <span
+                      className={clsx("k-picker-footer-time", {
+                        active: view === "time" && timeEditSide === "end",
+                      })}
+                      onClick={() => {
+                        setTimeEditSide("end");
+                        setView(view === "time" && timeEditSide === "end" ? "date" : "time");
+                      }}
+                    >
+                      {draft[1]?.format("HH:mm:ss") ?? "--:--:--"}
+                    </span>
+                  </>
+                ) : (
+                  <span
+                    className={clsx("k-picker-footer-time", { active: view === "time" })}
+                    onClick={() => setView(view === "time" ? "date" : "time")}
+                  >
+                    {(draft[0] ?? dayjs()).format("HH:mm:ss")}
+                  </span>
+                )}
               </div>
             )}
+            {footer && <div className="k-picker-extra-footer">{extra(footer)}</div>}
           </div>
         </div>
-        {footer && <div className="k-picker-extra-footer">{extra(footer)}</div>}
-      </div>,
+      </PopupTransition>,
       document.body
     );
   const placeholders = Array.isArray(placeholder)
@@ -483,6 +596,7 @@ export default function DatePicker({
     : isRange
       ? [placeholder || "Start date", placeholder || "End date"]
       : [placeholder || locale?.k?.datePicker?.placeholder || "Select date"];
+  const inputSize = Math.max(10, fmt.length);
   const classes = clsx(
     "k-datepicker",
     {
@@ -506,22 +620,58 @@ export default function DatePicker({
           })}
           onClick={() => !disabled && setOpen(!visible)}
         >
-          {(isRange ? [0, 1] : [0]).map((index) => (
-            <span key={index}>
+          {isRange ? (
+            <>
               <input
                 className="k-datepicker-input"
-                value={texts[index] ?? ""}
-                placeholder={placeholders[index]}
+                size={inputSize}
+                value={texts[0] ?? ""}
+                placeholder={placeholders[0]}
                 readOnly={!editable || disabled}
-                onClick={(event) => event.stopPropagation()}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setTimeEditSide("start");
+                }}
                 onFocus={() => !disabled && setOpen(true)}
-                onChange={(event) => edit(event.target.value, index)}
-                onBlur={() => acceptInput(index)}
+                onChange={(event) => edit(event.target.value, 0)}
+                onBlur={() => acceptInput(0)}
               />
-              {isRange && index === 0 && <span className="k-datepicker-separator">—</span>}
-            </span>
-          ))}
-          <Icon type={dateIcon} className="k-icon-calendar" strokeWidth={1.5} />
+              <span className="k-datepicker-separator">
+                <Icon type={ArrowRight} />
+              </span>
+              <input
+                className="k-datepicker-input"
+                size={inputSize}
+                value={texts[1] ?? ""}
+                placeholder={placeholders[1]}
+                readOnly={!editable || disabled}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setTimeEditSide("end");
+                }}
+                onFocus={() => !disabled && setOpen(true)}
+                onChange={(event) => edit(event.target.value, 1)}
+                onBlur={() => acceptInput(1)}
+              />
+            </>
+          ) : (
+            <input
+              className="k-datepicker-input"
+              size={inputSize}
+              value={texts[0] ?? ""}
+              placeholder={placeholders[0]}
+              readOnly={!editable || disabled}
+              onClick={(event) => event.stopPropagation()}
+              onFocus={() => !disabled && setOpen(true)}
+              onChange={(event) => edit(event.target.value, 0)}
+              onBlur={() => acceptInput(0)}
+            />
+          )}
+          <Icon
+            type={mode === "time" ? Clock : dateIcon}
+            className="k-icon-calendar"
+            strokeWidth={1.5}
+          />
           {clearable && !disabled && values.length > 0 && (
             <Icon type={CircleX} className="k-icon-clean" onClick={clear} />
           )}

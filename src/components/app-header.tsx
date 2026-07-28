@@ -1,7 +1,6 @@
 import Color from "color";
 import { ArrowUpRight, Languages, LogoGithub, LogoKui, Moon, Search, Sun } from "kui-icons";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { useLocation, useNavigate } from "react-router";
 import {
   Button,
   ColorPicker,
@@ -16,6 +15,7 @@ import {
   type MenuOptionsProps,
   type MenuSelectEvent,
 } from "react-kui";
+import { useLocation, useNavigate } from "react-router";
 import { version } from "../../package.json";
 import { useDocs } from "../context";
 import { routeData } from "../menu";
@@ -52,9 +52,7 @@ export default function AppHeader() {
           { key: "/guide/language", title: externalTitle(t("menu.language")) },
           { key: "/guide/change-log", title: externalTitle(t("menu.change_log")) },
           { key: "/guide/dark-mode", title: externalTitle(t("menu.dark_mode")) },
-          { key: "https://v4.k-ui.cn/", title: externalTitle(t("menu.docs_v4")) },
-          { key: "https://v3.k-ui.cn/", title: externalTitle(t("menu.docs_v3")) },
-          { key: "https://v2.k-ui.cn/", title: externalTitle(t("menu.docs_v2")) },
+          { key: "https://react-v2.k-ui.cn/", title: externalTitle(t("menu.docs_v2")) },
           {
             key: "https://react.k-ui.cn/",
             title: externalTitle(t("menu.docs_react")),

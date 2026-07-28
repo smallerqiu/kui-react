@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { ChevronDown, CircleX, Loading, X } from "kui-icons";
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import PopupTransition from "../base/popup-transition";
 import { ConfigContext } from "../config";
 import Empty from "../empty";
 import Icon, { type IconType } from "../icon";
@@ -523,7 +524,6 @@ const Select: React.FC<SelectProps> = ({
         left: `${left}px`,
         top: `${top}px`,
         transformOrigin: transOrigin,
-        display: visible ? undefined : "none",
       } as React.CSSProperties,
       className: clsx("k-select-dropdown", "k-scroll", {
         "k-select-dropdown-multiple": multiple,
@@ -550,7 +550,12 @@ const Select: React.FC<SelectProps> = ({
       </div>
     );
 
-    return createPortal(overlay, document.body);
+    return createPortal(
+      <PopupTransition visible={visible} name="k-select" nodeRef={refPopper}>
+        {overlay}
+      </PopupTransition>,
+      document.body
+    );
   };
 
   const finalArrowIcon = arrowIcon || ChevronDown;

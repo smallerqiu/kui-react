@@ -11,6 +11,7 @@ import {
   type HTMLAttributes,
 } from "react";
 import { createPortal } from "react-dom";
+import PopupTransition from "../base/popup-transition";
 import { ConfigContext } from "../config";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 import Empty from "../empty";
@@ -280,57 +281,58 @@ export default function TreeSelect({
   const overlay =
     rendered &&
     createPortal(
-      <div
-        ref={overlayRef}
-        className={clsx("k-tree-select-dropdown", "k-scroll", {
-          "k-tree-select-dropdown-multiple": multiple,
-          "k-tree-select-dropdown-sm": size === "small",
-        })}
-        style={{
-          display: visible ? undefined : "none",
-          position: "absolute",
-          zIndex: 1050,
-          left: position.left,
-          top: position.top,
-          minWidth: position.minWidth,
-          transformOrigin: position.origin,
-        }}
-      >
-        {loading ? (
-          <div className="k-tree-select-loading">
-            <Icon type={LoaderCircle} spin />
-            <span>{locale?.k?.select?.loading}</span>
-          </div>
-        ) : data.length ? (
-          <Tree
-            data={data}
-            checkable={treeCheckable}
-            showLine={treeShowLine}
-            showIcon={treeShowIcon}
-            multiple={!!multiple || !!treeCheckable}
-            checkStrictly={treeCheckStrictly}
-            expandedKeys={treeExpandedKeys ?? initialExpanded ?? expanded}
-            selectedKeys={selectedForTree}
-            checkedKeys={checkedForTree}
-            selectAsCheck={treeCheckable}
-            loadData={treeLoadData}
-            queryKey={query}
-            onSelect={select}
-            onExpand={(event) => onTreeExpand?.(event)}
-            onExpandedKeysChange={(keys) => {
-              setExpanded(keys);
-              onTreeExpandedKeysChange?.(keys);
-            }}
-            onCheck={(_node, _value, keys) => commit(keys)}
-            onCheckedKeysChange={(keys) => {
-              setChecked(keys);
-              onTreeCheckedKeysChange?.(keys);
-            }}
-          />
-        ) : (
-          <Empty description={emptyText || locale?.k?.select?.emptyText} />
-        )}
-      </div>,
+      <PopupTransition visible={visible} name="k-tree-select" nodeRef={overlayRef}>
+        <div
+          ref={overlayRef}
+          className={clsx("k-tree-select-dropdown", "k-scroll", {
+            "k-tree-select-dropdown-multiple": multiple,
+            "k-tree-select-dropdown-sm": size === "small",
+          })}
+          style={{
+            position: "absolute",
+            zIndex: 1050,
+            left: position.left,
+            top: position.top,
+            minWidth: position.minWidth,
+            transformOrigin: position.origin,
+          }}
+        >
+          {loading ? (
+            <div className="k-tree-select-loading">
+              <Icon type={LoaderCircle} spin />
+              <span>{locale?.k?.select?.loading}</span>
+            </div>
+          ) : data.length ? (
+            <Tree
+              data={data}
+              checkable={treeCheckable}
+              showLine={treeShowLine}
+              showIcon={treeShowIcon}
+              multiple={!!multiple || !!treeCheckable}
+              checkStrictly={treeCheckStrictly}
+              expandedKeys={treeExpandedKeys ?? initialExpanded ?? expanded}
+              selectedKeys={selectedForTree}
+              checkedKeys={checkedForTree}
+              selectAsCheck={treeCheckable}
+              loadData={treeLoadData}
+              queryKey={query}
+              onSelect={select}
+              onExpand={(event) => onTreeExpand?.(event)}
+              onExpandedKeysChange={(keys) => {
+                setExpanded(keys);
+                onTreeExpandedKeysChange?.(keys);
+              }}
+              onCheck={(_node, _value, keys) => commit(keys)}
+              onCheckedKeysChange={(keys) => {
+                setChecked(keys);
+                onTreeCheckedKeysChange?.(keys);
+              }}
+            />
+          ) : (
+            <Empty description={emptyText || locale?.k?.select?.emptyText} />
+          )}
+        </div>
+      </PopupTransition>,
       document.body
     );
 

@@ -13,27 +13,27 @@ Two concepts: row `row` and column `col`. Specific usage is as follows:
 
 ## Examples
 
-[Basic Usage](./demo/basic.tsx)
+[Basic Usage](./demo/basic.tsx?show=vertical)
 
 - `col` must be placed inside `row`.
 
-[Column Gutter](./demo/gutter.tsx)
+[Column Gutter](./demo/gutter.tsx?show=vertical)
 
 - Use the `gutter` attribute to set the spacing between columns. For vertical spacing, it can be written as an array [horizontal spacing, vertical spacing].
 
-[Grid Offset](./demo/offset.tsx)
+[Grid Offset](./demo/offset.tsx?show=vertical)
 
 - By setting the `offset` attribute, columns can be offset left or right, with the offset grid count being the value of `offset`.
 
-[Flex Alignment](./demo/align.tsx)
+[Flex Alignment](./demo/align.tsx?show=vertical)
 
 - Vertical alignment of Flex child elements.
 
-[Flex Layout](./demo/flex.tsx)
+[Flex Layout](./demo/flex.tsx?show=vertical)
 
 - Flex layout basics. Use `row-flex` to define a `flex` layout, where its child elements, based on different values like `start` , `center` , `end` , `space-between`, `space-around` , define their layout within the parent node.
 
-[Flex Fill](./demo/fill.tsx)
+[Flex Fill](./demo/fill.tsx?show=vertical)
 
 - Col provides a flex property to support filling.
 

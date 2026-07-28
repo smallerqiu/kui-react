@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import PopupTransition from "../base/popup-transition";
 import type { DropPlacementsType, TriggerType } from "../const/types";
 import { setPlacement } from "../utils/placement";
 import { getChildren } from "../utils/react-node";
@@ -231,42 +232,43 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   const overlayNode =
     rendered && overlay ? (
-      <div
-        ref={refPopper}
-        style={
-          {
-            left: `${left}px`,
-            top: `${top}px`,
-            transformOrigin: transOrigin,
-            display: visible ? undefined : "none",
-            ...style,
-          } as React.CSSProperties
-        }
-        className={popperClasses}
-        onClick={() => openChange(false)}
-        onMouseEnter={clearPopTimer}
-        onMouseLeave={mouseLeaveEvent}
-        {...(rest as any)}
-      >
-        <div className="k-dropdown-content">
-          <div className="k-dropdown-body">{overlay}</div>
-          {arrow && (
-            <div className="k-dropdown-arrow">
-              <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
-                <path
-                  d="M24,0.97087 L24,1.97087 C20,1.97087 18.5,2.97087 16.5,4.97087 C14.5,6.97087 14,7.97087 12,7.97087 C10,7.97087 9.5,6.97087 7.5,4.97087 C5.5,2.97087 4,1.97087 0,1.97087 L0,0.97087 L24,0.97087 Z"
-                  id="ot"
-                />
-                <path
-                  d="M24,0 L24,1 C20.032328,1 18.1576594,1.985435 16.1576594,3.985435 C14.1576594,5.985435 13.3847825,7 12,7 C10.6152175,7 9.81306952,5.985435 7.81306952,3.985435 C5.81306952,1.985435 4.0114261,1 0,1 L0,0 L24,0 Z"
-                  id="in"
-                  stroke="currentcolor"
-                />
-              </svg>
-            </div>
-          )}
+      <PopupTransition visible={visible} name="k-dropdown" nodeRef={refPopper}>
+        <div
+          ref={refPopper}
+          style={
+            {
+              left: `${left}px`,
+              top: `${top}px`,
+              transformOrigin: transOrigin,
+              ...style,
+            } as React.CSSProperties
+          }
+          className={popperClasses}
+          onClick={() => openChange(false)}
+          onMouseEnter={clearPopTimer}
+          onMouseLeave={mouseLeaveEvent}
+          {...(rest as any)}
+        >
+          <div className="k-dropdown-content">
+            <div className="k-dropdown-body">{overlay}</div>
+            {arrow && (
+              <div className="k-dropdown-arrow">
+                <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
+                  <path
+                    d="M24,0.97087 L24,1.97087 C20,1.97087 18.5,2.97087 16.5,4.97087 C14.5,6.97087 14,7.97087 12,7.97087 C10,7.97087 9.5,6.97087 7.5,4.97087 C5.5,2.97087 4,1.97087 0,1.97087 L0,0.97087 L24,0.97087 Z"
+                    id="ot"
+                  />
+                  <path
+                    d="M24,0 L24,1 C20.032328,1 18.1576594,1.985435 16.1576594,3.985435 C14.1576594,5.985435 13.3847825,7 12,7 C10.6152175,7 9.81306952,5.985435 7.81306952,3.985435 C5.81306952,1.985435 4.0114261,1 0,1 L0,0 L24,0 Z"
+                    id="in"
+                    stroke="currentcolor"
+                  />
+                </svg>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      </PopupTransition>
     ) : null;
 
   return (

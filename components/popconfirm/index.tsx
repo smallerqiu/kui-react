@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { CircleQuestionMark } from "kui-icons";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import PopupTransition from "../base/popup-transition";
 import Button from "../button/button";
 import { ConfigContext } from "../config";
 import type { PlacementsType } from "../const/types";
@@ -152,54 +153,58 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   const preCls = "popconfirm";
 
   const overlayNode = rendered ? (
-    <div
-      ref={refPopper}
-      className={clsx(`k-${preCls}`, `k-${preCls}-has-arrow`, { [`k-${preCls}-dark`]: dark })}
-      style={{
-        left: `${left}px`,
-        top: `${top}px`,
-        transformOrigin: transOrigin,
-        display: visible ? undefined : "none",
-        width: width ? (typeof width === "number" ? `${width}px` : width) : undefined,
-      }}
-      onMouseEnter={() => {
-        if (hideTimer.current) clearTimeout(hideTimer.current);
-        updateShow(true);
-      }}
-      onMouseLeave={() => {
-        showTimer.current = setTimeout(() => {
-          if (!show) updateShow(false);
-        }, 300);
-      }}
-    >
-      <div className={`k-${preCls}-content`}>
-        <div className={`k-${preCls}-body`}>
-          <Icon type={CircleQuestionMark} />
-          <div className={`k-${preCls}-title`}>{title}</div>
-        </div>
-        <div className={`k-${preCls}-footer`}>
-          <Button size="small" onClick={cancel}>
-            {cancelText || locale?.k?.common?.cancel}
-          </Button>
-          <Button size="small" type="primary" onClick={ok}>
-            {okText || locale?.k?.common?.ok}
-          </Button>
-        </div>
-        <div className={`k-${preCls}-arrow`}>
-          <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
-            <path
-              d="M24,0.97087 L24,1.97087 C20,1.97087 18.5,2.97087 16.5,4.97087 C14.5,6.97087 14,7.97087 12,7.97087 C10,7.97087 9.5,6.97087 7.5,4.97087 C5.5,2.97087 4,1.97087 0,1.97087 L0,0.97087 L24,0.97087 Z"
-              id="ot"
-            />
-            <path
-              d="M24,0 L24,1 C20.032328,1 18.1576594,1.985435 16.1576594,3.985435 C14.1576594,5.985435 13.3847825,7 12,7 C10.6152175,7 9.81306952,5.985435 7.81306952,3.985435 C5.81306952,1.985435 4.0114261,1 0,1 L0,0 L24,0 Z"
-              id="in"
-              stroke="currentcolor"
-            />
-          </svg>
+    <PopupTransition visible={visible} name={`k-${preCls}`} nodeRef={refPopper}>
+      <div
+        ref={refPopper}
+        {...({ "k-placement": currentPlacement } as React.HTMLAttributes<HTMLDivElement>)}
+        className={clsx(`k-${preCls}`, `k-${preCls}-has-arrow`, {
+          [`k-${preCls}-dark`]: dark,
+        })}
+        style={{
+          left: `${left}px`,
+          top: `${top}px`,
+          transformOrigin: transOrigin,
+          width: width ? (typeof width === "number" ? `${width}px` : width) : undefined,
+        }}
+        onMouseEnter={() => {
+          if (hideTimer.current) clearTimeout(hideTimer.current);
+          updateShow(true);
+        }}
+        onMouseLeave={() => {
+          showTimer.current = setTimeout(() => {
+            if (!show) updateShow(false);
+          }, 300);
+        }}
+      >
+        <div className={`k-${preCls}-content`}>
+          <div className={`k-${preCls}-body`}>
+            <Icon type={CircleQuestionMark} />
+            <div className={`k-${preCls}-title`}>{title}</div>
+          </div>
+          <div className={`k-${preCls}-footer`}>
+            <Button size="small" onClick={cancel}>
+              {cancelText || locale?.k?.common?.cancel}
+            </Button>
+            <Button size="small" type="primary" onClick={ok}>
+              {okText || locale?.k?.common?.ok}
+            </Button>
+          </div>
+          <div className={`k-${preCls}-arrow`}>
+            <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
+              <path
+                d="M24,0.97087 L24,1.97087 C20,1.97087 18.5,2.97087 16.5,4.97087 C14.5,6.97087 14,7.97087 12,7.97087 C10,7.97087 9.5,6.97087 7.5,4.97087 C5.5,2.97087 4,1.97087 0,1.97087 L0,0.97087 L24,0.97087 Z"
+                id="ot"
+              />
+              <path
+                d="M24,0 L24,1 C20.032328,1 18.1576594,1.985435 16.1576594,3.985435 C14.1576594,5.985435 13.3847825,7 12,7 C10.6152175,7 9.81306952,5.985435 7.81306952,3.985435 C5.81306952,1.985435 4.0114261,1 0,1 L0,0 L24,0 Z"
+                id="in"
+                stroke="currentcolor"
+              />
+            </svg>
+          </div>
         </div>
       </div>
-    </div>
+    </PopupTransition>
   ) : null;
 
   return (

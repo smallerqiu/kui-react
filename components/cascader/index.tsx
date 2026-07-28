@@ -10,6 +10,7 @@ import {
   type MouseEvent,
 } from "react";
 import { createPortal } from "react-dom";
+import PopupTransition from "../base/popup-transition";
 import Empty from "../empty";
 import Icon from "../icon";
 import type { CascaderOption, CascaderProps, CascaderValue } from "./types";
@@ -226,53 +227,56 @@ export default function Cascader({
       </div>
       {rendered &&
         createPortal(
-          <div
-            ref={overlayRef}
-            className={clsx("k-cascader-dropdown", { "k-cascader-dropdown-sm": size === "small" })}
-            style={{
-              display: visible ? undefined : "none",
-              left: position.left,
-              top: position.top,
-              minWidth: position.minWidth,
-              transformOrigin: position.origin,
-            }}
-          >
-            {options.length ? (
-              <div className="k-cascader-dropdown-menus">
-                {menus.map((menu, column) => (
-                  <ul className="k-cascader-dropdown-menu k-scroll" key={column}>
-                    {menu.map((item) => {
-                      const hasChildren = !!item.children?.length;
-                      return (
-                        <li
-                          className={clsx("k-cascader-dropdown-item", {
-                            "k-cascader-dropdown-item-active":
-                              activePath[column]?.value === item.value,
-                            "k-cascader-dropdown-item-selected":
-                              currentValue[column] === item.value,
-                            "k-cascader-dropdown-item-disabled": item.disabled,
-                          })}
-                          key={item.value}
-                          onClick={() => choose(item, column)}
-                          onMouseEnter={() => {
-                            if (expandTrigger === "hover" && hasChildren)
-                              choose(item, column, true);
-                          }}
-                        >
-                          <span>{item.label}</span>
-                          {hasChildren && (
-                            <Icon className="k-cascader-item-arrow" type={ChevronRight} />
-                          )}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                ))}
-              </div>
-            ) : (
-              <Empty description={emptyText} />
-            )}
-          </div>,
+          <PopupTransition visible={visible} name="k-cascader" nodeRef={overlayRef} timeout={250}>
+            <div
+              ref={overlayRef}
+              className={clsx("k-cascader-dropdown", {
+                "k-cascader-dropdown-sm": size === "small",
+              })}
+              style={{
+                left: position.left,
+                top: position.top,
+                minWidth: position.minWidth,
+                transformOrigin: position.origin,
+              }}
+            >
+              {options.length ? (
+                <div className="k-cascader-dropdown-menus">
+                  {menus.map((menu, column) => (
+                    <ul className="k-cascader-dropdown-menu k-scroll" key={column}>
+                      {menu.map((item) => {
+                        const hasChildren = !!item.children?.length;
+                        return (
+                          <li
+                            className={clsx("k-cascader-dropdown-item", {
+                              "k-cascader-dropdown-item-active":
+                                activePath[column]?.value === item.value,
+                              "k-cascader-dropdown-item-selected":
+                                currentValue[column] === item.value,
+                              "k-cascader-dropdown-item-disabled": item.disabled,
+                            })}
+                            key={item.value}
+                            onClick={() => choose(item, column)}
+                            onMouseEnter={() => {
+                              if (expandTrigger === "hover" && hasChildren)
+                                choose(item, column, true);
+                            }}
+                          >
+                            <span>{item.label}</span>
+                            {hasChildren && (
+                              <Icon className="k-cascader-item-arrow" type={ChevronRight} />
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  ))}
+                </div>
+              ) : (
+                <Empty description={emptyText} />
+              )}
+            </div>
+          </PopupTransition>,
           document.body
         )}
     </>
