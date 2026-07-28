@@ -28,15 +28,18 @@
 
 | 属性          | 说明                                               | 类型                      | 默认值      |
 | ------------- | -------------------------------------------------- | ------------------------- | ----------- |
-| modelValue    | 颜色值,可以使用 `v-model` 双向绑定                 | string                    | -           |
-| mode          | 颜色展示类型,提供 3 种模式(`hex` 、 `rgb` 、`hsl`) | string                    | 'hex'       |
-| presets       | 自定义颜色盘                                       | string[]                  | -           |
-| disabledAlpha | 是否禁用透明                                       | bool                      | false       |
-| disabled      | 是否失效状态                                       | bool                      | false       |
-| trigger       | 下拉触发形式                                       | [hover,click]             | hover       |
-| showText      | 是否展示颜色文字                                   | bool                      | false       |
-| size          | 颜色选择器的尺寸                                   | [small,medium,large]      | -           |
-| placement     | 颜色选择器的放置位置                               | string                    | bottom-left |
-| onUpdateMode  | 颜色模式更新时触发                                 | (mode: ColorMode) => void | -           |
-| onChange      | 颜色值改变的时候触发,返回颜色的值                  | (color: string) => void   | -           |
-| onOpenChange  | 颜色选择器展开或者收起的时候触发                   | (opened: boolean) => void | -           |
+| value         | 受控颜色值                                         | `string`                  | -           |
+| defaultValue  | 非受控初始颜色值                                   | `string`                  | `#000000ff` |
+| modelValue    | 兼容迁移时使用的受控颜色值                         | `string`                  | -           |
+| mode          | 颜色展示类型，支持 `hex`、`rgb`、`hsl`             | `ColorMode`               | `hex`       |
+| presets       | 自定义颜色盘                                       | `string[]`                | 内置色盘    |
+| disabledAlpha | 是否禁用透明度                                     | `boolean`                 | `false`     |
+| disabled      | 是否禁用                                           | `boolean`                 | `false`     |
+| trigger       | 弹层触发方式                                       | `hover \| click`          | `click`     |
+| showText      | 是否展示颜色文字                                   | `boolean`                 | `false`     |
+| size          | 颜色选择器尺寸                                     | `SizeType`                | -           |
+| placement     | 弹层位置                                           | `DropPlacementsType`      | `bottom-left` |
+| children      | 自定义触发元素                                     | `ReactNode`               | -           |
+| onUpdateMode  | 颜色模式更新时触发                                 | `(mode: ColorMode) => void` | -         |
+| onChange      | 颜色值改变时触发                                   | `(color: string) => void` | -           |
+| onOpenChange  | 颜色选择器展开或收起时触发                         | `(opened: boolean) => void` | -         |

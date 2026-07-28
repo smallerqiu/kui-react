@@ -23,11 +23,11 @@ Avoid components sticking together, create uniform space.
 
 - Preset spacing sizes: large, medium, and small. Set `size` to `large` or `medium` to set the spacing to large or medium, respectively. If `size` is not set, the spacing is small.
 
-[Alignment](./demo/align.tsx)
+[Alignment](./demo/align.tsx?show=vertical)
 
 - Set the alignment mode.
 
-[Custom Size](./demo/custom-size.tsx)
+[Custom Size](./demo/custom-size.tsx?show=vertical)
 
 - Customize spacing size.
 
@@ -39,11 +39,11 @@ Avoid components sticking together, create uniform space.
 
 - Divider between adjacent components.
 
-[Compact Layout Group](./demo/compact.tsx)
+[Compact Layout Group](./demo/compact.tsx?show=vertical)
 
 - Use `compact` to tightly connect form components and merge borders.
 
-[Button Compact Layout](./demo/compact-button.tsx)
+[Button Compact Layout](./demo/compact-button.tsx?show=vertical)
 
 - Example of compactly arranged Button components.
 
@@ -56,9 +56,9 @@ Avoid components sticking together, create uniform space.
 | Property | Description                                    | Type                                 | Default |
 | -------- | ---------------------------------------------- | ------------------------------------ | ------- |
 | align    | Alignment method                               | `start`, `end`, `center`, `baseline` | center  |
-| vertical | Whether to display vertically                  | bool                                 | false   |
-| size     | Spacing size                                   | `small`, `medium`, `large`, number   | small   |
-| wrap     | Whether to wrap                                | bool                                 | false   |
-| split    | Set split                                      | v-slot                               | -       |
-| compact  | Whether to use compact mode                    | bool                                 | false   |
-| block    | Option to adjust width to parent element width | bool                                 | false   |
+| vertical | Whether to display vertically                  | `boolean`                            | `false` |
+| size     | Spacing size                                   | `SizeType \| number \| (number \| string)[]` | - |
+| wrap     | Whether to wrap                                | `boolean`                            | `false` |
+| split    | Content rendered between adjacent children    | `ReactNode`                          | - |
+| compact  | Whether to use compact mode                    | `boolean`                            | `false` |
+| block    | Whether to fill the parent width               | `boolean`                            | `false` |

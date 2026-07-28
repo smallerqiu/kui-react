@@ -66,6 +66,7 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
 ) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const drawIdRef = useRef(0);
+  const mountedRef = useRef(false);
   const { locale } = useContext(ConfigContext);
   const messages = (locale ?? zhCN)?.k?.qrcode;
 
@@ -152,8 +153,18 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
   ]);
 
   useEffect(() => {
-    void draw();
-  }, [draw]);
+    // 与 Vue 版保持一致：首次挂载始终绘制；非 active 状态下冻结二维码，
+    // 回到 active 时再使用最新的 value 和配置重绘。
+    if (!mountedRef.current || status === "active") void draw();
+    mountedRef.current = true;
+  }, [draw, status]);
+  useEffect(
+    () => () => {
+      // 让尚未完成的 toCanvas / Logo onload 回调失效，避免卸载后继续绘制。
+      drawIdRef.current += 1;
+    },
+    []
+  );
   useEffect(() => {
     const observer = new MutationObserver((records) => {
       if (records.some((record) => record.attributeName === "theme-mode")) void draw();

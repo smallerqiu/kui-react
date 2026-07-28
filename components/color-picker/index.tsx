@@ -4,6 +4,7 @@ import {
   cloneElement,
   isValidElement,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type HTMLAttributes,
@@ -60,6 +61,9 @@ export default function ColorPicker({
   const controlled = value ?? modelValue;
   const [innerColor, setInnerColor] = useState(defaultValue ?? controlled ?? "#000000ff");
   const [mode, setMode] = useState<ColorMode>(modeProp);
+  const initialColor = useMemo(() => Color(defaultValue ?? controlled ?? "#000000ff"), []);
+  const [currentHue, setCurrentHue] = useState(initialColor.hue());
+  const [currentAlpha, setCurrentAlpha] = useState(initialColor.alpha());
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ left: 0, top: 0, origin: "bottom" });
   const [currentPlacement, setCurrentPlacement] = useState(placement);
@@ -68,16 +72,16 @@ export default function ColorPicker({
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const currentValue = controlled ?? innerColor;
   const color = Color(currentValue);
-  const format = (next: ColorInstance) =>
-    mode === "hex"
+  const format = (next: ColorInstance, targetMode = mode) =>
+    targetMode === "hex"
       ? next.alpha() < 1
         ? next.hexa()
         : next.hex()
-      : mode === "rgb"
+      : targetMode === "rgb"
         ? next.rgb().string(0)
         : next.hsl().string(0);
-  const update = (next: ColorInstance) => {
-    const formatted = format(next);
+  const update = (next: ColorInstance, targetMode = mode) => {
+    const formatted = format(next, targetMode);
     if (controlled === undefined) setInnerColor(formatted);
     onChange?.(formatted);
   };
@@ -105,6 +109,11 @@ export default function ColorPicker({
     if (next) requestAnimationFrame(updatePosition);
   };
   useEffect(() => setMode(modeProp), [modeProp]);
+  useEffect(() => {
+    const next = Color(currentValue);
+    setCurrentAlpha(next.alpha());
+    if (next.saturationv() > 0) setCurrentHue(next.hue());
+  }, [currentValue]);
   useEffect(() => setCurrentPlacement(placement), [placement]);
   useEffect(() => {
     if (!open) return;
@@ -124,48 +133,71 @@ export default function ColorPicker({
       window.removeEventListener("scroll", updatePosition, true);
     };
   }, [open, disabled, placement]);
+  const mouseEnter = () => {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    setVisible(true);
+  };
+  const mouseLeave = () => {
+    hideTimerRef.current = setTimeout(() => setVisible(false), 300);
+  };
   const hoverProps =
     trigger === "hover"
-      ? {
-          onMouseEnter: () => {
-            if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-            setVisible(true);
-          },
-          onMouseLeave: () => {
-            hideTimerRef.current = setTimeout(() => setVisible(false), 300);
-          },
-        }
+      ? { onMouseEnter: mouseEnter, onMouseLeave: mouseLeave }
       : { onClick: () => setVisible(!open) };
-  const triggerNode =
-    children && isValidElement(children) ? (
-      cloneElement(children as ReactElement<any>, { ...hoverProps, ref: triggerRef })
-    ) : (
-      <div
-        {...rest}
-        ref={triggerRef as React.RefObject<HTMLDivElement>}
-        className={clsx(
-          "k-color-picker",
-          {
-            "k-color-picker-opened": open,
-            "k-color-picker-disabled": disabled,
-            "k-color-picker-sm": size === "small",
-            "k-color-picker-lg": size === "large",
-          },
-          className
-        )}
-        {...hoverProps}
-      >
-        <div className="k-color-picker-selection">
-          <div className="k-color-picker-color">
-            <div
-              className="k-color-picker-color-inner"
-              style={{ backgroundColor: color.string() }}
-            />
-          </div>
-          {showText && <div className="k-color-picker-trigger-text">{format(color)}</div>}
+  const customTrigger =
+    children && isValidElement(children)
+      ? (children as ReactElement<{
+          onClick?: (event: React.MouseEvent) => void;
+          onMouseEnter?: (event: React.MouseEvent) => void;
+          onMouseLeave?: (event: React.MouseEvent) => void;
+          ref?: React.Ref<HTMLElement>;
+        }>)
+      : null;
+  const triggerNode = customTrigger ? (
+    cloneElement(customTrigger, {
+      ref: (node: HTMLElement | null) => {
+        triggerRef.current = node;
+        const childRef = customTrigger.props.ref;
+        if (typeof childRef === "function") childRef(node);
+        else if (childRef) (childRef as React.MutableRefObject<HTMLElement | null>).current = node;
+      },
+      onClick: (event: React.MouseEvent) => {
+        customTrigger.props.onClick?.(event);
+        if (trigger === "click" && !event.defaultPrevented) setVisible(!open);
+      },
+      onMouseEnter: (event: React.MouseEvent) => {
+        customTrigger.props.onMouseEnter?.(event);
+        if (trigger === "hover") mouseEnter();
+      },
+      onMouseLeave: (event: React.MouseEvent) => {
+        customTrigger.props.onMouseLeave?.(event);
+        if (trigger === "hover") mouseLeave();
+      },
+    })
+  ) : (
+    <div
+      {...rest}
+      ref={triggerRef as React.RefObject<HTMLDivElement>}
+      className={clsx(
+        "k-color-picker",
+        {
+          "k-color-picker-opened": open,
+          "k-color-picker-disabled": disabled,
+          "k-color-picker-sm": size === "small",
+          "k-color-picker-lg": size === "large",
+        },
+        className
+      )}
+      {...hoverProps}
+    >
+      <div className="k-color-picker-selection">
+        <div className="k-color-picker-color">
+          <div className="k-color-picker-color-inner" style={{ backgroundColor: color.string() }} />
         </div>
+        {showText && <div className="k-color-picker-trigger-text">{format(color)}</div>}
       </div>
-    );
+    </div>
+  );
   const dropdown =
     typeof document !== "undefined"
       ? createPortal(
@@ -192,10 +224,10 @@ export default function ColorPicker({
             >
               <div className="k-color-picker-body">
                 <Paint
-                  hue={color.hue()}
+                  hue={currentHue}
                   value={color}
                   onUpdateRGB={(rgb: ColorObject) =>
-                    update(Color({ ...rgb, alpha: color.alpha() }).rgb())
+                    update(Color({ ...rgb, alpha: currentAlpha }).rgb())
                   }
                 />
                 <div className="k-color-picker-bar">
@@ -206,11 +238,20 @@ export default function ColorPicker({
                     />
                   </div>
                   <div className="k-color-picker-bar-box">
-                    <Hue hue={color.hue()} onUpdateHue={(hue) => update(color.hue(hue).rgb())} />
+                    <Hue
+                      hue={currentHue}
+                      onUpdateHue={(hue) => {
+                        setCurrentHue(hue);
+                        update(color.hue(hue).rgb());
+                      }}
+                    />
                     {!disabledAlpha && (
                       <Alpha
                         value={color}
-                        onUpdateAlpha={(alpha) => update(color.alpha(alpha).rgb())}
+                        onUpdateAlpha={(alpha) => {
+                          setCurrentAlpha(alpha);
+                          update(color.alpha(alpha).rgb());
+                        }}
                       />
                     )}
                   </div>
@@ -222,10 +263,23 @@ export default function ColorPicker({
                   onUpdateMode={(next) => {
                     setMode(next);
                     onUpdateMode?.(next);
+                    update(color, next);
                   }}
-                  onUpdateColorValue={update}
+                  onUpdateColorValue={(next) => {
+                    setCurrentAlpha(next.alpha());
+                    if (next.saturationv() > 0) setCurrentHue(next.hue());
+                    update(next);
+                  }}
                 />
-                <Presets presets={presets} color={color} onUpdateColor={update} />
+                <Presets
+                  presets={presets}
+                  color={color}
+                  onUpdateColor={(next) => {
+                    setCurrentAlpha(next.alpha());
+                    setCurrentHue(next.hue());
+                    update(next.rgb());
+                  }}
+                />
               </div>
               <div className="k-color-picker-arrow">
                 <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">

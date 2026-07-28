@@ -7,6 +7,7 @@ export interface AlphaProps {
 }
 export default function Alpha({ value, onUpdateAlpha }: AlphaProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const dragCleanupRef = useRef<() => void>(() => undefined);
   const color = Color(value);
   useEffect(() => {
     const canvas = canvasRef.current,
@@ -20,6 +21,7 @@ export default function Alpha({ value, onUpdateAlpha }: AlphaProps) {
     context.fillStyle = gradient;
     context.fillRect(0, 0, canvas.width, canvas.height);
   }, [color.hex()]);
+  useEffect(() => () => dragCleanupRef.current(), []);
   const start = (event: ReactMouseEvent) => {
     const move = (x: number) => {
       const rect = canvasRef.current!.getBoundingClientRect();
@@ -27,10 +29,12 @@ export default function Alpha({ value, onUpdateAlpha }: AlphaProps) {
     };
     move(event.clientX);
     const mousemove = (item: MouseEvent) => move(item.clientX);
+    dragCleanupRef.current();
     const up = () => {
       document.removeEventListener("mousemove", mousemove);
       document.removeEventListener("mouseup", up);
     };
+    dragCleanupRef.current = up;
     document.addEventListener("mousemove", mousemove);
     document.addEventListener("mouseup", up);
   };

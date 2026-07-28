@@ -44,17 +44,13 @@ A component that converts text into QR codes, supporting custom colors and logo 
 | logoBorder | Whether to add a white protective border around the logo. Prevents visual clutter by separating QR modules from the logo.                                                                                                                 | `boolean`                                         | `true`                       |
 | margin     | Quiet zone (white border) width around the QR code matrix, measured in module counts.                                                                                                                                                     | `number`                                          | `0`                          |
 | errorLevel | Error correction level. Options: `'L'` (7%), `'M'` (15%), `'Q'` (25%), `'H'` (30%).<br>_Note: When embedding a logo, it is recommended to use `'M'` or `'H'` to ensure reliable scanning even if the center is obscured._                 | `'L' \| 'M' \| 'Q' \| 'H'`                        | `'M'`                        |
+| loadingContent | Custom overlay content for the `loading` status. | `ReactNode` | - |
+| expiredContent | Custom overlay content for the `expired` status. | `ReactNode` | - |
+| scannedContent | Custom overlay content for the `scanned` status. | `ReactNode` | - |
+| onRefresh | Called when the `expired` status overlay is clicked. | `() => void` | - |
 
-### Events
+### Ref
 
-| Event Name | Description                                                                                                         | Callback Signature |
-| :--------- | :------------------------------------------------------------------------------------------------------------------ | :----------------- |
-| refresh    | Triggered when clicking the refresh button on the overlay while `status` is `'expired'`. Used to fetch new QR data. | `() => void`       |
-
-### Slots
-
-| Slot Name | Description                                              |
-| :-------- | :------------------------------------------------------- |
-| loading   | Custom overlay for `status="loading"`.                   |
-| expired   | Custom overlay and retry message for `status="expired"`. |
-| scanned   | Custom overlay for `status="scanned"`.                   |
+| Method | Description | Type |
+| :--- | :--- | :--- |
+| download | Downloads the current QR code as a PNG; an optional filename may be supplied. | `(fileName?: string) => void` |

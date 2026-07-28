@@ -6,6 +6,7 @@ export interface HueProps {
 }
 export default function Hue({ hue = 0, onUpdateHue }: HueProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const dragCleanupRef = useRef<() => void>(() => undefined);
   useEffect(() => {
     const canvas = canvasRef.current,
       context = canvas?.getContext("2d");
@@ -16,6 +17,7 @@ export default function Hue({ hue = 0, onUpdateHue }: HueProps) {
     context.fillStyle = gradient;
     context.fillRect(0, 0, canvas.width, canvas.height);
   }, []);
+  useEffect(() => () => dragCleanupRef.current(), []);
   const start = (event: ReactMouseEvent) => {
     const move = (clientX: number) => {
       const rect = canvasRef.current!.getBoundingClientRect();
@@ -23,12 +25,15 @@ export default function Hue({ hue = 0, onUpdateHue }: HueProps) {
     };
     move(event.clientX);
     const mousemove = (item: MouseEvent) => move(item.clientX);
+    dragCleanupRef.current();
     const up = () => {
       document.removeEventListener("mousemove", mousemove);
       document.removeEventListener("mouseup", up);
     };
+    dragCleanupRef.current = up;
     document.addEventListener("mousemove", mousemove);
     document.addEventListener("mouseup", up);
+    event.preventDefault();
   };
   return (
     <div className="k-color-picker-slider-hue">

@@ -8,6 +8,7 @@ export interface PaintProps {
 }
 export default function Paint({ hue = 0, value, onUpdateRGB }: PaintProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const dragCleanupRef = useRef<() => void>(() => undefined);
   const hsv = Color(value).hsv().object();
   useEffect(() => {
     const canvas = canvasRef.current,
@@ -26,6 +27,7 @@ export default function Paint({ hue = 0, value, onUpdateRGB }: PaintProps) {
     context.fillStyle = black;
     context.fillRect(0, 0, canvas.width, canvas.height);
   }, [hue]);
+  useEffect(() => () => dragCleanupRef.current(), []);
   const start = (event: ReactMouseEvent) => {
     const move = (x: number, y: number) => {
       const rect = canvasRef.current!.getBoundingClientRect();
@@ -35,10 +37,12 @@ export default function Paint({ hue = 0, value, onUpdateRGB }: PaintProps) {
     };
     move(event.clientX, event.clientY);
     const mousemove = (item: MouseEvent) => move(item.clientX, item.clientY);
+    dragCleanupRef.current();
     const up = () => {
       document.removeEventListener("mousemove", mousemove);
       document.removeEventListener("mouseup", up);
     };
+    dragCleanupRef.current = up;
     document.addEventListener("mousemove", mousemove);
     document.addEventListener("mouseup", up);
   };

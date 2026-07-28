@@ -19,15 +19,15 @@
 
 - 相邻组件垂直间距。
 
-[间距大小](./demo/size.tsx)
+[间距大小](./demo/size.tsx?show=vertical)
 
 - 间距预设大、中、小三种大小。 通过设置 `size` 为 `large` `medium` 分别把间距设为大、中间距。若不设置 size，则间距为小。
 
-[对齐](./demo/align.tsx)
+[对齐](./demo/align.tsx?show=vertical)
 
 - 设置对齐模式。
 
-[自定义尺寸](./demo/custom-size.tsx)
+[自定义尺寸](./demo/custom-size.tsx?show=vertical)
 
 - 自定义间距大小。
 
@@ -39,11 +39,11 @@
 
 - 相邻组件分隔符。
 
-[紧凑布局组合](./demo/compact.tsx)
+[紧凑布局组合](./demo/compact.tsx?show=vertical)
 
 - 使用 compact 让表单组件之间紧凑连接且合并边框。
 
-[Button 紧凑布局](./demo/compact-button.tsx)
+[Button 紧凑布局](./demo/compact-button.tsx?show=vertical)
 
 - Button 组件紧凑排列的示例。
 
@@ -56,9 +56,9 @@
 | 属性     | 说明                         | 类型                                  | 默认值 |
 | -------- | ---------------------------- | ------------------------------------- | ------ |
 | align    | 对齐方式                     | `start` , `end` ,`center` ,`baseline` | center |
-| vertical | 是否垂直显示                 | bool                                  | false  |
-| size     | 间距大小                     | `small`,`medium`,`large`,number       | small  |
-| wrap     | 是否换行                     | bool                                  | false  |
-| split    | 设置拆分                     | v-slot                                | -      |
-| compact  | 是否使用经凑模式             | bool                                  | false  |
-| block    | 将宽度调整为父元素宽度的选项 | bool                                  | false  |
+| vertical | 是否垂直显示                 | `boolean`                             | `false` |
+| size     | 间距大小                     | `SizeType \| number \| (number \| string)[]` | - |
+| wrap     | 是否换行                     | `boolean`                             | `false` |
+| split    | 相邻元素间的分隔内容         | `ReactNode`                           | - |
+| compact  | 是否使用紧凑模式             | `boolean`                             | `false` |
+| block    | 是否撑满父元素宽度           | `boolean`                             | `false` |

@@ -28,15 +28,18 @@ Freely output colors.
 
 | Property      | Description                                                     | Type                      | Default     |
 | ------------- | --------------------------------------------------------------- | ------------------------- | ----------- |
-| modelValue    | Color value, can use `v-model` for two-way binding              | string                    | -           |
-| mode          | Color display type, provides 3 modes (`hex` , `rgb` ,`hsl`)     | string                    | 'hex'       |
-| presets       | Custom color palette                                            | string[]                  | -           |
-| disabledAlpha | Whether to disable transparency                                 | bool                      | false       |
-| disabled      | Is it in an invalid state?                                      | bool                      | false       |
-| trigger       | Pull-down trigger mode                                          | [hover,click]             | click       |
-| showText      | Whether to display colored text                                 | bool                      | false       |
-| size          | Size of the color picker                                        | [small,medium,large]      | -           |
-| placement     | Placement of the color picker                                   | string                    | bottom-left |
-| onUpdateMode  | Triggered when the color mode is updated                        | (mode: ColorMode) => void | -           |
-| onChange      | Triggered when the color value changes, returns the color value | (color: string) => void   | -           |
-| onOpenChange  | Triggered when the color picker expands or collapses            | (opened: boolean) => void | -           |
+| value         | Controlled color value                                          | `string`                  | -           |
+| defaultValue  | Initial uncontrolled color value                                | `string`                  | `#000000ff` |
+| modelValue    | Controlled value retained for migration compatibility           | `string`                  | -           |
+| mode          | Color output mode: `hex`, `rgb`, or `hsl`                       | `ColorMode`               | `hex`       |
+| presets       | Custom color palette                                            | `string[]`                | Built-in palette |
+| disabledAlpha | Whether alpha editing is disabled                               | `boolean`                 | `false`     |
+| disabled      | Whether the picker is disabled                                  | `boolean`                 | `false`     |
+| trigger       | Popup trigger mode                                              | `hover \| click`          | `click`     |
+| showText      | Whether to display the color text                               | `boolean`                 | `false`     |
+| size          | Picker size                                                     | `SizeType`                | -           |
+| placement     | Popup placement                                                 | `DropPlacementsType`      | `bottom-left` |
+| children      | Custom trigger element                                          | `ReactNode`               | -           |
+| onUpdateMode  | Called when the color mode changes                              | `(mode: ColorMode) => void` | -         |
+| onChange      | Called when the color value changes                             | `(color: string) => void` | -           |
+| onOpenChange  | Called when the popup opens or closes                           | `(opened: boolean) => void` | -         |
