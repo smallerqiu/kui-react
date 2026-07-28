@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Space, KSwitch as Switch, Slider } from "react-kui";
-export default function Size() {
+export default function App() {
   const [disabled, setDisabled] = useState(false),
     [v1, setV1] = useState(80),
     [v2, setV2] = useState<number[]>([30, 50]);

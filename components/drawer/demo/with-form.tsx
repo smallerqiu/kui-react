@@ -26,7 +26,7 @@ const rules = {
     { min: 2, max: 5, message: "长度为2-5个字符" },
   ],
 };
-export default function WithForm() {
+export default function App() {
   const [show1, setShow1] = useState(false),
     [show2, setShow2] = useState(false),
     ref = useRef<FormExpose>(null),

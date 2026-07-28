@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Space, Select } from "react-kui";
 import { fruits } from "./data";
 const options = fruits.map((value) => ({ label: value, value }));
-export default function Filterable() {
+export default function App() {
   const [v1, setV1] = useState<any>(""),
     [v2, setV2] = useState<any[]>([]),
     [v3, setV3] = useState<any>(""),

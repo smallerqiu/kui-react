@@ -1,5 +1,5 @@
 import { Progress } from "react-kui";
-export default function Circle() {
+export default function App() {
   return (
     <>
       <Progress type="circle" percent={50} />

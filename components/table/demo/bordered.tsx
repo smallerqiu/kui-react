@@ -16,6 +16,6 @@ const columns: Column<(typeof data)[number]>[] = [
   },
   { title: "Address", key: "address" },
 ];
-export default function Bordered() {
+export default function App() {
   return <Table data={data} columns={columns} bordered header="Header" footer="Footer" />;
 }

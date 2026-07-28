@@ -28,6 +28,6 @@ const columns: Column[] = [
     render: () => <Button size="small">test2</Button>,
   },
 ];
-export default function Fixed() {
+export default function App() {
   return <Table data={data} columns={columns} scroll={{ y: 300 }} />;
 }

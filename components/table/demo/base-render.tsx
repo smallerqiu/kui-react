@@ -38,6 +38,6 @@ const columns: Column<Person>[] = [
     ),
   },
 ];
-export default function BaseRender() {
+export default function App() {
   return <Table data={people} columns={columns} />;
 }

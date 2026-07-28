@@ -4,7 +4,7 @@ const options = ["Apple", "Orange", "Banana", "Pear", "Grape"].map((label) => ({
   label,
   value: label.toLowerCase(),
 }));
-export default function Disabled() {
+export default function App() {
   const [disabled, setDisabled] = useState(false),
     [checked, setChecked] = useState(false);
   return (

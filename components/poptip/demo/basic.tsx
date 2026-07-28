@@ -1,6 +1,6 @@
 import { Button, Space, Poptip } from "react-kui";
 
-export default function Basic() {
+export default function App() {
   return (
     <Space>
       <Poptip title="Title" content={<p>See the light through the mist!</p>}>

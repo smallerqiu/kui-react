@@ -1,5 +1,5 @@
 import { Divider } from "react-kui";
-export default function WithText() {
+export default function App() {
   return (
     <div>
       <p>See the light through the mist!</p>

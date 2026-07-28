@@ -14,7 +14,7 @@ const overlay = (
     <MenuItem>3rd menu item</MenuItem>
   </Menu>
 );
-export default function Arrow() {
+export default function App() {
   return (
     <div id="dropdown-demo-placement">
       {placements.map((placement) => (

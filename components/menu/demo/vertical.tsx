@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Menu } from "react-kui";
 import { items } from "./data";
-export default function Vertical() {
+export default function App() {
   const [current, setCurrent] = useState(["1-1"]);
   return (
     <div style={{ width: 256 }}>

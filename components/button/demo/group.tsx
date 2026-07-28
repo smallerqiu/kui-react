@@ -1,6 +1,6 @@
 import { User } from "kui-icons";
 import { Space, Button, ButtonGroup } from "react-kui";
-export default function Group() {
+export default function App() {
   return (
     <Space>
       <ButtonGroup>

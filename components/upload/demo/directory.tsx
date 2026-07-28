@@ -1,7 +1,7 @@
 import { Upload as UploadIcon } from "kui-icons";
 import { Button, Upload } from "react-kui";
 import { action, headers } from "./shared";
-export default function Directory() {
+export default function App() {
   return (
     <Upload
       action={action}

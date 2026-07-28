@@ -30,7 +30,7 @@ const orgOptions: CascaderOption[] = [
   },
 ];
 
-export default function Demo() {
+export default function App() {
   const [departmentPath, setDepartmentPath] = useState<CascaderValue>([]);
   return (
     <Space vertical>

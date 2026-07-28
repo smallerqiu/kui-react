@@ -13,7 +13,7 @@ const source: Row[] = [
   { key: "1", name: "Li Lei", age: 33, mail: "hanlin@hotmail.com" },
   { key: "4", name: "Hu Cong", age: 25, mail: "hucong@163.com" },
 ];
-export default function TableSorter() {
+export default function App() {
   const [data, setData] = useState<Row[]>([]),
     [loading, setLoading] = useState(false),
     timer = useRef<ReturnType<typeof setTimeout> | null>(null);

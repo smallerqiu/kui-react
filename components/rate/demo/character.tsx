@@ -1,7 +1,7 @@
 import { Heart, Wifi, WifiHigh, WifiLow, WifiOff, WifiZero } from "kui-icons";
 import { Space, Rate } from "react-kui";
 const icons = [WifiOff, WifiZero, WifiLow, WifiHigh, Wifi];
-export default function Character() {
+export default function App() {
   return (
     <Space vertical>
       <Rate icon={Heart} allowHalf value={1.5} />

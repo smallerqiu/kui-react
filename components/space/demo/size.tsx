@@ -1,5 +1,5 @@
 import { Button, Space } from "react-kui";
-export default function SizeDemo() {
+export default function App() {
   return (
     <Space vertical>
       {(["small", "medium", "large"] as const).map((size) => (

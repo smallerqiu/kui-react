@@ -5,7 +5,7 @@ const options = [
   { value: "medium", label: "Medium" },
   { value: "small", label: "Small" },
 ];
-export default function Size() {
+export default function App() {
   const [size, setSize] = useState<SizeType>("medium");
   return (
     <Space vertical>

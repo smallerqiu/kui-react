@@ -1,6 +1,6 @@
 import { Heart } from "kui-icons";
 import { Card, Space } from "react-kui";
-export default function Vertical() {
+export default function App() {
   return (
     <Space vertical>
       <Card title="Card" icon={Heart} style={{ width: 256 }}>

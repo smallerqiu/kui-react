@@ -4,7 +4,7 @@ const options = ["Beijing", "Shenzhen", "Shanghai", "Guangzhou", "Wuhan"].map((l
   label,
   value: label.toLowerCase(),
 }));
-export default function CheckAll() {
+export default function App() {
   const [cities, setCities] = useState<string[]>([]);
   const checked = cities.length === options.length,
     indeterminate = cities.length > 0 && !checked;

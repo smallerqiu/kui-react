@@ -1,6 +1,6 @@
 import { Hammer, Ribbon } from "kui-icons";
 import { TimeLine, TimeLineItem } from "react-kui";
-export default function WithIcon() {
+export default function App() {
   return (
     <TimeLine>
       <TimeLineItem color="green" time="2020-11-03">

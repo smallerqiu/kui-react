@@ -38,7 +38,7 @@ const closeAll = () => {
       index * 500
     );
 };
-export default function Confirm() {
+export default function App() {
   return (
     <Space vertical>
       <Button onClick={confirm}>Confirm</Button>

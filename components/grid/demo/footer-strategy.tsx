@@ -1,5 +1,5 @@
 import { Grid, GridItem } from "react-kui";
-export default function FooterStrategy() {
+export default function App() {
   return (
     <Grid cols={{ xs: 1, sm: 2, md: 5 }} yGap={30}>
       <GridItem span={{ xs: 1, md: 2 }}>

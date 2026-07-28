@@ -24,7 +24,7 @@ const initial = {
   hobbies: [] as string[],
   other: "",
 };
-export default function Length() {
+export default function App() {
   const [form, setForm] = useState({ ...initial });
   const validatePass = (_: FormRule, value: any, cb: (e?: Error) => void) =>
     cb(value !== form.password ? new Error("The two passwords do not match!") : undefined);

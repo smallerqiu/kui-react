@@ -1,6 +1,6 @@
 import { Bell } from "kui-icons";
 import { Icon, Space, Badge } from "react-kui";
-export default function Dot() {
+export default function App() {
   return (
     <Space vertical>
       <Badge dot>

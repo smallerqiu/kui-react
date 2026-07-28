@@ -6,7 +6,7 @@ const content = (
     <p>See the light through the mist!</p>
   </>
 );
-export default function Trigger() {
+export default function App() {
   return (
     <Space>
       <Poptip title="Title" content={content}>

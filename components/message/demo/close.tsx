@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { Button, Space, message } from "react-kui";
-export default function Close() {
+export default function App() {
   const count = useRef(0);
   return (
     <Space vertical>

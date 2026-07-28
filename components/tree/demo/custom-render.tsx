@@ -23,7 +23,7 @@ const data: TreeNode[] = [
     ],
   },
 ];
-export default function CustomRender() {
+export default function App() {
   const [expanded, setExpanded] = useState(["0-0"]);
   return (
     <Tree

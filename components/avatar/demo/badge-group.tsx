@@ -1,7 +1,7 @@
 import { Heart, User } from "kui-icons";
 import { Badge, Space, Avatar, AvatarGroup } from "react-kui";
 
-export default function BadgeGroup() {
+export default function App() {
   return (
     <>
       <Space>

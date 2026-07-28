@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Space, DatePicker, type DatePickerInput } from "react-kui";
-export default function ValueType() {
+export default function App() {
   const [v1, s1] = useState<DatePickerInput>("2025-11-30"),
     [v2, s2] = useState<DatePickerInput>("2025/11/30"),
     [v3, s3] = useState<DatePickerInput>(new Date()),

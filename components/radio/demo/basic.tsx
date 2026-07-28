@@ -5,7 +5,7 @@ const items = [
   { label: "Orange", value: "orange" },
   { label: "Banana", value: "banana" },
 ];
-export default function Basic() {
+export default function App() {
   const [checked, setChecked] = useState(true),
     [value, setValue] = useState("apple");
   return (

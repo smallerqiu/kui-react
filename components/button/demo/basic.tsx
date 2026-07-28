@@ -1,5 +1,5 @@
 import { Space, Button } from "react-kui";
-export default function Basic() {
+export default function App() {
   return (
     <Space wrap>
       <Button>Default</Button>

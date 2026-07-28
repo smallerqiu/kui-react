@@ -1,5 +1,5 @@
 import { Progress } from "react-kui";
-export default function Size() {
+export default function App() {
   return (
     <>
       Custom:

@@ -3,7 +3,7 @@ const columns: Column[] = [
   { title: "Name", key: "name" },
   { title: "Age", key: "age" },
 ];
-export default function Used() {
+export default function App() {
   return (
     <Space vertical block>
       Select:

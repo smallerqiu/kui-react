@@ -5,7 +5,7 @@ const caps = [
   { label: "Round", value: "round" },
   { label: "Square", value: "square" },
 ];
-export default function Dashboard() {
+export default function App() {
   const [gap, setGap] = useState(140),
     [cap, setCap] = useState<ProgressStroke>("round");
   return (

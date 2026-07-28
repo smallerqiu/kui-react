@@ -12,7 +12,7 @@ const initial: Pane[] = [
   { key: "2", title: "Tab 2", content: "Content 2", closable: true },
   { key: "3", title: "Tab 3", content: "Content 3", closable: true },
 ];
-export default function Closable() {
+export default function App() {
   const [panes, setPanes] = useState(initial);
   const [active, setActive] = useState("1");
   const [index, setIndex] = useState(0);

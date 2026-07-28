@@ -25,7 +25,7 @@ const Buttons = ({ disabled = false }) => (
     </Button>
   </Space>
 );
-export default function Disabled() {
+export default function App() {
   return (
     <Flex size="small">
       <Buttons />

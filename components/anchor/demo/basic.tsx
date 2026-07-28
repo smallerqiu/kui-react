@@ -1,5 +1,5 @@
 import { Anchor, AnchorLink } from "react-kui";
-export default function Basic() {
+export default function App() {
   return (
     <div
       className="anchor-demo-basic"

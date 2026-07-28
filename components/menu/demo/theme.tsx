@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { KSwitch as Switch, Menu } from "react-kui";
 import { items } from "./data";
-export default function Theme() {
+export default function App() {
   const [dark, setDark] = useState(true),
     [current, setCurrent] = useState(["1-1"]),
     [openKeys, setOpenKeys] = useState(["sub2"]);

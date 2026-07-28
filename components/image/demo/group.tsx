@@ -6,7 +6,7 @@ const data = [
   "https://cdn.chuchur.com/upload/cat/cat4.jpg",
   "https://cdn.chuchur.com/upload/cat/cat5---.jpg",
 ];
-export default function Group() {
+export default function App() {
   return (
     <Space vertical>
       <ImageGroup>

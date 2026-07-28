@@ -1,7 +1,7 @@
 import { Settings } from "kui-icons";
 import { Icon, Collapse, CollapsePanel } from "react-kui";
 import { text } from "./content";
-export default function Extra() {
+export default function App() {
   const extra = <Icon type={Settings} />;
   return (
     <div className="demo-collapse">

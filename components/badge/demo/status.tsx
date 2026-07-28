@@ -1,6 +1,6 @@
 import { Space, Badge, type BadgeStatusType } from "react-kui";
 const statuses: BadgeStatusType[] = ["success", "error", "default", "warning"];
-export default function Status() {
+export default function App() {
   return (
     <>
       <Space>

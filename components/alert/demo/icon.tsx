@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Checkbox, Space, Alert } from "react-kui";
 
-export default function WithIcon() {
+export default function App() {
   const [bordered, setBordered] = useState(true);
   return (
     <Space vertical block>

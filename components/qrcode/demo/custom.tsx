@@ -9,7 +9,7 @@ import {
   QRCode,
   type QRCodeErrorLevel,
 } from "react-kui";
-export default function Custom() {
+export default function App() {
   const [color, setColor] = useState("#4CAF50"),
     [size, setSize] = useState(100),
     [margin, setMargin] = useState(0),

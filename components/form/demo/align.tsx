@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, DatePicker, Input, RadioGroup, Option, Select, Form, FormItem } from "react-kui";
-export default function Align() {
+export default function App() {
   const [layout, setLayout] = useState<any>("horizontal");
   return (
     <Form layout={layout} labelCol={{ span: 5 }} wrapperCol={{ span: 6 }}>

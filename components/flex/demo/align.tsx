@@ -9,7 +9,7 @@ const justifyOptions: FlexJustifyType[] = [
   "space-evenly",
 ];
 const alignOptions: FlexAlignType[] = ["flex-start", "center", "flex-end"];
-export default function Align() {
+export default function App() {
   const [justify, setJustify] = useState<FlexJustifyType>("flex-start");
   const [align, setAlign] = useState<FlexAlignType>("flex-start");
   return (

@@ -1,4 +1,4 @@
 import { Skeleton } from "react-kui";
-export default function Animated() {
+export default function App() {
   return <Skeleton animated />;
 }

@@ -16,7 +16,7 @@ const item = (placement: Parameters<typeof Poptip>[0]["placement"], label: strin
     <Button>{label}</Button>
   </Poptip>
 );
-export default function Placement() {
+export default function App() {
   return (
     <Flex style={{ width: 300 }} vertical align="center">
       <Space compact>

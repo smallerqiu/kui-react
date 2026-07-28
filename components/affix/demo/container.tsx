@@ -1,6 +1,6 @@
 import { useCallback, useRef } from "react";
 import { Button, Affix } from "react-kui";
-export default function Container() {
+export default function App() {
   const ref = useRef<HTMLDivElement>(null);
   const target = useCallback(() => ref.current, []);
   return (

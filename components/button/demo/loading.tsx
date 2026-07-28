@@ -1,7 +1,7 @@
 import { Power, Search } from "kui-icons";
 import { useState } from "react";
 import { Space, Button } from "react-kui";
-export default function LoadingDemo() {
+export default function App() {
   const [loading, setLoading] = useState(false);
   const [delayed, setDelayed] = useState(false);
   return (

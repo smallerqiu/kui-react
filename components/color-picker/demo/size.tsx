@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Space, ColorPicker } from "react-kui";
-export default function Size() {
+export default function App() {
   const [color, setColor] = useState("#3a95ff");
   return (
     <Space vertical>

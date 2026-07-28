@@ -1,5 +1,5 @@
 import { Button, Space, message } from "react-kui";
-export default function Types() {
+export default function App() {
   return (
     <Space vertical>
       <Button onClick={() => message.warning("I am a warning message.")}>Warning</Button>

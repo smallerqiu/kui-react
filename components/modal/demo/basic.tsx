@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Space, Modal } from "react-kui";
 
-export default function Basic() {
+export default function App() {
   const [visible, setVisible] = useState(false);
   const [overlayVisible, setOverlayVisible] = useState(false);
   return (

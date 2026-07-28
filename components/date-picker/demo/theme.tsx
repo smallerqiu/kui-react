@@ -1,6 +1,6 @@
 import { ArrowDown } from "kui-icons";
 import { Space, DatePicker } from "react-kui";
-export default function Theme() {
+export default function App() {
   return (
     <Space vertical>
       <DatePicker shape="circle" />

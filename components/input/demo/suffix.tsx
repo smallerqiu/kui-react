@@ -20,7 +20,7 @@ const protocols = [
       ],
     },
   ];
-export default function Suffix() {
+export default function App() {
   const [time, setTime] = useState(60);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
   useEffect(

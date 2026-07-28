@@ -1,5 +1,5 @@
 import { Space, Slider } from "react-kui";
-export default function Formatter() {
+export default function App() {
   return (
     <Space style={{ maxWidth: 520 }} vertical block>
       <code>format %</code>

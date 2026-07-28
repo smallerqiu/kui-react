@@ -27,7 +27,7 @@ const options = (prefix: string) => (
     <Option value={`${prefix}-2`}>{prefix}-2</Option>
   </>
 );
-export default function Group() {
+export default function App() {
   return (
     <Space vertical size="medium" block style={{ width: 600, maxWidth: "100%" }}>
       <InputGroup>

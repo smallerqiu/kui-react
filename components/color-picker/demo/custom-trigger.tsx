@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Space, ColorPicker } from "react-kui";
-export default function CustomTrigger() {
+export default function App() {
   const [color1, setColor1] = useState("#3a95ff"),
     [color2, setColor2] = useState("red");
   return (

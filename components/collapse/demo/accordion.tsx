@@ -1,4 +1,4 @@
 import { CollapseDemo } from "./content";
-export default function Accordion() {
+export default function App() {
   return <CollapseDemo accordion />;
 }

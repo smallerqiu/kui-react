@@ -29,7 +29,7 @@ const columns: Column<Person>[] = [
     ),
   },
 ];
-export default function TableCheck() {
+export default function App() {
   const [selectedKeys, setSelectedKeys] = useState<Array<string | number>>([]);
   return (
     <>

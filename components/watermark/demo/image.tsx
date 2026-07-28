@@ -1,5 +1,5 @@
 import { Watermark } from "react-kui";
-export default function Image() {
+export default function App() {
   return (
     <Watermark
       content="图片不可用时展示"

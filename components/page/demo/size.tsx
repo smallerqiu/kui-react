@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Space, Page } from "react-kui";
 
-export default function Size() {
+export default function App() {
   const [page, setPage] = useState(1);
   return (
     <Space vertical>

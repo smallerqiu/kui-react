@@ -1,6 +1,6 @@
 import { Collapse, CollapsePanel } from "react-kui";
 import { text } from "./content";
-export default function Nesting() {
+export default function App() {
   return (
     <div className="demo-collapse">
       <Collapse openKeys={["1"]}>

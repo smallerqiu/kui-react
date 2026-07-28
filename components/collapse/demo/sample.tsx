@@ -1,4 +1,4 @@
 import { CollapseDemo } from "./content";
-export default function Sample() {
+export default function App() {
   return <CollapseDemo sample />;
 }

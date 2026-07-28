@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { TabPanel, Tabs } from "react-kui";
-export default function Basic() {
+export default function App() {
   const [value, setValue] = useState("1");
   const [animated, setAnimated] = useState(false);
   return (

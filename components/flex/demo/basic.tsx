@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Flex } from "react-kui";
-export default function Basic() {
+export default function App() {
   const [vertical, setVertical] = useState(false);
   return (
     <Flex vertical size="medium">

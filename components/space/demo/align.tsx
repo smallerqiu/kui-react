@@ -1,5 +1,5 @@
 import { Button, Flex, Space } from "react-kui";
-export default function Align() {
+export default function App() {
   return (
     <Flex className="demo-space-align" wrap size="small">
       {(["start", "end", "center", "baseline"] as const).map((align) => (

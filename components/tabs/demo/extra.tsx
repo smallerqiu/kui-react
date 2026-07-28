@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, TabPanel, Tabs } from "react-kui";
-export default function Extra() {
+export default function App() {
   const [value, setValue] = useState("1");
   return (
     <Tabs value={value} onChange={setValue} extra={<Button size="small">Extra Operate</Button>}>

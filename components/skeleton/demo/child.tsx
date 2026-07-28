@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, Skeleton } from "react-kui";
-export default function Child() {
+export default function App() {
   const [loading, setLoading] = useState(false),
     timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(

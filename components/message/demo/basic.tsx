@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { Button, message } from "react-kui";
-export default function Basic() {
+export default function App() {
   const count = useRef(0);
   return (
     <Button

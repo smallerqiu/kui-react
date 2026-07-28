@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Space, QRCode, type QRCodeStatus } from "react-kui";
-export default function Status() {
+export default function App() {
   const [url, setUrl] = useState("https://react.k-ui.cn"),
     [status, setStatus] = useState<QRCodeStatus>("expired");
   const refresh = () => {

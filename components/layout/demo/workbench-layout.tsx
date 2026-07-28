@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Layout, Content, Header, Sider } from "react-kui";
 import "./demo.css";
-export default function Workbench() {
+export default function App() {
   const [detail, setDetail] = useState(true);
   return (
     <Layout className="layout-demo">

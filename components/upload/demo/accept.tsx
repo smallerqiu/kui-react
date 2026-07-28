@@ -6,7 +6,7 @@ const choices = [
   { accept: "video/*", icon: Video, label: "Upload Video" },
   { accept: ".pdf,.png,.jpeg", icon: UploadIcon, label: "Upload PDF, PNG, JPEG" },
 ];
-export default function Accept() {
+export default function App() {
   return (
     <Space vertical>
       {choices.map(({ accept, icon, label }) => (

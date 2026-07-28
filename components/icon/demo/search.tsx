@@ -14,7 +14,7 @@ const toPascalCase = (value: string) =>
     .map((word) => word[0].toUpperCase() + word.slice(1))
     .join("");
 
-export default function IconSearchDemo() {
+export default function App() {
   const [query, setQuery] = useState("");
   const matches = useMemo(() => {
     const term = query.toLowerCase().trim();

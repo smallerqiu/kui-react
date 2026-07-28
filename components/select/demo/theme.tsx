@@ -5,7 +5,7 @@ const options = ["Apple", "Orange", "Banana", "Pear"].map((label, index) => ({
   label,
   value: String(index + 1),
 }));
-export default function Theme() {
+export default function App() {
   const [value, setValue] = useState<any[]>(["1", "3"]);
   return (
     <Space vertical align="start" block style={{ width: 300, maxWidth: "100%" }}>

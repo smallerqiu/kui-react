@@ -9,7 +9,7 @@ const itemStyle = {
   fontWeight: 700,
   display: "flex",
 } as const;
-export default function Autoplay() {
+export default function App() {
   const carouselRef = useRef<CarouselRef>(null);
   return (
     <div>

@@ -8,7 +8,7 @@ const directions = [
     label,
     value: label.toLowerCase(),
   }));
-export default function Vertical() {
+export default function App() {
   const [direction, setDirection] = useState<"vertical" | "horizontal">("horizontal"),
     [city, setCity] = useState("wuhan");
   return (

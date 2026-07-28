@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Space, DatePicker } from "react-kui";
-export default function Basic() {
+export default function App() {
   const [year, setYear] = useState("2025"),
     [month, setMonth] = useState("2025-10"),
     [date, setDate] = useState("2025-12-12"),

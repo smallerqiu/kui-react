@@ -1,7 +1,7 @@
 import { Search } from "kui-icons";
 import { useState } from "react";
 import { Checkbox, type ShapeType, message, Space, Input, TextArea } from "react-kui";
-export default function Theme() {
+export default function App() {
   const [circle, setCircle] = useState(false);
   const shape: ShapeType | undefined = circle ? "circle" : undefined;
   const search = (value: string) => {

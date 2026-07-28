@@ -19,7 +19,7 @@ const overlay = (
     ))}
   </Menu>
 );
-export default function DropdownButtons() {
+export default function App() {
   return (
     <Space vertical>
       <DropdownButton overlay={overlay} onClick={(e) => console.log("click left button", e)}>

@@ -1,6 +1,6 @@
 import { Button, Content, Footer, Header, Layout, Sider, Grid, GridItem } from "react-kui";
 import "./demo.css";
-export default function Architecture() {
+export default function App() {
   return (
     <Layout style={{ minHeight: 500 }}>
       <Sider style={{ width: 160, padding: 20, background: "var(--kui-color-bg-layout)" }}>

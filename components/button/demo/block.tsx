@@ -1,5 +1,5 @@
 import { Space, Button } from "react-kui";
-export default function Block() {
+export default function App() {
   return (
     <Space vertical style={{ width: "100%" }}>
       <Button type="primary" block>

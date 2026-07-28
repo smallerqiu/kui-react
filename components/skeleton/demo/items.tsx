@@ -25,7 +25,7 @@ const sizes = [
     { label: "Square", value: "square" },
     { label: "Circle", value: "circle" },
   ];
-export default function Items() {
+export default function App() {
   const [animated, setAnimated] = useState(false),
     [block, setBlock] = useState(false),
     [size, setSize] = useState<SizeType | undefined>(),

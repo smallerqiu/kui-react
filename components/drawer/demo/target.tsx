@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Button, RadioGroup, Space, Drawer, type DrawerPlacementsType } from "react-kui";
 const options = ["left", "top", "right", "bottom"].map((value) => ({ label: value, value }));
-export default function Target() {
+export default function App() {
   const [open, setOpen] = useState(false),
     [placement, setPlacement] = useState<DrawerPlacementsType>("left"),
     ref = useRef<HTMLDivElement>(null);

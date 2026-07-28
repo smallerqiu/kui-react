@@ -1,6 +1,6 @@
 import { LogoAlipay, LogoWechat } from "kui-icons";
 import { Button, Space, message } from "react-kui";
-export default function CustomIcon() {
+export default function App() {
   return (
     <Space vertical>
       <Button

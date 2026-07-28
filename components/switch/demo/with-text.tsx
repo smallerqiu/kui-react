@@ -1,6 +1,6 @@
 import { Check, LogoApple, LogoMicrosoft, Plane, Wifi, X } from "kui-icons";
 import { Icon, Space, KSwitch as Switch } from "react-kui";
-export default function WithText() {
+export default function App() {
   return (
     <Space vertical align="start">
       <Switch trueText="Yes" falseText="No" />

@@ -1,44 +1,57 @@
 import { useState } from "react";
-import { Space, Col, Row } from "react-kui";
-export default function Gutter() {
+import { Col, Row, Slider, Space } from "react-kui";
+
+const gutterMarks = { 8: "8", 16: "16", 24: "24", 32: "32", 40: "40" };
+const columnMarks = { 2: "2", 3: "3", 4: "4", 6: "6", 8: "8", 12: "12" };
+
+export default function App() {
   const [h, setH] = useState(8);
   const [v, setV] = useState(8);
   const [cols, setCols] = useState(4);
   return (
     <Space vertical block className="demo-grid">
-      <label>
-        Horizontal gutter: {h}
-        <input
-          type="range"
+      <code>gutter = 10</code>
+      <Row gutter={10} className="row-gutter">
+        <Col span={12}>
+          <div>col-12</div>
+        </Col>
+        <Col span={12}>
+          <div>col-12</div>
+        </Col>
+      </Row>
+      <code>Horizontal Gutter (px): {h}</code>
+      <div style={{ width: "55%", padding: 10 }}>
+        <Slider
           min={8}
           max={40}
-          step={8}
+          step={null}
+          marks={gutterMarks}
           value={h}
-          onChange={(e) => setH(Number(e.target.value))}
+          onChange={(value) => setH(value as number)}
         />
-      </label>
-      <label>
-        Vertical gutter: {v}
-        <input
-          type="range"
+      </div>
+      <code>Vertical Gutter (px): {v}</code>
+      <div style={{ width: "55%", padding: 10 }}>
+        <Slider
           min={8}
           max={40}
-          step={8}
+          step={null}
+          marks={gutterMarks}
           value={v}
-          onChange={(e) => setV(Number(e.target.value))}
+          onChange={(value) => setV(value as number)}
         />
-      </label>
-      <label>
-        Column count: {cols}
-        <input
-          type="range"
+      </div>
+      <code>Column Count: {cols}</code>
+      <div style={{ width: "55%", padding: 10 }}>
+        <Slider
           min={2}
           max={12}
-          step={1}
+          step={null}
+          marks={columnMarks}
           value={cols}
-          onChange={(e) => setCols(Number(e.target.value))}
+          onChange={(value) => setCols(value as number)}
         />
-      </label>
+      </div>
       <Row gutter={[h, v]}>
         {Array.from({ length: cols * 2 }, (_, i) => (
           <Col span={24 / cols} key={i}>

@@ -1,7 +1,7 @@
 import { Lock, User } from "kui-icons";
 import { useState } from "react";
 import { Button, message, Space, Input } from "react-kui";
-export default function WithIcon() {
+export default function App() {
   const [visible, setVisible] = useState(true);
   const search = (value: string) => {
     message.info("This is search event");

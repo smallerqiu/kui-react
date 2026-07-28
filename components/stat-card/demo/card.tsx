@@ -13,7 +13,7 @@ const items2: StatNumberItem[] = [
   { value: 5872, desc: "Number of likes", prefix: <Icon type={Heart} /> },
   { value: 9873672, desc: "Number of Favorites", prefix: <Icon type={Star} /> },
 ];
-export default function CardDemo() {
+export default function App() {
   const [showTitle, setShowTitle] = useState(true),
     [bordered, setBordered] = useState(false),
     [reverse, setReverse] = useState(false);

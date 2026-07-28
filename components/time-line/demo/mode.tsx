@@ -2,7 +2,7 @@ import { Hammer } from "kui-icons";
 import { useState } from "react";
 import { Radio, RadioGroup, TimeLine, TimeLineItem, type TimelineMode } from "react-kui";
 const modes: TimelineMode[] = ["left", "center", "alternate", "right"];
-export default function Mode() {
+export default function App() {
   const [mode, setMode] = useState<TimelineMode>("left");
   return (
     <>

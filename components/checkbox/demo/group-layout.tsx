@@ -8,7 +8,7 @@ const options = ["Beijing", "Shanghai", "Guangzhou", "Wuhan", "Other"].map((labe
   label,
   value: label.toLowerCase(),
 }));
-export default function GroupLayout() {
+export default function App() {
   const [direction, setDirection] = useState<"horizontal" | "vertical">("horizontal"),
     [cities, setCities] = useState(["wuhan"]);
   return (

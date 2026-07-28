@@ -1,4 +1,4 @@
 import BentoShared from "./bento-shared";
-export default function BentoEnglish() {
+export default function App() {
   return <BentoShared />;
 }

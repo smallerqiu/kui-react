@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, TabPanel, Tabs } from "react-kui";
-export default function Disabled() {
+export default function App() {
   const [value, setValue] = useState("1");
   const [disabled, setDisabled] = useState(true);
   return (

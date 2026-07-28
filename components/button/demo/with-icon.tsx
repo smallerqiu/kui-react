@@ -1,6 +1,6 @@
 import { ChevronDown, Power, Search } from "kui-icons";
 import { Icon, Space, Button } from "react-kui";
-export default function WithIcon() {
+export default function App() {
   return (
     <Space wrap>
       <Button type="primary" icon={Search} shape="circle" />

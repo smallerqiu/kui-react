@@ -1,5 +1,5 @@
 import { Grid, GridItem } from "react-kui";
-export default function AlignWhiteSpace() {
+export default function App() {
   return (
     <Grid cols={{ xs: 1, sm: 2, lg: 3, xxl: 4 }} xGap={32} yGap={16}>
       <GridItem>

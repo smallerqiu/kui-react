@@ -1,7 +1,7 @@
 import { Files, GitBranch, Search } from "kui-icons";
 import { Icon, Layout, Content, Footer, Header, Sider } from "react-kui";
 import "./demo.css";
-export default function LowCode() {
+export default function App() {
   return (
     <Layout className="layout-demo" style={{ background: "#1e1e1e", color: "#ccc" }}>
       <Layout>

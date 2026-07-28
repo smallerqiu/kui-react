@@ -1,7 +1,7 @@
 import { Camera } from "kui-icons";
 import { Upload } from "react-kui";
 import { action, headers } from "./shared";
-export default function Avatar() {
+export default function App() {
   return (
     <Upload
       action={action}

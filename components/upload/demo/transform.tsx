@@ -24,7 +24,7 @@ const transformFile = (file: File) =>
     };
     img.src = url;
   });
-export default function Transform() {
+export default function App() {
   return (
     <Upload
       action={action}

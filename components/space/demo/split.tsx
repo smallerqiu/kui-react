@@ -1,5 +1,5 @@
 import { Divider, Space } from "react-kui";
-export default function Split() {
+export default function App() {
   return (
     <Space split={<Divider type="vertical" />}>
       <a href="#">Edit</a>

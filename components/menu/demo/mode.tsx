@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, type DirectionType, Space, Menu } from "react-kui";
 import { items } from "./data";
-export default function Mode() {
+export default function App() {
   const [current, setCurrent] = useState(["1-1"]),
     [openKeys, setOpenKeys] = useState(["sub2"]),
     [mode, setMode] = useState<DirectionType>("inline"),

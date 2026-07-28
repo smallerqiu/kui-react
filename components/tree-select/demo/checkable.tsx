@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Checkbox, Space, TreeSelect } from "react-kui";
 import { data, expandedKeys } from "./data";
-export default function Checkable() {
+export default function App() {
   const [value, setValue] = useState<Array<string | number>>([]),
     [strict, setStrict] = useState(false);
   return (

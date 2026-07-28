@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Button, Input, Poptip, Space, QRCode, type QRCodeRef } from "react-kui";
-export default function Download() {
+export default function App() {
   const [url, setUrl] = useState("https://react.k-ui.cn"),
     ref = useRef<QRCodeRef>(null);
   return (

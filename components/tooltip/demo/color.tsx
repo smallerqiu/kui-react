@@ -20,7 +20,7 @@ const list = (values: string[]) =>
       <Tag color={color}>{color}</Tag>
     </Tooltip>
   ));
-export default function Color() {
+export default function App() {
   return (
     <div className="demo-tooltip-color">
       <Divider orientation="left">Presets:</Divider>

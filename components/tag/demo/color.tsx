@@ -14,7 +14,7 @@ const colors = [
     "lime",
   ],
   custom = ["#c20", "#39f", "#e3f", "#6c0"];
-export default function Color() {
+export default function App() {
   return (
     <div>
       <h4 style={{ marginBottom: 16 }}>Presets:</h4>

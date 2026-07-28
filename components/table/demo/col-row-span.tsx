@@ -11,6 +11,6 @@ const columns: Column<(typeof data)[number]>[] = [
   { title: "Age", key: "age", width: 100, colSpan: (_, index) => (index === 1 ? 2 : 1) },
   { title: "City", key: "city", width: 100 },
 ];
-export default function ColRowSpan() {
+export default function App() {
   return <Table data={data} columns={columns} bordered />;
 }

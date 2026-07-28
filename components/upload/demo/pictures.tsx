@@ -16,7 +16,7 @@ const initial: UploadFile[] = [
     size: "222kb",
   },
 ];
-export default function Pictures() {
+export default function App() {
   const [files, setFiles] = useState(initial);
   return (
     <Space vertical>

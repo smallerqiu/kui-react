@@ -4,7 +4,7 @@ import { expandedKeys, data as source } from "./data";
 const data = structuredClone(source);
 data[0].children![0].disabled = true;
 data[0].children![0].children![1].children![1].disabled = true;
-export default function Disabled() {
+export default function App() {
   const [value1, setValue1] = useState<Array<string | number>>(["0-1", "1-1"]),
     [value2, setValue2] = useState<Array<string | number>>(["0-1", "1-1-2", "1-1-2-1", "1-2-1"]);
   return (

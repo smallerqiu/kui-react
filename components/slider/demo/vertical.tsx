@@ -1,5 +1,5 @@
 import { Space, Slider } from "react-kui";
-export default function Vertical() {
+export default function App() {
   return (
     <Space style={{ height: 300 }} block size={35}>
       <Slider style={{ height: "100%" }} vertical value={35} size="small" />

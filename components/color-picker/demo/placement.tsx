@@ -7,7 +7,7 @@ const placements = [
   "top",
   "top-right",
 ] as const;
-export default function Placement() {
+export default function App() {
   return (
     <Space wrap>
       {placements.map((placement) => (

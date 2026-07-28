@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Input, Space, QRCode } from "react-kui";
-export default function Basic() {
+export default function App() {
   const [value, setValue] = useState("https://react.k-ui.cn");
   return (
     <Space vertical>

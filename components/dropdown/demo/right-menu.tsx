@@ -20,7 +20,7 @@ const overlay = (
     </MenuItem>
   </Menu>
 );
-export default function RightMenu() {
+export default function App() {
   return (
     <Dropdown trigger="contextmenu" overlay={overlay}>
       <div

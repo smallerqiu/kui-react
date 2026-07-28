@@ -2,7 +2,7 @@ import { PanelLeftClose, PanelLeftOpen } from "kui-icons";
 import { useState } from "react";
 import { Button, Icon, Layout, Content, Footer, Header, Sider } from "react-kui";
 import "./demo.css";
-export default function Admin() {
+export default function App() {
   const [collapsed, setCollapsed] = useState(false);
   return (
     <Layout className="layout-demo">

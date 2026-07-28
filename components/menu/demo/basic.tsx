@@ -29,7 +29,7 @@ const items: MenuOptionsProps[] = [
     key: "4",
   },
 ];
-export default function Basic() {
+export default function App() {
   const [current, setCurrent] = useState(["1"]);
   return (
     <Menu

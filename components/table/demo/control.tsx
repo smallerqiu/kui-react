@@ -12,7 +12,7 @@ import {
   type Column,
 } from "react-kui";
 import { people, type Person } from "./data";
-export default function Control() {
+export default function App() {
   const [size, setSize] = useState<SizeType>("medium"),
     [bordered, setBordered] = useState(true),
     [loading, setLoading] = useState(false),

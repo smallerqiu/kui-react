@@ -1,6 +1,6 @@
 import { Apple, Heart, House, Loading, LogoApple, LogoKui } from "kui-icons";
 import { Space, Icon } from "react-kui";
-export default function Basic() {
+export default function App() {
   return (
     <Space vertical>
       <code>Logo and Spin</code>

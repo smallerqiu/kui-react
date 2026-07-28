@@ -1,7 +1,7 @@
 import { Minus, Plus } from "kui-icons";
 import { useState } from "react";
 import { Button, ButtonGroup, Progress } from "react-kui";
-export default function Dynamic() {
+export default function App() {
   const [percent, setPercent] = useState(30),
     change = (step: number) => setPercent((value) => Math.max(0, Math.min(100, value + step)));
   return (

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Affix } from "react-kui";
-export default function Callbacks() {
+export default function App() {
   const [fixed, setFixed] = useState(false);
   return (
     <>

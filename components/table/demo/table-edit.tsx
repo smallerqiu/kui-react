@@ -13,7 +13,7 @@ const initial: Row[] = [
   { key: "2", name: "Hu Cong", age: 28, address: "Wu Han Nanhu No. 198", isEdit: false },
   { key: "3", name: "Qiu", age: 32, address: "Wu Han Nanhu No. 188", isEdit: false },
 ];
-export default function TableEdit() {
+export default function App() {
   const [data, setData] = useState(initial),
     count = useRef(4);
   const patch = (key: string, values: Partial<Row>) =>

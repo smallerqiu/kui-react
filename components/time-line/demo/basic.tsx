@@ -1,5 +1,5 @@
 import { TimeLine, TimeLineItem } from "react-kui";
-export default function Basic() {
+export default function App() {
   return (
     <TimeLine>
       <TimeLineItem time="2020-11-03">Release version 3.0</TimeLineItem>

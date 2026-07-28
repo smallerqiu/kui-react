@@ -1,5 +1,5 @@
 import { Divider } from "react-kui";
-export default function Basic() {
+export default function App() {
   return (
     <div>
       Text

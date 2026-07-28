@@ -1,6 +1,6 @@
 import { Grid, GridItem } from "react-kui";
 import "./demo.css";
-export default function Basic() {
+export default function App() {
   return (
     <Grid cols={{ xs: 1, md: 2, lg: 4 }} xGap={16} yGap={16}>
       <GridItem span={2}>

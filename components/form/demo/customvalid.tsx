@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { Button, Input, message, Form, FormItem, type FormExpose, type FormRule } from "react-kui";
 const labelCol = { span: 5 },
   wrapperCol = { span: 16 };
-export default function CustomValid() {
+export default function App() {
   const ref = useRef<FormExpose>(null);
   const [form, setForm] = useState({
     fullname: "",

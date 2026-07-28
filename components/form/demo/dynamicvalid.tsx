@@ -12,7 +12,7 @@ import {
   FormItem,
   type FormExpose,
 } from "react-kui";
-export default function DynamicValid() {
+export default function App() {
   const ref = useRef<FormExpose>(null),
     count = useRef(2);
   const [form, setForm] = useState({

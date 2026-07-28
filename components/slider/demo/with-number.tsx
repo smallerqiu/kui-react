@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { InputNumber, Col, Row, Slider } from "react-kui";
-export default function WithNumber() {
+export default function App() {
   const [n1, setN1] = useState(1),
     [n2, setN2] = useState(0);
   return (

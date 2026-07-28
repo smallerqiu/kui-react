@@ -65,7 +65,7 @@ const remove = (nodes: TreeNode[], key: string): boolean => {
   }
   return nodes.some((n) => !!n.children && remove(n.children, key));
 };
-export default function Directory() {
+export default function App() {
   const [data, setData] = useState(initial),
     [expanded, setExpanded] = useState(["0-0", "1-0", "1-1", "1-2"]),
     [selected, setSelected] = useState(["0-0"]),

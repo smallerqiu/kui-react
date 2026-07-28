@@ -7,7 +7,7 @@ const Body = () => (
     <p>something ...</p>
   </>
 );
-export default function Basic() {
+export default function App() {
   const [show, setShow] = useState(false),
     [show2, setShow2] = useState(false),
     [show3, setShow3] = useState(false),

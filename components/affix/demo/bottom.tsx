@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Affix } from "react-kui";
-export default function Bottom() {
+export default function App() {
   const [bottom, setBottom] = useState(120);
   return (
     <Affix offsetBottom={bottom}>

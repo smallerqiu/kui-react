@@ -6,7 +6,7 @@ const sizes = [
   { value: "medium", label: "Default" },
   { value: "small", label: "Small" },
 ];
-export default function Size() {
+export default function App() {
   const [size, setSize] = useState<SizeType>("medium"),
     [value, setValue] = useState<string | number | null>("0-1"),
     [multiple, setMultiple] = useState<Array<string | number>>(["0-1"]);

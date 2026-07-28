@@ -2,7 +2,7 @@ import { Save } from "kui-icons";
 import { useEffect, useRef, useState } from "react";
 import { Button, Input, Space, Modal } from "react-kui";
 
-export default function Custom() {
+export default function App() {
   const [open, setOpen] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);

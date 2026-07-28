@@ -1,7 +1,7 @@
 import { Download } from "kui-icons";
 import { useState } from "react";
 import { type SizeType, Space, Button } from "react-kui";
-export default function SizeDemo() {
+export default function App() {
   const [size, setSize] = useState<SizeType>("medium");
   return (
     <Space vertical align="start">

@@ -14,7 +14,7 @@ import {
 } from "react-kui";
 const labelCol = { span: 6 },
   wrapperCol = { span: 16 };
-export default function WithModal() {
+export default function App() {
   const ref = useRef<FormExpose>(null);
   const [visible, setVisible] = useState(false),
     [group, setGroup] = useState<{ name: string; list: { username: string; age: string }[] }>({

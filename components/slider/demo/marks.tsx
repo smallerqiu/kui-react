@@ -1,5 +1,5 @@
 import { Space, Slider } from "react-kui";
-export default function Marks() {
+export default function App() {
   return (
     <Space style={{ maxWidth: 520 }} vertical block>
       <code>step=10</code>

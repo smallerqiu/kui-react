@@ -1,5 +1,5 @@
 import { Anchor, AnchorLink } from "react-kui";
-export default function WithinContainer() {
+export default function App() {
   return (
     <div style={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: 10 }}>
       <div

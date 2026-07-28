@@ -9,7 +9,7 @@ const Items = () => (
     <BreadcrumbItem icon={Heart}>Other</BreadcrumbItem>
   </>
 );
-export default function Separator() {
+export default function App() {
   return (
     <Space vertical>
       <Breadcrumb separator=">">

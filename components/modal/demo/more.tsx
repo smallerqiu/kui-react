@@ -4,7 +4,7 @@ import { Button, Space, Modal } from "react-kui";
 const text = `A long time ago, In a beautiful kingdom,
 there lived a young king and queen,
 the people loved them so much;`;
-export default function More() {
+export default function App() {
   const [open, setOpen] = useState<number | null>(null);
   const close = () => setOpen(null);
   return (

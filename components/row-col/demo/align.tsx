@@ -1,7 +1,7 @@
 import { Space, Col, Row, type RowProps } from "react-kui";
 const heights = [96, 64, 128, 72];
 const values: NonNullable<RowProps["align"]>[] = ["top", "middle", "bottom"];
-export default function Align() {
+export default function App() {
   return (
     <Space block vertical className="demo-grid">
       {values.map((align) => (

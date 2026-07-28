@@ -1,4 +1,4 @@
 import BentoShared from "./bento-shared";
-export default function Bento() {
+export default function App() {
   return <BentoShared zh />;
 }

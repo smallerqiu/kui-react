@@ -1,7 +1,7 @@
 import { Heart } from "kui-icons";
 import { Icon, Space, Avatar } from "react-kui";
 
-export default function Types() {
+export default function App() {
   return (
     <Space wrap>
       <Avatar icon={Heart} />

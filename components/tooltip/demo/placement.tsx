@@ -5,7 +5,7 @@ const item = (placement: Parameters<typeof Tooltip>[0]["placement"], label: stri
     <Button>{label}</Button>
   </Tooltip>
 );
-export default function Placement() {
+export default function App() {
   return (
     <Flex style={{ width: 300 }} vertical align="center">
       <Space compact>

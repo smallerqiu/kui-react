@@ -1,5 +1,5 @@
 import { Space, KSwitch as Switch } from "react-kui";
-export default function Size() {
+export default function App() {
   return (
     <Space vertical>
       <Switch />

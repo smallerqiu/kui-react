@@ -46,7 +46,7 @@ const data: TreeNode[] = [
     ],
   },
 ];
-export default function CustomIcon() {
+export default function App() {
   const [expanded, setExpanded] = useState(["0-0", "1-0", "1-1", "1-2"]);
   return (
     <Tree

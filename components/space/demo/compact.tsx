@@ -1,6 +1,6 @@
 import { Copy } from "kui-icons";
 import { Button, Input, Space } from "react-kui";
-export default function Compact() {
+export default function App() {
   return (
     <Space vertical size="medium" block style={{ maxWidth: 520 }}>
       <Space compact style={{ width: "50%" }}>

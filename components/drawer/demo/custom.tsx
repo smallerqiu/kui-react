@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Radio, RadioGroup, Space, Drawer, type DrawerPlacementsType } from "react-kui";
 const placements: DrawerPlacementsType[] = ["left", "top", "right", "bottom"];
-export default function Custom() {
+export default function App() {
   const [open, setOpen] = useState(false),
     [placement, setPlacement] = useState<DrawerPlacementsType>("left");
   return (

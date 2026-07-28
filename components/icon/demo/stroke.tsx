@@ -1,6 +1,6 @@
 import { ChevronRight, ChevronsRight } from "kui-icons";
 import { Icon } from "react-kui";
-export default function Stroke() {
+export default function App() {
   return (
     <div>
       {[1, 2, 4].map((width) => (

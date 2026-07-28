@@ -1,5 +1,5 @@
 import { Space, Tag } from "react-kui";
-export default function Basic() {
+export default function App() {
   return (
     <Space wrap>
       <Tag theme="fill">标签1</Tag>

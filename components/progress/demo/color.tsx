@@ -4,7 +4,7 @@ import { Button, ButtonGroup, Progress } from "react-kui";
 const getColor = (v: number) =>
   v >= 80 ? "#f79e08" : v >= 50 ? "#c7b98d" : v >= 30 ? "#bdc78d" : "";
 const strength = (v: number) => (v < 30 ? "Empty" : v < 50 ? "Weak" : v < 80 ? "Normal" : "Strong");
-export default function Color() {
+export default function App() {
   const [percent, setPercent] = useState(0),
     change = (step: number) => setPercent((v) => Math.max(0, Math.min(100, v + step))),
     color = getColor(percent);

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Space, DatePicker, type DatePickerInput } from "react-kui";
-export default function Range() {
+export default function App() {
   const [value1, setValue1] = useState<DatePickerInput[]>(["2025-10-01", "2025-11-25"]),
     [value2, setValue2] = useState<DatePickerInput[]>([
       "2025-09-01 10:10:10",

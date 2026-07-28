@@ -26,7 +26,7 @@ const overlay = (
     </MenuItem>
   </Menu>
 );
-export default function Placement() {
+export default function App() {
   return (
     <Space wrap>
       {placements.map((placement) => (

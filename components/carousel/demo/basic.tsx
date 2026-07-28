@@ -8,7 +8,7 @@ const itemStyle = {
   fontWeight: 700,
   display: "flex",
 } as const;
-export default function Basic() {
+export default function App() {
   return (
     <Carousel defaultValue={2} loop autoplay height={300}>
       {[1, 2, 3].map((value) => (

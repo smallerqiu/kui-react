@@ -25,7 +25,7 @@ const data: TreeNode[] = [
     ],
   },
 ];
-export default function Checkable() {
+export default function App() {
   const [strict, setStrict] = useState(false),
     [checked, setChecked] = useState(["1-1", "aa"]),
     [expanded, setExpanded] = useState(["1-1", "1-1-2", "1-2", "0-1"]);

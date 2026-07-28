@@ -1,6 +1,6 @@
 import { LogoQq, LogoWechat, LogoX, LogoYoutube } from "kui-icons";
 import { Space, Tag } from "react-kui";
-export default function WithIcon() {
+export default function App() {
   return (
     <Space wrap>
       <Tag icon={LogoX} color="#55acee">

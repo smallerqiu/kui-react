@@ -2,7 +2,7 @@ import { useState } from "react";
 import { RadioGroup, Space, Select } from "react-kui";
 import { data } from "./data";
 const sizes = ["large", "medium", "small"].map((value) => ({ label: value, value }));
-export default function Size() {
+export default function App() {
   const [size, setSize] = useState<any>("medium"),
     [v1, setV1] = useState<any>(0),
     [v2, setV2] = useState<any[]>([0, 1]),

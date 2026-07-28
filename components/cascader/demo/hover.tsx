@@ -40,7 +40,7 @@ const categoryOptions: CascaderOption[] = [
   },
 ];
 
-export default function Demo() {
+export default function App() {
   const [selectedCategory, setSelectedCategory] = useState<CascaderValue>([
     "electronics",
     "computer",

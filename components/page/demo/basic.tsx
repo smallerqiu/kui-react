@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { message, Space, Page } from "react-kui";
 
-export default function Basic() {
+export default function App() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
   const onChange = (nextPage: number, nextPageSize: number) => {

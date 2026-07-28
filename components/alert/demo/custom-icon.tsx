@@ -1,7 +1,7 @@
 import { LogoAlipay, LogoApple, LogoGoogle, LogoWechat } from "kui-icons";
 import { Space, Alert } from "react-kui";
 
-export default function CustomIcon() {
+export default function App() {
   return (
     <Space vertical block>
       <Alert type="success" icon={LogoAlipay}>

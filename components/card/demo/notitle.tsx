@@ -6,7 +6,7 @@ const Content = () => (
     <div>card content</div>
   </>
 );
-export default function NoTitle() {
+export default function App() {
   return (
     <Space vertical block className="demo-view-fill">
       <Card>

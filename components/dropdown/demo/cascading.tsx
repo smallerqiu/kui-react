@@ -29,7 +29,7 @@ const items = [
     ],
   },
 ];
-export default function Cascading() {
+export default function App() {
   const overlay = <Menu items={items} onSelect={({ key }: MenuSelectEvent) => console.log(key)} />;
   return (
     <Dropdown overlay={overlay}>

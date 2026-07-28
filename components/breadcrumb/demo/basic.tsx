@@ -1,5 +1,5 @@
 import { Breadcrumb, BreadcrumbItem } from "react-kui";
-export default function Basic() {
+export default function App() {
   return (
     <>
       <p>use href</p>

@@ -53,7 +53,7 @@ const initial = {
   other: "",
   readme: false,
 };
-export default function Valid() {
+export default function App() {
   const ref = useRef<FormExpose>(null);
   const [form, setForm] = useState({ ...initial }),
     [size, setSize] = useState<SizeType>("medium"),

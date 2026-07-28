@@ -12,7 +12,7 @@ const overlay = (
     </MenuItem>
   </Menu>
 );
-export default function Basic() {
+export default function App() {
   return (
     <>
       <Dropdown arrow placement="bottom" overlay={overlay}>

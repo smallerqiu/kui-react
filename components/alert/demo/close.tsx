@@ -1,6 +1,6 @@
 import { Space, Alert } from "react-kui";
 
-export default function Close() {
+export default function App() {
   return (
     <Space vertical block>
       <Alert type="success" closable>

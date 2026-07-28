@@ -44,6 +44,6 @@ const columns: Column[] = [
   },
   { title: "Gender", key: "gender", width: 100, fixed: "right" },
 ];
-export default function HeaderSpan() {
+export default function App() {
   return <Table data={data} columns={columns} bordered scroll={{ y: 300 }} />;
 }

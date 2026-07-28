@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { KSwitch as Switch, Spin } from "react-kui";
-export default function Container() {
+export default function App() {
   const [spinning, setSpinning] = useState(false);
   return (
     <div>

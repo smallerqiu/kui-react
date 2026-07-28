@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, Card, SkeletonImage, SkeletonText } from "react-kui";
-export default function Custom() {
+export default function App() {
   const [loading, setLoading] = useState(false),
     timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(

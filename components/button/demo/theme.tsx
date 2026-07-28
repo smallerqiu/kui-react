@@ -1,5 +1,5 @@
 import { Space, Button } from "react-kui";
-export default function Theme() {
+export default function App() {
   return (
     <Space vertical>
       {(["outline", "dashed", "fill"] as const).map((theme) => (

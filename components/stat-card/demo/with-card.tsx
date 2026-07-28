@@ -1,7 +1,7 @@
 import { ArrowDown, ArrowUp } from "kui-icons";
 import { useState } from "react";
 import { Button, Card, Icon, Space, StatNumber } from "react-kui";
-export default function WithCard() {
+export default function App() {
   const [value, setValue] = useState(Math.random() * 100000);
   return (
     <Space vertical className="demo-view-fill">

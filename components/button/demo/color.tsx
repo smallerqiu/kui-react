@@ -18,7 +18,7 @@ const colors = [
   "pink",
   "brown",
 ];
-export default function ColorDemo() {
+export default function App() {
   return (
     <Flex size="small" wrap>
       {(["solid", "outline", "dashed"] as const).map((theme) => (

@@ -1,6 +1,6 @@
 import { Button, Layout, Content, Footer, Header } from "react-kui";
 import "./demo.css";
-export default function Portal() {
+export default function App() {
   return (
     <Layout className="layout-demo">
       <Header style={{ display: "flex", justifyContent: "space-between" }}>

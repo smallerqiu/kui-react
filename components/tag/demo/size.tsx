@@ -13,7 +13,7 @@ const sizes = [
     { label: "Fill", value: "fill" },
     { label: "Outline", value: "outline" },
   ];
-export default function Size() {
+export default function App() {
   const [size, setSize] = useState<any>("small"),
     [shape, setShape] = useState<any>("circle"),
     [theme, setTheme] = useState<any>("fill");

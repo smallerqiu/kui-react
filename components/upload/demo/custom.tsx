@@ -2,7 +2,7 @@ import { Upload as UploadIcon } from "kui-icons";
 import { useRef, useState } from "react";
 import { Button, Space, Upload, type UploadFile, type UploadRef } from "react-kui";
 import { action, headers } from "./shared";
-export default function Custom() {
+export default function App() {
   const ref = useRef<UploadRef>(null),
     [disabled, setDisabled] = useState(true);
   return (

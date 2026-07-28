@@ -14,7 +14,7 @@ const colors = [
   "gold",
   "lime",
 ];
-export default function Color() {
+export default function App() {
   return (
     <Space vertical block>
       Presets

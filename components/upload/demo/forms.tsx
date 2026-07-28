@@ -14,7 +14,7 @@ import {
 import { action, headers } from "./shared";
 const urlOf = ({ file }: UploadChangeEvent) =>
   file.response?.url ?? file.url ?? file.filename ?? "";
-export default function Forms() {
+export default function App() {
   const ref = useRef<FormExpose>(null);
   const [form, setForm] = useState({ avatar: "", file: "", files: "" }),
     [loading, setLoading] = useState(false),

@@ -5,7 +5,7 @@ const item = {
   intro: "KUI is a desktop UI component library based on React",
   desc: "Dozens of useful and aesthetically pleasing components, a very user-friendly API suitable for developers of any skill level, and comprehensive documentation.",
 };
-export default function List() {
+export default function App() {
   const [loading, setLoading] = useState(false),
     timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(

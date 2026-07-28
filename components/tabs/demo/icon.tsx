@@ -1,7 +1,7 @@
 import { LogoApple, LogoMicrosoft } from "kui-icons";
 import { useState } from "react";
 import { TabPanel, Tabs } from "react-kui";
-export default function IconDemo() {
+export default function App() {
   const [value, setValue] = useState("1");
   return (
     <Tabs value={value} onChange={setValue}>

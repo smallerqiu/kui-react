@@ -8,7 +8,7 @@ const itemStyle = {
   fontWeight: 700,
   display: "flex",
 } as const;
-export default function Vertical() {
+export default function App() {
   return (
     <Carousel vertical>
       {[1, 2, 3, 4].map((value) => (

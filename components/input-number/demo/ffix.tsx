@@ -1,6 +1,6 @@
 import { CircleQuestionMark, LogoYen, UserPlus } from "kui-icons";
 import { Button, Divider, Space, Tooltip, InputNumber } from "react-kui";
-export default function Affix() {
+export default function App() {
   return (
     <>
       <Space block vertical>

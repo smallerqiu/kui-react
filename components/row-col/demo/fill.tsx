@@ -1,5 +1,5 @@
 import { Space, Col, Row } from "react-kui";
-export default function Fill() {
+export default function App() {
   return (
     <Space block vertical className="demo-grid">
       <code>Percentage columns</code>

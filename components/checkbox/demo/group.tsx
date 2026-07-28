@@ -4,7 +4,7 @@ const initial: CheckboxOption[] = ["Apple", "Orange", "Banana", "Pear", "Grape"]
   label,
   value: label.toLowerCase(),
 }));
-export default function Group() {
+export default function App() {
   const [value, setValue] = useState(["apple", "grape"]),
     [options, setOptions] = useState(initial);
   useEffect(() => {

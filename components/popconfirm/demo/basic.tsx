@@ -1,5 +1,5 @@
 import { message, Popconfirm } from "react-kui";
-export default function Basic() {
+export default function App() {
   return (
     <Popconfirm
       title="Are you sure delete this task?"

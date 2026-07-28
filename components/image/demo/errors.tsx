@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Space, KImage } from "react-kui";
-export default function Errors() {
+export default function App() {
   const [src, setSrc] = useState("https://cdn.chuchur.com/upload/demo/test_300.jpg");
   return (
     <Space vertical>

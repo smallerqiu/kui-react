@@ -32,7 +32,7 @@ const dates = [
     { label: "Card", value: "card" },
     { label: "Outline", value: "outline" },
   ];
-export default function RadioButtons() {
+export default function App() {
   const [size, setSize] = useState<any>("medium"),
     [shape, setShape] = useState<any>("round"),
     [theme, setTheme] = useState<any>("default"),

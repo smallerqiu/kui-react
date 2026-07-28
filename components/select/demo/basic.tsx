@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Space, Option, Select } from "react-kui";
 import { data as initial } from "./data";
-export default function Basic() {
+export default function App() {
   const [value1, setValue1] = useState<any>(2),
     [value2, setValue2] = useState<any>(2),
     [data, setData] = useState(initial);

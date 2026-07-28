@@ -5,7 +5,7 @@ const userList = ["K", "Zhang", "Mr Qiu", "Jack cheng", "Jone Blue"];
 const colorList = ["#3a95ff", "#00bb5d", "#ff3300", "#ffa500"];
 const randomIndex = (length: number) => Math.floor(Math.random() * length);
 
-export default function Change() {
+export default function App() {
   const [text, setText] = useState(userList[0]);
   const [color, setColor] = useState(colorList[0]);
   const changeValue = () => {

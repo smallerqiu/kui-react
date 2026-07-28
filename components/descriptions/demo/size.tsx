@@ -6,7 +6,7 @@ const types = [
   { label: "Medium", value: "medium" },
   { label: "Small", value: "small" },
 ];
-export default function Size() {
+export default function App() {
   const [size, setSize] = useState<"medium" | "small">("medium"),
     extra = (
       <Button size="small" type="primary">

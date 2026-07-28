@@ -43,7 +43,7 @@ const show = () =>
       message.info("show");
     },
   });
-export default function Global() {
+export default function App() {
   return (
     <Space vertical>
       <Button onClick={success}>Success</Button>

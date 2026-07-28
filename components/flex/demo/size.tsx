@@ -1,34 +1,37 @@
 import { useState } from "react";
-import { Button, type SizeType, Flex, type FlexSizeType } from "react-kui";
-export default function SizeDemo() {
+import {
+  Button,
+  Checkbox,
+  Flex,
+  type FlexSizeType,
+  Radio,
+  RadioGroup,
+  Slider,
+  type SizeType,
+} from "react-kui";
+
+export default function App() {
   const [size, setSize] = useState<FlexSizeType>("small");
   const [custom, setCustom] = useState(false);
+  const [customSize, setCustomSize] = useState(8);
   return (
     <Flex vertical size="medium">
-      <Flex size="small">
+      <RadioGroup value={size} onChange={(value) => setSize(value as SizeType)}>
         {(["small", "medium", "large"] as SizeType[]).map((item) => (
-          <Button
-            key={item}
-            type={size === item ? "primary" : "default"}
-            onClick={() => {
-              setCustom(false);
-              setSize(item);
-            }}
-          >
-            {item}
-          </Button>
+          <Radio key={item} value={item} label={item[0].toUpperCase() + item.slice(1)} />
         ))}
-        <Button type={custom ? "primary" : "default"} onClick={() => setCustom(true)}>
-          custom
-        </Button>
-      </Flex>
+      </RadioGroup>
+      <Checkbox checked={custom} label="customize" onChange={({ checked }) => setCustom(checked)} />
       {custom && (
-        <input
-          type="range"
-          min={0}
+        <Slider
+          value={customSize}
           max={50}
-          value={typeof size === "number" ? size : 8}
-          onChange={(event) => setSize(Number(event.target.value))}
+          step={1}
+          onChange={(value) => {
+            const next = value as number;
+            setCustomSize(next);
+            setSize(next);
+          }}
         />
       )}
       <Flex size={size}>

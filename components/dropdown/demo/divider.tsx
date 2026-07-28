@@ -16,7 +16,7 @@ const overlay = (
     <MenuItem disabled>3rd menu item (disabled)</MenuItem>
   </Menu>
 );
-export default function Divider() {
+export default function App() {
   return (
     <Dropdown overlay={overlay}>
       <Button>

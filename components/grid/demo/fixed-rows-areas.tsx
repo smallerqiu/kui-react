@@ -1,6 +1,6 @@
 import { Grid, GridItem } from "react-kui";
 import "./demo.css";
-export default function FixedRows() {
+export default function App() {
   return (
     <Grid
       cols={4}

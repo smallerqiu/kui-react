@@ -11,7 +11,7 @@ import {
   Watermark,
   type WatermarkLayoutType,
 } from "react-kui";
-export default function Custom() {
+export default function App() {
   const [content, setContent] = useState("Kui React"),
     [color, setColor] = useState("rgba(100, 100, 100, 0.3)"),
     [fontSize, setFontSize] = useState(16),

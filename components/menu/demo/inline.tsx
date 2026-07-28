@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Menu } from "react-kui";
 import { inlineItems } from "./data";
-export default function Inline() {
+export default function App() {
   const [current, setCurrent] = useState(["1-1"]),
     [openKeys, setOpenKeys] = useState(["sub1"]);
   return (

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Space, StatNumber } from "react-kui";
-export default function Basic() {
+export default function App() {
   const [value, setValue] = useState(Math.random() * 100000);
   return (
     <Space vertical>

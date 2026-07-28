@@ -1,6 +1,6 @@
 import { Button, Grid, GridItem } from "react-kui";
 import "./demo.css";
-export default function SuffixDisplay() {
+export default function App() {
   return (
     <Grid cols={{ xs: 2, md: 6 }} xGap={8}>
       <GridItem span={2}>

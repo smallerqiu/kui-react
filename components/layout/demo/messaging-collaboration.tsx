@@ -1,7 +1,7 @@
 import { Send } from "kui-icons";
 import { Button, Layout, Content, Footer, Header, Sider } from "react-kui";
 import "./demo.css";
-export default function Messaging() {
+export default function App() {
   return (
     <Layout className="layout-demo">
       <Sider style={{ width: 240 }}>

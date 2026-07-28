@@ -1,6 +1,6 @@
 import { Cloud, Heart, House } from "kui-icons";
 import { Breadcrumb, BreadcrumbItem } from "react-kui";
-export default function IconDemo() {
+export default function App() {
   return (
     <Breadcrumb>
       <BreadcrumbItem href="/" icon={House}>

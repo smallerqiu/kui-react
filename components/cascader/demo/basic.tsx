@@ -26,7 +26,7 @@ const areaOptions: CascaderOption[] = [
   },
 ];
 
-export default function Demo() {
+export default function App() {
   const [selectedArea, setSelectedArea] = useState<CascaderValue>(["hubei", "wuhan", "wuchang"]);
   return (
     <Space vertical>

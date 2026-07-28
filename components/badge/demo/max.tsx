@@ -7,7 +7,7 @@ const values: Array<{ count: string | number; maxCount?: number }> = [
   { count: "hot" },
   { count: "new" },
 ];
-export default function Max() {
+export default function App() {
   return (
     <Space size="large" wrap>
       {values.map(({ count, maxCount }) => (

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Space, Select } from "react-kui";
 import { data as source } from "./data";
 const data = source.map((item) => (item.value === 1 ? { ...item, disabled: true } : item));
-export default function Disabled() {
+export default function App() {
   const [v1, setV1] = useState<string | number>(2),
     [v2, setV2] = useState<Array<string | number>>([0, 3]),
     [v3] = useState<Array<string | number>>([0, 2, 3]);

@@ -25,7 +25,7 @@ const data: TreeNode[] = [
     ],
   },
 ];
-export default function Disabled() {
+export default function App() {
   const [expanded, setExpanded] = useState(["0-0", "1-0", "1-1"]),
     [checked, setChecked] = useState(["1-0-0"]);
   return (

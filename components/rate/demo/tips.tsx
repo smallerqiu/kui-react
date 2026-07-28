@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Space, Rate } from "react-kui";
 const descriptions = ["terrible", "bad", "normal", "good", "wonderful"];
-export default function Tips() {
+export default function App() {
   const [value, setValue] = useState(3);
   return (
     <Space vertical>

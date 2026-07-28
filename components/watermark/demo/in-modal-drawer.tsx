@@ -6,7 +6,7 @@ const content = ["审批专用", "张三 2026-07-10", "IP: 192.168.1.100"],
       <p>核心敏感数据</p>
     </Flex>
   );
-export default function InModalDrawer() {
+export default function App() {
   const [modal, setModal] = useState(false),
     [drawer, setDrawer] = useState(false);
   return (

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button, message, Upload } from "react-kui";
 import { action, headers } from "./shared";
 const limit = 2;
-export default function Exceed() {
+export default function App() {
   const [disabled, setDisabled] = useState(false);
   return (
     <Upload

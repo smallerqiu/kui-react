@@ -4,7 +4,7 @@ const Panel = ({ children }: { children: string }) => (
     {children}
   </Flex>
 );
-export default function Vertical() {
+export default function App() {
   return (
     <Splitter direction="horizontal" style={{ height: 240 }}>
       <SplitterPanel size="20%" min={10} max={30}>

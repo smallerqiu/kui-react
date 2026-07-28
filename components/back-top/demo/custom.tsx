@@ -1,5 +1,5 @@
 import { BackTop } from "react-kui";
-export default function Custom() {
+export default function App() {
   return (
     <div>
       <BackTop bottom={100}>

@@ -1,5 +1,5 @@
 import { Space, TextArea } from "react-kui";
-export default function Textarea() {
+export default function App() {
   return (
     <Space vertical block>
       <TextArea rows={4} placeholder="Please input" />

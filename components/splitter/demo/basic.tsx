@@ -5,7 +5,7 @@ const Panel = ({ children }: { children: string }) => (
     {children}
   </Flex>
 );
-export default function Basic() {
+export default function App() {
   const [sizes, setSizes] = useState<number[]>([]);
   return (
     <>

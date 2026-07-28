@@ -6,7 +6,7 @@ const values: NonNullable<RowProps["justify"]>[] = [
   "space-around",
   "space-between",
 ];
-export default function FlexDemo() {
+export default function App() {
   return (
     <Space vertical block className="demo-grid">
       {values.map((justify) => (

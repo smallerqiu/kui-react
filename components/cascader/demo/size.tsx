@@ -14,7 +14,7 @@ const simpleOptions: CascaderOption[] = [
   { value: "2", label: "选项二", children: [{ value: "2-1", label: "子选项 C" }] },
 ];
 
-export default function Demo() {
+export default function App() {
   const [value, setValue] = useState<CascaderValue>([]);
   const common = { value, onChange: setValue, options: simpleOptions, style: { width: 240 } };
   return (

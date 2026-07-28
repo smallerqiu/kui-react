@@ -1,6 +1,6 @@
 import { Grid, GridItem } from "react-kui";
 import "./demo.css";
-export default function BreakpointFallback() {
+export default function App() {
   return (
     <Grid cols={{ xs: 1, md: 4, xl: 6 }} xGap={20} yGap={20}>
       <GridItem span={{ xs: 1, md: 2, xl: 1 }}>

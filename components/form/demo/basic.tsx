@@ -30,7 +30,7 @@ const treeData = [
     ],
   },
 ];
-export default function Basic() {
+export default function App() {
   const [disabled, setDisabled] = useState(false),
     [size, setSize] = useState<SizeType>("medium"),
     [shape, setShape] = useState<ShapeType>("round"),

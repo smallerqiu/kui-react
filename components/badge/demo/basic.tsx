@@ -1,5 +1,5 @@
 import { Space, Badge } from "react-kui";
-export default function Basic() {
+export default function App() {
   return (
     <Space size="large">
       <Badge count={3}>

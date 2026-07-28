@@ -3,7 +3,7 @@ import "dayjs/locale/en";
 import { useState } from "react";
 import { Space, DatePicker } from "react-kui";
 dayjs.locale("en");
-export default function Lang() {
+export default function App() {
   const [value, setValue] = useState("2021-01-01 20:20:20");
   return (
     <Space wrap vertical>

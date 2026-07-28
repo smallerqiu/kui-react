@@ -1,6 +1,6 @@
 import { Space, Alert } from "react-kui";
 
-export default function Basic() {
+export default function App() {
   return (
     <Space vertical block>
       <Alert showIcon={false} type="success">

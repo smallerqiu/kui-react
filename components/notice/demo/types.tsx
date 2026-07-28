@@ -1,6 +1,6 @@
 import { Button, Space, notice } from "react-kui";
 const types = ["info", "warning", "success", "error"] as const;
-export default function Types() {
+export default function App() {
   return (
     <Space vertical>
       {types.map((type) => (

@@ -4,7 +4,7 @@ const initial = ["Apple", "Orange", "Banana", "Pear", "Grape"].map((label) => ({
   label,
   value: label.toLowerCase(),
 }));
-export default function Group() {
+export default function App() {
   const [value, setValue] = useState("apple"),
     [options, setOptions] = useState(initial);
   useEffect(() => {

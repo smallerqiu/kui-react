@@ -2,7 +2,7 @@ import { ArrowDown, ArrowUp, Moon, Sun, Trash2 } from "kui-icons";
 import { useState } from "react";
 import { Button, Icon, message, modal, Space, Tag, Table, type Column } from "react-kui";
 import { people, type Person } from "./data";
-export default function Basic() {
+export default function App() {
   const [data, setData] = useState([...people]);
   const move = (index: number, offset: number) => {
     const target = index + offset;

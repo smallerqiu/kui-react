@@ -10,7 +10,7 @@ const p2 = [7, 14, 30, 90].map((days) => ({
   label: `Last ${days} days`,
   value: () => [dayjs().add(-days, "d"), dayjs()],
 }));
-export default function Presets() {
+export default function App() {
   const [value1, setValue1] = useState<DatePickerInput>(),
     [value2, setValue2] = useState<DatePickerInput[]>([]);
   return (

@@ -1,15 +1,11 @@
 import { useState } from "react";
-import { Button, Space } from "react-kui";
-export default function CustomSize() {
+import { Button, Slider, Space } from "react-kui";
+
+export default function App() {
   const [size, setSize] = useState(12);
   return (
     <div>
-      <input
-        type="range"
-        value={size}
-        max={50}
-        onChange={(event) => setSize(Number(event.target.value))}
-      />
+      <Slider value={size} max={50} onChange={(value) => setSize(value as number)} />
       <Space size={size}>
         <Button type="primary">Primary</Button>
         <Button type="danger">Danger</Button>

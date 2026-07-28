@@ -1,5 +1,5 @@
 import { Grid, GridItem } from "react-kui";
-export default function HeroSection() {
+export default function App() {
   return (
     <Grid cols={12} rows={8} style={{ height: 400, background: "var(--kui-color-bg-5)" }}>
       <GridItem

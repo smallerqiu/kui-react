@@ -1,5 +1,5 @@
 import { Progress } from "react-kui";
-export default function Basic() {
+export default function App() {
   return (
     <>
       <Progress percent={30} />

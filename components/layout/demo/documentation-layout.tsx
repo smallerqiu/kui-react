@@ -1,6 +1,6 @@
 import { Layout, Content, Header, Sider } from "react-kui";
 import "./demo.css";
-export default function Documentation() {
+export default function App() {
   return (
     <Layout className="layout-demo">
       <Header>

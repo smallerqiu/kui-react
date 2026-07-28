@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Space, Input, TextArea } from "react-kui";
-export default function Basic() {
+export default function App() {
   const [value, setValue] = useState("");
   return (
     <Space vertical block>

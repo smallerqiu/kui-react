@@ -1,6 +1,6 @@
 import { LogoKui } from "kui-icons";
 import { Space, InputNumber } from "react-kui";
-export default function Size() {
+export default function App() {
   return (
     <Space vertical block>
       <InputNumber placeholder="Large Input" size="large" icon={LogoKui} />

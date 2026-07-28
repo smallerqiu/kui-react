@@ -6,7 +6,7 @@ const before = (hour: number, minute: number) => (date: Date) => {
   target.setHours(hour, minute, 0, 0);
   return date < target;
 };
-export default function DisabledDate() {
+export default function App() {
   return (
     <Space wrap vertical>
       <code>not before than today</code>

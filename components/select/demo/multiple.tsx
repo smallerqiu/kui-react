@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Space, Option, Select } from "react-kui";
 import { data } from "./data";
-export default function Multiple() {
+export default function App() {
   const [v1, setV1] = useState<any[]>([0, 2]),
     [v2, setV2] = useState<any[]>([0, 2]),
     [v3, setV3] = useState<any[]>([0, 2, 3]);

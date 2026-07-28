@@ -1,5 +1,5 @@
 import { Space, Col, Row } from "react-kui";
-export default function Offset() {
+export default function App() {
   return (
     <Space vertical block className="demo-grid">
       <Row>

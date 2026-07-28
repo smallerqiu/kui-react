@@ -5,7 +5,7 @@ const item = (placement: Parameters<typeof Popconfirm>[0]["placement"], label: s
     <Button>{label}</Button>
   </Popconfirm>
 );
-export default function Placement() {
+export default function App() {
   return (
     <Flex style={{ width: 300 }} vertical align="center">
       <Space compact>

@@ -8,7 +8,7 @@ const features = [
   [2, 2, "Privacy Protection"],
   [2, 1, "Multi-device Collaboration"],
 ] as const;
-export default function BentoShared({ zh = false }: { zh?: boolean }) {
+export default function App({ zh = false }: { zh?: boolean }) {
   return (
     <div>
       <h2>{zh ? "技术规格矩阵" : "Technical Specifications Matrix"}</h2>

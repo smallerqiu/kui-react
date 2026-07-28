@@ -13,7 +13,7 @@ const keyboard = {
   onBlur: fire("blur"),
   onFocus: fire("focus"),
 };
-export default function Event() {
+export default function App() {
   return (
     <Space vertical block>
       <Input placeholder="Please input" clearable onChange={fire("change")} {...keyboard} />

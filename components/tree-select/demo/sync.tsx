@@ -10,7 +10,7 @@ const insert = (nodes: TreeNode[], key: string, children: TreeNode[]): boolean =
   }
   return false;
 };
-export default function Sync() {
+export default function App() {
   const [data, setData] = useState<TreeNode[]>([
       { title: "Expand to load", key: "0-0" },
       { title: "Expand to load", key: "0-1" },

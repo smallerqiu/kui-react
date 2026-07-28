@@ -32,6 +32,6 @@ const columns: Column<(typeof data)[number]>[] = [
     ),
   },
 ];
-export default function CustomHeader() {
+export default function App() {
   return <Table data={data} columns={columns} />;
 }
