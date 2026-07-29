@@ -10,17 +10,21 @@ export default function Alpha({ value, onUpdateAlpha }: AlphaProps) {
   const dragCleanupRef = useRef<() => void>(() => undefined);
   const color = Color(value);
   useEffect(() => {
-    const canvas = canvasRef.current,
-      context = canvas?.getContext("2d");
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext("2d");
     if (!canvas || !context) return;
+
     const rgb = color.rgb().object();
     const gradient = context.createLinearGradient(0, 0, canvas.width, 0);
+
     gradient.addColorStop(0, `rgba(${rgb.r},${rgb.g},${rgb.b},0)`);
     gradient.addColorStop(1, `rgba(${rgb.r},${rgb.g},${rgb.b},1)`);
+
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.fillStyle = gradient;
     context.fillRect(0, 0, canvas.width, canvas.height);
-  }, [color.hex()]);
+  }, [color]);
+
   useEffect(() => () => dragCleanupRef.current(), []);
   const start = (event: ReactMouseEvent) => {
     const move = (x: number) => {

@@ -1,6 +1,6 @@
 import Big from "big.js";
 import { ChevronDown, ChevronUp } from "kui-icons";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { SizeContext } from "../config/size-context";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
@@ -51,17 +51,18 @@ const InputNumber: React.FC<InputNumberProps> = ({
   onChange,
   suffixSlot,
   prefixSlot,
-  className = "",
   ...rest
 }) => {
   const parentSize = useContext(SizeContext);
   const [innerValue, setInnerValue] = useState(normalize(value, precision));
   const [userInput, setUserInput] = useState<string | null>(null);
+  const prevValueRef = useRef(value);
 
   useEffect(() => {
-    const next = normalize(value, precision);
-    if (next !== innerValue) {
-      setInnerValue(next);
+    // 仅在外部 value 发生变化时才同步，避免依赖 innerValue 导致的无限循环
+    if (value !== prevValueRef.current) {
+      prevValueRef.current = value;
+      setInnerValue(normalize(value, precision));
     }
   }, [value, precision]);
 
@@ -113,7 +114,8 @@ const InputNumber: React.FC<InputNumberProps> = ({
       emitValue(Number(normalizedStr));
       if (formatter) {
         const formatted = formatter(normalizedStr);
-        if (formatted !== userInput) setUserInput(formatted);
+        // 与当前输入值 val 比较而非异步的 userInput 状态，避免过期闭包导致误判
+        if (formatted !== val) setUserInput(formatted);
       }
     }
   };
@@ -166,6 +168,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
       icon={icon}
       shape={shape}
       theme={theme}
+      inputType="input-number"
       onChange={handleInput}
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}

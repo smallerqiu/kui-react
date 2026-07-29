@@ -15,8 +15,8 @@ export interface InputProps extends Omit<
   clearable?: boolean;
   visiblePasswordIcon?: boolean;
   size?: SizeType;
-  value?: any;
-  defaultValue?: any;
+  value?: string | number | readonly string[];
+  defaultValue?: string | number | readonly string[];
   icon?: IconType[];
   suffix?: React.ReactNode;
   prefix?: React.ReactNode;
@@ -96,6 +96,16 @@ const Input = React.forwardRef<InputRef, InputProps>(
       setShowPassword(!showPassword);
     };
 
+    const isInlineAffix = (node: React.ReactNode) =>
+      typeof node === "string" || typeof node === "number";
+    const hasPrefix = prefix !== null && prefix !== undefined && prefix !== "";
+    const hasSuffix = suffix !== null && suffix !== undefined && suffix !== "";
+    const prefixIsGroup = hasPrefix && !isInlineAffix(prefix);
+    const suffixIsGroup = hasSuffix && !isInlineAffix(suffix);
+    const useGroup = prefixIsGroup || suffixIsGroup;
+    const inlinePrefix = hasPrefix && !prefixIsGroup ? prefix : null;
+    const inlineSuffix = hasSuffix && !suffixIsGroup ? suffix : null;
+
     const getSuffix = () => {
       if (type === "password" && visiblePasswordIcon) {
         return (
@@ -110,11 +120,11 @@ const Input = React.forwardRef<InputRef, InputProps>(
           <Icon
             type={Search}
             className="k-input-search-icon"
-            onClick={() => onSearch(currentValue)}
+            onClick={() => onSearch(currentValue as string)}
           />
         );
       }
-      return suffix ? <div className="k-input-suffix">{suffix}</div> : null;
+      return inlineSuffix ? <div className={`k-${inputType}-suffix`}>{inlineSuffix}</div> : null;
     };
 
     const clearableShow =
@@ -123,8 +133,8 @@ const Input = React.forwardRef<InputRef, InputProps>(
     const multiple =
       (!!icon ||
         !!onSearch ||
-        !!suffix ||
-        !!prefix ||
+        hasSuffix ||
+        hasPrefix ||
         type === "password" ||
         clearable ||
         !!controls) &&
@@ -154,6 +164,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
       disabled,
       multiple,
       type,
+      size,
       theme,
       shape,
       inputRef,
@@ -163,13 +174,15 @@ const Input = React.forwardRef<InputRef, InputProps>(
       onChange: handleInputChange,
       onFocus: handleInputFocus,
       onBlur: handleInputBlur,
+      className: !multiple ? className : undefined,
+      style: !multiple ? style : undefined,
     };
 
     if (typeof currentSize === "string") {
-      (inputBoxProps as any).size = currentSize;
+      inputBoxProps.size = currentSize;
     }
 
-    const textInput = <InputBox {...(inputBoxProps as any)} />;
+    const textInput = <InputBox {...inputBoxProps} />;
     if (!multiple) return textInput;
 
     const rootClasses = clsx(
@@ -184,7 +197,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
         [`k-${inputType}-circle`]: shape === "circle",
         [`k-${inputType}-square`]: shape === "square",
       },
-      className
+      !useGroup && className
     );
 
     const innerChildren: React.ReactNode[] = [];
@@ -194,14 +207,14 @@ const Input = React.forwardRef<InputRef, InputProps>(
           key="input-icon"
           type={icon}
           className={`k-${inputType}-icon`}
-          onClick={(e) => !disabled && onIconClick?.(e as any)}
+          onClick={(e) => !disabled && onIconClick?.(e)}
         />
       );
     }
-    if (prefix) {
+    if (inlinePrefix) {
       innerChildren.push(
         <div key="input-prefix" className={`k-${inputType}-prefix`}>
-          {prefix}
+          {inlinePrefix}
         </div>
       );
     }
@@ -219,13 +232,21 @@ const Input = React.forwardRef<InputRef, InputProps>(
         />
       );
     }
+    const suffixNode = getSuffix();
+    if (suffixNode) {
+      innerChildren.push(<React.Fragment key="input-suffix-node">{suffixNode}</React.Fragment>);
+    }
     if (controls) {
       innerChildren.push(<React.Fragment key="input-controls">{controls}</React.Fragment>);
     }
 
-    if (prefix || suffix) {
-      const preChildren = prefix ? <div className="k-input-group-prefix">{prefix}</div> : null;
-      const sufChildren = suffix ? <div className="k-input-group-suffix">{suffix}</div> : null;
+    if (useGroup) {
+      const preChildren = prefixIsGroup ? (
+        <div className="k-input-group-prefix">{prefix}</div>
+      ) : null;
+      const sufChildren = suffixIsGroup ? (
+        <div className="k-input-group-suffix">{suffix}</div>
+      ) : null;
 
       return (
         <InputGroup size={currentSize} theme={theme} className={className} style={style}>
@@ -238,13 +259,8 @@ const Input = React.forwardRef<InputRef, InputProps>(
       );
     }
 
-    const suffixNode = getSuffix();
-    if (suffixNode) {
-      innerChildren.push(<React.Fragment key="input-suffix-node">{suffixNode}</React.Fragment>);
-    }
-
     return (
-      <div className={rootClasses} style={style} {...(rest as any)} data-multiple="">
+      <div className={rootClasses} style={style} data-multiple="">
         {innerChildren}
       </div>
     );

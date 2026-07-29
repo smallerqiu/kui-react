@@ -109,12 +109,23 @@ export default function ColorPicker({
     if (next) requestAnimationFrame(updatePosition);
   };
   useEffect(() => setMode(modeProp), [modeProp]);
+  // 清理未完成的隐藏定时器，防止在组件卸载后调用 setState
+  useEffect(
+    () => () => {
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    },
+    []
+  );
   useEffect(() => {
     const next = Color(currentValue);
     setCurrentAlpha(next.alpha());
     if (next.saturationv() > 0) setCurrentHue(next.hue());
   }, [currentValue]);
   useEffect(() => setCurrentPlacement(placement), [placement]);
+  const updatePositionRef = useRef(updatePosition);
+  useEffect(() => {
+    updatePositionRef.current = updatePosition;
+  });
   useEffect(() => {
     if (!open) return;
     const outside = (event: MouseEvent) => {
@@ -124,15 +135,17 @@ export default function ColorPicker({
       )
         setVisible(false);
     };
+    const handleResize = () => updatePositionRef.current();
+    const handleScroll = () => updatePositionRef.current();
     document.addEventListener("mousedown", outside);
-    window.addEventListener("resize", updatePosition);
-    window.addEventListener("scroll", updatePosition, true);
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("scroll", handleScroll, true);
     return () => {
       document.removeEventListener("mousedown", outside);
-      window.removeEventListener("resize", updatePosition);
-      window.removeEventListener("scroll", updatePosition, true);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", handleScroll, true);
     };
-  }, [open, disabled, placement]);
+  }, [open, disabled]);
   const mouseEnter = () => {
     if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     setVisible(true);
@@ -159,7 +172,7 @@ export default function ColorPicker({
         triggerRef.current = node;
         const childRef = customTrigger.props.ref;
         if (typeof childRef === "function") childRef(node);
-        else if (childRef) (childRef as React.MutableRefObject<HTMLElement | null>).current = node;
+        else if (childRef) (childRef as React.RefObject<HTMLElement | null>).current = node;
       },
       onClick: (event: React.MouseEvent) => {
         customTrigger.props.onClick?.(event);

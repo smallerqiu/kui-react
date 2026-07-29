@@ -8,7 +8,7 @@ export interface InputBoxProps extends Omit<React.InputHTMLAttributes<HTMLInputE
   theme?: string;
   shape?: string;
   inputType?: string;
-  value?: any;
+  value?: string | number | readonly string[];
   showPassword?: boolean;
   inputRef?: React.Ref<HTMLInputElement>;
 }
