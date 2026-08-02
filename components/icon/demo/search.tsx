@@ -1,7 +1,7 @@
 import * as icons from "kui-icons";
 import { useMemo, useState } from "react";
+import { Affix, Flex, Grid, GridItem, Icon, Input, Tag, type IconType } from "react-kui";
 import { copyToClipboard } from "react-kui/utils/share";
-import { Icon, type IconType } from "react-kui";
 import "./search.less";
 import { tags } from "./tags";
 
@@ -32,39 +32,30 @@ export default function App() {
     items.length ? (
       <>
         <h3>{title}</h3>
-        <div
-          className="icon-list"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill,minmax(72px,1fr))",
-            gap: 8,
-          }}
-        >
+        <Grid className="icon-list" itemMinWidth={56} xGap={8} yGap={8}>
           {items.map((name) => (
-            <button
-              type="button"
-              key={name}
-              className="icon-item"
-              onClick={() => void copyToClipboard(name)}
-            >
+            <GridItem key={name} className="icon-item" onClick={() => void copyToClipboard(name)}>
               <Icon type={iconMap[name]} strokeWidth={1} />
               <span className="item-tip">{name}</span>
-            </button>
+            </GridItem>
           ))}
-        </div>
+        </Grid>
       </>
     ) : null;
   return (
     <div>
       <h3>Icons Filter</h3>
-      <div className="icon-search">
-        <Icon type={icons.Search} />
-        <input
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="Enter keyword to search, then click an icon to copy its name."
-        />
-      </div>
+      <Affix offsetTop={65}>
+        <Flex size="large" style={{ backgroundColor: "var(--kui-color-bg)" }}>
+          <Input
+            value={query}
+            onChange={(value) => setQuery(value)}
+            placeholder="Enter keyword to search, then click an icon to copy its name."
+            icon={icons.Search}
+            suffix={<Tag>⌘K</Tag>}
+          />
+        </Flex>
+      </Affix>
       <div className="show-icons">
         {section("App icons", apps)}
         {section("Logos", logos)}

@@ -18,7 +18,7 @@ export default function Demo() {
 }
 ```
 
-[IconList](./demo/search.tsx)
+[IconList](./demo/search.tsx?demo=false)
 
 [Basic Usage](./demo/basic.tsx)
 

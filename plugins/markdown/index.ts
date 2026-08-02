@@ -7,6 +7,7 @@ import { type Plugin } from "vite";
 
 interface LiveDemo {
   component: string;
+  useDemo: boolean;
   title: string;
   source: string;
   highlightedSource: string;
@@ -49,7 +50,9 @@ export default function vitePluginKuiMd(): Plugin {
           const absolutePath = path.resolve(path.dirname(id), src);
           const source = fs.readFileSync(absolutePath, "utf-8");
           const highlightedSource = hljs.highlight(source, { language: "tsx" }).value;
-          const show = new URLSearchParams(query.replace(/^\?/, "")).get("show");
+          const params = new URLSearchParams(query.replace(/^\?/, ""));
+          const show = params.get("show");
+          const useDemo = params.get("demo") !== "false";
           const direction = show === "vertical" ? "vertical" : "horizontal";
           const localModules = Array.from(
             source.matchAll(/(?:from\s+|import\s+)["'](\.[^"']+)["']/g),
@@ -59,6 +62,7 @@ export default function vitePluginKuiMd(): Plugin {
           const index = liveDemos.length;
           liveDemos.push({
             component: src,
+            useDemo,
             title,
             source,
             highlightedSource,
@@ -105,6 +109,9 @@ export default function vitePluginKuiMd(): Plugin {
           }
           const demoIndex = Number(part);
           const demo = liveDemos[demoIndex];
+          if (!demo.useDemo) {
+            return [`createElement(LiveDemo${demoIndex}, { key: ${index} })`];
+          }
           return [
             `createElement(Demo, {
             key: ${index},

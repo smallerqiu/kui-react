@@ -20,7 +20,7 @@ export default function App() {
         </Col>
       </Row>
       <code>Horizontal Gutter (px): {h}</code>
-      <div style={{ width: "55%", padding: 10 }}>
+      <div style={{ width: "55%", padding: "10,0" }}>
         <Slider
           min={8}
           max={40}
@@ -31,7 +31,7 @@ export default function App() {
         />
       </div>
       <code>Vertical Gutter (px): {v}</code>
-      <div style={{ width: "55%", padding: 10 }}>
+      <div style={{ width: "55%", padding: "10,0" }}>
         <Slider
           min={8}
           max={40}
@@ -42,7 +42,7 @@ export default function App() {
         />
       </div>
       <code>Column Count: {cols}</code>
-      <div style={{ width: "55%", padding: 10 }}>
+      <div style={{ width: "55%", padding: "10,0" }}>
         <Slider
           min={2}
           max={12}

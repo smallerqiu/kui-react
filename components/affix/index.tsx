@@ -17,11 +17,24 @@ export interface AffixProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChan
   onChange?: (affixed: boolean) => void;
 }
 
+const defaultTarget = () => (typeof window === "undefined" ? null : window);
+
+function isSameStyle(current: CSSProperties, next: CSSProperties) {
+  const currentStyle = current as Record<string, unknown>;
+  const nextStyle = next as Record<string, unknown>;
+  const currentKeys = Object.keys(currentStyle);
+  const nextKeys = Object.keys(nextStyle);
+  return (
+    currentKeys.length === nextKeys.length &&
+    currentKeys.every((key) => currentStyle[key] === nextStyle[key])
+  );
+}
+
 export default function Affix({
   children,
   offsetTop = 0,
   offsetBottom,
-  target = () => (typeof window === "undefined" ? null : window),
+  target = defaultTarget,
   onChange,
   className,
   style,
@@ -62,8 +75,11 @@ export default function Affix({
       }
     }
 
-    setAffixStyle(nextStyle);
-    setPlaceholderStyle(nextFixed ? { height: rect.height, width: rect.width } : {});
+    const nextPlaceholderStyle = nextFixed ? { height: rect.height, width: rect.width } : {};
+    setAffixStyle((current) => (isSameStyle(current, nextStyle) ? current : nextStyle));
+    setPlaceholderStyle((current) =>
+      isSameStyle(current, nextPlaceholderStyle) ? current : nextPlaceholderStyle
+    );
     if (fixedRef.current !== nextFixed) {
       fixedRef.current = nextFixed;
       setFixed(nextFixed);
