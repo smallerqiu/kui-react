@@ -15,4 +15,20 @@ export default function App() {
 
 [多语言切换示例](./demo.tsx?show=vertical)
 
-内置简体中文、繁体中文、德语、希腊语、英语、法语、意大利语、日语、韩语、俄语、泰语、乌克兰语和越南语。
+目前 KUI 内置了以下语言：
+
+- 简体中文(zh-CN)
+- 繁体中文(zh-TW)
+- 德语(de)
+- 希腊语(el)
+- 英语(en)
+- 法语(fr)
+- 意大利语(it)
+- 日语(ja)
+- 韩语(ko)
+- 俄语(ru)
+- 泰语(th)
+- 乌克兰语(uk)
+- 越南语(vi)
+
+欢迎贡献代码，以支持更多语言。[Join](https://github.com/smallerqiu/kui-react/tree/master/components/locale/lang)

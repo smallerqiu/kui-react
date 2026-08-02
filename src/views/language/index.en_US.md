@@ -15,4 +15,20 @@ export default function App() {
 
 [Locale switching example](./demo.tsx?show=vertical)
 
-Built-in locales include Simplified and Traditional Chinese, German, Greek, English, French, Italian, Japanese, Korean, Russian, Thai, Ukrainian, and Vietnamese.
+Currently, KUI has the following languages built-in:
+
+- Simplified Chinese (zh-CN)
+- Traditional Chinese (zh-TW)
+- German (de)
+- Greek (el)
+- English (en)
+- French (fr)
+- Italian (it)
+- Japanese (ja)
+- Korean (ko)
+- Russian (ru)
+- Thai (th)
+- Ukrainian (uk)
+- Vietnamese (vi)
+
+We welcome code contributions to support more languages.[Join](https://github.com/smallerqiu/kui-react/tree/master/components/locale/lang)

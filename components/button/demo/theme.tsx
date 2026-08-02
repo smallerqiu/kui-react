@@ -1,24 +1,46 @@
-import { Space, Button } from "react-kui";
+import { Button, Space } from "react-kui";
 export default function App() {
   return (
     <Space vertical>
-      {(["outline", "dashed", "fill"] as const).map((theme) => (
-        <div key={theme}>
-          <code>{theme}</code>
-          <Space size="small">
-            <Button type="primary" theme={theme}>
-              {theme}
-            </Button>
-            <Button type="danger" theme={theme}>
-              {theme}
-            </Button>
-            <Button type="warning" theme={theme}>
-              {theme}
-            </Button>
-            <Button theme={theme}>{theme}</Button>
-          </Space>
-        </div>
-      ))}
+      <code>outline</code>
+      <Space size="small">
+        <Button type="primary" theme="outline">
+          outline
+        </Button>
+        <Button type="danger" theme="outline">
+          outline
+        </Button>
+        <Button type="warning" theme="outline">
+          outline
+        </Button>
+        <Button theme="outline">outline</Button>
+      </Space>
+      <code>dashed</code>
+      <Space size="small">
+        <Button type="primary" theme="dashed">
+          dashed
+        </Button>
+        <Button type="danger" theme="dashed">
+          dashed
+        </Button>
+        <Button type="warning" theme="dashed">
+          dashed
+        </Button>
+        <Button theme="dashed">dashed</Button>
+      </Space>
+      <code>fill</code>
+      <Space size="small">
+        <Button type="primary" theme="fill">
+          primary
+        </Button>
+        <Button type="danger" theme="fill">
+          danger
+        </Button>
+        <Button type="warning" theme="fill">
+          warning
+        </Button>
+        <Button theme="fill">default</Button>
+      </Space>
     </Space>
   );
 }

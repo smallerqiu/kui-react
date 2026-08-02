@@ -1,21 +1,15 @@
 import { Download } from "kui-icons";
 import { useState } from "react";
-import { type SizeType, Space, Button } from "react-kui";
+import { Button, RadioButton, RadioGroup, type SizeType, Space } from "react-kui";
 export default function App() {
   const [size, setSize] = useState<SizeType>("medium");
   return (
     <Space vertical align="start">
-      <Space>
-        {(["large", "medium", "small"] as SizeType[]).map((item) => (
-          <Button
-            key={item}
-            type={size === item ? "primary" : "default"}
-            onClick={() => setSize(item)}
-          >
-            {item}
-          </Button>
-        ))}
-      </Space>
+      <RadioGroup value={size} type="button" theme="card" onChange={setSize}>
+        <RadioButton value="large" label="Large" />
+        <RadioButton value="medium" label="Medium" />
+        <RadioButton value="small" label="Small" />
+      </RadioGroup>
       <Space wrap>
         <Button type="primary" size={size}>
           Primary
@@ -29,6 +23,9 @@ export default function App() {
         </Button>
         <Button type="primary" size={size} icon={Download} />
         <Button type="primary" shape="circle" size={size} icon={Download} />
+        <Button type="primary" shape="circle" size={size} icon={Download}>
+          Download
+        </Button>
         <Button type="primary" size={size} icon={Download}>
           Download
         </Button>

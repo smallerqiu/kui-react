@@ -34,13 +34,13 @@ export default defineConfig(({ mode }) => {
           entryFileNames: "js/[name]-[hash].js",
           chunkFileNames: "js/[name]-[hash].js",
           assetFileNames: (assetInfo) => {
-            if (assetInfo.name && assetInfo.name.endsWith(".css")) {
+            if (assetInfo.names.some((name) => name.endsWith(".css"))) {
               return "css/[name]-[hash][extname]";
             }
-            if (assetInfo.name && /\.(png|jpe?g|gif|svg|webp|avif|ico)$/.test(assetInfo.name)) {
+            if (assetInfo.names.some((name) => /\.(png|jpe?g|gif|svg|webp|avif|ico)$/.test(name))) {
               return "img/[name]-[hash][extname]";
             }
-            if (assetInfo.name && /\.(woff2?|eot|ttf|otf)$/.test(assetInfo.name)) {
+            if (assetInfo.names.some((name) => /\.(woff2?|eot|ttf|otf)$/.test(name))) {
               return "fonts/[name]-[hash][extname]";
             }
             return "assets/[name]-[hash][extname]";

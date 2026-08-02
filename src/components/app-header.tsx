@@ -123,13 +123,13 @@ export default function AppHeader() {
   return (
     <Header className="header">
       <div className="header-inner">
-        <button className="logo" type="button" onClick={() => navigate("/")}>
+        <div className="logo" onClick={() => navigate("/")}>
           <Icon type={LogoKui} />
           <span className="wrap-name">
             <span className="name">Kui React</span>
             <span className="ver">v {version}</span>
           </span>
-        </button>
+        </div>
         <Divider type="vertical" />
         <div className="search-component">
           <Select

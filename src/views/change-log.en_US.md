@@ -16,9 +16,13 @@ rm -rf node_modules/.vite
 
 ### 3.0.0
 
+`2026-07-20`
+
 - Complete refactor based on `React 19`, aligned with `kui-vue`
 
 ### 2.0.0
+
+`2021-07-10`
 
 - Full refactor
 - Fixed multiple bugs and improved overall user experience
