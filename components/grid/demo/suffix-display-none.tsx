@@ -1,17 +1,16 @@
-import { Button, Grid, GridItem } from "react-kui";
-import "./demo.css";
+import { Button, Grid, GridItem, Input, Option, Select } from "react-kui";
 export default function App() {
   return (
     <Grid cols={{ xs: 2, md: 6 }} xGap={8}>
       <GridItem span={2}>
-        <input className="grid-demo-input" placeholder="Search keywords..." />
+        <Input placeholder="Search keywords..." />
       </GridItem>
       <GridItem span={{ xs: 0, md: 2 }}>
-        <select className="grid-demo-input">
-          <option>Filter</option>
-        </select>
+        <Select>
+          <Option value={1}>Filter</Option>
+        </Select>
       </GridItem>
-      <GridItem suffix>
+      <GridItem suffix style={{ justifySelf: "end" }}>
         <Button>Query</Button>
       </GridItem>
     </Grid>
