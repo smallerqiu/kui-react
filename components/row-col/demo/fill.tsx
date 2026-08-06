@@ -1,9 +1,9 @@
-import { Space, Col, Row } from "react-kui";
+import { Col, Row, Space } from "react-kui";
 export default function App() {
   return (
     <Space block vertical className="demo-grid">
       <code>Percentage columns</code>
-      <Row>
+      <Row className="demo-back">
         <Col flex={3}>
           <div>3/8</div>
         </Col>
@@ -12,7 +12,7 @@ export default function App() {
         </Col>
       </Row>
       <code>Fill rest</code>
-      <Row>
+      <Row className="demo-back">
         <Col flex="100px">
           <div>100px</div>
         </Col>
@@ -21,7 +21,7 @@ export default function App() {
         </Col>
       </Row>
       <code>Raw flex style</code>
-      <Row>
+      <Row className="demo-back">
         <Col flex="1 1 128px">
           <div>1 1 128px</div>
         </Col>

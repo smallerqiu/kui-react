@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Button, Flex, type FlexAlignType, type FlexJustifyType } from "react-kui";
+import {
+  Button,
+  Flex,
+  RadioButton,
+  RadioGroup,
+  type FlexAlignType,
+  type FlexJustifyType,
+} from "react-kui";
 const justifyOptions: FlexJustifyType[] = [
   "flex-start",
   "center",
@@ -15,31 +22,21 @@ export default function App() {
   return (
     <Flex vertical size="small" align="start">
       <span>Justify</span>
-      <Flex wrap size="small">
+      <RadioGroup value={justify} theme="card" type="button" onChange={setJustify}>
         {justifyOptions.map((item) => (
-          <Button
-            size="small"
-            key={item}
-            type={justify === item ? "primary" : "default"}
-            onClick={() => setJustify(item)}
-          >
+          <RadioButton key={item} value={item}>
             {item}
-          </Button>
+          </RadioButton>
         ))}
-      </Flex>
+      </RadioGroup>
       <span>Align</span>
-      <Flex size="small">
+      <RadioGroup value={align} theme="card" type="button" onChange={setAlign}>
         {alignOptions.map((item) => (
-          <Button
-            size="small"
-            key={item}
-            type={align === item ? "primary" : "default"}
-            onClick={() => setAlign(item)}
-          >
+          <RadioButton key={item} value={item}>
             {item}
-          </Button>
+          </RadioButton>
         ))}
-      </Flex>
+      </RadioGroup>
       <Flex
         align={align}
         justify={justify}

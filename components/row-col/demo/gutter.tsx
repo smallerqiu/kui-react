@@ -31,7 +31,7 @@ export default function App() {
         />
       </div>
       <code>Vertical Gutter (px): {v}</code>
-      <div style={{ width: "55%", padding: "10,0" }}>
+      <div style={{ width: "55%", padding: "10px" }}>
         <Slider
           min={8}
           max={40}
@@ -42,7 +42,7 @@ export default function App() {
         />
       </div>
       <code>Column Count: {cols}</code>
-      <div style={{ width: "55%", padding: "10,0" }}>
+      <div style={{ width: "55%", padding: "10px" }}>
         <Slider
           min={2}
           max={12}
@@ -52,7 +52,7 @@ export default function App() {
           onChange={(value) => setCols(value as number)}
         />
       </div>
-      <Row gutter={[h, v]}>
+      <Row gutter={[h, v]} className="row-gutter">
         {Array.from({ length: cols * 2 }, (_, i) => (
           <Col span={24 / cols} key={i}>
             <div>col-{cols}</div>

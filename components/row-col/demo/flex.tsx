@@ -1,4 +1,5 @@
-import { Space, Col, Row, type RowProps } from "react-kui";
+import { Col, Row, Space, type RowProps } from "react-kui";
+import { Fragment } from "react/jsx-runtime";
 const values: NonNullable<RowProps["justify"]>[] = [
   "start",
   "center",
@@ -10,16 +11,16 @@ export default function App() {
   return (
     <Space vertical block className="demo-grid">
       {values.map((justify) => (
-        <div key={justify}>
+        <Fragment key={justify}>
           <code>{justify}</code>
-          <Row justify={justify}>
+          <Row justify={justify} className="demo-back">
             {Array.from({ length: 4 }, (_, i) => (
               <Col span={4} key={i}>
                 <div>col-4</div>
               </Col>
             ))}
           </Row>
-        </div>
+        </Fragment>
       ))}
     </Space>
   );

@@ -1,5 +1,6 @@
+import { Card, Grid, GridItem, Icon } from "react-kui";
 import { Link } from "react-router";
-import { Card, Icon } from "react-kui";
+import { Fragment } from "react/jsx-runtime";
 import { useDocs } from "../../context";
 import { navData } from "../../menu";
 
@@ -10,24 +11,20 @@ export default function ComponentsDemo() {
       {navData
         .filter((group) => group.key !== "guide")
         .map((group) => (
-          <section key={group.key}>
+          <Fragment key={group.key}>
             <h2>{t(group.title)}</h2>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill,minmax(200px,1fr))",
-                gap: 16,
-              }}
-            >
+            <Grid itemMinWidth={200} xGap={16} yGap={16}>
               {group.children.map((item) => (
-                <Link key={item.name} to={`/components/${item.name}${lang === "en" ? "-en" : ""}`}>
-                  <Card bordered title={`${item.sub} ${lang !== "en" ? item.title : ""}`}>
-                    <Icon type={item.icon} size={50} strokeWidth={1} className="icon-view" />
-                  </Card>
-                </Link>
+                <GridItem key={item.name}>
+                  <Link to={`/components/${item.name}${lang === "en" ? "-en" : ""}`}>
+                    <Card bordered title={`${item.sub} ${lang !== "en" ? item.title : ""}`}>
+                      <Icon type={item.icon} size={50} strokeWidth={1} className="icon-view" />
+                    </Card>
+                  </Link>
+                </GridItem>
               ))}
-            </div>
-          </section>
+            </Grid>
+          </Fragment>
         ))}
     </div>
   );
