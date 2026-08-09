@@ -7,6 +7,7 @@ export type BadgeStatusType = "default" | "success" | "error" | "warning";
 export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
   count?: string | number;
   dot?: boolean;
+  pill?: boolean;
   color?: string;
   status?: BadgeStatusType;
   text?: React.ReactNode;
@@ -17,6 +18,7 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
 const Badge: React.FC<BadgeProps> = ({
   count,
   dot = false,
+  pill = false,
   color,
   status = "default",
   text,
@@ -84,7 +86,7 @@ const Badge: React.FC<BadgeProps> = ({
     );
   }
 
-  const classes = clsx("k-badge", className);
+  const classes = clsx("k-badge", { "k-badge-pill": pill }, className);
 
   return (
     <div className={classes} style={style} {...rest}>

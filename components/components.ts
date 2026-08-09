@@ -68,6 +68,9 @@ export type {
 export { default as Flex } from "./flex";
 export type { FlexAlignType, FlexJustifyType, FlexProps, FlexSizeType } from "./flex";
 
+export { default as FeatureCard } from "./feature-card";
+export type { FeatureCardProps } from "./feature-card";
+
 export { Grid, GridItem } from "./grid";
 export type { GridItemProps, GridProps } from "./grid";
 

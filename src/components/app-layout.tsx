@@ -1,8 +1,7 @@
 import clsx from "clsx";
 import { ChevronLeft, ChevronRight, Menu as MenuIcon, X } from "kui-icons";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, useLocation } from "react-router";
-import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { Button, Content, Icon, Layout, Menu, MenuGroup, MenuItem, Sider } from "react-kui";
 import { useDocs } from "../context";
 import { navData, routeData, type RouteItem } from "../menu";
@@ -13,7 +12,6 @@ const OPEN_KEYS = navData.map((group) => group.key);
 export default function AppLayout({ children }: { children: ReactNode }) {
   const { lang, t } = useDocs();
   const location = useLocation();
-  const pageRef = useRef<HTMLDivElement>(null);
   const [showNav, setShowNav] = useState(false);
   const currentName = location.pathname.split("/").pop()?.replace(/-en$/, "") ?? "";
   const index = routeData.findIndex((item) => item.name === currentName);
@@ -64,21 +62,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           </Menu>
         </Sider>
         <Content>
-          <SwitchTransition mode="out-in">
-            <CSSTransition
-              key={location.pathname}
-              nodeRef={pageRef}
-              timeout={180}
-              classNames={{
-                enterActive: "docs-page-fade-enter-active",
-                exitActive: "docs-page-fade-exit-active",
-              }}
-            >
-              <main ref={pageRef} className="content-inner">
-                {children}
-              </main>
-            </CSSTransition>
-          </SwitchTransition>
+          <main className="content-inner">{children}</main>
           <div className="foot-nav">
             {prev && (
               <Link to={pathFor(prev)} className="nav-prev">

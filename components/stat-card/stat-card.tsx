@@ -10,6 +10,8 @@ export interface StatNumberItem {
   prefix?: ReactNode;
   suffix?: ReactNode;
   desc?: ReactNode;
+  trend?: ReactNode;
+  trendStatus?: "default" | "success" | "danger" | "warning";
   autoAnimate?: boolean;
   autoAnimateOnce?: boolean;
 }
@@ -62,6 +64,16 @@ export default function StatCard({
               />
             </div>
             <div className="k-stat-card-item-desc">{item.desc}</div>
+            {item.trend !== undefined && (
+              <div
+                className={clsx(
+                  "k-stat-card-item-trend",
+                  `k-stat-card-item-trend-${item.trendStatus || "default"}`
+                )}
+              >
+                {item.trend}
+              </div>
+            )}
           </div>
         ))}
       </div>
