@@ -32,7 +32,6 @@ export interface MenuProps extends Omit<React.HTMLAttributes<HTMLUListElement>, 
   openKeys?: string[];
   onSelect?: (data: MenuSelectEvent) => void;
   onOpenChange?: (openKeys: string[]) => void;
-  isDropdown?: boolean;
   children?: React.ReactNode;
 }
 
@@ -46,95 +45,137 @@ const Menu: React.FC<MenuProps> = ({
   openKeys = EMPTY_KEYS,
   onSelect,
   onOpenChange,
-  isDropdown = false,
   children,
-  className = "",
+  className,
   ...rest
 }) => {
-  const dropdown = useContext(DropdownContext);
-  const resolvedIsDropdown = isDropdown || dropdown !== null;
-  const [selectedKeys, setSelectedKeys] = useState<string[]>(value);
-  const [currentOpenKeys, setCurrentOpenKeys] = useState<string[]>(openKeys);
-  const [currentMode, setCurrentMode] = useState<DirectionType>(mode);
-  const [collapsed, setCollapsed] = useState(inlineCollapsed);
-  const tempOpenKeys = useRef<string[]>(openKeys);
+  const dropdown = useContext(DropdownContext) !== null;
+  const [selectedKeys, setSelectedKeys] = useState([...value]);
+  const [currentOpenKeys, setCurrentOpenKeys] = useState(inlineCollapsed ? [] : [...openKeys]);
+  const [currentMode, setCurrentMode] = useState(mode);
+  const [currentInlineCollapsed, setCurrentInlineCollapsed] = useState(inlineCollapsed);
+  const [popupInlineCollapsed, setPopupInlineCollapsed] = useState(inlineCollapsed);
+  const tempOpenKeys = useRef([...openKeys]);
+  const collapseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mounted = useRef({ value: false, mode: false, openKeys: false, collapsed: false });
 
-  const applyCollapsed = (nextCollapsed: boolean) => {
-    if (nextCollapsed) {
-      if (currentOpenKeys.length > 0) tempOpenKeys.current = currentOpenKeys;
-      setCurrentOpenKeys([]);
-    } else {
-      setCurrentOpenKeys(tempOpenKeys.current);
-    }
+  const collapseOpenKeys = () => {
+    if (currentOpenKeys.length > 0) tempOpenKeys.current = [...currentOpenKeys];
+    setCurrentOpenKeys([]);
   };
+  const restoreOpenKeys = () => setCurrentOpenKeys([...tempOpenKeys.current]);
 
-  useEffect(() => setSelectedKeys(value), [value]);
   useEffect(() => {
+    if (!mounted.current.value) {
+      mounted.current.value = true;
+      return;
+    }
+    setSelectedKeys([...value]);
+  }, [value]);
+
+  useEffect(() => {
+    if (!mounted.current.mode) {
+      mounted.current.mode = true;
+      return;
+    }
     setCurrentMode(mode);
-    if (mode === "vertical") applyCollapsed(true);
+    if (mode === "vertical") collapseOpenKeys();
+    else if (!inlineCollapsed) restoreOpenKeys();
   }, [mode]);
-  useEffect(() => setCurrentOpenKeys(openKeys), [openKeys]);
+
   useEffect(() => {
-    setCollapsed(inlineCollapsed);
-    applyCollapsed(inlineCollapsed);
+    if (!mounted.current.openKeys) {
+      mounted.current.openKeys = true;
+      return;
+    }
+    if (inlineCollapsed || currentMode === "vertical") tempOpenKeys.current = [...openKeys];
+    else setCurrentOpenKeys([...openKeys]);
+  }, [openKeys]);
+
+  useEffect(() => {
+    if (!mounted.current.collapsed) {
+      mounted.current.collapsed = true;
+      return;
+    }
+    if (collapseTimer.current) clearTimeout(collapseTimer.current);
+    if (inlineCollapsed) {
+      setCurrentInlineCollapsed(true);
+      collapseOpenKeys();
+      collapseTimer.current = setTimeout(() => setPopupInlineCollapsed(true), 200);
+    } else {
+      setPopupInlineCollapsed(false);
+      setCurrentInlineCollapsed(false);
+      restoreOpenKeys();
+    }
   }, [inlineCollapsed]);
 
-  const handleSelectedChange = (key: string, selected: boolean, keyPath: string[]) => {
-    const nextSelected = selected
-      ? [...keyPath, key]
-      : selectedKeys.filter((itemKey) => itemKey !== key);
-    setSelectedKeys(nextSelected);
-    onSelect?.({ key, keyPath });
-
-    if (currentMode === "horizontal" || currentMode === "vertical" || collapsed) {
-      if (currentOpenKeys.length > 0) tempOpenKeys.current = currentOpenKeys;
-      setCurrentOpenKeys([]);
-    }
-  };
-
-  const handleOpenChange = (key: string, opened: boolean, keyPath: string[]) => {
-    let nextOpen: string[];
-    if (accordion) {
-      nextOpen = opened ? [...keyPath, key] : keyPath;
-    } else if (!opened) {
-      nextOpen = currentOpenKeys.filter((itemKey) => itemKey !== key);
-    } else {
-      nextOpen = currentOpenKeys.includes(key) ? currentOpenKeys : [...currentOpenKeys, key];
-    }
-    setCurrentOpenKeys(nextOpen);
-    onOpenChange?.(nextOpen);
-  };
-
-  const preCls = resolvedIsDropdown ? "dropdown-menu" : "menu";
-  const classes = clsx(
-    `k-${preCls}`,
-    `k-${preCls}-${currentMode}`,
-    { "k-scroll": resolvedIsDropdown, [`k-${preCls}-inline-collapsed`]: collapsed },
-    className
+  useEffect(
+    () => () => {
+      if (collapseTimer.current) clearTimeout(collapseTimer.current);
+    },
+    []
   );
+
+  const selectedKeysChange = (key: string, selected: boolean, keyPath: string[]) => {
+    setSelectedKeys((keys) =>
+      selected ? [...keyPath, key] : keys.filter((itemKey) => itemKey !== key)
+    );
+    onSelect?.({ key, keyPath });
+    if (currentMode === "horizontal" || currentMode === "vertical" || currentInlineCollapsed) {
+      collapseOpenKeys();
+    }
+  };
+  const registerSelectedPath = (key: string, keyPath: string[]) => {
+    setSelectedKeys((keys) => (keys.includes(key) ? [...keyPath, key] : keys));
+  };
+
+  const openKeysChange = (key: string, opened: boolean, keyPath: string[]) => {
+    let nextKeys: string[];
+    if (accordion) nextKeys = opened ? [...keyPath, key] : keyPath;
+    else if (!opened) nextKeys = currentOpenKeys.filter((itemKey) => itemKey !== key);
+    else {
+      nextKeys = currentOpenKeys.includes(key) ? currentOpenKeys : [...currentOpenKeys, key];
+    }
+    setCurrentOpenKeys(nextKeys);
+    onOpenChange?.(nextKeys);
+  };
+
+  const contextValue: MenuContextValue = {
+    selectedKeys,
+    openKeys: currentOpenKeys,
+    mode: currentMode,
+    inlineCollapsed: currentInlineCollapsed,
+    popupInlineCollapsed,
+    dropdown,
+    keyPath: [],
+    openKeysChange,
+    selectedKeysChange,
+    registerSelectedPath,
+  };
+  const preCls = dropdown ? "dropdown-menu" : "menu";
   const renderedChildren = React.Children.map(children, (child) => {
     if (!React.isValidElement(child)) return child;
     const element = child as React.ReactElement<any>;
     return React.cloneElement(element, {
       menuKey: element.props.menuKey ?? (element.key == null ? undefined : String(element.key)),
-      keyPath: [],
     });
   });
-  const contextValue: MenuContextValue = {
-    selectedKeys,
-    openKeys: currentOpenKeys,
-    mode: currentMode,
-    inlineCollapsed: collapsed,
-    isDropdown: resolvedIsDropdown,
-    accordion,
-    keyPath: [],
-    onSelectedChange: handleSelectedChange,
-    onOpenChange: handleOpenChange,
-  };
 
   return (
     <MenuContext.Provider value={contextValue}>
-      <ul className={classes} {...({ "theme-mode": theme } as any)} {...rest}>
+      <ul
+        className={clsx(
+          `k-${preCls}`,
+          `k-${preCls}-${currentMode}`,
+          {
+            "k-scroll": dropdown,
+            [`k-${preCls}-inline-collapsed`]: currentInlineCollapsed,
+          },
+          className
+        )}
+        {...({ "theme-mode": theme } as React.HTMLAttributes<HTMLUListElement>)}
+        {...rest}
+      >
         {items?.length
           ? items.map((item) => <RecursiveMenu item={item} key={item.key} />)
           : renderedChildren}

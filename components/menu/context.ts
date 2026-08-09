@@ -6,13 +6,14 @@ export interface MenuContextValue {
   openKeys: string[];
   mode: DirectionType;
   inlineCollapsed: boolean;
-  isDropdown: boolean;
-  accordion: boolean;
+  popupInlineCollapsed: boolean;
+  dropdown: boolean;
   keyPath: string[];
-  onSelectedChange: (key: string, selected: boolean, keyPath: string[]) => void;
-  onOpenChange: (key: string, opened: boolean, keyPath: string[]) => void;
-  clearPopupTimer?: () => void;
-  schedulePopupClose?: () => void;
+  openKeysChange: (key: string, opened: boolean, keyPath: string[]) => void;
+  selectedKeysChange: (key: string, selected: boolean, keyPath: string[]) => void;
+  registerSelectedPath: (key: string, keyPath: string[]) => void;
+  clearPopTimer?: () => void;
+  hidePopTimer?: () => void;
 }
 
 export const MenuContext = createContext<MenuContextValue>({
@@ -20,9 +21,10 @@ export const MenuContext = createContext<MenuContextValue>({
   openKeys: [],
   mode: "vertical",
   inlineCollapsed: false,
-  isDropdown: false,
-  accordion: false,
+  popupInlineCollapsed: false,
+  dropdown: false,
   keyPath: [],
-  onSelectedChange: () => {},
-  onOpenChange: () => {},
+  openKeysChange: () => {},
+  selectedKeysChange: () => {},
+  registerSelectedPath: () => {},
 });

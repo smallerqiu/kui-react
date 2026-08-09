@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Icon, { type IconType } from "../icon";
 import { MenuContext } from "./context";
 
@@ -7,9 +7,7 @@ export interface MenuItemProps extends Omit<React.HTMLAttributes<HTMLLIElement>,
   icon?: IconType[];
   title?: React.ReactNode;
   disabled?: boolean;
-  isPopup?: boolean;
   menuKey?: string;
-  keyPath?: string[];
   children?: React.ReactNode;
 }
 
@@ -17,23 +15,19 @@ const MenuItem: React.FC<MenuItemProps> = ({
   icon,
   title,
   disabled = false,
-  isPopup = false,
-  menuKey,
-  keyPath: ownKeyPath,
+  menuKey = "",
   children,
-  className = "",
+  className,
   ...rest
 }) => {
-  const ctx = useContext(MenuContext);
+  const context = useContext(MenuContext);
   const [active, setActive] = useState(false);
-  const preCls = ctx.isDropdown ? "dropdown-menu" : "menu";
-  const key = menuKey ?? "";
-  const keyPath = ownKeyPath ?? ctx.keyPath;
-  const isSelected = ctx.selectedKeys.includes(key) && !ctx.isDropdown;
-  const paddingLeft =
-    ctx.mode === "inline" && !ctx.inlineCollapsed && keyPath.length && !isPopup
-      ? `${keyPath.length * 16 + 16}px`
-      : undefined;
+  const selected = context.selectedKeys.includes(menuKey) && !context.dropdown;
+  const preCls = context.dropdown ? "dropdown-menu" : "menu";
+
+  useEffect(() => {
+    if (selected) context.registerSelectedPath(menuKey, context.keyPath);
+  }, []);
 
   return (
     <li
@@ -41,21 +35,30 @@ const MenuItem: React.FC<MenuItemProps> = ({
         `k-${preCls}-item`,
         {
           [`k-${preCls}-item-active`]: active,
-          [`k-${preCls}-item-selected`]: isSelected,
+          [`k-${preCls}-item-selected`]: selected,
           [`k-${preCls}-item-disabled`]: disabled,
         },
         className
       )}
-      style={{ paddingLeft }}
-      onMouseEnter={() => !disabled && setActive(true)}
-      onMouseLeave={() => !disabled && setActive(false)}
+      style={{
+        paddingLeft:
+          context.mode === "inline" && !context.inlineCollapsed && context.keyPath.length
+            ? `${context.keyPath.length * 16 + 16}px`
+            : undefined,
+      }}
+      onMouseEnter={() => {
+        if (!disabled) setActive(true);
+      }}
+      onMouseLeave={() => {
+        if (!disabled) setActive(false);
+      }}
       onClick={() => {
-        if (!disabled) ctx.onSelectedChange(key, true, keyPath);
+        if (!disabled) context.selectedKeysChange(menuKey, true, context.keyPath);
       }}
       {...rest}
     >
       {icon ? <Icon type={icon} className={`k-${preCls}-item-icon`} /> : null}
-      <span className={`k-${preCls}-title-content`}>{title || children}</span>
+      <span className={`k-${preCls}-title-content`}>{title ?? children}</span>
     </li>
   );
 };
