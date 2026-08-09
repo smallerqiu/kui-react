@@ -53,12 +53,12 @@
 
 ## Space API
 
-| 属性     | 说明                         | 类型                                  | 默认值 |
-| -------- | ---------------------------- | ------------------------------------- | ------ |
-| align    | 对齐方式                     | `start` , `end` ,`center` ,`baseline` | center |
-| vertical | 是否垂直显示                 | `boolean`                             | `false` |
-| size     | 间距大小                     | `SizeType \| number \| (number \| string)[]` | - |
-| wrap     | 是否换行                     | `boolean`                             | `false` |
-| split    | 相邻元素间的分隔内容         | `ReactNode`                           | - |
-| compact  | 是否使用紧凑模式             | `boolean`                             | `false` |
-| block    | 是否撑满父元素宽度           | `boolean`                             | `false` |
+| 属性     | 说明                 | 类型                                         | 默认值  |
+| -------- | -------------------- | -------------------------------------------- | ------- |
+| align    | 对齐方式             | `start` , `end` ,`center` ,`baseline`        | center  |
+| vertical | 是否垂直显示         | `boolean`                                    | `false` |
+| size     | 间距大小             | `SizeType \| number \| (number \| string)[]` | -       |
+| wrap     | 是否换行             | `boolean`                                    | `false` |
+| split    | 相邻元素间的分隔内容 | `ReactNode`                                  | -       |
+| compact  | 是否使用紧凑模式     | `boolean`                                    | `false` |
+| block    | 是否撑满父元素宽度   | `boolean`                                    | `false` |

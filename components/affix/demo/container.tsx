@@ -1,5 +1,5 @@
 import { useCallback, useRef } from "react";
-import { Button, Affix } from "react-kui";
+import { Affix, Button } from "react-kui";
 export default function App() {
   const ref = useRef<HTMLDivElement>(null);
   const target = useCallback(() => ref.current, []);
@@ -8,8 +8,11 @@ export default function App() {
       ref={ref}
       style={{
         height: 300,
-        overflowY: "auto",
-        background: "repeating-linear-gradient(45deg,#ddd 0 20px,#f5f5f5 20px 40px)",
+        overflowY: "scroll",
+        backgroundImage:
+          "linear-gradient(-45deg, #cdcdcd 25%, #eeeeee50 0),linear-gradient(45deg, #cdcdcd 25%, #eeeeee50 0),    linear-gradient(-45deg, #eeeeee50 75%, #cdcdcd 0),    linear-gradient(45deg, #eeeeee50 75%, #cdcdcd 0)",
+        backgroundSize: "40px 40px",
+        backgroundPosition: "0 0,0 -20px,-20px 20px,20px 0",
       }}
     >
       <div style={{ height: 800, paddingTop: 50 }}>

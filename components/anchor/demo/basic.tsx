@@ -22,7 +22,7 @@ export default function App() {
             id={id}
             key={id}
             style={{
-              height: 400,
+              height: 500,
               padding: 20,
               background: "var(--kui-color-bg-container)",
               marginBottom: 20,
@@ -33,11 +33,13 @@ export default function App() {
           </section>
         ))}
       </div>
-      <Anchor offsetTop={20} container=".anchor-demo-basic">
-        <AnchorLink href="#part-1" title="Basic" />
-        <AnchorLink href="#part-2" title="Guide" />
-        <AnchorLink href="#part-3" title="FAQ" />
-      </Anchor>
+      <div>
+        <Anchor offsetTop={20} container=".anchor-demo-basic">
+          <AnchorLink href="#part-1" title="Basic" />
+          <AnchorLink href="#part-2" title="Guide" />
+          <AnchorLink href="#part-3" title="FAQ" />
+        </Anchor>
+      </div>
     </div>
   );
 }

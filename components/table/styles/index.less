@@ -132,7 +132,9 @@
       }
 
       .k-table-sorter {
-        display: inline-block;
+        display: inline-flex;
+        flex-direction: column;
+        gap: 3px;
         margin-left: 8px;
         vertical-align: middle;
 
@@ -141,8 +143,12 @@
           align-items: center;
           font-size: 10px;
           line-height: 1;
-          color: #ccc;
+          color: var(--kui-color-icon);
           height: 7px;
+          transform: scaleY(0.7);
+        }
+        .k-table-sorter-down {
+          transform: scaleY(0.7) rotate(180deg);
         }
         .k-table-sorter-active {
           color: var(--kui-color-primary);
@@ -363,8 +369,15 @@
     }
     .k-table-body {
       border-right: 1px solid var(--kui-color-border);
+      border-bottom: 1px solid var(--kui-color-border);
       border-top: 1px solid var(--kui-color-border);
       border-left: 1px solid var(--kui-color-border);
+
+      // 底边由滚动容器负责，保证空数据和固定高度滚动时边框始终闭合。
+      // 最后一行不再重复绘制，避免滚动到底部时出现双边框。
+      tbody > tr:last-child > td {
+        border-bottom: 0;
+      }
     }
     .k-table-footer {
       border-right: 1px solid var(--kui-color-border);

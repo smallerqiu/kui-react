@@ -16,10 +16,12 @@ export default function AnchorLink({
   ...rest
 }: AnchorLinkProps) {
   const context = useContext(AnchorContext);
+  const registerLink = context?.registerLink;
+  const unregisterLink = context?.unregisterLink;
   useEffect(() => {
-    context?.registerLink(href);
-    return () => context?.unregisterLink(href);
-  }, [context, href]);
+    registerLink?.(href);
+    return () => unregisterLink?.(href);
+  }, [href, registerLink, unregisterLink]);
 
   return (
     <div

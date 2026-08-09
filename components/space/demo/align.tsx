@@ -1,4 +1,4 @@
-import { Button, Flex, Space } from "react-kui";
+import { Button, Flex, Space, Tag } from "react-kui";
 export default function App() {
   return (
     <Flex className="demo-space-align" wrap size="small">
@@ -19,12 +19,13 @@ export default function App() {
               display: "grid",
               placeItems: "center",
               background: "#92929252",
+              border: "1px solid var(--kui-color-border)",
             }}
           >
             block
           </div>
           <Button>button</Button>
-          <span>{align}</span>
+          <Tag color="blue">{align}</Tag>
         </Space>
       ))}
     </Flex>

@@ -53,12 +53,12 @@ Avoid components sticking together, create uniform space.
 
 ## Space API
 
-| Property | Description                                    | Type                                 | Default |
-| -------- | ---------------------------------------------- | ------------------------------------ | ------- |
-| align    | Alignment method                               | `start`, `end`, `center`, `baseline` | center  |
-| vertical | Whether to display vertically                  | `boolean`                            | `false` |
-| size     | Spacing size                                   | `SizeType \| number \| (number \| string)[]` | - |
-| wrap     | Whether to wrap                                | `boolean`                            | `false` |
-| split    | Content rendered between adjacent children    | `ReactNode`                          | - |
-| compact  | Whether to use compact mode                    | `boolean`                            | `false` |
-| block    | Whether to fill the parent width               | `boolean`                            | `false` |
+| Property | Description                                | Type                                         | Default |
+| -------- | ------------------------------------------ | -------------------------------------------- | ------- |
+| align    | Alignment method                           | `start`, `end`, `center`, `baseline`         | center  |
+| vertical | Whether to display vertically              | `boolean`                                    | `false` |
+| size     | Spacing size                               | `SizeType \| number \| (number \| string)[]` | -       |
+| wrap     | Whether to wrap                            | `boolean`                                    | `false` |
+| split    | Content rendered between adjacent children | `ReactNode`                                  | -       |
+| compact  | Whether to use compact mode                | `boolean`                                    | `false` |
+| block    | Whether to fill the parent width           | `boolean`                                    | `false` |

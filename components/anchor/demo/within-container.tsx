@@ -13,10 +13,12 @@ export default function App() {
           content 2
         </div>
       </div>
-      <Anchor container=".anchor-demo-scroll">
-        <AnchorLink href="#item-1" title="part 1" />
-        <AnchorLink href="#item-2" title="part 2" />
-      </Anchor>
+      <div>
+        <Anchor container=".anchor-demo-scroll">
+          <AnchorLink href="#item-1" title="part 1" />
+          <AnchorLink href="#item-2" title="part 2" />
+        </Anchor>
+      </div>
     </div>
   );
 }

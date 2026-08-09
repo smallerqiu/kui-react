@@ -14,6 +14,9 @@ Assists with page-level overall layout.
 
 ## Examples
 
+[Basic Layout](./demo/basic.tsx?show=vertical)
+- Basic Layout
+
 [Modern Enterprise Admin Console](./demo/enterprise-admin-console.tsx?show=vertical)
 
 - The most common "sidebar navigation + top toolbar" structure, suitable for SaaS products, CMS backends, or ERP systems.

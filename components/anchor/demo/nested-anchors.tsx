@@ -20,14 +20,16 @@ export default function App() {
         <h2 id="events">Events</h2>
         <div style={{ height: 400 }} />
       </div>
-      <Anchor container=".anchor-demo-nested">
-        <AnchorLink href="#api" title="API">
-          <AnchorLink href="#props" title="Props">
-            <AnchorLink href="#anchor-props" title="Anchor Props" />
+      <div style={{ paddingTop: 40 }}>
+        <Anchor container=".anchor-demo-nested">
+          <AnchorLink href="#api" title="API">
+            <AnchorLink href="#props" title="Props">
+              <AnchorLink href="#anchor-props" title="Anchor Props" />
+            </AnchorLink>
+            <AnchorLink href="#events" title="Events" />
           </AnchorLink>
-          <AnchorLink href="#events" title="Events" />
-        </AnchorLink>
-      </Anchor>
+        </Anchor>
+      </div>
     </div>
   );
 }

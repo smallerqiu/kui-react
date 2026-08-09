@@ -41,41 +41,57 @@ export default function Affix({
   ...rest
 }: AffixProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+  const targetRef = useRef<HTMLElement | Window | null>(null);
+  const frameRef = useRef<number | null>(null);
   const fixedRef = useRef(false);
+  const onChangeRef = useRef(onChange);
   const [fixed, setFixed] = useState(false);
   const [affixStyle, setAffixStyle] = useState<CSSProperties>({});
   const [placeholderStyle, setPlaceholderStyle] = useState<CSSProperties>({});
 
+  onChangeRef.current = onChange;
+
   const updatePosition = useCallback(() => {
-    const element = wrapperRef.current;
-    const scrollTarget = target();
-    if (!element || !scrollTarget || typeof window === "undefined") return;
+    frameRef.current = null;
+    const wrapper = wrapperRef.current;
+    const inner = innerRef.current;
+    const scrollTarget = targetRef.current;
+    if (!wrapper || !inner || !scrollTarget || typeof window === "undefined") return;
 
-    const rect = element.getBoundingClientRect();
-    const isWindow = scrollTarget === window;
-    const targetRect = isWindow
-      ? { top: 0, bottom: window.innerHeight }
-      : (scrollTarget as HTMLElement).getBoundingClientRect();
-
-    let nextFixed: boolean;
+    const rect = wrapper.getBoundingClientRect();
+    const targetRect =
+      scrollTarget === window
+        ? { top: 0, bottom: window.innerHeight }
+        : (scrollTarget as HTMLElement).getBoundingClientRect();
+    let nextFixed = false;
     let nextStyle: CSSProperties = {};
+
     if (offsetBottom !== undefined) {
       nextFixed = targetRect.bottom - rect.bottom - offsetBottom <= 0;
       if (nextFixed) {
         nextStyle = {
           position: "fixed",
           bottom: window.innerHeight - targetRect.bottom + offsetBottom,
+          left: rect.left,
           width: rect.width,
         };
       }
     } else {
       nextFixed = rect.top - targetRect.top - offsetTop <= 0;
       if (nextFixed) {
-        nextStyle = { position: "fixed", top: targetRect.top + offsetTop, width: rect.width };
+        nextStyle = {
+          position: "fixed",
+          top: targetRect.top + offsetTop,
+          left: rect.left,
+          width: rect.width,
+        };
       }
     }
 
-    const nextPlaceholderStyle = nextFixed ? { height: rect.height, width: rect.width } : {};
+    const nextPlaceholderStyle: CSSProperties = nextFixed
+      ? { height: inner.getBoundingClientRect().height }
+      : {};
     setAffixStyle((current) => (isSameStyle(current, nextStyle) ? current : nextStyle));
     setPlaceholderStyle((current) =>
       isSameStyle(current, nextPlaceholderStyle) ? current : nextPlaceholderStyle
@@ -83,30 +99,47 @@ export default function Affix({
     if (fixedRef.current !== nextFixed) {
       fixedRef.current = nextFixed;
       setFixed(nextFixed);
-      onChange?.(nextFixed);
+      onChangeRef.current?.(nextFixed);
     }
-  }, [offsetBottom, offsetTop, onChange, target]);
+  }, [offsetBottom, offsetTop]);
+
+  const scheduleUpdate = useCallback(() => {
+    if (frameRef.current !== null || typeof window === "undefined") return;
+    frameRef.current = window.requestAnimationFrame(updatePosition);
+  }, [updatePosition]);
 
   useEffect(() => {
-    const scrollTarget = target();
-    if (!scrollTarget || typeof window === "undefined") return;
-    scrollTarget.addEventListener("scroll", updatePosition, { passive: true });
-    window.addEventListener("resize", updatePosition);
+    if (typeof window === "undefined" || !wrapperRef.current || !innerRef.current) return;
+    targetRef.current = target();
+    const scrollTarget = targetRef.current;
+    if (!scrollTarget) return;
+
+    window.addEventListener("scroll", scheduleUpdate, true);
+    window.addEventListener("resize", scheduleUpdate);
     const observer =
-      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updatePosition);
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(scheduleUpdate);
+    observer?.observe(wrapperRef.current);
+    observer?.observe(innerRef.current);
     if (scrollTarget !== window) observer?.observe(scrollTarget as HTMLElement);
-    observer?.observe(wrapperRef.current!);
-    updatePosition();
+    scheduleUpdate();
+
     return () => {
-      scrollTarget.removeEventListener("scroll", updatePosition);
-      window.removeEventListener("resize", updatePosition);
+      window.removeEventListener("scroll", scheduleUpdate, true);
+      window.removeEventListener("resize", scheduleUpdate);
       observer?.disconnect();
+      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
+      frameRef.current = null;
+      targetRef.current = null;
     };
-  }, [target, updatePosition]);
+  }, [scheduleUpdate, target]);
 
   return (
     <div {...rest} ref={wrapperRef} style={{ ...style, ...placeholderStyle }}>
-      <div className={clsx("k-affix", { "k-affix-fixed": fixed }, className)} style={affixStyle}>
+      <div
+        ref={innerRef}
+        className={clsx("k-affix", { "k-affix-fixed": fixed }, className)}
+        style={affixStyle}
+      >
         {children}
       </div>
     </div>
