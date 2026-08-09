@@ -159,6 +159,16 @@ export function setPlacement({
     }
   }
 
+  const anchorInViewport =
+    rect.bottom > 0 && rect.top < clientHeight && rect.right > 0 && rect.left < clientWidth;
+  if (anchorInViewport) {
+    if (calcLeft < 0) calcLeft = 0;
+    else if (calcLeft + pickerW > clientWidth) calcLeft = clientWidth - pickerW;
+
+    if (calcTop < 0) calcTop = 0;
+    else if (calcTop + pickerH > clientHeight) calcTop = clientHeight - pickerH;
+  }
+
   // 赋值
   top.value = calcTop + scrollTop;
   left.value = calcLeft + scrollLeft;

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import PopupTransition from "../base/popup-transition";
 import type { DropPlacementsType, TriggerType } from "../const/types";
@@ -49,6 +49,9 @@ const Dropdown: React.FC<DropdownProps> = ({
   const [top, setTop] = useState(0);
 
   const showTimer = useRef<NodeJS.Timeout | null>(null);
+  const positionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const frameRef = useRef<number | null>(null);
+  const contextmenuPosition = useRef<{ x: number; y: number } | null>(null);
 
   const refSelection = target || localRefSelection;
 
@@ -59,52 +62,81 @@ const Dropdown: React.FC<DropdownProps> = ({
     }
   }, [show]);
 
-  const updatePosition = (e?: MouseEvent) => {
-    if (!refPopper.current) return;
-    const targetElement = refSelection.current;
-    if (!targetElement) return;
+  const updatePosition = useCallback(
+    (e?: MouseEvent, requestedPlacement = currentPlacement) => {
+      if (!refPopper.current) return;
+      const targetElement = refSelection.current;
+      if (!targetElement) return;
 
-    const position = e ? { x: e.clientX, y: e.clientY } : null;
+      const position =
+        e != null
+          ? { x: e.clientX, y: e.clientY }
+          : trigger === "contextmenu"
+            ? contextmenuPosition.current
+            : null;
 
-    const placementObj = { value: currentPlacement };
-    const originObj = { value: transOrigin };
-    const topObj = { value: top };
-    const leftObj = { value: left };
+      const placementObj = { value: requestedPlacement };
+      const originObj = { value: "bottom" };
+      const topObj = { value: 0 };
+      const leftObj = { value: 0 };
 
-    setPlacement({
-      refSelection: targetElement,
-      position,
-      refPopper: refPopper.current,
-      currentPlacement: placementObj,
-      transOrigin: originObj,
-      top: topObj,
-      left: leftObj,
+      setPlacement({
+        refSelection: targetElement,
+        position,
+        refPopper: refPopper.current,
+        currentPlacement: placementObj,
+        transOrigin: originObj,
+        top: topObj,
+        left: leftObj,
+      });
+
+      setCurrentPlacement((current) =>
+        current === placementObj.value ? current : (placementObj.value as DropPlacementsType)
+      );
+      setTransOrigin((current) => (current === originObj.value ? current : originObj.value));
+      setTop((current) => (current === topObj.value ? current : topObj.value));
+      setLeft((current) => (current === leftObj.value ? current : leftObj.value));
+    },
+    [currentPlacement, refSelection, trigger]
+  );
+
+  const schedulePositionUpdate = useCallback(() => {
+    if (frameRef.current !== null || typeof window === "undefined") return;
+    frameRef.current = window.requestAnimationFrame(() => {
+      frameRef.current = null;
+      updatePosition();
     });
-
-    setCurrentPlacement(placementObj.value as DropPlacementsType);
-    setTransOrigin(originObj.value);
-    setTop(topObj.value);
-    setLeft(leftObj.value);
-  };
+  }, [updatePosition]);
 
   useEffect(() => {
+    setCurrentPlacement(placement);
     if (visible) {
-      updatePosition();
+      positionTimer.current = setTimeout(() => updatePosition(undefined, placement), 0);
     }
-  }, [visible, placement]);
+    return () => {
+      if (positionTimer.current) clearTimeout(positionTimer.current);
+      positionTimer.current = null;
+    };
+  }, [placement, visible]);
 
   useEffect(() => {
     if (!visible) return;
     const targetElement = refSelection.current;
     if (!targetElement) return;
-    const observer = new ResizeObserver(() => {
-      updatePosition();
-    });
-    observer.observe(targetElement);
+    const observer =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(schedulePositionUpdate);
+    observer?.observe(targetElement);
+    if (refPopper.current) observer?.observe(refPopper.current);
+    window.addEventListener("resize", schedulePositionUpdate);
+    window.addEventListener("scroll", schedulePositionUpdate, true);
     return () => {
-      observer.disconnect();
+      observer?.disconnect();
+      window.removeEventListener("resize", schedulePositionUpdate);
+      window.removeEventListener("scroll", schedulePositionUpdate, true);
+      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
+      frameRef.current = null;
     };
-  }, [visible]);
+  }, [schedulePositionUpdate, visible]);
 
   const outsideClick = (e: MouseEvent) => {
     const targetElement = refSelection.current;
@@ -140,6 +172,15 @@ const Dropdown: React.FC<DropdownProps> = ({
     }
   };
 
+  useEffect(
+    () => () => {
+      clearPopTimer();
+      if (positionTimer.current) clearTimeout(positionTimer.current);
+      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
+    },
+    []
+  );
+
   const openChange = (opened: boolean, e?: MouseEvent) => {
     if (!rendered && opened) {
       setRendered(true);
@@ -147,7 +188,13 @@ const Dropdown: React.FC<DropdownProps> = ({
     setVisible(opened);
     onOpenChange?.(opened);
     if (opened) {
-      setTimeout(() => updatePosition(e), 0);
+      if (trigger === "contextmenu" && e) {
+        contextmenuPosition.current = { x: e.clientX, y: e.clientY };
+      }
+      if (positionTimer.current) clearTimeout(positionTimer.current);
+      positionTimer.current = setTimeout(() => updatePosition(e, placement), 0);
+    } else if (trigger === "contextmenu") {
+      contextmenuPosition.current = null;
     }
   };
 
@@ -172,7 +219,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   const clickEvent = () => {
     if (disabled) return;
     if (trigger === "click") {
-      openChange(!visible);
+      openChange(true);
     }
   };
 
@@ -244,6 +291,7 @@ const Dropdown: React.FC<DropdownProps> = ({
             } as React.CSSProperties
           }
           className={popperClasses}
+          {...({ "k-placement": currentPlacement } as Record<string, string>)}
           onClick={() => openChange(false)}
           onMouseEnter={clearPopTimer}
           onMouseLeave={mouseLeaveEvent}

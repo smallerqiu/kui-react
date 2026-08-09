@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { MenuContext } from "./menu";
+import { MenuContext } from "./context";
 
 const MenuDivider: React.FC = () => {
   const ctx = useContext(MenuContext);
