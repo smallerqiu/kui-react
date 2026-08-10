@@ -1,6 +1,5 @@
 // Transfer (portal) utility for React components
-// In React, use ReactDOM.createPortal instead of manually transferring DOM nodes.
-// This utility is kept as a reference but prefer ReactDOM.createPortal.
+// In React, use the base Teleport component instead of manually transferring DOM nodes.
 
 export function transferTo(target: HTMLElement | true | null, el: HTMLElement) {
   const container = target === true || !target ? document.body : target;

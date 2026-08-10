@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import PopupTransition from "../base/popup-transition";
+import Teleport from "../base/teleport";
+import Transition from "../base/transition";
 import type { DropPlacementsType, TriggerType } from "../const/types";
 import { setPlacement } from "../utils/placement";
 import { getChildren } from "../utils/react-node";
@@ -21,6 +21,8 @@ export interface DropdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>
 export const DropdownContext = React.createContext<{
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
+  clearPopTimer?: () => void;
+  menuSelected?: (data: { key: string; keyPath: string[] }) => void;
 } | null>(null);
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -279,7 +281,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   const overlayNode =
     rendered && overlay ? (
-      <PopupTransition visible={visible} name="k-dropdown" nodeRef={refPopper}>
+      <Transition show={visible} name="k-dropdown" nodeRef={refPopper}>
         <div
           ref={refPopper}
           style={
@@ -316,15 +318,20 @@ const Dropdown: React.FC<DropdownProps> = ({
             )}
           </div>
         </div>
-      </PopupTransition>
+      </Transition>
     ) : null;
 
   return (
     <DropdownContext.Provider
-      value={{ onMouseEnter: mouseEnterEvent, onMouseLeave: mouseLeaveEvent }}
+      value={{
+        onMouseEnter: mouseEnterEvent,
+        onMouseLeave: mouseLeaveEvent,
+        clearPopTimer,
+        menuSelected: () => openChange(false),
+      }}
     >
       {triggerNode}
-      {overlayNode && createPortal(overlayNode, document.body)}
+      <Teleport to="body">{overlayNode}</Teleport>
     </DropdownContext.Provider>
   );
 };

@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
-import { MenuContext } from "./context";
+import { MenuContext } from "./menu-context";
 
 const MenuDivider: React.FC = () => {
-  const { dropdown } = useContext(MenuContext);
-  const preCls = dropdown ? "dropdown-menu" : "menu";
+  const menuContext = useContext(MenuContext);
+  const preCls = menuContext?.dropdown ? "dropdown-menu" : "menu";
   return <li className={`k-${preCls}-item-divider`} />;
 };
 

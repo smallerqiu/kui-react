@@ -10,8 +10,8 @@ import {
   type ChangeEvent,
   type HTMLAttributes,
 } from "react";
-import { createPortal } from "react-dom";
-import PopupTransition from "../base/popup-transition";
+import Teleport from "../base/teleport";
+import Transition from "../base/transition";
 import { ConfigContext } from "../config";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 import Empty from "../empty";
@@ -278,10 +278,9 @@ export default function TreeSelect({
       <span className="k-tree-select-search-mirror">{query}</span>
     </div>
   );
-  const overlay =
-    rendered &&
-    createPortal(
-      <PopupTransition visible={visible} name="k-tree-select" nodeRef={overlayRef}>
+  const overlay = rendered && (
+    <Teleport to="body">
+      <Transition show={visible} name="k-tree-select" nodeRef={overlayRef}>
         <div
           ref={overlayRef}
           className={clsx("k-tree-select-dropdown", "k-scroll", {
@@ -332,9 +331,9 @@ export default function TreeSelect({
             <Empty description={emptyText || locale?.k?.select?.emptyText} />
           )}
         </div>
-      </PopupTransition>,
-      document.body
-    );
+      </Transition>
+    </Teleport>
+  );
 
   return (
     <>

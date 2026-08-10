@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import { CSSTransition } from "react-transition-group";
 
 type ElementRef = React.Ref<HTMLElement> | undefined;
@@ -13,6 +13,7 @@ export interface TransitionProps {
   show?: boolean;
   appear?: boolean;
   timeout?: number;
+  nodeRef?: React.RefObject<HTMLElement | null>;
   children: React.ReactElement<React.HTMLAttributes<HTMLElement>>;
   onBeforeEnter?: (el: HTMLElement) => void;
   onEnter?: (el: HTMLElement) => void;
@@ -27,6 +28,7 @@ const Transition: React.FC<TransitionProps> = ({
   show = true,
   appear = false,
   timeout = 300,
+  nodeRef: externalNodeRef,
   children,
   onBeforeEnter,
   onEnter,
@@ -35,14 +37,21 @@ const Transition: React.FC<TransitionProps> = ({
   onLeave,
   onAfterLeave,
 }) => {
-  const nodeRef = useRef<HTMLElement>(null);
+  const internalRef = useRef<HTMLElement>(null);
+  const nodeRef = externalNodeRef || internalRef;
   const hidden = useRef(!show);
-  const childRef = (children.props as { ref?: ElementRef }).ref;
-  const child = React.cloneElement(children, {
-    ref: (node: HTMLElement | null) => {
-      nodeRef.current = node;
+  const childRef =
+    (children.props as { ref?: ElementRef }).ref ??
+    ((children as React.ReactElement & { ref?: ElementRef }).ref as ElementRef);
+  const mergedRef = useCallback(
+    (node: HTMLElement | null) => {
+      (nodeRef as React.MutableRefObject<HTMLElement | null>).current = node;
       setRef(childRef, node);
     },
+    [childRef, nodeRef]
+  );
+  const child = React.cloneElement(children, {
+    ref: mergedRef,
     style: {
       ...children.props.style,
       display: !show && hidden.current ? "none" : children.props.style?.display,
@@ -70,18 +79,10 @@ const Transition: React.FC<TransitionProps> = ({
         el.style.display = children.props.style?.display ?? "";
         onBeforeEnter?.(el);
       }}
-      onEntering={() => {
-        if (nodeRef.current) onEnter?.(nodeRef.current);
-      }}
-      onEntered={() => {
-        if (nodeRef.current) onAfterEnter?.(nodeRef.current);
-      }}
-      onExit={() => {
-        if (nodeRef.current) onBeforeLeave?.(nodeRef.current);
-      }}
-      onExiting={() => {
-        if (nodeRef.current) onLeave?.(nodeRef.current);
-      }}
+      onEntering={() => nodeRef.current && onEnter?.(nodeRef.current)}
+      onEntered={() => nodeRef.current && onAfterEnter?.(nodeRef.current)}
+      onExit={() => nodeRef.current && onBeforeLeave?.(nodeRef.current)}
+      onExiting={() => nodeRef.current && onLeave?.(nodeRef.current)}
       onExited={() => {
         const el = nodeRef.current;
         if (!el) return;

@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import PopupTransition from "../base/popup-transition";
+import Teleport from "../base/teleport";
+import Transition from "../base/transition";
 import type { PlacementsType } from "../const/types";
 import { setPlacement } from "../utils/placement";
 import { getChildren } from "../utils/react-node";
@@ -154,7 +154,7 @@ const Poptip: React.FC<PoptipProps> = ({
   const preCls = "poptip";
 
   const overlayNode = rendered ? (
-    <PopupTransition visible={visible} name={`k-${preCls}`} nodeRef={refPopper}>
+    <Transition show={visible} name={`k-${preCls}`} nodeRef={refPopper}>
       <div
         ref={refPopper}
         {...({ "k-placement": currentPlacement } as React.HTMLAttributes<HTMLDivElement>)}
@@ -195,13 +195,13 @@ const Poptip: React.FC<PoptipProps> = ({
           </div>
         </div>
       </div>
-    </PopupTransition>
+    </Transition>
   ) : null;
 
   return (
     <>
       {triggerNode}
-      {overlayNode && createPortal(overlayNode, document.body)}
+      <Teleport to="body">{overlayNode}</Teleport>
     </>
   );
 };

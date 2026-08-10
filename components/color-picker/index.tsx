@@ -11,8 +11,8 @@ import {
   type ReactElement,
   type ReactNode,
 } from "react";
-import { createPortal } from "react-dom";
-import PopupTransition from "../base/popup-transition";
+import Teleport from "../base/teleport";
+import Transition from "../base/transition";
 import type { DropPlacementsType, SizeType } from "../const/types";
 import { setPlacement } from "../utils/placement";
 import Alpha from "./alpha";
@@ -211,107 +211,105 @@ export default function ColorPicker({
       </div>
     </div>
   );
-  const dropdown =
-    typeof document !== "undefined"
-      ? createPortal(
-          <PopupTransition visible={open} name="k-color-picker" nodeRef={popoverRef} timeout={200}>
-            <div
-              ref={popoverRef}
-              {...({ "k-placement": currentPlacement } as HTMLAttributes<HTMLDivElement>)}
-              className={clsx("k-color-picker-dropdown", {
-                "k-color-picker-disabled-alpha": disabledAlpha,
-              })}
-              style={{
-                left: position.left,
-                top: position.top,
-                transformOrigin: position.origin,
-              }}
-              onMouseEnter={() => hideTimerRef.current && clearTimeout(hideTimerRef.current)}
-              onMouseLeave={
-                trigger === "hover"
-                  ? () => {
-                      hideTimerRef.current = setTimeout(() => setVisible(false), 300);
-                    }
-                  : undefined
+  const dropdown = (
+    <Teleport to="body">
+      <Transition show={open} name="k-color-picker" timeout={200} nodeRef={popoverRef}>
+        <div
+          ref={popoverRef}
+          {...({ "k-placement": currentPlacement } as HTMLAttributes<HTMLDivElement>)}
+          className={clsx("k-color-picker-dropdown", {
+            "k-color-picker-disabled-alpha": disabledAlpha,
+          })}
+          style={{
+            left: position.left,
+            top: position.top,
+            transformOrigin: position.origin,
+          }}
+          onMouseEnter={() => hideTimerRef.current && clearTimeout(hideTimerRef.current)}
+          onMouseLeave={
+            trigger === "hover"
+              ? () => {
+                  hideTimerRef.current = setTimeout(() => setVisible(false), 300);
+                }
+              : undefined
+          }
+        >
+          <div className="k-color-picker-body">
+            <Paint
+              hue={currentHue}
+              value={color}
+              onUpdateRGB={(rgb: ColorObject) =>
+                update(Color({ ...rgb, alpha: currentAlpha }).rgb())
               }
-            >
-              <div className="k-color-picker-body">
-                <Paint
-                  hue={currentHue}
-                  value={color}
-                  onUpdateRGB={(rgb: ColorObject) =>
-                    update(Color({ ...rgb, alpha: currentAlpha }).rgb())
-                  }
-                />
-                <div className="k-color-picker-bar">
-                  <div className="k-color-picker-avatar">
-                    <div
-                      className="k-color-picker-avatar-inner"
-                      style={{ backgroundColor: color.string() }}
-                    />
-                  </div>
-                  <div className="k-color-picker-bar-box">
-                    <Hue
-                      hue={currentHue}
-                      onUpdateHue={(hue) => {
-                        setCurrentHue(hue);
-                        update(color.hue(hue).rgb());
-                      }}
-                    />
-                    {!disabledAlpha && (
-                      <Alpha
-                        value={color}
-                        onUpdateAlpha={(alpha) => {
-                          setCurrentAlpha(alpha);
-                          update(color.alpha(alpha).rgb());
-                        }}
-                      />
-                    )}
-                  </div>
-                </div>
-                <Mode
-                  mode={mode}
-                  value={color}
-                  disabledAlpha={disabledAlpha}
-                  onUpdateMode={(next) => {
-                    setMode(next);
-                    onUpdateMode?.(next);
-                    update(color, next);
-                  }}
-                  onUpdateColorValue={(next) => {
-                    setCurrentAlpha(next.alpha());
-                    if (next.saturationv() > 0) setCurrentHue(next.hue());
-                    update(next);
-                  }}
-                />
-                <Presets
-                  presets={presets}
-                  color={color}
-                  onUpdateColor={(next) => {
-                    setCurrentAlpha(next.alpha());
-                    setCurrentHue(next.hue());
-                    update(next.rgb());
-                  }}
+            />
+            <div className="k-color-picker-bar">
+              <div className="k-color-picker-avatar">
+                <div
+                  className="k-color-picker-avatar-inner"
+                  style={{ backgroundColor: color.string() }}
                 />
               </div>
-              <div className="k-color-picker-arrow">
-                <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
-                  <path
-                    id="ot"
-                    d="m24,0.97087l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+              <div className="k-color-picker-bar-box">
+                <Hue
+                  hue={currentHue}
+                  onUpdateHue={(hue) => {
+                    setCurrentHue(hue);
+                    update(color.hue(hue).rgb());
+                  }}
+                />
+                {!disabledAlpha && (
+                  <Alpha
+                    value={color}
+                    onUpdateAlpha={(alpha) => {
+                      setCurrentAlpha(alpha);
+                      update(color.alpha(alpha).rgb());
+                    }}
                   />
-                  <path
-                    id="in"
-                    stroke="currentcolor"
-                    d="m24,0l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
-                  />
-                </svg>
+                )}
               </div>
             </div>
-          </PopupTransition>,
-          document.body
-        )
-      : null;
+            <Mode
+              mode={mode}
+              value={color}
+              disabledAlpha={disabledAlpha}
+              onUpdateMode={(next) => {
+                setMode(next);
+                onUpdateMode?.(next);
+                update(color, next);
+              }}
+              onUpdateColorValue={(next) => {
+                setCurrentAlpha(next.alpha());
+                if (next.saturationv() > 0) setCurrentHue(next.hue());
+                update(next);
+              }}
+            />
+            <Presets
+              presets={presets}
+              color={color}
+              onUpdateColor={(next) => {
+                setCurrentAlpha(next.alpha());
+                setCurrentHue(next.hue());
+                update(next.rgb());
+              }}
+            />
+          </div>
+          <div className="k-color-picker-arrow">
+            <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
+              <path
+                id="ot"
+                d="m24,0.97087l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+              />
+              <path
+                id="in"
+                stroke="currentcolor"
+                d="m24,0l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+              />
+            </svg>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+  );
   return (
     <>
       {triggerNode}

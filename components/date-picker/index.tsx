@@ -24,8 +24,8 @@ import {
   type MouseEvent,
   type ReactNode,
 } from "react";
-import { createPortal } from "react-dom";
-import PopupTransition from "../base/popup-transition";
+import Teleport from "../base/teleport";
+import Transition from "../base/transition";
 import { Button } from "../button";
 import { ConfigContext } from "../config";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
@@ -509,10 +509,9 @@ export default function DatePicker({
           : datePanel;
   const extra = (content: DatePickerProps["header"]) =>
     typeof content === "function" ? content({ emit: emitExternal }) : content;
-  const overlay =
-    rendered &&
-    createPortal(
-      <PopupTransition visible={visible} name="k-date-picker" nodeRef={overlayRef}>
+  const overlay = rendered && (
+    <Teleport to="body">
+      <Transition show={visible} name="k-date-picker" nodeRef={overlayRef}>
         <div
           ref={overlayRef}
           className={clsx("k-datepicker-overlay", {
@@ -588,9 +587,9 @@ export default function DatePicker({
             {footer && <div className="k-picker-extra-footer">{extra(footer)}</div>}
           </div>
         </div>
-      </PopupTransition>,
-      document.body
-    );
+      </Transition>
+    </Teleport>
+  );
   const placeholders = Array.isArray(placeholder)
     ? placeholder
     : isRange

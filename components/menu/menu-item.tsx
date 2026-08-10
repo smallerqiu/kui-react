@@ -1,7 +1,7 @@
 import clsx from "clsx";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import Icon, { type IconType } from "../icon";
-import { MenuContext } from "./context";
+import { MenuContext, SubMenuContext } from "./menu-context";
 
 export interface MenuItemProps extends Omit<React.HTMLAttributes<HTMLLIElement>, "title"> {
   icon?: IconType[];
@@ -20,14 +20,11 @@ const MenuItem: React.FC<MenuItemProps> = ({
   className,
   ...rest
 }) => {
-  const context = useContext(MenuContext);
+  const menuContext = useContext(MenuContext);
+  const subMenuContext = useContext(SubMenuContext);
   const [active, setActive] = useState(false);
-  const selected = context.selectedKeys.includes(menuKey) && !context.dropdown;
-  const preCls = context.dropdown ? "dropdown-menu" : "menu";
-
-  useEffect(() => {
-    if (selected) context.registerSelectedPath(menuKey, context.keyPath);
-  }, []);
+  const preCls = menuContext?.dropdown ? "dropdown-menu" : "menu";
+  const selected = menuContext?.selectedKeys.includes(menuKey) && !menuContext.dropdown;
 
   return (
     <li
@@ -42,18 +39,18 @@ const MenuItem: React.FC<MenuItemProps> = ({
       )}
       style={{
         paddingLeft:
-          context.mode === "inline" && !context.inlineCollapsed && context.keyPath.length
-            ? `${context.keyPath.length * 16 + 16}px`
+          menuContext?.mode === "inline" &&
+          !menuContext.inlineCollapsed &&
+          subMenuContext?.keyPath.length
+            ? `${subMenuContext.keyPath.length * 16 + 16}px`
             : undefined,
       }}
-      onMouseEnter={() => {
-        if (!disabled) setActive(true);
-      }}
-      onMouseLeave={() => {
-        if (!disabled) setActive(false);
-      }}
+      onMouseEnter={() => !disabled && setActive(true)}
+      onMouseLeave={() => !disabled && setActive(false)}
       onClick={() => {
-        if (!disabled) context.selectedKeysChange(menuKey, true, context.keyPath);
+        if (!disabled) {
+          menuContext?.selectedKeysChange(menuKey, true, subMenuContext?.keyPath || []);
+        }
       }}
       {...rest}
     >

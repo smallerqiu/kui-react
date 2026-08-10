@@ -1,7 +1,8 @@
 import clsx from "clsx";
 import { X } from "kui-icons";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import Teleport from "../base/teleport";
+import Transition from "../base/transition";
 import { Button } from "../button";
 import { ConfigContext } from "../config";
 import type { DrawerPlacementsType } from "../const/types";
@@ -61,6 +62,10 @@ const Drawer: React.FC<DrawerProps> = ({
   const hideTimer = useRef<NodeJS.Timeout | null>(null);
 
   const toggle = (value: boolean) => {
+    if (value && hideTimer.current) {
+      clearTimeout(hideTimer.current);
+      hideTimer.current = null;
+    }
     if (!rendered && value) {
       setRendered(true);
       setTimeout(() => {
@@ -156,19 +161,22 @@ const Drawer: React.FC<DrawerProps> = ({
   const drawerEl = (
     <div className={classes}>
       {mask && (
-        <div
-          className={clsx("k-drawer-mask", { "k-drawer-mask-to-body": isBody })}
-          style={{ display: visible ? undefined : "none" }}
-          onClick={maskClosable ? close : undefined}
-        />
+        <Transition name="k-drawer-fade" show={visible} timeout={400}>
+          <div
+            className={clsx("k-drawer-mask", { "k-drawer-mask-to-body": isBody })}
+            onClick={maskClosable ? close : undefined}
+          />
+        </Transition>
       )}
       <div className="k-drawer-wrap" tabIndex={-1} style={{ display: opened ? undefined : "none" }}>
         <div
-          className="k-drawer-box"
-          style={{
-            ...drawerStyle,
-            display: visible ? undefined : "none",
-          }}
+          className={clsx(
+            "k-drawer-box",
+            visible
+              ? `k-drawer-${placement}-enter-from k-drawer-${placement}-enter-active`
+              : `k-drawer-${placement}-leave-from k-drawer-${placement}-leave-active k-drawer-${placement}-leave-to`
+          )}
+          style={drawerStyle}
         >
           <div className="k-drawer-content">
             <div className="k-drawer-header">
@@ -183,7 +191,7 @@ const Drawer: React.FC<DrawerProps> = ({
     </div>
   );
 
-  return createPortal(drawerEl, targetEl);
+  return <Teleport to={targetEl}>{drawerEl}</Teleport>;
 };
 
 export default Drawer;

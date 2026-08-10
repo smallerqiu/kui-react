@@ -1,8 +1,8 @@
 import clsx from "clsx";
 import { ChevronDown, CircleX, Loading, X } from "kui-icons";
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import PopupTransition from "../base/popup-transition";
+import Teleport from "../base/teleport";
+import Transition from "../base/transition";
 import { ConfigContext } from "../config";
 import Empty from "../empty";
 import Icon, { type IconType } from "../icon";
@@ -550,11 +550,12 @@ const Select: React.FC<SelectProps> = ({
       </div>
     );
 
-    return createPortal(
-      <PopupTransition visible={visible} name="k-select" nodeRef={refPopper}>
-        {overlay}
-      </PopupTransition>,
-      document.body
+    return (
+      <Teleport to="body">
+        <Transition show={visible} name="k-select" nodeRef={refPopper}>
+          {overlay}
+        </Transition>
+      </Teleport>
     );
   };
 

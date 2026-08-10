@@ -9,8 +9,8 @@ import {
   type KeyboardEvent,
   type MouseEvent,
 } from "react";
-import { createPortal } from "react-dom";
-import PopupTransition from "../base/popup-transition";
+import Teleport from "../base/teleport";
+import Transition from "../base/transition";
 import Empty from "../empty";
 import Icon from "../icon";
 import type { CascaderOption, CascaderProps, CascaderValue } from "./types";
@@ -225,9 +225,9 @@ export default function Cascader({
         )}
         {showClear && <Icon className="k-cascader-clearable" onClick={clear} type={CircleX} />}
       </div>
-      {rendered &&
-        createPortal(
-          <PopupTransition visible={visible} name="k-cascader" nodeRef={overlayRef} timeout={250}>
+      {rendered && (
+        <Teleport to="body">
+          <Transition show={visible} name="k-cascader" timeout={250} nodeRef={overlayRef}>
             <div
               ref={overlayRef}
               className={clsx("k-cascader-dropdown", {
@@ -276,9 +276,9 @@ export default function Cascader({
                 <Empty description={emptyText} />
               )}
             </div>
-          </PopupTransition>,
-          document.body
-        )}
+          </Transition>
+        </Teleport>
+      )}
     </>
   );
 }

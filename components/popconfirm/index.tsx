@@ -1,8 +1,8 @@
 import clsx from "clsx";
 import { CircleQuestionMark } from "kui-icons";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import PopupTransition from "../base/popup-transition";
+import Teleport from "../base/teleport";
+import Transition from "../base/transition";
 import Button from "../button/button";
 import { ConfigContext } from "../config";
 import type { PlacementsType } from "../const/types";
@@ -153,7 +153,7 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   const preCls = "popconfirm";
 
   const overlayNode = rendered ? (
-    <PopupTransition visible={visible} name={`k-${preCls}`} nodeRef={refPopper}>
+    <Transition show={visible} name={`k-${preCls}`} nodeRef={refPopper}>
       <div
         ref={refPopper}
         {...({ "k-placement": currentPlacement } as React.HTMLAttributes<HTMLDivElement>)}
@@ -204,13 +204,13 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
           </div>
         </div>
       </div>
-    </PopupTransition>
+    </Transition>
   ) : null;
 
   return (
     <>
       {triggerNode}
-      {overlayNode && createPortal(overlayNode, document.body)}
+      <Teleport to="body">{overlayNode}</Teleport>
     </>
   );
 };

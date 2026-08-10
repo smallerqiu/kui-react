@@ -2,9 +2,10 @@ import clsx from "clsx";
 import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Teleport from "../base/teleport";
 import Transition, { getTransitionProp } from "../base/transition";
+import { DropdownContext } from "../dropdown/dropdown";
 import Icon, { type IconType } from "../icon";
 import { setPlacement } from "../utils/placement";
-import { MenuContext, type MenuContextValue } from "./context";
+import { MenuContext, SubMenuContext } from "./menu-context";
 
 export interface SubMenuProps {
   disabled?: boolean;
@@ -21,60 +22,64 @@ const SubMenu: React.FC<SubMenuProps> = ({
   menuKey = "",
   children,
 }) => {
-  const context = useContext(MenuContext);
+  const dropdownContext = useContext(DropdownContext);
+  const menuContext = useContext(MenuContext);
+  const parentSubMenuContext = useContext(SubMenuContext);
   const refSelection = useRef<HTMLDivElement>(null);
   const refPopper = useRef<HTMLDivElement>(null);
-  const top = useRef(0);
-  const left = useRef(0);
   const currentPlacement = useRef("bottom-left");
   const transOrigin = useRef("bottom left");
+  const top = useRef(0);
+  const left = useRef(0);
   const popTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const showTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [position, setPosition] = useState({ top: 0, left: 0 });
-  const [placement, setCurrentPlacement] = useState("bottom-left");
+  const [placement, setPlacementState] = useState("bottom-left");
   const [origin, setOrigin] = useState("bottom left");
   const [minWidth, setMinWidth] = useState("");
   const [rendered, setRendered] = useState(
-    context.mode === "inline" && !context.popupInlineCollapsed
+    menuContext?.mode === "inline" && !menuContext.popupInlineCollapsed
   );
   const [positioned, setPositioned] = useState(false);
 
-  const keyPath = context.keyPath;
-  const childKeyPath = [...keyPath, menuKey];
-  const opened = context.openKeys.includes(menuKey);
-  const selected = context.selectedKeys.includes(menuKey) && !context.dropdown;
-  const preCls = context.dropdown ? "dropdown-menu-submenu" : "menu-submenu";
-  const popup =
-    context.mode === "horizontal" || context.mode === "vertical" || context.popupInlineCollapsed;
+  const keyPath = parentSubMenuContext?.keyPath || [];
+  const opened = Boolean(menuContext?.openKeys.includes(menuKey));
+  const selected = Boolean(menuContext?.selectedKeys.includes(menuKey) && !menuContext.dropdown);
+  const preCls = menuContext?.dropdown ? "dropdown-menu-submenu" : "menu-submenu";
+  const popup = Boolean(
+    menuContext?.mode === "horizontal" ||
+    menuContext?.mode === "vertical" ||
+    menuContext?.popupInlineCollapsed
+  );
 
   const updatePosition = () => {
-    if (!refSelection.current || !refPopper.current) return;
+    if (!refSelection.current || !refPopper.current || !menuContext) return;
     if (
-      (context.mode === "horizontal" && keyPath.length > 0) ||
-      context.mode === "vertical" ||
-      (context.mode === "inline" && context.inlineCollapsed)
+      (menuContext.mode === "horizontal" && keyPath.length) ||
+      menuContext.mode === "vertical" ||
+      (menuContext.mode === "inline" && menuContext.inlineCollapsed)
     ) {
       currentPlacement.current = "right-top";
     }
-    const placementState = { value: currentPlacement.current };
-    const originState = { value: transOrigin.current };
-    const topState = { value: top.current };
-    const leftState = { value: left.current };
+    const placementRef = { value: currentPlacement.current };
+    const originRef = { value: transOrigin.current };
+    const topRef = { value: top.current };
+    const leftRef = { value: left.current };
     setPlacement({
       refSelection: refSelection.current,
       refPopper: refPopper.current,
-      currentPlacement: placementState,
-      transOrigin: originState,
-      top: topState,
-      left: leftState,
+      currentPlacement: placementRef,
+      transOrigin: originRef,
+      top: topRef,
+      left: leftRef,
       offset: 8,
     });
-    currentPlacement.current = placementState.value;
-    transOrigin.current = originState.value;
-    top.current = topState.value;
-    left.current = leftState.value;
+    currentPlacement.current = placementRef.value;
+    transOrigin.current = originRef.value;
+    top.current = topRef.value;
+    left.current = leftRef.value;
     setPosition({ top: top.current, left: left.current });
-    setCurrentPlacement(currentPlacement.current);
+    setPlacementState(currentPlacement.current);
     setOrigin(transOrigin.current);
     setPositioned(true);
   };
@@ -98,20 +103,18 @@ const SubMenu: React.FC<SubMenuProps> = ({
   };
   const hideCurrentPopTimer = () => {
     clearCurrentPopTimer();
-    popTimer.current = setTimeout(() => context.openKeysChange(menuKey, false, keyPath), 200);
+    popTimer.current = setTimeout(() => menuContext?.openKeysChange(menuKey, false, keyPath), 200);
   };
   const showPopper = () => {
     if (!opened) setPositioned(false);
     setRendered(true);
     if (showTimer.current) clearTimeout(showTimer.current);
     showTimer.current = setTimeout(() => {
-      context.openKeysChange(menuKey, true, keyPath);
+      menuContext?.openKeysChange(menuKey, true, keyPath);
     }, 0);
   };
-
-  const childContext: MenuContextValue = {
-    ...context,
-    keyPath: childKeyPath,
+  const childSubMenuContext = {
+    keyPath: [...keyPath, menuKey],
     clearPopTimer: clearCurrentPopTimer,
     hidePopTimer: hideCurrentPopTimer,
   };
@@ -125,18 +128,15 @@ const SubMenu: React.FC<SubMenuProps> = ({
 
   const titleProps: React.HTMLAttributes<HTMLDivElement> & {
     ref?: React.RefObject<HTMLDivElement | null>;
-  } = {
-    className: `k-${preCls}-title`,
-    style: {},
-  };
-  if (context.mode === "inline" && !context.inlineCollapsed) {
+  } = { className: `k-${preCls}-title`, style: {} };
+  if (menuContext?.mode === "inline" && !menuContext.inlineCollapsed) {
     titleProps.onClick = () => {
-      if (!disabled) context.openKeysChange(menuKey, !opened, keyPath);
+      if (!disabled) menuContext.openKeysChange(menuKey, !opened, keyPath);
     };
   } else if (
-    context.mode === "horizontal" ||
-    context.mode === "vertical" ||
-    context.inlineCollapsed
+    menuContext?.mode === "horizontal" ||
+    menuContext?.mode === "vertical" ||
+    menuContext?.inlineCollapsed
   ) {
     titleProps.ref = refSelection;
     titleProps.onMouseEnter = () => {
@@ -148,62 +148,65 @@ const SubMenu: React.FC<SubMenuProps> = ({
       if (!disabled) hideCurrentPopTimer();
     };
   }
-  if (keyPath.length && context.mode === "inline" && !context.inlineCollapsed) {
+  if (keyPath.length && menuContext?.mode === "inline" && !menuContext.inlineCollapsed) {
     titleProps.style = { paddingLeft: `${keyPath.length * 16 + 16}px` };
   }
 
   let leftValue = position.left;
-  if ((context.mode === "horizontal" && keyPath.length) || context.mode === "vertical") {
+  if ((menuContext?.mode === "horizontal" && keyPath.length) || menuContext?.mode === "vertical") {
     leftValue += 3;
   }
   const transitionProps = popup
-    ? {
-        name: `k-${preCls}-popup`,
-        timeout: 300,
-      }
+    ? { name: `k-${preCls}-popup`, timeout: 300 }
     : { ...getTransitionProp("k-collapse-slide"), timeout: 200 };
-  const submenuNode = rendered ? (
-    <Transition show={opened} {...transitionProps}>
-      <div
-        ref={refPopper}
-        className={popup ? `k-${preCls}-popup` : `k-${preCls}-sub`}
-        {...(popup ? ({ "k-placement": placement } as React.HTMLAttributes<HTMLDivElement>) : {})}
-        style={
-          popup
-            ? {
-                minWidth: context.mode === "horizontal" ? minWidth : undefined,
-                top: `${position.top}px`,
-                left: `${leftValue}px`,
-                transformOrigin: origin,
-                visibility: positioned ? undefined : "hidden",
-              }
-            : undefined
-        }
-        onMouseEnter={
-          popup
-            ? () => {
-                clearCurrentPopTimer();
-                context.openKeysChange(menuKey, true, keyPath);
-                context.clearPopTimer?.();
-              }
-            : undefined
-        }
-        onMouseLeave={
-          popup
-            ? () => {
-                hideCurrentPopTimer();
-                context.hidePopTimer?.();
-              }
-            : undefined
-        }
-      >
-        <div className={popup ? `k-${preCls}-sub` : undefined}>
-          <ul className={`k-menu k-menu-${popup ? "vertical" : context.mode}`}>
-            <MenuContext.Provider value={childContext}>{renderedChildren}</MenuContext.Provider>
-          </ul>
+  const childrenNode = rendered ? (
+    <Teleport to="body" disabled={!popup}>
+      <Transition show={opened} nodeRef={refPopper} {...transitionProps}>
+        <div
+          ref={refPopper}
+          className={popup ? `k-${preCls}-popup` : `k-${preCls}-sub`}
+          {...(popup ? ({ "k-placement": placement } as React.HTMLAttributes<HTMLDivElement>) : {})}
+          style={
+            popup
+              ? {
+                  minWidth: menuContext?.mode === "horizontal" ? minWidth : undefined,
+                  top: `${position.top}px`,
+                  left: `${leftValue}px`,
+                  transformOrigin: origin,
+                  visibility: positioned ? undefined : "hidden",
+                }
+              : undefined
+          }
+          onMouseEnter={
+            popup
+              ? () => {
+                  clearCurrentPopTimer();
+                  menuContext?.openKeysChange(menuKey, true, keyPath);
+                  parentSubMenuContext?.clearPopTimer?.();
+                  dropdownContext?.clearPopTimer?.();
+                }
+              : undefined
+          }
+          onMouseLeave={
+            popup
+              ? () => {
+                  hideCurrentPopTimer();
+                  parentSubMenuContext?.hidePopTimer?.();
+                  dropdownContext?.clearPopTimer?.();
+                }
+              : undefined
+          }
+        >
+          <div className={popup ? `k-${preCls}-sub` : undefined}>
+            <ul className={`k-menu k-menu-${popup ? "vertical" : menuContext?.mode}`}>
+              <SubMenuContext.Provider value={childSubMenuContext}>
+                {renderedChildren}
+              </SubMenuContext.Provider>
+            </ul>
+          </div>
         </div>
-      </div>
-    </Transition>
+      </Transition>
+    </Teleport>
   ) : null;
 
   return (
@@ -218,13 +221,11 @@ const SubMenu: React.FC<SubMenuProps> = ({
       <div {...titleProps}>
         {icon ? <Icon type={icon} className="k-menu-item-icon" /> : null}
         <span className={`k-${preCls}-title-content`}>{title}</span>
-        {context.mode === "horizontal" && !keyPath.length ? null : (
+        {menuContext?.mode === "horizontal" && !keyPath.length ? null : (
           <i className={`k-${preCls}-arrow`} />
         )}
       </div>
-      <Teleport to="body" disabled={!popup}>
-        {submenuNode}
-      </Teleport>
+      {childrenNode}
     </li>
   );
 };

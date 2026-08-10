@@ -1,7 +1,8 @@
 import clsx from "clsx";
 import { X } from "kui-icons";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import Teleport from "../base/teleport";
+import Transition from "../base/transition";
 import { Button } from "../button";
 import { ConfigContext } from "../config";
 import { getMousePoint } from "../config/context";
@@ -87,6 +88,10 @@ const Modal: React.FC<ModalProps> = ({
   };
 
   const toggle = (value: boolean) => {
+    if (value && hideTimer.current) {
+      clearTimeout(hideTimer.current);
+      hideTimer.current = null;
+    }
     if (!rendered && value) {
       setRendered(true);
       setTimeout(() => {
@@ -240,7 +245,11 @@ const Modal: React.FC<ModalProps> = ({
 
   const modalEl = (
     <div className={classes}>
-      {mask && <div className="k-modal-mask" style={{ display: visible ? undefined : "none" }} />}
+      {mask && (
+        <Transition name="k-modal-fade" show={visible} timeout={400}>
+          <div className="k-modal-mask" />
+        </Transition>
+      )}
       <div
         className="k-modal-wrap"
         tabIndex={-1}
@@ -250,11 +259,13 @@ const Modal: React.FC<ModalProps> = ({
       >
         <div
           ref={refModal}
-          className="k-modal-inner"
-          style={{
-            ...(modalStyle || {}),
-            display: visible ? undefined : "none",
-          }}
+          className={clsx(
+            "k-modal-inner",
+            visible
+              ? "k-modal-zoom-enter-from k-modal-zoom-enter-active"
+              : "k-modal-zoom-leave-from k-modal-zoom-leave-active k-modal-zoom-leave-to"
+          )}
+          style={modalStyle || undefined}
         >
           {contentNode}
           <div tabIndex={0} />
@@ -263,7 +274,7 @@ const Modal: React.FC<ModalProps> = ({
     </div>
   );
 
-  return createPortal(modalEl, document.body);
+  return <Teleport to="body">{modalEl}</Teleport>;
 };
 
 export default Modal;

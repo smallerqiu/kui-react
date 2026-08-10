@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import type { DirectionType } from "../const/types";
 import { DropdownContext } from "../dropdown/dropdown";
 import type { IconType } from "../icon";
-import { MenuContext, type MenuContextValue } from "./context";
+import { MenuContext } from "./menu-context";
 import RecursiveMenu from "./recursive-menu";
 
 const EMPTY_KEYS: string[] = [];
@@ -49,7 +49,7 @@ const Menu: React.FC<MenuProps> = ({
   className,
   ...rest
 }) => {
-  const dropdown = useContext(DropdownContext) !== null;
+  const dropdownContext = useContext(DropdownContext);
   const [selectedKeys, setSelectedKeys] = useState([...value]);
   const [currentOpenKeys, setCurrentOpenKeys] = useState(inlineCollapsed ? [] : [...openKeys]);
   const [currentMode, setCurrentMode] = useState(mode);
@@ -57,7 +57,7 @@ const Menu: React.FC<MenuProps> = ({
   const [popupInlineCollapsed, setPopupInlineCollapsed] = useState(inlineCollapsed);
   const tempOpenKeys = useRef([...openKeys]);
   const collapseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const mounted = useRef({ value: false, mode: false, openKeys: false, collapsed: false });
+  const mounted = useRef({ value: false, mode: false, open: false, collapsed: false });
 
   const collapseOpenKeys = () => {
     if (currentOpenKeys.length > 0) tempOpenKeys.current = [...currentOpenKeys];
@@ -72,7 +72,6 @@ const Menu: React.FC<MenuProps> = ({
     }
     setSelectedKeys([...value]);
   }, [value]);
-
   useEffect(() => {
     if (!mounted.current.mode) {
       mounted.current.mode = true;
@@ -82,16 +81,14 @@ const Menu: React.FC<MenuProps> = ({
     if (mode === "vertical") collapseOpenKeys();
     else if (!inlineCollapsed) restoreOpenKeys();
   }, [mode]);
-
   useEffect(() => {
-    if (!mounted.current.openKeys) {
-      mounted.current.openKeys = true;
+    if (!mounted.current.open) {
+      mounted.current.open = true;
       return;
     }
     if (inlineCollapsed || currentMode === "vertical") tempOpenKeys.current = [...openKeys];
     else setCurrentOpenKeys([...openKeys]);
   }, [openKeys]);
-
   useEffect(() => {
     if (!mounted.current.collapsed) {
       mounted.current.collapsed = true;
@@ -108,7 +105,6 @@ const Menu: React.FC<MenuProps> = ({
       restoreOpenKeys();
     }
   }, [inlineCollapsed]);
-
   useEffect(
     () => () => {
       if (collapseTimer.current) clearTimeout(collapseTimer.current);
@@ -124,11 +120,8 @@ const Menu: React.FC<MenuProps> = ({
     if (currentMode === "horizontal" || currentMode === "vertical" || currentInlineCollapsed) {
       collapseOpenKeys();
     }
+    dropdownContext?.menuSelected?.({ key, keyPath });
   };
-  const registerSelectedPath = (key: string, keyPath: string[]) => {
-    setSelectedKeys((keys) => (keys.includes(key) ? [...keyPath, key] : keys));
-  };
-
   const openKeysChange = (key: string, opened: boolean, keyPath: string[]) => {
     let nextKeys: string[];
     if (accordion) nextKeys = opened ? [...keyPath, key] : keyPath;
@@ -139,19 +132,7 @@ const Menu: React.FC<MenuProps> = ({
     setCurrentOpenKeys(nextKeys);
     onOpenChange?.(nextKeys);
   };
-
-  const contextValue: MenuContextValue = {
-    selectedKeys,
-    openKeys: currentOpenKeys,
-    mode: currentMode,
-    inlineCollapsed: currentInlineCollapsed,
-    popupInlineCollapsed,
-    dropdown,
-    keyPath: [],
-    openKeysChange,
-    selectedKeysChange,
-    registerSelectedPath,
-  };
+  const dropdown = dropdownContext !== null;
   const preCls = dropdown ? "dropdown-menu" : "menu";
   const renderedChildren = React.Children.map(children, (child) => {
     if (!React.isValidElement(child)) return child;
@@ -162,7 +143,18 @@ const Menu: React.FC<MenuProps> = ({
   });
 
   return (
-    <MenuContext.Provider value={contextValue}>
+    <MenuContext.Provider
+      value={{
+        openKeys: currentOpenKeys,
+        selectedKeys,
+        mode: currentMode,
+        inlineCollapsed: currentInlineCollapsed,
+        popupInlineCollapsed,
+        dropdown,
+        openKeysChange,
+        selectedKeysChange,
+      }}
+    >
       <ul
         className={clsx(
           `k-${preCls}`,
