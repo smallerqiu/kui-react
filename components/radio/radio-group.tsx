@@ -5,6 +5,7 @@ import type { IconType } from "../icon";
 import Radio from "./radio";
 import RadioButton from "./radio-button";
 import type { ChangeEvent } from "./types";
+import { RadioGroupContext } from "./radio-group-context";
 
 export interface RadioOption {
   label?: string;
@@ -28,17 +29,6 @@ export interface RadioGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
 }
 
-export interface RadioGroupContextValue {
-  value?: any;
-  disabled?: boolean;
-  theme?: ThemeType;
-  size?: SizeType;
-  shape?: ShapeType;
-  onChange?: (e: ChangeEvent) => void;
-}
-
-export const RadioGroupContext = React.createContext<RadioGroupContextValue | null>(null);
-
 const RadioGroup: React.FC<RadioGroupProps> = ({
   value,
   defaultValue = "",
@@ -57,19 +47,14 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
   const rootRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef(new Map<any, HTMLElement | null>());
 
-  const [currentValue, setCurrentValue] = useState(value !== undefined ? value : defaultValue);
+  const [innerValue, setInnerValue] = useState(defaultValue);
+  const currentValue = value ?? innerValue;
   const [segStyle, setSegStyle] = useState<React.CSSProperties>({});
   const [changed, setChanged] = useState(false);
 
   const isVertical = direction === "vertical";
   const isButton = type === "button";
   const isCard = theme === "card";
-
-  useEffect(() => {
-    if (value !== undefined) {
-      setCurrentValue(value);
-    }
-  }, [value]);
 
   const setItemRef = (el: HTMLElement | null, val: any) => {
     if (el) {
@@ -90,8 +75,10 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
 
   const updateSeg = () => {
     if (!isCard || !isButton) return;
-    setChanged(true);
-    setTimeout(updateSize, 0);
+    setTimeout(() => {
+      setChanged(true);
+      updateSize();
+    }, 0);
   };
 
   useEffect(() => {
@@ -111,7 +98,7 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
 
   const handleRadioChange = (event: ChangeEvent) => {
     if (value === undefined) {
-      setCurrentValue(event.value);
+      setInnerValue(event.value);
     }
     onChange?.(event.value);
   };

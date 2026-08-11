@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import React, { useContext, useEffect, useState } from "react";
 import type { SizeType, ThemeType } from "../const/types";
-import { RadioGroupContext } from "./radio-group";
+import { RadioGroupContext } from "./radio-group-context";
 import type { ChangeEvent } from "./types";
 
 export interface RadioProps extends Omit<React.HTMLAttributes<HTMLLabelElement>, "onChange"> {

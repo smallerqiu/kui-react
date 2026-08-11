@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import type { ShapeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
 import { getChildren } from "../utils/react-node";
-import { AvatarGroupContext } from "./avatar-group";
+import { AvatarGroupContext } from "./avatar-group-context";
 
 export interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   icon?: IconType[];

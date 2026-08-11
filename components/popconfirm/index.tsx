@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import Button from "../button/button";
-import { ConfigContext } from "../config";
+import { ConfigContext } from "../config/config-context";
 import type { PlacementsType } from "../const/types";
 import Icon from "../icon";
 import zhCN from "../locale/zh-CN";
@@ -43,6 +43,12 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
 
   const [visible, setVisible] = useState(show);
   const [rendered, setRendered] = useState(show);
+  const [previousShow, setPreviousShow] = useState(show);
+  if (previousShow !== show) {
+    setPreviousShow(show);
+    setVisible(show);
+    if (show) setRendered(true);
+  }
   const [left, setLeft] = useState(0);
   const [top, setTop] = useState(0);
   const [currentPlacement, setCurrentPlacement] = useState(placement);
@@ -50,34 +56,31 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
 
   const refPopper = useRef<HTMLDivElement>(null);
   const refSelection = useRef<HTMLElement>(null);
+  const placementRef = useRef<string>(placement);
+  const transOriginRef = useRef("bottom");
+  const topRef = useRef(0);
+  const leftRef = useRef(0);
   const hideTimer = useRef<NodeJS.Timeout | null>(null);
   const showTimer = useRef<NodeJS.Timeout | null>(null);
 
   const updatePosition = () => {
     if (!refSelection.current || !refPopper.current) return;
-    const placementObj = { value: currentPlacement };
-    const originObj = { value: transOrigin };
-    const topObj = { value: top };
-    const leftObj = { value: left };
+    placementRef.current = placement;
 
     setPlacement({
-      refSelection: refSelection.current,
-      refPopper: refPopper.current,
-      currentPlacement: placementObj,
-      transOrigin: originObj,
-      top: topObj,
-      left: leftObj,
+      refSelection,
+      refPopper,
+      currentPlacement: placementRef,
+      transOrigin: transOriginRef,
+      top: topRef,
+      left: leftRef,
     });
 
-    setCurrentPlacement(placementObj.value as PlacementsType);
-    setTransOrigin(originObj.value);
-    setTop(topObj.value);
-    setLeft(leftObj.value);
+    setCurrentPlacement(placementRef.current as PlacementsType);
+    setTransOrigin(transOriginRef.current);
+    setTop(topRef.current);
+    setLeft(leftRef.current);
   };
-
-  useEffect(() => {
-    setVisible(show);
-  }, [show]);
 
   useEffect(() => {
     if (visible) updatePosition();

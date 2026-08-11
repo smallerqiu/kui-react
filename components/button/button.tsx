@@ -6,7 +6,7 @@ import type { ButtonType, ShapeType, SizeType, ThemeType } from "../const/types"
 import { colors } from "../const/var";
 import Icon, { type IconType } from "../icon";
 import { getChildren } from "../utils/react-node";
-import { ButtonGroupContext } from "./button-group";
+import { ButtonGroupContext } from "./button-group-context";
 
 export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "type"> {
   htmlType?: "button" | "submit" | "reset";

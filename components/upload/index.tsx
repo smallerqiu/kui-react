@@ -9,7 +9,7 @@ import {
   type HTMLAttributes,
 } from "react";
 import { v4 as uuid } from "uuid";
-import { ConfigContext } from "../config";
+import { ConfigContext } from "../config/config-context";
 import type { UploadStatusType } from "../const/types";
 import type { IconType } from "../icon";
 import zhCN from "../locale/zh-CN";

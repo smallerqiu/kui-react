@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, X } from "kui-icons";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Icon from "../icon";
 import { getChildren } from "../utils/react-node";
+import type { TabPanelProps } from "./tab-panel";
 
 export interface TabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
   value?: string | number;
@@ -45,21 +46,17 @@ const Tabs: React.FC<TabsProps> = ({
       ? (childList[0].key as string)
       : undefined;
 
-  const [activeKey, setActiveKey] = useState<string | number | undefined>(
+  const [innerActiveKey, setInnerActiveKey] = useState<string | number | undefined>(
     value !== undefined ? value : firstKey
   );
-  const [currentIndex, setCurrentIndex] = useState(-1);
+  const activeKey = value ?? innerActiveKey;
+  const currentIndex = childList.findIndex(
+    (child) => React.isValidElement(child) && child.key === activeKey
+  );
   const [scrollable, setScrollable] = useState(false);
   const [navOffsetLeft, setNavOffsetLeft] = useState(0);
   const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
   const [nextBtnDisabled, setNextBtnDisabled] = useState(false);
-
-  // Sync from prop
-  useEffect(() => {
-    if (value !== undefined) {
-      setActiveKey(value);
-    }
-  }, [value]);
 
   const updateInkBarPosition = useCallback(
     (index: number) => {
@@ -137,7 +134,6 @@ const Tabs: React.FC<TabsProps> = ({
   // Recalculate on active change
   useEffect(() => {
     const idx = childList.findIndex((c) => React.isValidElement(c) && c.key === activeKey);
-    setCurrentIndex(idx);
     if (idx >= 0) {
       setTimeout(() => {
         resetActivePosition(idx);
@@ -181,21 +177,20 @@ const Tabs: React.FC<TabsProps> = ({
     onRemove?.(key);
   };
 
-  const tabClick = (key: string, disabled: boolean, index: number) => {
+  const tabClick = (key: string, disabled: boolean) => {
     if (disabled) return;
     onTabClick?.(key);
     if (activeKey !== key) {
-      if (value === undefined) setActiveKey(key);
-      setCurrentIndex(index);
+      if (value === undefined) setInnerActiveKey(key);
       onChange?.(key);
     }
   };
 
   // Build nav tabs from children
-  const navNodes = childList.map((panel, index) => {
+  const navNodes = childList.map((panel) => {
     if (!React.isValidElement(panel)) return null;
     const key = panel.key as string;
-    const { icon, title, closable, disabled } = panel.props;
+    const { icon, title, closable, disabled } = panel.props as TabPanelProps;
     const isDisabled = disabled !== undefined && disabled !== false;
     const isClosable = closable !== undefined;
     return (
@@ -205,7 +200,7 @@ const Tabs: React.FC<TabsProps> = ({
           "k-tabs-tab-active": key === activeKey,
           "k-tabs-tab-disabled": isDisabled,
         })}
-        onClick={() => tabClick(key, isDisabled, index)}
+        onClick={() => tabClick(key, isDisabled)}
       >
         {icon ? <Icon type={icon} /> : null}
         {title}

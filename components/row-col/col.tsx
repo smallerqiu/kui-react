@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React, { useContext } from "react";
-import { RowContext } from "./row";
+import { RowContext } from "./row-context";
 
 export interface ColProps extends React.HTMLAttributes<HTMLDivElement> {
   span?: number;

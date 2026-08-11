@@ -1,10 +1,11 @@
-import React, { useState, type CSSProperties, type ReactNode } from "react";
+import React, { useId, useState, type CSSProperties, type ReactNode } from "react";
 import type { IconType } from "../icon";
 import Icon from "../icon";
 import { useMenuContext, useSubMenuContext } from "./menu-context";
 
 export interface MenuItemProps {
-  itemKey: string;
+  itemKey?: string;
+  menuKey?: string;
   icon?: IconType[] | ReactNode;
   title?: ReactNode;
   disabled?: boolean;
@@ -15,6 +16,7 @@ export interface MenuItemProps {
 
 export const MenuItem: React.FC<MenuItemProps> = ({
   itemKey,
+  menuKey,
   icon,
   title,
   disabled = false,
@@ -25,9 +27,13 @@ export const MenuItem: React.FC<MenuItemProps> = ({
   const menuContext = useMenuContext();
   const subMenuContext = useSubMenuContext();
   const [active, setActive] = useState(false);
+  const generatedKey = useId();
+  const currentKey = itemKey ?? menuKey ?? generatedKey;
 
   const preCls = menuContext?.dropdown ? "dropdown-menu" : "menu";
-  const selected = Boolean(menuContext?.selectedKeys.includes(itemKey) && !menuContext?.dropdown);
+  const selected = Boolean(
+    menuContext?.selectedKeys.includes(currentKey) && !menuContext?.dropdown
+  );
 
   const paddingLeft =
     menuContext?.mode === "inline" &&
@@ -66,7 +72,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
       onMouseLeave={() => !disabled && setActive(false)}
       onClick={() => {
         if (!disabled) {
-          menuContext?.selectedKeysChange?.(itemKey, true, subMenuContext?.keyPath || []);
+          menuContext?.selectedKeysChange?.(currentKey, true, subMenuContext?.keyPath || []);
         }
       }}
     >

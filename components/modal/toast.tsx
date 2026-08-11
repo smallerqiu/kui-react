@@ -1,7 +1,7 @@
 import { CircleAlert, CircleCheck, CircleQuestionMark, CircleX, Info } from "kui-icons";
 import { useContext, useState } from "react";
 import { Button } from "../button";
-import { ConfigContext } from "../config";
+import { ConfigContext } from "../config/config-context";
 import Icon, { type IconType } from "../icon";
 import zhCN from "../locale/zh-CN";
 import Modal from "./modal";

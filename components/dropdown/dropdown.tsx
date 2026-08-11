@@ -35,6 +35,12 @@ const Dropdown: React.FC<DropdownProps> = ({
 }) => {
   const [visible, setVisible] = useState(show);
   const [rendered, setRendered] = useState(show);
+  const [previousShow, setPreviousShow] = useState(show);
+  if (previousShow !== show) {
+    setPreviousShow(show);
+    setVisible(show);
+    if (show) setRendered(true);
+  }
 
   const localRefSelection = useRef<HTMLElement>(null);
   const refPopper = useRef<HTMLDivElement>(null);
@@ -43,6 +49,10 @@ const Dropdown: React.FC<DropdownProps> = ({
   const [transOrigin, setTransOrigin] = useState("bottom");
   const [left, setLeft] = useState(0);
   const [top, setTop] = useState(0);
+  const placementRef = useRef<string>(placement);
+  const transOriginRef = useRef("bottom");
+  const leftRef = useRef(0);
+  const topRef = useRef(0);
 
   const showTimer = useRef<NodeJS.Timeout | null>(null);
   const positionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -51,15 +61,8 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   const refSelection = target || localRefSelection;
 
-  useEffect(() => {
-    setVisible(show);
-    if (show) {
-      setRendered(true);
-    }
-  }, [show]);
-
   const updatePosition = useCallback(
-    (e?: MouseEvent, requestedPlacement = currentPlacement) => {
+    (e?: MouseEvent, requestedPlacement = placement) => {
       if (!refPopper.current) return;
       const targetElement = refSelection.current;
       if (!targetElement) return;
@@ -71,29 +74,28 @@ const Dropdown: React.FC<DropdownProps> = ({
             ? contextmenuPosition.current
             : null;
 
-      const placementObj = { value: requestedPlacement };
-      const originObj = { value: "bottom" };
-      const topObj = { value: 0 };
-      const leftObj = { value: 0 };
+      placementRef.current = requestedPlacement;
 
       setPlacement({
-        refSelection: targetElement,
+        refSelection,
         position,
-        refPopper: refPopper.current,
-        currentPlacement: placementObj,
-        transOrigin: originObj,
-        top: topObj,
-        left: leftObj,
+        refPopper,
+        currentPlacement: placementRef,
+        transOrigin: transOriginRef,
+        top: topRef,
+        left: leftRef,
       });
 
       setCurrentPlacement((current) =>
-        current === placementObj.value ? current : (placementObj.value as DropPlacementsType)
+        current === placementRef.current ? current : (placementRef.current as DropPlacementsType)
       );
-      setTransOrigin((current) => (current === originObj.value ? current : originObj.value));
-      setTop((current) => (current === topObj.value ? current : topObj.value));
-      setLeft((current) => (current === leftObj.value ? current : leftObj.value));
+      setTransOrigin((current) =>
+        current === transOriginRef.current ? current : transOriginRef.current
+      );
+      setTop((current) => (current === topRef.current ? current : topRef.current));
+      setLeft((current) => (current === leftRef.current ? current : leftRef.current));
     },
-    [currentPlacement, refSelection, trigger]
+    [placement, refSelection, trigger]
   );
 
   const schedulePositionUpdate = useCallback(() => {
@@ -105,7 +107,6 @@ const Dropdown: React.FC<DropdownProps> = ({
   }, [updatePosition]);
 
   useEffect(() => {
-    setCurrentPlacement(placement);
     if (visible) {
       positionTimer.current = setTimeout(() => updatePosition(undefined, placement), 0);
     }

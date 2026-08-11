@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import {
   useContext,
+  useEffect,
   useRef,
   useState,
   type CSSProperties,
@@ -60,7 +61,9 @@ export default function Slider({
   const [internal, setInternal] = useState<number | number[]>(initial);
   const current = controlled ?? internal;
   const currentRef = useRef(current);
-  currentRef.current = current;
+  useEffect(() => {
+    currentRef.current = current;
+  }, [current]);
   const railRef = useRef<HTMLDivElement>(null);
   const thumbRefs = useRef<Array<HTMLDivElement | null>>([]);
   const [dragging, setDragging] = useState(-1);

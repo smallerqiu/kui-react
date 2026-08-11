@@ -1,9 +1,9 @@
 import clsx from "clsx";
 import { ChevronDown, CircleX, Loading, X } from "kui-icons";
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
-import { ConfigContext } from "../config";
+import { ConfigContext } from "../config/config-context";
 import Empty from "../empty";
 import Icon, { type IconType } from "../icon";
 import zhCN from "../locale/zh-CN";
@@ -47,8 +47,9 @@ export interface SelectProps extends Omit<
   shape?: ShapeType;
   arrowIcon?: IconType[];
   onSearch?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onChange?: (value: string | number | string[] | number[]) => void;
+  onChange?: (value: any) => void;
   onSelect?: (option: SelectOption & { selected: boolean }) => void;
+  onClear?: () => void;
   onOpenChange?: (opened: boolean) => void;
   children?: React.ReactNode;
 }
@@ -79,6 +80,7 @@ const Select: React.FC<SelectProps> = ({
   onSearch,
   onChange,
   onSelect,
+  onClear: onClearCallback,
   onOpenChange,
   children,
   className = "",
@@ -92,8 +94,23 @@ const Select: React.FC<SelectProps> = ({
 
   const [visible, setVisible] = useState(false);
   const [rendered, setRendered] = useState(false);
-  const [currentValue, setCurrentValue] = useState<any[]>(
+  const [internalValue, setInternalValue] = useState<any[]>(
     multiple ? ((initialValue || []) as any[]) : isEmpty(initialValue) ? [] : [initialValue]
+  );
+  const controlled = value !== undefined || modelValue !== undefined;
+  const controlledValue = modelValue !== undefined ? modelValue : value;
+  const currentValue = useMemo(
+    () =>
+      controlled
+        ? multiple
+          ? Array.isArray(controlledValue)
+            ? controlledValue
+            : []
+          : isEmpty(controlledValue)
+            ? []
+            : [controlledValue]
+        : internalValue,
+    [controlled, controlledValue, internalValue, multiple]
   );
 
   const [queryInputVisible, setQueryInputVisible] = useState(false);
@@ -104,6 +121,12 @@ const Select: React.FC<SelectProps> = ({
   const left = useRef(0);
   const top = useRef(0);
   const currentPlacement = useRef(placement);
+  const [position, setPosition] = useState({
+    left: 0,
+    top: 0,
+    origin: "bottom",
+    placement,
+  });
   const [activeIndex, setActiveIndex] = useState(-1);
   const [ctxFocused, setCtxFocused] = useState(false);
 
@@ -112,42 +135,37 @@ const Select: React.FC<SelectProps> = ({
   const queryInputRef = useRef<HTMLInputElement>(null);
   const queryInputMirrorRef = useRef<HTMLSpanElement>(null);
   const queryInputEventTimer = useRef<NodeJS.Timeout | null>(null);
+  const clearQueryTimer = useRef<NodeJS.Timeout | null>(null);
+  const positionRaf = useRef(0);
+  const openRaf = useRef(0);
 
   const hasSearchEvent = !!onSearch;
 
-  // Sync value with prop
-  useEffect(() => {
-    const val = modelValue !== undefined ? modelValue : value;
-    setCurrentValue(multiple ? ((val || []) as any[]) : isEmpty(val) ? [] : [val]);
-  }, [value, modelValue, multiple]);
-
   // Update placement position
   const updatePosition = () => {
-    if (!refSelection.current || !refPopper.current) return;
-
-    setMinWidth(refSelection.current.offsetWidth);
-
-    const placementObj = { value: currentPlacement };
-    const originObj = { value: transOrigin };
-    const topObj = { value: top };
-    const leftObj = { value: left };
-
-    setPlacement({
-      refSelection,
-      refPopper,
-      currentPlacement,
-      transOrigin,
-      top: topObj,
-      left: leftObj,
+    cancelAnimationFrame(positionRaf.current);
+    positionRaf.current = requestAnimationFrame(() => {
+      if (!refSelection.current || !refPopper.current) return;
+      setMinWidth(refSelection.current.offsetWidth);
+      setPlacement({
+        refSelection,
+        refPopper,
+        currentPlacement,
+        transOrigin,
+        top,
+        left,
+      });
+      setPosition({
+        left: left.current,
+        top: top.current,
+        origin: transOrigin.current,
+        placement: currentPlacement.current,
+      });
     });
-
-    setCurrentPlacement(placementObj.value as DropPlacementsType);
-    setTransOrigin(originObj.value);
-    setTop(topObj.value);
-    setLeft(leftObj.value);
   };
 
   useEffect(() => {
+    currentPlacement.current = placement;
     if (visible) {
       updatePosition();
     }
@@ -165,6 +183,17 @@ const Select: React.FC<SelectProps> = ({
     };
   }, [visible]);
 
+  useEffect(() => {
+    document.addEventListener("scroll", updatePosition, true);
+    return () => {
+      cancelAnimationFrame(positionRaf.current);
+      cancelAnimationFrame(openRaf.current);
+      if (queryInputEventTimer.current) clearTimeout(queryInputEventTimer.current);
+      if (clearQueryTimer.current) clearTimeout(clearQueryTimer.current);
+      document.removeEventListener("scroll", updatePosition, true);
+    };
+  }, []);
+
   // Handle outside click
   const outsideClick = (e: MouseEvent) => {
     const ctx = refSelection.current;
@@ -179,15 +208,16 @@ const Select: React.FC<SelectProps> = ({
       clearQuery();
     }
   };
+  const handleOutsideClick = useEffectEvent(outsideClick);
 
   useEffect(() => {
     if (visible) {
-      document.addEventListener("click", outsideClick);
+      document.addEventListener("click", handleOutsideClick);
     } else {
-      document.removeEventListener("click", outsideClick);
+      document.removeEventListener("click", handleOutsideClick);
     }
     return () => {
-      document.removeEventListener("click", outsideClick);
+      document.removeEventListener("click", handleOutsideClick);
     };
   }, [visible]);
 
@@ -204,7 +234,7 @@ const Select: React.FC<SelectProps> = ({
       if (React.isValidElement(child)) {
         const childProps = child.props as any;
         const { label, value: val, disabled: d } = childProps;
-        const resolvedLabel = label || childProps.children || val;
+        const resolvedLabel = label ?? childProps.children ?? val;
         data.push({
           value: val,
           disabled: d,
@@ -215,20 +245,10 @@ const Select: React.FC<SelectProps> = ({
     return data;
   }, [options, loading, children]);
 
-  const reallySize = useMemo(() => {
-    const key = queryKey;
-    const filter = filterable && key.trim() !== "";
-    return filter
-      ? optionsData.filter((item) => String(item.label).toLowerCase().includes(key.toLowerCase()))
-          .length
-      : optionsData.length;
-  }, [optionsData, queryKey, filterable]);
-
   const scrollOptionIntoView = (index: number) => {
     const containerEl = refPopper.current;
     if (!containerEl || !containerEl.children[0]) return;
-    const listEl = containerEl.children[0];
-    const optionEl = listEl.children[index] as HTMLElement;
+    const optionEl = containerEl.querySelectorAll<HTMLElement>(".k-select-item")[index];
     if (!optionEl) return;
 
     const optionTop = optionEl.offsetTop;
@@ -248,30 +268,23 @@ const Select: React.FC<SelectProps> = ({
       return;
     }
     if (visible) {
-      if (e.key === "ArrowDown") {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        const filtered = filterOptions();
+        const direction = e.key === "ArrowDown" ? 1 : -1;
         let index = activeIndex;
-        if (index < reallySize - 1) {
-          index += 1;
-        } else {
-          index = 0;
+        for (let count = 0; count < filtered.length; count += 1) {
+          index = (index + direction + filtered.length) % filtered.length;
+          if (!filtered[index]?.disabled) {
+            setActiveIndex(index);
+            setTimeout(() => scrollOptionIntoView(index), 0);
+            break;
+          }
         }
-        setActiveIndex(index);
-        scrollOptionIntoView(index);
-        e.preventDefault();
-      } else if (e.key === "ArrowUp") {
-        let index = activeIndex;
-        if (index >= 1) {
-          index -= 1;
-        } else {
-          index = reallySize - 1;
-        }
-        setActiveIndex(index);
-        scrollOptionIntoView(index);
         e.preventDefault();
       } else if (e.key === "Enter" && activeIndex >= 0 && (ctxFocused || queryInputFocused)) {
         const filtered = filterOptions();
         const item = filtered[activeIndex];
-        if (item) {
+        if (item && !item.disabled) {
           handleSelect({ label: item.label, value: item.value });
         }
         e.preventDefault();
@@ -283,16 +296,14 @@ const Select: React.FC<SelectProps> = ({
       }
     }
   };
+  const handleDocumentKeydown = useEffectEvent(onKeydown);
 
   useEffect(() => {
-    const handleKeydown = (e: KeyboardEvent) => {
-      onKeydown(e);
-    };
-    document.addEventListener("keydown", handleKeydown);
+    document.addEventListener("keydown", handleDocumentKeydown);
     return () => {
-      document.removeEventListener("keydown", handleKeydown);
+      document.removeEventListener("keydown", handleDocumentKeydown);
     };
-  }, [visible, activeIndex, optionsData, reallySize, ctxFocused, queryInputFocused, queryKey]);
+  }, []);
 
   const labelText = useMemo(() => {
     if (!optionsData || optionsData.length === 0) {
@@ -313,10 +324,11 @@ const Select: React.FC<SelectProps> = ({
     }
   };
 
-  const clearQuery = () => {
+  function clearQuery() {
     setActiveIndex(-1);
     if (filterable || hasSearchEvent) {
-      setTimeout(() => {
+      if (clearQueryTimer.current) clearTimeout(clearQueryTimer.current);
+      clearQueryTimer.current = setTimeout(() => {
         setQueryKey("");
         if (queryInputRef.current) {
           queryInputRef.current.value = "";
@@ -325,13 +337,13 @@ const Select: React.FC<SelectProps> = ({
         setQueryInputVisible(false);
       }, 300);
     }
-  };
+  }
 
   const onMouseenter = (index: number) => {
     setActiveIndex(index);
   };
 
-  const handleSelect = (item: OptionSelectEvent) => {
+  function handleSelect(item: OptionSelectEvent) {
     const { value: val, label: lbl } = item;
     let selected = true;
     let nextValue = [...currentValue];
@@ -362,13 +374,13 @@ const Select: React.FC<SelectProps> = ({
     }
 
     if (value === undefined && modelValue === undefined) {
-      setCurrentValue(nextValue);
+      setInternalValue(nextValue);
     }
 
     const outputValue = multiple ? nextValue : nextValue[0];
     onChange?.(outputValue);
     onSelect?.({ value: val, label: lbl, selected });
-  };
+  }
 
   const searchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target;
@@ -386,10 +398,16 @@ const Select: React.FC<SelectProps> = ({
     if (hasSearchEvent) {
       if (queryInputEventTimer.current) clearTimeout(queryInputEventTimer.current);
       queryInputEventTimer.current = setTimeout(() => {
-        setRendered(true);
-        setVisible(true);
-        onOpenChange?.(true);
-        setTimeout(updatePosition, 0);
+        if (!rendered) {
+          setRendered(true);
+          openRaf.current = requestAnimationFrame(() => {
+            setVisible(true);
+            onOpenChange?.(true);
+          });
+        } else {
+          setVisible(true);
+          onOpenChange?.(true);
+        }
         onSearch?.(e);
       }, 500);
     }
@@ -412,7 +430,7 @@ const Select: React.FC<SelectProps> = ({
     nextValue.splice(index, 1);
 
     if (value === undefined && modelValue === undefined) {
-      setCurrentValue(nextValue);
+      setInternalValue(nextValue);
     }
     onChange?.(multiple ? nextValue : nextValue[0]);
     setTimeout(updatePosition, 0);
@@ -422,8 +440,9 @@ const Select: React.FC<SelectProps> = ({
     e.stopPropagation();
     const nextValue: any[] = [];
     if (value === undefined && modelValue === undefined) {
-      setCurrentValue(nextValue);
+      setInternalValue(nextValue);
     }
+    onClearCallback?.();
     onChange?.(multiple ? nextValue : (undefined as any));
     clearQuery();
   };
@@ -438,7 +457,7 @@ const Select: React.FC<SelectProps> = ({
     }
   };
 
-  const toggle = (show: boolean | null = null) => {
+  function toggle(show: boolean | null = null) {
     if (disabled) return;
 
     if (hasSearchEvent) {
@@ -448,12 +467,11 @@ const Select: React.FC<SelectProps> = ({
 
     if (!rendered) {
       setRendered(true);
-      setVisible(true);
-      onOpenChange?.(true);
-      setTimeout(() => {
-        updatePosition();
+      openRaf.current = requestAnimationFrame(() => {
+        setVisible(true);
+        onOpenChange?.(true);
         showQuery();
-      }, 0);
+      });
     } else {
       const nextVisible = show !== null ? show : !visible;
       setVisible(nextVisible);
@@ -467,15 +485,15 @@ const Select: React.FC<SelectProps> = ({
         clearQuery();
       }
     }
-  };
+  }
 
-  const filterOptions = () => {
+  function filterOptions() {
     const key = queryKey;
     const filter = filterable && key.trim() !== "";
     return filter
       ? optionsData.filter((item) => String(item.label).toLowerCase().includes(key.toLowerCase()))
       : optionsData;
-  };
+  }
 
   const renderOptions = () => {
     const nodes = filterOptions();
@@ -503,7 +521,7 @@ const Select: React.FC<SelectProps> = ({
       if (queryKey === "" && multiple && currentValue.length > 0) {
         const nextValue = currentValue.slice(0, -1);
         if (value === undefined && modelValue === undefined) {
-          setCurrentValue(nextValue);
+          setInternalValue(nextValue);
         }
         onChange?.(nextValue);
         setTimeout(updatePosition, 0);
@@ -521,20 +539,21 @@ const Select: React.FC<SelectProps> = ({
       ref: refPopper,
       style: {
         minWidth: `${minWidth}px`,
-        left: `${left}px`,
-        top: `${top}px`,
-        transformOrigin: transOrigin,
+        left: `${position.left}px`,
+        top: `${position.top}px`,
+        transformOrigin: position.origin,
       } as React.CSSProperties,
       className: clsx("k-select-dropdown", "k-scroll", {
         "k-select-dropdown-multiple": multiple,
         "k-select-dropdown-sm": size === "small",
       }),
+      onClick: (event: React.MouseEvent) => event.stopPropagation(),
     };
 
     const loadingNode = (
       <div className="k-select-loading">
         <Icon type={Loading} spin />
-        <span>{locale?.k?.select?.loading}</span>
+        <span>{loadingText || locale?.k?.select?.loading}</span>
       </div>
     );
 
@@ -598,7 +617,7 @@ const Select: React.FC<SelectProps> = ({
     ) : null;
 
   const renderTags = () => {
-    let tags = labelText.map((label, i) => {
+    const tags = labelText.map((label, i) => {
       return (
         <span className="k-select-tag" key={`${label}-${i}`}>
           {label}

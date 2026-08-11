@@ -1,9 +1,9 @@
 import clsx from "clsx";
 import { Check } from "kui-icons";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import type { SizeType, ThemeType, ValueType } from "../const/types";
 import Icon from "../icon";
-import { CheckboxGroupContext } from "./checkbox-group";
+import { CheckboxGroupContext } from "./checkbox-group-context";
 
 export interface ChangeEvent {
   value?: any;
@@ -25,7 +25,7 @@ export interface CheckboxProps extends Omit<React.HTMLAttributes<HTMLLabelElemen
 }
 
 const Checkbox: React.FC<CheckboxProps> = ({
-  checked = false,
+  checked,
   valueType = "boolean",
   value,
   label,
@@ -43,19 +43,14 @@ const Checkbox: React.FC<CheckboxProps> = ({
   const isGroup = !!group;
   const groupChecked = isGroup && group.value ? group.value.indexOf(value) > -1 : false;
 
-  const [localChecked, setLocalChecked] = useState(checked);
-
-  useEffect(() => {
-    setLocalChecked(checked);
-  }, [checked]);
-
-  const isChecked = isGroup ? groupChecked : localChecked;
+  const [localChecked, setLocalChecked] = useState(checked ?? false);
+  const isChecked = isGroup ? groupChecked : (checked ?? localChecked);
   const currentDisabled = disabled || (isGroup && group.disabled);
   const currentTheme = isGroup && group.theme ? group.theme : theme;
   const currentSize = isGroup && group.size ? group.size : size;
 
   const emitValue = (newChecked: boolean) => {
-    if (!isGroup) {
+    if (!isGroup && checked === undefined) {
       setLocalChecked(newChecked);
     }
     const labelVal = label || children || value;

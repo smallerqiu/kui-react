@@ -27,8 +27,9 @@ export default function App() {
     }, 2000);
   }, []);
   useEffect(() => {
-    fetchData();
+    const initialTimer = setTimeout(fetchData, 0);
     return () => {
+      clearTimeout(initialTimer);
       if (timer.current) clearTimeout(timer.current);
     };
   }, [fetchData]);

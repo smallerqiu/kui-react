@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import {
-  createContext,
   useCallback,
   useEffect,
   useMemo,
@@ -9,15 +8,7 @@ import {
   type CSSProperties,
   type HTMLAttributes,
 } from "react";
-
-export interface AnchorContextValue {
-  activeLink: string;
-  registerLink: (link: string) => void;
-  unregisterLink: (link: string) => void;
-  scrollTo: (link: string) => void;
-}
-
-export const AnchorContext = createContext<AnchorContextValue | null>(null);
+import { AnchorContext, type AnchorContextValue } from "./anchor-context";
 
 export interface AnchorProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "onClick"> {
   affix?: boolean;
@@ -52,10 +43,12 @@ export default function Anchor({
   const [activeLink, setActiveLink] = useState("");
   const [inkStyle, setInkStyle] = useState<CSSProperties>({ opacity: 0 });
 
-  offsetTopRef.current = offsetTop;
-  boundsRef.current = bounds;
-  onChangeRef.current = onChange;
-  onClickRef.current = onClick;
+  useEffect(() => {
+    offsetTopRef.current = offsetTop;
+    boundsRef.current = bounds;
+    onChangeRef.current = onChange;
+    onClickRef.current = onClick;
+  }, [bounds, offsetTop, onChange, onClick]);
 
   const getContainer = useCallback((): HTMLElement | Window | null => {
     if (typeof window === "undefined") return null;

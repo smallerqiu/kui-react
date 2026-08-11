@@ -33,9 +33,14 @@ export default function RollUp({
         : character
     );
   const [characters, setCharacters] = useState(() => offset(current));
+  const syncKey = `${current}:${precision}`;
+  const [previousSyncKey, setPreviousSyncKey] = useState(syncKey);
+  if (previousSyncKey !== syncKey) {
+    setPreviousSyncKey(syncKey);
+    setCharacters(offset(current));
+  }
 
   useEffect(() => {
-    setCharacters(offset(current));
     const frame = requestAnimationFrame(() => setCharacters(format(current)));
     return () => cancelAnimationFrame(frame);
   }, [current, precision]);

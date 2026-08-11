@@ -12,7 +12,7 @@ import {
   type ReactNode,
 } from "react";
 import { Button } from "../button";
-import { ConfigContext } from "../config";
+import { ConfigContext } from "../config/config-context";
 import zhCN from "../locale/zh-CN";
 import Spin from "../spin";
 

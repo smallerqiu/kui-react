@@ -1,12 +1,5 @@
 import React from "react";
-
-export interface ConfigContextValue {
-  locale: Record<string, any> | null;
-}
-
-export const ConfigContext = React.createContext<ConfigContextValue>({
-  locale: null,
-});
+import { ConfigContext } from "./config-context";
 
 export interface ConfigProviderProps {
   locale?: Record<string, any> | null;

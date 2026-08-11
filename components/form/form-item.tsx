@@ -10,10 +10,11 @@ import {
   type ReactElement,
   type ReactNode,
 } from "react";
-import { ConfigContext } from "../config";
+import { ConfigContext } from "../config/config-context";
 import zhCN from "../locale/zh-CN";
 import { Col, Row } from "../row-col";
-import { FormContext, type FormItemHandle } from "./form";
+import type { FormItemHandle } from "./form";
+import { FormContext } from "./form-context";
 import type { ColProps, FormRule } from "./types";
 
 export interface FormItemProps {

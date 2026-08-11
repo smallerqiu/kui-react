@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { Inbox } from "kui-icons";
 import React, { useContext } from "react";
-import { ConfigContext } from "../config";
+import { ConfigContext } from "../config/config-context";
 import Icon from "../icon";
 import zhCN from "../locale/zh-CN";
 

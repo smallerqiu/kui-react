@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import { Button } from "../button";
-import { ConfigContext } from "../config";
+import { ConfigContext } from "../config/config-context";
 import type { DrawerPlacementsType } from "../const/types";
 import zhCN from "../locale/zh-CN";
 
@@ -92,7 +92,8 @@ const Drawer: React.FC<DrawerProps> = ({
   };
 
   useEffect(() => {
-    toggle(open);
+    const timer = setTimeout(() => toggle(open), 0);
+    return () => clearTimeout(timer);
   }, [open]);
 
   useEffect(() => {

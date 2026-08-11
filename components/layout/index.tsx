@@ -1,7 +1,6 @@
 import clsx from "clsx";
-import React, { createContext, useContext, useEffect, useState } from "react";
-
-export const SiderHookContext = createContext<((mounted: boolean) => void) | null>(null);
+import React, { useContext, useEffect, useState } from "react";
+import { SiderHookContext } from "./layout-context";
 
 export interface LayoutProps extends React.HTMLAttributes<HTMLElement> {
   suffixCls?: string;

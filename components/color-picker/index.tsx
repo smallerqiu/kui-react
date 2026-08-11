@@ -1,14 +1,12 @@
 import clsx from "clsx";
 import Color, { type ColorInstance, type ColorObject } from "color";
 import {
-  cloneElement,
   isValidElement,
   useEffect,
   useMemo,
   useRef,
   useState,
   type HTMLAttributes,
-  type ReactElement,
   type ReactNode,
 } from "react";
 import Teleport from "../base/teleport";
@@ -49,7 +47,7 @@ export default function ColorPicker({
   placement = "bottom-left",
   trigger = "click",
   size,
-  mode: modeProp = "hex",
+  mode: modeProp,
   presets,
   onChange,
   onUpdateMode,
@@ -60,7 +58,8 @@ export default function ColorPicker({
 }: ColorPickerProps) {
   const controlled = value ?? modelValue;
   const [innerColor, setInnerColor] = useState(defaultValue ?? controlled ?? "#000000ff");
-  const [mode, setMode] = useState<ColorMode>(modeProp);
+  const [innerMode, setInnerMode] = useState<ColorMode>(modeProp ?? "hex");
+  const mode = modeProp ?? innerMode;
   const initialColor = useMemo(() => Color(defaultValue ?? controlled ?? "#000000ff"), []);
   const [currentHue, setCurrentHue] = useState(initialColor.hue());
   const [currentAlpha, setCurrentAlpha] = useState(initialColor.alpha());
@@ -69,8 +68,19 @@ export default function ColorPicker({
   const [currentPlacement, setCurrentPlacement] = useState(placement);
   const triggerRef = useRef<HTMLElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
+  const placementRef = useRef<string>(placement);
+  const transOriginRef = useRef("bottom");
+  const topRef = useRef(0);
+  const leftRef = useRef(0);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const currentValue = controlled ?? innerColor;
+  const [syncedValue, setSyncedValue] = useState(currentValue);
+  if (syncedValue !== currentValue) {
+    const next = Color(currentValue);
+    setSyncedValue(currentValue);
+    setCurrentAlpha(next.alpha());
+    if (next.saturationv() > 0) setCurrentHue(next.hue());
+  }
   const color = Color(currentValue);
   const format = (next: ColorInstance, targetMode = mode) =>
     targetMode === "hex"
@@ -87,20 +97,17 @@ export default function ColorPicker({
   };
   const updatePosition = () => {
     if (!triggerRef.current || !popoverRef.current) return;
-    const placementValue = { value: currentPlacement };
-    const originValue = { value: position.origin };
-    const topValue = { value: position.top };
-    const leftValue = { value: position.left };
+    placementRef.current = placement;
     setPlacement({
-      refSelection: triggerRef.current,
-      refPopper: popoverRef.current,
-      currentPlacement: placementValue,
-      transOrigin: originValue,
-      top: topValue,
-      left: leftValue,
+      refSelection: triggerRef,
+      refPopper: popoverRef,
+      currentPlacement: placementRef,
+      transOrigin: transOriginRef,
+      top: topRef,
+      left: leftRef,
     });
-    setCurrentPlacement(placementValue.value as DropPlacementsType);
-    setPosition({ left: leftValue.value, top: topValue.value, origin: originValue.value });
+    setCurrentPlacement(placementRef.current as DropPlacementsType);
+    setPosition({ left: leftRef.current, top: topRef.current, origin: transOriginRef.current });
   };
   const setVisible = (next: boolean) => {
     if (disabled) return;
@@ -108,7 +115,6 @@ export default function ColorPicker({
     onOpenChange?.(next);
     if (next) requestAnimationFrame(updatePosition);
   };
-  useEffect(() => setMode(modeProp), [modeProp]);
   // 清理未完成的隐藏定时器，防止在组件卸载后调用 setState
   useEffect(
     () => () => {
@@ -116,12 +122,6 @@ export default function ColorPicker({
     },
     []
   );
-  useEffect(() => {
-    const next = Color(currentValue);
-    setCurrentAlpha(next.alpha());
-    if (next.saturationv() > 0) setCurrentHue(next.hue());
-  }, [currentValue]);
-  useEffect(() => setCurrentPlacement(placement), [placement]);
   const updatePositionRef = useRef(updatePosition);
   useEffect(() => {
     updatePositionRef.current = updatePosition;
@@ -158,35 +158,23 @@ export default function ColorPicker({
       ? { onMouseEnter: mouseEnter, onMouseLeave: mouseLeave }
       : { onClick: () => setVisible(!open) };
   const customTrigger =
-    children && isValidElement(children)
-      ? (children as ReactElement<{
-          onClick?: (event: React.MouseEvent) => void;
-          onMouseEnter?: (event: React.MouseEvent) => void;
-          onMouseLeave?: (event: React.MouseEvent) => void;
-          ref?: React.Ref<HTMLElement>;
-        }>)
-      : null;
+    children && isValidElement(children) ? children : null;
   const triggerNode = customTrigger ? (
-    cloneElement(customTrigger, {
-      ref: (node: HTMLElement | null) => {
-        triggerRef.current = node;
-        const childRef = customTrigger.props.ref;
-        if (typeof childRef === "function") childRef(node);
-        else if (childRef) (childRef as React.RefObject<HTMLElement | null>).current = node;
-      },
-      onClick: (event: React.MouseEvent) => {
-        customTrigger.props.onClick?.(event);
+    <span
+      ref={triggerRef}
+      className="k-color-picker-custom-trigger"
+      onClick={(event: React.MouseEvent) => {
         if (trigger === "click" && !event.defaultPrevented) setVisible(!open);
-      },
-      onMouseEnter: (event: React.MouseEvent) => {
-        customTrigger.props.onMouseEnter?.(event);
+      }}
+      onMouseEnter={() => {
         if (trigger === "hover") mouseEnter();
-      },
-      onMouseLeave: (event: React.MouseEvent) => {
-        customTrigger.props.onMouseLeave?.(event);
+      }}
+      onMouseLeave={() => {
         if (trigger === "hover") mouseLeave();
-      },
-    })
+      }}
+    >
+      {customTrigger}
+    </span>
   ) : (
     <div
       {...rest}
@@ -273,7 +261,7 @@ export default function ColorPicker({
               value={color}
               disabledAlpha={disabledAlpha}
               onUpdateMode={(next) => {
-                setMode(next);
+                if (modeProp === undefined) setInnerMode(next);
                 onUpdateMode?.(next);
                 update(color, next);
               }}

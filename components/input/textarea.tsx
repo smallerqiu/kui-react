@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 
 export interface TextAreaProps extends Omit<
@@ -28,18 +28,13 @@ const TextArea: React.FC<TextAreaProps> = ({
   onInput,
   ...rest
 }) => {
-  const [currentValue, setCurrentValue] = useState(value !== undefined ? value : defaultValue);
-
-  useEffect(() => {
-    if (value !== undefined) {
-      setCurrentValue(value);
-    }
-  }, [value]);
+  const [innerValue, setInnerValue] = useState(defaultValue);
+  const currentValue = value ?? innerValue;
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const v = e.target.value;
     if (value === undefined) {
-      setCurrentValue(v);
+      setInnerValue(v);
     }
     onChange?.(v);
     onInput?.(e as any);

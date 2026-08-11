@@ -2,19 +2,13 @@ import clsx from "clsx";
 import React, { useContext } from "react";
 import { SizeContext } from "../config/size-context";
 import type { ShapeType, SizeType } from "../const/types";
+import { ButtonGroupContext } from "./button-group-context";
 
 export interface ButtonGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: SizeType;
   shape?: ShapeType;
   children?: React.ReactNode;
 }
-
-export interface ButtonGroupContextValue {
-  size?: SizeType;
-  shape?: ShapeType;
-}
-
-export const ButtonGroupContext = React.createContext<ButtonGroupContextValue | null>(null);
 
 const ButtonGroup: React.FC<ButtonGroupProps> = ({
   size,

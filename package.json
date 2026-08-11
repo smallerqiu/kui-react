@@ -12,7 +12,8 @@
     "build:cjs": "vite build --config vite.config.lib.ts",
     "build:css": "vite build --config vite.config.css.ts",
     "build:docs": "vite build --config vite.config.docs.ts",
-    "build": "npm run typecheck && npm run build:es && npm run build:cjs && npm run build:css"
+    "build": "npm run typecheck && npm run build:es && npm run build:cjs && npm run build:css",
+    "eslint": "npx eslint components"
   },
   "repository": {
     "type": "git",

@@ -1,15 +1,7 @@
 import clsx from "clsx";
-import { createContext, useEffect, useMemo, useRef, type HTMLAttributes } from "react";
+import { useEffect, useMemo, useRef, type HTMLAttributes } from "react";
 import createInstance, { type ImagePreviewInstance } from "./instance";
-import type { ImagePreviewProps } from "./preview";
-
-export interface ImageGroupContextValue {
-  show: (props: ImagePreviewProps) => void;
-  register: (src: string) => void;
-  unregister: (src: string) => void;
-  togglePanel: () => void;
-}
-export const ImageGroupContext = createContext<ImageGroupContextValue | null>(null);
+import { ImageGroupContext, type ImageGroupContextValue } from "./image-group-context";
 export interface ImageGroupProps extends HTMLAttributes<HTMLDivElement> {
   data?: string[];
 }

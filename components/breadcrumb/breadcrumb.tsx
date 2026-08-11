@@ -1,12 +1,11 @@
 import clsx from "clsx";
-import React, { createContext } from "react";
+import React from "react";
+import { BreadcrumbContext } from "./breadcrumb-context";
 
 export interface BreadcrumbProps extends React.HTMLAttributes<HTMLElement> {
   separator?: React.ReactNode;
   children?: React.ReactNode;
 }
-
-export const BreadcrumbContext = createContext<React.ReactNode>("/");
 
 const Breadcrumb: React.FC<BreadcrumbProps> = ({
   separator = "/",

@@ -3,6 +3,7 @@ import React from "react";
 import type { ShapeType } from "../const/types";
 import { getChildren } from "../utils/react-node";
 import Avatar from "./avatar";
+import { AvatarGroupContext } from "./avatar-group-context";
 
 export interface AvatarGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   maxCount?: number;
@@ -10,13 +11,6 @@ export interface AvatarGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: number | "large" | "small" | "default";
   children?: React.ReactNode;
 }
-
-export interface AvatarGroupContextValue {
-  shape?: ShapeType;
-  size?: number | "large" | "small" | "default";
-}
-
-export const AvatarGroupContext = React.createContext<AvatarGroupContextValue | null>(null);
 
 const AvatarGroup: React.FC<AvatarGroupProps> = ({
   maxCount,

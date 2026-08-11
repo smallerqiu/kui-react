@@ -24,12 +24,15 @@ const SkeletonAvatar: React.FC<SkeletonAvatarProps> = ({
   ...rest
 }) => {
   const [show, setShow] = useState(loading);
+  const [previousLoading, setPreviousLoading] = useState(loading);
+  if (previousLoading !== loading) {
+    setPreviousLoading(loading);
+    if (loading) setShow(true);
+  }
   const timer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (loading) {
-      setShow(true);
-    } else {
+    if (!loading) {
       if (timer.current) clearTimeout(timer.current);
       timer.current = setTimeout(() => setShow(false), delay);
     }

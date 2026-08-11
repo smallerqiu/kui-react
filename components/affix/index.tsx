@@ -50,7 +50,9 @@ export default function Affix({
   const [affixStyle, setAffixStyle] = useState<CSSProperties>({});
   const [placeholderStyle, setPlaceholderStyle] = useState<CSSProperties>({});
 
-  onChangeRef.current = onChange;
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
   const updatePosition = useCallback(() => {
     frameRef.current = null;
@@ -64,11 +66,13 @@ export default function Affix({
       scrollTarget === window
         ? { top: 0, bottom: window.innerHeight }
         : (scrollTarget as HTMLElement).getBoundingClientRect();
-    let nextFixed = false;
+    const nextFixed =
+      offsetBottom !== undefined
+        ? targetRect.bottom - rect.bottom - offsetBottom <= 0
+        : rect.top - targetRect.top - offsetTop <= 0;
     let nextStyle: CSSProperties = {};
 
     if (offsetBottom !== undefined) {
-      nextFixed = targetRect.bottom - rect.bottom - offsetBottom <= 0;
       if (nextFixed) {
         nextStyle = {
           position: "fixed",
@@ -78,7 +82,6 @@ export default function Affix({
         };
       }
     } else {
-      nextFixed = rect.top - targetRect.top - offsetTop <= 0;
       if (nextFixed) {
         nextStyle = {
           position: "fixed",

@@ -27,7 +27,7 @@ import {
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import { Button } from "../button";
-import { ConfigContext } from "../config";
+import { ConfigContext } from "../config/config-context";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
 import zhCN from "../locale/zh-CN";
@@ -165,17 +165,25 @@ export default function DatePicker({
   const [hoverDate, setHoverDate] = useState<Dayjs | null>(null);
   const [timeEditSide, setTimeEditSide] = useState<"start" | "end">("start");
   const [texts, setTexts] = useState<string[]>(initial.map((item) => item.format(fmt)));
+  const [syncedValues, setSyncedValues] = useState(values);
+  const [syncedFormat, setSyncedFormat] = useState(fmt);
+  if (syncedValues !== values || syncedFormat !== fmt) {
+    setSyncedValues(values);
+    setSyncedFormat(fmt);
+    setDraft(values);
+    setTexts(values.map((item) => item.format(fmt)));
+    if (values[0]) setPanelDate(values[0]);
+  }
   const rootRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ left: 0, top: 0, origin: "left top" });
   const [currentPlacement, setCurrentPlacement] = useState<DropPlacementsType>(placement);
+  const placementRef = useRef<string>(placement);
+  const transOriginRef = useRef("left top");
+  const topRef = useRef(0);
+  const leftRef = useRef(0);
   const timeColRefs = useRef<Partial<Record<UnitType, HTMLUListElement | null>>>({});
 
-  useEffect(() => {
-    setDraft(values);
-    setTexts(values.map((item) => item.format(fmt)));
-    if (values[0]) setPanelDate(values[0]);
-  }, [controlled, startDate, endDate, fmt]);
   const setOpen = (next: boolean) => {
     if (opened === undefined) setVisibleState(next);
     setRendered(true);
@@ -186,20 +194,17 @@ export default function DatePicker({
     if (!root) return;
     const overlay = overlayRef.current;
     if (!overlay) return;
-    const current = { value: placement };
-    const top = { value: 0 };
-    const left = { value: 0 };
-    const origin = { value: "left top" };
+    placementRef.current = placement;
     setPlacement({
-      refSelection: root,
-      refPopper: overlay,
-      currentPlacement: current,
-      transOrigin: origin,
-      top,
-      left,
+      refSelection: rootRef,
+      refPopper: overlayRef,
+      currentPlacement: placementRef,
+      transOrigin: transOriginRef,
+      top: topRef,
+      left: leftRef,
     });
-    setCurrentPlacement(current.value as DropPlacementsType);
-    setPosition({ left: left.value, top: top.value, origin: origin.value });
+    setCurrentPlacement(placementRef.current as DropPlacementsType);
+    setPosition({ left: leftRef.current, top: topRef.current, origin: transOriginRef.current });
   }, [placement]);
   useEffect(() => {
     if (!visible) return;

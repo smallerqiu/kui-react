@@ -13,7 +13,7 @@ import {
   type ReactNode,
 } from "react";
 import Icon from "../icon";
-import { ImageGroupContext } from "./group";
+import { ImageGroupContext } from "./image-group-context";
 import createInstance, { type ImagePreviewInstance } from "./instance";
 import type { ImagePreviewProps } from "./preview";
 import { loadImage } from "./utils";

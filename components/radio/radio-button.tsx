@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Button } from "../button";
 import type { ShapeType, SizeType } from "../const/types";
 import type { IconType } from "../icon";
-import { RadioGroupContext } from "./radio-group";
+import { RadioGroupContext } from "./radio-group-context";
 import type { ChangeEvent } from "./types";
 
 export interface RadioButtonProps extends Omit<

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { getChildren } from "../utils/react-node";
 
 export interface CollapseProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
@@ -11,7 +11,7 @@ export interface CollapseProps extends Omit<React.HTMLAttributes<HTMLDivElement>
 }
 
 const Collapse: React.FC<CollapseProps> = ({
-  openKeys = [],
+  openKeys,
   accordion = false,
   sample = false,
   onChange,
@@ -19,11 +19,8 @@ const Collapse: React.FC<CollapseProps> = ({
   className = "",
   ...rest
 }) => {
-  const [activeKeys, setActiveKeys] = useState<(string | number)[]>(openKeys);
-
-  useEffect(() => {
-    setActiveKeys(openKeys);
-  }, [openKeys]);
+  const [innerActiveKeys, setInnerActiveKeys] = useState<(string | number)[]>(openKeys ?? []);
+  const activeKeys = openKeys ?? innerActiveKeys;
 
   const handleExpand = (key: string | number) => {
     if (!key && key !== 0) return;
@@ -37,7 +34,7 @@ const Collapse: React.FC<CollapseProps> = ({
       nextKeys = accordion ? [key] : [...nextKeys, key];
     }
 
-    setActiveKeys(nextKeys);
+    if (openKeys === undefined) setInnerActiveKeys(nextKeys);
     onChange?.(key);
   };
 

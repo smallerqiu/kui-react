@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import type { SizeType } from "../const/types";
 import type { IconType } from "../icon";
 import Star from "./star";
@@ -43,9 +43,11 @@ const Rate: React.FC<RateProps> = ({
   const [tempValue, setTempValue] = useState<number | null>(null);
   const [cleared, setCleared] = useState(false);
 
-  useEffect(() => {
+  const [syncedValue, setSyncedValue] = useState(value);
+  if (syncedValue !== value) {
+    setSyncedValue(value);
     setInitValue(value);
-  }, [value]);
+  }
 
   const update = (t: "C" | "M", index: number, percent: number) => {
     if (t === "M") {

@@ -1,9 +1,10 @@
 import React from "react";
 import Button from "../button/button";
+import type { ButtonProps } from "../button/button";
 import { type IconType } from "../icon";
 import { useDropdownContext } from "./dropdown-context";
 
-export interface TriggerButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface TriggerButtonProps extends ButtonProps {
   icon?: IconType[];
   disabled?: boolean;
 }

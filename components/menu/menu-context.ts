@@ -1,4 +1,3 @@
-import type { RefObject } from "react";
 import { createContext, useContext } from "react";
 import type { DirectionType } from "../const/types";
 
@@ -6,8 +5,8 @@ export interface MenuContextProps {
   openKeys: string[];
   selectedKeys: string[];
   mode: DirectionType;
-  inlineCollapsed: RefObject<boolean>;
-  popupInlineCollapsed: RefObject<boolean>;
+  inlineCollapsed: boolean;
+  popupInlineCollapsed: boolean;
   dropdown: boolean;
   openKeysChange?: (key: string, opened: boolean, keyPath: string[]) => void;
   selectedKeysChange?: (key: string, selected: boolean, keyPath: string[]) => void;

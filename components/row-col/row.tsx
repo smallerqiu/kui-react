@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import React from "react";
+import { RowContext } from "./row-context";
 
 export interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
   gutter?: number | [number, number];
@@ -8,8 +9,6 @@ export interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
   align?: "top" | "middle" | "bottom";
   children?: React.ReactNode;
 }
-
-export const RowContext = React.createContext<number | [number, number] | undefined>(undefined);
 
 const Row: React.FC<RowProps> = ({
   gutter,

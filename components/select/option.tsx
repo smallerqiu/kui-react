@@ -32,7 +32,7 @@ const Option: React.FC<OptionProps> = ({
   className = "",
   ...rest
 }) => {
-  const labelText = label || children || value;
+  const labelText = label ?? children ?? value;
 
   const handleSelect = () => {
     if (disabled) return;

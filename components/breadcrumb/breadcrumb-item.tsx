@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import React, { useContext } from "react";
 import Icon, { type IconType } from "../icon";
-import { BreadcrumbContext } from "./breadcrumb";
+import { BreadcrumbContext } from "./breadcrumb-context";
 
 export interface BreadcrumbItemProps extends React.HTMLAttributes<HTMLLIElement> {
   href?: string;

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import React, { useState, type CSSProperties, type ReactNode } from "react";
 import type { DirectionType } from "../const/types";
 import { useDropdownContext } from "../dropdown/dropdown-context";
 import type { IconType } from "../icon";
@@ -23,6 +23,7 @@ export interface MenuOptionsProps {
 export interface MenuProps {
   theme?: string;
   mode?: DirectionType;
+  value?: string[];
   selectedKeys?: string[];
   accordion?: boolean;
   items?: MenuOptionsProps[];
@@ -39,11 +40,12 @@ export interface MenuProps {
 export const Menu: React.FC<MenuProps> = ({
   theme,
   mode = "vertical",
-  selectedKeys = [],
+  value,
+  selectedKeys,
   accordion = false,
   items,
   inlineCollapsed = false,
-  openKeys = [],
+  openKeys,
   onSelect,
   onOpenChange,
   onChange,
@@ -52,44 +54,28 @@ export const Menu: React.FC<MenuProps> = ({
   style,
 }) => {
   const dropdownContext = useDropdownContext();
-  const currentInlineCollapsed = useRef(inlineCollapsed);
-  const popupInlineCollapsed = useRef(inlineCollapsed);
-  const tempOpenKeys = useRef(openKeys);
-  const collapseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [internalSelectedKeys, setInternalSelectedKeys] = useState<string[]>([]);
+  const [internalOpenKeys, setInternalOpenKeys] = useState<string[]>([]);
+  const [popupCollapseReady, setPopupCollapseReady] = useState(inlineCollapsed);
 
-  useEffect(() => {
-    if (collapseTimer.current) clearTimeout(collapseTimer.current);
-    if (inlineCollapsed) {
-      currentInlineCollapsed.current = true;
-      if (openKeys.length) {
-        tempOpenKeys.current = [...openKeys];
-      }
-      onChange?.([]);
-      collapseTimer.current = setTimeout(() => {
-        popupInlineCollapsed.current = true;
-      }, 200);
-    } else {
-      popupInlineCollapsed.current = false;
-      currentInlineCollapsed.current = false;
-      onChange?.([...tempOpenKeys.current]);
-    }
-  }, [inlineCollapsed, openKeys, onChange]);
+  const currentSelectedKeys = value ?? selectedKeys ?? internalSelectedKeys;
+  const currentOpenKeys = openKeys ?? internalOpenKeys;
+  const visibleOpenKeys = inlineCollapsed ? [] : currentOpenKeys;
+  const popupInlineCollapsed = inlineCollapsed && popupCollapseReady;
 
   const selectedKeysChange = (key: string, selected: boolean, keyPath: string[]) => {
-    let nextSelected: string[];
-    if (selected) {
-      nextSelected = [...keyPath, key];
-    } else {
-      nextSelected = selectedKeys.filter((x) => x !== key);
-    }
+    const nextSelected = selected
+      ? [...keyPath, key]
+      : currentSelectedKeys.filter((itemKey) => itemKey !== key);
 
+    setInternalSelectedKeys(nextSelected);
     onChange?.(nextSelected);
     onSelect?.({ key, keyPath });
 
-    if (mode === "horizontal" || mode === "vertical" || currentInlineCollapsed) {
-      tempOpenKeys.current = [...nextSelected];
+    if (mode === "horizontal" || mode === "vertical" || inlineCollapsed) {
+      setInternalOpenKeys([]);
+      onOpenChange?.([]);
     }
-
     dropdownContext?.menuSelected?.({ key, keyPath });
   };
 
@@ -97,32 +83,28 @@ export const Menu: React.FC<MenuProps> = ({
     let nextOpenKeys: string[];
     if (accordion) {
       nextOpenKeys = opened ? [...keyPath, key] : keyPath;
+    } else if (opened) {
+      nextOpenKeys = currentOpenKeys.includes(key) ? currentOpenKeys : [...currentOpenKeys, key];
     } else {
-      if (!opened) {
-        nextOpenKeys = openKeys.filter((x) => x !== key);
-      } else {
-        nextOpenKeys = openKeys.includes(key) ? openKeys : [...openKeys, key];
-      }
+      nextOpenKeys = currentOpenKeys.filter((itemKey) => itemKey !== key);
     }
 
+    setInternalOpenKeys(nextOpenKeys);
     onOpenChange?.(nextOpenKeys);
   };
 
   const dropdown = dropdownContext != null;
-
   const menuState: MenuContextProps = {
-    openKeys,
-    selectedKeys,
+    openKeys: visibleOpenKeys,
+    selectedKeys: currentSelectedKeys,
     mode,
-    inlineCollapsed: currentInlineCollapsed,
+    inlineCollapsed,
     popupInlineCollapsed,
     dropdown,
     openKeysChange,
     selectedKeysChange,
   };
-
   const preCls = dropdown ? "dropdown-menu" : "menu";
-
   const cls = clsx(
     `k-${preCls}`,
     `k-${preCls}-${mode}`,
@@ -133,7 +115,21 @@ export const Menu: React.FC<MenuProps> = ({
 
   return (
     <MenuContext.Provider value={menuState}>
-      <ul className={cls} data-theme-mode={theme} style={style}>
+      <ul
+        className={cls}
+        theme-mode={theme}
+        style={style}
+        onTransitionRun={(event) => {
+          if (event.target === event.currentTarget && inlineCollapsed) {
+            setPopupCollapseReady(false);
+          }
+        }}
+        onTransitionEnd={(event) => {
+          if (event.target === event.currentTarget && inlineCollapsed) {
+            setPopupCollapseReady(true);
+          }
+        }}
+      >
         {items && items.length > 0
           ? items.map((item) => <RecursiveMenu item={item} key={item.key} />)
           : children}

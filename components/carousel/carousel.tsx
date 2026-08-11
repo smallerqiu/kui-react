@@ -11,7 +11,7 @@ import {
   type HTMLAttributes,
 } from "react";
 import Icon from "../icon";
-import { CarouselContext } from "./carousel-item";
+import { CarouselContext } from "./carousel-context";
 
 export interface CarouselRef {
   next: () => void;

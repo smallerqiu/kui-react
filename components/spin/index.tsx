@@ -20,6 +20,11 @@ const Spin: React.FC<SpinProps> = ({
   ...rest
 }) => {
   const [spinning, setSpinning] = useState(spinningProp);
+  const [previousSpinning, setPreviousSpinning] = useState(spinningProp);
+  if (previousSpinning !== spinningProp) {
+    setPreviousSpinning(spinningProp);
+    if (spinningProp) setSpinning(true);
+  }
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -28,7 +33,6 @@ const Spin: React.FC<SpinProps> = ({
         clearTimeout(timerRef.current);
         timerRef.current = null;
       }
-      setSpinning(true);
     } else {
       if (timerRef.current) {
         clearTimeout(timerRef.current);

@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { ChevronsLeft, ChevronsRight, ChevronUp, Ellipsis } from "kui-icons";
-import React, { useContext, useEffect, useState } from "react";
-import { ConfigContext } from "../config";
+import React, { useContext, useState } from "react";
+import { ConfigContext } from "../config/config-context";
 import type { SizeType, ThemeType } from "../const/types";
 import Icon from "../icon";
 import InputNumber from "../input-number";
@@ -45,22 +45,17 @@ const Page: React.FC<PageProps> = ({
   const [currentPage, setCurrentPage] = useState(pageProp);
   const [currentPageSize, setCurrentPageSize] = useState(pageSizeProp);
   const [pageCount, setPageCount] = useState(calcPageCount(total, pageSizeProp));
+  const syncKey = `${total}:${pageProp}:${pageSizeProp}`;
+  const [previousSyncKey, setPreviousSyncKey] = useState(syncKey);
+  if (previousSyncKey !== syncKey) {
+    const newCount = calcPageCount(total, pageSizeProp);
+    setPreviousSyncKey(syncKey);
+    setCurrentPageSize(pageSizeProp);
+    setPageCount(newCount);
+    setCurrentPage(Math.min(pageProp, newCount));
+  }
   const [prevHover, setPrevHover] = useState(false);
   const [nextHover, setNextHover] = useState(false);
-
-  useEffect(() => {
-    const newCount = calcPageCount(total, currentPageSize);
-    setPageCount(newCount);
-    if (currentPage > newCount) setCurrentPage(newCount);
-  }, [total, currentPageSize]);
-
-  useEffect(() => {
-    setCurrentPage(pageProp);
-  }, [pageProp]);
-
-  useEffect(() => {
-    setCurrentPageSize(pageSizeProp);
-  }, [pageSizeProp]);
 
   const toPage = (p: number) => {
     if (disabled) return;

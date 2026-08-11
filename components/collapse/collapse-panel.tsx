@@ -25,9 +25,9 @@ const CollapsePanel: React.FC<CollapsePanelProps> = ({
   const [expanded, setExpanded] = useState(active);
   const [rendered, setRendered] = useState(active);
   useEffect(() => {
-    setRendered(true);
     // Use a small delay to trigger the CSS transition after mount
     const timer = setTimeout(() => {
+      if (active) setRendered(true);
       setExpanded(active);
     }, 0);
     return () => clearTimeout(timer);
@@ -48,7 +48,7 @@ const CollapsePanel: React.FC<CollapsePanelProps> = ({
         <span className="k-collapse-title">{title}</span>
         {extra ? <span className="k-collapse-extra">{extra}</span> : null}
       </div>
-      {rendered ? (
+      {active || rendered ? (
         <div className="k-collapse-content" style={{ display: expanded ? undefined : "none" }}>
           <div className="k-collapse-content-box">{children}</div>
         </div>

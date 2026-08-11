@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { Loading } from "kui-icons";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import type { SizeType, ValueType } from "../const/types";
 import Icon from "../icon";
 import { getValueWithType } from "../utils/checked";
@@ -23,7 +23,7 @@ export interface SwitchProps extends Omit<
 }
 
 const Switch: React.FC<SwitchProps> = ({
-  checked = false,
+  checked,
   valueType = "boolean",
   type,
   disabled = false,
@@ -38,18 +38,15 @@ const Switch: React.FC<SwitchProps> = ({
   onClick,
   ...rest
 }) => {
-  const [localChecked, setLocalChecked] = useState(checked);
-
-  useEffect(() => {
-    setLocalChecked(checked);
-  }, [checked]);
+  const [innerChecked, setInnerChecked] = useState(false);
+  const currentChecked = checked ?? innerChecked;
 
   const change = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled || loading) {
       return;
     }
-    const nextChecked = !localChecked;
-    setLocalChecked(nextChecked);
+    const nextChecked = !currentChecked;
+    if (checked === undefined) setInnerChecked(nextChecked);
 
     const val = getValueWithType(nextChecked, valueType);
     onChange?.(val);
@@ -59,7 +56,7 @@ const Switch: React.FC<SwitchProps> = ({
   const classes = clsx(
     "k-switch",
     {
-      "k-switch-checked": localChecked,
+      "k-switch-checked": currentChecked,
       "k-switch-disabled": disabled || loading,
       [`k-switch-${type}`]: type,
       "k-switch-sm": size === "small",
@@ -76,7 +73,7 @@ const Switch: React.FC<SwitchProps> = ({
 
   const textNode = showInner ? (
     <span className="k-switch-inner">
-      {localChecked ? currentCheckedChildren : currentUnCheckedChildren}
+      {currentChecked ? currentCheckedChildren : currentUnCheckedChildren}
     </span>
   ) : null;
 

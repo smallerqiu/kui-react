@@ -12,7 +12,7 @@ import {
 } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
-import { ConfigContext } from "../config";
+import { ConfigContext } from "../config/config-context";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 import Empty from "../empty";
 import Icon, { type IconType } from "../icon";
@@ -130,19 +130,14 @@ export default function TreeSelect({
   const [visible, setVisible] = useState(false);
   const [rendered, setRendered] = useState(false);
   const [query, setQuery] = useState("");
-  const [expanded, setExpanded] = useState<string[]>(treeExpandedKeys ?? []);
-  const [checked, setChecked] = useState<string[]>(treeCheckedKeys ?? []);
+  const [innerExpanded, setInnerExpanded] = useState<string[]>([]);
+  const [innerChecked, setInnerChecked] = useState<string[]>([]);
+  const expanded = treeExpandedKeys ?? innerExpanded;
+  const checked = treeCheckedKeys ?? innerChecked;
   const [position, setPosition] = useState({ left: 0, top: 0, minWidth: 0, origin: "top" });
   const selectionRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (treeExpandedKeys) setExpanded(treeExpandedKeys);
-  }, [treeExpandedKeys]);
-  useEffect(() => {
-    if (treeCheckedKeys) setChecked(treeCheckedKeys);
-  }, [treeCheckedKeys]);
 
   const allNodes = useMemo(() => buildTree({ data, expandedKeys: expanded }), [data, expanded]);
   const labels = useMemo(() => {
@@ -318,12 +313,12 @@ export default function TreeSelect({
               onSelect={select}
               onExpand={(event) => onTreeExpand?.(event)}
               onExpandedKeysChange={(keys) => {
-                setExpanded(keys);
+                if (treeExpandedKeys === undefined) setInnerExpanded(keys);
                 onTreeExpandedKeysChange?.(keys);
               }}
               onCheck={(_node, _value, keys) => commit(keys)}
               onCheckedKeysChange={(keys) => {
-                setChecked(keys);
+                if (treeCheckedKeys === undefined) setInnerChecked(keys);
                 onTreeCheckedKeysChange?.(keys);
               }}
             />

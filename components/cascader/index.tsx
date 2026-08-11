@@ -63,13 +63,16 @@ export default function Cascader({
   const currentValue = controlledValue ?? innerValue;
   const selectedPath = useMemo(() => pathFromValue(options, currentValue), [options, currentValue]);
   const [activePath, setActivePath] = useState<CascaderOption[]>(selectedPath);
+  const [syncedSelectedPath, setSyncedSelectedPath] = useState(selectedPath);
+  if (syncedSelectedPath !== selectedPath) {
+    setSyncedSelectedPath(selectedPath);
+    setActivePath(selectedPath);
+  }
   const [visible, setVisible] = useState(false);
   const [rendered, setRendered] = useState(false);
   const [position, setPosition] = useState({ left: 0, top: 0, minWidth: 0, origin: "top" });
   const selectionRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => setActivePath(selectedPath), [selectedPath]);
 
   const menus = useMemo(() => {
     const result: CascaderOption[][] = [options];

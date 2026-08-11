@@ -1,7 +1,16 @@
 import clsx from "clsx";
-import React, { type CSSProperties, type ReactNode, useLayoutEffect, useRef } from "react";
-import Teleport from "react-kui/base/teleport";
-import Transition, { getTransitionProp } from "react-kui/base/transition";
+import React, {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
+import Teleport from "../base/teleport";
+import Transition, { getTransitionProp } from "../base/transition";
 import { useDropdownContext } from "../dropdown/dropdown-context";
 import type { IconType } from "../icon";
 import Icon from "../icon";
@@ -9,7 +18,8 @@ import { setPlacement } from "../utils/placement";
 import { SubMenuContext, useMenuContext, useSubMenuContext } from "./menu-context";
 
 export interface SubMenuProps {
-  itemKey: string;
+  itemKey?: string;
+  menuKey?: string;
   disabled?: boolean;
   title?: ReactNode;
   icon?: IconType[];
@@ -18,223 +28,232 @@ export interface SubMenuProps {
 
 export const SubMenu: React.FC<SubMenuProps> = ({
   itemKey,
+  menuKey,
   disabled = false,
   title,
   icon,
   children,
 }) => {
+  const generatedKey = useId();
+  const currentKey = itemKey ?? menuKey ?? generatedKey;
   const refSelection = useRef<HTMLDivElement | null>(null);
   const refPopper = useRef<HTMLDivElement | null>(null);
-
-  const top = useRef(0);
-  const left = useRef(0);
-  const minWidth = useRef("");
-  const currentPlacement = useRef("bottom-left");
-
-  const transOrigin = useRef("bottom left");
+  const topRef = useRef(0);
+  const leftRef = useRef(0);
+  const placementRef = useRef("bottom-left");
+  const originRef = useRef("bottom left");
+  const [position, setPosition] = useState({
+    top: 0,
+    left: 0,
+    placement: "bottom-left",
+    origin: "bottom left",
+  });
+  const [minWidth, setMinWidth] = useState("");
 
   const dropdownContext = useDropdownContext();
   const menuContext = useMenuContext();
   const subMenuContext = useSubMenuContext();
-
-  const popTimer = useRef<NodeJS.Timeout | null>(null);
+  const popTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const positionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const openRaf = useRef(0);
   const preCls = menuContext?.dropdown ? "dropdown-menu-submenu" : "menu-submenu";
-
-  const rendered = useRef<boolean>(
-    menuContext?.mode === "inline" && !menuContext?.popupInlineCollapsed
-  );
-
-  // onMounted(() => {
-  //   nextTick(() => {
-  //     const width = refSelection.value?.offsetWidth;
-  //     minWidth.value = `${width}px`;
-
-  //     if (menuContext?.openKeys.includes(key)) {
-  //       updatePosition();
-  //     }
-  //   });
-  // });
-
-  // onBeforeUnmount(() => {
-  //   clearTimeout(popTimer.value);
-  // });
-
-  const clearCurrentPopTimer = () => {
-    if (popTimer.current) clearTimeout(popTimer.current);
-  };
-  const hideCurrentPopTimer = () => {
-    popTimer.current = setTimeout(() => {
-      menuContext?.openKeysChange?.(itemKey as string, false, subMenuContext?.keyPath || []);
-    }, 200);
-  };
-
-  const childSubMenuContext = {
-    keyPath: [...(subMenuContext?.keyPath || []), itemKey],
-    clearPopTimer: clearCurrentPopTimer,
-    hidePopTimer: hideCurrentPopTimer,
-  };
-
-  const showPopper = () => {
-    rendered.current = true;
-  };
-
-  const updatePosition = () => {
-    // console.log(mode, keyPath);
-    // the second level menu show right top
-    // or the mode is vertical
-    if (
-      (menuContext?.mode == "horizontal" && subMenuContext?.keyPath.length) ||
-      menuContext?.mode == "vertical" ||
-      (menuContext?.mode == "inline" && menuContext?.inlineCollapsed)
-    ) {
-      currentPlacement.current = "right-top";
-    }
-    setTimeout(() => {
-      setPlacement({
-        refSelection,
-        refPopper,
-        currentPlacement,
-        transOrigin,
-        top,
-        left,
-        offset: 8,
-      });
-    });
-  };
-  useLayoutEffect(() => {
-    menuContext?.openKeysChange?.(itemKey as string, true, subMenuContext?.keyPath || []);
-    updatePosition();
-  }, [rendered, itemKey, menuContext, subMenuContext]);
-  const usePopup = () =>
+  const popup =
     menuContext?.mode === "horizontal" ||
     menuContext?.mode === "vertical" ||
-    menuContext?.popupInlineCollapsed;
+    Boolean(menuContext?.popupInlineCollapsed);
+  const [rendered, setRendered] = useState(
+    menuContext?.mode === "inline" && !menuContext?.popupInlineCollapsed
+  );
+  const opened = Boolean(menuContext?.openKeys.includes(currentKey));
 
-  const renderChildren = () => {
-    const popup = usePopup();
-    if (popup && !rendered.current) return null;
+  const clearCurrentPopTimer = useCallback(() => {
+    if (popTimer.current) clearTimeout(popTimer.current);
+    popTimer.current = null;
+  }, []);
 
-    const opened = menuContext?.openKeys.includes(itemKey);
-    let leftValue = left.current;
+  const hideCurrentPopTimer = useCallback(() => {
+    clearCurrentPopTimer();
+    popTimer.current = setTimeout(() => {
+      menuContext?.openKeysChange?.(currentKey, false, subMenuContext?.keyPath || []);
+    }, 200);
+  }, [clearCurrentPopTimer, currentKey, menuContext, subMenuContext]);
+
+  const childSubMenuContext = useMemo(
+    () => ({
+      keyPath: [...(subMenuContext?.keyPath || []), currentKey],
+      clearPopTimer: clearCurrentPopTimer,
+      hidePopTimer: hideCurrentPopTimer,
+    }),
+    [clearCurrentPopTimer, currentKey, hideCurrentPopTimer, subMenuContext?.keyPath]
+  );
+
+  const updatePosition = useCallback(() => {
+    if (!refSelection.current || !refPopper.current) return;
+    setMinWidth(`${refSelection.current.offsetWidth}px`);
     if (
-      (menuContext?.mode == "horizontal" && subMenuContext?.keyPath.length) ||
-      menuContext?.mode == "vertical"
+      (menuContext?.mode === "horizontal" && subMenuContext?.keyPath.length) ||
+      menuContext?.mode === "vertical" ||
+      (menuContext?.mode === "inline" && menuContext.inlineCollapsed)
     ) {
-      leftValue += 3;
+      placementRef.current = "right-top";
+    } else {
+      placementRef.current = "bottom-left";
     }
-    const popperPros = {
-      ref: refPopper,
-      "k-placement": currentPlacement.current,
-      style: {
-        minWidth: menuContext?.mode == "horizontal" ? minWidth.current : null,
-        top: top.current + "px",
-        left: leftValue + "px",
-        transformOrigin: transOrigin.current,
-      } as CSSProperties,
-      onMouseEnter: () => {
-        clearCurrentPopTimer();
-        menuContext?.openKeysChange?.(itemKey as string, true, subMenuContext?.keyPath || []);
-        subMenuContext?.clearPopTimer?.();
-        dropdownContext?.clearPopTimer?.();
-      },
-      onMouseLeave: () => {
-        hideCurrentPopTimer();
-        subMenuContext?.hidePopTimer?.();
-        dropdownContext?.clearPopTimer?.();
-      },
-    };
 
-    const transitionProps = popup
-      ? { name: `k-${preCls}-popup` }
-      : getTransitionProp("k-collapse-slide");
-    const containerProps = popup
-      ? { className: `k-${preCls}-popup`, ...popperPros }
-      : { className: `k-${preCls}-sub` };
+    setPlacement({
+      refSelection,
+      refPopper,
+      currentPlacement: placementRef,
+      transOrigin: originRef,
+      top: topRef,
+      left: leftRef,
+      offset: 8,
+    });
+    setPosition({
+      top: topRef.current,
+      left: leftRef.current,
+      placement: placementRef.current,
+      origin: originRef.current,
+    });
+  }, [menuContext, subMenuContext]);
 
-    return (
+  const schedulePosition = useCallback(() => {
+    if (positionTimer.current) clearTimeout(positionTimer.current);
+    positionTimer.current = setTimeout(updatePosition, 0);
+  }, [updatePosition]);
+
+  const showPopper = () => {
+    clearCurrentPopTimer();
+    if (!rendered) {
+      setRendered(true);
+      cancelAnimationFrame(openRaf.current);
+      openRaf.current = requestAnimationFrame(() => {
+        menuContext?.openKeysChange?.(currentKey, true, subMenuContext?.keyPath || []);
+        schedulePosition();
+      });
+    } else {
+      menuContext?.openKeysChange?.(currentKey, true, subMenuContext?.keyPath || []);
+      schedulePosition();
+    }
+  };
+
+  useEffect(() => {
+    if (opened && popup) schedulePosition();
+  }, [opened, popup, schedulePosition]);
+
+  useEffect(
+    () => () => {
+      clearCurrentPopTimer();
+      if (positionTimer.current) clearTimeout(positionTimer.current);
+      cancelAnimationFrame(openRaf.current);
+    },
+    [clearCurrentPopTimer]
+  );
+
+  let left = position.left;
+  if (
+    (menuContext?.mode === "horizontal" && subMenuContext?.keyPath.length) ||
+    menuContext?.mode === "vertical"
+  ) {
+    left += 3;
+  }
+
+  const popperProps = {
+    ref: refPopper,
+    "k-placement": position.placement,
+    style: {
+      minWidth: menuContext?.mode === "horizontal" ? minWidth : undefined,
+      top: `${position.top}px`,
+      left: `${left}px`,
+      transformOrigin: position.origin,
+    } as CSSProperties,
+    onMouseEnter: () => {
+      clearCurrentPopTimer();
+      menuContext?.openKeysChange?.(currentKey, true, subMenuContext?.keyPath || []);
+      subMenuContext?.clearPopTimer?.();
+      dropdownContext?.clearPopTimer?.();
+    },
+    onMouseLeave: () => {
+      hideCurrentPopTimer();
+      subMenuContext?.hidePopTimer?.();
+      dropdownContext?.clearPopTimer?.();
+    },
+  };
+
+  const transitionProps = popup
+    ? { name: `k-${preCls}-popup` }
+    : getTransitionProp("k-collapse-slide");
+  const containerProps = popup
+    ? { className: `k-${preCls}-popup`, ...popperProps }
+    : { className: `k-${preCls}-sub` };
+
+  const childrenNode =
+    popup && !rendered ? null : (
       <Teleport to="body" disabled={!popup}>
-        <Transition {...transitionProps} show={opened}>
-          {opened ? (
-            <div {...containerProps}>
-              <div className={popup ? `k-${preCls}-sub` : undefined}>
-                <ul className={`k-menu k-menu-${popup ? "vertical" : menuContext?.mode}`}>
-                  <SubMenuContext.Provider value={childSubMenuContext}>
-                    {children}
-                  </SubMenuContext.Provider>
-                </ul>
-              </div>
+        <Transition {...transitionProps} show={opened} appear={popup}>
+          <div {...containerProps}>
+            <div className={popup ? `k-${preCls}-sub` : undefined}>
+              <ul className={`k-menu k-menu-${popup ? "vertical" : menuContext?.mode}`}>
+                <SubMenuContext.Provider value={childSubMenuContext}>
+                  {children}
+                </SubMenuContext.Provider>
+              </ul>
             </div>
-          ) : (
-            <></>
-          )}
+          </div>
         </Transition>
       </Teleport>
     );
-  };
 
-  const selected = menuContext?.selectedKeys.includes(itemKey) && !menuContext?.dropdown;
-  const opened = menuContext?.openKeys.includes(itemKey);
-  const titleProps: Record<string, any> = {
-    class: `k-${preCls}-title`,
-    style: {} as CSSProperties,
-  };
-  if (menuContext?.mode == "inline" && !menuContext?.inlineCollapsed) {
-    titleProps.onClick = () => {
-      if (disabled) return;
-      menuContext?.openKeysChange?.(itemKey as string, !opened, subMenuContext?.keyPath || []);
-    };
-  } else if (
-    menuContext?.mode == "horizontal" ||
-    menuContext?.mode == "vertical" ||
-    menuContext?.inlineCollapsed
-  ) {
-    // popper
-    titleProps.ref = refSelection;
-    titleProps.onMouseEnter = () => {
-      if (disabled) return;
-      clearCurrentPopTimer();
-      showPopper();
-    };
-    titleProps.onMouseLeave = () => {
-      if (disabled) return;
-      popTimer.current = setTimeout(() => {
-        menuContext?.openKeysChange?.(itemKey as string, false, subMenuContext?.keyPath || []);
-      }, 200);
-    };
-  }
+  const selected = Boolean(
+    menuContext?.selectedKeys.includes(currentKey) && !menuContext?.dropdown
+  );
+  const titleStyle: CSSProperties = {};
   if (
     subMenuContext?.keyPath.length &&
     menuContext?.mode === "inline" &&
-    !menuContext?.inlineCollapsed
+    !menuContext.inlineCollapsed
   ) {
-    titleProps.style.paddingLeft = `${(subMenuContext?.keyPath || []).length * 16 + 16}px`;
+    titleStyle.paddingLeft = `${subMenuContext.keyPath.length * 16 + 16}px`;
   }
 
-  const titleNode = (
-    <div {...titleProps}>
-      {icon ? <Icon type={icon} className="k-menu-item-icon" /> : null}
-      {<span className={`k-${preCls}-title-content`}>{title}</span>}
-      {menuContext?.mode == "horizontal" && !subMenuContext?.keyPath.length ? null : (
-        <i className={`k-${preCls}-arrow`} />
-      )}
-    </div>
-  );
+  const popupTitleProps =
+    menuContext?.mode === "inline" && !menuContext.inlineCollapsed
+      ? {
+          onClick: () => {
+            if (!disabled) {
+              menuContext?.openKeysChange?.(currentKey, !opened, subMenuContext?.keyPath || []);
+            }
+          },
+        }
+      : {
+          ref: refSelection as React.Ref<HTMLDivElement>,
+          onMouseEnter: () => {
+            if (!disabled) showPopper();
+          },
+          onMouseLeave: () => {
+            if (!disabled) hideCurrentPopTimer();
+          },
+        };
 
-  const classes = [
-    `k-${preCls}`,
-    {
-      [`k-${preCls}-active`]: opened || selected,
-      [`k-${preCls}-selected`]: selected,
-      [`k-${preCls}-opened`]: opened,
-      [`k-${preCls}-disabled`]: disabled,
-    },
-  ];
-  const childrenNode = renderChildren();
   return (
-    <li className={clsx(classes)}>
-      {titleNode}
+    <li
+      className={clsx(`k-${preCls}`, {
+        [`k-${preCls}-active`]: opened || selected,
+        [`k-${preCls}-selected`]: selected,
+        [`k-${preCls}-opened`]: opened,
+        [`k-${preCls}-disabled`]: disabled,
+      })}
+    >
+      <div className={`k-${preCls}-title`} style={titleStyle} {...popupTitleProps}>
+        {icon ? <Icon type={icon} className="k-menu-item-icon" /> : null}
+        <span className={`k-${preCls}-title-content`}>{title}</span>
+        {menuContext?.mode === "horizontal" && !subMenuContext?.keyPath.length ? null : (
+          <i className={`k-${preCls}-arrow`} />
+        )}
+      </div>
       {childrenNode}
     </li>
   );
 };
+
 export default SubMenu;
