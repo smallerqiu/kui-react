@@ -1,97 +1,86 @@
-import React, { useCallback, useRef } from "react";
+import React, { useRef, type ReactElement } from "react";
 import { CSSTransition } from "react-transition-group";
 
-type ElementRef = React.Ref<HTMLElement> | undefined;
-
-function setRef(ref: ElementRef, node: HTMLElement | null) {
-  if (typeof ref === "function") ref(node);
-  else if (ref) (ref as React.MutableRefObject<HTMLElement | null>).current = node;
-}
-
 export interface TransitionProps {
-  name?: string;
+  /** 控制显隐 */
   show?: boolean;
+  /** 动画 class 前缀，默认 'v' */
+  name?: string;
+  /** 是否在初次挂载时执行动画 */
   appear?: boolean;
-  timeout?: number;
-  nodeRef?: React.RefObject<HTMLElement | null>;
-  children: React.ReactElement<React.HTMLAttributes<HTMLElement>>;
+  /** 动画超时时间(ms)，Vue 自动测算，RTG 需指定超时兜底 */
+  timeout?: number | { enter?: number; exit?: number };
+  /** 自定义 Class 映射 */
+  enterFromClass?: string;
+  enterActiveClass?: string;
+  enterToClass?: string;
+  leaveFromClass?: string;
+  leaveActiveClass?: string;
+  leaveToClass?: string;
+  /** 生命周期钩子 */
   onBeforeEnter?: (el: HTMLElement) => void;
   onEnter?: (el: HTMLElement) => void;
   onAfterEnter?: (el: HTMLElement) => void;
   onBeforeLeave?: (el: HTMLElement) => void;
   onLeave?: (el: HTMLElement) => void;
   onAfterLeave?: (el: HTMLElement) => void;
+  /** 必须是单一元素 */
+  children: ReactElement<{ ref?: React.Ref<HTMLElement> }>;
 }
 
-const Transition: React.FC<TransitionProps> = ({
+export const Transition: React.FC<TransitionProps> = ({
+  show,
   name = "v",
-  show = true,
   appear = false,
   timeout = 300,
-  nodeRef: externalNodeRef,
-  children,
+  enterFromClass,
+  enterActiveClass,
+  enterToClass,
+  leaveFromClass,
+  leaveActiveClass,
+  leaveToClass,
   onBeforeEnter,
   onEnter,
   onAfterEnter,
   onBeforeLeave,
   onLeave,
   onAfterLeave,
+  children,
 }) => {
-  const internalRef = useRef<HTMLElement>(null);
-  const nodeRef = externalNodeRef || internalRef;
-  const hidden = useRef(!show);
-  const childRef =
-    (children.props as { ref?: ElementRef }).ref ??
-    ((children as React.ReactElement & { ref?: ElementRef }).ref as ElementRef);
-  const mergedRef = useCallback(
-    (node: HTMLElement | null) => {
-      (nodeRef as React.MutableRefObject<HTMLElement | null>).current = node;
-      setRef(childRef, node);
-    },
-    [childRef, nodeRef]
-  );
-  const child = React.cloneElement(children, {
-    ref: mergedRef,
-    style: {
-      ...children.props.style,
-      display: !show && hidden.current ? "none" : children.props.style?.display,
-    },
-  } as React.HTMLAttributes<HTMLElement> & { ref: React.Ref<HTMLElement> });
+  const nodeRef = useRef<HTMLElement>(null);
+
+  const classNames = {
+    appear: enterFromClass ?? `${name}-enter-from`,
+    appearActive: enterActiveClass ?? `${name}-enter-active`,
+    appearDone: enterToClass ?? `${name}-enter-to`,
+    enter: enterFromClass ?? `${name}-enter-from`,
+    enterActive: enterActiveClass ?? `${name}-enter-active`,
+    enterDone: enterToClass ?? `${name}-enter-to`,
+    exit: leaveFromClass ?? `${name}-leave-from`,
+    exitActive: leaveActiveClass ?? `${name}-leave-active`,
+    exitDone: leaveToClass ?? `${name}-leave-to`,
+  };
 
   return (
     <CSSTransition
-      appear={appear}
       in={show}
       nodeRef={nodeRef}
       timeout={timeout}
-      classNames={{
-        appear: `${name}-enter-from`,
-        appearActive: `${name}-enter-active`,
-        enter: `${name}-enter-from`,
-        enterActive: `${name}-enter-active`,
-        exit: `${name}-leave-from`,
-        exitActive: `${name}-leave-active ${name}-leave-to`,
-      }}
-      onEnter={() => {
-        const el = nodeRef.current;
-        if (!el) return;
-        hidden.current = false;
-        el.style.display = children.props.style?.display ?? "";
-        onBeforeEnter?.(el);
-      }}
+      classNames={classNames}
+      appear={appear}
+      mountOnEnter
+      unmountOnExit
+      onEnter={() => nodeRef.current && onBeforeEnter?.(nodeRef.current)}
       onEntering={() => nodeRef.current && onEnter?.(nodeRef.current)}
       onEntered={() => nodeRef.current && onAfterEnter?.(nodeRef.current)}
       onExit={() => nodeRef.current && onBeforeLeave?.(nodeRef.current)}
       onExiting={() => nodeRef.current && onLeave?.(nodeRef.current)}
-      onExited={() => {
-        const el = nodeRef.current;
-        if (!el) return;
-        onAfterLeave?.(el);
-        hidden.current = true;
-        el.style.display = "none";
-      }}
+      onExited={() => nodeRef.current && onAfterLeave?.(nodeRef.current)}
     >
-      {child}
+      {/* 必须给子节点注入 nodeRef 避免 React 严格模式警告 */}
+      {React.cloneElement(children, {
+        ref: nodeRef,
+      })}
     </CSSTransition>
   );
 };

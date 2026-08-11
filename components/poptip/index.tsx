@@ -145,7 +145,7 @@ const Poptip: React.FC<PoptipProps> = ({
     });
   } else {
     triggerNode = (
-      <span ref={refSelection as any} {...triggerProps}>
+      <span ref={refSelection} {...triggerProps}>
         {children}
       </span>
     );

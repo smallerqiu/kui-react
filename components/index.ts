@@ -1,7 +1,7 @@
 import * as components from "./components";
 export * from "./components";
 
-export const version = (import.meta as any).env?.version as string;
+export const version: string = import.meta.env?.version;
 
 export { components };
 

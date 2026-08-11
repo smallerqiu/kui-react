@@ -5,6 +5,7 @@ import Transition from "../base/transition";
 import type { DropPlacementsType, TriggerType } from "../const/types";
 import { setPlacement } from "../utils/placement";
 import { getChildren } from "../utils/react-node";
+import { DropdownContext } from "./dropdown-context";
 
 export interface DropdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "show"> {
   trigger?: TriggerType;
@@ -17,13 +18,6 @@ export interface DropdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   overlay?: React.ReactNode;
   children?: React.ReactNode;
 }
-
-export const DropdownContext = React.createContext<{
-  onMouseEnter?: () => void;
-  onMouseLeave?: () => void;
-  clearPopTimer?: () => void;
-  menuSelected?: (data: { key: string; keyPath: string[] }) => void;
-} | null>(null);
 
 const Dropdown: React.FC<DropdownProps> = ({
   trigger = "hover",
@@ -272,7 +266,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       ...triggerProps,
     })
   ) : (
-    <span ref={refSelection as any} {...triggerProps}>
+    <span ref={refSelection} {...triggerProps}>
       {firstChild}
     </span>
   );
@@ -297,7 +291,7 @@ const Dropdown: React.FC<DropdownProps> = ({
           onClick={() => openChange(false)}
           onMouseEnter={clearPopTimer}
           onMouseLeave={mouseLeaveEvent}
-          {...(rest as any)}
+          {...rest}
         >
           <div className="k-dropdown-content">
             <div className="k-dropdown-body">{overlay}</div>

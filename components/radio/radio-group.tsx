@@ -11,7 +11,7 @@ export interface RadioOption {
   value?: any;
   disabled?: boolean;
   icon?: IconType[];
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface RadioGroupProps extends React.HTMLAttributes<HTMLDivElement> {

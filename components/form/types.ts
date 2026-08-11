@@ -11,5 +11,5 @@ export interface FormRule {
   type?: "mobile" | "mail" | "number";
   min?: number;
   max?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }

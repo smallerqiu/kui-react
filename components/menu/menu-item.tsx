@@ -1,61 +1,77 @@
-import clsx from "clsx";
-import React, { useContext, useState } from "react";
-import Icon, { type IconType } from "../icon";
-import { MenuContext, SubMenuContext } from "./menu-context";
+import React, { useState, type CSSProperties, type ReactNode } from "react";
+import type { IconType } from "../icon";
+import Icon from "../icon";
+import { useMenuContext, useSubMenuContext } from "./menu-context";
 
-export interface MenuItemProps extends Omit<React.HTMLAttributes<HTMLLIElement>, "title"> {
-  icon?: IconType[];
-  title?: React.ReactNode;
+export interface MenuItemProps {
+  itemKey: string;
+  icon?: IconType[] | ReactNode;
+  title?: ReactNode;
   disabled?: boolean;
-  menuKey?: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
+  className?: string;
+  style?: CSSProperties;
 }
 
-const MenuItem: React.FC<MenuItemProps> = ({
+export const MenuItem: React.FC<MenuItemProps> = ({
+  itemKey,
   icon,
   title,
   disabled = false,
-  menuKey = "",
   children,
-  className,
-  ...rest
+  className = "",
+  style,
 }) => {
-  const menuContext = useContext(MenuContext);
-  const subMenuContext = useContext(SubMenuContext);
+  const menuContext = useMenuContext();
+  const subMenuContext = useSubMenuContext();
   const [active, setActive] = useState(false);
+
   const preCls = menuContext?.dropdown ? "dropdown-menu" : "menu";
-  const selected = menuContext?.selectedKeys.includes(menuKey) && !menuContext.dropdown;
+  const selected = Boolean(menuContext?.selectedKeys.includes(itemKey) && !menuContext?.dropdown);
+
+  const paddingLeft =
+    menuContext?.mode === "inline" &&
+    !menuContext?.inlineCollapsed &&
+    subMenuContext?.keyPath.length
+      ? subMenuContext.keyPath.length * 16 + 16
+      : undefined;
+
+  const classNames = [
+    `k-${preCls}-item`,
+    active && `k-${preCls}-item-active`,
+    selected && `k-${preCls}-item-selected`,
+    disabled && `k-${preCls}-item-disabled`,
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const titleNode = <span className={`k-${preCls}-title-content`}>{title ?? children}</span>;
+
+  let iconNode: ReactNode = null;
+  if (React.isValidElement(icon)) {
+    iconNode = <span className={`k-${preCls}-item-icon`}>{icon}</span>;
+  } else if (Array.isArray(icon)) {
+    iconNode = <Icon type={icon} className={`k-${preCls}-item-icon`} />;
+  }
 
   return (
     <li
-      className={clsx(
-        `k-${preCls}-item`,
-        {
-          [`k-${preCls}-item-active`]: active,
-          [`k-${preCls}-item-selected`]: selected,
-          [`k-${preCls}-item-disabled`]: disabled,
-        },
-        className
-      )}
+      className={classNames}
       style={{
-        paddingLeft:
-          menuContext?.mode === "inline" &&
-          !menuContext.inlineCollapsed &&
-          subMenuContext?.keyPath.length
-            ? `${subMenuContext.keyPath.length * 16 + 16}px`
-            : undefined,
+        ...style,
+        paddingLeft: paddingLeft ? `${paddingLeft}px` : style?.paddingLeft,
       }}
       onMouseEnter={() => !disabled && setActive(true)}
       onMouseLeave={() => !disabled && setActive(false)}
       onClick={() => {
         if (!disabled) {
-          menuContext?.selectedKeysChange(menuKey, true, subMenuContext?.keyPath || []);
+          menuContext?.selectedKeysChange?.(itemKey, true, subMenuContext?.keyPath || []);
         }
       }}
-      {...rest}
     >
-      {icon ? <Icon type={icon} className={`k-${preCls}-item-icon`} /> : null}
-      <span className={`k-${preCls}-title-content`}>{title ?? children}</span>
+      {iconNode}
+      {titleNode}
     </li>
   );
 };

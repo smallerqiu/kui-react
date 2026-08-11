@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import Button from "../button/button";
 import { type IconType } from "../icon";
-import { DropdownContext } from "./dropdown";
+import { useDropdownContext } from "./dropdown-context";
 
 export interface TriggerButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: IconType[];
@@ -10,7 +10,7 @@ export interface TriggerButtonProps extends React.ButtonHTMLAttributes<HTMLButto
 
 const TriggerButton = React.forwardRef<any, TriggerButtonProps>(
   ({ icon, disabled = false, children, onMouseEnter, onMouseLeave, ...rest }, ref) => {
-    const dropdown = useContext(DropdownContext);
+    const dropdown = useDropdownContext();
 
     const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
       dropdown?.onMouseEnter?.();
@@ -29,7 +29,7 @@ const TriggerButton = React.forwardRef<any, TriggerButtonProps>(
         disabled={disabled}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        {...(rest as any)}
+        {...rest}
       >
         {children}
       </Button>

@@ -7,7 +7,7 @@ export interface CheckboxOption {
   label?: string;
   value?: any;
   disabled?: boolean;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface CheckboxGroupProps extends Omit<

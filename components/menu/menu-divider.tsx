@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
-import { MenuContext } from "./menu-context";
+import React from "react";
+import { useDropdownContext } from "../dropdown/dropdown-context.ts";
 
-const MenuDivider: React.FC = () => {
-  const menuContext = useContext(MenuContext);
-  const preCls = menuContext?.dropdown ? "dropdown-menu" : "menu";
+export const MenuDivider: React.FC = () => {
+  const dropdownContext = useDropdownContext();
+  const preCls = dropdownContext ? "dropdown-menu" : "menu";
+
   return <li className={`k-${preCls}-item-divider`} />;
 };
 

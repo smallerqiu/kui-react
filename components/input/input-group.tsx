@@ -59,7 +59,7 @@ const InputGroup: React.FC<InputGroupProps> = ({
         return React.cloneElement(child, {
           className: itemClass,
           key: child.key || `item-${i}`,
-        } as any);
+        });
       }
       return child;
     });

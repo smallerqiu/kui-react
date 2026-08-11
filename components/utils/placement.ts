@@ -1,17 +1,19 @@
 // Placement utility for positioning popups/popovers
 // Converted from Vue Ref-based API to React-friendly mutable object API
 
+import type { RefObject } from "react";
+
 interface PlacementOptions {
-  refSelection: HTMLElement | null;
-  refPopper: HTMLElement | null;
-  currentPlacement: { value: string };
+  refSelection: RefObject<HTMLElement | null>;
+  refPopper: RefObject<HTMLElement | null>;
+  currentPlacement: RefObject<string>;
   position?: {
     x: number;
     y: number;
   } | null;
-  transOrigin: { value: string };
-  top: { value: number };
-  left: { value: number };
+  transOrigin: RefObject<string>;
+  top: RefObject<number>;
+  left: RefObject<number>;
   offset?: number;
 }
 
@@ -26,12 +28,9 @@ export function setPlacement({
   offset = 3,
 }: PlacementOptions) {
   if (!refPopper) return;
-
+  // The value assigned to 'rect' is not used in subsequent statements.
   // 模式检测 & 基准矩形
-  let rect:
-    | DOMRect
-    | { width: number; height: number; top: number; bottom: number; left: number; right: number }
-    | null = null;
+  let rect = null;
   // 是否是鼠标右键/坐标模式
   const isMouseMode = position && typeof position.x === "number" && typeof position.y === "number";
 
@@ -47,15 +46,17 @@ export function setPlacement({
     };
   } else if (refSelection) {
     // 元素模式：真实 DOM 矩形
-    rect = refSelection.getBoundingClientRect?.();
+    // console.log(refSelection);
+    rect = refSelection.current?.getBoundingClientRect?.();
   } else {
     return;
   }
 
-  const pickerH = refPopper.offsetHeight;
-  const pickerW = refPopper.offsetWidth;
+  const pickerH = refPopper.current?.offsetHeight || 0;
+  const pickerW = refPopper.current?.offsetWidth || 0;
   const { clientHeight, clientWidth, scrollTop, scrollLeft } = document.documentElement;
 
+  if (rect == null) return;
   // 计算居中坐标 (仅用于检测)
   const centerLeft = rect.left + rect.width / 2 - pickerW / 2;
   const centerTop = rect.top + rect.height / 2 - pickerH / 2;
@@ -79,7 +80,7 @@ export function setPlacement({
   };
 
   // 智能决策
-  let [side, align] = currentPlacement.value.split("-");
+  let [side, align] = currentPlacement.current.split("-");
 
   // [关键修复] 仅在鼠标模式下，强制补全对齐方向
   if (isMouseMode && !align) {
@@ -170,11 +171,11 @@ export function setPlacement({
   }
 
   // 赋值
-  top.value = calcTop + scrollTop;
-  left.value = calcLeft + scrollLeft;
-  transOrigin.value = `${originX} ${originY}`;
+  top.current = calcTop + scrollTop;
+  left.current = calcLeft + scrollLeft;
+  transOrigin.current = `${originX} ${originY}`;
 
-  if (currentPlacement.value !== finalPlacement) {
-    currentPlacement.value = finalPlacement;
+  if (currentPlacement.current !== finalPlacement) {
+    currentPlacement.current = finalPlacement;
   }
 }

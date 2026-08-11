@@ -195,7 +195,7 @@ const Tabs: React.FC<TabsProps> = ({
   const navNodes = childList.map((panel, index) => {
     if (!React.isValidElement(panel)) return null;
     const key = panel.key as string;
-    const { icon, title, closable, disabled } = panel.props as any;
+    const { icon, title, closable, disabled } = panel.props;
     const isDisabled = disabled !== undefined && disabled !== false;
     const isClosable = closable !== undefined;
     return (

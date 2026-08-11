@@ -47,7 +47,7 @@ export interface SelectProps extends Omit<
   shape?: ShapeType;
   arrowIcon?: IconType[];
   onSearch?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onChange?: (value: string | number | any[]) => void;
+  onChange?: (value: string | number | string[] | number[]) => void;
   onSelect?: (option: SelectOption & { selected: boolean }) => void;
   onOpenChange?: (opened: boolean) => void;
   children?: React.ReactNode;
@@ -100,10 +100,10 @@ const Select: React.FC<SelectProps> = ({
   const [queryKey, setQueryKey] = useState("");
   const [minWidth, setMinWidth] = useState(0);
   const [queryInputFocused, setQueryInputFocused] = useState(false);
-  const [transOrigin, setTransOrigin] = useState("bottom");
-  const [left, setLeft] = useState(0);
-  const [top, setTop] = useState(0);
-  const [currentPlacement, setCurrentPlacement] = useState(placement);
+  const transOrigin = useRef("bottom");
+  const left = useRef(0);
+  const top = useRef(0);
+  const currentPlacement = useRef(placement);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [ctxFocused, setCtxFocused] = useState(false);
 
@@ -133,10 +133,10 @@ const Select: React.FC<SelectProps> = ({
     const leftObj = { value: left };
 
     setPlacement({
-      refSelection: refSelection.current,
-      refPopper: refPopper.current,
-      currentPlacement: placementObj,
-      transOrigin: originObj,
+      refSelection,
+      refPopper,
+      currentPlacement,
+      transOrigin,
       top: topObj,
       left: leftObj,
     });
@@ -552,7 +552,7 @@ const Select: React.FC<SelectProps> = ({
 
     return (
       <Teleport to="body">
-        <Transition show={visible} name="k-select" nodeRef={refPopper}>
+        <Transition show={visible} name="k-select" ref={refPopper}>
           {overlay}
         </Transition>
       </Teleport>
