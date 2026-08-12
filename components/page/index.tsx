@@ -97,7 +97,7 @@ const Page: React.FC<PageProps> = ({
       if (page < pCount - 3) showNextMore = true;
     }
 
-    let array: number[] = [];
+    const array: number[] = [];
     if (showPrevMore && !showNextMore) {
       const startPage = pCount - (groupCount - 2);
       for (let i = startPage; i < pCount; i++) array.push(i);

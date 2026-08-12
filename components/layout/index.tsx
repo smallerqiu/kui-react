@@ -84,9 +84,14 @@ const Sider: React.FC<SiderProps> = ({
   }, [collectSider]);
 
   const classes = clsx(`k-${suffixCls}`, className);
+  const siderWidth = collapsible && collapsed ? collapsedWidth : width;
+  const siderStyle = {
+    width: style?.width ?? siderWidth,
+    ...style,
+  };
 
   return (
-    <aside className={classes} style={style} {...rest}>
+    <aside className={classes} style={siderStyle} {...rest}>
       {children}
     </aside>
   );

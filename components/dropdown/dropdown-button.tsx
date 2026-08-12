@@ -2,7 +2,7 @@ import { Ellipsis } from "kui-icons";
 import React, { useRef } from "react";
 import Button from "../button/button";
 import ButtonGroup from "../button/button-group";
-import type { DropPlacementsType, ShapeType, SizeType } from "../const/types";
+import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 import { type IconType } from "../icon";
 import Dropdown from "./dropdown";
 import TriggerButton from "./trigger";
@@ -12,7 +12,7 @@ export interface DropdownButtonProps extends Omit<React.HTMLAttributes<HTMLDivEl
   shape?: ShapeType;
   disabled?: boolean;
   icon?: IconType[];
-  theme?: string;
+  theme?: ThemeType;
   arrow?: boolean;
   placement?: DropPlacementsType;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -38,11 +38,12 @@ const DropdownButton: React.FC<DropdownButtonProps> = ({
 
   const triggerNode = (
     <ButtonGroup className="k-dropdown-button" size={size} shape={shape}>
-      <Button disabled={disabled} onClick={onClick}>
+      <Button disabled={disabled} theme={theme} onClick={onClick}>
         {children}
       </Button>
       <TriggerButton
         disabled={disabled}
+        theme={theme}
         ref={refTrigger}
         icon={!icon ? Ellipsis : icon}
         className="k-dropdown-trigger"

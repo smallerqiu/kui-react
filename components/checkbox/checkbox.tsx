@@ -3,6 +3,7 @@ import { Check } from "kui-icons";
 import React, { useContext, useState } from "react";
 import type { SizeType, ThemeType, ValueType } from "../const/types";
 import Icon from "../icon";
+import { getValueWithType } from "../utils/checked";
 import { CheckboxGroupContext } from "./checkbox-group-context";
 
 export interface ChangeEvent {
@@ -56,7 +57,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
     const labelVal = label || children || value;
     const eventObj: ChangeEvent = {
       checked: newChecked,
-      value: value,
+      value: isGroup ? value : getValueWithType(newChecked, valueType),
       label: labelVal,
     };
     onChange?.(eventObj);

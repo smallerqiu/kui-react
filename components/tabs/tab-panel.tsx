@@ -13,18 +13,8 @@ export interface TabPanelProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
 }
 
-const TabPanel: React.FC<TabPanelProps> = ({
-  tabKey,
-  activeKey,
-  children,
-  className = "",
-  // strip out props that should not be spread to DOM
-  title: _title,
-  icon: _icon,
-  disabled: _disabled,
-  closable: _closable,
-  ...rest
-}) => {
+const TabPanel: React.FC<TabPanelProps> = (props) => {
+  const { tabKey, activeKey, children, className = "", ...rest } = props;
   const isActive = activeKey === tabKey;
   return (
     <div
