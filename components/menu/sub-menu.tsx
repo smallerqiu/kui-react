@@ -182,7 +182,10 @@ export const SubMenu: React.FC<SubMenuProps> = ({
 
   const transitionProps = popup
     ? { name: `k-${preCls}-popup` }
-    : getTransitionProp("k-collapse-slide");
+    : {
+        ...getTransitionProp("k-collapse-slide"),
+        timeout: { appear: 300, enter: 300, exit: 200 },
+      };
   const containerProps = popup
     ? { className: `k-${preCls}-popup`, ...popperProps }
     : { className: `k-${preCls}-sub` };

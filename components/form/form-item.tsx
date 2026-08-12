@@ -4,6 +4,7 @@ import {
   cloneElement,
   isValidElement,
   useContext,
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -40,7 +41,7 @@ export default function FormItem({
   const [valid, setValid] = useState(true);
   const [message, setMessage] = useState<string>();
 
-  const validate = (ruleInput?: FormRule | FormRule[]) => {
+  const validate = useCallback((ruleInput?: FormRule | FormRule[]) => {
     const list = ruleInput ? (Array.isArray(ruleInput) ? ruleInput : [ruleInput]) : [];
     const value = prop ? form?.getValue(prop) : undefined;
     for (const rule of [...list].sort((item) => (item.required ? -1 : 0))) {
@@ -85,7 +86,7 @@ export default function FormItem({
     setValid(true);
     setMessage(undefined);
     return true;
-  };
+  }, [form, label, messages, prop]);
   const handle = useMemo<FormItemHandle | null>(
     () =>
       prop
@@ -99,7 +100,7 @@ export default function FormItem({
             },
           }
         : null,
-    [prop, rules, form, label, messages]
+    [prop, rules, validate]
   );
   useEffect(() => {
     if (!handle || !form) return;

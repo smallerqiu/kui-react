@@ -110,8 +110,9 @@ export default function Tree({
   const expanded = expandedKeys ?? innerExpanded;
   const checked = checkedKeys ?? innerChecked;
   const flat = useMemo(
-    () =>
-      buildTree({
+    () => {
+      void version;
+      return buildTree({
         data,
         selectedKeys: selected,
         expandedKeys: expanded,
@@ -119,7 +120,8 @@ export default function Tree({
         hasLoad: !!loadData,
         checkable,
         checkStrictly,
-      }),
+      });
+    },
     [data, selected, expanded, checked, loadData, checkable, checkStrictly, version]
   );
   const byKey = useMemo(() => new Map(flat.map((node) => [node.key, node])), [flat]);
@@ -130,7 +132,7 @@ export default function Tree({
   };
   const expand = async (node: TreeNode) => {
     if (node.isLeaf || loadingKeys.has(node.key)) return;
-    let nextExpanded = !expanded.includes(node.key);
+    const nextExpanded = !expanded.includes(node.key);
     if (nextExpanded && loadData && !node.children?.length) {
       setLoadingKeys((current) => new Set(current).add(node.key));
       try {

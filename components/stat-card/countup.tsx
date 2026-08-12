@@ -47,7 +47,7 @@ export default function CountUpNumber({
       count.onDestroy();
       if (countRef.current === count) countRef.current = null;
     };
-  }, [autoAnimate, autoAnimateOnce, duration, separator, type]);
+  }, [autoAnimate, autoAnimateOnce, currentValue, duration, precision, separator, type]);
 
   useEffect(() => {
     countRef.current?.update(currentValue);

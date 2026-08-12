@@ -122,7 +122,7 @@ export default function TreeSelect({
 }: TreeSelectProps) {
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
-  const data = treeData ?? options ?? [];
+  const data = useMemo(() => treeData ?? options ?? [], [options, treeData]);
   const controlledValue = modelValue !== undefined ? modelValue : value;
   const [innerValue, setInnerValue] = useState(() => normalize(controlledValue, !!multiple));
   const currentValue =

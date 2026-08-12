@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Button, Space, StatNumber } from "react-kui";
+const initValue = Math.random() * 10000000;
 export default function App() {
-  const [value, setValue] = useState(Math.random() * 100000);
+  const [value, setValue] = useState(initValue);
   return (
     <Space vertical>
       <Button onClick={() => setValue(Math.random() * 10000000)} size="small">

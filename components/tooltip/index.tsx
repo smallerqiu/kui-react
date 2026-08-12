@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import type { PlacementsType } from "../const/types";
@@ -51,7 +51,7 @@ const Tooltip: React.FC<TooltipProps> = ({
   const hideTimer = useRef<NodeJS.Timeout | null>(null);
   const showTimer = useRef<NodeJS.Timeout | null>(null);
 
-  const updatePosition = () => {
+  const updatePosition = useCallback(() => {
     if (!refSelection.current || !refPopper.current) return;
     placementRef.current = placement;
 
@@ -68,11 +68,11 @@ const Tooltip: React.FC<TooltipProps> = ({
     setTransOrigin(transOriginRef.current);
     setTop(topRef.current);
     setLeft(leftRef.current);
-  };
+  }, [placement]);
 
   useEffect(() => {
     if (visible) updatePosition();
-  }, [title, visible]);
+  }, [title, updatePosition, visible]);
 
   useEffect(() => {
     window.addEventListener("resize", updatePosition);
@@ -81,7 +81,7 @@ const Tooltip: React.FC<TooltipProps> = ({
       if (hideTimer.current) clearTimeout(hideTimer.current);
       if (showTimer.current) clearTimeout(showTimer.current);
     };
-  }, []);
+  }, [updatePosition]);
 
   const updateShow = (value: boolean) => {
     setVisible(value);

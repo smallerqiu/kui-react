@@ -2,8 +2,8 @@ import clsx from "clsx";
 import Color, { type ColorInstance, type ColorObject } from "color";
 import {
   isValidElement,
+  useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
   type HTMLAttributes,
@@ -60,7 +60,7 @@ export default function ColorPicker({
   const [innerColor, setInnerColor] = useState(defaultValue ?? controlled ?? "#000000ff");
   const [innerMode, setInnerMode] = useState<ColorMode>(modeProp ?? "hex");
   const mode = modeProp ?? innerMode;
-  const initialColor = useMemo(() => Color(defaultValue ?? controlled ?? "#000000ff"), []);
+  const [initialColor] = useState(() => Color(defaultValue ?? controlled ?? "#000000ff"));
   const [currentHue, setCurrentHue] = useState(initialColor.hue());
   const [currentAlpha, setCurrentAlpha] = useState(initialColor.alpha());
   const [open, setOpen] = useState(false);
@@ -95,7 +95,7 @@ export default function ColorPicker({
     if (controlled === undefined) setInnerColor(formatted);
     onChange?.(formatted);
   };
-  const updatePosition = () => {
+  const updatePosition = useCallback(() => {
     if (!triggerRef.current || !popoverRef.current) return;
     placementRef.current = placement;
     setPlacement({
@@ -108,13 +108,13 @@ export default function ColorPicker({
     });
     setCurrentPlacement(placementRef.current as DropPlacementsType);
     setPosition({ left: leftRef.current, top: topRef.current, origin: transOriginRef.current });
-  };
-  const setVisible = (next: boolean) => {
+  }, [placement]);
+  const setVisible = useCallback((next: boolean) => {
     if (disabled) return;
     setOpen(next);
     onOpenChange?.(next);
     if (next) requestAnimationFrame(updatePosition);
-  };
+  }, [disabled, onOpenChange, updatePosition]);
   // 清理未完成的隐藏定时器，防止在组件卸载后调用 setState
   useEffect(
     () => () => {
@@ -145,7 +145,7 @@ export default function ColorPicker({
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("scroll", handleScroll, true);
     };
-  }, [open, disabled]);
+  }, [open, setVisible]);
   const mouseEnter = () => {
     if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     setVisible(true);

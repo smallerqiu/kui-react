@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { X } from "kui-icons";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import { Button } from "../button";
@@ -31,6 +31,8 @@ export interface DrawerProps {
   children?: React.ReactNode;
 }
 
+const getBody = () => document.body;
+
 const Drawer: React.FC<DrawerProps> = ({
   open = false,
   title = "Title",
@@ -42,7 +44,7 @@ const Drawer: React.FC<DrawerProps> = ({
   closable = true,
   footer = true,
   maskClosable = true,
-  target = () => document.body,
+  target = getBody,
   mask = true,
   loading = false,
   escKey = true,
@@ -61,12 +63,12 @@ const Drawer: React.FC<DrawerProps> = ({
   const [rendered, setRendered] = useState(false);
   const hideTimer = useRef<NodeJS.Timeout | null>(null);
 
-  const toggle = (value: boolean) => {
+  const toggle = useCallback((value: boolean) => {
     if (value && hideTimer.current) {
       clearTimeout(hideTimer.current);
       hideTimer.current = null;
     }
-    if (!rendered && value) {
+    if (value) {
       setRendered(true);
       setTimeout(() => {
         setVisible(true);
@@ -74,27 +76,26 @@ const Drawer: React.FC<DrawerProps> = ({
         onOpenChange?.(true);
       }, 0);
     } else {
-      if (value) {
-        setVisible(true);
-        setOpened(true);
-        onOpenChange?.(true);
-      } else {
-        setVisible(false);
-        if (hideTimer.current) clearTimeout(hideTimer.current);
-        hideTimer.current = setTimeout(() => setOpened(false), 300);
-        onOpenChange?.(false);
-      }
+      setVisible(false);
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+      hideTimer.current = setTimeout(() => setOpened(false), 300);
+      onOpenChange?.(false);
     }
-  };
+  }, [onOpenChange]);
 
-  const escToClose = (e: KeyboardEvent) => {
+  const close = useCallback(() => {
+    toggle(false);
+    onClose?.();
+  }, [onClose, toggle]);
+
+  const escToClose = useCallback((e: KeyboardEvent) => {
     if (e.key === "Escape") close();
-  };
+  }, [close]);
 
   useEffect(() => {
     const timer = setTimeout(() => toggle(open), 0);
     return () => clearTimeout(timer);
-  }, [open]);
+  }, [open, toggle]);
 
   useEffect(() => {
     if (escKey) document.addEventListener("keydown", escToClose);
@@ -104,12 +105,7 @@ const Drawer: React.FC<DrawerProps> = ({
       if (t) t.style.overflow = "";
       if (hideTimer.current) clearTimeout(hideTimer.current);
     };
-  }, [escKey]);
-
-  const close = () => {
-    toggle(false);
-    onClose?.();
-  };
+  }, [escKey, escToClose, target]);
 
   const cancel = () => {
     onCancel?.();

@@ -5,6 +5,7 @@ import {
   isValidElement,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type HTMLAttributes,
@@ -43,9 +44,10 @@ export function Splitter({
   const limitsRef = useRef({ min: [] as number[], max: [] as number[] });
   const dragRef = useRef<number | null>(null);
   const [sizes, setSizes] = useState<number[]>([]);
-  const panels = Children.toArray(children).filter(
-    isValidElement
-  ) as ReactElement<SplitterPanelProps>[];
+  const panels = useMemo(
+    () => Children.toArray(children).filter(isValidElement) as ReactElement<SplitterPanelProps>[],
+    [children]
+  );
 
   const initialize = useCallback(() => {
     const container = containerRef.current;
@@ -62,7 +64,7 @@ export function Splitter({
     limitsRef.current = { min, max };
     sizesRef.current = next;
     setSizes(next);
-  }, [direction, panels.length]);
+  }, [direction, panels]);
 
   useEffect(() => {
     initialize();

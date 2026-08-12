@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useEffect, useState, type HTMLAttributes } from "react";
+import { useCallback, useEffect, useState, type HTMLAttributes } from "react";
 
 export interface RollUpProps extends HTMLAttributes<HTMLDivElement> {
   value?: number;
@@ -19,13 +19,13 @@ export default function RollUp({
   ...rest
 }: RollUpProps) {
   const current = value ?? modelValue ?? 0;
-  const format = (number: number) =>
+  const format = useCallback((number: number) =>
     new Intl.NumberFormat("en-US", {
       minimumFractionDigits: precision,
       maximumFractionDigits: precision,
     })
       .format(number)
-      .split("");
+      .split(""), [precision]);
   const offset = (number: number) =>
     format(number).map((character) =>
       /\d/.test(character)
@@ -43,7 +43,7 @@ export default function RollUp({
   useEffect(() => {
     const frame = requestAnimationFrame(() => setCharacters(format(current)));
     return () => cancelAnimationFrame(frame);
-  }, [current, precision]);
+  }, [current, format]);
 
   return (
     <div {...rest} className={clsx("k-stat-roll-number-container", className)}>

@@ -129,7 +129,7 @@ const Tabs: React.FC<TabsProps> = ({
       }
       updateNav();
     }, 0);
-  }, [navOffsetLeft, activeKey, childList]);
+  }, [navOffsetLeft, activeKey, childList, resetActivePosition, updateInkBarPosition, updateNav]);
 
   // Recalculate on active change
   useEffect(() => {
@@ -141,7 +141,7 @@ const Tabs: React.FC<TabsProps> = ({
         updateNav();
       }, 0);
     }
-  }, [activeKey, children]);
+  }, [activeKey, childList, resetActivePosition, updateInkBarPosition, updateNav]);
 
   useEffect(() => {
     window.addEventListener("resize", resetNavPosition);

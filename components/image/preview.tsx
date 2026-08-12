@@ -15,6 +15,7 @@ import {
 } from "kui-icons";
 import {
   forwardRef,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useRef,
@@ -59,10 +60,10 @@ const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(
     const src = options.src ?? "";
     const index = data.indexOf(src);
 
-    const close = () => {
+    const close = useCallback(() => {
       setVisible(false);
       options.onClose?.();
-    };
+    }, [options]);
     const togglePanel = () => setPanelVisible((value) => !value);
     useImperativeHandle(ref, () => ({
       show(props) {
@@ -104,7 +105,7 @@ const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(
         document.removeEventListener("keydown", keydown);
         document.removeEventListener("wheel", wheel);
       };
-    }, [visible, options.onClose]);
+    }, [close, visible]);
     const switchImage = (offset: number) => {
       const next = Math.max(0, Math.min(data.length - 1, index + offset));
       if (next === index || next < 0) return;

@@ -184,11 +184,11 @@ export default function DatePicker({
   const leftRef = useRef(0);
   const timeColRefs = useRef<Partial<Record<UnitType, HTMLUListElement | null>>>({});
 
-  const setOpen = (next: boolean) => {
+  const setOpen = useCallback((next: boolean) => {
     if (opened === undefined) setVisibleState(next);
     setRendered(true);
     onOpenChange?.(next);
-  };
+  }, [onOpenChange, opened]);
   const updatePosition = useCallback(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -227,7 +227,7 @@ export default function DatePicker({
       window.removeEventListener("resize", updatePosition);
       window.removeEventListener("scroll", updatePosition, true);
     };
-  }, [visible, updatePosition, isRange, draft, values, fmt]);
+  }, [visible, updatePosition, isRange, draft, values, fmt, setOpen]);
 
   const output = (item: Dayjs) =>
     valueType === "date"
@@ -503,7 +503,7 @@ export default function DatePicker({
         timeColRefs.current[unit]?.scrollTo({ top: active[unit]() * 32 + 16 });
       });
     });
-  }, [visible, view, timeEditSide]);
+  }, [visible, view, timeEditSide, draft, mode, panelDate]);
   const panel =
     view === "year"
       ? yearPanel

@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { CircleQuestionMark } from "kui-icons";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import Button from "../button/button";
@@ -63,7 +63,7 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   const hideTimer = useRef<NodeJS.Timeout | null>(null);
   const showTimer = useRef<NodeJS.Timeout | null>(null);
 
-  const updatePosition = () => {
+  const updatePosition = useCallback(() => {
     if (!refSelection.current || !refPopper.current) return;
     placementRef.current = placement;
 
@@ -80,26 +80,18 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
     setTransOrigin(transOriginRef.current);
     setTop(topRef.current);
     setLeft(leftRef.current);
-  };
+  }, [placement]);
 
   useEffect(() => {
     if (visible) updatePosition();
-  }, [title, visible]);
+  }, [title, updatePosition, visible]);
 
-  useEffect(() => {
-    window.addEventListener("resize", updatePosition);
-    return () => {
-      window.removeEventListener("resize", updatePosition);
-      document.removeEventListener("click", outsideClick);
-    };
-  }, []);
-
-  const updateShow = (value: boolean) => {
+  const updateShow = useCallback((value: boolean) => {
     setVisible(value);
     onShowChange?.(value);
-  };
+  }, [onShowChange]);
 
-  const outsideClick = (e: MouseEvent) => {
+  const outsideClick = useCallback((e: MouseEvent) => {
     const ctx = refSelection.current;
     if (
       refPopper.current &&
@@ -109,7 +101,15 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
     ) {
       updateShow(false);
     }
-  };
+  }, [updateShow]);
+
+  useEffect(() => {
+    window.addEventListener("resize", updatePosition);
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+      document.removeEventListener("click", outsideClick);
+    };
+  }, [outsideClick, updatePosition]);
 
   const showPopconfirm = () => {
     if (showTimer.current) clearTimeout(showTimer.current);

@@ -160,7 +160,7 @@ export const Transition = forwardRef<HTMLElement, TransitionProps>(function Tran
   );
 });
 
-export function getTransitionProp(name: string): Omit<TransitionProps, "children" | "show"> {
+export const getTransitionProp = (name: string): Omit<TransitionProps, "children" | "show"> => {
   return {
     name,
     onBeforeEnter(el) {
@@ -206,9 +206,9 @@ export function getTransitionProp(name: string): Omit<TransitionProps, "children
       el.style.overflow = "";
     },
   };
-}
+};
 
-export function getTransitionHorProp(name: string): Omit<TransitionProps, "children" | "show"> {
+export const getTransitionHorProp = (name: string): Omit<TransitionProps, "children" | "show"> => {
   return {
     name,
     onBeforeEnter(el) {
@@ -255,6 +255,6 @@ export function getTransitionHorProp(name: string): Omit<TransitionProps, "child
       el.style.overflow = "";
     },
   };
-}
+};
 
 export default Transition;

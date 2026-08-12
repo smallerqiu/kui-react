@@ -1,5 +1,11 @@
 import clsx from "clsx";
-import React, { useState, type CSSProperties, type ReactNode } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import type { DirectionType } from "../const/types";
 import { useDropdownContext } from "../dropdown/dropdown-context";
 import type { IconType } from "../icon";
@@ -56,12 +62,39 @@ export const Menu: React.FC<MenuProps> = ({
   const dropdownContext = useDropdownContext();
   const [internalSelectedKeys, setInternalSelectedKeys] = useState<string[]>([]);
   const [internalOpenKeys, setInternalOpenKeys] = useState<string[]>([]);
-  const [popupCollapseReady, setPopupCollapseReady] = useState(inlineCollapsed);
+  const [collapseState, setCollapseState] = useState({
+    inlineCollapsed,
+    popupReady: inlineCollapsed,
+  });
+  const collapseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  if (collapseState.inlineCollapsed !== inlineCollapsed) {
+    setCollapseState({ inlineCollapsed, popupReady: false });
+  }
 
   const currentSelectedKeys = value ?? selectedKeys ?? internalSelectedKeys;
   const currentOpenKeys = openKeys ?? internalOpenKeys;
   const visibleOpenKeys = inlineCollapsed ? [] : currentOpenKeys;
-  const popupInlineCollapsed = inlineCollapsed && popupCollapseReady;
+  const popupInlineCollapsed =
+    inlineCollapsed &&
+    collapseState.inlineCollapsed === inlineCollapsed &&
+    collapseState.popupReady;
+
+  useEffect(() => {
+    if (inlineCollapsed) {
+      collapseTimer.current = setTimeout(() => {
+        setCollapseState((current) =>
+          current.inlineCollapsed ? { ...current, popupReady: true } : current
+        );
+        collapseTimer.current = null;
+      }, 200);
+    }
+
+    return () => {
+      if (collapseTimer.current) clearTimeout(collapseTimer.current);
+      collapseTimer.current = null;
+    };
+  }, [inlineCollapsed]);
 
   const selectedKeysChange = (key: string, selected: boolean, keyPath: string[]) => {
     const nextSelected = selected
@@ -115,21 +148,7 @@ export const Menu: React.FC<MenuProps> = ({
 
   return (
     <MenuContext.Provider value={menuState}>
-      <ul
-        className={cls}
-        theme-mode={theme}
-        style={style}
-        onTransitionRun={(event) => {
-          if (event.target === event.currentTarget && inlineCollapsed) {
-            setPopupCollapseReady(false);
-          }
-        }}
-        onTransitionEnd={(event) => {
-          if (event.target === event.currentTarget && inlineCollapsed) {
-            setPopupCollapseReady(true);
-          }
-        }}
-      >
+      <ul className={cls} theme-mode={theme} style={style}>
         {items && items.length > 0
           ? items.map((item) => <RecursiveMenu item={item} key={item.key} />)
           : children}

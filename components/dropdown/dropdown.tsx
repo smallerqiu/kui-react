@@ -114,7 +114,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       if (positionTimer.current) clearTimeout(positionTimer.current);
       positionTimer.current = null;
     };
-  }, [placement, visible]);
+  }, [placement, updatePosition, visible]);
 
   useEffect(() => {
     if (!visible) return;
@@ -133,9 +133,9 @@ const Dropdown: React.FC<DropdownProps> = ({
       if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
       frameRef.current = null;
     };
-  }, [schedulePositionUpdate, visible]);
+  }, [refSelection, schedulePositionUpdate, visible]);
 
-  const outsideClick = (e: MouseEvent) => {
+  const outsideClick = useCallback((e: MouseEvent) => {
     const targetElement = refSelection.current;
     if (!refPopper.current) return;
     const clickedEl = e.target as HTMLElement;
@@ -149,7 +149,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       setVisible(false);
       onOpenChange?.(false);
     }
-  };
+  }, [onOpenChange, refSelection, trigger]);
 
   useEffect(() => {
     if (visible) {
@@ -160,7 +160,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     return () => {
       document.removeEventListener("click", outsideClick);
     };
-  }, [visible, trigger]);
+  }, [outsideClick, visible]);
 
   const clearPopTimer = () => {
     if (showTimer.current) {

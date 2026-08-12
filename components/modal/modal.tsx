@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { X } from "kui-icons";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import { Button } from "../button";
@@ -79,20 +79,20 @@ const Modal: React.FC<ModalProps> = ({
     top: el.offsetTop,
   });
 
-  const updateOrigin = () => {
+  const updateOrigin = useCallback(() => {
     if (refModal.current) {
       const { x, y } = getMousePoint();
       const p = getOffset(refModal.current);
       refModal.current.style.transformOrigin = `${x - p.left}px ${y - p.top}px`;
     }
-  };
+  }, []);
 
-  const toggle = (value: boolean) => {
+  const toggle = useCallback((value: boolean) => {
     if (value && hideTimer.current) {
       clearTimeout(hideTimer.current);
       hideTimer.current = null;
     }
-    if (!rendered && value) {
+    if (value) {
       setRendered(true);
       setTimeout(() => {
         setVisible(true);
@@ -106,32 +106,20 @@ const Modal: React.FC<ModalProps> = ({
         }, 0);
       }, 0);
     } else {
-      if (value) {
-        setVisible(true);
-        setShowInner(true);
-        onOpenChange?.(true);
-        setTimeout(() => {
-          if (draggable && refModal.current) {
-            setLeftPos((document.body.offsetWidth - refModal.current.offsetWidth) / 2);
-          }
-          updateOrigin();
-        }, 0);
-      } else {
-        setVisible(false);
-        if (hideTimer.current) clearTimeout(hideTimer.current);
-        hideTimer.current = setTimeout(() => setShowInner(false), 300);
-        onOpenChange?.(false);
-      }
+      setVisible(false);
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+      hideTimer.current = setTimeout(() => setShowInner(false), 300);
+      onOpenChange?.(false);
     }
-  };
+  }, [draggable, onOpenChange, updateOrigin]);
 
   useEffect(() => {
     const timer = setTimeout(() => toggle(open), 0);
     return () => clearTimeout(timer);
-  }, [open]);
+  }, [open, toggle]);
 
   // Dragging
-  const mousemove = (e: MouseEvent) => {
+  const mousemove = useCallback((e: MouseEvent) => {
     if (isMousePressed && draggable) {
       const { x, y } = startPos.current;
       setLeftPos((prev) => prev + e.clientX - x);
@@ -140,15 +128,13 @@ const Modal: React.FC<ModalProps> = ({
       updateOrigin();
       e.preventDefault();
     }
-  };
+  }, [draggable, isMousePressed, updateOrigin]);
 
-  const mouseup = () => {
+  const mouseup = useCallback(() => {
     setIsMousePressed(false);
-    document.removeEventListener("mousemove", mousemove);
-    document.removeEventListener("mouseup", mouseup);
-  };
+  }, []);
 
-  const handleMouseDown = (e: MouseEvent) => {
+  const handleMouseDown = useCallback((e: MouseEvent) => {
     if (
       e.button === 0 &&
       draggable &&
@@ -157,30 +143,32 @@ const Modal: React.FC<ModalProps> = ({
     ) {
       setIsMousePressed(true);
       startPos.current = { x: e.clientX, y: e.clientY };
-      document.addEventListener("mousemove", mousemove);
-      document.addEventListener("mouseup", mouseup);
     }
     setMousedownIn(visible && !!refModal.current?.contains(e.target as Node));
-  };
+  }, [draggable, visible]);
 
-  const close = () => {
+  const close = useCallback(() => {
     toggle(false);
     onClose?.();
-  };
+  }, [onClose, toggle]);
 
-  const escToClose = (e: KeyboardEvent) => {
+  const escToClose = useCallback((e: KeyboardEvent) => {
     if (e.key === "Escape") close();
-  };
+  }, [close]);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleMouseDown);
+    document.addEventListener("mousemove", mousemove);
+    document.addEventListener("mouseup", mouseup);
     if (escKey) document.addEventListener("keydown", escToClose);
     return () => {
       document.removeEventListener("mousedown", handleMouseDown);
+      document.removeEventListener("mousemove", mousemove);
+      document.removeEventListener("mouseup", mouseup);
       if (escKey) document.removeEventListener("keydown", escToClose);
       if (hideTimer.current) clearTimeout(hideTimer.current);
     };
-  }, [visible, draggable, escKey, maskClosable, loading]);
+  }, [escKey, escToClose, handleMouseDown, mousemove, mouseup]);
 
   const ok = () => onOk?.();
   const cancel = () => {

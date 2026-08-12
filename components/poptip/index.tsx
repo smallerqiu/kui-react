@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import type { PlacementsType } from "../const/types";
@@ -53,7 +53,7 @@ const Poptip: React.FC<PoptipProps> = ({
   const hideTimer = useRef<NodeJS.Timeout | null>(null);
   const showTimer = useRef<NodeJS.Timeout | null>(null);
 
-  const updatePosition = () => {
+  const updatePosition = useCallback(() => {
     if (!refSelection.current || !refPopper.current) return;
     placementRef.current = placement;
 
@@ -70,27 +70,19 @@ const Poptip: React.FC<PoptipProps> = ({
     setTransOrigin(transOriginRef.current);
     setTop(topRef.current);
     setLeft(leftRef.current);
-  };
+  }, [placement]);
 
   useEffect(() => {
     if (visible) updatePosition();
-  }, [title, visible]);
+  }, [title, updatePosition, visible]);
 
-  useEffect(() => {
-    window.addEventListener("resize", updatePosition);
-    return () => {
-      window.removeEventListener("resize", updatePosition);
-      document.removeEventListener("click", outsideClick);
-    };
-  }, []);
-
-  const updateShow = (value: boolean) => {
+  const updateShow = useCallback((value: boolean) => {
     setVisible(value);
     onShowChange?.(value);
     if (!value) onClose?.();
-  };
+  }, [onClose, onShowChange]);
 
-  const outsideClick = (e: MouseEvent) => {
+  const outsideClick = useCallback((e: MouseEvent) => {
     const ctx = refSelection.current;
     if (
       refPopper.current &&
@@ -100,7 +92,15 @@ const Poptip: React.FC<PoptipProps> = ({
     ) {
       updateShow(false);
     }
-  };
+  }, [updateShow]);
+
+  useEffect(() => {
+    window.addEventListener("resize", updatePosition);
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+      document.removeEventListener("click", outsideClick);
+    };
+  }, [outsideClick, updatePosition]);
 
   const showPoptip = () => {
     if (showTimer.current) clearTimeout(showTimer.current);

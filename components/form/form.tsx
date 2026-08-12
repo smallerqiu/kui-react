@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import {
   forwardRef,
+  useCallback,
   useImperativeHandle,
   useMemo,
   useRef,
@@ -78,11 +79,11 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
   ref
 ) {
   const itemsRef = useRef(new Map<string, FormItemHandle>());
-  const setValue = (path: string, value: any) => {
+  const setValue = useCallback((path: string, value: any) => {
     const { parent, key } = getByPath(model, path);
     if (parent) parent[key] = value;
     onChange?.(model);
-  };
+  }, [model, onChange]);
   const validate = (callback?: (result: FormSubmitEvent) => void) => {
     let valid = true;
     for (const item of itemsRef.current.values()) {
@@ -125,7 +126,7 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
       register: (item) => itemsRef.current.set(item.prop, item),
       unregister: (prop) => itemsRef.current.delete(prop),
     }),
-    [model, rules, layout, name, size, shape, theme, disabled, labelCol, wrapperCol, onChange]
+    [model, rules, layout, name, size, shape, theme, disabled, labelCol, wrapperCol, setValue]
   );
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {

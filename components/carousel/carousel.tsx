@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight } from "kui-icons";
 import {
   Children,
   forwardRef,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useRef,
@@ -69,29 +70,29 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
     return () => observer?.disconnect();
   }, []);
 
-  const goTo = (index: number) => {
+  const goTo = useCallback((index: number) => {
     if (!items.length) return;
     const next = loop
       ? ((index % items.length) + items.length) % items.length
       : Math.max(0, Math.min(items.length - 1, index));
     if (controlled === undefined) setInnerIndex(next);
     onChange?.(next);
-  };
+  }, [controlled, items.length, loop, onChange]);
 
-  const stop = () => {
+  const stop = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = null;
-  };
-  const play = () => {
+  }, []);
+  const play = useCallback(() => {
     stop();
     if (autoplay && items.length > 1)
       timerRef.current = setInterval(() => goTo(current + 1), delay);
-  };
+  }, [autoplay, current, delay, goTo, items.length, stop]);
 
   useEffect(() => {
     play();
     return stop;
-  }, [autoplay, current, delay, items.length]);
+  }, [play, stop]);
 
   useImperativeHandle(ref, () => ({
     next: () => goTo(current + 1),

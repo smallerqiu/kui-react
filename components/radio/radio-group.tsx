@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { DirectionType, RadioType, ShapeType, SizeType, ThemeType } from "../const/types";
 import type { IconType } from "../icon";
 import Radio from "./radio";
@@ -62,7 +62,7 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
     }
   };
 
-  const updateSize = () => {
+  const updateSize = useCallback(() => {
     const activeEl = itemRefs.current.get(currentValue);
     if (activeEl) {
       setSegStyle(
@@ -71,19 +71,19 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
           : { width: `${activeEl.offsetWidth - 4}px`, left: `${activeEl.offsetLeft + 2}px` }
       );
     }
-  };
+  }, [currentValue, isVertical]);
 
-  const updateSeg = () => {
+  const updateSeg = useCallback(() => {
     if (!isCard || !isButton) return;
     setTimeout(() => {
       setChanged(true);
       updateSize();
     }, 0);
-  };
+  }, [isButton, isCard, updateSize]);
 
   useEffect(() => {
     updateSeg();
-  }, [currentValue, direction, theme, type]);
+  }, [updateSeg]);
 
   useEffect(() => {
     if (!rootRef.current) return;
@@ -94,7 +94,7 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
     return () => {
       observer.disconnect();
     };
-  }, [currentValue]);
+  }, [updateSize]);
 
   const handleRadioChange = (event: ChangeEvent) => {
     if (value === undefined) {
