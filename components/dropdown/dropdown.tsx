@@ -60,6 +60,9 @@ const Dropdown: React.FC<DropdownProps> = ({
   const contextmenuPosition = useRef<{ x: number; y: number } | null>(null);
 
   const refSelection = target || localRefSelection;
+  const setLocalSelection = useCallback((node: HTMLElement | null) => {
+    localRefSelection.current = node;
+  }, []);
 
   const updatePosition = useCallback(
     (e?: MouseEvent, requestedPlacement = placement) => {
@@ -263,20 +266,15 @@ const Dropdown: React.FC<DropdownProps> = ({
     };
   }
 
-  const triggerNode = firstChild ? (
+  const triggerNode = target ? (
+    candidate
+  ) : firstChild ? (
     React.cloneElement(firstChild, {
-      ref: (node: HTMLElement | null) => {
-        refSelection.current = node;
-      },
+      ref: setLocalSelection,
       ...triggerProps,
     })
   ) : (
-    <span
-      ref={(node) => {
-        refSelection.current = node;
-      }}
-      {...triggerProps}
-    >
+    <span ref={setLocalSelection} {...triggerProps}>
       {candidate}
     </span>
   );

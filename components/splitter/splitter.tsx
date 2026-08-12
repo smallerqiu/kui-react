@@ -44,6 +44,7 @@ export function Splitter({
   const limitsRef = useRef({ min: [] as number[], max: [] as number[] });
   const dragRef = useRef<number | null>(null);
   const [sizes, setSizes] = useState<number[]>([]);
+  const [dragging, setDragging] = useState(false);
   const panels = useMemo(
     () => Children.toArray(children).filter(isValidElement) as ReactElement<SplitterPanelProps>[],
     [children]
@@ -73,6 +74,16 @@ export function Splitter({
     return () => observer?.disconnect();
   }, [initialize]);
 
+  useEffect(() => {
+    if (!dragging) return;
+    document.body.style.cursor = direction === "horizontal" ? "col-resize" : "row-resize";
+    document.body.classList.add("k-splitter-dragging");
+    return () => {
+      document.body.style.cursor = "";
+      document.body.classList.remove("k-splitter-dragging");
+    };
+  }, [direction, dragging]);
+
   const emitSizes = (callback?: (value: number[]) => void) => {
     callback?.(sizesRef.current.map((value) => Number(value.toFixed(3))));
   };
@@ -80,8 +91,7 @@ export function Splitter({
   const handleMouseDown = (index: number, event: ReactMouseEvent) => {
     event.preventDefault();
     dragRef.current = index;
-    document.body.style.cursor = direction === "horizontal" ? "col-resize" : "row-resize";
-    document.body.classList.add("k-splitter-dragging");
+    setDragging(true);
     emitSizes(onResizeStart);
 
     const move = (moveEvent: MouseEvent) => {
@@ -111,8 +121,7 @@ export function Splitter({
     };
     const up = () => {
       dragRef.current = null;
-      document.body.style.cursor = "";
-      document.body.classList.remove("k-splitter-dragging");
+      setDragging(false);
       document.removeEventListener("mousemove", move);
       document.removeEventListener("mouseup", up);
       emitSizes(onResizeEnd);
