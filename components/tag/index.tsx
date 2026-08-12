@@ -3,14 +3,14 @@ import { X } from "kui-icons";
 import React, { useState } from "react";
 import { type ColorType, type ShapeType, type SizeType, type ThemeType } from "../const/types";
 import { colors } from "../const/var";
-import Icon from "../icon";
+import Icon, { type IconType } from "../icon";
 import { isColor } from "../utils/color";
 
 export interface TagProps extends React.HTMLAttributes<HTMLDivElement> {
   closeable?: boolean;
   color?: ColorType;
   shape?: ShapeType;
-  icon?: any;
+  icon?: IconType[];
   size?: SizeType;
   theme?: ThemeType;
   onClose?: () => void;
@@ -42,7 +42,7 @@ const Tag: React.FC<TagProps> = ({
     }, 300);
   };
 
-  const isPresetColor = color && colors.includes(color as any);
+  const isPresetColor = color !== undefined && colors.some((preset) => preset === color);
   const isCustomColor = color && isColor(color) && !isPresetColor;
 
   const tagClasses = clsx(

@@ -11,7 +11,7 @@
 
 [基本用法](./demo/basic.tsx)
 
-- 可使用 `v-model` 进行数据双向绑定
+- 使用 `checked` 和 `onChange` 控制开关状态
 
 [文字 / 图标](./demo/with-text.tsx)
 
@@ -33,7 +33,7 @@
 
 | 属性               | 说明                                                      | 类型                     | 默认值 |
 | ------------------ | --------------------------------------------------------- | ------------------------ | ------ |
-| checked            | 指定当前是否选中，可以使用 `v-model` 双向绑定数据         | bool                     | false  |
+| checked            | 受控的开关状态                                             | bool                     | false  |
 | disabled           | 禁用开关                                                  | bool                     | false  |
 | type               | 主题颜色 可传入 `success`，`warning`，`danger`，`primary` | string                   | -      |
 | size               | 组件尺寸，值为`small`展示小尺寸                           | string                   | -      |

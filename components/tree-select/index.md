@@ -40,7 +40,7 @@
 
 | 属性             | 说明                                                       | 类型                              | 默认值     |
 | ---------------- | ---------------------------------------------------------- | --------------------------------- | ---------- |
-| modelValue       | 指定选中项目的 `value` 值，可以使用 `v-model` 双向绑定数据 | string,number,any[]               | -          |
+| value            | 受控的选中值                                               | string,number,any[]               | -          |
 | width            | 组件宽度                                                   | string,number                     | -          |
 | placeholder      | 选择框默认文字                                             | string                            | 请选择     |
 | disabled         | 是否禁用当前项                                             | bool                              | false      |

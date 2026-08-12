@@ -50,7 +50,7 @@ Can be used in BI/Dashboard scenarios, business backend oriented, intuitive.
 
 | Property        | Description                                       | Type                | Default   |
 | --------------- | ------------------------------------------------- | ------------------- | --------- |
-| modelValue      | Numerical value(v-model)                          | number              | -         |
+| value           | Numerical value                                   | number              | -         |
 | duration        | Numerical dynamic display time (seconds)          | number              | 1.2       |
 | prefix          | Prefix content of numerical value                 | string              | -         |
 | suffix          | Suffix content of numerical value                 | string              | -         |

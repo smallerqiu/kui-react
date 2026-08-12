@@ -13,7 +13,7 @@ export interface DropdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   arrow?: boolean;
   show?: boolean;
   placement?: DropPlacementsType;
-  target?: React.RefObject<any>;
+  target?: React.RefObject<HTMLElement | null>;
   onOpenChange?: (opened: boolean) => void;
   overlay?: React.ReactNode;
   children?: React.ReactNode;
@@ -229,46 +229,55 @@ const Dropdown: React.FC<DropdownProps> = ({
   };
 
   const childList = getChildren(children);
-  const firstChild = (
-    childList.length === 1 ? childList[0] : <span>{childList}</span>
-  ) as React.ReactElement<Record<string, any>>;
+  type TriggerElementProps = React.HTMLAttributes<HTMLElement> & {
+    ref?: React.Ref<HTMLElement>;
+  };
+  const candidate = childList.length === 1 ? childList[0] : <span>{childList}</span>;
+  const firstChild = React.isValidElement<TriggerElementProps>(candidate) ? candidate : null;
 
-  const triggerProps: Record<string, any> = {};
+  const triggerProps: React.HTMLAttributes<HTMLElement> = {};
   if (!target) {
-    triggerProps.onClick = (e: React.MouseEvent) => {
+    triggerProps.onClick = (e: React.MouseEvent<HTMLElement>) => {
       clickEvent();
-      if (React.isValidElement(firstChild) && firstChild.props.onClick) {
+      if (firstChild?.props.onClick) {
         firstChild.props.onClick(e);
       }
     };
-    triggerProps.onMouseEnter = (e: React.MouseEvent) => {
+    triggerProps.onMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
       mouseEnterEvent();
-      if (React.isValidElement(firstChild) && firstChild.props.onMouseEnter) {
+      if (firstChild?.props.onMouseEnter) {
         firstChild.props.onMouseEnter(e);
       }
     };
-    triggerProps.onMouseLeave = (e: React.MouseEvent) => {
+    triggerProps.onMouseLeave = (e: React.MouseEvent<HTMLElement>) => {
       mouseLeaveEvent();
-      if (React.isValidElement(firstChild) && firstChild.props.onMouseLeave) {
+      if (firstChild?.props.onMouseLeave) {
         firstChild.props.onMouseLeave(e);
       }
     };
-    triggerProps.onContextMenu = (e: React.MouseEvent) => {
+    triggerProps.onContextMenu = (e: React.MouseEvent<HTMLElement>) => {
       contextmenuEvent(e);
-      if (React.isValidElement(firstChild) && firstChild.props.onContextMenu) {
+      if (firstChild?.props.onContextMenu) {
         firstChild.props.onContextMenu(e);
       }
     };
   }
 
-  const triggerNode = React.isValidElement(firstChild) ? (
+  const triggerNode = firstChild ? (
     React.cloneElement(firstChild, {
-      ref: refSelection,
+      ref: (node: HTMLElement | null) => {
+        refSelection.current = node;
+      },
       ...triggerProps,
     })
   ) : (
-    <span ref={refSelection} {...triggerProps}>
-      {firstChild}
+    <span
+      ref={(node) => {
+        refSelection.current = node;
+      }}
+      {...triggerProps}
+    >
+      {candidate}
     </span>
   );
 

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Button } from "../button";
-import type { ShapeType, SizeType } from "../const/types";
+import type { ShapeType, SizeType, ThemeType } from "../const/types";
 import type { IconType } from "../icon";
 import { RadioGroupContext } from "./radio-group-context";
 import type { ChangeEvent } from "./types";
@@ -10,8 +10,8 @@ export interface RadioButtonProps extends Omit<
   "onChange"
 > {
   label?: string;
-  value?: any;
-  theme?: string;
+  value?: string | number;
+  theme?: ThemeType;
   disabled?: boolean;
   checked?: boolean;
   icon?: IconType[];
@@ -21,7 +21,7 @@ export interface RadioButtonProps extends Omit<
   children?: React.ReactNode;
 }
 
-const RadioButton = React.forwardRef<any, RadioButtonProps>(
+const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
   (
     {
       label,
@@ -69,11 +69,11 @@ const RadioButton = React.forwardRef<any, RadioButtonProps>(
         disabled={currentDisabled}
         size={currentSize}
         icon={icon}
-        theme={currentTheme as any}
+        theme={currentTheme}
         shape={currentShape}
         type={isChecked ? "primary" : "default"}
-        onClick={handleClick as any}
-        {...(rest as any)}
+        onClick={handleClick}
+        {...rest}
       >
         {labelText}
       </Button>

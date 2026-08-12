@@ -141,14 +141,22 @@ const Poptip: React.FC<PoptipProps> = ({
   }
 
   let triggerNode: React.ReactNode;
-  if (firstChild && React.isValidElement(firstChild)) {
-    triggerNode = React.cloneElement(firstChild as React.ReactElement<any>, {
-      ref: refSelection,
+  const setSelectionRef = (node: HTMLElement | null) => {
+    refSelection.current = node;
+  };
+  if (
+    firstChild &&
+    React.isValidElement<React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement> }>(
+      firstChild
+    )
+  ) {
+    triggerNode = React.cloneElement(firstChild, {
+      ref: setSelectionRef,
       ...triggerProps,
     });
   } else {
     triggerNode = (
-      <span ref={refSelection} {...triggerProps}>
+      <span ref={setSelectionRef} {...triggerProps}>
         {children}
       </span>
     );

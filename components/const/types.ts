@@ -15,12 +15,7 @@ export type PlacementsType =
   | "right-bottom";
 export type DrawerPlacementsType = "left" | "right" | "top" | "bottom";
 export type DropPlacementsType =
-  | "top"
-  | "top-left"
-  | "top-right"
-  | "bottom"
-  | "bottom-left"
-  | "bottom-right";
+  "top" | "top-left" | "top-right" | "bottom" | "bottom-left" | "bottom-right";
 
 export type ValueType = "string" | "number" | "boolean";
 export type SizeType = "small" | "medium" | "large";

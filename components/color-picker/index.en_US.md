@@ -30,7 +30,6 @@ Freely output colors.
 | ------------- | --------------------------------------------------------------- | ------------------------- | ----------- |
 | value         | Controlled color value                                          | `string`                  | -           |
 | defaultValue  | Initial uncontrolled color value                                | `string`                  | `#000000ff` |
-| modelValue    | Controlled value retained for migration compatibility           | `string`                  | -           |
 | mode          | Color output mode: `hex`, `rgb`, or `hsl`                       | `ColorMode`               | `hex`       |
 | presets       | Custom color palette                                            | `string[]`                | Built-in palette |
 | disabledAlpha | Whether alpha editing is disabled                               | `boolean`                 | `false`     |

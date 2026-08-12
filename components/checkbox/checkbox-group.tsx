@@ -4,29 +4,29 @@ import type { DirectionType, SizeType, ThemeType } from "../const/types";
 import Checkbox, { type ChangeEvent } from "./checkbox";
 import { CheckboxGroupContext } from "./checkbox-group-context";
 
-export interface CheckboxOption {
+export interface CheckboxOption<T extends string | number = string | number> {
   label?: string;
-  value?: any;
+  value: T;
   disabled?: boolean;
   [key: string]: unknown;
 }
 
-export interface CheckboxGroupProps extends Omit<
+export interface CheckboxGroupProps<T extends string | number = string | number> extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
   "onChange" | "defaultValue"
 > {
-  value?: any[];
-  defaultValue?: any[];
+  value?: T[];
+  defaultValue?: T[];
   theme?: ThemeType;
   disabled?: boolean;
   options?: CheckboxOption[];
   direction?: DirectionType;
   size?: SizeType;
-  onChange?: (value: any[]) => void;
+  onChange?: (value: T[]) => void;
   children?: React.ReactNode;
 }
 
-const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
+const CheckboxGroup = <T extends string | number = string | number>({
   value,
   defaultValue = [],
   theme = "fill",
@@ -38,12 +38,13 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   children,
   className = "",
   ...rest
-}) => {
-  const [innerValue, setInnerValue] = useState<any[]>(defaultValue);
+}: CheckboxGroupProps<T>) => {
+  const [innerValue, setInnerValue] = useState<T[]>(defaultValue);
   const currentValue = value ?? innerValue;
 
   const handleCheckboxChange = (event: ChangeEvent) => {
-    const { checked, value: val } = event;
+    const checked = event.checked;
+    const val = event.value as T;
     const nextValue = [...currentValue];
     const index = nextValue.indexOf(val);
 

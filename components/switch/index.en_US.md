@@ -11,7 +11,7 @@ Switch selector.
 
 [Basic Usage](./demo/basic.tsx)
 
-- Can use `v-model` for two-way data binding.
+- Use `checked` and `onChange` to control the switch state.
 
 [Text / Icon](./demo/with-text.tsx)
 
@@ -33,7 +33,7 @@ Switch selector.
 
 | Property           | Description                                                               | Type                     | Default |
 | ------------------ | ------------------------------------------------------------------------- | ------------------------ | ------- |
-| checked            | Specify whether currently selected, can use `v-model` for two-way binding | bool                     | false   |
+| checked            | Controlled switch state                                                   | bool                     | false   |
 | disabled           | Disable switch                                                            | bool                     | false   |
 | type               | Theme color, can pass `success`, `warning`, `danger`, `primary`           | string                   | -       |
 | size               | Component size, when value is `small` displays small size                 | string                   | -       |

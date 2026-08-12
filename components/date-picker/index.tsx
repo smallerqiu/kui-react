@@ -51,7 +51,6 @@ export interface DatePickerProps extends Omit<
   "onChange" | "children"
 > {
   value?: DatePickerInput | DatePickerInput[];
-  modelValue?: DatePickerInput | DatePickerInput[];
   startDate?: DatePickerInput;
   endDate?: DatePickerInput;
   valueType?: DatePickerValueType;
@@ -107,7 +106,6 @@ const parse = (value: DatePickerInput, format: string, valueType: DatePickerValu
 
 export default function DatePicker({
   value,
-  modelValue,
   startDate,
   endDate,
   valueType = "string",
@@ -144,7 +142,7 @@ export default function DatePicker({
   const fmt = format || defaultFormat(mode);
   const isRange = mode.endsWith("Range");
   const hasTime = mode === "time" || mode.includes("Time");
-  const controlled = modelValue !== undefined ? modelValue : value;
+  const controlled = value;
   const initial = useMemo(() => {
     const source = controlled !== undefined ? controlled : isRange ? [startDate, endDate] : null;
     return (Array.isArray(source) ? source : source == null ? [] : [source])
@@ -595,11 +593,24 @@ export default function DatePicker({
       </Transition>
     </Teleport>
   );
-  const placeholders = Array.isArray(placeholder)
+  const datePickerPlaceholders: Record<DatePickerModeType, string> = {
+    year: locale.k.datePicker.selectYear,
+    month: locale.k.datePicker.selectMonth,
+    date: locale.k.datePicker.selectDate,
+    dateTime: locale.k.datePicker.selectDate,
+    time: locale.k.datePicker.selectTime,
+    dateRange: locale.k.datePicker.selectDate,
+    dateTimeRange: locale.k.datePicker.selectDate,
+  };
+  const customPlaceholders = Array.isArray(placeholder)
     ? placeholder
-    : isRange
-      ? [placeholder || "Start date", placeholder || "End date"]
-      : [placeholder || locale?.k?.datePicker?.placeholder || "Select date"];
+    : [placeholder, placeholder];
+  const placeholders = isRange
+    ? [
+        customPlaceholders[0] || locale.k.datePicker.startDate,
+        customPlaceholders[1] || locale.k.datePicker.endDate,
+      ]
+    : [customPlaceholders[0] || datePickerPlaceholders[mode]];
   const inputSize = Math.max(10, fmt.length);
   const classes = clsx(
     "k-datepicker",

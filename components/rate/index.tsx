@@ -15,7 +15,7 @@ export interface RateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "o
   disabled?: boolean;
   count?: number;
   character?: string | ((index: number) => React.ReactNode);
-  icon?: IconType[] | ((index: number) => any);
+  icon?: IconType[] | ((index: number) => IconType[]);
   symbolReverseFill?: boolean;
   strokeWidth?: number;
   onChange?: (value: number) => void;

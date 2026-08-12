@@ -10,17 +10,19 @@ export default function App() {
     password: "",
     confirm_password: "",
   });
-  const validateID = (_: FormRule, value: any, cb: (e?: Error) => void) =>
+  const validateID = (_: FormRule, value: unknown, cb: (e?: Error) => void) =>
     cb(
-      value && !/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value)
+      typeof value === "string" &&
+        value !== "" &&
+        !/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value)
         ? new Error("Please enter the correct ID number")
         : undefined
     );
-  const validatePassword = (_: FormRule, value: any, cb: (e?: Error) => void) => {
+  const validatePassword = (_: FormRule, value: unknown, cb: (e?: Error) => void) => {
     cb(!value ? new Error("Please input your password") : undefined);
     if (value) ref.current?.test("confirm_password");
   };
-  const validateAgain = (_: FormRule, value: any, cb: (e?: Error) => void) =>
+  const validateAgain = (_: FormRule, value: unknown, cb: (e?: Error) => void) =>
     cb(
       !value
         ? new Error("Please input your password again")

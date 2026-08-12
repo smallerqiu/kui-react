@@ -11,7 +11,7 @@ Radio button.
 
 [Single Selection](./demo/basic.tsx)
 
-- When used alone, the `v-model` value is `true` for selected and `false` for unselected.
+- When used alone, control the selected state with `checked` and `onChange`.
 
 [Multiple Selection](./demo/group.tsx)
 
@@ -33,7 +33,6 @@ Radio button.
 
 | Property   | Description                        | Type                     | Default |
 | ---------- | ---------------------------------- | ------------------------ | ------- |
-| modelValue | Whether selected (v-model)         | bool                     | false   |
 | checked    | Whether selected                   | bool                     | false   |
 | label      | Text prompt                        | string, number           | -       |
 | value      | Value when used in combination     | string 、 number         | -       |
@@ -44,7 +43,7 @@ Radio button.
 
 | Property   | Description                                                                                    | Type                              | Default    |
 | ---------- | ---------------------------------------------------------------------------------------------- | --------------------------------- | ---------- |
-| modelValue | Used to set the currently selected value. Can use `v-model` for two-way binding data           | any                               | -          |
+| value      | Controlled selected value                                                                  | string, number                    | -          |
 | size       | Button size, optional values: `small`, `large`, default not selected                           | string                            | -          |
 | direction  | Layout direction, optional values: `horizontal`, `vertical`                                    | string                            | horizontal |
 | shape      | `button`'s shape property, displays rounded corners                                            | string                            | -          |

@@ -40,7 +40,7 @@ Similar to the Select selection control, when the selectable data structure is a
 
 | Property         | Description                                                                     | Type                              | Default       |
 | ---------------- | ------------------------------------------------------------------------------- | --------------------------------- | ------------- |
-| modelValue       | Specify the `value` of the selected item, can use `v-model` for two-way binding | string, number, any[]             | -             |
+| value            | Controlled selected value                                                        | string, number, any[]             | -             |
 | width            | Component width                                                                 | string, number                    | -             |
 | placeholder      | Default text of selector                                                        | string                            | Please select |
 | disabled         | Whether current item is disabled                                                | bool                              | false         |

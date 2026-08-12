@@ -25,7 +25,7 @@ Separate long lists using pagination, loading only one page at a time.
 
 | Property     | Description                                                                     | Type                                 | Default          |
 | ------------ | ------------------------------------------------------------------------------- | ------------------------------------ | ---------------- |
-| page         | Current page number(v-model)                                                    | number                               | 1                |
+| page         | Current page number                                                             | number                               | 1                |
 | disabled     | Disabled status                                                                 | bool                                 | false            |
 | total        | Total data count                                                                | number                               | 0                |
 | pageSize     | number of items per page                                                        | number                               | 10               |

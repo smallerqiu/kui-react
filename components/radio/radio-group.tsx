@@ -7,17 +7,20 @@ import RadioButton from "./radio-button";
 import type { ChangeEvent } from "./types";
 import { RadioGroupContext } from "./radio-group-context";
 
+type RadioValue = string | number | undefined;
+
 export interface RadioOption {
   label?: string;
-  value?: any;
+  value?: string | number;
   disabled?: boolean;
   icon?: IconType[];
   [key: string]: unknown;
 }
 
-export interface RadioGroupProps extends React.HTMLAttributes<HTMLDivElement> {
-  value?: any;
-  defaultValue?: any;
+export interface RadioGroupProps<T extends RadioValue = string | number>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange"> {
+  value?: T;
+  defaultValue?: T;
   disabled?: boolean;
   direction?: DirectionType;
   size?: SizeType;
@@ -25,13 +28,13 @@ export interface RadioGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   shape?: ShapeType;
   options?: RadioOption[];
   type?: RadioType;
-  onChange?: (value: any) => void;
+  onChange?: (value: T) => void;
   children?: React.ReactNode;
 }
 
-const RadioGroup: React.FC<RadioGroupProps> = ({
+const RadioGroup = <T extends RadioValue = string | number>({
   value,
-  defaultValue = "",
+  defaultValue,
   disabled = false,
   direction = "horizontal",
   size,
@@ -43,11 +46,12 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
   children,
   className = "",
   ...rest
-}) => {
+}: RadioGroupProps<T>) => {
   const rootRef = useRef<HTMLDivElement>(null);
-  const itemRefs = useRef(new Map<any, HTMLElement | null>());
+  const itemRefs = useRef(new Map<RadioValue, HTMLElement | null>());
+  const animationFrame = useRef<number | null>(null);
 
-  const [innerValue, setInnerValue] = useState(defaultValue);
+  const [innerValue, setInnerValue] = useState<T>(() => defaultValue ?? value ?? ("" as T));
   const currentValue = value ?? innerValue;
   const [segStyle, setSegStyle] = useState<React.CSSProperties>({});
   const [changed, setChanged] = useState(false);
@@ -56,7 +60,7 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
   const isButton = type === "button";
   const isCard = theme === "card";
 
-  const setItemRef = (el: HTMLElement | null, val: any) => {
+  const setItemRef = (el: HTMLElement | null, val: RadioValue) => {
     if (el) {
       itemRefs.current.set(val, el);
     }
@@ -75,10 +79,14 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
 
   const updateSeg = useCallback(() => {
     if (!isCard || !isButton) return;
-    setTimeout(() => {
+    if (animationFrame.current !== null) cancelAnimationFrame(animationFrame.current);
+    animationFrame.current = requestAnimationFrame(() => {
       setChanged(true);
-      updateSize();
-    }, 0);
+      animationFrame.current = requestAnimationFrame(() => {
+        updateSize();
+        animationFrame.current = null;
+      });
+    });
   }, [isButton, isCard, updateSize]);
 
   useEffect(() => {
@@ -93,14 +101,16 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
     observer.observe(rootRef.current);
     return () => {
       observer.disconnect();
+      if (animationFrame.current !== null) cancelAnimationFrame(animationFrame.current);
     };
   }, [updateSize]);
 
   const handleRadioChange = (event: ChangeEvent) => {
+    const nextValue = event.value as T;
     if (value === undefined) {
-      setInnerValue(event.value);
+      setInnerValue(nextValue);
     }
-    onChange?.(event.value);
+    onChange?.(nextValue);
   };
 
   const onTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
@@ -128,8 +138,8 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
     if (options && options.length > 0) {
       return options.map((option) => (
         <Component
-          ref={(el: any) => setItemRef(el, option.value)}
-          key={option.value}
+          ref={(el: HTMLButtonElement | HTMLLabelElement | null) => setItemRef(el, option.value)}
+          key={option.label ?? option.value}
           label={option.label}
           value={option.value}
           disabled={disabled || option.disabled}
@@ -141,11 +151,16 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
       ));
     }
     return React.Children.map(children, (child) => {
-      if (React.isValidElement<{ value?: any }>(child)) {
+      if (
+        React.isValidElement<{
+          value?: RadioValue;
+          ref?: React.Ref<HTMLButtonElement | HTMLLabelElement>;
+        }>(child)
+      ) {
         const val = child.props.value;
         return React.cloneElement(child, {
-          ref: (el: any) => setItemRef(el, val),
-        } as any);
+          ref: (el: HTMLButtonElement | HTMLLabelElement | null) => setItemRef(el, val),
+        });
       }
       return child;
     });

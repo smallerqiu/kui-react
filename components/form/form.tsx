@@ -32,7 +32,7 @@ export interface FormProps extends Omit<
   "onSubmit" | "onReset" | "onChange"
 > {
   layout?: DirectionType;
-  model?: Record<string, any>;
+  model?: Record<string, unknown>;
   name?: string;
   labelCol?: ColProps;
   wrapperCol?: ColProps;
@@ -43,16 +43,19 @@ export interface FormProps extends Omit<
   disabled?: boolean;
   onSubmit?: (event: FormSubmitEvent) => void;
   onReset?: () => void;
-  onChange?: (model: Record<string, any>) => void;
+  onChange?: (model: Record<string, unknown>) => void;
 }
 
-const getByPath = (object: Record<string, any>, path: string) => {
+const getByPath = (object: Record<string, unknown>, path: string) => {
   const keys = path
     .replace(/\[(\w+)\]/g, ".$1")
     .replace(/^\./, "")
     .split(".");
-  let parent: any = object;
-  for (let index = 0; index < keys.length - 1; index++) parent = parent?.[keys[index]];
+  let parent: Record<string, unknown> | undefined = object;
+  for (let index = 0; index < keys.length - 1; index++) {
+    const next: unknown = parent?.[keys[index]];
+    parent = typeof next === "object" && next !== null ? (next as Record<string, unknown>) : undefined;
+  }
   const key = keys.at(-1)!;
   return { parent, key, value: parent?.[key] };
 };
@@ -79,7 +82,7 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
   ref
 ) {
   const itemsRef = useRef(new Map<string, FormItemHandle>());
-  const setValue = useCallback((path: string, value: any) => {
+  const setValue = useCallback((path: string, value: unknown) => {
     const { parent, key } = getByPath(model, path);
     if (parent) parent[key] = value;
     onChange?.(model);

@@ -7,7 +7,7 @@ import { getValueWithType } from "../utils/checked";
 import { CheckboxGroupContext } from "./checkbox-group-context";
 
 export interface ChangeEvent {
-  value?: any;
+  value?: unknown;
   label?: React.ReactNode;
   checked: boolean;
 }
@@ -15,7 +15,7 @@ export interface ChangeEvent {
 export interface CheckboxProps extends Omit<React.HTMLAttributes<HTMLLabelElement>, "onChange"> {
   checked?: boolean;
   valueType?: ValueType;
-  value?: any;
+  value?: unknown;
   label?: React.ReactNode;
   theme?: ThemeType;
   disabled?: boolean;
@@ -54,7 +54,8 @@ const Checkbox: React.FC<CheckboxProps> = ({
     if (!isGroup && checked === undefined) {
       setLocalChecked(newChecked);
     }
-    const labelVal = label || children || value;
+    const labelVal =
+      label || children || (typeof value === "string" || typeof value === "number" ? value : undefined);
     const eventObj: ChangeEvent = {
       checked: newChecked,
       value: isGroup ? value : getValueWithType(newChecked, valueType),

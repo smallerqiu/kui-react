@@ -47,7 +47,7 @@
 
 | 属性       | 说明                                  | 类型                  | 默认值 |
 | ---------- | ------------------------------------- | --------------------- | ------ |
-| modelValue | 当前激活 tab 面板的 key(v-model)      | string                | -      |
+| value      | 当前激活 tab 面板的 key               | string,number         | -      |
 | card       | 页签样式是否为卡片样式                | bool                  | false  |
 | sample     | 页签样式是否为简洁样式                | bool                  | false  |
 | animated   | 是否使用动画切换 Tabs                 | bool                  | true   |

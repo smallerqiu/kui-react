@@ -31,7 +31,7 @@ When standard numerical values need to be obtained.
 | min        | Minimum value                                                               | number                              | -Infinity |
 | max        | Maximum value                                                               | number                              | Infinity  |
 | step       | Step value for each change, can be a decimal                                | number, string                      | 1         |
-| modelValue | The value of InputNumber(v-model)                                           | number                              | -         |
+| value      | Controlled InputNumber value                                                | number, string                      | -         |
 | formatter  | Specifies the format of the value displayed in the input box                | (value: string \| number) => string | -         |
 | parser     | Specifies how to convert back from formatter to number, used with formatter | (value: string) => string \| number | -         |
 | size       | Input box size                                                              | string                              | -         |

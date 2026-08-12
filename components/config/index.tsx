@@ -1,8 +1,8 @@
 import React from "react";
-import { ConfigContext } from "./config-context";
+import { ConfigContext, type Locale } from "./config-context";
 
 export interface ConfigProviderProps {
-  locale?: Record<string, any> | null;
+  locale?: Locale | null;
   children?: React.ReactNode;
 }
 

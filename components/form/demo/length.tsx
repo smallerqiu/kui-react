@@ -26,7 +26,7 @@ const initial = {
 };
 export default function App() {
   const [form, setForm] = useState({ ...initial });
-  const validatePass = (_: FormRule, value: any, cb: (e?: Error) => void) =>
+  const validatePass = (_: FormRule, value: unknown, cb: (e?: Error) => void) =>
     cb(value !== form.password ? new Error("The two passwords do not match!") : undefined);
   const rules = {
     number: [

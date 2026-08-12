@@ -4,7 +4,7 @@ import type { FormItemHandle } from "./form";
 import type { ColProps, FormRule } from "./types";
 
 export interface FormContextValue {
-  model: Record<string, any>;
+  model: Record<string, unknown>;
   rules?: Record<string, FormRule[]>;
   layout: DirectionType;
   name?: string;
@@ -14,8 +14,8 @@ export interface FormContextValue {
   disabled?: boolean;
   labelCol?: ColProps;
   wrapperCol?: ColProps;
-  getValue: (path: string) => any;
-  setValue: (path: string, value: any) => void;
+  getValue: (path: string) => unknown;
+  setValue: (path: string, value: unknown) => void;
   register: (item: FormItemHandle) => void;
   unregister: (prop: string) => void;
 }

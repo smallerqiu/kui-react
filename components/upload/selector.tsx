@@ -1,8 +1,15 @@
 import clsx from "clsx";
 import { Plus } from "kui-icons";
-import { useRef, useState, type DragEvent, type HTMLAttributes } from "react";
+import {
+  useRef,
+  useState,
+  type DragEvent,
+  type HTMLAttributes,
+  type InputHTMLAttributes,
+} from "react";
 import Icon, { type IconType } from "../icon";
 import type { UploadFile } from "./index";
+import type { Locale } from "../config/config-context";
 
 export interface SelectorProps extends Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> {
   disabled?: boolean;
@@ -14,7 +21,7 @@ export interface SelectorProps extends Omit<HTMLAttributes<HTMLDivElement>, "onS
   uploadText?: string;
   uploadSubText?: string;
   draggable?: boolean;
-  locale?: any;
+  locale?: Locale;
   fileList?: UploadFile[];
   uploadIcon?: IconType[];
   type?: "list" | "picture";
@@ -40,6 +47,9 @@ export default function Selector({
 }: SelectorProps) {
   const [dragOver, setDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const directoryProps: InputHTMLAttributes<HTMLInputElement> & {
+    webkitdirectory?: string;
+  } = directory ? { webkitdirectory: "" } : {};
   if (type === "picture" && limit && fileList.length >= limit) return null;
   const select = (files: FileList | null) => {
     if (files?.length) onSelect?.(files);
@@ -81,7 +91,7 @@ export default function Selector({
           accept={accept}
           disabled={disabled}
           multiple={multiple}
-          {...({ webkitdirectory: directory ? "" : undefined } as any)}
+          {...directoryProps}
           onChange={(event) => {
             select(event.target.files);
             event.target.value = "";

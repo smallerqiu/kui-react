@@ -20,7 +20,7 @@
 
 [从浮层内关闭](./demo/closeinside.tsx)
 
-- 使用 `v-model` 属性控制浮层显示。
+- 使用 `open` 和 `onOpenChange` 控制浮层显示。
 
 [位置](./demo/placement.tsx)
 

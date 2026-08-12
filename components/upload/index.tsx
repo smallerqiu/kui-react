@@ -24,7 +24,7 @@ export interface UploadFile {
   status?: UploadStatusType;
   percent?: number;
   preview?: string | null;
-  response?: any;
+  response?: unknown;
   errorText?: string;
   xhr?: XMLHttpRequest;
 }
@@ -40,7 +40,7 @@ export interface UploadProps extends Omit<HTMLAttributes<HTMLDivElement>, "onCha
   name?: string;
   action: string;
   type?: "list" | "picture";
-  data?: Record<string, any>;
+  data?: Record<string, string | number | boolean | Blob>;
   disabled?: boolean;
   directory?: boolean;
   multiple?: boolean;
@@ -139,7 +139,9 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
     const file = transformFile ? await transformFile(original) : original;
     const body = new FormData();
     body.append(name, file);
-    Object.entries(data).forEach(([key, value]) => body.append(key, value));
+    Object.entries(data).forEach(([key, value]) =>
+      body.append(key, value instanceof Blob ? value : String(value))
+    );
     const xhr = new XMLHttpRequest();
     item.xhr = xhr;
     xhr.open(method, action);

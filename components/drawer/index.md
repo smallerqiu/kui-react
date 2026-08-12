@@ -12,7 +12,7 @@
 
 [基本用法](./demo/basic.tsx)
 
-- 通过 `v-model` 双向绑定 `Drawer` 是否展示 , title 为null或false时不显示标题
+- 通过 `open` 和 `onOpenChange` 控制 `Drawer` 是否展示，`title` 为 null 或 false 时不显示标题
 
 [自定义](./demo/custom.tsx)
 
@@ -30,7 +30,7 @@
 
 | 属性          | 说明                                                               | 类型                  | 默认值              |
 | ------------- | ------------------------------------------------------------------ | --------------------- | ------------------- |
-| modelValue    | 对话框是否显示，可使用 v-model 双向绑定数据。                      | bool                  | false               |
+| open          | 抽屉是否显示                                                     | bool                  | false               |
 | escKey        | 是否支持按 Esc 关闭                                                | bool                  | true                |
 | maskClosable  | 是否点击遮罩关闭弹窗, 为否时 Esc 键将失效                          | bool                  | true                |
 | title         | 抽屉标题,为null或false时不显示标题                                 | string                | -                   |

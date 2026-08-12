@@ -3,10 +3,10 @@ import { Space, Select } from "react-kui";
 import { fruits } from "./data";
 const options = fruits.map((value) => ({ label: value, value }));
 export default function App() {
-  const [v1, setV1] = useState<any>(""),
-    [v2, setV2] = useState<any[]>([]),
-    [v3, setV3] = useState<any>(""),
-    [v4, setV4] = useState<any[]>([]),
+  const [v1, setV1] = useState<string | number>(""),
+    [v2, setV2] = useState<(string | number)[]>([]),
+    [v3, setV3] = useState<string | number>(""),
+    [v4, setV4] = useState<(string | number)[]>([]),
     [remote, setRemote] = useState<typeof options>([]),
     [loading, setLoading] = useState(false);
   const search = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,7 +22,7 @@ export default function App() {
       <span>Filtering:</span>
       <Select
         value={v1}
-        onChange={setV1}
+        onChange={(next) => !Array.isArray(next) && next !== undefined && setV1(next)}
         block
         placeholder="Filtering"
         filterable
@@ -32,7 +32,7 @@ export default function App() {
       <span>Multiple Filtering:</span>
       <Select
         value={v2}
-        onChange={(v) => setV2(v as any[])}
+        onChange={(next) => Array.isArray(next) && setV2(next)}
         multiple
         maxTagCount={3}
         block
@@ -44,7 +44,7 @@ export default function App() {
       <span>Search:</span>
       <Select
         value={v3}
-        onChange={setV3}
+        onChange={(next) => !Array.isArray(next) && next !== undefined && setV3(next)}
         onSearch={search}
         block
         loading={loading}
@@ -55,7 +55,7 @@ export default function App() {
       <span>Multiple Search:</span>
       <Select
         value={v4}
-        onChange={(v) => setV4(v as any[])}
+        onChange={(next) => Array.isArray(next) && setV4(next)}
         multiple
         block
         maxTagCount={3}

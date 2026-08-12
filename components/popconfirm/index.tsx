@@ -138,16 +138,24 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
 
   const childList = getChildren(children);
   const firstChild = childList.length === 1 ? childList[0] : null;
+  const setSelectionRef = (node: HTMLElement | null) => {
+    refSelection.current = node;
+  };
 
   let triggerNode: React.ReactNode;
-  if (firstChild && React.isValidElement(firstChild)) {
-    triggerNode = React.cloneElement(firstChild as React.ReactElement<any>, {
-      ref: refSelection,
+  if (
+    firstChild &&
+    React.isValidElement<React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement> }>(
+      firstChild
+    )
+  ) {
+    triggerNode = React.cloneElement(firstChild, {
+      ref: setSelectionRef,
       onClick: showPopconfirm,
     });
   } else {
     triggerNode = (
-      <span ref={refSelection as any} onClick={showPopconfirm}>
+      <span ref={setSelectionRef} onClick={showPopconfirm}>
         {children}
       </span>
     );

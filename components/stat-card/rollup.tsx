@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState, type HTMLAttributes } from "react";
 
 export interface RollUpProps extends HTMLAttributes<HTMLDivElement> {
   value?: number;
-  modelValue?: number;
   duration?: number;
   precision?: number;
 }
@@ -12,13 +11,12 @@ const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 export default function RollUp({
   value,
-  modelValue,
   duration = 1.2,
   precision = 0,
   className,
   ...rest
 }: RollUpProps) {
-  const current = value ?? modelValue ?? 0;
+  const current = value ?? 0;
   const format = useCallback((number: number) =>
     new Intl.NumberFormat("en-US", {
       minimumFractionDigits: precision,

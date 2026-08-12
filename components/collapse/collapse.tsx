@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import React, { useState } from "react";
 import { getChildren } from "../utils/react-node";
+import type { CollapsePanelProps } from "./collapse-panel";
 
 export interface CollapseProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
   openKeys?: (string | number)[];
@@ -45,12 +46,12 @@ const Collapse: React.FC<CollapseProps> = ({
   return (
     <div className={classes} {...rest}>
       {childList.map((child, index) => {
-        if (!React.isValidElement(child)) return child;
+        if (!React.isValidElement<CollapsePanelProps>(child)) return child;
 
         const key = child.key ?? index;
         const isActive = activeKeys.includes(key as string | number);
 
-        return React.cloneElement(child as React.ReactElement<any>, {
+        return React.cloneElement(child, {
           panelKey: key,
           active: isActive,
           onExpand: handleExpand,

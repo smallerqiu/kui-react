@@ -16,7 +16,7 @@ export default function App() {
       Disabled item
       <Select
         value={v1}
-        onChange={(value) => !Array.isArray(value) && setV1(value)}
+        onChange={(value) => !Array.isArray(value) && value !== undefined && setV1(value)}
         block
         options={data}
       />
@@ -24,7 +24,7 @@ export default function App() {
       Clearable = false
       <Select
         value={v1}
-        onChange={(value) => !Array.isArray(value) && setV1(value)}
+        onChange={(value) => !Array.isArray(value) && value !== undefined && setV1(value)}
         block
         clearable={false}
         options={data}

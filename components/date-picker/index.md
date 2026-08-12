@@ -10,7 +10,7 @@
 
 [基本用法](./demo/basic.tsx)
 
-- 选择或者手动输入日期,通过 `v-model` 进行数据双向绑定
+- 选择或手动输入日期，通过 `value` 和 `onChange` 控制日期值
 
 [输出类型](./demo/value-type.tsx)
 
@@ -48,7 +48,7 @@
 
 | 属性         | 说明                                                                                                               | 类型                                                        | 默认值     |
 | ------------ | ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- | ---------- |
-| modelValue   | 默认时间值                                                                                                         | any                                                         | -          |
+| value        | 受控的日期或时间值                                                                                                 | DatePickerInput, DatePickerInput[]                           | -          |
 | startDate    | 开始时间 (取值)                                                                                                    | any                                                         | -          |
 | endDate      | 结束时间 (取值)                                                                                                    | any                                                         | -          |
 | mode         | 使用 `mode` 属性，可以自定义日期显示类型，提供 `year`,`month`,`date`,`time`,`dateTime`,`dateRange`,`dateTimeRange` | string                                                      | date       |

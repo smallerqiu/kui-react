@@ -74,7 +74,7 @@ const Page: React.FC<PageProps> = ({
     if (!disabled && currentPage < pageCount) toPage(currentPage + 1);
   };
 
-  const changeSize = (value: any) => {
+  const changeSize = (value: string | number) => {
     const newPageSize = Number(value);
     setCurrentPageSize(newPageSize);
     const newCount = calcPageCount(total, newPageSize);
@@ -225,7 +225,9 @@ const Page: React.FC<PageProps> = ({
             clearable={false}
             theme={theme}
             disabled={disabled}
-            onChange={changeSize}
+            onChange={(value) => {
+              if (typeof value === "string" || typeof value === "number") changeSize(value);
+            }}
             options={sizeOptions}
           />
         </div>

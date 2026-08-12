@@ -11,7 +11,7 @@ Modal dialog box.
 
 [Basic Usage](./demo/basic.tsx)
 
-- Use `v-model` for two-way data binding.
+- Use `open` and `onOpenChange` to control visibility.
 
 [Custom](./demo/custom.tsx)
 
@@ -33,7 +33,7 @@ Modal dialog box.
 
 | Property     | Description                                                                 | Type                  | Default |
 | ------------ | --------------------------------------------------------------------------- | --------------------- | ------- |
-| modelValue   | Whether the dialog is displayed, can use v-model for two-way binding.       | bool                  | false   |
+| open         | Whether the dialog is displayed                                             | bool                  | false   |
 | title        | Dialog title                                                                | string                | -       |
 | width        | Dialog width                                                                | number, string        | 520     |
 | okText       | OK button text                                                              | string                | OK      |

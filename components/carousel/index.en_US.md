@@ -12,7 +12,7 @@ A set of rotating/carousel areas.
 
 [Basic Usage](./demo/basic.tsx)
 
-- The simplest usage. You can specify the initial value via `value (v-model)`.
+- The simplest usage. You can specify the initial value with `defaultValue`.
 
 [Vertical](./demo/vertical.tsx)
 
@@ -26,7 +26,7 @@ A set of rotating/carousel areas.
 
 | Property   | Description                                                                    | Type    | Default |
 | ---------- | ------------------------------------------------------------------------------ | ------- | ------- |
-| modelValue | The index of the slide, starting from 0. Can use `v-model` for two-way binding | number  | 0       |
+| value      | Controlled slide index, starting from 0                                      | number  | -       |
 | loop       | Whether to enable loop                                                         | bool    | true    |
 | vertical   | Whether to display in vertical mode                                            | bool    | false   |
 | autoplay   | Whether to auto-switch                                                         | bool    | false   |

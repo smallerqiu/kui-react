@@ -6,7 +6,7 @@ import type { ChangeEvent } from "./types";
 
 export interface RadioProps extends Omit<React.HTMLAttributes<HTMLLabelElement>, "onChange"> {
   checked?: boolean;
-  value?: any;
+  value?: string | number;
   label?: string;
   theme?: ThemeType;
   size?: SizeType;

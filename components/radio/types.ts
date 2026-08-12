@@ -1,5 +1,5 @@
 export interface ChangeEvent {
-  value: string | number;
+  value: string | number | undefined;
   label: string;
   checked: boolean;
 }

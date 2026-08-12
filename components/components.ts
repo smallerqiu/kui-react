@@ -212,5 +212,7 @@ export type {
   SizeType,
   SpinModeType,
   ThemeType,
+  TriggerType,
   UploadStatusType,
+  ValueType,
 } from "./const/types";

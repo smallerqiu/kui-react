@@ -11,7 +11,7 @@ Checkbox for multiple selections.
 
 [Single Selection](./demo/basic.tsx)
 
-- When used alone, a `v-model` value of `true` means checked, and `false` means unchecked.
+- When used alone, control the checked state with `checked` and `onChange`.
 
 [Multiple Selection](./demo/group.tsx)
 
@@ -33,7 +33,7 @@ Checkbox for multiple selections.
 
 | Property      | Description                                                   | Type                  | Default |
 | ------------- | ------------------------------------------------------------- | --------------------- | ------- |
-| checked       | Whether it is selected. Can use `v-model` for two-way binding | bool                  | false   |
+| checked       | Controlled checked state                                     | bool                  | false   |
 | label         | The text to display                                           | string 、 number      | -       |
 | value         | The value represented when used in combination                | String、number        | -       |
 | disabled      | Whether the current item is disabled                          | bool                  | false   |
@@ -46,7 +46,7 @@ Checkbox for multiple selections.
 
 | Property   | Description                                                                            | Type             | Default    |
 | ---------- | -------------------------------------------------------------------------------------- | ---------------- | ---------- |
-| modelValue | Used to set the currently selected value. Can use `v-model` for two-way binding        | any[]            | -          |
+| value      | Controlled selected values                                                              | any[]            | -          |
 | disabled   | Whether the component is disabled                                                      | bool             | false      |
 | onChange   | Triggered when the option state changes, returns the currently selected item and state | (any[])=>void    | -          |
 | direction  | Layout direction, optional values `horizontal`, `vertical`                             | string           | horizontal |

@@ -31,7 +31,6 @@ const pathFromValue = (options: CascaderOption[], value: CascaderValue) => {
 
 export default function Cascader({
   value,
-  modelValue,
   defaultValue = [],
   options: optionsProp,
   theme = "fill",
@@ -58,7 +57,7 @@ export default function Cascader({
   ...rest
 }: CascaderProps) {
   const options = optionsProp ?? EMPTY_OPTIONS;
-  const controlledValue = modelValue ?? value;
+  const controlledValue = value;
   const [innerValue, setInnerValue] = useState<CascaderValue>(defaultValue);
   const currentValue = controlledValue ?? innerValue;
   const selectedPath = useMemo(() => pathFromValue(options, currentValue), [options, currentValue]);

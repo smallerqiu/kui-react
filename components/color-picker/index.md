@@ -30,7 +30,6 @@
 | ------------- | -------------------------------------------------- | ------------------------- | ----------- |
 | value         | 受控颜色值                                         | `string`                  | -           |
 | defaultValue  | 非受控初始颜色值                                   | `string`                  | `#000000ff` |
-| modelValue    | 兼容迁移时使用的受控颜色值                         | `string`                  | -           |
 | mode          | 颜色展示类型，支持 `hex`、`rgb`、`hsl`             | `ColorMode`               | `hex`       |
 | presets       | 自定义颜色盘                                       | `string[]`                | 内置色盘    |
 | disabledAlpha | 是否禁用透明度                                     | `boolean`                 | `false`     |

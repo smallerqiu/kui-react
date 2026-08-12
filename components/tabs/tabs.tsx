@@ -213,9 +213,9 @@ const Tabs: React.FC<TabsProps> = ({
 
   // Inject activeKey into TabPanel children
   const panelNodes = childList.map((panel) => {
-    if (!React.isValidElement(panel)) return panel;
-    return React.cloneElement(panel as React.ReactElement<any>, {
-      tabKey: panel.key,
+    if (!React.isValidElement<{ tabKey?: React.Key; activeKey?: React.Key }>(panel)) return panel;
+    return React.cloneElement(panel, {
+      tabKey: panel.key ?? undefined,
       activeKey,
     });
   });

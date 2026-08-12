@@ -5,10 +5,11 @@ import Icon from "../icon";
 import Progress from "../progress";
 import Tooltip from "../tooltip";
 import type { UploadFile } from "./index";
+import type { Locale } from "../config/config-context";
 
 export interface UploadFileListProps {
   showUploadList?: boolean;
-  locale?: any;
+  locale?: Locale;
   type?: "list" | "picture";
   fileList?: UploadFile[];
   disabled?: boolean;

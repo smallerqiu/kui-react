@@ -11,7 +11,7 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 
 [Basic Usage](./demo/basic.tsx)
 
-- Use `v-model` for two-way data binding.
+- Use `value` and `onChange` to control the input value.
 
 [Theme](./demo/theme.tsx)
 
@@ -45,7 +45,7 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 
 | Property            | Description                                                         | Type                    | Default |
 | ------------------- | ------------------------------------------------------------------- | ----------------------- | ------- |
-| modelValue          | Bound value, can use `v-model` for two-way binding                  | string, number          | -       |
+| value               | Controlled input value                                              | string, number          | -       |
 | size                | Button size, optional values `small`, `large`, default not selected | string                  | -       |
 | icon                | Input box icon                                                      | string                  | -       |
 | suffix              | Extension suffix                                                    | string, Slot            | -       |

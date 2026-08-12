@@ -3,7 +3,7 @@ import type { ShapeType, SizeType, ThemeType } from "../const/types";
 import type { ChangeEvent } from "./types";
 
 export interface RadioGroupContextValue {
-  value?: any;
+  value?: string | number;
   disabled?: boolean;
   theme?: ThemeType;
   size?: SizeType;

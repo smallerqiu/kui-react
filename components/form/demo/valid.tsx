@@ -66,7 +66,8 @@ export default function App() {
     []
   );
   const custom =
-    (test: (v: any) => boolean, msg: string) => (_: FormRule, v: any, cb: (e?: Error) => void) =>
+    (test: (v: unknown) => boolean, msg: string) =>
+    (_: FormRule, v: unknown, cb: (e?: Error) => void) =>
       cb(test(v) ? undefined : new Error(msg));
   const rules = {
     email: [

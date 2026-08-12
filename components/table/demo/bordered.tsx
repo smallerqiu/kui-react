@@ -6,12 +6,14 @@ const data = [
   { key: "3", fullname: "Qiu", price: 28000, address: "Wu Han Nanhu No. 188" },
 ];
 const columns: Column<(typeof data)[number]>[] = [
-  { title: "Name", key: "fullname", render: (value) => <a>{value}</a> },
+  { title: "Name", key: "fullname", render: (value) => <a>{String(value ?? "")}</a> },
   {
     title: "Housing price",
     key: "price",
     render: (value) => (
-      <span style={{ color: value > 20000 ? "red" : undefined }}>￥{value}/㎡</span>
+      <span style={{ color: Number(value) > 20000 ? "red" : undefined }}>
+        ￥{Number(value)}/㎡
+      </span>
     ),
   },
   { title: "Address", key: "address" },

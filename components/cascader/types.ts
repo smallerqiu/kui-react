@@ -17,7 +17,6 @@ export interface CascaderProps extends Omit<
   "onChange" | "defaultValue"
 > {
   value?: CascaderValue;
-  modelValue?: CascaderValue;
   defaultValue?: CascaderValue;
   options?: CascaderOption[];
   theme?: ThemeType;

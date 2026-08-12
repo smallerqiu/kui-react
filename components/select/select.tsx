@@ -19,6 +19,13 @@ export interface SelectOption {
   value: string | number;
   disabled?: boolean;
 }
+export type SelectValue = string | number | (string | number)[] | undefined;
+type SelectPrimitive = string | number;
+
+const normalizeValue = (value: SelectValue): SelectPrimitive[] => {
+  if (Array.isArray(value)) return value;
+  return typeof value === "string" || typeof value === "number" ? [value] : [];
+};
 
 export interface SelectProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -29,8 +36,7 @@ export interface SelectProps extends Omit<
   placement?: DropPlacementsType;
   width?: number;
   maxTagCount?: number;
-  value?: string | number | any[];
-  modelValue?: string | number | any[]; // For backward compatibility
+  value?: SelectValue;
   clearable?: boolean;
   filterable?: boolean;
   block?: boolean;
@@ -47,7 +53,7 @@ export interface SelectProps extends Omit<
   shape?: ShapeType;
   arrowIcon?: IconType[];
   onSearch?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onChange?: (value: any) => void;
+  onChange?: (value: SelectValue) => void;
   onSelect?: (option: SelectOption & { selected: boolean }) => void;
   onClear?: () => void;
   onOpenChange?: (opened: boolean) => void;
@@ -61,7 +67,6 @@ const Select: React.FC<SelectProps> = ({
   width,
   maxTagCount,
   value,
-  modelValue,
   clearable = true,
   filterable = false,
   block = false,
@@ -90,15 +95,13 @@ const Select: React.FC<SelectProps> = ({
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
 
-  const initialValue = modelValue !== undefined ? modelValue : value;
-
   const [visible, setVisible] = useState(false);
   const [rendered, setRendered] = useState(false);
-  const [internalValue, setInternalValue] = useState<any[]>(
-    multiple ? ((initialValue || []) as any[]) : isEmpty(initialValue) ? [] : [initialValue]
+  const [internalValue, setInternalValue] = useState<(string | number)[]>(
+    multiple ? (Array.isArray(value) ? value : []) : normalizeValue(value)
   );
-  const controlled = value !== undefined || modelValue !== undefined;
-  const controlledValue = modelValue !== undefined ? modelValue : value;
+  const controlled = value !== undefined;
+  const controlledValue = value;
   const currentValue = useMemo(
     () =>
       controlled
@@ -106,9 +109,7 @@ const Select: React.FC<SelectProps> = ({
           ? Array.isArray(controlledValue)
             ? controlledValue
             : []
-          : isEmpty(controlledValue)
-            ? []
-            : [controlledValue]
+          : normalizeValue(controlledValue)
         : internalValue,
     [controlled, controlledValue, internalValue, multiple]
   );
@@ -230,11 +231,15 @@ const Select: React.FC<SelectProps> = ({
     const data: SelectOption[] = [];
     const childList = getChildren(children);
 
-    childList.forEach((child: any) => {
-      if (React.isValidElement(child)) {
-        const childProps = child.props as any;
+    childList.forEach((child) => {
+      if (React.isValidElement<React.ComponentProps<typeof Option>>(child)) {
+        const childProps = child.props;
         const { label, value: val, disabled: d } = childProps;
-        const resolvedLabel = label ?? childProps.children ?? val;
+        const candidateLabel = label ?? childProps.children ?? val;
+        const resolvedLabel =
+          typeof candidateLabel === "string" || typeof candidateLabel === "number"
+            ? candidateLabel
+            : val;
         data.push({
           value: val,
           disabled: d,
@@ -373,7 +378,7 @@ const Select: React.FC<SelectProps> = ({
       setActiveIndex(-1);
     }
 
-    if (value === undefined && modelValue === undefined) {
+    if (value === undefined) {
       setInternalValue(nextValue);
     }
 
@@ -429,7 +434,7 @@ const Select: React.FC<SelectProps> = ({
     const nextValue = [...currentValue];
     nextValue.splice(index, 1);
 
-    if (value === undefined && modelValue === undefined) {
+    if (value === undefined) {
       setInternalValue(nextValue);
     }
     onChange?.(multiple ? nextValue : nextValue[0]);
@@ -438,12 +443,12 @@ const Select: React.FC<SelectProps> = ({
 
   const onClear = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const nextValue: any[] = [];
-    if (value === undefined && modelValue === undefined) {
+    const nextValue: (string | number)[] = [];
+    if (value === undefined) {
       setInternalValue(nextValue);
     }
     onClearCallback?.();
-    onChange?.(multiple ? nextValue : (undefined as any));
+    onChange?.(multiple ? nextValue : undefined);
     clearQuery();
   };
 
@@ -520,7 +525,7 @@ const Select: React.FC<SelectProps> = ({
     if (e.key === "Backspace") {
       if (queryKey === "" && multiple && currentValue.length > 0) {
         const nextValue = currentValue.slice(0, -1);
-        if (value === undefined && modelValue === undefined) {
+        if (value === undefined) {
           setInternalValue(nextValue);
         }
         onChange?.(nextValue);
@@ -584,9 +589,11 @@ const Select: React.FC<SelectProps> = ({
     ref: queryInputRef,
     className: "k-select-search",
     autoComplete: "off",
-    onChange: (e: any) => e.stopPropagation(),
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+      e.stopPropagation();
+      searchInput(e);
+    },
     onKeyDown: queryKeydown,
-    onInput: searchInput as any,
     onBlur: () => {
       if (!visible) {
         setQueryInputVisible(false);

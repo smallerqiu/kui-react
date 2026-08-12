@@ -1,5 +1,13 @@
 import Big from "big.js";
-export const isEmpty = (value: any): boolean => {
+type BigSource = ConstructorParameters<typeof Big>[0];
+
+const isBigSource = (value: unknown): value is BigSource =>
+  typeof value === "string" ||
+  typeof value === "number" ||
+  typeof value === "bigint" ||
+  value instanceof Big;
+
+export const isEmpty = (value: unknown): boolean => {
   return (
     value == null || // null 或 undefined
     (typeof value === "string" && value.trim() === "") || // 空字符串
@@ -8,8 +16,8 @@ export const isEmpty = (value: any): boolean => {
   );
 };
 
-export const isRealNum = (val: any): boolean => {
-  if (val === null || val === "" || Array.isArray(val)) return false;
+export const isRealNum = (val: unknown): boolean => {
+  if (!isBigSource(val) || val === "") return false;
   try {
     new Big(val);
     return true;
@@ -18,13 +26,13 @@ export const isRealNum = (val: any): boolean => {
   }
 };
 
-export const normalize = (val: any, precision?: number) => {
+export const normalize = (val: unknown, precision?: number) => {
   if (!isRealNum(val)) return "";
-  const b = new Big(val);
+  const b = new Big(val as BigSource);
   return precision !== undefined ? b.toFixed(precision) : b.toFixed();
 };
 
-export const isValidBig = (val: any) => {
+export const isValidBig = (val: unknown) => {
   if (val === null || val === undefined || val === "") return false;
 
   const str = String(val).trim();
@@ -38,11 +46,12 @@ export const isValidBig = (val: any) => {
   }
 };
 
-const toBigSafe = (val: any) => {
+const toBigSafe = (val: unknown) => {
   try {
     if (val === null || val === undefined || val === "") {
       throw new Error();
     }
+    if (!isBigSource(val)) throw new Error();
     return new Big(val);
   } catch {
     // console.error(`Slider Error: [${name}] is an invalid number:`, val);

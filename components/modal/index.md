@@ -11,7 +11,7 @@
 
 [基本用法](./demo/basic.tsx)
 
-- 使用 `v-model` 进行数据双向绑定
+- 使用 `open` 和 `onOpenChange` 控制显示状态
 
 [自定义](./demo/custom.tsx)
 
@@ -33,7 +33,7 @@
 
 | 属性         | 说明                                          | 类型                  | 默认值 |
 | ------------ | --------------------------------------------- | --------------------- | ------ |
-| modelValue   | 对话框是否显示，可使用 v-model 双向绑定数据。 | bool                  | false  |
+| open         | 对话框是否显示                              | bool                  | false  |
 | title        | 对话框标题                                    | string                | -      |
 | width        | 对话框宽度                                    | number, string        | 520    |
 | okText       | 确定按钮文字                                  | string                | 确定   |

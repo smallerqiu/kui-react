@@ -10,7 +10,7 @@ When the user needs to input a date, they can click the standard input box to po
 
 [Basic Usage](./demo/basic.tsx)
 
-- Select or manually input a date. Use `v-model` for two-way data binding.
+- Select or manually enter a date. Use `value` and `onChange` to control the date value.
 
 [Output Type](./demo/value-type.tsx)
 
@@ -48,7 +48,7 @@ When the user needs to input a date, they can click the standard input box to po
 
 | Property     | Description                                                                                                                                            | Type                                                        | Default    |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- | ---------- |
-| modelValue   | Default time value                                                                                                                                     | any                                                         | -          |
+| value        | Controlled date or time value                                                                                                                         | DatePickerInput, DatePickerInput[]                           | -          |
 | startDate    | Start time (value)                                                                                                                                     | any                                                         | -          |
 | endDate      | End time (value)                                                                                                                                       | any                                                         | -          |
 | mode         | Use the `mode` property to customize the date display type. Options: `year`, `month`, `date`, `time`, `dateTime`, `dateRange`, `dateTimeRange`         | string                                                      | date       |

@@ -11,7 +11,7 @@
 
 [单选](./demo/basic.tsx)
 
-- 单独使用 `v-model` 的值 `true` 表示选中，为 `false` 表示未选中。
+- 单独使用时，通过 `checked` 和 `onChange` 控制选中状态。
 
 [多选](./demo/group.tsx)
 
@@ -33,7 +33,6 @@
 
 | 属性       | 说明                     | 类型                     | 默认值 |
 | ---------- | ------------------------ | ------------------------ | ------ |
-| modelValue | 是否选中状态(v-model)    | bool                     | false  |
 | checked    | 是否选中状态             | bool                     | false  |
 | label      | 文字提示                 | string 、 number         | -      |
 | value      | 组合使用时的值           | string 、 number         | -      |
@@ -44,7 +43,7 @@
 
 | 属性       | 说明                                                                       | 类型                              | 默认值     |
 | ---------- | -------------------------------------------------------------------------- | --------------------------------- | ---------- |
-| modelValue | 用于设置当前选中的值。可以使用 `v-model` 双向绑定数据                      | any                               | -          |
+| value      | 受控的当前选中值                                                        | string、number                     | -          |
 | size       | 按钮尺寸,可选值 `small`、`large`，默认不选                                 | string                            | -          |
 | direction  | 布局方向,可选值 `horizontal`、`vertical`                                   | string                            | horizontal |
 | shape      | `button` 的 shape 属性 ，显示圆角                                          | string                            | -          |

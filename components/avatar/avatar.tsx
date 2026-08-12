@@ -79,12 +79,10 @@ const Avatar: React.FC<AvatarProps> = ({
     rootStyles.fontSize = `${sizeVal / 2}px`;
   }
 
-  const hasIcon = childList.some((c: any) => {
+  const hasIcon = childList.some((c) => {
     if (React.isValidElement(c)) {
       const childType = c.type;
-      return (
-        childType === Icon || (typeof childType === "object" && (childType as any)?.name === "Icon")
-      );
+      return childType === Icon;
     }
     return false;
   });

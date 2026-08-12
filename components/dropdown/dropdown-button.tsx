@@ -34,7 +34,7 @@ const DropdownButton: React.FC<DropdownButtonProps> = ({
   className = "",
   ...rest
 }) => {
-  const refTrigger = useRef<any>(null);
+  const refTrigger = useRef<HTMLButtonElement>(null);
 
   const triggerNode = (
     <ButtonGroup className="k-dropdown-button" size={size} shape={shape}>

@@ -1,6 +1,7 @@
 import { LogoApple } from "kui-icons";
 import { useState } from "react";
 import { Space, RadioGroup } from "react-kui";
+import type { DirectionType, RadioType, ShapeType, SizeType, ThemeType } from "react-kui";
 const dates = [
     { label: "1 week", value: 0 },
     { label: "1 month", value: 1 },
@@ -33,11 +34,11 @@ const dates = [
     { label: "Outline", value: "outline" },
   ];
 export default function App() {
-  const [size, setSize] = useState<any>("medium"),
-    [shape, setShape] = useState<any>("round"),
-    [theme, setTheme] = useState<any>("default"),
-    [direction, setDirection] = useState<any>("horizontal"),
-    [type, setType] = useState<any>("button"),
+  const [size, setSize] = useState<SizeType>("medium"),
+    [shape, setShape] = useState<ShapeType>("round"),
+    [theme, setTheme] = useState<ThemeType>("default"),
+    [direction, setDirection] = useState<DirectionType>("horizontal"),
+    [type, setType] = useState<RadioType>("button"),
     [value, setValue] = useState(0);
   return (
     <Space vertical>

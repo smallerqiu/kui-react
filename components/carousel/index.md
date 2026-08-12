@@ -12,7 +12,7 @@
 
 [基本用法](./demo/basic.tsx)
 
-- 最简单的用法,可以通过 `value(v-model)` 指定初始值
+- 最简单的用法，可以通过 `defaultValue` 指定初始值
 
 [垂直](./demo/vertical.tsx)
 
@@ -26,7 +26,7 @@
 
 | 属性       | 说明                                                     | 类型    | 默认值  |
 | ---------- | -------------------------------------------------------- | ------- | ------- |
-| modelValue | 幻灯片的索引，从 0 开始，可以使用 `v-model` 双向绑定数据 | number  | 0       |
+| value      | 当前幻灯片索引，从 0 开始                              | number  | -       |
 | loop       | 是否开启循环                                             | bool    | true    |
 | vertical   | 是否垂直模式显示                                         | bool    | false   |
 | autoplay   | 是否自动切换                                             | bool    | false   |

@@ -10,6 +10,17 @@ const rAF = (callback: FrameRequestCallback) =>
     ? window.requestAnimationFrame(callback)
     : setTimeout(() => callback(Date.now()), 1000 / 60);
 
+interface OdometerCell {
+  container: HTMLSpanElement;
+  current?: string | null;
+  position: number;
+  new: boolean;
+  lastTimeAdd?: number;
+  nextToAdd?: HTMLSpanElement | null;
+  lastTimer?: ReturnType<typeof setTimeout>;
+  timerClean?: ReturnType<typeof setTimeout> | null;
+}
+
 export class Odometer implements CountUpPlugin {
   version = "1.0";
 
@@ -19,7 +30,7 @@ export class Odometer implements CountUpPlugin {
     lastDigitDelay: 0.25,
   };
 
-  private cell_digits: any = null;
+  private cell_digits: OdometerCell[] | null = null;
 
   constructor(options?: OdometerOptions) {
     this.options = {
@@ -32,13 +43,13 @@ export class Odometer implements CountUpPlugin {
   public render(elem: HTMLElement | HTMLInputElement, formatted: string): void {
     // render DOM here
     const options = this.options;
-    var createdNow = false;
+    let createdNow = false;
     if (!this.cell_digits) {
       createdNow = true;
       // avoid adding more than once
       if (!document.querySelector("style[odometer]")) {
         // add styles for odometer numbers
-        var style = document.createElement("style");
+        const style = document.createElement("style");
         style.setAttribute("odometer", "odometer");
         style.innerHTML =
           ".odometer-numbers{display:inline-flex;line-height:100%;overflow-y:hidden}.odometer-numbers>span{display:flex;flex-direction:column;justify-content:start;align-items:center;height:1em;will-change:transform;transform:translateY(0)}";
@@ -55,7 +66,7 @@ export class Odometer implements CountUpPlugin {
     const transitionDigit = `transform ${options.duration}s ease-out`;
 
     // appearing new cell_digits
-    for (var i = this.cell_digits.length; i < formatted.length; i++) {
+    for (let i = this.cell_digits.length; i < formatted.length; i++) {
       // create a container
       const container = document.createElement("span");
       container.style.transition = transitionDigit;
@@ -71,7 +82,7 @@ export class Odometer implements CountUpPlugin {
       });
     }
 
-    function appendDigit(cell: any, newDigit: any) {
+    function appendDigit(cell: OdometerCell, newDigit: HTMLSpanElement) {
       cell.position--;
       cell.container.appendChild(newDigit);
       cell.lastTimeAdd = +new Date();
@@ -85,7 +96,7 @@ export class Odometer implements CountUpPlugin {
       } else cell.container.style.transform = `translateY(${cell.position}em)`;
     }
 
-    function pushDigit(cell: any, newDigit: any) {
+    function pushDigit(cell: OdometerCell, newDigit: HTMLSpanElement) {
       const { lastDigitDelay = 0.25, duration = 0.8 } = options;
       // if there was another cell waiting to be added, we add it here
       if (cell.nextToAdd) {
@@ -95,17 +106,18 @@ export class Odometer implements CountUpPlugin {
       }
 
       const now = +new Date();
-      const delayTime = lastDigitDelay * 1000 - (now - cell.lastTimeAdd);
+      const lastTimeAdd = cell.lastTimeAdd ?? 0;
+      const delayTime = lastDigitDelay * 1000 - (now - lastTimeAdd);
 
       // if we are in slow animation, we just add digit
-      if (lastDigitDelay <= 0 || now - cell.lastTimeAdd >= delayTime * 1.05) {
+      if (lastDigitDelay <= 0 || now - lastTimeAdd >= delayTime * 1.05) {
         appendDigit(cell, newDigit);
         cell.nextToAdd = null;
       } else {
         // if not, we delay the push
         cell.nextToAdd = newDigit;
         cell.lastTimer = setTimeout(() => {
-          appendDigit(cell, cell.nextToAdd);
+          if (cell.nextToAdd) appendDigit(cell, cell.nextToAdd);
           cell.nextToAdd = null;
         }, duration * 1000);
       }
@@ -114,14 +126,14 @@ export class Odometer implements CountUpPlugin {
     // we add all sequence cell_digits that are new in formatted number
     // or remove cells no more exist (we put blank cells)
     const len = Math.max(formatted.length, this.cell_digits.length);
-    for (var i: any = 0; i < len; i++) {
+    for (let i = 0; i < len; i++) {
       // cell has changed
-      var ch = i < formatted.length ? formatted.charAt(i) : null;
+      const ch = i < formatted.length ? formatted.charAt(i) : null;
       const cell = this.cell_digits[i];
       if (cell.current != ch) {
         cell.current = ch;
 
-        var newDigit = document.createElement("span");
+        const newDigit = document.createElement("span");
         newDigit.innerHTML = ch === null ? blank : ch;
 
         // the last delay animation only if there is a minimum of 3 elements
@@ -131,7 +143,7 @@ export class Odometer implements CountUpPlugin {
           pushDigit(cell, newDigit);
         }
 
-        clearTimeout(cell.timerClean);
+        if (cell.timerClean) clearTimeout(cell.timerClean);
 
         // when animation end, we can remove all extra animated cells
         cell.timerClean = setTimeout(
@@ -142,8 +154,11 @@ export class Odometer implements CountUpPlugin {
             rAF(() => {
               cell.position = -1;
               // we remove all childs except last
-              while (cell.container.children.length > 1)
-                cell.container.removeChild(cell.container.firstChild);
+              while (cell.container.children.length > 1) {
+                const firstChild = cell.container.firstChild;
+                if (!firstChild) break;
+                cell.container.removeChild(firstChild);
+              }
               //insert blank space (forcing width to avoid weird behaviour in comma)
               const digitBlank = document.createElement("span");
               digitBlank.innerHTML = blank;

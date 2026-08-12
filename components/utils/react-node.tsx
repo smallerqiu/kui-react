@@ -1,6 +1,6 @@
 import React from "react";
 
-export function cloneNodes(vnode: React.ReactNode, props: Record<string, any>) {
+export function cloneNodes(vnode: React.ReactNode, props: React.HTMLAttributes<HTMLElement>) {
   if (React.Children.count(vnode) === 1) {
     return React.cloneElement(vnode as React.ReactElement, props);
   }

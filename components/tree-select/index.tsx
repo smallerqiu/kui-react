@@ -32,7 +32,6 @@ export interface TreeSelectProps extends Omit<
   width?: number;
   maxTagCount?: number;
   value?: TreeSelectValue;
-  modelValue?: TreeSelectValue;
   clearable?: boolean;
   filterable?: boolean;
   block?: boolean;
@@ -83,7 +82,6 @@ export default function TreeSelect({
   width,
   maxTagCount,
   value,
-  modelValue,
   clearable = true,
   filterable,
   block,
@@ -123,7 +121,7 @@ export default function TreeSelect({
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
   const data = useMemo(() => treeData ?? options ?? [], [options, treeData]);
-  const controlledValue = modelValue !== undefined ? modelValue : value;
+  const controlledValue = value;
   const [innerValue, setInnerValue] = useState(() => normalize(controlledValue, !!multiple));
   const currentValue =
     controlledValue !== undefined ? normalize(controlledValue, !!multiple) : innerValue;

@@ -36,7 +36,7 @@ When there are too many operation commands on the page, this component can be us
 
 | Property     | Description                                                                         | Type                | Default     |
 | ------------ | ----------------------------------------------------------------------------------- | ------------------- | ----------- |
-| show         | Whether the dropdown is displayed by default(v-model).                              | bool                | false       |
+| show         | Whether the dropdown is displayed by default.                                      | bool                | false       |
 | trigger      | Trigger method. Supports 3 methods: hover (default), click, custom                  | string              | hover       |
 | placement    | Menu popup position: bottomLeft bottomCenter bottomRight topLeft topCenter topRight | string              | bottom-left |
 | theme        | The component renders the theme, defaulting to 'fill'.                              | string              | fill        |

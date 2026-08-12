@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Button, DatePicker, Input, RadioGroup, Option, Select, Form, FormItem } from "react-kui";
+import type { DirectionType } from "react-kui";
 export default function App() {
-  const [layout, setLayout] = useState<any>("horizontal");
+  const [layout, setLayout] = useState<DirectionType>("horizontal");
   return (
     <Form layout={layout} labelCol={{ span: 5 }} wrapperCol={{ span: 6 }}>
       <FormItem label="Layout">

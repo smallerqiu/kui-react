@@ -12,8 +12,16 @@ import {
   type UploadChangeEvent,
 } from "react-kui";
 import { action, headers } from "./shared";
-const urlOf = ({ file }: UploadChangeEvent) =>
-  file.response?.url ?? file.url ?? file.filename ?? "";
+const urlOf = ({ file }: UploadChangeEvent) => {
+  const responseUrl =
+    typeof file.response === "object" &&
+    file.response !== null &&
+    "url" in file.response &&
+    typeof file.response.url === "string"
+      ? file.response.url
+      : undefined;
+  return responseUrl ?? file.url ?? file.filename ?? "";
+};
 export default function App() {
   const ref = useRef<FormExpose>(null);
   const [form, setForm] = useState({ avatar: "", file: "", files: "" }),

@@ -5,7 +5,6 @@ import { Odometer } from "./utils/odometer";
 
 export interface CountUpNumberProps extends HTMLAttributes<HTMLSpanElement> {
   value?: number;
-  modelValue?: number;
   separator?: string;
   duration?: number;
   precision?: number;
@@ -16,7 +15,6 @@ export interface CountUpNumberProps extends HTMLAttributes<HTMLSpanElement> {
 
 export default function CountUpNumber({
   value,
-  modelValue,
   separator = ",",
   duration = 1.2,
   precision = 0,
@@ -28,7 +26,7 @@ export default function CountUpNumber({
 }: CountUpNumberProps) {
   const elementRef = useRef<HTMLSpanElement>(null);
   const countRef = useRef<CountUp | null>(null);
-  const currentValue = value ?? modelValue ?? 0;
+  const currentValue = value ?? 0;
 
   useEffect(() => {
     if (!elementRef.current) return;

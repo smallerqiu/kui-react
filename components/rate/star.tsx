@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { Star as StarIcon } from "kui-icons";
 import React from "react";
-import Icon from "../icon";
+import Icon, { type IconType } from "../icon";
 import Tooltip from "../tooltip";
 
 export interface StarProps {
@@ -12,7 +12,7 @@ export interface StarProps {
   half?: boolean;
   allowHalf?: boolean;
   disabled?: boolean;
-  icon?: any;
+  icon?: IconType[] | ((index: number) => IconType[]);
   size?: number | string;
   index: number;
   symbolReverseFill?: boolean;

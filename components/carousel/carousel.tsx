@@ -23,7 +23,6 @@ export interface CarouselRef {
 export interface CarouselProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
   value?: number;
   defaultValue?: number;
-  modelValue?: number;
   loop?: boolean;
   autoplay?: boolean;
   delay?: number;
@@ -37,7 +36,6 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
   {
     value,
     defaultValue,
-    modelValue,
     loop = true,
     autoplay = false,
     delay = 3000,
@@ -53,7 +51,7 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
   ref
 ) {
   const items = Children.toArray(children);
-  const controlled = value ?? modelValue;
+  const controlled = value;
   const [innerIndex, setInnerIndex] = useState(controlled ?? defaultValue ?? 0);
   const [width, setWidth] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);

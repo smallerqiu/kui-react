@@ -9,7 +9,7 @@ export interface TriggerButtonProps extends ButtonProps {
   disabled?: boolean;
 }
 
-const TriggerButton = React.forwardRef<any, TriggerButtonProps>(
+const TriggerButton = React.forwardRef<HTMLButtonElement, TriggerButtonProps>(
   ({ icon, disabled = false, children, onMouseEnter, onMouseLeave, ...rest }, ref) => {
     const dropdown = useDropdownContext();
 

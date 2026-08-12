@@ -18,7 +18,6 @@ export interface SliderProps extends Omit<
 > {
   value?: number | number[];
   defaultValue?: number | number[];
-  modelValue?: number | number[];
   min?: number;
   max?: number;
   step?: number | null;
@@ -37,7 +36,6 @@ export interface SliderProps extends Omit<
 export default function Slider({
   value,
   defaultValue,
-  modelValue,
   min = 0,
   max = 100,
   step = 1,
@@ -56,7 +54,7 @@ export default function Slider({
 }: SliderProps) {
   const contextSize = useContext(SizeContext);
   const size = sizeProp ?? (contextSize === "small" ? "small" : undefined);
-  const controlled = value ?? modelValue;
+  const controlled = value;
   const initial = controlled ?? defaultValue ?? (range ? [min, min] : min);
   const [internal, setInternal] = useState<number | number[]>(initial);
   const current = controlled ?? internal;

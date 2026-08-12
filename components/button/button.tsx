@@ -8,7 +8,8 @@ import Icon, { type IconType } from "../icon";
 import { getChildren } from "../utils/react-node";
 import { ButtonGroupContext } from "./button-group-context";
 
-export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "type"> {
+export interface ButtonProps
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "type" | "onClick"> {
   htmlType?: "button" | "submit" | "reset";
   icon?: IconType[];
   block?: boolean;
@@ -21,9 +22,10 @@ export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonE
   shape?: ShapeType;
   href?: string;
   target?: string;
+  onClick?: React.MouseEventHandler<HTMLElement>;
 }
 
-const Button = React.forwardRef<any, ButtonProps>(
+const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
   (
     {
       htmlType = "button",
@@ -51,7 +53,7 @@ const Button = React.forwardRef<any, ButtonProps>(
     const computedSize = size || buttonGroup?.size || parentSize || "default";
     const computedShape = shape || buttonGroup?.shape;
 
-    const handleClick = (e: React.MouseEvent<any>) => {
+    const handleClick = (e: React.MouseEvent<HTMLElement>) => {
       if (loading || disabled) {
         e.preventDefault();
         return;
@@ -69,8 +71,7 @@ const Button = React.forwardRef<any, ButtonProps>(
         if (React.isValidElement(firstChild)) {
           const childType = firstChild.type;
           return (
-            childType === Icon ||
-            (typeof childType === "object" && (childType as any)?.name === "Icon")
+            childType === Icon
           );
         }
       }
@@ -86,7 +87,7 @@ const Button = React.forwardRef<any, ButtonProps>(
         "k-btn-block": block,
         "k-btn-loading": loading,
         "k-btn-icon-only": iconOnly(),
-        [`k-btn-${color}`]: color && colors.includes(color as any),
+        [`k-btn-${color}`]: color && colors.some((preset) => preset === color),
         "k-btn-lg": computedSize === "large",
         "k-btn-circle": computedShape === "circle",
         "k-btn-square": computedShape === "square",
@@ -115,17 +116,22 @@ const Button = React.forwardRef<any, ButtonProps>(
       className: classes,
       onClick: handleClick,
     };
+    const setElementRef = (node: HTMLButtonElement | HTMLAnchorElement | null) => {
+      if (typeof ref === "function") ref(node);
+      else if (ref) ref.current = node;
+    };
 
     if (type === "link" && href && !disabled) {
+      const anchorProps = commonProps as unknown as React.AnchorHTMLAttributes<HTMLAnchorElement>;
       return (
-        <a href={href} target={target} ref={ref} {...(commonProps as any)}>
+        <a href={href} target={target} ref={setElementRef} {...anchorProps}>
           {childNodes}
         </a>
       );
     }
 
     return (
-      <button type={htmlType} disabled={disabled || loading} ref={ref} {...commonProps}>
+      <button type={htmlType} disabled={disabled || loading} ref={setElementRef} {...commonProps}>
         {childNodes}
       </button>
     );

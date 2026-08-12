@@ -6,7 +6,8 @@ const data = [
   { key: "2", name: "Hu Cong", age: 28, address: "Wu Han Nanhu No. 198" },
   { key: "3", name: "Qiu", age: 28, address: "Wu Han Nanhu No. 188" },
 ];
-const header = (tip: string) => (column: Column) => (
+type Row = (typeof data)[number];
+const header = (tip: string) => (column: Column<Row>) => (
   <Flex size="small">
     {column.title}
     <Tooltip title={tip}>
@@ -14,7 +15,7 @@ const header = (tip: string) => (column: Column) => (
     </Tooltip>
   </Flex>
 );
-const columns: Column<(typeof data)[number]>[] = [
+const columns: Column<Row>[] = [
   { title: "Name", key: "name" },
   { title: "Age", key: "age", renderHeader: header("How old are you?") },
   { title: "Address", key: "address", renderHeader: header("Where are you from?") },

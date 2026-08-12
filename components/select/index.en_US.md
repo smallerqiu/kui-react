@@ -11,7 +11,7 @@ Dropdown selector.
 
 [Single Selection](./demo/basic.tsx)
 
-- Use `v-model` for two-way data binding.
+- Use `value` and `onChange` to control the selected value.
 
 [Multiple Selection](./demo/multiple.tsx)
 
@@ -19,7 +19,7 @@ Dropdown selector.
 
 [Disabled and Non-clearable](./demo/disabled.tsx)
 
-- Use `v-model` for two-way data binding.
+- For multiple selection, use an array `value` with `onChange`.
 
 [Filtering and Searching](./demo/filterable.tsx)
 
@@ -37,7 +37,7 @@ Dropdown selector.
 
 | Property     | Description                                                                       | Type                                       | Default       |
 | ------------ | --------------------------------------------------------------------------------- | ------------------------------------------ | ------------- |
-| modelValue   | Specifies the `value` of the selected item, can use `v-model` for two-way binding | string, number                             | -             |
+| value        | Controlled selected value                                                        | string, number                             | -             |
 | width        | Component width                                                                   | string, number                             | -             |
 | placeholder  | Default text of selector                                                          | string                                     | Please select |
 | disabled     | Whether current item is disabled                                                  | bool                                       | false         |

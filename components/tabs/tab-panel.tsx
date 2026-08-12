@@ -1,9 +1,10 @@
 import clsx from "clsx";
 import React from "react";
+import type { IconType } from "../icon";
 
 export interface TabPanelProps extends React.HTMLAttributes<HTMLDivElement> {
   title?: string;
-  icon?: any[];
+  icon?: IconType[];
   disabled?: boolean;
   closable?: boolean;
   /** injected by Tabs */

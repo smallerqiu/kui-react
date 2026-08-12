@@ -120,16 +120,24 @@ const Tooltip: React.FC<TooltipProps> = ({
     onTouchStart: mouseEnter,
     onTouchEnd: hide,
   };
+  const setSelectionRef = (node: HTMLElement | null) => {
+    refSelection.current = node;
+  };
 
   let triggerNode: React.ReactNode;
-  if (firstChild && React.isValidElement(firstChild)) {
-    triggerNode = React.cloneElement(firstChild as React.ReactElement<any>, {
-      ref: refSelection,
+  if (
+    firstChild &&
+    React.isValidElement<React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement> }>(
+      firstChild
+    )
+  ) {
+    triggerNode = React.cloneElement(firstChild, {
+      ref: setSelectionRef,
       ...triggerProps,
     });
   } else {
     triggerNode = (
-      <span ref={refSelection as any} {...triggerProps}>
+      <span ref={setSelectionRef} {...triggerProps}>
         {children}
       </span>
     );
@@ -138,13 +146,13 @@ const Tooltip: React.FC<TooltipProps> = ({
   const preCls = "tooltip";
 
   const arrowFill = isColor(color)
-    ? colors.includes(color as any)
+    ? colors.some((preset) => preset === color)
       ? `var(--kui-color-${color})`
       : color
     : "currentcolor";
 
   const bgColor = isColor(color)
-    ? colors.includes(color as any)
+    ? colors.some((preset) => preset === color)
       ? `var(--kui-color-${color})`
       : color
     : undefined;

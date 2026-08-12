@@ -22,7 +22,6 @@ import Presets from "./presets";
 export interface ColorPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
   value?: string;
   defaultValue?: string;
-  modelValue?: string;
   disabled?: boolean;
   disabledAlpha?: boolean;
   showText?: boolean;
@@ -40,7 +39,6 @@ export interface ColorPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "
 export default function ColorPicker({
   value,
   defaultValue,
-  modelValue,
   disabled = false,
   disabledAlpha = false,
   showText = false,
@@ -56,7 +54,7 @@ export default function ColorPicker({
   children,
   ...rest
 }: ColorPickerProps) {
-  const controlled = value ?? modelValue;
+  const controlled = value;
   const [innerColor, setInnerColor] = useState(defaultValue ?? controlled ?? "#000000ff");
   const [innerMode, setInnerMode] = useState<ColorMode>(modeProp ?? "hex");
   const mode = modeProp ?? innerMode;

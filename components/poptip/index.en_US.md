@@ -20,7 +20,7 @@ The difference from `Tooltip` is that users can operate on elements in the float
 
 [Close from Inside the Floating Layer](./demo/closeinside.tsx)
 
-- Use the `v-model` attribute to control the floating layer's visibility.
+- Use `open` and `onOpenChange` to control the floating layer's visibility.
 
 [Position](./demo/placement.tsx)
 

@@ -20,19 +20,20 @@ export interface SortState {
   key: string;
   order: null | "desc" | "asc";
 }
-export interface Column<T = any> {
+export interface Column<T = Record<string, unknown>> {
   key: string;
   title: ReactNode;
   width?: number;
   fixed?: "left" | "right";
   sorter?: boolean | ((state: SortState) => void);
-  render?: (value: any, record: T, rowIndex: number, column: Column<T>) => ReactNode;
-  renderHeader?: (column: Column<T>, index: number) => ReactNode;
+  render?(value: unknown, record: T, rowIndex: number, column: Column<T>): ReactNode;
+  renderHeader?(column: Column<T>, index: number): ReactNode;
   colSpan?: number | ((record: T, index: number) => number);
   rowSpan?: number | ((record: T, index: number) => number);
   children?: Column<T>[];
 }
-export interface TableProps<T = any> extends Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> {
+export interface TableProps<T = Record<string, unknown>>
+  extends Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> {
   data?: T[];
   columns?: Column<T>[];
   selectedKeys?: Array<string | number>;
@@ -65,7 +66,7 @@ const flatten = <T,>(columns: Column<T>[]): Column<T>[] =>
 const leafCount = <T,>(column: Column<T>): number =>
   column.children?.length ? column.children.reduce((sum, child) => sum + leafCount(child), 0) : 1;
 
-export default function Table<T = any>({
+export default function Table<T extends object = Record<string, unknown>>({
   data = [],
   columns = [],
   selectedKeys,
@@ -99,8 +100,13 @@ export default function Table<T = any>({
   const selected = controlledSelection ? new Set(selectedKeys) : innerSelected;
   const leaves = useMemo(() => flatten(columns), [columns]);
   const split = scroll.y != null;
-  const keyOf = (record: T) =>
-    typeof rowKey === "function" ? rowKey(record) : (record as any)[rowKey];
+  const valueOf = (record: T, key: string): unknown =>
+    key in record ? (record as Record<string, unknown>)[key] : undefined;
+  const keyOf = (record: T) => {
+    if (typeof rowKey === "function") return rowKey(record);
+    const key = valueOf(record, rowKey);
+    return typeof key === "string" || typeof key === "number" ? key : "";
+  };
   const isDisabled = (key: string | number) => disabledKeys.includes(key);
 
   const headerInfo = useMemo(() => {
@@ -164,10 +170,16 @@ export default function Table<T = any>({
       leaves.find((column) => column.key === sort.key)?.sorter === true
     ) {
       result.sort((a, b) => {
-        const first = (a as any)[sort.key],
-          second = (b as any)[sort.key];
+        const first = valueOf(a, sort.key),
+          second = valueOf(b, sort.key);
         if (first === second) return 0;
-        const comparison = first > second ? 1 : -1;
+        const comparison =
+          (typeof first === "number" && typeof second === "number") ||
+          (typeof first === "string" && typeof second === "string")
+            ? first > second
+              ? 1
+              : -1
+            : 0;
         return sort.order === "asc" ? comparison : -comparison;
       });
     }
@@ -345,7 +357,7 @@ export default function Table<T = any>({
           {leaves.map((column, colIndex) => {
             const cell = matrix[rowIndex]?.[colIndex];
             if (!cell?.show) return null;
-            const value = (record as any)[column.key];
+            const value = valueOf(record, column.key);
             return (
               <td
                 key={column.key}
@@ -354,7 +366,7 @@ export default function Table<T = any>({
                 className={fixedClass(column, colIndex)}
                 style={fixed[column.key]}
               >
-                {column.render?.(value, record, rowIndex, column) ?? value}
+                {column.render?.(value, record, rowIndex, column) ?? (value as ReactNode)}
               </td>
             );
           })}

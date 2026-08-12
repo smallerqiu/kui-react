@@ -42,11 +42,11 @@ The navigation menu is the soul of a website. Users rely on navigation to jump b
 
 | Property        | Description                                                       | Type                                              | Default  |
 | --------------- | ----------------------------------------------------------------- | ------------------------------------------------- | -------- |
-| modelValue      | Currently selected menu item (v-model)                            | string: []                                        | -        |
+| value           | Currently selected menu items                                    | string[]                                          | -        |
 | theme           | Theme color                                                       | [light, dark]                                     | light    |
 | items           | Menu data                                                         | MenuOptionsProps[]                                | -        |
 | openKeys        | Currently expanded SubMenu menu item key array                    | string[]                                          | -        |
-| selectedKeys    | Currently selected menu item, can use v-model binding             | string[]                                          | -        |
+| selectedKeys    | Currently selected menu items                                     | string[]                                          | -        |
 | mode            | Menu type, supports three modes: vertical, horizontal, and inline | string: vertical vertical-right horizontal inline | vertical |
 | onSelect        | Called when MenuItem is clicked                                   | (data: MenuSelectEvent) => void                   | -        |
 | onOpenChange    | Callback when SubMenu expands/collapses                           | (openKeys: string[])=>void                        | -        |

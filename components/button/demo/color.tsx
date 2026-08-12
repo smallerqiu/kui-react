@@ -24,7 +24,7 @@ export default function App() {
       {(["solid", "outline", "dashed"] as const).map((theme) => (
         <Flex size="small" wrap key={theme}>
           {colors.map((color) => (
-            <Button color={color as any} key={color} theme={theme}>
+            <Button color={color} key={color} theme={theme}>
               {theme}
             </Button>
           ))}

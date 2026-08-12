@@ -4,7 +4,6 @@ import CountUp from "./countup";
 
 export interface StatNumberProps extends Omit<HTMLAttributes<HTMLDivElement>, "prefix"> {
   value?: number;
-  modelValue?: number;
   separator?: string;
   duration?: number;
   precision?: number;
@@ -17,7 +16,6 @@ export interface StatNumberProps extends Omit<HTMLAttributes<HTMLDivElement>, "p
 
 export default function StatNumber({
   value,
-  modelValue,
   separator,
   duration = 1,
   precision = 0,
@@ -33,7 +31,7 @@ export default function StatNumber({
     <div {...rest} className={clsx("k-stat-number", className)}>
       {prefix != null && <span className="k-stat-number-prefix">{prefix}</span>}
       <CountUp
-        value={value ?? modelValue ?? 0}
+        value={value ?? 0}
         separator={separator}
         duration={duration}
         precision={precision}

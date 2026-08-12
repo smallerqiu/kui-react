@@ -18,9 +18,13 @@ export default function App() {
     count = useRef(4);
   const patch = (key: string, values: Partial<Row>) =>
     setData((rows) => rows.map((row) => (row.key === key ? { ...row, ...values } : row)));
-  const field = (key: keyof Row) => (value: any, record: Row) =>
+  const field = (key: keyof Row) => (value: unknown, record: Row) =>
     record.isEdit ? (
-      <Input value={value} onChange={(next) => patch(record.key, { [key]: next })} size="small" />
+      <Input
+        value={typeof value === "string" || typeof value === "number" ? value : ""}
+        onChange={(next) => patch(record.key, { [key]: next })}
+        size="small"
+      />
     ) : (
       String(value)
     );

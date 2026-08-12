@@ -12,7 +12,7 @@ A floating panel that slides in from the edge of the screen.
 
 [Basic Usage](./demo/basic.tsx)
 
-- Use `v-model` for two-way binding to control whether the `Drawer` is displayed. If `title` is null or false, the title is not shown.
+- Use `open` and `onOpenChange` to control whether the `Drawer` is displayed. If `title` is null or false, the title is not shown.
 
 [Custom](./demo/custom.tsx)
 
@@ -30,7 +30,7 @@ A floating panel that slides in from the edge of the screen.
 
 | Property     | Description                                                                                       | Type                  | Default             |
 | ------------ | ------------------------------------------------------------------------------------------------- | --------------------- | ------------------- |
-| modelValue   | Whether the dialog is displayed, can use v-model for two-way binding.                             | bool                  | false               |
+| open         | Whether the drawer is displayed                                                                   | bool                  | false               |
 | escKey       | Whether to support closing with Esc key                                                           | bool                  | true                |
 | maskClosable | Whether clicking the mask allows closing                                                          | bool                  | false               |
 | title        | Drawer title. When null or false, the title is not displayed                                      | string                | -                   |

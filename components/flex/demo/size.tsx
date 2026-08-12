@@ -16,7 +16,10 @@ export default function App() {
   const [customSize, setCustomSize] = useState(8);
   return (
     <Flex vertical size="medium">
-      <RadioGroup value={size} onChange={(value) => setSize(value as SizeType)}>
+      <RadioGroup
+        value={Array.isArray(size) ? "small" : size}
+        onChange={(value) => setSize(value as SizeType)}
+      >
         {(["small", "medium", "large"] as SizeType[]).map((item) => (
           <Radio key={item} value={item} label={item[0].toUpperCase() + item.slice(1)} />
         ))}

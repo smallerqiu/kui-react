@@ -11,7 +11,7 @@
 
 [基本用法](./demo/basic.tsx)
 
-- 使用 `v-model` 进行数据双向绑定
+- 使用 `value` 和 `onChange` 控制输入值
 
 [主题](./demo/theme.tsx)
 
@@ -45,7 +45,7 @@
 
 | 属性                | 说明                                       | 类型                    | 默认值 |
 | ------------------- | ------------------------------------------ | ----------------------- | ------ |
-| modelValue          | 绑定的值，可使用 `v-model` 双向绑定        | string 、 number        | -      |
+| value               | 受控输入值                                 | string 、 number        | -      |
 | size                | 按钮尺寸,可选值 `small`、`large`，默认不选 | string                  | -      |
 | icon                | 输入框图标                                 | string                  | -      |
 | suffix              | 扩展后缀                                   | string,Slot             | -      |

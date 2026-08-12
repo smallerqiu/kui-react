@@ -3,7 +3,7 @@ import type { SizeType, ThemeType } from "../const/types";
 import type { ChangeEvent } from "./checkbox";
 
 export interface CheckboxGroupContextValue {
-  value?: any[];
+  value?: unknown[];
   disabled?: boolean;
   theme?: ThemeType;
   size?: SizeType;

@@ -6,7 +6,7 @@ export interface ColProps {
 export interface FormRule {
   required?: boolean;
   message?: string;
-  validator?: (rule: FormRule, value: any, callback: (error?: Error) => void) => void;
+  validator?: (rule: FormRule, value: unknown, callback: (error?: Error) => void) => void;
   pattern?: RegExp;
   type?: "mobile" | "mail" | "number";
   min?: number;

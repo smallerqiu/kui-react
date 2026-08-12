@@ -6,8 +6,8 @@ export interface TextAreaProps extends Omit<
   React.TextareaHTMLAttributes<HTMLTextAreaElement>,
   "onChange"
 > {
-  value?: any;
-  defaultValue?: any;
+  value?: string | number | readonly string[];
+  defaultValue?: string | number | readonly string[];
   theme?: ThemeType;
   shape?: ShapeType;
   size?: SizeType;
@@ -37,7 +37,6 @@ const TextArea: React.FC<TextAreaProps> = ({
       setInnerValue(v);
     }
     onChange?.(v);
-    onInput?.(e as any);
   };
 
   const classes = clsx(
@@ -60,6 +59,7 @@ const TextArea: React.FC<TextAreaProps> = ({
       disabled={disabled}
       value={currentValue ?? ""}
       onChange={handleChange}
+      onInput={onInput}
       {...rest}
     />
   );
