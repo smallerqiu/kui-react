@@ -2,6 +2,9 @@ import { Upload as UploadIcon } from "kui-icons";
 import { useRef, useState } from "react";
 import { Button, Space, Upload, type UploadFile, type UploadRef } from "react-kui";
 import { action, headers } from "./shared";
+
+const requestData = { type: "image", time: Date.now() };
+
 export default function App() {
   const ref = useRef<UploadRef>(null),
     [disabled, setDisabled] = useState(true);
@@ -12,7 +15,7 @@ export default function App() {
         action={action}
         name="file"
         headers={headers}
-        data={{ type: "image", time: Date.now() }}
+        data={requestData}
         autoTrigger={false}
         onSelectFiles={(files: UploadFile[]) => {
           console.log(files);

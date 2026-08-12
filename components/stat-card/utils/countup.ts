@@ -119,7 +119,10 @@ export class CountUp {
     this.startVal = this.validateValue(this.options.startVal || 0);
     this.frameVal = this.startVal;
     this.endVal = this.validateValue(endVal as number);
-    this.options.decimalPlaces = Math.max(0 || (this.options.decimalPlaces as number));
+    this.options.decimalPlaces = Math.max(
+      0,
+      typeof this.options.decimalPlaces === "number" ? this.options.decimalPlaces : 0
+    );
     this.resetDuration();
     this.options.separator = String(this.options.separator);
     this.useEasing = this.options.useEasing || false;
@@ -170,7 +173,7 @@ export class CountUp {
       },
       { threshold: 0 }
     );
-    this.el && this.observer.observe(this.el);
+    if (this.el) this.observer.observe(this.el);
   }
 
   /** Disconnect the IntersectionObserver and stop watching this element. */

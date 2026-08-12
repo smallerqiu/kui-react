@@ -3,9 +3,9 @@ import { Space, DatePicker, type DatePickerInput } from "react-kui";
 export default function App() {
   const [v1, s1] = useState<DatePickerInput>("2025-11-30"),
     [v2, s2] = useState<DatePickerInput>("2025/11/30"),
-    [v3, s3] = useState<DatePickerInput>(new Date()),
-    [v4, s4] = useState<DatePickerInput>(Date.now()),
-    [v5, s5] = useState<DatePickerInput>(Math.floor(Date.now() / 1000));
+    [v3, s3] = useState<DatePickerInput>(new Date("2025-11-30")),
+    [v4, s4] = useState<DatePickerInput>(1764460800000),
+    [v5, s5] = useState<DatePickerInput>(1764460800);
   const row = (
     label: string,
     value: DatePickerInput,

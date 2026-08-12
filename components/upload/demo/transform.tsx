@@ -13,9 +13,11 @@ const transformFile = (file: File) =>
       ctx?.drawImage(img, (img.width - 200) / 2, (img.height - 300) / 2, 200, 300);
       canvas.toBlob((blob) => {
         URL.revokeObjectURL(url);
-        blob
-          ? resolve(new File([blob], file.name, { type: "image/png" }))
-          : reject(new Error("Image conversion failed"));
+        if (blob) {
+          resolve(new File([blob], file.name, { type: "image/png" }));
+        } else {
+          reject(new Error("Image conversion failed"));
+        }
       }, "image/png");
     };
     img.onerror = () => {

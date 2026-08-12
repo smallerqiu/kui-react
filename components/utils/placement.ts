@@ -28,29 +28,19 @@ export function setPlacement({
   offset = 3,
 }: PlacementOptions) {
   if (!refPopper) return;
-  // The value assigned to 'rect' is not used in subsequent statements.
   // 模式检测 & 基准矩形
-  let rect = null;
   // 是否是鼠标右键/坐标模式
   const isMouseMode = position && typeof position.x === "number" && typeof position.y === "number";
-
-  if (isMouseMode) {
-    // 鼠标模式：0x0 虚拟矩形
-    rect = {
-      width: 0,
-      height: 0,
-      top: position.y,
-      bottom: position.y,
-      left: position.x,
-      right: position.x,
-    };
-  } else if (refSelection) {
-    // 元素模式：真实 DOM 矩形
-    // console.log(refSelection);
-    rect = refSelection.current?.getBoundingClientRect?.();
-  } else {
-    return;
-  }
+  const rect = isMouseMode
+    ? {
+        width: 0,
+        height: 0,
+        top: position.y,
+        bottom: position.y,
+        left: position.x,
+        right: position.x,
+      }
+    : refSelection.current?.getBoundingClientRect();
 
   const pickerH = refPopper.current?.offsetHeight || 0;
   const pickerW = refPopper.current?.offsetWidth || 0;
@@ -115,10 +105,10 @@ export function setPlacement({
   const finalPlacement = align ? `${side}-${align}` : side;
 
   // 坐标计算
-  let calcTop = 0;
-  let calcLeft = 0;
-  let originX = "center";
-  let originY = "center";
+  let calcTop: number;
+  let calcLeft: number;
+  let originX: string;
+  let originY: string;
 
   // Y 轴
   if (side === "top") {

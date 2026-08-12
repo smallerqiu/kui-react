@@ -2,9 +2,12 @@ import clsx from "clsx";
 import { useContext, type HTMLAttributes } from "react";
 import { CarouselContext } from "./carousel-context";
 
-export interface CarouselItemProps extends HTMLAttributes<HTMLDivElement> {}
-
-export default function CarouselItem({ className, style, children, ...rest }: CarouselItemProps) {
+export default function CarouselItem({
+  className,
+  style,
+  children,
+  ...rest
+}: HTMLAttributes<HTMLDivElement>) {
   const { width, height, vertical } = useContext(CarouselContext);
   return (
     <div

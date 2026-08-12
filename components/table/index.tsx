@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { ChevronDown, ChevronUp } from "kui-icons";
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -32,8 +33,10 @@ export interface Column<T = Record<string, unknown>> {
   rowSpan?: number | ((record: T, index: number) => number);
   children?: Column<T>[];
 }
-export interface TableProps<T = Record<string, unknown>>
-  extends Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> {
+export interface TableProps<T = Record<string, unknown>> extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onSelect"
+> {
   data?: T[];
   columns?: Column<T>[];
   selectedKeys?: Array<string | number>;
@@ -100,8 +103,11 @@ export default function Table<T extends object = Record<string, unknown>>({
   const selected = controlledSelection ? new Set(selectedKeys) : innerSelected;
   const leaves = useMemo(() => flatten(columns), [columns]);
   const split = scroll.y != null;
-  const valueOf = (record: T, key: string): unknown =>
-    key in record ? (record as Record<string, unknown>)[key] : undefined;
+  const valueOf = useCallback(
+    <T extends object>(record: T, key: string): unknown =>
+      key in record ? (record as Record<string, unknown>)[key] : undefined,
+    []
+  );
   const keyOf = (record: T) => {
     if (typeof rowKey === "function") return rowKey(record);
     const key = valueOf(record, rowKey);
@@ -184,7 +190,7 @@ export default function Table<T extends object = Record<string, unknown>>({
       });
     }
     return result;
-  }, [data, leaves, sort]);
+  }, [data, leaves, sort, valueOf]);
   const matrix = useMemo(() => {
     const result: MatrixCell[][] = processed.map(() =>
       leaves.map(() => ({ rowSpan: 1, colSpan: 1, show: true }))
@@ -226,7 +232,13 @@ export default function Table<T extends object = Record<string, unknown>>({
     const next = new Set(selected);
     data.forEach((record) => {
       const key = keyOf(record);
-      if (!isDisabled(key)) checked ? next.add(key) : next.delete(key);
+      if (!isDisabled(key)) {
+        if (checked) {
+          next.add(key);
+        } else {
+          next.delete(key);
+        }
+      }
     });
     onSelectAll?.(checked, commitSelection(next));
   };
@@ -234,7 +246,11 @@ export default function Table<T extends object = Record<string, unknown>>({
     const key = keyOf(record);
     if (isDisabled(key)) return;
     const next = new Set(selected);
-    event.checked ? next.add(key) : next.delete(key);
+    if (event.checked) {
+      next.add(key);
+    } else {
+      next.delete(key);
+    }
     onSelect?.(record, event.checked, commitSelection(next));
   };
   const changeSort = (column: Column<T>) => {

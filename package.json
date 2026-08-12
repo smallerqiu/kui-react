@@ -4,6 +4,7 @@
   "description": "A high quality UI components Library with React",
   "main": "dist/k-ui.js",
   "style": "dist/k-ui.css",
+  "type": "module",
   "scripts": {
     "dev": "vite --config vite.config.docs.ts",
     "start": "npm run dev",
