@@ -10,10 +10,11 @@ import React, {
   type ReactNode,
 } from "react";
 import Teleport from "../base/teleport";
-import Transition, { getTransitionProp } from "../base/transition";
+import Transition from "../base/transition";
 import { useDropdownContext } from "../dropdown/dropdown-context";
 import type { IconType } from "../icon";
 import Icon from "../icon";
+import { getTransitionProp } from "../utils/transition";
 import { setPlacement } from "../utils/placement";
 import { SubMenuContext, useMenuContext, useSubMenuContext } from "./menu-context";
 

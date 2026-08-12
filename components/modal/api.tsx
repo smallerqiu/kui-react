@@ -2,10 +2,8 @@ import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { recordMousePoint } from "../config/context";
 import type { IconType } from "../icon";
-import Modal from "./modal";
 import Toast, { type ToastType } from "./toast";
 
-export type { ModalProps } from "./modal";
 export interface ModalApiProps {
   title?: React.ReactNode;
   okText?: string;
@@ -17,6 +15,7 @@ export interface ModalApiProps {
   onCancel?: () => void;
   type?: ToastType;
 }
+
 export interface ModalInstance {
   destroy: () => void;
 }
@@ -52,6 +51,7 @@ export interface ModalApi {
   error: (props: ModalApiProps) => ModalInstance;
   destroyAll: () => void;
 }
+
 export const modal: ModalApi = {
   show: showModal,
   info: (props) => showModal({ type: "info", ...props }),
@@ -61,4 +61,3 @@ export const modal: ModalApi = {
   confirm: (props) => showModal({ type: "confirm", ...props }),
   destroyAll: () => [...instances].forEach((instance) => instance.destroy()),
 };
-export default Modal;
