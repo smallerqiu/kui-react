@@ -30,11 +30,13 @@ export interface MenuProps {
   theme?: string;
   mode?: DirectionType;
   value?: string[];
+  defaultValue?: string[];
   selectedKeys?: string[];
   accordion?: boolean;
   items?: MenuOptionsProps[];
   inlineCollapsed?: boolean;
   openKeys?: string[];
+  defaultOpenKeys?: string[];
   onSelect?: (data: MenuSelectEvent) => void;
   onOpenChange?: (openKeys: string[]) => void;
   onChange?: (selectedKeys: string[]) => void;
@@ -47,11 +49,13 @@ export const Menu: React.FC<MenuProps> = ({
   theme,
   mode = "vertical",
   value,
+  defaultValue = [],
   selectedKeys,
   accordion = false,
   items,
   inlineCollapsed = false,
   openKeys,
+  defaultOpenKeys = [],
   onSelect,
   onOpenChange,
   onChange,
@@ -60,8 +64,8 @@ export const Menu: React.FC<MenuProps> = ({
   style,
 }) => {
   const dropdownContext = useDropdownContext();
-  const [internalSelectedKeys, setInternalSelectedKeys] = useState<string[]>([]);
-  const [internalOpenKeys, setInternalOpenKeys] = useState<string[]>([]);
+  const [internalSelectedKeys, setInternalSelectedKeys] = useState<string[]>(defaultValue);
+  const [internalOpenKeys, setInternalOpenKeys] = useState<string[]>(defaultOpenKeys);
   const [collapseState, setCollapseState] = useState({
     inlineCollapsed,
     popupReady: inlineCollapsed,
@@ -101,12 +105,12 @@ export const Menu: React.FC<MenuProps> = ({
       ? [...keyPath, key]
       : currentSelectedKeys.filter((itemKey) => itemKey !== key);
 
-    setInternalSelectedKeys(nextSelected);
+    if (value === undefined && selectedKeys === undefined) setInternalSelectedKeys(nextSelected);
     onChange?.(nextSelected);
     onSelect?.({ key, keyPath });
 
     if (mode === "horizontal" || mode === "vertical" || inlineCollapsed) {
-      setInternalOpenKeys([]);
+      if (openKeys === undefined) setInternalOpenKeys([]);
       onOpenChange?.([]);
     }
     dropdownContext?.menuSelected?.({ key, keyPath });
@@ -122,7 +126,7 @@ export const Menu: React.FC<MenuProps> = ({
       nextOpenKeys = currentOpenKeys.filter((itemKey) => itemKey !== key);
     }
 
-    setInternalOpenKeys(nextOpenKeys);
+    if (openKeys === undefined) setInternalOpenKeys(nextOpenKeys);
     onOpenChange?.(nextOpenKeys);
   };
 

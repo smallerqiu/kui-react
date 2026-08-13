@@ -11,6 +11,7 @@ import zhCN from "../locale/zh-CN";
 export interface ModalProps {
   className?: string;
   open?: boolean;
+  defaultOpen?: boolean;
   title?: React.ReactNode;
   okText?: string;
   cancelText?: string;
@@ -36,7 +37,8 @@ export interface ModalProps {
 
 const Modal: React.FC<ModalProps> = ({
   className,
-  open = false,
+  open,
+  defaultOpen = false,
   title,
   okText,
   cancelText,
@@ -61,6 +63,8 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
+  const [innerOpen, setInnerOpen] = useState(defaultOpen);
+  const currentOpen = open ?? innerOpen;
 
   const [visible, setVisible] = useState(false);
   const [showInner, setShowInner] = useState(false);
@@ -97,7 +101,6 @@ const Modal: React.FC<ModalProps> = ({
       setTimeout(() => {
         setVisible(true);
         setShowInner(true);
-        onOpenChange?.(true);
         setTimeout(() => {
           if (draggable && refModal.current) {
             setLeftPos((document.body.offsetWidth - refModal.current.offsetWidth) / 2);
@@ -109,14 +112,21 @@ const Modal: React.FC<ModalProps> = ({
       setVisible(false);
       if (hideTimer.current) clearTimeout(hideTimer.current);
       hideTimer.current = setTimeout(() => setShowInner(false), 300);
-      onOpenChange?.(false);
     }
-  }, [draggable, onOpenChange, updateOrigin]);
+  }, [draggable, updateOrigin]);
+
+  const requestOpen = useCallback(
+    (next: boolean) => {
+      if (open === undefined) setInnerOpen(next);
+      onOpenChange?.(next);
+    },
+    [onOpenChange, open]
+  );
 
   useEffect(() => {
-    const timer = setTimeout(() => toggle(open), 0);
+    const timer = setTimeout(() => toggle(currentOpen), 0);
     return () => clearTimeout(timer);
-  }, [open, toggle]);
+  }, [currentOpen, toggle]);
 
   // Dragging
   const mousemove = useCallback((e: MouseEvent) => {
@@ -148,9 +158,9 @@ const Modal: React.FC<ModalProps> = ({
   }, [draggable, visible]);
 
   const close = useCallback(() => {
-    toggle(false);
+    requestOpen(false);
     onClose?.();
-  }, [onClose, toggle]);
+  }, [onClose, requestOpen]);
 
   const escToClose = useCallback((e: KeyboardEvent) => {
     if (e.key === "Escape") close();
@@ -172,7 +182,7 @@ const Modal: React.FC<ModalProps> = ({
 
   const ok = () => onOk?.();
   const cancel = () => {
-    toggle(false);
+    requestOpen(false);
     onCancel?.();
   };
 

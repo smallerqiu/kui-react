@@ -43,7 +43,7 @@ Folders, organizational structures, biological classifications, countries and re
 | draggable     | Whether it can be dragged                                                                                         | bool                              | false   |
 | showLine      | Whether to show connecting lines                                                                                  | bool                              | false   |
 | showIcon      | Whether to show icons                                                                                             | bool                              | true    |
-| extra         | Extension element                                                                                                 | slot(node)                        | -       |
+| extra         | Extension element                                                                                                 | ReactNode(node)                        | -       |
 | showExtra     | Whether to show extension elements by default                                                                     | bool                              | false   |
 | checkStrictly | In checkable state, node selection is completely controlled (parent-child node selection state no longer related) | bool                              | false   |
 | checkedKeys   | Tree nodes with checked checkboxes                                                                                | string[]                          | []      |

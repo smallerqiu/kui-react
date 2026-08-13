@@ -43,9 +43,11 @@ The navigation menu is the soul of a website. Users rely on navigation to jump b
 | Property        | Description                                                       | Type                                              | Default  |
 | --------------- | ----------------------------------------------------------------- | ------------------------------------------------- | -------- |
 | value           | Currently selected menu items                                    | string[]                                          | -        |
+| defaultValue    | Initially selected menu items in uncontrolled mode               | string[]                                          | []       |
 | theme           | Theme color                                                       | [light, dark]                                     | light    |
 | items           | Menu data                                                         | MenuOptionsProps[]                                | -        |
 | openKeys        | Currently expanded SubMenu menu item key array                    | string[]                                          | -        |
+| defaultOpenKeys | Initially expanded SubMenu keys in uncontrolled mode             | string[]                                          | []       |
 | selectedKeys    | Currently selected menu items                                     | string[]                                          | -        |
 | mode            | Menu type, supports three modes: vertical, horizontal, and inline | string: vertical vertical-right horizontal inline | vertical |
 | onSelect        | Called when MenuItem is clicked                                   | (data: MenuSelectEvent) => void                   | -        |

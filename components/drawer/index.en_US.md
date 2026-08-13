@@ -30,14 +30,15 @@ A floating panel that slides in from the edge of the screen.
 
 | Property     | Description                                                                                       | Type                  | Default             |
 | ------------ | ------------------------------------------------------------------------------------------------- | --------------------- | ------------------- |
-| open         | Whether the drawer is displayed                                                                   | bool                  | false               |
+| open         | Controlled drawer visibility                                                                      | bool                  | -                   |
+| defaultOpen  | Initial visibility in uncontrolled mode                                                           | bool                  | false               |
 | escKey       | Whether to support closing with Esc key                                                           | bool                  | true                |
-| maskClosable | Whether clicking the mask allows closing                                                          | bool                  | false               |
+| maskClosable | Whether clicking the mask allows closing                                                          | bool                  | true                |
 | title        | Drawer title. When null or false, the title is not displayed                                      | string                | -                   |
 | width        | Drawer width, used when `placement` is `left` or `right`, supports percentage                     | number, string        | 520                 |
-| height       | Drawer height, used when `placement` is `top` or `bottom`, supports percentage                    | number, string        | 256                 |
+| height       | Drawer height, used when `placement` is `top` or `bottom`, supports percentage                    | number, string        | 520                 |
 | placement    | The display direction of the drawer. Provides 4 display methods: `left`, `top`, `right`, `bottom` | string                | right               |
-| footer       | Footer content. Set `footer=null` to not display the footer                                       | slot                  | true                |
+| footer       | Footer content. Set `footer=null` to not display the footer                                       | ReactNode                  | true                |
 | closable     | Whether to show the close button                                                                  | bool                  | true                |
 | target       | The parent element to display                                                                     | () => HTMLElement     | () => document.body |
 | okText       | OK button text                                                                                    | string                | OK                  |

@@ -15,7 +15,7 @@ Switch selector.
 
 [Text / Icon](./demo/with-text.tsx)
 
-- Use `true-text` and `false-text` to set the text displayed when selected and unselected. Use the `slot` `(checked|unchecked)` to control the content.
+- Use `trueText` and `falseText` for text, or pass custom React nodes through `checkedChildren` and `unCheckedChildren`.
 
 [Disabled / Controllable](./demo/disabled.tsx)
 
@@ -38,7 +38,7 @@ Switch selector.
 | disabled           | Disable switch                                                            | bool                     | false   |
 | type               | Theme color, can pass `success`, `warning`, `danger`, `primary`           | string                   | -       |
 | size               | Component size, when value is `small` displays small size                 | string                   | -       |
-| checked(unchecked) | Content when selected (not selected)                                      | slot                     | -       |
+| checkedChildren / unCheckedChildren | Custom content for the checked / unchecked state               | ReactNode                     | -       |
 | true-text          | Text displayed when `checked` is `true`                                   | string                   | -       |
 | false-text         | Text displayed when `checked` is `false`                                  | string                   | -       |
 | valueType          | The type of output value for the unit option                              | [string,number,bool]     | bool    |

@@ -26,6 +26,10 @@
 
 [自定义时长](./demo/close.tsx)
 
+[合并更新](./demo/grouping.tsx)
+
+- 使用相同的 `grouping` 更新已有通知。
+
 - 可以自定义配置，其中 `duration` 来控制自动关闭时长,默认 `3s`
 
 ## API
@@ -47,8 +51,9 @@
 | 属性     | 说明                                   | 类型          | 默认值 |
 | -------- | -------------------------------------- | ------------- | ------ |
 | title    | 通知提醒的标题                         | string        | -      |
-| content  | 提示内容                               | string ,VNode | -      |
-| duration | 自动关闭的延时，单位秒，不关闭可以写 0 | number        | 3      |
+| content  | 提示内容                               | string ,ReactNode | -      |
+| duration | 自动关闭的延时，单位秒，不关闭可以写 0 | number        | 3.5    |
 | icon     | 自定义图标                             | string        | -      |
 | color    | 自定义图标颜色                         | string        | -      |
 | onClose  | 关闭时的回调                           | () => void    | -      |
+| grouping | 分组标识；相同标识的通知复用原条目并重新计时 | string     | -      |

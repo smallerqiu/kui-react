@@ -153,6 +153,7 @@ const navData = [
         name: "input-number",
         icon: DecimalsArrowRight,
       },
+      { title: "验证码输入框", sub: "InputOTP", name: "input-otp", icon: RectangleEllipsis },
       { title: "多选框", sub: "Checkbox", name: "checkbox", icon: SquareCheck },
       { title: "单选框", sub: "Radio", name: "radio", icon: CircleDot },
       { title: "开关", sub: "Switch", name: "switch", icon: ToggleLeft },
@@ -180,6 +181,7 @@ const navData = [
     children: [
       { title: "头像", sub: "Avatar", name: "avatar", icon: SmilePlus },
       { title: "卡片", sub: "Card", name: "card", icon: CreditCard },
+      { title: "功能卡片", sub: "FeatureCard", name: "feature-card", icon: CreditCard },
       { title: "走马灯", sub: "Carousel", name: "carousel", icon: GalleryHorizontal },
       {
         title: "折叠面板",
@@ -220,6 +222,12 @@ const navData = [
       { title: "徽标", sub: "Badge", name: "badge", icon: BellDot },
       { title: "抽屉", sub: "Drawer", name: "drawer", icon: PanelLeftClose },
       { title: "空状态", sub: "Empty", name: "empty", icon: Inbox },
+      {
+        title: "反馈面板",
+        sub: "FeedbackPanel",
+        name: "feedback-panel",
+        icon: MessageCircleCheck,
+      },
       { title: "进度", sub: "Loading", name: "loading", icon: Loading },
       { title: "全局提示", sub: "Message", name: "message", icon: RectangleEllipsis },
       { title: "通知提醒", sub: "Notice", name: "notice", icon: Info },
@@ -233,6 +241,7 @@ const navData = [
       },
       { title: "进度条", sub: "Progress", name: "progress", icon: Gauge },
       { title: "评分", sub: "Rate", name: "rate", icon: Star },
+      { title: "结果", sub: "Result", name: "result", icon: Info },
       { title: "骨架屏", sub: "Skeleton", name: "skeleton", icon: TextAlignStart },
       { title: "加载中", sub: "Spin", name: "spin", icon: Loader },
       { title: "标签", sub: "Tag", name: "tag", icon: Tag },

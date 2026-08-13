@@ -26,6 +26,10 @@ Display notification reminder information in the four corners of the system. Oft
 
 [Custom Duration](./demo/close.tsx)
 
+[Grouping](./demo/grouping.tsx)
+
+- Update an existing notice by using the same `grouping` key.
+
 - Can be custom configured. Use `duration` to control the auto-close duration (default `3s`).
 
 ## API
@@ -47,8 +51,9 @@ Parameter `options` is an object, specific description as follows:
 | Property | Description                                      | Type          | Default |
 | -------- | ------------------------------------------------ | ------------- | ------- |
 | title    | Notification title                               | string        | -       |
-| content  | Prompt content                                   | string, VNode | -       |
-| duration | Auto-close delay, in seconds, 0 means not closed | number        | 3       |
+| content  | Prompt content                                   | string, ReactNode | -       |
+| duration | Auto-close delay, in seconds, 0 means not closed | number        | 3.5     |
 | icon     | Custom icon                                      | string        | -       |
 | color    | Custom icon color                                | string        | -       |
 | onClose  | Callback when closing                            | () => void    | -       |
+| grouping | Group key; notices with the same key reuse the existing entry and reset its timer | string | - |

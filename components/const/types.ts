@@ -23,7 +23,7 @@ export type ShapeType = "circle" | "square" | "round";
 export type BooleanType = boolean | undefined;
 
 export type ButtonType = "primary" | "danger" | "warning" | "default" | "text" | "link";
-export type ThemeType = "outline" | "fill" | "default" | "solid" | "dashed" | "card";
+export type ThemeType = "outline" | "fill" | "underlined" | "default" | "solid" | "dashed" | "card";
 
 export type RadioType = "radio" | "button";
 export type DirectionType = "horizontal" | "vertical" | "inline";
@@ -36,3 +36,5 @@ export type SpinModeType = "bounce" | "flip" | "rotate" | "zoom";
 export type TriggerType = "hover" | "click" | "contextmenu";
 
 export type NoticeType = "info" | "success" | "warning" | "error" | "loading";
+export type FeedbackPanelKind = "positive" | "negative" | "caution" | "neutral";
+export type ResultStatus = "success" | "error" | "info" | "warning" | "403" | "404" | "500";

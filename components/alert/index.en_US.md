@@ -30,7 +30,7 @@ Warning prompts to display information that needs attention.
 | Property    | Description                                                                      | Type         | Default |
 | ----------- | -------------------------------------------------------------------------------- | ------------ | ------- |
 | type        | Alert type, optional values are `success`, `info`, `warning`, `error` or not set | string       | warning |
-| message     | Alert content                                                                    | string，Slot | -       |
+| message     | Alert content                                                                    | string，ReactNode | -       |
 | description | Auxiliary text introduction for the alert                                        | string       | -       |
 | showIcon    | Whether to show the icon                                                         | bool         | false   |
 | closable    | Whether to show the close button                                                 | bool         | false   |

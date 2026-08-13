@@ -48,8 +48,8 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 | value               | Controlled input value                                              | string, number          | -       |
 | size                | Button size, optional values `small`, `large`, default not selected | string                  | -       |
 | icon                | Input box icon                                                      | string                  | -       |
-| suffix              | Extension suffix                                                    | string, Slot            | -       |
-| prefix              | Extension prefix                                                    | string, Slot            | -       |
+| suffix              | Extension suffix                                                    | string, ReactNode            | -       |
+| prefix              | Extension prefix                                                    | string, ReactNode            | -       |
 | theme               | The theme of Input                                                  | string                  | fill    |
 | clearable           | Whether to show the clear button                                    | bool                    | false   |
 | visiblePassword     | Password initially displayed in plain text                          | bool                    | false   |

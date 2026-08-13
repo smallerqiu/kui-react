@@ -44,4 +44,4 @@ Content area that can be collapsed/expanded.
 | -------- | --------------------------------------- | ------ | ------- |
 | title    | The title of the currently active panel | string | -       |
 | key      | Unique identifier of the panel          | string | -       |
-| extra    | Card title extension                    | slot   | -       |
+| extra    | Card title extension                    | ReactNode   | -       |

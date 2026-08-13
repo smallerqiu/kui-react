@@ -22,8 +22,8 @@ export type { BadgeProps, BadgeStatusType } from "./badge";
 export { Button, ButtonGroup } from "./button";
 export type { ButtonGroupProps, ButtonProps } from "./button";
 
-export { default as Card } from "./card";
-export type { CardProps } from "./card";
+export { default as Card, CardMeta } from "./card";
+export type { CardMetaProps, CardProps } from "./card";
 
 export { Carousel, CarouselItem } from "./carousel";
 export type { CarouselProps, CarouselRef } from "./carousel";
@@ -71,6 +71,9 @@ export type { FlexAlignType, FlexJustifyType, FlexProps, FlexSizeType } from "./
 export { default as FeatureCard } from "./feature-card";
 export type { FeatureCardProps } from "./feature-card";
 
+export { default as FeedbackPanel } from "./feedback-panel";
+export type { FeedbackPanelKind, FeedbackPanelProps } from "./feedback-panel";
+
 export { Grid, GridItem } from "./grid";
 export type { GridItemProps, GridProps } from "./grid";
 
@@ -85,6 +88,9 @@ export type { InputGroupProps, InputProps, TextAreaProps } from "./input";
 
 export { default as InputNumber } from "./input-number";
 export type { InputNumberProps } from "./input-number";
+
+export { default as InputOTP } from "./input-otp";
+export type { InputOTPProps, InputOTPRef, InputOTPValidator } from "./input-otp";
 
 export { Content, Footer, Header, Layout, Sider } from "./layout";
 
@@ -130,6 +136,9 @@ export type { RadioButtonProps, RadioGroupProps, RadioOption, RadioProps } from 
 
 export { default as Rate } from "./rate";
 export type { RateProps } from "./rate";
+
+export { default as Result } from "./result";
+export type { ResultProps, ResultStatus } from "./result";
 
 export { Option, Select } from "./select";
 export type { OptionProps, SelectOption, SelectProps } from "./select";

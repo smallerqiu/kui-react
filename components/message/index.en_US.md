@@ -27,7 +27,11 @@ Globally display operation feedback information.
 
 [Custom Duration](./demo/close.tsx)
 
-- Can be custom configured. Use `duration` to control the auto-close duration (default `3s`). Use `closable` to show a close button.
+[Grouping](./demo/grouping.tsx)
+
+- Update an existing message by using the same `grouping` key.
+
+- Use `duration` to control auto-close (default `3.5s`) and `closable` to show a close button.
 
 ## API
 
@@ -49,9 +53,10 @@ Parameter `options` is an object, specific description as follows:
 | Property | Description                                                                      | Type          | Default |
 | -------- | -------------------------------------------------------------------------------- | ------------- | ------- |
 | type     | Prompt type, provides four optional types: `info`, `success`, `error`, `warning` | string        | info    |
-| content  | Prompt content                                                                   | string, Vnode | -       |
-| duration | Auto-close delay, in seconds, 0 means not auto-closed                            | number        | 3       |
-| closable | Whether it can be manually closed                                                | bool          | false   |
+| content  | Prompt content                                                                   | string, ReactNode | -       |
+| duration | Auto-close delay, in seconds, 0 means not auto-closed                            | number        | 3.5     |
+| closable | Whether it can be manually closed                                                | boolean       | false   |
 | icon     | Custom icon                                                                      | string        | -       |
 | color    | Custom icon color                                                                | string        | -       |
 | onClose  | Callback when closing                                                            | () => void    | -       |
+| grouping | Group key; messages with the same key reuse the existing entry and reset its timer | string      | -       |

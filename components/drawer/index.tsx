@@ -10,6 +10,7 @@ import zhCN from "../locale/zh-CN";
 
 export interface DrawerProps {
   open?: boolean;
+  defaultOpen?: boolean;
   title?: React.ReactNode;
   width?: number | string;
   height?: number | string;
@@ -34,7 +35,8 @@ export interface DrawerProps {
 const getBody = () => document.body;
 
 const Drawer: React.FC<DrawerProps> = ({
-  open = false,
+  open,
+  defaultOpen = false,
   title = "Title",
   width = 520,
   height = 520,
@@ -57,6 +59,8 @@ const Drawer: React.FC<DrawerProps> = ({
 }) => {
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
+  const [innerOpen, setInnerOpen] = useState(defaultOpen);
+  const currentOpen = open ?? innerOpen;
 
   const [visible, setVisible] = useState(false);
   const [opened, setOpened] = useState(false);
@@ -73,29 +77,35 @@ const Drawer: React.FC<DrawerProps> = ({
       setTimeout(() => {
         setVisible(true);
         setOpened(true);
-        onOpenChange?.(true);
       }, 0);
     } else {
       setVisible(false);
       if (hideTimer.current) clearTimeout(hideTimer.current);
       hideTimer.current = setTimeout(() => setOpened(false), 300);
-      onOpenChange?.(false);
     }
-  }, [onOpenChange]);
+  }, []);
+
+  const requestOpen = useCallback(
+    (next: boolean) => {
+      if (open === undefined) setInnerOpen(next);
+      onOpenChange?.(next);
+    },
+    [onOpenChange, open]
+  );
 
   const close = useCallback(() => {
-    toggle(false);
+    requestOpen(false);
     onClose?.();
-  }, [onClose, toggle]);
+  }, [onClose, requestOpen]);
 
   const escToClose = useCallback((e: KeyboardEvent) => {
     if (e.key === "Escape") close();
   }, [close]);
 
   useEffect(() => {
-    const timer = setTimeout(() => toggle(open), 0);
+    const timer = setTimeout(() => toggle(currentOpen), 0);
     return () => clearTimeout(timer);
-  }, [open, toggle]);
+  }, [currentOpen, toggle]);
 
   useEffect(() => {
     if (escKey) document.addEventListener("keydown", escToClose);
@@ -109,7 +119,7 @@ const Drawer: React.FC<DrawerProps> = ({
 
   const cancel = () => {
     onCancel?.();
-    toggle(false);
+    requestOpen(false);
   };
 
   const ok = () => onOk?.();

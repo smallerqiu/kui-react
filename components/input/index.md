@@ -48,8 +48,8 @@
 | value               | 受控输入值                                 | string 、 number        | -      |
 | size                | 按钮尺寸,可选值 `small`、`large`，默认不选 | string                  | -      |
 | icon                | 输入框图标                                 | string                  | -      |
-| suffix              | 扩展后缀                                   | string,Slot             | -      |
-| prefix              | 扩展前缀                                   | string,Slot             | -      |
+| suffix              | 扩展后缀                                   | string,ReactNode             | -      |
+| prefix              | 扩展前缀                                   | string,ReactNode             | -      |
 | theme               | 主题                                       | string                  | fill   |
 | clearable           | 是否显示清除按钮                           | bool                    | false  |
 | visiblePassword     | 密码出事化明文显示                         | bool                    | false  |

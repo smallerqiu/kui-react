@@ -44,7 +44,7 @@ When an operation takes a long time to complete, display the current progress an
 | strokeLinecap | Progress bar style                                                                   | [round \| square \| butt]         | round   |
 | width         | Circular progress bar canvas width, in px                                            | number                            | -       |
 | size          | When value is `small`, displays small size                                           | string                            | -       |
-| format        | Custom progress bar text                                                             | (percent: number) => any \| VNode | -       |
+| format        | Custom progress bar text                                                             | (percent: number) => any \| ReactNode | -       |
 | status        | Progress bar status, provides four types: `active`, `exception`, `success`, `normal` | string                            | normal  |
 | type          | Progress bar type, provides three types: `line`, `circle`, `dashboard`               | string                            | -       |
 | showInfo      | Whether to show progress text                                                        | bool                              | true    |

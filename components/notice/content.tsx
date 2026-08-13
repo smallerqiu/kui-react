@@ -14,6 +14,8 @@ export interface ContentProps {
   duration?: number;
   closable?: boolean;
   onClose?: () => void;
+  /** Reuse and update an existing entry with the same key. */
+  grouping?: string;
   noticeType?: "message" | "notice";
 }
 const icons = {

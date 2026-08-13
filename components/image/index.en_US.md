@@ -39,8 +39,8 @@ Previewable images.
 | showPanel   | Whether to display the extension panel by default      | bool                    | false   |
 | onClose     | Close trigger event                                    | () => void              | -       |
 | switch      | Multi-image switch trigger event                       | (index: number) => void | -       |
-| tool        | Custom toolbar buttons                                 | slot                    | -       |
-| panel       | Custom extension panel                                 | slot                    | -       |
+| tool        | Custom toolbar buttons                                 | ReactNode                    | -       |
+| panel       | Custom extension panel                                 | ReactNode                    | -       |
 
 ## ImageGroup API
 

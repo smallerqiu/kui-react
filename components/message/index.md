@@ -27,7 +27,11 @@
 
 [自定义时长](./demo/close.tsx)
 
-- 可以自定义配置，其中 `duration` 来控制自动关闭时长,默认 `3s` , `closable` 显示关闭按钮
+[合并更新](./demo/grouping.tsx)
+
+- 使用相同的 `grouping` 更新已有消息。
+
+- 可以自定义配置，其中 `duration` 控制自动关闭时长，默认 `3.5s`；`closable` 显示关闭按钮。
 
 ## API
 
@@ -49,9 +53,10 @@
 | 属性     | 说明                                                              | 类型         | 默认值 |
 | -------- | ----------------------------------------------------------------- | ------------ | ------ |
 | type     | 提示类型，提供 `info`、`success`、`error`、`warning` 四种可选类型 | string       | info   |
-| content  | 提示内容                                                          | string,Vnode | -      |
-| duration | 自动关闭的延时，单位秒，0 为 不自动关闭                           | number       | 3      |
-| closable | 是否可手动关闭                                                    | bool         | false  |
+| content  | 提示内容                                                          | string,ReactNode | -      |
+| duration | 自动关闭的延时，单位秒，0 为不自动关闭                            | number       | 3.5    |
+| closable | 是否可手动关闭                                                    | boolean      | false  |
 | icon     | 自定义图标                                                        | string       | -      |
 | color    | 自定义图标颜色                                                    | string       | -      |
 | onClose  | 关闭时的回调                                                      | () => void   | -      |
+| grouping | 分组标识；相同标识的消息复用原条目并重新计时                      | string       | -      |

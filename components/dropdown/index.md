@@ -41,6 +41,6 @@
 | placement    | 菜单弹出位置：bottomLeft bottomCenter bottomRight topLeft topCenter topRight | string              | bottom-left |
 | theme        | 组件呈现主题,默认'fill'                                                      | string              | fill        |
 | arrow        | 是否显示箭头                                                                 | bool                | false       |
-| target       | 触发下拉的元素                                                               | VNode               | -           |
+| target       | 触发下拉的元素                                                               | ReactNode               | -           |
 | disabled     | 是否允许触发下拉                                                             | bool                | false       |
 | onOpenChange | 打开或关闭Dropdown时触发                                                     | (opened:bool)=>void | -           |

@@ -48,16 +48,18 @@ export interface DatePickerPreset {
 
 export interface DatePickerProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
-  "onChange" | "children"
+  "onChange" | "children" | "defaultValue"
 > {
   value?: DatePickerInput | DatePickerInput[];
+  defaultValue?: DatePickerInput | DatePickerInput[];
   startDate?: DatePickerInput;
   endDate?: DatePickerInput;
   valueType?: DatePickerValueType;
   mode?: DatePickerModeType;
   presets?: DatePickerPreset[];
   disabled?: boolean;
-  opened?: boolean;
+  open?: boolean;
+  defaultOpen?: boolean;
   clearable?: boolean;
   editable?: boolean;
   placeholder?: string | string[];
@@ -106,13 +108,15 @@ const parse = (value: DatePickerInput, format: string, valueType: DatePickerValu
 
 export default function DatePicker({
   value,
+  defaultValue,
   startDate,
   endDate,
   valueType = "string",
   mode = "date",
   presets,
   disabled,
-  opened,
+  open,
+  defaultOpen = false,
   clearable = true,
   editable = true,
   placeholder = "",
@@ -144,17 +148,24 @@ export default function DatePicker({
   const hasTime = mode === "time" || mode.includes("Time");
   const controlled = value;
   const initial = useMemo(() => {
-    const source = controlled !== undefined ? controlled : isRange ? [startDate, endDate] : null;
+    const source =
+      controlled !== undefined
+        ? controlled
+        : defaultValue !== undefined
+          ? defaultValue
+          : isRange
+            ? [startDate, endDate]
+            : null;
     return (Array.isArray(source) ? source : source == null ? [] : [source])
       .map((item) => parse(item, fmt, valueType))
       .filter((item): item is Dayjs => !!item);
-  }, [controlled, startDate, endDate, isRange, fmt, valueType]);
+  }, [controlled, defaultValue, startDate, endDate, isRange, fmt, valueType]);
   const [inner, setInner] = useState<Dayjs[]>(initial);
   const values =
     controlled !== undefined || startDate !== undefined || endDate !== undefined ? initial : inner;
-  const [visibleState, setVisibleState] = useState(!!opened);
-  const visible = opened ?? visibleState;
-  const [rendered, setRendered] = useState(!!opened);
+  const [visibleState, setVisibleState] = useState(defaultOpen);
+  const visible = open ?? visibleState;
+  const [rendered, setRendered] = useState(open ?? defaultOpen);
   const [panelDate, setPanelDate] = useState(initial[0] ?? dayjs());
   const [view, setView] = useState<"date" | "month" | "year" | "time">(
     mode === "year" ? "year" : mode === "month" ? "month" : mode === "time" ? "time" : "date"
@@ -183,10 +194,10 @@ export default function DatePicker({
   const timeColRefs = useRef<Partial<Record<UnitType, HTMLUListElement | null>>>({});
 
   const setOpen = useCallback((next: boolean) => {
-    if (opened === undefined) setVisibleState(next);
+    if (open === undefined) setVisibleState(next);
     setRendered(true);
     onOpenChange?.(next);
-  }, [onOpenChange, opened]);
+  }, [onOpenChange, open]);
   const updatePosition = useCallback(() => {
     const root = rootRef.current;
     if (!root) return;

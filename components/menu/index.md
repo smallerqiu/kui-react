@@ -43,9 +43,11 @@
 | 属性            | 说明                                     | 类型                                              | 默认值   |
 | --------------- | ---------------------------------------- | ------------------------------------------------- | -------- |
 | value           | 当前选中的菜单项                         | string[]                                          | -        |
+| defaultValue    | 非受控模式初始选中的菜单项               | string[]                                          | []       |
 | theme           | 主题颜色                                 | string: light dark                                | light    |
 | items           | 菜单数据                                 | MenuOptionsProps[]                                | -        |
 | openKeys        | 当前展开的 SubMenu 菜单项 key 数组       | string[]                                          | -        |
+| defaultOpenKeys | 非受控模式初始展开的 SubMenu key 数组    | string[]                                          | []       |
 | selectedKeys    | 当前选中的菜单项                        | string[]                                          | -        |
 | mode            | 菜单类型，支持垂直、水平、和内嵌模式三种 | string: vertical vertical-right horizontal inline | vertical |
 | onSelect        | 点击 MenuItem 调用此函数                 | (data: MenuSelectEvent) => void                   | -        |

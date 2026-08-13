@@ -39,8 +39,8 @@
 | showPanel   | 默认是否展示扩展面板                            | bool                    | false  |
 | onClose     | 关闭触发事件                                    | () => void              | -      |
 | switch      | 多图切换触发事件                                | (index: number) => void | -      |
-| tool        | 自定义工具栏按钮                                | slot                    | -      |
-| panel       | 自定义扩展面板                                  | slot                    | -      |
+| tool        | 自定义工具栏按钮                                | ReactNode                    | -      |
+| panel       | 自定义扩展面板                                  | ReactNode                    | -      |
 
 ## ImageGroup API
 

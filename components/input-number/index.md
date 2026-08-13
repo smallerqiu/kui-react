@@ -32,14 +32,15 @@
 | max        | 最大值                                                     | number                              | Infinity  |
 | step       | 每次改变步数，可以为小数                                   | number,string                       | 1         |
 | value      | InputNumber 的受控值                                      | number,string                       | -         |
+| defaultValue | 非受控模式的初始值                                      | number,string                       | -         |
 | formatter  | 指定输入框展示值的格式                                     | (value: string \| number) => string | -         |
 | parser     | 指定从 formatter 里转换回数字的方式，和 formatter 搭配使用 | (value: string) => string \| number | -         |
 | size       | 输入框大小                                                 | string                              | -         |
 | disabled   | 禁用                                                       | bool                                | false     |
 | precision  | 数值精度                                                   | number                              | -         |
 | shape      | 组件的外观                                                 | `circle` , `square`                 | -         |
-| suffix     | 自定义后缀                                                 | string,slot                         | -         |
-| prefix     | 前缀内容                                                   | string,slot                         | -         |
+| suffix     | 自定义后缀                                                 | string,ReactNode                         | -         |
+| prefix     | 前缀内容                                                   | string,ReactNode                         | -         |
 | controls   | 是否显示增减按钮                                           | bool                                | true      |
 | clearable  | 是否显示清除按钮                                           | bool                                | false     |
 | theme      | 组件呈现主题                                               | string                              | fill      |

@@ -15,7 +15,7 @@
 
 [文字 / 图标](./demo/with-text.tsx)
 
-- 通过 `true-text` 和 `false-text` 设置选中和非选中呈现文字, 通过设置 `slot` 为 `(checked|unchecked)` 控制内容
+- 通过 `trueText` 和 `falseText` 设置选中和未选中时的文字，也可以通过 `checkedChildren` 和 `unCheckedChildren` 传入自定义 ReactNode。
 
 [禁用 / 可控](./demo/disabled.tsx)
 
@@ -38,7 +38,7 @@
 | disabled           | 禁用开关                                                  | bool                     | false  |
 | type               | 主题颜色 可传入 `success`，`warning`，`danger`，`primary` | string                   | -      |
 | size               | 组件尺寸，值为`small`展示小尺寸                           | string                   | -      |
-| checked(unchecked) | 选中(非选中)时的内容                                      | slot                     | -      |
+| checkedChildren / unCheckedChildren | 选中 / 未选中时的自定义内容                       | ReactNode                     | -      |
 | true-text          | 当 `checked` 为 `true` 时 ，显示的文字                    | string                   | -      |
 | false-text         | 当 `checked` 为 `false` 时 ，显示的文字                   | string                   | -      |
 | valueType          | 单位选项的输出值的类型                                    | [string,number,bool]     | bool   |

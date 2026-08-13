@@ -41,6 +41,6 @@ When there are too many operation commands on the page, this component can be us
 | placement    | Menu popup position: bottomLeft bottomCenter bottomRight topLeft topCenter topRight | string              | bottom-left |
 | theme        | The component renders the theme, defaulting to 'fill'.                              | string              | fill        |
 | arrow        | Whether to display the arrow                                                        | bool                | false       |
-| target       | Element that triggers the dropdown                                                  | VNode               | -           |
+| target       | Element that triggers the dropdown                                                  | ReactNode               | -           |
 | disabled     | Whether dropdown triggering is allowed                                              | bool                | false       |
 | onOpenChange | Triggered when opening or closing a Dropdown                                        | (opened:bool)=>void | -           |

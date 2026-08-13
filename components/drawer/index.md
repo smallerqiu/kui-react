@@ -30,17 +30,18 @@
 
 | 属性          | 说明                                                               | 类型                  | 默认值              |
 | ------------- | ------------------------------------------------------------------ | --------------------- | ------------------- |
-| open          | 抽屉是否显示                                                     | bool                  | false               |
+| open          | 受控的抽屉显示状态                                               | bool                  | -                   |
+| defaultOpen   | 非受控模式的初始显示状态                                         | bool                  | false               |
 | escKey        | 是否支持按 Esc 关闭                                                | bool                  | true                |
 | maskClosable  | 是否点击遮罩关闭弹窗, 为否时 Esc 键将失效                          | bool                  | true                |
 | title         | 抽屉标题,为null或false时不显示标题                                 | string                | -                   |
 | width         | 抽屉宽度 `placement`为 `left` 或 `right` 时使用,支持百分比         | number,string         | 520                 |
-| height        | 抽屉高度 `placement`为 `top` 或 `bottom` 时使用,支持百分比         | number,string         | 256                 |
+| height        | 抽屉高度 `placement`为 `top` 或 `bottom` 时使用,支持百分比         | number,string         | 520                 |
 | placement     | 抽屉显示方向，提供 `left` , `top` , `right` , `bottom` 4种展示方式 | string                | right               |
-| footer        | 页脚内容，不显示页脚设置`footer=null`即可                          | slot                  | true                |
+| footer        | 页脚内容，不显示页脚设置`footer=null`即可                          | ReactNode                  | true                |
 | closable      | 是否显示关闭按钮                                                   | bool                  | true                |
 | target        | 展示的父元素                                                       | () => HTMLElement     | () => document.body |
-| mask-closable | 点击蒙层是否允许关闭                                               | bool                  | false               |
+| maskClosable  | 点击蒙层是否允许关闭                                               | bool                  | true                |
 | okText        | 确定按钮文字                                                       | string                | 确定                |
 | cancelText    | 取消按钮文字                                                       | string                | 取消                |
 | mask          | 是否展示蒙层                                                       | bool                  | true                |

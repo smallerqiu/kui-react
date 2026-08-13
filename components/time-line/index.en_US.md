@@ -30,5 +30,5 @@ When an operation takes a long time to complete, display the current progress an
 | icon     | Timeline `item` icon                                                                                           | string       | -       |
 | color    | Timeline `item` icon color                                                                                     | string       | -       |
 | time     | Time text                                                                                                      | string       | -       |
-| extra    | Custom auxiliary content                                                                                       | string, slot | -       |
+| extra    | Custom auxiliary content                                                                                       | string, ReactNode | -       |
 | mode     | Can change relative position of timeline and content by setting `mode`: `left`, `center`, `alternate`, `right` | string       | left    |

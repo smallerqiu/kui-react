@@ -43,7 +43,7 @@
 | draggable     | 是否可以拖拽                                                 | bool                              | false  |
 | showLine      | 是否展示连接线                                               | bool                              | false  |
 | showIcon      | 是否展示图标                                                 | bool                              | true   |
-| extra         | 扩展元素                                                     | slot(node)                        | -      |
+| extra         | 扩展元素                                                     | ReactNode(node)                        | -      |
 | showExtra     | 是否默认展示扩展元素                                         | bool                              | false  |
 | checkStrictly | checkable 状态下节点选择完全受控（父子节点选中状态不再关联） | bool                              | false  |
 | checkedKeys   | 选中复选框的树节点                                           | string[]                          | []     |

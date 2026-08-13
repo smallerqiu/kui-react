@@ -7,8 +7,12 @@ import Icon, { type IconType } from "../icon";
 import Input from "../input/input";
 import { isValidBig, normalize } from "../utils/number";
 
-export interface InputNumberProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface InputNumberProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange" | "defaultValue"
+> {
   value?: number | string;
+  defaultValue?: number | string;
   min?: number;
   max?: number;
   step?: number;
@@ -32,6 +36,7 @@ export interface InputNumberProps extends Omit<React.HTMLAttributes<HTMLDivEleme
 
 const InputNumber: React.FC<InputNumberProps> = ({
   value,
+  defaultValue,
   min = -Infinity,
   max = Infinity,
   step = 1,
@@ -54,7 +59,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
   ...rest
 }) => {
   const parentSize = useContext(SizeContext);
-  const [innerValue, setInnerValue] = useState(normalize(value, precision));
+  const [innerValue, setInnerValue] = useState(normalize(defaultValue, precision));
   const [userInput, setUserInput] = useState<string | null>(null);
   const prevValueRef = useRef(value);
 

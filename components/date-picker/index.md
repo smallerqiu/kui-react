@@ -49,6 +49,9 @@
 | 属性         | 说明                                                                                                               | 类型                                                        | 默认值     |
 | ------------ | ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- | ---------- |
 | value        | 受控的日期或时间值                                                                                                 | DatePickerInput, DatePickerInput[]                           | -          |
+| defaultValue | 非受控模式的初始日期或时间值                                                                                       | DatePickerInput, DatePickerInput[]                           | -          |
+| open         | 受控的下拉面板显示状态                                                                                             | bool                                                        | -          |
+| defaultOpen  | 非受控模式的初始下拉面板状态                                                                                       | bool                                                        | false      |
 | startDate    | 开始时间 (取值)                                                                                                    | any                                                         | -          |
 | endDate      | 结束时间 (取值)                                                                                                    | any                                                         | -          |
 | mode         | 使用 `mode` 属性，可以自定义日期显示类型，提供 `year`,`month`,`date`,`time`,`dateTime`,`dateRange`,`dateTimeRange` | string                                                      | date       |
@@ -60,12 +63,12 @@
 | disabledDate | 不可选择的日期                                                                                                     | (date: Date) => boolean                                     | -          |
 | disabledTime | 不可选择的时间                                                                                                     | (date: Date) => boolean                                     | -          |
 | format       | 设置日期格式，为数组时支持多格式匹配，展示以第一个为准。配置参考 [dayjs](http://day.js.org/)                       | string                                                      | YYYY-MM-DD |
-| theme        | theme='fill' 时呈现浅色主题                                                                                        | string                                                      | -          |
+| theme        | theme='fill' 时呈现浅色主题                                                                                        | string                                                      | fill       |
 | dateIcon     | 自定义图标                                                                                                         | string                                                      | -          |
 | shape        | 组件呈现的形式                                                                                                     | [circle,square]                                             | -          |
-| bordered     | 是否展示边框                                                                                                       | bool                                                        | false      |
-| placement    | 下拉展示的方位                                                                                                     | string                                                      | -          |
-| valueType    | 默认输出的值的类型                                                                                                 | ["date" ,"timestamp" , "unix" , "string"]                   | -          |
+| bordered     | 是否展示边框                                                                                                       | bool                                                        | true       |
+| placement    | 下拉展示的方位                                                                                                     | string                                                      | bottom-left |
+| valueType    | 默认输出的值的类型                                                                                                 | ["date" ,"timestamp" , "unix" , "string"]                   | string     |
 | presets      | 预设的日期                                                                                                         | DatePickerPresetsType[]                                     | -          |
 | onChange     | 默认值改变之后的回调                                                                                               | (date: Date \| Date[], dateStr: string \| string[]) => void | -          |
 | onOpenChange | 下拉框展开或收起时触发                                                                                             | (opened: boolean) => void                                   | -          |

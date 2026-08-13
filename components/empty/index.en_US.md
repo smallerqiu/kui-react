@@ -29,6 +29,6 @@ Placeholder display for empty states.
 
 | Property    | Description                                                                | Type            | Default |
 | ----------- | -------------------------------------------------------------------------- | --------------- | ------- |
-| description | Custom description content                                                 | [string, slot ] | -       |
+| description | Custom description content                                                 | [string, ReactNode ] | -       |
 | imageStyle  | Image style                                                                | Object          | -       |
-| image       | Set the display image. When a string, it represents a custom image address | [string, slot ] | -       |
+| image       | Set the display image. When a string, it represents a custom image address | [string, ReactNode ] | -       |

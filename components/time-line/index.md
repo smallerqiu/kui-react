@@ -30,5 +30,5 @@
 | icon  | 时间轴 `item` 图标                                                                     | string      | -      |
 | color | 时间轴 `item` 图标颜色                                                                 | string      | -      |
 | time  | 时间文本                                                                               | string      | -      |
-| extra | 自定义辅助内容                                                                         | string,slot | -      |
+| extra | 自定义辅助内容                                                                         | string,ReactNode | -      |
 | mode  | 通过设置 `mode` 可以改变时间轴和内容的相对位置 `left` ,`center`, `alternate` , `right` | string      | left   |

@@ -33,7 +33,8 @@ Modal dialog box.
 
 | Property     | Description                                                                 | Type                  | Default |
 | ------------ | --------------------------------------------------------------------------- | --------------------- | ------- |
-| open         | Whether the dialog is displayed                                             | bool                  | false   |
+| open         | Controlled dialog visibility                                                | bool                  | -       |
+| defaultOpen  | Initial visibility in uncontrolled mode                                     | bool                  | false   |
 | title        | Dialog title                                                                | string                | -       |
 | width        | Dialog width                                                                | number, string        | 520     |
 | okText       | OK button text                                                              | string                | OK      |
@@ -41,12 +42,12 @@ Modal dialog box.
 | draggable    | Whether the modal can be dragged, not available in confirm mode             | bool                  | false   |
 | centered     | Whether the window can be centered, not available in confirm mode           | bool                  | false   |
 | maximized    | Whether the modal can be maximized, not available in confirm mode           | bool                  | false   |
-| maskClosable | Whether clicking the mask closes the modal, if not, Esc key will be invalid | bool                  | true    |
+| maskClosable | Whether clicking the mask closes the modal                                  | bool                  | false   |
 | escKey       | Whether to support closing with Esc key                                     | bool                  | true    |
-| footer       | When `footer=false`, the bottom button is not displayed.                    | bool,Slot             | true    |
+| footer       | When `footer=false`, the bottom button is not displayed.                    | bool,ReactNode             | true    |
 | loading      | When set to `true`, the confirm button will be in a loading state           | bool                  | false   |
-| top          | Distance from the top of the window                                         | number                | -       |
-| showClose    | Whether to display the close button                                         | bool                  | false   |
+| top          | Distance from the top of the window                                         | number                | 100     |
+| showClose    | Whether to display the close button                                         | bool                  | true    |
 | mask         | Whether to show the mask                                                    | bool                  | true    |
 | onOk         | Callback when OK is clicked, `Note: will not close Modal`                   | () => void            | -       |
 | onCancel     | Callback when Cancel is clicked                                             | () => void            | -       |

@@ -44,7 +44,7 @@
 | strokeLinecap | 进度条的样式                                                     | [round \| square \| butt]         | round  |
 | width         | 圆形进度条画布宽度，单位 px                                      | number                            | -      |
 | size          | 值为`small`，展示小尺寸                                          | string                            | -      |
-| format        | 自定义进度条文字                                                 | (percent: number) => any \| VNode | -      |
+| format        | 自定义进度条文字                                                 | (percent: number) => any \| ReactNode | -      |
 | status        | 进度条状态,提供四种类型: `active`,`exception`,`success`,`normal` | string                            | normal |
 | type          | 进度条类型,提供三种类型: `line`,`circle`,`dashboard`             | string                            | -      |
 | showInfo      | 是否显示进度文字                                                 | bool                              | true   |

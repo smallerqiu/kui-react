@@ -13,6 +13,7 @@ export interface MessageOptions {
   icon?: IconType[];
   color?: string;
   onClose?: () => void;
+  grouping?: string;
 }
 export interface MessageApi {
   name: "message";

@@ -44,4 +44,4 @@
 | ----- | -------------------- | ------ | ------ |
 | title | 当前激活的面板的标题 | string | -      |
 | key   | Panel 的唯一标识     | string | -      |
-| extra | 卡片标题扩展         | slot   | -      |
+| extra | 卡片标题扩展         | ReactNode   | -      |
