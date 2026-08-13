@@ -41,6 +41,11 @@ Dropdown selector.
 | defaultValue | Initial selected value in uncontrolled mode                                      | string, number, (string\|number)[]         | -             |
 | open         | Controlled dropdown visibility                                                    | boolean                                    | -             |
 | defaultOpen  | Initial dropdown visibility in uncontrolled mode                                  | boolean                                    | false         |
+| placement    | Dropdown placement                                                                 | DropPlacementsType                         | bottom-left   |
+| block        | Whether to fill the parent width                                                   | boolean                                    | false         |
+| filterable   | Whether search filtering is enabled                                                | boolean                                    | false         |
+| loadingText  | Loading-state text                                                                 | string                                     | -             |
+| arrowIcon    | Custom dropdown arrow icon                                                         | IconType[]                                 | -             |
 | width        | Component width                                                                   | string, number                             | -             |
 | placeholder  | Default text of selector                                                          | string                                     | Please select |
 | disabled     | Whether current item is disabled                                                  | boolean                                       | false         |

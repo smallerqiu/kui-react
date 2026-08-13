@@ -46,11 +46,17 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 | Property            | Description                                                         | Type                    | Default |
 | ------------------- | ------------------------------------------------------------------- | ----------------------- | ------- |
 | value               | Controlled input value                                              | string, number          | -       |
+| defaultValue        | Initial input value in uncontrolled mode                            | string, number          | ""      |
 | size                | Button size, optional values `small`, `large`, default not selected | string                  | -       |
 | icon                | Input box icon                                                      | string                  | -       |
 | suffix              | Extension suffix                                                    | string, ReactNode            | -       |
 | prefix              | Extension prefix                                                    | string, ReactNode            | -       |
 | theme               | The theme of Input                                                  | string                  | fill    |
+| shape               | Input shape                                                         | ShapeType               | -       |
+| inputType           | Custom style class prefix                                           | string                  | input   |
+| controls            | Control area used by components such as InputNumber                 | ReactNode               | -       |
+| disabled            | Whether the input is disabled                                       | boolean                 | false   |
+| multiple            | Whether native multiple input is enabled                            | boolean                 | false   |
 | clearable           | Whether to show the clear button                                    | boolean                    | false   |
 | visiblePasswordIcon | Whether to show the toggle button or control password visibility    | boolean                    | true    |
 | onSearch            | Search event callback                                               | (value: string) => void | -       |

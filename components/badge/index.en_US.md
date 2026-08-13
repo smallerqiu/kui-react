@@ -44,5 +44,6 @@ Generally appears in the upper right corner of notification icons or avatars, us
 | color    | Badge color                                                                           | string         | -       |
 | maxCount | The maximum numeric value to display. Values above this will be shown with a '+' sign | number         | 99      |
 | dot      | Do not display the number, only a small red dot                                       | boolean           | false   |
+| pill     | Display the badge with a pill shape                                                   | boolean        | false   |
 | text     | If status is set, text sets the display text of the status dot                        | string         | ''      |
 | status   | Set Badge as a status dot                                                             | string         | ''      |

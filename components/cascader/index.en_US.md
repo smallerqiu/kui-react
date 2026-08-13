@@ -34,7 +34,16 @@ A cascading selection box.
 | defaultValue  | Initial path value in uncontrolled mode.                                                                            | `(string \| number)[]` | `[]`              |
 | open          | Controlled dropdown visibility.                                                                                     | `boolean`              | -                 |
 | defaultOpen   | Initial dropdown visibility in uncontrolled mode.                                                                   | `boolean`              | `false`           |
+| theme         | Component theme.                                                                                                     | `ThemeType`            | `fill`            |
+| bordered      | Whether to display the border.                                                                                       | `boolean`              | `true`            |
+| shape         | Component shape.                                                                                                     | `ShapeType`            | -                 |
+| showArrow     | Whether to display the dropdown arrow.                                                                               | `boolean`              | `true`            |
+| icon          | Custom prefix icon.                                                                                                  | `IconType[]`           | -                 |
+| arrowIcon     | Custom dropdown arrow.                                                                                               | `IconType[]`           | -                 |
+| emptyText     | Empty-state text.                                                                                                    | `string`               | -                 |
+| placement     | Popup placement.                                                                                                     | `DropPlacementsType`   | `bottom-left`     |
 | onChange      | Called when a path is selected or cleared.                                                                           | `(value) => void`       | -                 |
+| onOpenChange  | Called when dropdown visibility changes.                                                                             | `(open: boolean) => void` | -               |
 | options       | Tree-structured data source for cascading options.                                                                  | `CascaderOption[]`     | `[]`              |
 | placeholder   | Fallback placeholder text displayed when no path is selected.                                                       | `string`               | `"Please select"` |
 | disabled      | Whether to completely disable interaction for the entire component.                                                 | `boolean`              | `false`           |

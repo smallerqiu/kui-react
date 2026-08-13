@@ -47,8 +47,15 @@
 | showExtra     | 是否默认展示扩展元素                                         | boolean                              | false  |
 | checkStrictly | checkable 状态下节点选择完全受控（父子节点选中状态不再关联） | boolean                              | false  |
 | checkedKeys   | 选中复选框的树节点                                           | string[]                          | []     |
+| defaultCheckedKeys | 非受控模式的初始勾选节点                                | string[]                          | []     |
 | expandedKeys  | 指定展开的节点                                               | string[]                          | []     |
+| defaultExpandedKeys | 非受控模式的初始展开节点                                | string[]                          | []     |
 | selectedKeys  | 选中的节点                                                   | string[]                          | []     |
+| defaultSelectedKeys | 非受控模式的初始选中节点                                | string[]                          | []     |
+| selectAsCheck | 点击节点时同步切换勾选状态                                   | boolean                           | false  |
+| queryKey      | 用于过滤或高亮的查询关键字                                   | string                            | -      |
+| renderTitle   | 自定义节点标题                                               | (node: TreeNode) => ReactNode     | -      |
+| renderExtra   | 自定义节点扩展区域                                           | (node: TreeNode) => ReactNode     | -      |
 | multiple      | 是否支持多选                                                 | boolean                              | false  |
 | loading       | 异步加载状态                                                 | boolean                              | false  |
 | loadData      | 异步加载数据的方法                                           | (node: TreeNode) => Promise<any\> | -      |
@@ -71,8 +78,11 @@
 | onSelect    | 点击树节点时触发       | (node: TreeNode) => void                                                     |
 | onCheck     | 点击复选框时触发       | (node: TreeNode, checked: boolean, checkedKeys: string[]) => void            |
 | onExpand    | 展开和收起子节点时触发 | (result: TreeExpandEvent) => void                                            |
-| onDragstart | 开始拖拽时调用         | (node: TreeNode, event: DragEvent) => void                                   |
-| onDragend   | dragend 触发时调用     | (node: TreeNode, event: DragEvent) => void                                   |
-| onDragenter | dragenter 触发时调用   | (node: TreeNode, event: DragEvent) => void                                   |
-| onDragleave | dragleave 触发时调用   | (node: TreeNode, event: DragEvent) => void                                   |
+| onExpandedKeysChange | 展开节点集合变化时触发 | (keys: string[]) => void                                 |
+| onCheckedKeysChange | 勾选节点集合变化时触发 | (keys: string[]) => void                                  |
+| onSelectedKeysChange | 选中节点集合变化时触发 | (keys: string[]) => void                                 |
+| onDragStart | 开始拖拽时调用         | (node: TreeNode, event: DragEvent) => void                                   |
+| onDragEnd   | dragend 触发时调用     | (node: TreeNode, event: DragEvent) => void                                   |
+| onDragEnter | dragenter 触发时调用   | (node: TreeNode, event: DragEvent) => void                                   |
+| onDragLeave | dragleave 触发时调用   | (node: TreeNode, event: DragEvent) => void                                   |
 | onDrop      | drop 触发时调用        | (node: { dragNode: TreeNode; dropNode: TreeNode }, event: DragEvent) => void |

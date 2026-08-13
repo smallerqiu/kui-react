@@ -47,12 +47,35 @@ Folders, organizational structures, biological classifications, countries and re
 | showExtra     | Whether to show extension elements by default                                                                     | boolean                              | false   |
 | checkStrictly | In checkable state, node selection is completely controlled (parent-child node selection state no longer related) | boolean                              | false   |
 | checkedKeys   | Tree nodes with checked checkboxes                                                                                | string[]                          | []      |
+| defaultCheckedKeys | Initial checked nodes in uncontrolled mode                                                                  | string[]                          | []      |
 | expandedKeys  | Specify expanded nodes                                                                                            | string[]                          | []      |
+| defaultExpandedKeys | Initial expanded nodes in uncontrolled mode                                                                | string[]                          | []      |
 | selectedKeys  | Selected nodes                                                                                                    | string[]                          | []      |
+| defaultSelectedKeys | Initial selected nodes in uncontrolled mode                                                                | string[]                          | []      |
+| selectAsCheck | Toggle checked state when selecting a node                                                                         | boolean                           | false   |
+| queryKey      | Query key used for filtering or highlighting                                                                       | string                            | -       |
+| renderTitle   | Custom node title renderer                                                                                          | (node: TreeNode) => ReactNode     | -       |
+| renderExtra   | Custom node extra-content renderer                                                                                  | (node: TreeNode) => ReactNode     | -       |
 | multiple      | Whether to support multiple selection                                                                             | boolean                              | false   |
 | loading       | Asynchronous loading state                                                                                        | boolean                              | false   |
 | loadData      | Method to asynchronously load data                                                                                | (node: TreeNode) => Promise<any\> | -       |
 | directory     | Does not display as a directory tree                                                                              | boolean                              | false   |
+
+## Tree Events
+
+| Property | Description | Type |
+| --- | --- | --- |
+| onExpand | Called when a node expands or collapses | (result: TreeExpandEvent) => void |
+| onExpandedKeysChange | Called when expanded keys change | (keys: string[]) => void |
+| onCheck | Called when a checkbox changes | (node: TreeNode, checked: boolean, keys: string[]) => void |
+| onCheckedKeysChange | Called when checked keys change | (keys: string[]) => void |
+| onSelect | Called when a node is selected | (node: TreeNode, keys: string[]) => void |
+| onSelectedKeysChange | Called when selected keys change | (keys: string[]) => void |
+| onDragStart | Called when dragging starts | (node: TreeNode, event: DragEvent) => void |
+| onDragEnter | Called when a dragged node enters | (node: TreeNode, event: DragEvent) => void |
+| onDragLeave | Called when a dragged node leaves | (node: TreeNode, event: DragEvent) => void |
+| onDrop | Called when a node is dropped | (nodes, event: DragEvent) => void |
+| onDragEnd | Called when dragging ends | (node: TreeNode, event: DragEvent) => void |
 
 ## TreeNode API
 

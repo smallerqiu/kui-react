@@ -98,18 +98,22 @@ const columns = [
 | bordered     | 是否显示边框              | boolean                                                                         | false    |
 | checkable    | 是否显示勾选框            | boolean                                                                         | false    |
 | selectedKeys | 勾选的key集合             | string[]                                                                     | -        |
+| defaultSelectedKeys | 非受控模式下的初始勾选 key 集合 | (string \| number)[]                                                   | []       |
 | disabledKeys | 禁用的key集合             | string[]                                                                     | -        |
 | size         | 值为`small`时展示紧凑模式 | string                                                                       | -        |
 | emptyText    | 没有数据时展示的提示      | string                                                                       | 赞无数据 |
 | loading      | 表格异步加载模式          | boolean                                                                         | false    |
 | data         | 显示的结构化数据          | any[]                                                                        | []       |
 | columns      | 表格列的配置描述，        | Column[]                                                                     | []       |
+| header       | 自定义表头内容            | ReactNode                                                                    | -        |
+| footer       | 自定义表尾内容            | ReactNode                                                                    | -        |
 | rowKey       | 勾选时的依据              | string                                                                       | key      |
 | striped      | 是否展示斑马条纹          | boolean                                                                         | false    |
 | onRowClick   | 单击某一行时触发          | (record: any, index: number) => void                                         | -        |
 | onSort       | 点击排序时触发            | (state: SortState) => void                                                   | -        |
 | onSelect     | 点击复选框时触发          | (record: any, selected: boolean, selectedKeys: (string \| number)[]) => void | -        |
 | onSelectAll  | 点击Table头部复选框时触发 | (selected: boolean, selectedKeys: (string \| number)[]) => void              | -        |
+| onSelectedKeysChange | 勾选 key 集合变化时触发 | (selectedKeys: (string \| number)[]) => void                              | -        |
 
 ## Column API
 

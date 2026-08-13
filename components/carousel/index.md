@@ -27,9 +27,11 @@
 | 属性       | 说明                                                     | 类型    | 默认值  |
 | ---------- | -------------------------------------------------------- | ------- | ------- |
 | value      | 当前幻灯片索引，从 0 开始                              | number  | -       |
+| defaultValue | 非受控模式下的初始幻灯片索引                          | number  | 0       |
 | loop       | 是否开启循环                                             | boolean    | true    |
 | vertical   | 是否垂直模式显示                                         | boolean    | false   |
 | autoplay   | 是否自动切换                                             | boolean    | false   |
 | delay      | 自动切换的时间间隔，单位为毫秒                           | number  | 3000    |
 | height     | 幻灯片的高度                                             | number  | 256(px) |
 | dots       | 是否在图库底部显示圆点                                   | boolean | true    |
+| onChange   | 当前幻灯片变化时触发                                     | (index: number) => void | - |

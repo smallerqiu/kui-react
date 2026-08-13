@@ -34,7 +34,16 @@
 | defaultValue  | 非受控模式下的初始路径值。                                                             | `(string \| number)[]` | `[]`        |
 | open          | 受控的下拉框显示状态。                                                                 | `boolean`              | -           |
 | defaultOpen   | 非受控模式下的初始下拉框状态。                                                         | `boolean`              | `false`     |
+| theme         | 组件主题。                                                                             | `ThemeType`            | `fill`      |
+| bordered      | 是否显示边框。                                                                         | `boolean`              | `true`      |
+| shape         | 组件形状。                                                                             | `ShapeType`            | -           |
+| showArrow     | 是否显示下拉箭头。                                                                     | `boolean`              | `true`      |
+| icon          | 自定义前缀图标。                                                                       | `IconType[]`           | -           |
+| arrowIcon     | 自定义下拉箭头。                                                                       | `IconType[]`           | -           |
+| emptyText     | 空数据提示。                                                                           | `string`               | -           |
+| placement     | 弹层位置。                                                                             | `DropPlacementsType`   | `bottom-left` |
 | onChange      | 选择或清空路径时触发。                                                                 | `(value) => void`       | -           |
+| onOpenChange  | 下拉框显示状态变化时触发。                                                             | `(open: boolean) => void` | -         |
 | options       | 可选择的级联数据源树状结构。                                                           | `CascaderOption[]`     | `[]`        |
 | placeholder   | 当没有任何选择路径时的兜底提示占位文案。                                               | `string`               | `"请选择"`  |
 | disabled      | 是否完全禁用整个组件交互。                                                             | `boolean`              | `false`     |

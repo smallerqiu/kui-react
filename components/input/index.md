@@ -46,11 +46,17 @@
 | 属性                | 说明                                       | 类型                    | 默认值 |
 | ------------------- | ------------------------------------------ | ----------------------- | ------ |
 | value               | 受控输入值                                 | string 、 number        | -      |
+| defaultValue        | 非受控模式下的初始输入值                   | string、number          | ""     |
 | size                | 按钮尺寸,可选值 `small`、`large`，默认不选 | string                  | -      |
 | icon                | 输入框图标                                 | string                  | -      |
 | suffix              | 扩展后缀                                   | string,ReactNode             | -      |
 | prefix              | 扩展前缀                                   | string,ReactNode             | -      |
 | theme               | 主题                                       | string                  | fill   |
+| shape               | 输入框形状                                 | ShapeType               | -      |
+| inputType           | 自定义样式类名前缀                         | string                  | input  |
+| controls            | 输入框控制区域，供 InputNumber 等组件使用  | ReactNode               | -      |
+| disabled            | 是否禁用                                   | boolean                 | false  |
+| multiple            | 是否允许原生多值输入                       | boolean                 | false  |
 | clearable           | 是否显示清除按钮                           | boolean                    | false  |
 | visiblePasswordIcon | 是否显示切换按钮或者控制密码显隐           | boolean                    | true   |
 | onSearch            | 搜索事件的回调                             | (value: string) => void | -      |

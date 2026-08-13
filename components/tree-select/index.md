@@ -45,6 +45,12 @@
 | open             | 受控的下拉框显示状态                                       | boolean                           | -          |
 | defaultOpen      | 非受控模式的初始下拉框状态                                 | boolean                           | false      |
 | width            | 组件宽度                                                   | string,number                     | -          |
+| placement        | 下拉框弹出位置                                             | DropPlacementsType                | bottom-left |
+| maxTagCount      | 多选时最多展示的标签数量                                   | number                            | -          |
+| filterable       | 是否允许搜索过滤                                           | boolean                           | false      |
+| block            | 是否撑满父容器宽度                                         | boolean                           | false      |
+| options          | `treeData` 的兼容数据源属性                                | TreeNode[]                        | []         |
+| arrowIcon        | 自定义下拉箭头图标                                         | IconType[]                        | -          |
 | placeholder      | 选择框默认文字                                             | string                            | 请选择     |
 | disabled         | 是否禁用当前项                                             | boolean                              | false      |
 | size             | 组件尺寸大小,提供`small`,`large`两种尺寸，默认为正常       | string                            | -          |
@@ -63,6 +69,10 @@
 | treeShowLine     | 是否展示连接线                                             | boolean                              | false      |
 | treeShowIcon     | 是否展示图标                                               | boolean                              | true       |
 | treeExpandedKeys | 指定展开的节点                                             | string[]                          | []         |
+| treeSelectedKeys | 受控的 Tree 选中节点                                       | string[]                          | -          |
+| treeCheckedKeys  | 受控的 Tree 勾选节点                                       | string[]                          | -          |
+| treeCheckStrictly | 父子节点勾选状态是否相互独立                              | boolean                           | false      |
+| treeExpandedAll  | 是否默认展开全部非叶子节点                                 | boolean                           | false      |
 
 ## Tree 事件
 
@@ -72,5 +82,7 @@
 | onSearch     | 搜索时触发             | (e: InputEvent) => void                                   |
 | onChange     | 值改变时触发           | (value: string\|string[]) => void                         |
 | onTreeExpand | Tree节点展开时触发     | (result: TreeExpandEvent) => void                         |
+| onTreeExpandedKeysChange | Tree 展开 key 集合变化时触发 | (keys: string[]) => void                    |
+| onTreeCheckedKeysChange | Tree 勾选 key 集合变化时触发 | (keys: string[]) => void                     |
 | onOpenChange | 下拉框展开或收起时触发 | (open: boolean) => void                                   |
 | onClear      | 清空时触发             | () => void                                                |

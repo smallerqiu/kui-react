@@ -36,10 +36,12 @@
 | checked            | 受控的开关状态                                             | boolean                     | -      |
 | defaultChecked     | 非受控模式的初始开关状态                                   | boolean                     | false  |
 | disabled           | 禁用开关                                                  | boolean                     | false  |
+| loading            | 加载状态，加载时不可操作                                  | boolean                  | false  |
 | type               | 主题颜色 可传入 `success`，`warning`，`danger`，`primary` | string                   | -      |
 | size               | 组件尺寸，值为`small`展示小尺寸                           | string                   | -      |
-| checkedChildren / unCheckedChildren | 选中 / 未选中时的自定义内容                       | ReactNode                     | -      |
-| true-text          | 当 `checked` 为 `true` 时 ，显示的文字                    | string                   | -      |
-| false-text         | 当 `checked` 为 `false` 时 ，显示的文字                   | string                   | -      |
+| checkedChildren    | 选中时的自定义内容                                 | ReactNode                     | -      |
+| unCheckedChildren  | 未选中时的自定义内容                               | ReactNode                     | -      |
+| trueText           | 当 `checked` 为 `true` 时显示的文字                       | string                   | -      |
+| falseText          | 当 `checked` 为 `false` 时显示的文字                      | string                   | -      |
 | valueType          | 单位选项的输出值的类型                                    | [string,number,boolean]     | boolean   |
 | onChange           | 当 `checked` 改变时触发，回调                             | (value: boolean) => void | -      |

@@ -41,6 +41,11 @@
 | defaultValue | 非受控模式的初始选中值                                     | string,number,(string\|number)[]           | -          |
 | open         | 受控的下拉框显示状态                                       | boolean                                    | -          |
 | defaultOpen  | 非受控模式的初始下拉框状态                                 | boolean                                    | false      |
+| placement    | 下拉框弹出位置                                             | DropPlacementsType                         | bottom-left |
+| block        | 是否撑满父容器宽度                                         | boolean                                    | false      |
+| filterable   | 是否允许搜索过滤                                           | boolean                                    | false      |
+| loadingText  | 加载状态提示文字                                           | string                                     | -          |
+| arrowIcon    | 自定义下拉箭头图标                                         | IconType[]                                 | -          |
 | width        | 组件宽度                                                   | string,number                              | -          |
 | placeholder  | 选择框默认文字                                             | string                                     | 请选择     |
 | disabled     | 是否禁用当前项                                             | boolean                                       | false      |

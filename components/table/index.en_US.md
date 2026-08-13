@@ -98,18 +98,22 @@ const columns = [
 | bordered     | Whether to display borders                               | boolean                                                                         | false   |
 | checkable    | Whether to show checkboxes                               | boolean                                                                         | false   |
 | selectedKeys | Collection of selected keys                              | string[]                                                                     | -       |
+| defaultSelectedKeys | Initial selected keys in uncontrolled mode       | (string \| number)[]                                                        | []      |
 | disabledKeys | Disabled key set                                         | string[]                                                                     | -       |
 | size         | Display compact mode when the value is `small`           | string                                                                       | -       |
 | emptyText    | Prompt displayed when there is no data                   | string                                                                       | No Data |
 | loading      | Table asynchronous loading mode                          | boolean                                                                         | false   |
 | data         | Structured data to be displayed                          | any[]                                                                        | []      |
 | columns      | Configuration description of table columns               | Column[]                                                                     | []      |
+| header       | Custom table header content                              | ReactNode                                                                    | -       |
+| footer       | Custom table footer content                              | ReactNode                                                                    | -       |
 | rowKey       | Basis for selection                                      | string                                                                       | key     |
 | striped      | Whether to display zebra stripes                         | boolean                                                                         | false   |
 | onRowClick   | Triggered when clicking a row                            | (record: any, index: number) => void                                         | -       |
 | onSort       | Triggered when clicking to sort                          | (state: SortState) => void                                                   | -       |
 | onSelect     | Triggered when clicking the checkbox                     | (record: any, selected: boolean, selectedKeys: (string \| number)[]) => void | -       |
 | onSelectAll  | Triggered when clicking the header checkbox of the Table | (selected: boolean, selectedKeys: (string \| number)[]) => void              | -       |
+| onSelectedKeysChange | Called when selected keys change                 | (selectedKeys: (string \| number)[]) => void                                | -       |
 
 ## Column API
 
