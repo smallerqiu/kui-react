@@ -4,17 +4,16 @@ import fs from "fs";
 import path from "path";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
-import banner from "./plugins/banner";
-import { generateGlobalDts } from "./plugins/resolver";
+import banner from "./plugins/banner/index.ts";
 export const getLocaleEntries = () => {
-  const localePath = path.resolve(__dirname, "components/locale");
+  const localePath = path.resolve(import.meta.dirname, "components/locale");
   if (!fs.existsSync(localePath)) return {};
   const files = fs.readdirSync(localePath);
   const entries: Record<string, string> = {};
   files.forEach((file) => {
     if (file.endsWith(".ts") || file.endsWith(".js")) {
       const name = file.replace(/\.(ts|js)$/, "");
-      entries[`locale/${name}`] = path.resolve(__dirname, `components/locale/${file}`);
+      entries[`locale/${name}`] = path.resolve(import.meta.dirname, `components/locale/${file}`);
     }
   });
   return entries;
@@ -33,13 +32,9 @@ export default defineConfig({
       insertTypesEntry: true,
       tsconfigPath: "./tsconfig.app.json",
       outDirs: "./types/",
-      entryRoot: path.resolve(__dirname, "components"),
+      entryRoot: path.resolve(import.meta.dirname, "components"),
       exclude: ["node_modules/**", "src/**", "plugins"],
       include: ["components/**/*.ts", "components/**/*.tsx"],
-      afterBuild: () => {
-        // 在 ES 构建完成后生成 global.d.ts、Vetur 和 Web-Types 配置
-        generateGlobalDts();
-      },
     }),
     banner(),
   ],
@@ -47,7 +42,7 @@ export default defineConfig({
     outDir: "es",
     lib: {
       entry: {
-        index: path.resolve(__dirname, "components/index.ts"),
+        index: path.resolve(import.meta.dirname, "components/index.ts"),
         ...getLocaleEntries(),
       },
       formats: ["es"],
@@ -55,7 +50,15 @@ export default defineConfig({
     },
     minify: false,
     rollupOptions: {
-      external: ["react", "react-dom", "react-dom/client", "dayjs"],
+      external: [
+        "react",
+        "react/compiler-runtime",
+        "react/jsx-runtime",
+        "react/jsx-dev-runtime",
+        "react-dom",
+        "react-dom/client",
+        "dayjs",
+      ],
       output: {
         exports: "named",
         globals: { react: "React", dayjs: "dayjs" },

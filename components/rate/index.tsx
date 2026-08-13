@@ -6,6 +6,7 @@ import Star from "./star";
 
 export interface RateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
   value?: number;
+  defaultValue?: number;
   allowClear?: boolean;
   allowHalf?: boolean;
   color?: string;
@@ -22,7 +23,8 @@ export interface RateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "o
 }
 
 const Rate: React.FC<RateProps> = ({
-  value = 0,
+  value,
+  defaultValue = 0,
   allowClear = true,
   allowHalf = false,
   color,
@@ -39,15 +41,10 @@ const Rate: React.FC<RateProps> = ({
   className = "",
   ...rest
 }) => {
-  const [initValue, setInitValue] = useState(value);
+  const [innerValue, setInnerValue] = useState(defaultValue);
   const [tempValue, setTempValue] = useState<number | null>(null);
   const [cleared, setCleared] = useState(false);
-
-  const [syncedValue, setSyncedValue] = useState(value);
-  if (syncedValue !== value) {
-    setSyncedValue(value);
-    setInitValue(value);
-  }
+  const currentValue = value ?? innerValue;
 
   const update = (t: "C" | "M", index: number, percent: number) => {
     if (t === "M") {
@@ -61,8 +58,8 @@ const Rate: React.FC<RateProps> = ({
       let v = index - (allowHalf ? (percent < 0.5 ? 0.5 : 0) : 0);
       v = parseFloat(v.toFixed(2));
 
-      const nextValue = v === initValue && allowClear ? 0 : v;
-      setInitValue(nextValue);
+      const nextValue = v === currentValue && allowClear ? 0 : v;
+      if (value === undefined) setInnerValue(nextValue);
 
       if (nextValue === 0) {
         setCleared(true);
@@ -79,7 +76,7 @@ const Rate: React.FC<RateProps> = ({
     setCleared(false);
   };
 
-  const tpValue = tempValue !== null ? tempValue : initValue;
+  const tpValue = tempValue !== null ? tempValue : currentValue;
 
   // Normalize count
   let actualCount = count;
@@ -132,7 +129,7 @@ const Rate: React.FC<RateProps> = ({
       {...rest}
     >
       {stars}
-      {showScore ? <span className="k-rate-score">{initValue}</span> : null}
+      {showScore ? <span className="k-rate-score">{currentValue}</span> : null}
     </div>
   );
 };

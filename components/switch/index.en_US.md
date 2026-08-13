@@ -33,7 +33,8 @@ Switch selector.
 
 | Property           | Description                                                               | Type                     | Default |
 | ------------------ | ------------------------------------------------------------------------- | ------------------------ | ------- |
-| checked            | Controlled switch state                                                   | bool                     | false   |
+| checked            | Controlled switch state                                                   | bool                     | -       |
+| defaultChecked     | Initial switch state in uncontrolled mode                                 | bool                     | false   |
 | disabled           | Disable switch                                                            | bool                     | false   |
 | type               | Theme color, can pass `success`, `warning`, `danger`, `primary`           | string                   | -       |
 | size               | Component size, when value is `small` displays small size                 | string                   | -       |

@@ -1,4 +1,4 @@
-import type { PluginConfig, UnionPluginOptions } from './types'
+import type { PluginConfig, UnionPluginOptions } from './types.ts'
 
 /**
  * Verify the banner content

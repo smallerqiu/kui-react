@@ -2,8 +2,8 @@ import babel from "@rolldown/plugin-babel";
 import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import path from "path";
 import { defineConfig } from "vite";
-import banner from "./plugins/banner";
-import reactMarkdown from "./plugins/markdown";
+import banner from "./plugins/banner/index.ts";
+import reactMarkdown from "./plugins/markdown/index.ts";
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -19,8 +19,8 @@ export default defineConfig(({ mode }) => {
     plugins: [reactMarkdown(), react(), babel({ presets: [reactCompilerPreset()] }), banner()],
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, "/"),
-        "react-kui": path.resolve(__dirname, "./components"),
+        "@": path.resolve(import.meta.dirname, "/"),
+        "react-kui": path.resolve(import.meta.dirname, "./components"),
         // "kui-icons": `${import.meta.env.VITE_APP_IMPORT_URL}/js/kui-icons.esm.js`,
       },
       extensions: [".js", ".ts", ".jsx", ".tsx", ".json", "md"],

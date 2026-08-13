@@ -33,7 +33,8 @@
 
 | 属性               | 说明                                                      | 类型                     | 默认值 |
 | ------------------ | --------------------------------------------------------- | ------------------------ | ------ |
-| checked            | 受控的开关状态                                             | bool                     | false  |
+| checked            | 受控的开关状态                                             | bool                     | -      |
+| defaultChecked     | 非受控模式的初始开关状态                                   | bool                     | false  |
 | disabled           | 禁用开关                                                  | bool                     | false  |
 | type               | 主题颜色 可传入 `success`，`warning`，`danger`，`primary` | string                   | -      |
 | size               | 组件尺寸，值为`small`展示小尺寸                           | string                   | -      |

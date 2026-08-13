@@ -37,7 +37,8 @@ Dropdown selector.
 
 | Property     | Description                                                                       | Type                                       | Default       |
 | ------------ | --------------------------------------------------------------------------------- | ------------------------------------------ | ------------- |
-| value        | Controlled selected value                                                        | string, number                             | -             |
+| value        | Controlled selected value                                                        | string, number, (string\|number)[]         | -             |
+| defaultValue | Initial selected value in uncontrolled mode                                      | string, number, (string\|number)[]         | -             |
 | width        | Component width                                                                   | string, number                             | -             |
 | placeholder  | Default text of selector                                                          | string                                     | Please select |
 | disabled     | Whether current item is disabled                                                  | bool                                       | false         |

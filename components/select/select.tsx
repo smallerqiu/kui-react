@@ -29,7 +29,7 @@ const normalizeValue = (value: SelectValue): SelectPrimitive[] => {
 
 export interface SelectProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "onChange" | "onSelect"
+  "onChange" | "onSelect" | "defaultValue"
 > {
   placeholder?: string;
   size?: SizeType;
@@ -37,6 +37,7 @@ export interface SelectProps extends Omit<
   width?: number;
   maxTagCount?: number;
   value?: SelectValue;
+  defaultValue?: SelectValue;
   clearable?: boolean;
   filterable?: boolean;
   block?: boolean;
@@ -67,6 +68,7 @@ const Select: React.FC<SelectProps> = ({
   width,
   maxTagCount,
   value,
+  defaultValue,
   clearable = true,
   filterable = false,
   block = false,
@@ -98,7 +100,9 @@ const Select: React.FC<SelectProps> = ({
   const [visible, setVisible] = useState(false);
   const [rendered, setRendered] = useState(false);
   const [internalValue, setInternalValue] = useState<(string | number)[]>(
-    multiple ? (Array.isArray(value) ? value : []) : normalizeValue(value)
+    multiple
+      ? (Array.isArray(defaultValue) ? defaultValue : [])
+      : normalizeValue(defaultValue)
   );
   const controlled = value !== undefined;
   const controlledValue = value;

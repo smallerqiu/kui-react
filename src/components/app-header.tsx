@@ -22,12 +22,39 @@ import { routeData } from "../menu";
 
 const DEFAULT_THEME_COLOR = "#3a95ff";
 
+function updateThemeColorStyle(value: string) {
+  const [red, green, blue] = Color(value).rgb().array();
+  let style = document.querySelector<HTMLStyleElement>('style[name="kui"]');
+  if (!style) {
+    style = document.createElement("style");
+    style.setAttribute("name", "kui");
+    document.head.appendChild(style);
+  }
+  style.textContent = `
+    body[theme-type='custom'] {
+      --kui-color-primary: rgb(${red}, ${green}, ${blue});
+      --kui-color-primary-hover: rgba(${red}, ${green}, ${blue}, .9);
+      --kui-color-primary-active: rgba(${red}, ${green}, ${blue}, .75);
+      --kui-color-primary-1: rgba(${red}, ${green}, ${blue}, .9);
+      --kui-color-primary-3: rgba(${red}, ${green}, ${blue}, .7);
+      --kui-color-primary-6: rgba(${red}, ${green}, ${blue}, .4);
+      --kui-color-primary-8: rgba(${red}, ${green}, ${blue}, .2);
+      --kui-color-primary-9: rgba(${red}, ${green}, ${blue}, .1);
+      --kui-color-item-selected: rgba(${red}, ${green}, ${blue}, .2);
+      --kui-color-outline: rgba(${red}, ${green}, ${blue}, .2);
+    }
+  `;
+  document.body.setAttribute("theme-type", "custom");
+}
+
 export default function AppHeader() {
   const navigate = useNavigate();
   const location = useLocation();
   const { lang, changeLang, t } = useDocs();
   const [query, setQuery] = useState<string | number>("");
-  const [themeColor, setThemeColor] = useState(DEFAULT_THEME_COLOR);
+  const [themeColor, setThemeColor] = useState(
+    () => localStorage.getItem("themeColor") || DEFAULT_THEME_COLOR
+  );
   const [themeMode, setThemeMode] = useState(() => localStorage.getItem("theme-mode") || "light");
 
   const withLang = (path: string) => `${path}${lang === "en" ? "-en" : ""}`;
@@ -71,28 +98,7 @@ export default function AppHeader() {
         : ["docs"];
 
   const applyThemeColor = (value: string) => {
-    const [red, green, blue] = Color(value).rgb().array();
-    let style = document.querySelector<HTMLStyleElement>('style[name="kui"]');
-    if (!style) {
-      style = document.createElement("style");
-      style.setAttribute("name", "kui");
-      document.head.appendChild(style);
-    }
-    style.textContent = `
-      body[theme-type='custom'] {
-        --kui-color-primary: rgb(${red}, ${green}, ${blue});
-        --kui-color-primary-hover: rgba(${red}, ${green}, ${blue}, .9);
-        --kui-color-primary-active: rgba(${red}, ${green}, ${blue}, .75);
-        --kui-color-primary-1: rgba(${red}, ${green}, ${blue}, .9);
-        --kui-color-primary-3: rgba(${red}, ${green}, ${blue}, .7);
-        --kui-color-primary-6: rgba(${red}, ${green}, ${blue}, .4);
-        --kui-color-primary-8: rgba(${red}, ${green}, ${blue}, .2);
-        --kui-color-primary-9: rgba(${red}, ${green}, ${blue}, .1);
-        --kui-color-item-selected: rgba(${red}, ${green}, ${blue}, .2);
-        --kui-color-outline: rgba(${red}, ${green}, ${blue}, .2);
-      }
-    `;
-    document.body.setAttribute("theme-type", "custom");
+    updateThemeColorStyle(value);
     localStorage.setItem("themeColor", value);
     setThemeColor(value);
   };
@@ -102,9 +108,8 @@ export default function AppHeader() {
     const savedColor = localStorage.getItem("themeColor");
     if (savedMode) {
       document.documentElement.setAttribute("theme-mode", savedMode);
-      setThemeMode(savedMode);
     }
-    if (savedColor) applyThemeColor(savedColor);
+    if (savedColor) updateThemeColorStyle(savedColor);
   }, []);
 
   const search = (name: string) => {

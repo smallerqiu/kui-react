@@ -26,6 +26,7 @@ Rating component.
 | Property          | Description                                 | Type                    | Default |
 | ----------------- | ------------------------------------------- | ----------------------- | ------- |
 | value             | Current controlled value                    | number                  | -       |
+| defaultValue      | Initial value in uncontrolled mode          | number                  | 0       |
 | allowClear        | Whether to allow clearing by clicking again | bool                    | false   |
 | allowHalf         | Whether to allow half selection             | bool                    | false   |
 | showScore         | Whether to show score                       | bool                    | false   |

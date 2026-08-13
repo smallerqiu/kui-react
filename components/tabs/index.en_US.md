@@ -48,6 +48,7 @@ Provide peer areas to accommodate and display large chunks of content, keeping t
 | Property   | Description                                                     | Type                  | Default |
 | ---------- | --------------------------------------------------------------- | --------------------- | ------- |
 | value      | Currently active tab panel's key                                | string, number        | -       |
+| defaultValue | Initially active key in uncontrolled mode                      | string, number        | First panel |
 | card       | Whether tab style is card style                                 | bool                  | false   |
 | sample     | Whether tab style is simple style                               | bool                  | false   |
 | animated   | Whether to use animation to switch Tabs                         | bool                  | true    |

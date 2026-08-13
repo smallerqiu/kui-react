@@ -24,7 +24,7 @@ export type TreeSelectValue = string | number | Array<string | number> | null | 
 
 export interface TreeSelectProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
-  "onChange" | "onSelect"
+  "onChange" | "onSelect" | "defaultValue"
 > {
   placeholder?: string;
   size?: SizeType;
@@ -32,6 +32,7 @@ export interface TreeSelectProps extends Omit<
   width?: number;
   maxTagCount?: number;
   value?: TreeSelectValue;
+  defaultValue?: TreeSelectValue;
   clearable?: boolean;
   filterable?: boolean;
   block?: boolean;
@@ -82,6 +83,7 @@ export default function TreeSelect({
   width,
   maxTagCount,
   value,
+  defaultValue,
   clearable = true,
   filterable,
   block,
@@ -122,7 +124,7 @@ export default function TreeSelect({
   const locale = config?.locale || zhCN;
   const data = useMemo(() => treeData ?? options ?? [], [options, treeData]);
   const controlledValue = value;
-  const [innerValue, setInnerValue] = useState(() => normalize(controlledValue, !!multiple));
+  const [innerValue, setInnerValue] = useState(() => normalize(defaultValue, !!multiple));
   const currentValue =
     controlledValue !== undefined ? normalize(controlledValue, !!multiple) : innerValue;
   const [visible, setVisible] = useState(false);

@@ -1,9 +1,12 @@
 import fs from "node:fs";
 import { resolve } from "node:path";
 import type { PluginOption as VitePluginOption, ResolvedConfig as ViteResolvedConfig } from "vite";
-import pkg from "../../package.json";
-import type { PluginConfig, UnionPluginOptions } from "./types";
-import { getPluginConfig } from "./utils";
+import type { PluginConfig, UnionPluginOptions } from "./types.ts";
+import { getPluginConfig } from "./utils.ts";
+const pkg = JSON.parse(fs.readFileSync(new URL("../../package.json", import.meta.url), "utf8")) as {
+  name: string;
+  version: string;
+};
 const bannerText = `/*!
  * ${pkg.name} v${pkg.version}
  * Copyright 2017-present, kui-react.
@@ -12,7 +15,7 @@ const bannerText = `/*!
  * Author: Qiu / https://chuchur.com
  */\n`;
 
-export type { BannerPluginOptions, ContentCallback, PluginConfig } from "./types";
+export type { BannerPluginOptions, ContentCallback, PluginConfig } from "./types.ts";
 
 // Extends the config from `vite.config.ts`
 let viteConfig: ViteResolvedConfig;

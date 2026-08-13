@@ -26,6 +26,7 @@
 | 属性              | 说明                     | 类型                    | 默认值 |
 | ----------------- | ------------------------ | ----------------------- | ------ |
 | value             | 当前受控值              | number                  | -      |
+| defaultValue      | 非受控模式的初始值      | number                  | 0      |
 | allowClear        | 是否允许再次点击后清除   | bool                    | false  |
 | allowHalf         | 是否允许半选             | bool                    | false  |
 | showScore         | 是否显示分数             | bool                    | false  |

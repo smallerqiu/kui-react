@@ -7,6 +7,7 @@ import type { TabPanelProps } from "./tab-panel";
 
 export interface TabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
   value?: string | number;
+  defaultValue?: string | number;
   card?: boolean;
   sample?: boolean;
   centered?: boolean;
@@ -20,6 +21,7 @@ export interface TabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "o
 
 const Tabs: React.FC<TabsProps> = ({
   value,
+  defaultValue,
   card = false,
   sample = false,
   centered = false,
@@ -47,7 +49,7 @@ const Tabs: React.FC<TabsProps> = ({
       : undefined;
 
   const [innerActiveKey, setInnerActiveKey] = useState<string | number | undefined>(
-    value !== undefined ? value : firstKey
+    defaultValue ?? firstKey
   );
   const activeKey = value ?? innerActiveKey;
   const currentIndex = childList.findIndex(

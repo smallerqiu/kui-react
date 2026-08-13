@@ -10,6 +10,7 @@ export interface SwitchProps extends Omit<
   "onChange" | "type"
 > {
   checked?: boolean;
+  defaultChecked?: boolean;
   valueType?: ValueType;
   type?: string;
   disabled?: boolean;
@@ -24,6 +25,7 @@ export interface SwitchProps extends Omit<
 
 const Switch: React.FC<SwitchProps> = ({
   checked,
+  defaultChecked = false,
   valueType = "boolean",
   type,
   disabled = false,
@@ -38,7 +40,7 @@ const Switch: React.FC<SwitchProps> = ({
   onClick,
   ...rest
 }) => {
-  const [innerChecked, setInnerChecked] = useState(false);
+  const [innerChecked, setInnerChecked] = useState(defaultChecked);
   const currentChecked = checked ?? innerChecked;
 
   const change = (e: React.MouseEvent<HTMLButtonElement>) => {
