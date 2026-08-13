@@ -47,6 +47,7 @@ export interface SelectProps extends Omit<
   multiple?: boolean;
   loading?: boolean;
   bordered?: boolean;
+  extendWidth?: boolean;
   showArrow?: boolean;
   options?: SelectOption[];
   theme?: ThemeType;
@@ -80,6 +81,7 @@ const Select: React.FC<SelectProps> = ({
   multiple = false,
   loading = false,
   bordered = true,
+  extendWidth = true,
   showArrow = true,
   options,
   theme = "fill",
@@ -556,7 +558,7 @@ const Select: React.FC<SelectProps> = ({
     const popperProps = {
       ref: refPopper,
       style: {
-        minWidth: `${minWidth}px`,
+        minWidth: extendWidth ? `${minWidth}px` : undefined,
         left: `${position.left}px`,
         top: `${position.top}px`,
         transformOrigin: position.origin,

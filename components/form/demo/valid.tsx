@@ -15,7 +15,7 @@ import {
   Rate,
   Select,
   Slider,
-  KSwitch as Switch,
+  Switch,
   TextArea,
   TreeSelect,
   type FormExpose,

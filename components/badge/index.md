@@ -43,6 +43,6 @@
 | count    | 显示的文字                                 | string，number | -      |
 | color    | 徽标颜色                                   | string         | -      |
 | maxCount | 展示封顶的数字值，高于的部分会以+号显示    | number         | 99     |
-| dot      | 不展示数字，只有一个小红点                 | bool           | false  |
+| dot      | 不展示数字，只有一个小红点                 | boolean           | false  |
 | text     | 如果设置了状态，文本将设置状态点的显示文本 | string         | ''     |
 | status   | 将徽章设置为状态点                         | string         | ''     |

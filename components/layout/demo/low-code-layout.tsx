@@ -1,5 +1,5 @@
 import { Files, GitBranch, Search } from "kui-icons";
-import { Content, Footer, Header, Icon, Input, KSwitch, Layout, Sider } from "react-kui";
+import { Content, Footer, Header, Icon, Input, Switch, Layout, Sider } from "react-kui";
 
 const styles = `
 .ide-layout { height: 100vh; background: #1e1e1e; color: #ccc; overflow: hidden; }
@@ -61,7 +61,7 @@ export default function App() {
             <div className="panel-title">Attribute Settings</div>
             <div className="inspector-content">
               <div className="setting-row">
-                <span>Display mode:</span> <KSwitch />
+                <span>Display mode:</span> <Switch />
               </div>
               <div className="setting-row">
                 <span>Main color:</span> <Input size="small" />

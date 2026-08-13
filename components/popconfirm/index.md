@@ -32,7 +32,7 @@
 | okText     | 确定按钮的文字，                                                                                                                                                           | string       | 确定   |
 | open       | 受控的显示状态                                                                                                                                                             | boolean      | -      |
 | defaultOpen | 非受控模式的初始显示状态                                                                                                                                                 | boolean      | false  |
-| dark       | 是否展示暗色主题                                                                                                                                                           | bool         | false  |
+| dark       | 是否展示暗色主题                                                                                                                                                           | boolean         | false  |
 | cancelText | 取消按钮的文字，                                                                                                                                                           | string       | 取消   |
 | onCancel   | 点击取消的回调，                                                                                                                                                           | () => void   | -      |
 | onOk       | 点击确定的回调，                                                                                                                                                           | () => void   | -      |

@@ -27,9 +27,9 @@ Rating component.
 | ----------------- | ------------------------------------------- | ----------------------- | ------- |
 | value             | Current controlled value                    | number                  | -       |
 | defaultValue      | Initial value in uncontrolled mode          | number                  | 0       |
-| allowClear        | Whether to allow clearing by clicking again | bool                    | false   |
-| allowHalf         | Whether to allow half selection             | bool                    | false   |
-| showScore         | Whether to show score                       | bool                    | false   |
+| allowClear        | Whether to allow clearing by clicking again | boolean                    | false   |
+| allowHalf         | Whether to allow half selection             | boolean                    | false   |
+| showScore         | Whether to show score                       | boolean                    | false   |
 | character         | Custom character                            | string                  | -       |
 | count             | Total number of stars                       | number                  | -       |
 | icon              | Custom display icon                         | Icon                    | -       |
@@ -38,5 +38,5 @@ Rating component.
 | disabled          | Read-only, cannot interact                  | string                  | -       |
 | tooltips          | Custom prompt information for each item     | string[]                | -       |
 | onChange          | Callback when selecting                     | (value: number) => void | -       |
-| symbolReverseFill | Symbol Inverted Fill Color                  | bool                    | false   |
+| symbolReverseFill | Symbol Inverted Fill Color                  | boolean                    | false   |
 | strokeWidth       | Symbol Border Unit                          | number                  | 1       |

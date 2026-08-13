@@ -15,7 +15,7 @@ import {
   Select,
   Slider,
   Space,
-  KSwitch as Switch,
+  Switch,
   TreeSelect,
   Form,
   FormItem,

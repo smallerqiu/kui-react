@@ -23,7 +23,7 @@ import {
   Select,
   Sider,
   Space,
-  KSwitch as Switch,
+  Switch,
   Tag,
   TextArea,
   type ShapeType,

@@ -33,13 +33,13 @@ Switch selector.
 
 | Property           | Description                                                               | Type                     | Default |
 | ------------------ | ------------------------------------------------------------------------- | ------------------------ | ------- |
-| checked            | Controlled switch state                                                   | bool                     | -       |
-| defaultChecked     | Initial switch state in uncontrolled mode                                 | bool                     | false   |
-| disabled           | Disable switch                                                            | bool                     | false   |
+| checked            | Controlled switch state                                                   | boolean                     | -       |
+| defaultChecked     | Initial switch state in uncontrolled mode                                 | boolean                     | false   |
+| disabled           | Disable switch                                                            | boolean                     | false   |
 | type               | Theme color, can pass `success`, `warning`, `danger`, `primary`           | string                   | -       |
 | size               | Component size, when value is `small` displays small size                 | string                   | -       |
 | checkedChildren / unCheckedChildren | Custom content for the checked / unchecked state               | ReactNode                     | -       |
 | true-text          | Text displayed when `checked` is `true`                                   | string                   | -       |
 | false-text         | Text displayed when `checked` is `false`                                  | string                   | -       |
-| valueType          | The type of output value for the unit option                              | [string,number,bool]     | bool    |
+| valueType          | The type of output value for the unit option                              | [string,number,boolean]     | boolean    |
 | onChange           | Triggered when `checked` changes, callback                                | (value: boolean) => void | -       |

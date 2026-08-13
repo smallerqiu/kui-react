@@ -37,6 +37,6 @@
 | width     | 展示的宽度,默认为内容区域的大小                                                                                                                                            | string,number | -      |
 | open      | 受控的显示状态                                                                                                                                                             | boolean       | -      |
 | defaultOpen | 非受控模式的初始显示状态                                                                                                                                                 | boolean       | false  |
-| dark      | 是否使用暗色主题                                                                                                                                                           | bool          | false  |
+| dark      | 是否使用暗色主题                                                                                                                                                           | boolean          | false  |
 | onClose   | 关闭时的回调                                                                                                                                                               | () => void    | -      |
 | onOpenChange | 显示状态变化时触发                                                                                                                                                       | (open: boolean) => void | - |

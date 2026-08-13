@@ -28,7 +28,7 @@
 | -------- | ---------------- | ------------ | ------ |
 | title    | 卡片的标题       | ReactNode    | -      |
 | icon     | 卡片标题的图标   | IconType[]   | -      |
-| bordered | 卡片是否显示边框 | bool         | false  |
+| bordered | 卡片是否显示边框 | boolean         | false  |
 | extra    | 卡片标题扩展     | ReactNode    | -      |
 | cover    | 卡片封面         | string,ReactNode | -   |
 

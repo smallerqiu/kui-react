@@ -28,7 +28,7 @@ The most basic card container, can carry text, lists, images, paragraphs, often 
 | -------- | ---------------------------------- | ------------ | ------- |
 | title    | Card title                         | ReactNode    | -       |
 | icon     | Icon for the card title            | IconType[]   | -       |
-| bordered | Whether the card displays a border | bool         | false   |
+| bordered | Whether the card displays a border | boolean         | false   |
 | extra    | Card title extension               | ReactNode    | -       |
 | cover    | Card cover                         | string,ReactNode | -    |
 

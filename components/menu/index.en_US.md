@@ -52,15 +52,15 @@ The navigation menu is the soul of a website. Users rely on navigation to jump b
 | mode            | Menu type, supports three modes: vertical, horizontal, and inline | string: vertical vertical-right horizontal inline | vertical |
 | onSelect        | Called when MenuItem is clicked                                   | (data: MenuSelectEvent) => void                   | -        |
 | onOpenChange    | Callback when SubMenu expands/collapses                           | (openKeys: string[])=>void                        | -        |
-| accordion       | Whether only one menu item can be expanded                        | bool                                              | false    |
-| inlineCollapsed | Whether the menu is collapsed in inline mode                      | bool                                              | false    |
+| accordion       | Whether only one menu item can be expanded                        | boolean                                              | false    |
+| inlineCollapsed | Whether the menu is collapsed in inline mode                      | boolean                                              | false    |
 
 ### Menu(items)
 
 | Property | Description                              | Type               | Default |
 | -------- | ---------------------------------------- | ------------------ | ------- |
 | icon     | Item icon                                | string             | -       |
-| disabled | Whether disabled                         | bool               | false   |
+| disabled | Whether disabled                         | boolean               | false   |
 | key      | Unique identifier for item               | string             | -       |
 | title    | Suspended title displayed when collapsed | string             | -       |
 | children | Menu children                            | MenuOptionsProps[] | -       |
@@ -70,7 +70,7 @@ The navigation menu is the soul of a website. Users rely on navigation to jump b
 | Property | Description                              | Type   | Default |
 | -------- | ---------------------------------------- | ------ | ------- |
 | icon     | Item icon                                | string | -       |
-| disabled | Whether disabled                         | bool   | false   |
+| disabled | Whether disabled                         | boolean   | false   |
 | key      | Unique identifier for item               | string | -       |
 | title    | Suspended title displayed when collapsed | string | -       |
 
@@ -79,7 +79,7 @@ The navigation menu is the soul of a website. Users rely on navigation to jump b
 | Property | Description                | Type          | Default |
 | -------- | -------------------------- | ------------- | ------- |
 | icon     | Item icon                  | string        | -       |
-| disabled | Whether disabled           | bool          | false   |
+| disabled | Whether disabled           | boolean          | false   |
 | key      | Unique identifier for item | string        | -       |
 | title    | Submenu item content       | ReactNode | -       |
 

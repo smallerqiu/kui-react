@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { KSwitch as Switch, Menu } from "react-kui";
+import { Switch, Menu } from "react-kui";
 import { items } from "./data";
 export default function App() {
   const [dark, setDark] = useState(true),

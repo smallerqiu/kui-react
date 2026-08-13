@@ -33,26 +33,26 @@ Modal dialog box.
 
 | Property     | Description                                                                 | Type                  | Default |
 | ------------ | --------------------------------------------------------------------------- | --------------------- | ------- |
-| open         | Controlled dialog visibility                                                | bool                  | -       |
-| defaultOpen  | Initial visibility in uncontrolled mode                                     | bool                  | false   |
+| open         | Controlled dialog visibility                                                | boolean                  | -       |
+| defaultOpen  | Initial visibility in uncontrolled mode                                     | boolean                  | false   |
 | title        | Dialog title                                                                | string                | -       |
 | width        | Dialog width                                                                | number, string        | 520     |
 | okText       | OK button text                                                              | string                | OK      |
 | cancelText   | Cancel button text                                                          | string                | Cancel  |
-| draggable    | Whether the modal can be dragged, not available in confirm mode             | bool                  | false   |
-| centered     | Whether the window can be centered, not available in confirm mode           | bool                  | false   |
-| maximized    | Whether the modal can be maximized, not available in confirm mode           | bool                  | false   |
-| maskClosable | Whether clicking the mask closes the modal                                  | bool                  | false   |
-| escKey       | Whether to support closing with Esc key                                     | bool                  | true    |
-| footer       | When `footer=false`, the bottom button is not displayed.                    | bool,ReactNode             | true    |
-| loading      | When set to `true`, the confirm button will be in a loading state           | bool                  | false   |
+| draggable    | Whether the modal can be dragged, not available in confirm mode             | boolean                  | false   |
+| centered     | Whether the window can be centered, not available in confirm mode           | boolean                  | false   |
+| maximized    | Whether the modal can be maximized, not available in confirm mode           | boolean                  | false   |
+| maskClosable | Whether clicking the mask closes the modal                                  | boolean                  | false   |
+| escKey       | Whether to support closing with Esc key                                     | boolean                  | true    |
+| footer       | When `footer=false`, the bottom button is not displayed.                    | boolean,ReactNode             | true    |
+| loading      | When set to `true`, the confirm button will be in a loading state           | boolean                  | false   |
 | top          | Distance from the top of the window                                         | number                | 100     |
-| showClose    | Whether to display the close button                                         | bool                  | true    |
-| mask         | Whether to show the mask                                                    | bool                  | true    |
+| showClose    | Whether to display the close button                                         | boolean                  | true    |
+| mask         | Whether to show the mask                                                    | boolean                  | true    |
 | onOk         | Callback when OK is clicked, `Note: will not close Modal`                   | () => void            | -       |
 | onCancel     | Callback when Cancel is clicked                                             | () => void            | -       |
 | onClose      | Callback when window closes                                                 | () => void            | -       |
-| onOpenChange | Callback for opening or closing a window                                    | (opened:bool) => void | -       |
+| onOpenChange | Callback for opening or closing a window                                    | (opened:boolean) => void | -       |
 
 ## Modal.method()
 

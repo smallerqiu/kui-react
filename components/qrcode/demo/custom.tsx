@@ -5,7 +5,7 @@ import {
   RadioGroup,
   Slider,
   Space,
-  KSwitch as Switch,
+  Switch,
   QRCode,
   type QRCodeErrorLevel,
 } from "react-kui";

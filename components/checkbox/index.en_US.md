@@ -37,10 +37,10 @@ Checkbox for multiple selections.
 | defaultChecked | Initial checked state in uncontrolled mode                  | boolean               | false   |
 | label         | The text to display                                           | string 、 number      | -       |
 | value         | The value represented when used in combination                | String、number        | -       |
-| disabled      | Whether the current item is disabled                          | bool                  | false   |
-| indeterminate | Combined auxiliary option controls the indeterminate state    | bool                  | false   |
+| disabled      | Whether the current item is disabled                          | boolean                  | false   |
+| indeterminate | Combined auxiliary option controls the indeterminate state    | boolean                  | false   |
 | theme         | The component renders the theme, defaulting to 'fill'.        | string                | fill    |
-| valueType     | The type of output value for the unit option                  | [string,number,bool]  | bool    |
+| valueType     | The type of output value for the unit option                  | [string,number,boolean]  | boolean    |
 | onChange      | Callback when the option state changes                        | (e:ChangeEvent)=>void | -       |
 
 ## CheckboxGroup API
@@ -49,7 +49,7 @@ Checkbox for multiple selections.
 | ---------- | -------------------------------------------------------------------------------------- | ---------------- | ---------- |
 | value      | Controlled selected values                                                              | any[]            | -          |
 | defaultValue | Initial selected values in uncontrolled mode                                          | any[]            | []         |
-| disabled   | Whether the component is disabled                                                      | bool             | false      |
+| disabled   | Whether the component is disabled                                                      | boolean             | false      |
 | onChange   | Triggered when the option state changes, returns the currently selected item and state | (any[])=>void    | -          |
 | direction  | Layout direction, optional values `horizontal`, `vertical`                             | string           | horizontal |
 | options    | Can specify child `checkbox` items                                                     | CheckboxOption[] | -          |

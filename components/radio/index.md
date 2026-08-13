@@ -37,7 +37,7 @@
 | defaultChecked | 非受控模式的初始选中状态 | boolean               | false  |
 | label      | 文字提示                 | string 、 number         | -      |
 | value      | 组合使用时的值           | string 、 number         | -      |
-| disabled   | 是否禁用当前项           | bool                     | false  |
+| disabled   | 是否禁用当前项           | boolean                     | false  |
 | onChange   | 在选项状态发生改变时回调 | (e: ChangeEvent) => void | -      |
 
 ## RadioGroup API

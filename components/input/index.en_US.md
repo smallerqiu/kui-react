@@ -51,9 +51,8 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 | suffix              | Extension suffix                                                    | string, ReactNode            | -       |
 | prefix              | Extension prefix                                                    | string, ReactNode            | -       |
 | theme               | The theme of Input                                                  | string                  | fill    |
-| clearable           | Whether to show the clear button                                    | bool                    | false   |
-| visiblePassword     | Password initially displayed in plain text                          | bool                    | false   |
-| visiblePasswordIcon | Whether to show the toggle button or control password visibility    | bool                    | true    |
+| clearable           | Whether to show the clear button                                    | boolean                    | false   |
+| visiblePasswordIcon | Whether to show the toggle button or control password visibility    | boolean                    | true    |
 | onSearch            | Search event callback                                               | (value: string) => void | -       |
 | onIconClick         | Callback for icon click event                                       | (e: Event) => void      | -       |
 | onClear             | Callback for pressing the clear button                              | () => void              | -       |
@@ -63,6 +62,6 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 
 | Property | Description                                                                         | Type   | Default |
 | -------- | ----------------------------------------------------------------------------------- | ------ | ------- |
-| block    | Whether to inherit the parent width                                                 | bool   | false   |
-| compact  | Whether to use compact mode                                                         | bool   | false   |
+| block    | Whether to inherit the parent width                                                 | boolean   | false   |
+| compact  | Whether to use compact mode                                                         | boolean   | false   |
 | size     | Spacing of child components, optional values `small`, `large`, default not selected | string | -       |

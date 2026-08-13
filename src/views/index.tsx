@@ -4,7 +4,7 @@ import {
   Button,
   FeatureCard,
   Icon,
-  KSwitch,
+  Switch,
   Layout,
   Progress,
   StatCard,
@@ -124,7 +124,7 @@ export default function Home() {
                   <div className="preview-panel">
                     <div className="preview-panel-head">
                       <strong>Usage</strong>
-                      <KSwitch size="small" checked />
+                      <Switch size="small" checked />
                     </div>
                     <Progress percent={72} showInfo={false} />
                     <Progress percent={48} showInfo={false} />

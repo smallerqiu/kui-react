@@ -95,17 +95,17 @@ const columns = [
 
 | 属性         | 说明                      | 类型                                                                         | 默认值   |
 | ------------ | ------------------------- | ---------------------------------------------------------------------------- | -------- |
-| bordered     | 是否显示边框              | bool                                                                         | false    |
-| checkable    | 是否显示勾选框            | bool                                                                         | false    |
+| bordered     | 是否显示边框              | boolean                                                                         | false    |
+| checkable    | 是否显示勾选框            | boolean                                                                         | false    |
 | selectedKeys | 勾选的key集合             | string[]                                                                     | -        |
 | disabledKeys | 禁用的key集合             | string[]                                                                     | -        |
 | size         | 值为`small`时展示紧凑模式 | string                                                                       | -        |
 | emptyText    | 没有数据时展示的提示      | string                                                                       | 赞无数据 |
-| loading      | 表格异步加载模式          | bool                                                                         | false    |
+| loading      | 表格异步加载模式          | boolean                                                                         | false    |
 | data         | 显示的结构化数据          | any[]                                                                        | []       |
 | columns      | 表格列的配置描述，        | Column[]                                                                     | []       |
 | rowKey       | 勾选时的依据              | string                                                                       | key      |
-| striped      | 是否展示斑马条纹          | bool                                                                         | false    |
+| striped      | 是否展示斑马条纹          | boolean                                                                         | false    |
 | onRowClick   | 单击某一行时触发          | (record: any, index: number) => void                                         | -        |
 | onSort       | 点击排序时触发            | (state: SortState) => void                                                   | -        |
 | onSelect     | 点击复选框时触发          | (record: any, selected: boolean, selectedKeys: (string \| number)[]) => void | -        |

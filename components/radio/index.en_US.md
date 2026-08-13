@@ -37,7 +37,7 @@ Radio button.
 | defaultChecked | Initial checked state in uncontrolled mode | boolean          | false   |
 | label      | Text prompt                        | string, number           | -       |
 | value      | Value when used in combination     | string 、 number         | -       |
-| disabled   | Whether current item is disabled   | bool                     | false   |
+| disabled   | Whether current item is disabled   | boolean                     | false   |
 | onChange   | Callback when option state changes | (e: ChangeEvent) => void | -       |
 
 ## RadioGroup API

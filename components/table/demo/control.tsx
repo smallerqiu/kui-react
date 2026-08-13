@@ -6,7 +6,7 @@ import {
   Icon,
   RadioGroup,
   Space,
-  KSwitch as Switch,
+  Switch,
   Tag,
   Table,
   type Column,

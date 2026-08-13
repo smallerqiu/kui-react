@@ -49,10 +49,10 @@ Provide peer areas to accommodate and display large chunks of content, keeping t
 | ---------- | --------------------------------------------------------------- | --------------------- | ------- |
 | value      | Currently active tab panel's key                                | string, number        | -       |
 | defaultValue | Initially active key in uncontrolled mode                      | string, number        | First panel |
-| card       | Whether tab style is card style                                 | bool                  | false   |
-| sample     | Whether tab style is simple style                               | bool                  | false   |
-| animated   | Whether to use animation to switch Tabs                         | bool                  | true    |
-| centered   | Whether to center the label                                     | bool                  | false   |
+| card       | Whether tab style is card style                                 | boolean                  | false   |
+| sample     | Whether tab style is simple style                               | boolean                  | false   |
+| animated   | Whether to use animation to switch Tabs                         | boolean                  | true    |
+| centered   | Whether to center the label                                     | boolean                  | false   |
 | onRemove   | Callback when tab is closed, returns the closed tab's key value | (key: string) => void | -       |
 | onChange   | Callback when switching panels                                  | (key: string) => void | -       |
 | onTabClick | Callback when tab is clicked                                    | (key: string) => void | -       |
@@ -64,5 +64,5 @@ Provide peer areas to accommodate and display large chunks of content, keeping t
 | key      | Unique identifier of the panel | string | -       |
 | title    | Text displayed in tab header   | string | -       |
 | icon     | Icon displayed in tab header   | string | -       |
-| disabled | Whether tab is disabled        | bool   | false   |
-| closable | Whether tab shows close button | bool   | false   |
+| disabled | Whether tab is disabled        | boolean   | false   |
+| closable | Whether tab shows close button | boolean   | false   |

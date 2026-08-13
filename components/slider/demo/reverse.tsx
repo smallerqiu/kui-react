@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Space, KSwitch as Switch, Slider } from "react-kui";
+import { Space, Switch, Slider } from "react-kui";
 export default function App() {
   const [v1, setV1] = useState(30),
     [v2, setV2] = useState<number[]>([35, 60]),

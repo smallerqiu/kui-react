@@ -1,4 +1,4 @@
-import { Space, KSwitch as Switch } from "react-kui";
+import { Space, Switch } from "react-kui";
 export default function App() {
   return (
     <Space vertical>
