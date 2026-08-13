@@ -34,7 +34,9 @@ const invoke = (method: keyof LoadingHandle, value?: number) => {
 };
 
 const loading = {
-  start: () => invoke("start"),
+  start: (props?: LoadingProps) => {
+    ensureInstance(props)?.start();
+  },
   finish: () => invoke("finish"),
   error: () => invoke("error"),
   update: (percent: number) => invoke("update", percent),

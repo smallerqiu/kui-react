@@ -38,7 +38,14 @@ export { default as ColorPicker } from "./color-picker";
 export type { ColorPickerProps } from "./color-picker";
 
 export { default as DatePicker } from "./date-picker";
-export type { DatePickerInput, DatePickerProps } from "./date-picker";
+export type {
+  DatePickerInput,
+  DatePickerModeType,
+  DatePickerOutput,
+  DatePickerPreset,
+  DatePickerProps,
+  DatePickerValueType,
+} from "./date-picker";
 
 export { Descriptions, DescriptionsItem } from "./descriptions";
 export type { DescriptionsItemProps, DescriptionsProps } from "./descriptions";

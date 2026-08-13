@@ -47,10 +47,10 @@
 
 | 属性       | 说明                                                 | 类型             | 默认值     |
 | ---------- | ---------------------------------------------------- | ---------------- | ---------- |
-| value      | 受控的当前选中值                                   | any[]            | -          |
-| defaultValue | 非受控模式的初始选中值                           | any[]            | []         |
+| value      | 受控的当前选中值                                   | (string \| number)[] | -       |
+| defaultValue | 非受控模式的初始选中值                           | (string \| number)[] | []      |
 | disabled   | 是否禁用组件                                         | boolean             | false      |
-| onChange   | 在选项状态发生改变时触发，返回当前选中的项和状态     | (any[])=>void    | -          |
+| onChange   | 在选项状态发生改变时触发，返回当前选中的项和状态     | (value: (string \| number)[]) => void | - |
 | direction  | 布局方向,可选值 `horizontal`、`vertical`             | string           | horizontal |
 | options    | 可以指定子项 `checkbox`                              | CheckboxOption[] | -          |
 | size       | 设置复选框的大小                                     | string           | -          |

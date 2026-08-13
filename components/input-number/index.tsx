@@ -1,6 +1,6 @@
 import Big from "big.js";
 import { ChevronDown, ChevronUp } from "kui-icons";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useState } from "react";
 import { SizeContext } from "../config/size-context";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
@@ -57,19 +57,12 @@ const InputNumber: React.FC<InputNumberProps> = ({
   const parentSize = useContext(SizeContext);
   const [innerValue, setInnerValue] = useState(normalize(defaultValue, precision));
   const [userInput, setUserInput] = useState<string | null>(null);
-  const prevValueRef = useRef(value);
-
-  useEffect(() => {
-    // 仅在外部 value 发生变化时才同步，避免依赖 innerValue 导致的无限循环
-    if (value !== prevValueRef.current) {
-      prevValueRef.current = value;
-      setInnerValue(normalize(value, precision));
-    }
-  }, [value, precision]);
+  const controlled = value !== undefined;
+  const currentValue = controlled ? normalize(value, precision) : innerValue;
 
   const clamp = (val: string | number): string => {
     if (!isValidBig(val)) {
-      return val === "" ? "" : innerValue;
+      return val === "" ? "" : currentValue;
     }
     try {
       let b = new Big(val);
@@ -77,7 +70,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
       if (min !== -Infinity && b.lt(min)) b = new Big(min);
       return precision !== undefined ? b.toFixed(precision) : b.toFixed();
     } catch {
-      return innerValue;
+      return currentValue;
     }
   };
 
@@ -86,34 +79,39 @@ const InputNumber: React.FC<InputNumberProps> = ({
   };
 
   const displayValue = (() => {
-    if (userInput !== null) return userInput;
-    if (innerValue === "") return "";
-    return formatter ? formatter(innerValue) : innerValue;
+    if (!controlled && userInput !== null) return userInput;
+    if (currentValue === "") return "";
+    return formatter ? formatter(currentValue) : currentValue;
   })();
 
   const triggerUpdate = (val: string | number) => {
     const parsed = parser ? parser(String(val)) : val;
     const clampedStr = clamp(String(parsed));
-    setInnerValue(clampedStr);
+    if (!controlled) setInnerValue(clampedStr);
     setUserInput(null);
     const output = clampedStr === "" ? undefined : Number(clampedStr);
     emitValue(output);
   };
 
   const handleInput = (val: string) => {
-    setUserInput(val);
     const parsed = parser ? parser(val) : val;
     if (val === "") {
-      setInnerValue("");
+      if (!controlled) {
+        setUserInput(val);
+        setInnerValue("");
+      }
       emitValue(undefined);
       return;
     }
     if (isValidBig(parsed)) {
       const bigVal = new Big(parsed);
       const normalizedStr = bigVal.toFixed();
-      setInnerValue(normalizedStr);
+      if (!controlled) {
+        setUserInput(val);
+        setInnerValue(normalizedStr);
+      }
       emitValue(Number(normalizedStr));
-      if (formatter) {
+      if (!controlled && formatter) {
         const formatted = formatter(normalizedStr);
         // 与当前输入值 val 比较而非异步的 userInput 状态，避免过期闭包导致误判
         if (formatted !== val) setUserInput(formatted);
@@ -122,12 +120,12 @@ const InputNumber: React.FC<InputNumberProps> = ({
   };
 
   const handleBlur = () => {
-    triggerUpdate(userInput !== null ? userInput : innerValue);
+    triggerUpdate(!controlled && userInput !== null ? userInput : currentValue);
   };
 
   const stepAction = (type: "up" | "down") => {
     if (disabled || readOnly) return;
-    const current = isValidBig(innerValue) ? innerValue : 0;
+    const current = isValidBig(currentValue) ? currentValue : 0;
     const next = type === "up" ? new Big(current).plus(step) : new Big(current).minus(step);
     triggerUpdate(next.toFixed());
   };

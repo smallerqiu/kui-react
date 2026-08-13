@@ -37,6 +37,7 @@
 | 属性         | 说明                                                                         | 类型                | 默认值      |
 | ------------ | ---------------------------------------------------------------------------- | ------------------- | ----------- |
 | open         | 受控的显示状态                                                               | boolean             | -           |
+| show         | 已废弃，请使用 `open`                                                        | boolean             | -           |
 | defaultOpen  | 非受控模式的初始显示状态                                                     | boolean             | false       |
 | trigger      | 触发方式,支持hover(默认), click, custom 3种方式                              | string              | hover       |
 | placement    | 菜单弹出位置：bottomLeft bottomCenter bottomRight topLeft topCenter topRight | string              | bottom-left |
@@ -45,3 +46,18 @@
 | target       | 触发下拉的元素                                                               | ReactNode               | -           |
 | disabled     | 是否允许触发下拉                                                             | boolean                | false       |
 | onOpenChange | 打开或关闭Dropdown时触发                                                     | (opened:boolean)=>void | -           |
+| overlay      | 下拉层内容                                                                   | ReactNode           | -           |
+
+## DropdownButton API
+
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| size | 按钮尺寸 | SizeType | - |
+| shape | 按钮形状 | ShapeType | - |
+| disabled | 是否禁用 | boolean | false |
+| icon | 下拉触发按钮图标 | IconType | Ellipsis |
+| theme | 按钮主题 | ThemeType | - |
+| arrow | 是否显示下拉箭头 | boolean | false |
+| placement | 下拉层位置 | DropPlacementsType | bottom-right |
+| onClick | 主按钮点击回调 | (event: MouseEvent<HTMLButtonElement>) => void | - |
+| overlay | 下拉层内容 | ReactNode | - |

@@ -37,3 +37,5 @@ Input for verification codes, one-time passwords, and other fixed-length values.
 | shape | Shape | square,circle | - |
 | onChange | Value change callback | (value:string)=>void | - |
 | onComplete | Completion callback | (value:string)=>void | - |
+| onFocus | Triggered when an input receives focus | (event: FocusEvent<HTMLInputElement>) => void | - |
+| onBlur | Triggered when an input loses focus | (event: FocusEvent<HTMLInputElement>) => void | - |

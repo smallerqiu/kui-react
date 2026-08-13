@@ -97,21 +97,22 @@ const columns = [
 | ------------ | ------------------------- | ---------------------------------------------------------------------------- | -------- |
 | bordered     | 是否显示边框              | boolean                                                                         | false    |
 | checkable    | 是否显示勾选框            | boolean                                                                         | false    |
-| selectedKeys | 勾选的key集合             | string[]                                                                     | -        |
+| selectedKeys | 勾选的key集合             | (string \| number)[]                                                        | -        |
 | defaultSelectedKeys | 非受控模式下的初始勾选 key 集合 | (string \| number)[]                                                   | []       |
-| disabledKeys | 禁用的key集合             | string[]                                                                     | -        |
+| disabledKeys | 禁用的key集合             | (string \| number)[]                                                        | -        |
 | size         | 值为`small`时展示紧凑模式 | string                                                                       | -        |
 | emptyText    | 没有数据时展示的提示      | string                                                                       | 赞无数据 |
 | loading      | 表格异步加载模式          | boolean                                                                         | false    |
-| data         | 显示的结构化数据          | any[]                                                                        | []       |
+| data         | 显示的结构化数据          | T[]                                                                          | []       |
 | columns      | 表格列的配置描述，        | Column[]                                                                     | []       |
 | header       | 自定义表头内容            | ReactNode                                                                    | -        |
 | footer       | 自定义表尾内容            | ReactNode                                                                    | -        |
-| rowKey       | 勾选时的依据              | string                                                                       | key      |
+| rowKey       | 勾选时的依据              | string \| (record: T) => string \| number                                   | key      |
+| scroll       | 表格滚动区域              | { x?: number \| string; y?: number \| string }                              | {}       |
 | striped      | 是否展示斑马条纹          | boolean                                                                         | false    |
-| onRowClick   | 单击某一行时触发          | (record: any, index: number) => void                                         | -        |
+| onRowClick   | 单击某一行时触发          | (record: T, index: number) => void                                           | -        |
 | onSort       | 点击排序时触发            | (state: SortState) => void                                                   | -        |
-| onSelect     | 点击复选框时触发          | (record: any, selected: boolean, selectedKeys: (string \| number)[]) => void | -        |
+| onSelect     | 点击复选框时触发          | (record: T, selected: boolean, selectedKeys: (string \| number)[]) => void   | -        |
 | onSelectAll  | 点击Table头部复选框时触发 | (selected: boolean, selectedKeys: (string \| number)[]) => void              | -        |
 | onSelectedKeysChange | 勾选 key 集合变化时触发 | (selectedKeys: (string \| number)[]) => void                              | -        |
 
@@ -124,7 +125,8 @@ const columns = [
 | fixed   | 列固定的方向                     | left,right                                                                     | -      |
 | sorter  | 排序,为`true`时,本地排序         | boolean \| (state: SortState) => void                                          | -      |
 | width   | 列宽                             | number                                                                         | -      |
-| rowSpan | 行合并单位,为 0 时将不渲染当前行 | number                                                                         | -      |
-| colSpan | 列合并单位,为 0 时将不渲染当前列 | number                                                                         | -      |
-| render  | 自定义渲染                       | (h: any, record: any, colIndex: number, rowIndex: number, col: Column) => void | -      |
-| scroll  | 滚动属性                         | {x:[number ,string],y:[number , string]}                                       | -      |
+| rowSpan | 行合并单位，为 0 时将不渲染当前行 | number \| (record: T, index: number) => number | - |
+| colSpan | 列合并单位，为 0 时将不渲染当前列 | number \| (record: T, index: number) => number | - |
+| render  | 自定义单元格渲染                 | (value: unknown, record: T, rowIndex: number, column: Column<T>) => ReactNode | - |
+| renderHeader | 自定义表头渲染               | (column: Column<T>, index: number) => ReactNode | - |
+| children | 嵌套表头子列                    | Column<T>[] | - |

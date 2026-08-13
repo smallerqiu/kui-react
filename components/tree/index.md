@@ -58,7 +58,7 @@
 | renderExtra   | 自定义节点扩展区域                                           | (node: TreeNode) => ReactNode     | -      |
 | multiple      | 是否支持多选                                                 | boolean                              | false  |
 | loading       | 异步加载状态                                                 | boolean                              | false  |
-| loadData      | 异步加载数据的方法                                           | (node: TreeNode) => Promise<any\> | -      |
+| loadData      | 异步加载数据的方法                                           | (node: TreeNode) => Promise<unknown\> | -   |
 | directory     | 是不显示为目录树                                             | boolean                              | false  |
 
 ## TreeNode API

@@ -40,8 +40,8 @@
 
 | 属性             | 说明                                                       | 类型                              | 默认值     |
 | ---------------- | ---------------------------------------------------------- | --------------------------------- | ---------- |
-| value            | 受控的选中值                                               | string,number,any[]               | -          |
-| defaultValue     | 非受控模式的初始选中值                                     | string,number,any[]               | -          |
+| value            | 受控的选中值                                               | TreeSelectValue                   | -          |
+| defaultValue     | 非受控模式的初始选中值                                     | TreeSelectValue                   | -          |
 | open             | 受控的下拉框显示状态                                       | boolean                           | -          |
 | defaultOpen      | 非受控模式的初始下拉框状态                                 | boolean                           | false      |
 | width            | 组件宽度                                                   | string,number                     | -          |
@@ -63,7 +63,7 @@
 | theme            | 主题                                                       | string                            | fill       |
 | icon             | 自定义图标                                                 | string                            | -          |
 | shape            | shape='circle' 时呈现圆角                                  | string                            | -          |
-| treeLoadData     | 异步加载数据的方法                                         | (node: TreeNode) => Promise<any\> | -          |
+| treeLoadData     | 异步加载数据的方法                                         | (node: TreeNode) => Promise<unknown\> | -       |
 | treeData         | 可嵌套的节点属性的数组，生成 `tree` 的数据                 | TreeNode[]                        | []         |
 | treeCheckable    | 是否显示多选框                                             | boolean                              | false      |
 | treeShowLine     | 是否展示连接线                                             | boolean                              | false      |

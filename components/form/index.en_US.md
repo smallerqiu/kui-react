@@ -83,6 +83,7 @@ export default {
 | disabled   | Whether the form is enabled                                                                           | boolean                           | true       |
 | onReset    | Reset the entire form, reset all field values to empty and remove validation results                  | ()=> void                      | -          |
 | onSubmit   | Trigger event when submitting the form                                                                | (e: FormSubmitEvent) => void   | -          |
+| onChange   | Triggered when the form model changes                                                                 | (model: Record<string, unknown>) => void | - |
 
 ## Form Expose API
 
@@ -107,7 +108,7 @@ export default {
 | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------- |
 | required  | Whether it is a required field                                                                                                                                                                 | boolean                                                                    | false   |
 | message   | Prompt message when validation fails                                                                                                                                                           | string                                                                  | -       |
-| validator | Custom validation method, see example                                                                                                                                                          | (rule: FormRule, value: any, callback: (error?: Error) => void) => void | -       |
+| validator | Custom validation method, see example                                                                                                                                                          | (rule: FormRule, value: unknown, callback: (error?: Error) => void) => void | - |
 | type      | Data type validation. Provides three validation methods: `mobile` (phone), `mail` (email), `number` (numeric type judgment)                                                                    | string                                                                  | -       |
 | pattern   | Custom regular expression validation. For example, password strength containing numbers, letters, and special symbols can be written as `/(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{6,20}/` | string                                                                  | -       |
 | min       | Minimum field length validation                                                                                                                                                                | number                                                                  | -       |

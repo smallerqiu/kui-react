@@ -28,6 +28,7 @@ When an operation takes a long time to complete, display the current progress an
 | Property | Description                                                                                                    | Type         | Default |
 | -------- | -------------------------------------------------------------------------------------------------------------- | ------------ | ------- |
 | icon     | Timeline `item` icon                                                                                           | string       | -       |
+| dot      | Custom timeline dot                                                                                           | ReactNode    | -       |
 | color    | Timeline `item` icon color                                                                                     | string       | -       |
 | time     | Time text                                                                                                      | string       | -       |
 | extra    | Custom auxiliary content                                                                                       | string, ReactNode | -       |

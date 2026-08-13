@@ -97,21 +97,22 @@ const columns = [
 | ------------ | -------------------------------------------------------- | ---------------------------------------------------------------------------- | ------- |
 | bordered     | Whether to display borders                               | boolean                                                                         | false   |
 | checkable    | Whether to show checkboxes                               | boolean                                                                         | false   |
-| selectedKeys | Collection of selected keys                              | string[]                                                                     | -       |
+| selectedKeys | Collection of selected keys                              | (string \| number)[]                                                        | -       |
 | defaultSelectedKeys | Initial selected keys in uncontrolled mode       | (string \| number)[]                                                        | []      |
-| disabledKeys | Disabled key set                                         | string[]                                                                     | -       |
+| disabledKeys | Disabled key set                                         | (string \| number)[]                                                        | -       |
 | size         | Display compact mode when the value is `small`           | string                                                                       | -       |
 | emptyText    | Prompt displayed when there is no data                   | string                                                                       | No Data |
 | loading      | Table asynchronous loading mode                          | boolean                                                                         | false   |
-| data         | Structured data to be displayed                          | any[]                                                                        | []      |
+| data         | Structured data to be displayed                          | T[]                                                                          | []      |
 | columns      | Configuration description of table columns               | Column[]                                                                     | []      |
 | header       | Custom table header content                              | ReactNode                                                                    | -       |
 | footer       | Custom table footer content                              | ReactNode                                                                    | -       |
-| rowKey       | Basis for selection                                      | string                                                                       | key     |
+| rowKey       | Basis for selection                                      | string \| (record: T) => string \| number                                   | key     |
+| scroll       | Scrollable table area                                    | { x?: number \| string; y?: number \| string }                              | {}      |
 | striped      | Whether to display zebra stripes                         | boolean                                                                         | false   |
-| onRowClick   | Triggered when clicking a row                            | (record: any, index: number) => void                                         | -       |
+| onRowClick   | Triggered when clicking a row                            | (record: T, index: number) => void                                           | -       |
 | onSort       | Triggered when clicking to sort                          | (state: SortState) => void                                                   | -       |
-| onSelect     | Triggered when clicking the checkbox                     | (record: any, selected: boolean, selectedKeys: (string \| number)[]) => void | -       |
+| onSelect     | Triggered when clicking the checkbox                     | (record: T, selected: boolean, selectedKeys: (string \| number)[]) => void   | -       |
 | onSelectAll  | Triggered when clicking the header checkbox of the Table | (selected: boolean, selectedKeys: (string \| number)[]) => void              | -       |
 | onSelectedKeysChange | Called when selected keys change                 | (selectedKeys: (string \| number)[]) => void                                | -       |
 
@@ -124,7 +125,8 @@ const columns = [
 | fixed    | Column fixed direction                                             | left,right                                                                     | -       |
 | sorter   | Sorting, when `true`, local sorting is enabled                     | boolean \| (state: SortState) => void                                          | -       |
 | width    | Column width                                                       | number                                                                         | -       |
-| rowSpan  | Row merge unit, when 0, the current row will not be rendered       | number                                                                         | -       |
-| colSpan  | Column merge unit, when 0, the current column will not be rendered | number                                                                         | -       |
-| render   | Custom rendering                                                   | (h: any, record: any, colIndex: number, rowIndex: number, col: Column) => void | -       |
-| scroll   | Scrolling attributes                                               | {x:[number ,string],y:[number , string]}                                       | -       |
+| rowSpan  | Row span, or a function returning it                                | number \| (record: T, index: number) => number | - |
+| colSpan  | Column span, or a function returning it                             | number \| (record: T, index: number) => number | - |
+| render   | Custom cell rendering                                               | (value: unknown, record: T, rowIndex: number, column: Column<T>) => ReactNode | - |
+| renderHeader | Custom header rendering                                         | (column: Column<T>, index: number) => ReactNode | - |
+| children | Nested header columns                                               | Column<T>[] | - |

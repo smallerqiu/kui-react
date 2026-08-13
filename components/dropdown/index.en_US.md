@@ -37,6 +37,7 @@ When there are too many operation commands on the page, this component can be us
 | Property     | Description                                                                         | Type                | Default     |
 | ------------ | ----------------------------------------------------------------------------------- | ------------------- | ----------- |
 | open         | Controlled visibility                                                              | boolean             | -           |
+| show         | Deprecated; use `open` instead                                                     | boolean             | -           |
 | defaultOpen  | Initial visibility in uncontrolled mode                                            | boolean             | false       |
 | trigger      | Trigger method. Supports 3 methods: hover (default), click, custom                  | string              | hover       |
 | placement    | Menu popup position: bottomLeft bottomCenter bottomRight topLeft topCenter topRight | string              | bottom-left |
@@ -45,3 +46,18 @@ When there are too many operation commands on the page, this component can be us
 | target       | Element that triggers the dropdown                                                  | ReactNode               | -           |
 | disabled     | Whether dropdown triggering is allowed                                              | boolean                | false       |
 | onOpenChange | Triggered when opening or closing a Dropdown                                        | (opened:boolean)=>void | -           |
+| overlay      | Dropdown overlay content                                                           | ReactNode           | -           |
+
+## DropdownButton API
+
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| size | Button size | SizeType | - |
+| shape | Button shape | ShapeType | - |
+| disabled | Whether disabled | boolean | false |
+| icon | Dropdown trigger icon | IconType | Ellipsis |
+| theme | Button theme | ThemeType | - |
+| arrow | Whether to show the dropdown arrow | boolean | false |
+| placement | Dropdown placement | DropPlacementsType | bottom-right |
+| onClick | Main button click callback | (event: MouseEvent<HTMLButtonElement>) => void | - |
+| overlay | Dropdown overlay content | ReactNode | - |

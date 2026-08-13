@@ -65,3 +65,5 @@ import { Button } from "react-kui";
 | href     | The address to jump to when clicked. Specifying this property makes the button behave like an a link | string                                     | -       |
 | target   | Equivalent to the target attribute of an a link, takes effect when href exists                       | string                                     | -       |
 | block    | Option to fit button width to its parent width                                                       | boolean                                       | false   |
+| color    | Custom button color                                                                                   | string                                     | -       |
+| onClick  | Triggered when the button is clicked                                                                  | MouseEventHandler<HTMLElement>             | -       |

@@ -58,7 +58,7 @@ Folders, organizational structures, biological classifications, countries and re
 | renderExtra   | Custom node extra-content renderer                                                                                  | (node: TreeNode) => ReactNode     | -       |
 | multiple      | Whether to support multiple selection                                                                             | boolean                              | false   |
 | loading       | Asynchronous loading state                                                                                        | boolean                              | false   |
-| loadData      | Method to asynchronously load data                                                                                | (node: TreeNode) => Promise<any\> | -       |
+| loadData      | Method to asynchronously load data                                                                                | (node: TreeNode) => Promise<unknown\> | -    |
 | directory     | Does not display as a directory tree                                                                              | boolean                              | false   |
 
 ## Tree Events

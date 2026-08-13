@@ -41,6 +41,7 @@ export type DatePickerValueType = "date" | "timestamp" | "unix" | "string";
 export type DatePickerModeType =
   "year" | "month" | "date" | "time" | "dateTime" | "dateRange" | "dateTimeRange";
 export type DatePickerInput = Date | Dayjs | string | number | null | undefined;
+export type DatePickerOutput = Date | string | number | null;
 export interface DatePickerPreset {
   label: string;
   value: () => DatePickerInput | DatePickerInput[];
@@ -78,9 +79,9 @@ export interface DatePickerProps extends Omit<
   footer?:
     | ReactNode
     | ((api: { emit: (value: DatePickerInput | DatePickerInput[]) => void }) => ReactNode);
-  onChange?: (date: unknown | unknown[] | null, dateStr: string | string[]) => void;
-  onStartDateChange?: (value: unknown) => void;
-  onEndDateChange?: (value: unknown) => void;
+  onChange?: (date: DatePickerOutput | DatePickerOutput[], dateStr: string | string[]) => void;
+  onStartDateChange?: (value: DatePickerOutput) => void;
+  onEndDateChange?: (value: DatePickerOutput) => void;
   onOpenChange?: (open: boolean) => void;
   onClear?: () => void;
 }

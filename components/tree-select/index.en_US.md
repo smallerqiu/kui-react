@@ -40,8 +40,8 @@ Similar to the Select selection control, when the selectable data structure is a
 
 | Property         | Description                                                                     | Type                              | Default       |
 | ---------------- | ------------------------------------------------------------------------------- | --------------------------------- | ------------- |
-| value            | Controlled selected value                                                        | string, number, any[]             | -             |
-| defaultValue     | Initial selected value in uncontrolled mode                                      | string, number, any[]             | -             |
+| value            | Controlled selected value                                                        | TreeSelectValue                   | -             |
+| defaultValue     | Initial selected value in uncontrolled mode                                      | TreeSelectValue                   | -             |
 | open             | Controlled dropdown visibility                                                    | boolean                           | -             |
 | defaultOpen      | Initial dropdown visibility in uncontrolled mode                                  | boolean                           | false         |
 | width            | Component width                                                                 | string, number                    | -             |
@@ -63,7 +63,7 @@ Similar to the Select selection control, when the selectable data structure is a
 | theme            | The theme of TreeSelect                                                         | string                            | fill          |
 | icon             | Custom icon                                                                     | string                            | -             |
 | shape            | When shape='circle', displays rounded corners                                   | string                            | -             |
-| treeLoadData     | Method to asynchronously load data                                              | (node: TreeNode) => Promise<any\> | -             |
+| treeLoadData     | Method to asynchronously load data                                              | (node: TreeNode) => Promise<unknown\> | -          |
 | treeData         | Array of nestable node properties, data to generate `tree`                      | TreeNode[]                        | []            |
 | treeCheckable    | Whether to show checkbox                                                        | boolean                              | false         |
 | treeShowLine     | Whether to show connecting lines                                                | boolean                              | false         |

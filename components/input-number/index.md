@@ -37,6 +37,9 @@
 | parser     | 指定从 formatter 里转换回数字的方式，和 formatter 搭配使用 | (value: string) => string \| number | -         |
 | size       | 输入框大小                                                 | string                              | -         |
 | disabled   | 禁用                                                       | boolean                                | false     |
+| readOnly   | 是否只读                                                   | boolean                                | false     |
+| placeholder | 输入提示                                                  | string                                 | -         |
+| icon       | 输入框图标                                                 | IconType                               | -         |
 | precision  | 数值精度                                                   | number                              | -         |
 | shape      | 组件的外观                                                 | `circle` , `square`                 | -         |
 | suffix     | 自定义后缀                                                 | string,ReactNode                         | -         |

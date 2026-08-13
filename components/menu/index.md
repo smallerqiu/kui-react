@@ -52,6 +52,7 @@
 | mode            | 菜单类型，支持垂直、水平、和内嵌模式三种 | string: vertical vertical-right horizontal inline | vertical |
 | onSelect        | 点击 MenuItem 调用此函数                 | (data: MenuSelectEvent) => void                   | -        |
 | onOpenChange    | SubMenu 展开/关闭的回调                  | (openKeys: string[])=>void                        | -        |
+| onChange        | 选中 key 集合变化时触发                  | (selectedKeys: string[]) => void                  | -        |
 | accordion       | 是否只允许菜单展开一项                   | boolean                                              | false    |
 | inlineCollapsed | inline 时菜单是否收起状态                | boolean                                              | false    |
 

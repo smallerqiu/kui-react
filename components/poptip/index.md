@@ -36,7 +36,9 @@
 | placement | 提示框出现的位置，可选值为`top`，`top-left`，`top-right`，`bottom`，`bottom-left`，`bottom-right`，`left`，`left-top`，`left-bottom`，`right`，`right-top`，`right-bottom` | string        | top    |
 | width     | 展示的宽度,默认为内容区域的大小                                                                                                                                            | string,number | -      |
 | open      | 受控的显示状态                                                                                                                                                             | boolean       | -      |
+| show      | 已废弃，请使用 `open`                                                                                                                                                      | boolean       | -      |
 | defaultOpen | 非受控模式的初始显示状态                                                                                                                                                 | boolean       | false  |
 | dark      | 是否使用暗色主题                                                                                                                                                           | boolean          | false  |
 | onClose   | 关闭时的回调                                                                                                                                                               | () => void    | -      |
 | onOpenChange | 显示状态变化时触发                                                                                                                                                       | (open: boolean) => void | - |
+| onShowChange | 已废弃，请使用 `onOpenChange`                                                                                                                                           | (show: boolean) => void | - |

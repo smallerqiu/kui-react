@@ -63,7 +63,7 @@ Dropdown selector.
 | icon         | Custom icon                                                                       | string                                     | -             |
 | shape        | When shape='circle', displays rounded corners                                     | string                                     | -             |
 | onSelect     | Triggered when an item is selected                                                | (option: SelectOption) => void             | -             |
-| onChange     | Triggered when option state changes, returns selected value                       | (value: string \| number \| any[]) => void | -             |
+| onChange     | Triggered when option state changes, returns selected value                       | (value: SelectValue) => void | -             |
 | onOpenChange | Triggered when dropdown expands or collapses                                      | (open: boolean) => void                    | -             |
 | onSearch     | Triggered during search                                                           | (e: InputEvent) => void                    | -             |
 | onClear      | Triggered when the clear button is clicked                                        | () => void                                 | -             |

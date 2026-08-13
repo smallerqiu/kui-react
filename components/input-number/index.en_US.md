@@ -37,6 +37,9 @@ When standard numerical values need to be obtained.
 | parser     | Specifies how to convert back from formatter to number, used with formatter | (value: string) => string \| number | -         |
 | size       | Input box size                                                              | string                              | -         |
 | disabled   | Disabled                                                                    | boolean                                | -         |
+| readOnly   | Whether the input is read-only                                              | boolean                                | false     |
+| placeholder | Input placeholder                                                          | string                                 | -         |
+| icon       | Input icon                                                                  | IconType                               | -         |
 | precision  | Numerical precision                                                         | number                              | -         |
 | shape      | Component appearance                                                        | `circle` , `square`                 | -         |
 | suffix     | Custom suffix                                                               | string, ReactNode                        | -         |

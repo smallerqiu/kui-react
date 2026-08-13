@@ -85,7 +85,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
     }));
 
     const handleClear = () => {
-      setCurrentValue("");
+      if (value === undefined) setCurrentValue("");
       onClear?.();
       onChange?.("");
       inputRef.current?.focus();

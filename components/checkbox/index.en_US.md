@@ -47,10 +47,10 @@ Checkbox for multiple selections.
 
 | Property   | Description                                                                            | Type             | Default    |
 | ---------- | -------------------------------------------------------------------------------------- | ---------------- | ---------- |
-| value      | Controlled selected values                                                              | any[]            | -          |
-| defaultValue | Initial selected values in uncontrolled mode                                          | any[]            | []         |
+| value      | Controlled selected values                                                              | (string \| number)[] | -       |
+| defaultValue | Initial selected values in uncontrolled mode                                          | (string \| number)[] | []      |
 | disabled   | Whether the component is disabled                                                      | boolean             | false      |
-| onChange   | Triggered when the option state changes, returns the currently selected item and state | (any[])=>void    | -          |
+| onChange   | Triggered when the option state changes, returns the currently selected values         | (value: (string \| number)[]) => void | - |
 | direction  | Layout direction, optional values `horizontal`, `vertical`                             | string           | horizontal |
 | options    | Can specify child `checkbox` items                                                     | CheckboxOption[] | -          |
 | size       | set the size of Checkbox                                                               | string           | -          |

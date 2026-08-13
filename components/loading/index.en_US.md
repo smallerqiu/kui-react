@@ -72,7 +72,7 @@ export default axiosInstance;
 
 | Property | Description              | Type                    | Default |
 | -------- | ------------------------ | ----------------------- | ------- |
-| start    | Start loading            | () => void              | -       |
+| start    | Start loading with an optional bar height | (props?: { height?: number \| string }) => void | - |
 | finish   | Finish loading           | () => void              | -       |
 | error    | Loading error            | () => void              | -       |
 | update   | Manually update progress | (percent:number)=> void | -       |

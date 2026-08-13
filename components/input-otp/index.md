@@ -37,3 +37,5 @@
 | shape | 形状 | square,circle | - |
 | onChange | 值变化回调 | (value:string)=>void | - |
 | onComplete | 输入完成回调 | (value:string)=>void | - |
+| onFocus | 输入框获得焦点时触发 | (event: FocusEvent<HTMLInputElement>) => void | - |
+| onBlur | 输入框失去焦点时触发 | (event: FocusEvent<HTMLInputElement>) => void | - |

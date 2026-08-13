@@ -65,3 +65,5 @@ import { Button } from "kui-react";
 | href     | 点击跳转的地址，指定此属性 button 的行为和 a 链接一致 | string                                     | -      |
 | target   | 相当于 a 链接的 target 属性，href 存在时生效          | string                                     | -      |
 | block    | 使组件宽度适应其父级宽度                              | boolean                                       | false  |
+| color    | 自定义按钮颜色                                        | string                                     | -      |
+| onClick  | 点击按钮时触发                                        | MouseEventHandler<HTMLElement>             | -      |

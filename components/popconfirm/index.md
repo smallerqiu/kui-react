@@ -31,9 +31,11 @@
 | width      | 展示的宽度,默认为内容区域的大小                                                                                                                                            | string       | -      |
 | okText     | 确定按钮的文字，                                                                                                                                                           | string       | 确定   |
 | open       | 受控的显示状态                                                                                                                                                             | boolean      | -      |
+| show       | 已废弃，请使用 `open`                                                                                                                                                      | boolean      | -      |
 | defaultOpen | 非受控模式的初始显示状态                                                                                                                                                 | boolean      | false  |
 | dark       | 是否展示暗色主题                                                                                                                                                           | boolean         | false  |
 | cancelText | 取消按钮的文字，                                                                                                                                                           | string       | 取消   |
 | onCancel   | 点击取消的回调，                                                                                                                                                           | () => void   | -      |
 | onOk       | 点击确定的回调，                                                                                                                                                           | () => void   | -      |
 | onOpenChange | 显示状态变化时触发                                                                                                                                                       | (open: boolean) => void | - |
+| onShowChange | 已废弃，请使用 `onOpenChange`                                                                                                                                           | (show: boolean) => void | - |

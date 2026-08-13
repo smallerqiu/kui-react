@@ -32,5 +32,7 @@
 | width     | 展示的宽度,默认为内容区域的大小                                                                                                                                            | string       | -      |
 | disabled  | 禁用状态                                                                                                                                                                   | boolean         | false  |
 | open      | 受控的显示状态                                                                                                                                                             | boolean      | -      |
+| show      | 已废弃，请使用 `open`                                                                                                                                                      | boolean      | -      |
 | defaultOpen | 非受控模式的初始显示状态                                                                                                                                                 | boolean      | false  |
 | onOpenChange | 显示状态变化时触发                                                                                                                                                       | (open: boolean) => void | - |
+| onShowChange | 已废弃，请使用 `onOpenChange`                                                                                                                                           | (show: boolean) => void | - |

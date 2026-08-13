@@ -52,8 +52,8 @@
 | defaultValue | 非受控模式的初始日期或时间值                                                                                       | DatePickerInput, DatePickerInput[]                           | -          |
 | open         | 受控的下拉面板显示状态                                                                                             | boolean                                                        | -          |
 | defaultOpen  | 非受控模式的初始下拉面板状态                                                                                       | boolean                                                        | false      |
-| startDate    | 开始时间 (取值)                                                                                                    | any                                                         | -          |
-| endDate      | 结束时间 (取值)                                                                                                    | any                                                         | -          |
+| startDate    | 开始时间（范围选择）                                                                                                | DatePickerInput                                             | -          |
+| endDate      | 结束时间（范围选择）                                                                                                | DatePickerInput                                             | -          |
 | mode         | 使用 `mode` 属性，可以自定义日期显示类型，提供 `year`,`month`,`date`,`time`,`dateTime`,`dateRange`,`dateTimeRange` | string                                                      | date       |
 | disabled     | 是否禁用组件                                                                                                       | boolean                                                        | false      |
 | size         | 按钮尺寸,可选值 `small`、`large`                                                                                   | string                                                      | -          |
@@ -73,7 +73,7 @@
 | header       | 自定义面板头部内容或渲染函数                                                                                       | ReactNode, (api) => ReactNode                                | -          |
 | footer       | 自定义面板底部内容或渲染函数                                                                                       | ReactNode, (api) => ReactNode                                | -          |
 | onChange     | 默认值改变之后的回调                                                                                               | (date: Date \| Date[], dateStr: string \| string[]) => void | -          |
-| onStartDateChange | 范围选择开始日期变化时触发                                                                                   | (value: unknown) => void                                    | -          |
-| onEndDateChange | 范围选择结束日期变化时触发                                                                                      | (value: unknown) => void                                    | -          |
+| onStartDateChange | 范围选择开始日期变化时触发                                                                                   | (value: DatePickerOutput) => void                           | -          |
+| onEndDateChange | 范围选择结束日期变化时触发                                                                                      | (value: DatePickerOutput) => void                           | -          |
 | onOpenChange | 下拉框展开或收起时触发                                                                                             | (opened: boolean) => void                                   | -          |
 | onClear      | 点击清除按钮时触发                                                                                                 | () => void                                                  | -          |
