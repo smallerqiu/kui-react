@@ -39,6 +39,8 @@ Dropdown selector.
 | ------------ | --------------------------------------------------------------------------------- | ------------------------------------------ | ------------- |
 | value        | Controlled selected value                                                        | string, number, (string\|number)[]         | -             |
 | defaultValue | Initial selected value in uncontrolled mode                                      | string, number, (string\|number)[]         | -             |
+| open         | Controlled dropdown visibility                                                    | boolean                                    | -             |
+| defaultOpen  | Initial dropdown visibility in uncontrolled mode                                  | boolean                                    | false         |
 | width        | Component width                                                                   | string, number                             | -             |
 | placeholder  | Default text of selector                                                          | string                                     | Please select |
 | disabled     | Whether current item is disabled                                                  | bool                                       | false         |
@@ -57,7 +59,7 @@ Dropdown selector.
 | shape        | When shape='circle', displays rounded corners                                     | string                                     | -             |
 | onSelect     | Triggered when an item is selected                                                | (option: SelectOption) => void             | -             |
 | onChange     | Triggered when option state changes, returns selected value                       | (value: string \| number \| any[]) => void | -             |
-| onOpenChange | Triggered when dropdown expands or collapses                                      | (opened: boolean) => void                  | -             |
+| onOpenChange | Triggered when dropdown expands or collapses                                      | (open: boolean) => void                    | -             |
 | onSearch     | Triggered during search                                                           | (e: InputEvent) => void                    | -             |
 | onClear      | Triggered when the clear button is clicked                                        | () => void                                 | -             |
 

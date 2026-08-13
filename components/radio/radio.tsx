@@ -1,11 +1,12 @@
 import clsx from "clsx";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import type { SizeType, ThemeType } from "../const/types";
 import { RadioGroupContext } from "./radio-group-context";
 import type { ChangeEvent } from "./types";
 
 export interface RadioProps extends Omit<React.HTMLAttributes<HTMLLabelElement>, "onChange"> {
   checked?: boolean;
+  defaultChecked?: boolean;
   value?: string | number;
   label?: string;
   theme?: ThemeType;
@@ -18,7 +19,8 @@ export interface RadioProps extends Omit<React.HTMLAttributes<HTMLLabelElement>,
 const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
   (
     {
-      checked = false,
+      checked,
+      defaultChecked = false,
       value,
       label,
       theme = "fill",
@@ -35,19 +37,14 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
     const isGroup = !!group;
     const groupChecked = isGroup ? group.value === value : false;
 
-    const [localChecked, setLocalChecked] = useState(checked);
-
-    useEffect(() => {
-      setLocalChecked(checked);
-    }, [checked]);
-
-    const isChecked = isGroup ? groupChecked : localChecked;
+    const [localChecked, setLocalChecked] = useState(defaultChecked);
+    const isChecked = isGroup ? groupChecked : (checked ?? localChecked);
     const currentDisabled = disabled || (isGroup && group.disabled);
     const currentTheme = isGroup && group.theme ? group.theme : theme;
     const currentSize = isGroup && group.size ? group.size : size;
 
     const emitValue = (newChecked: boolean) => {
-      if (!isGroup) {
+      if (!isGroup && checked === undefined) {
         setLocalChecked(newChecked);
       }
       const labelVal = label || children || String(value);

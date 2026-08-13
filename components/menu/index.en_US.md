@@ -81,10 +81,10 @@ The navigation menu is the soul of a website. Users rely on navigation to jump b
 | icon     | Item icon                  | string        | -       |
 | disabled | Whether disabled           | bool          | false   |
 | key      | Unique identifier for item | string        | -       |
-| title    | Submenu item value         | string, slots | -       |
+| title    | Submenu item content       | ReactNode | -       |
 
 ### MenuGroup
 
 | Property | Description | Type          | Default |
 | -------- | ----------- | ------------- | ------- |
-| title    | Group title | string, slots | -       |
+| title    | Group title | ReactNode | -       |

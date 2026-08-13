@@ -74,9 +74,9 @@ const navData = [
         icon: CirclePlay,
       },
       {
-        title: "在Nuxt中使用",
-        sub: "Usage With Nuxt",
-        name: "usage-with-nuxt",
+        title: "在 Next.js 中使用",
+        sub: "Usage With Next.js",
+        name: "usage-with-next",
         icon: MountainSnow,
       },
       {

@@ -26,7 +26,7 @@ export { default as Card, CardMeta } from "./card";
 export type { CardMetaProps, CardProps } from "./card";
 
 export { Carousel, CarouselItem } from "./carousel";
-export type { CarouselProps, CarouselRef } from "./carousel";
+export type { CarouselItemProps, CarouselProps, CarouselRef } from "./carousel";
 
 export { Checkbox, CheckboxGroup } from "./checkbox";
 export type { ChangeEvent, CheckboxGroupProps, CheckboxOption, CheckboxProps } from "./checkbox";
@@ -78,7 +78,7 @@ export { Grid, GridItem } from "./grid";
 export type { GridItemProps, GridProps } from "./grid";
 
 export { ImageGroup, KImage } from "./image";
-export type { ImageGroupProps, ImageProps, ImageRef } from "./image";
+export type { ImageGroupProps, ImagePreviewProps, ImageProps, ImageRef } from "./image";
 
 export { default as Icon } from "./icon";
 export type { IconProps, IconType } from "./icon";
@@ -93,6 +93,7 @@ export { default as InputOTP } from "./input-otp";
 export type { InputOTPProps, InputOTPRef, InputOTPValidator } from "./input-otp";
 
 export { Content, Footer, Header, Layout, Sider } from "./layout";
+export type { LayoutProps, SiderProps } from "./layout";
 
 export { default as loading } from "./loading";
 export type { LoadingProps } from "./loading";
@@ -144,9 +145,16 @@ export { Option, Select } from "./select";
 export type { OptionProps, SelectOption, SelectProps } from "./select";
 
 export { default as ConfigProvider } from "./config";
+export type { ConfigProviderProps, Locale } from "./config";
 
 export { Skeleton, SkeletonAvatar, SkeletonButton, SkeletonImage, SkeletonText } from "./skeleton";
-export type { SkeletonProps } from "./skeleton";
+export type {
+  SkeletonAvatarProps,
+  SkeletonButtonProps,
+  SkeletonImageProps,
+  SkeletonProps,
+  SkeletonTextProps,
+} from "./skeleton";
 
 export { StatCard, StatNumber } from "./stat-card";
 export type { StatCardProps, StatNumberItem, StatNumberProps } from "./stat-card";
@@ -160,7 +168,7 @@ export type { SpaceProps } from "./space";
 export { default as Spin } from "./spin";
 export type { SpinProps } from "./spin";
 
-export { default as KSwitch } from "./switch";
+export { default as KSwitch, default as Switch } from "./switch";
 export type { SwitchProps } from "./switch";
 
 export { Splitter, SplitterPanel } from "./splitter";

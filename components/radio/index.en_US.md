@@ -33,7 +33,8 @@ Radio button.
 
 | Property   | Description                        | Type                     | Default |
 | ---------- | ---------------------------------- | ------------------------ | ------- |
-| checked    | Whether selected                   | bool                     | false   |
+| checked    | Controlled checked state           | boolean                  | -       |
+| defaultChecked | Initial checked state in uncontrolled mode | boolean          | false   |
 | label      | Text prompt                        | string, number           | -       |
 | value      | Value when used in combination     | string 、 number         | -       |
 | disabled   | Whether current item is disabled   | bool                     | false   |
@@ -44,6 +45,7 @@ Radio button.
 | Property   | Description                                                                                    | Type                              | Default    |
 | ---------- | ---------------------------------------------------------------------------------------------- | --------------------------------- | ---------- |
 | value      | Controlled selected value                                                                  | string, number                    | -          |
+| defaultValue | Initial selected value in uncontrolled mode                                              | string, number                    | -          |
 | size       | Button size, optional values: `small`, `large`, default not selected                           | string                            | -          |
 | direction  | Layout direction, optional values: `horizontal`, `vertical`                                    | string                            | horizontal |
 | shape      | `button`'s shape property, displays rounded corners                                            | string                            | -          |

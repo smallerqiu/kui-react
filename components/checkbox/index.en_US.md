@@ -33,7 +33,8 @@ Checkbox for multiple selections.
 
 | Property      | Description                                                   | Type                  | Default |
 | ------------- | ------------------------------------------------------------- | --------------------- | ------- |
-| checked       | Controlled checked state                                     | bool                  | false   |
+| checked       | Controlled checked state                                     | boolean               | -       |
+| defaultChecked | Initial checked state in uncontrolled mode                  | boolean               | false   |
 | label         | The text to display                                           | string 、 number      | -       |
 | value         | The value represented when used in combination                | String、number        | -       |
 | disabled      | Whether the current item is disabled                          | bool                  | false   |
@@ -47,6 +48,7 @@ Checkbox for multiple selections.
 | Property   | Description                                                                            | Type             | Default    |
 | ---------- | -------------------------------------------------------------------------------------- | ---------------- | ---------- |
 | value      | Controlled selected values                                                              | any[]            | -          |
+| defaultValue | Initial selected values in uncontrolled mode                                          | any[]            | []         |
 | disabled   | Whether the component is disabled                                                      | bool             | false      |
 | onChange   | Triggered when the option state changes, returns the currently selected item and state | (any[])=>void    | -          |
 | direction  | Layout direction, optional values `horizontal`, `vertical`                             | string           | horizontal |

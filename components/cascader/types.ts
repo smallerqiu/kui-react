@@ -18,6 +18,8 @@ export interface CascaderProps extends Omit<
 > {
   value?: CascaderValue;
   defaultValue?: CascaderValue;
+  open?: boolean;
+  defaultOpen?: boolean;
   options?: CascaderOption[];
   theme?: ThemeType;
   bordered?: boolean;

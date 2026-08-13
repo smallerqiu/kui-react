@@ -18,6 +18,22 @@ export const getLocaleEntries = () => {
   });
   return entries;
 };
+const packageJson = JSON.parse(
+  fs.readFileSync(path.resolve(import.meta.dirname, "package.json"), "utf8")
+) as { dependencies?: Record<string, string>; peerDependencies?: Record<string, string> };
+export const externalPackages = [
+  ...Object.keys(packageJson.dependencies ?? {}),
+  ...Object.keys(packageJson.peerDependencies ?? {}),
+  "react/compiler-runtime",
+  "react/jsx-runtime",
+  "react/jsx-dev-runtime",
+  "react-dom/client",
+];
+export const isExternalPackage = (id: string) =>
+  externalPackages.some(
+    (dependency) =>
+      dependency !== "kui-icons" && (id === dependency || id.startsWith(`${dependency}/`))
+  );
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -33,7 +49,7 @@ export default defineConfig({
       tsconfigPath: "./tsconfig.app.json",
       outDirs: "./types/",
       entryRoot: path.resolve(import.meta.dirname, "components"),
-      exclude: ["node_modules/**", "src/**", "plugins"],
+      exclude: ["node_modules/**", "src/**", "plugins", "components/**/__tests__/**"],
       include: ["components/**/*.ts", "components/**/*.tsx"],
     }),
     banner(),
@@ -50,18 +66,12 @@ export default defineConfig({
     },
     minify: false,
     rollupOptions: {
-      external: [
-        "react",
-        "react/compiler-runtime",
-        "react/jsx-runtime",
-        "react/jsx-dev-runtime",
-        "react-dom",
-        "react-dom/client",
-        "dayjs",
-      ],
+      external: isExternalPackage,
       output: {
         exports: "named",
-        globals: { react: "React", dayjs: "dayjs" },
+        preserveModules: true,
+        preserveModulesRoot: path.resolve(import.meta.dirname, "components"),
+        entryFileNames: "[name].js",
       },
     },
   },

@@ -12,7 +12,7 @@ Import the global stylesheet from the root layout:
 
 ```tsx
 // app/layout.tsx
-import "react-kui/style/index.css";
+import "react-kui/style";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return <html lang="en"><body>{children}</body></html>;

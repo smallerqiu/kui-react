@@ -42,6 +42,8 @@ Similar to the Select selection control, when the selectable data structure is a
 | ---------------- | ------------------------------------------------------------------------------- | --------------------------------- | ------------- |
 | value            | Controlled selected value                                                        | string, number, any[]             | -             |
 | defaultValue     | Initial selected value in uncontrolled mode                                      | string, number, any[]             | -             |
+| open             | Controlled dropdown visibility                                                    | boolean                           | -             |
+| defaultOpen      | Initial dropdown visibility in uncontrolled mode                                  | boolean                           | false         |
 | width            | Component width                                                                 | string, number                    | -             |
 | placeholder      | Default text of selector                                                        | string                            | Please select |
 | disabled         | Whether current item is disabled                                                | bool                              | false         |
@@ -70,5 +72,5 @@ Similar to the Select selection control, when the selectable data structure is a
 | onSearch     | Triggered during search                          | (e: InputEvent) => void                                   |
 | onChange     | Triggered when the value changes                 | (value: string\|string[]) => void                         |
 | onTreeExpand | Triggered when a tree node is expanded           | (result: TreeExpandEvent) => void                         |
-| onOpenChange | Triggered when the dropdown expands or collapses | (opened: boolean) => void                                 |
+| onOpenChange | Triggered when the dropdown expands or collapses | (open: boolean) => void                                   |
 | onClear      | Triggered when cleared                           | () => void                                                |

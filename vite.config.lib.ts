@@ -4,7 +4,7 @@ import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import path from "path";
 import { defineConfig } from "vite";
 import banner from "./plugins/banner/index.ts";
-import { getLocaleEntries } from "./vite.config.ts";
+import { getLocaleEntries, isExternalPackage } from "./vite.config.ts";
 
 export default defineConfig({
   publicDir: false,
@@ -25,15 +25,7 @@ export default defineConfig({
       compress: { drop_console: true, drop_debugger: true },
     },
     rollupOptions: {
-      external: [
-        "react",
-        "react/compiler-runtime",
-        "react/jsx-runtime",
-        "react/jsx-dev-runtime",
-        "react-dom",
-        "react-dom/client",
-        "dayjs",
-      ],
+      external: isExternalPackage,
       output: {
         exports: "named",
         globals: { react: "React", dayjs: "dayjs" },

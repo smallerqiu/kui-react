@@ -1,8 +1,8 @@
 import clsx from "clsx";
 import dayjs, { type Dayjs, type UnitType } from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
-import localeData from "dayjs/plugin/localeData";
-import isBetween from "dayjs/plugin/isBetween";
+import customParseFormat from "dayjs/plugin/customParseFormat.js";
+import localeData from "dayjs/plugin/localeData.js";
+import isBetween from "dayjs/plugin/isBetween.js";
 import {
   ArrowRight,
   CalendarDays,

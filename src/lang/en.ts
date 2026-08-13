@@ -43,7 +43,7 @@ export default {
     notice: "Notices",
     other: "Others",
     quick_start: "Quick Started",
-    usage_with_nuxt: "Usage With Nuxt",
+    usage_with_next: "Usage With Next.js",
     language: "Multi Language",
     change_log: "Change Log",
     dark_mode: "Dark Mode",

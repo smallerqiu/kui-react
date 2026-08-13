@@ -40,7 +40,7 @@ export default {
     notice: "反馈",
     other: "其它",
     quick_start: "快速开始",
-    usage_with_nuxt: "在Nuxt.js中使用",
+    usage_with_next: "在 Next.js 中使用",
     language: "多语言",
     change_log: "更新日志",
     dark_mode: "暗黑模式",

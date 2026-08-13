@@ -11,6 +11,9 @@ export interface DropdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   trigger?: TriggerType;
   disabled?: boolean;
   arrow?: boolean;
+  open?: boolean;
+  defaultOpen?: boolean;
+  /** @deprecated Use `open` instead. */
   show?: boolean;
   placement?: DropPlacementsType;
   target?: React.RefObject<HTMLElement | null>;
@@ -23,7 +26,9 @@ const Dropdown: React.FC<DropdownProps> = ({
   trigger = "hover",
   disabled = false,
   arrow = false,
-  show = false,
+  open,
+  defaultOpen = false,
+  show,
   placement = "bottom-left",
   target,
   onOpenChange,
@@ -33,13 +38,17 @@ const Dropdown: React.FC<DropdownProps> = ({
   style,
   ...rest
 }) => {
-  const [visible, setVisible] = useState(show);
-  const [rendered, setRendered] = useState(show);
-  const [previousShow, setPreviousShow] = useState(show);
-  if (previousShow !== show) {
-    setPreviousShow(show);
-    setVisible(show);
-    if (show) setRendered(true);
+  const externalOpen = open ?? show;
+  const initialOpen = externalOpen ?? defaultOpen;
+  const [visible, setVisible] = useState(initialOpen);
+  const [rendered, setRendered] = useState(initialOpen);
+  const [previousOpen, setPreviousOpen] = useState(externalOpen);
+  if (previousOpen !== externalOpen) {
+    setPreviousOpen(externalOpen);
+    if (externalOpen !== undefined) {
+      setVisible(externalOpen);
+      if (externalOpen) setRendered(true);
+    }
   }
 
   const localRefSelection = useRef<HTMLElement>(null);
@@ -149,10 +158,10 @@ const Dropdown: React.FC<DropdownProps> = ({
         !targetElement.contains(clickedEl)) ||
       (trigger === "contextmenu" && !refPopper.current.contains(clickedEl))
     ) {
-      setVisible(false);
+      if (externalOpen === undefined) setVisible(false);
       onOpenChange?.(false);
     }
-  }, [onOpenChange, refSelection, trigger]);
+  }, [externalOpen, onOpenChange, refSelection, trigger]);
 
   useEffect(() => {
     if (visible) {
@@ -185,7 +194,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     if (!rendered && opened) {
       setRendered(true);
     }
-    setVisible(opened);
+    if (externalOpen === undefined) setVisible(opened);
     onOpenChange?.(opened);
     if (opened) {
       if (trigger === "contextmenu" && e) {

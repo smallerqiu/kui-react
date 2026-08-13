@@ -22,6 +22,8 @@ import Presets from "./presets";
 export interface ColorPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
   value?: string;
   defaultValue?: string;
+  open?: boolean;
+  defaultOpen?: boolean;
   disabled?: boolean;
   disabledAlpha?: boolean;
   showText?: boolean;
@@ -39,6 +41,8 @@ export interface ColorPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "
 export default function ColorPicker({
   value,
   defaultValue,
+  open: openProp,
+  defaultOpen = false,
   disabled = false,
   disabledAlpha = false,
   showText = false,
@@ -61,7 +65,8 @@ export default function ColorPicker({
   const [initialColor] = useState(() => Color(defaultValue ?? controlled ?? "#000000ff"));
   const [currentHue, setCurrentHue] = useState(initialColor.hue());
   const [currentAlpha, setCurrentAlpha] = useState(initialColor.alpha());
-  const [open, setOpen] = useState(false);
+  const [innerOpen, setInnerOpen] = useState(defaultOpen);
+  const currentOpen = openProp ?? innerOpen;
   const [position, setPosition] = useState({ left: 0, top: 0, origin: "bottom" });
   const [currentPlacement, setCurrentPlacement] = useState(placement);
   const triggerRef = useRef<HTMLElement>(null);
@@ -109,10 +114,10 @@ export default function ColorPicker({
   }, [placement]);
   const setVisible = useCallback((next: boolean) => {
     if (disabled) return;
-    setOpen(next);
+    if (openProp === undefined) setInnerOpen(next);
     onOpenChange?.(next);
     if (next) requestAnimationFrame(updatePosition);
-  }, [disabled, onOpenChange, updatePosition]);
+  }, [disabled, onOpenChange, openProp, updatePosition]);
   // 清理未完成的隐藏定时器，防止在组件卸载后调用 setState
   useEffect(
     () => () => {
@@ -125,7 +130,7 @@ export default function ColorPicker({
     updatePositionRef.current = updatePosition;
   });
   useEffect(() => {
-    if (!open) return;
+    if (!currentOpen) return;
     const outside = (event: MouseEvent) => {
       if (
         !popoverRef.current?.contains(event.target as Node) &&
@@ -143,7 +148,7 @@ export default function ColorPicker({
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("scroll", handleScroll, true);
     };
-  }, [open, setVisible]);
+  }, [currentOpen, setVisible]);
   const mouseEnter = () => {
     if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     setVisible(true);
@@ -154,7 +159,7 @@ export default function ColorPicker({
   const hoverProps =
     trigger === "hover"
       ? { onMouseEnter: mouseEnter, onMouseLeave: mouseLeave }
-      : { onClick: () => setVisible(!open) };
+      : { onClick: () => setVisible(!currentOpen) };
   const customTrigger =
     children && isValidElement(children) ? children : null;
   const triggerNode = customTrigger ? (
@@ -162,7 +167,7 @@ export default function ColorPicker({
       ref={triggerRef}
       className="k-color-picker-custom-trigger"
       onClick={(event: React.MouseEvent) => {
-        if (trigger === "click" && !event.defaultPrevented) setVisible(!open);
+        if (trigger === "click" && !event.defaultPrevented) setVisible(!currentOpen);
       }}
       onMouseEnter={() => {
         if (trigger === "hover") mouseEnter();
@@ -180,7 +185,7 @@ export default function ColorPicker({
       className={clsx(
         "k-color-picker",
         {
-          "k-color-picker-opened": open,
+          "k-color-picker-opened": currentOpen,
           "k-color-picker-disabled": disabled,
           "k-color-picker-sm": size === "small",
           "k-color-picker-lg": size === "large",
@@ -199,7 +204,7 @@ export default function ColorPicker({
   );
   const dropdown = (
     <Teleport to="body">
-      <Transition show={open} name="k-color-picker" timeout={200} nodeRef={popoverRef}>
+      <Transition show={currentOpen} name="k-color-picker" timeout={200} nodeRef={popoverRef}>
         <div
           ref={popoverRef}
           {...({ "k-placement": currentPlacement } as HTMLAttributes<HTMLDivElement>)}

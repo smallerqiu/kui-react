@@ -32,6 +32,8 @@ const pathFromValue = (options: CascaderOption[], value: CascaderValue) => {
 export default function Cascader({
   value,
   defaultValue = [],
+  open: openProp,
+  defaultOpen = false,
   options: optionsProp,
   theme = "fill",
   bordered = true,
@@ -67,8 +69,10 @@ export default function Cascader({
     setSyncedSelectedPath(selectedPath);
     setActivePath(selectedPath);
   }
-  const [visible, setVisible] = useState(false);
-  const [rendered, setRendered] = useState(false);
+  const [innerOpen, setInnerOpen] = useState(defaultOpen);
+  const visible = openProp ?? innerOpen;
+  const [rendered, setRendered] = useState(visible);
+  if (visible && !rendered) setRendered(true);
   const [position, setPosition] = useState({ left: 0, top: 0, minWidth: 0, origin: "top" });
   const selectionRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -115,10 +119,10 @@ export default function Cascader({
         setRendered(true);
         setActivePath(selectedPath);
       }
-      setVisible(next);
+      if (openProp === undefined) setInnerOpen(next);
       onOpenChange?.(next);
     },
-    [disabled, onOpenChange, selectedPath, visible]
+    [disabled, onOpenChange, openProp, selectedPath, visible]
   );
 
   useEffect(() => {
@@ -154,8 +158,7 @@ export default function Cascader({
     setActivePath(nextPath);
     if (!option.children?.length && !hover) {
       commit(nextPath.map((item) => item.value));
-      setVisible(false);
-      onOpenChange?.(false);
+      setOpen(false);
     }
   };
 

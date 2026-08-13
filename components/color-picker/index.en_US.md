@@ -30,6 +30,8 @@ Freely output colors.
 | ------------- | --------------------------------------------------------------- | ------------------------- | ----------- |
 | value         | Controlled color value                                          | `string`                  | -           |
 | defaultValue  | Initial uncontrolled color value                                | `string`                  | `#000000ff` |
+| open          | Controlled popup visibility                                     | `boolean`                 | -           |
+| defaultOpen   | Initial popup visibility in uncontrolled mode                   | `boolean`                 | `false`     |
 | mode          | Color output mode: `hex`, `rgb`, or `hsl`                       | `ColorMode`               | `hex`       |
 | presets       | Custom color palette                                            | `string[]`                | Built-in palette |
 | disabledAlpha | Whether alpha editing is disabled                               | `boolean`                 | `false`     |
@@ -41,4 +43,4 @@ Freely output colors.
 | children      | Custom trigger element                                          | `ReactNode`               | -           |
 | onUpdateMode  | Called when the color mode changes                              | `(mode: ColorMode) => void` | -         |
 | onChange      | Called when the color value changes                             | `(color: string) => void` | -           |
-| onOpenChange  | Called when the popup opens or closes                           | `(opened: boolean) => void` | -         |
+| onOpenChange  | Called when the popup opens or closes                           | `(open: boolean) => void` | -           |

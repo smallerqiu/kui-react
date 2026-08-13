@@ -2,15 +2,15 @@ import { useState } from "react";
 import { Button, Poptip } from "react-kui";
 
 export default function App() {
-  const [show, setShow] = useState(false);
+  const [open, setOpen] = useState(false);
   return (
     <Poptip
       title="Title"
       trigger="click"
-      show={show}
-      onShowChange={setShow}
+      open={open}
+      onOpenChange={setOpen}
       content={
-        <Button onClick={() => setShow(false)} size="small">
+        <Button onClick={() => setOpen(false)} size="small">
           Close
         </Button>
       }

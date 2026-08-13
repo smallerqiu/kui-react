@@ -81,10 +81,10 @@
 | icon     | item 的图标     | string       | -      |
 | disabled | 是否禁用        | bool         | false  |
 | key      | item 的唯一标志 | string       | -      |
-| title    | 子菜单项值      | string,slots | -      |
+| title    | 子菜单项内容    | ReactNode | -      |
 
 ### MenuGroup
 
 | 属性  | 说明     | 类型         | 默认值 |
 | ----- | -------- | ------------ | ------ |
-| title | 分组标题 | string,slots | -      |
+| title | 分组标题 | ReactNode | -      |

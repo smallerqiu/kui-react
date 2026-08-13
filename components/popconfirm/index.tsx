@@ -13,6 +13,9 @@ import { getChildren } from "../utils/react-node";
 
 export interface PopconfirmProps {
   dark?: boolean;
+  open?: boolean;
+  defaultOpen?: boolean;
+  /** @deprecated Use `open` instead. */
   show?: boolean;
   title?: React.ReactNode;
   width?: number | string;
@@ -21,13 +24,17 @@ export interface PopconfirmProps {
   placement?: PlacementsType;
   onCancel?: () => void;
   onOk?: () => void;
+  onOpenChange?: (open: boolean) => void;
+  /** @deprecated Use `onOpenChange` instead. */
   onShowChange?: (show: boolean) => void;
   children?: React.ReactNode;
 }
 
 const Popconfirm: React.FC<PopconfirmProps> = ({
   dark = false,
-  show = false,
+  open,
+  defaultOpen = false,
+  show,
   title,
   width,
   okText,
@@ -35,19 +42,24 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   placement = "top",
   onCancel,
   onOk,
+  onOpenChange,
   onShowChange,
   children,
 }) => {
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
 
-  const [visible, setVisible] = useState(show);
-  const [rendered, setRendered] = useState(show);
-  const [previousShow, setPreviousShow] = useState(show);
-  if (previousShow !== show) {
-    setPreviousShow(show);
-    setVisible(show);
-    if (show) setRendered(true);
+  const externalOpen = open ?? show;
+  const initialOpen = externalOpen ?? defaultOpen;
+  const [visible, setVisible] = useState(initialOpen);
+  const [rendered, setRendered] = useState(initialOpen);
+  const [previousOpen, setPreviousOpen] = useState(externalOpen);
+  if (previousOpen !== externalOpen) {
+    setPreviousOpen(externalOpen);
+    if (externalOpen !== undefined) {
+      setVisible(externalOpen);
+      if (externalOpen) setRendered(true);
+    }
   }
   const [left, setLeft] = useState(0);
   const [top, setTop] = useState(0);
@@ -87,9 +99,10 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   }, [title, updatePosition, visible]);
 
   const updateShow = useCallback((value: boolean) => {
-    setVisible(value);
+    if (externalOpen === undefined) setVisible(value);
+    onOpenChange?.(value);
     onShowChange?.(value);
-  }, [onShowChange]);
+  }, [externalOpen, onOpenChange, onShowChange]);
 
   const outsideClick = useCallback((e: MouseEvent) => {
     const ctx = refSelection.current;
@@ -183,7 +196,7 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
         }}
         onMouseLeave={() => {
           showTimer.current = setTimeout(() => {
-            if (!show) updateShow(false);
+            updateShow(false);
           }, 300);
         }}
       >

@@ -8,6 +8,9 @@ import { getChildren } from "../utils/react-node";
 
 export interface PoptipProps {
   dark?: boolean;
+  open?: boolean;
+  defaultOpen?: boolean;
+  /** @deprecated Use `open` instead. */
   show?: boolean;
   title?: React.ReactNode;
   content?: React.ReactNode;
@@ -15,29 +18,38 @@ export interface PoptipProps {
   trigger?: "click" | "hover" | "focus";
   placement?: PlacementsType;
   onClose?: () => void;
+  onOpenChange?: (open: boolean) => void;
+  /** @deprecated Use `onOpenChange` instead. */
   onShowChange?: (show: boolean) => void;
   children?: React.ReactNode;
 }
 
 const Poptip: React.FC<PoptipProps> = ({
   dark = false,
-  show = false,
+  open,
+  defaultOpen = false,
+  show,
   title,
   content,
   width,
   trigger = "hover",
   placement = "top",
   onClose,
+  onOpenChange,
   onShowChange,
   children,
 }) => {
-  const [visible, setVisible] = useState(show);
-  const [rendered, setRendered] = useState(show);
-  const [previousShow, setPreviousShow] = useState(show);
-  if (previousShow !== show) {
-    setPreviousShow(show);
-    setVisible(show);
-    if (show) setRendered(true);
+  const externalOpen = open ?? show;
+  const initialOpen = externalOpen ?? defaultOpen;
+  const [visible, setVisible] = useState(initialOpen);
+  const [rendered, setRendered] = useState(initialOpen);
+  const [previousOpen, setPreviousOpen] = useState(externalOpen);
+  if (previousOpen !== externalOpen) {
+    setPreviousOpen(externalOpen);
+    if (externalOpen !== undefined) {
+      setVisible(externalOpen);
+      if (externalOpen) setRendered(true);
+    }
   }
   const [left, setLeft] = useState(0);
   const [top, setTop] = useState(0);
@@ -77,10 +89,11 @@ const Poptip: React.FC<PoptipProps> = ({
   }, [title, updatePosition, visible]);
 
   const updateShow = useCallback((value: boolean) => {
-    setVisible(value);
+    if (externalOpen === undefined) setVisible(value);
+    onOpenChange?.(value);
     onShowChange?.(value);
     if (!value) onClose?.();
-  }, [onClose, onShowChange]);
+  }, [externalOpen, onClose, onOpenChange, onShowChange]);
 
   const outsideClick = useCallback((e: MouseEvent) => {
     const ctx = refSelection.current;
@@ -120,7 +133,7 @@ const Poptip: React.FC<PoptipProps> = ({
   const hidePoptip = () => {
     if (hideTimer.current) clearTimeout(hideTimer.current);
     hideTimer.current = setTimeout(() => {
-      if (!show) updateShow(false);
+      updateShow(false);
     }, 300);
   };
 
@@ -184,7 +197,7 @@ const Poptip: React.FC<PoptipProps> = ({
         }}
         onMouseLeave={() => {
           showTimer.current = setTimeout(() => {
-            if (!show) updateShow(false);
+            updateShow(false);
           }, 300);
         }}
       >

@@ -36,7 +36,8 @@
 
 | 属性         | 说明                                                                         | 类型                | 默认值      |
 | ------------ | ---------------------------------------------------------------------------- | ------------------- | ----------- |
-| show         | 默认是否显示下拉                                                             | bool                | false       |
+| open         | 受控的显示状态                                                               | boolean             | -           |
+| defaultOpen  | 非受控模式的初始显示状态                                                     | boolean             | false       |
 | trigger      | 触发方式,支持hover(默认), click, custom 3种方式                              | string              | hover       |
 | placement    | 菜单弹出位置：bottomLeft bottomCenter bottomRight topLeft topCenter topRight | string              | bottom-left |
 | theme        | 组件呈现主题,默认'fill'                                                      | string              | fill        |

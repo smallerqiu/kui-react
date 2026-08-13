@@ -38,6 +38,8 @@ export interface SelectProps extends Omit<
   maxTagCount?: number;
   value?: SelectValue;
   defaultValue?: SelectValue;
+  open?: boolean;
+  defaultOpen?: boolean;
   clearable?: boolean;
   filterable?: boolean;
   block?: boolean;
@@ -69,6 +71,8 @@ const Select: React.FC<SelectProps> = ({
   maxTagCount,
   value,
   defaultValue,
+  open: openProp,
+  defaultOpen = false,
   clearable = true,
   filterable = false,
   block = false,
@@ -97,8 +101,13 @@ const Select: React.FC<SelectProps> = ({
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
 
-  const [visible, setVisible] = useState(false);
-  const [rendered, setRendered] = useState(false);
+  const [innerVisible, setInnerVisible] = useState(defaultOpen);
+  const visible = openProp ?? innerVisible;
+  const setVisible = (next: boolean) => {
+    if (openProp === undefined) setInnerVisible(next);
+  };
+  const [rendered, setRendered] = useState(visible);
+  if (visible && !rendered) setRendered(true);
   const [internalValue, setInternalValue] = useState<(string | number)[]>(
     multiple
       ? (Array.isArray(defaultValue) ? defaultValue : [])

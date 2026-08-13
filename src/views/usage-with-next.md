@@ -12,7 +12,7 @@ pnpm add react-kui kui-icons
 
 ```tsx
 // app/layout.tsx
-import "react-kui/style/index.css";
+import "react-kui/style";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return <html lang="zh-CN"><body>{children}</body></html>;

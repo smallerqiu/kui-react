@@ -33,7 +33,8 @@
 
 | 属性       | 说明                     | 类型                     | 默认值 |
 | ---------- | ------------------------ | ------------------------ | ------ |
-| checked    | 是否选中状态             | bool                     | false  |
+| checked    | 受控的选中状态           | boolean                  | -      |
+| defaultChecked | 非受控模式的初始选中状态 | boolean               | false  |
 | label      | 文字提示                 | string 、 number         | -      |
 | value      | 组合使用时的值           | string 、 number         | -      |
 | disabled   | 是否禁用当前项           | bool                     | false  |
@@ -44,6 +45,7 @@
 | 属性       | 说明                                                                       | 类型                              | 默认值     |
 | ---------- | -------------------------------------------------------------------------- | --------------------------------- | ---------- |
 | value      | 受控的当前选中值                                                        | string、number                     | -          |
+| defaultValue | 非受控模式的初始选中值                                                 | string、number                     | -          |
 | size       | 按钮尺寸,可选值 `small`、`large`，默认不选                                 | string                            | -          |
 | direction  | 布局方向,可选值 `horizontal`、`vertical`                                   | string                            | horizontal |
 | shape      | `button` 的 shape 属性 ，显示圆角                                          | string                            | -          |

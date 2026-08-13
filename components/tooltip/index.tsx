@@ -9,33 +9,45 @@ import { setPlacement } from "../utils/placement";
 import { getChildren } from "../utils/react-node";
 
 export interface TooltipProps {
+  open?: boolean;
+  defaultOpen?: boolean;
+  /** @deprecated Use `open` instead. */
   show?: boolean;
   title?: React.ReactNode;
   color?: string;
   disabled?: boolean;
   width?: number | string;
   placement?: PlacementsType;
+  onOpenChange?: (open: boolean) => void;
+  /** @deprecated Use `onOpenChange` instead. */
   onShowChange?: (show: boolean) => void;
   children?: React.ReactNode;
 }
 
 const Tooltip: React.FC<TooltipProps> = ({
-  show = false,
+  open,
+  defaultOpen = false,
+  show,
   title,
   color,
   disabled = false,
   width,
   placement = "top",
+  onOpenChange,
   onShowChange,
   children,
 }) => {
-  const [visible, setVisible] = useState(show);
-  const [rendered, setRendered] = useState(show);
-  const [previousShow, setPreviousShow] = useState(show);
-  if (previousShow !== show) {
-    setPreviousShow(show);
-    setVisible(show);
-    if (show) setRendered(true);
+  const externalOpen = open ?? show;
+  const initialOpen = externalOpen ?? defaultOpen;
+  const [visible, setVisible] = useState(initialOpen);
+  const [rendered, setRendered] = useState(initialOpen);
+  const [previousOpen, setPreviousOpen] = useState(externalOpen);
+  if (previousOpen !== externalOpen) {
+    setPreviousOpen(externalOpen);
+    if (externalOpen !== undefined) {
+      setVisible(externalOpen);
+      if (externalOpen) setRendered(true);
+    }
   }
   const [left, setLeft] = useState(0);
   const [top, setTop] = useState(0);
@@ -84,7 +96,8 @@ const Tooltip: React.FC<TooltipProps> = ({
   }, [updatePosition]);
 
   const updateShow = (value: boolean) => {
-    setVisible(value);
+    if (externalOpen === undefined) setVisible(value);
+    onOpenChange?.(value);
     onShowChange?.(value);
   };
 
@@ -106,7 +119,7 @@ const Tooltip: React.FC<TooltipProps> = ({
   const hide = () => {
     if (hideTimer.current) clearTimeout(hideTimer.current);
     hideTimer.current = setTimeout(() => {
-      if (!show) updateShow(false);
+      updateShow(false);
     }, 300);
   };
 
@@ -182,7 +195,7 @@ const Tooltip: React.FC<TooltipProps> = ({
         }}
         onMouseLeave={() => {
           showTimer.current = setTimeout(() => {
-            if (!show) updateShow(false);
+            updateShow(false);
           }, 300);
         }}
       >

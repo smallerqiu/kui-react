@@ -14,6 +14,7 @@ export interface ChangeEvent {
 
 export interface CheckboxProps extends Omit<React.HTMLAttributes<HTMLLabelElement>, "onChange"> {
   checked?: boolean;
+  defaultChecked?: boolean;
   valueType?: ValueType;
   value?: unknown;
   label?: React.ReactNode;
@@ -27,6 +28,7 @@ export interface CheckboxProps extends Omit<React.HTMLAttributes<HTMLLabelElemen
 
 const Checkbox: React.FC<CheckboxProps> = ({
   checked,
+  defaultChecked = false,
   valueType = "boolean",
   value,
   label,
@@ -44,7 +46,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   const isGroup = !!group;
   const groupChecked = isGroup && group.value ? group.value.indexOf(value) > -1 : false;
 
-  const [localChecked, setLocalChecked] = useState(checked ?? false);
+  const [localChecked, setLocalChecked] = useState(defaultChecked);
   const isChecked = isGroup ? groupChecked : (checked ?? localChecked);
   const currentDisabled = disabled || (isGroup && group.disabled);
   const currentTheme = isGroup && group.theme ? group.theme : theme;

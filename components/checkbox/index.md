@@ -33,7 +33,8 @@
 
 | 属性          | 说明                                          | 类型                  | 默认值 |
 | ------------- | --------------------------------------------- | --------------------- | ------ |
-| checked       | 受控的选中状态                                | bool                  | false  |
+| checked       | 受控的选中状态                                | boolean               | -      |
+| defaultChecked | 非受控模式的初始选中状态                    | boolean               | false  |
 | label         | 显示的文字                                    | string 、 number      | -      |
 | value         | 结合使用时表示的值                            | string、number        | -      |
 | disabled      | 是否禁用当前项                                | bool                  | false  |
@@ -47,6 +48,7 @@
 | 属性       | 说明                                                 | 类型             | 默认值     |
 | ---------- | ---------------------------------------------------- | ---------------- | ---------- |
 | value      | 受控的当前选中值                                   | any[]            | -          |
+| defaultValue | 非受控模式的初始选中值                           | any[]            | []         |
 | disabled   | 是否禁用组件                                         | bool             | false      |
 | onChange   | 在选项状态发生改变时触发，返回当前选中的项和状态     | (any[])=>void    | -          |
 | direction  | 布局方向,可选值 `horizontal`、`vertical`             | string           | horizontal |

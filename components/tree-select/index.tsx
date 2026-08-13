@@ -33,6 +33,8 @@ export interface TreeSelectProps extends Omit<
   maxTagCount?: number;
   value?: TreeSelectValue;
   defaultValue?: TreeSelectValue;
+  open?: boolean;
+  defaultOpen?: boolean;
   clearable?: boolean;
   filterable?: boolean;
   block?: boolean;
@@ -84,6 +86,8 @@ export default function TreeSelect({
   maxTagCount,
   value,
   defaultValue,
+  open: openProp,
+  defaultOpen = false,
   clearable = true,
   filterable,
   block,
@@ -127,8 +131,10 @@ export default function TreeSelect({
   const [innerValue, setInnerValue] = useState(() => normalize(defaultValue, !!multiple));
   const currentValue =
     controlledValue !== undefined ? normalize(controlledValue, !!multiple) : innerValue;
-  const [visible, setVisible] = useState(false);
-  const [rendered, setRendered] = useState(false);
+  const [innerOpen, setInnerOpen] = useState(defaultOpen);
+  const visible = openProp ?? innerOpen;
+  const [rendered, setRendered] = useState(visible);
+  if (visible && !rendered) setRendered(true);
   const [query, setQuery] = useState("");
   const [innerExpanded, setInnerExpanded] = useState<string[]>([]);
   const [innerChecked, setInnerChecked] = useState<string[]>([]);
@@ -170,7 +176,7 @@ export default function TreeSelect({
     const outside = (event: MouseEvent) => {
       const target = event.target as Node;
       if (!selectionRef.current?.contains(target) && !overlayRef.current?.contains(target)) {
-        setVisible(false);
+        if (openProp === undefined) setInnerOpen(false);
         setQuery("");
         onOpenChange?.(false);
       }
@@ -184,16 +190,16 @@ export default function TreeSelect({
       window.removeEventListener("resize", reposition);
       window.removeEventListener("scroll", reposition, true);
     };
-  }, [visible, updatePosition, onOpenChange]);
+  }, [visible, updatePosition, onOpenChange, openProp]);
   useEffect(() => {
     if (visible) requestAnimationFrame(updatePosition);
   }, [visible, labels.length, updatePosition]);
 
-  const open = () => {
+  const toggleOpen = () => {
     if (disabled) return;
     const next = !visible;
     setRendered(true);
-    setVisible(next);
+    if (openProp === undefined) setInnerOpen(next);
     onOpenChange?.(next);
     if (next && (filterable || onSearch)) requestAnimationFrame(() => inputRef.current?.focus());
     if (!next) setQuery("");
@@ -213,7 +219,7 @@ export default function TreeSelect({
     commit(keys);
     onTreeSelect?.(node.key, String(node.title ?? node.key), !exists);
     if (!multiple) {
-      setVisible(false);
+      if (openProp === undefined) setInnerOpen(false);
       onOpenChange?.(false);
     }
     setQuery("");
@@ -338,7 +344,7 @@ export default function TreeSelect({
         tabIndex={disabled ? -1 : 0}
         className={classes}
         style={{ ...style, width: width ? `${width}px` : style?.width }}
-        onClick={open}
+      onClick={toggleOpen}
       >
         {icon && <Icon type={icon} className="k-tree-select-icon" />}
         <div className="k-tree-select-selection">

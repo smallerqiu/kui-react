@@ -30,6 +30,8 @@
 | ------------- | -------------------------------------------------- | ------------------------- | ----------- |
 | value         | 受控颜色值                                         | `string`                  | -           |
 | defaultValue  | 非受控初始颜色值                                   | `string`                  | `#000000ff` |
+| open          | 受控的弹层显示状态                                 | `boolean`                 | -           |
+| defaultOpen   | 非受控模式的初始弹层状态                           | `boolean`                 | `false`     |
 | mode          | 颜色展示类型，支持 `hex`、`rgb`、`hsl`             | `ColorMode`               | `hex`       |
 | presets       | 自定义颜色盘                                       | `string[]`                | 内置色盘    |
 | disabledAlpha | 是否禁用透明度                                     | `boolean`                 | `false`     |
@@ -41,4 +43,4 @@
 | children      | 自定义触发元素                                     | `ReactNode`               | -           |
 | onUpdateMode  | 颜色模式更新时触发                                 | `(mode: ColorMode) => void` | -         |
 | onChange      | 颜色值改变时触发                                   | `(color: string) => void` | -           |
-| onOpenChange  | 颜色选择器展开或收起时触发                         | `(opened: boolean) => void` | -         |
+| onOpenChange  | 颜色选择器展开或收起时触发                         | `(open: boolean) => void` | -           |

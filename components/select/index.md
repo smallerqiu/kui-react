@@ -39,6 +39,8 @@
 | ------------ | ---------------------------------------------------------- | ------------------------------------------ | ---------- |
 | value        | 受控的选中值                                               | string,number,(string\|number)[]           | -          |
 | defaultValue | 非受控模式的初始选中值                                     | string,number,(string\|number)[]           | -          |
+| open         | 受控的下拉框显示状态                                       | boolean                                    | -          |
+| defaultOpen  | 非受控模式的初始下拉框状态                                 | boolean                                    | false      |
 | width        | 组件宽度                                                   | string,number                              | -          |
 | placeholder  | 选择框默认文字                                             | string                                     | 请选择     |
 | disabled     | 是否禁用当前项                                             | bool                                       | false      |
@@ -58,7 +60,7 @@
 | onSelect     | 选中一项时触发                                             | (option: SelectOption) => void             | -          |
 | onChange     | 在选项状态发生改变时触发,,返回选择的值value                | (value: string \| number \| any[]) => void | -          |
 | onSearch     | 搜索时触发                                                 | (e: InputEvent) => void                    | -          |
-| onOpenChange | 下拉框展开或收起时触发                                     | (opened: boolean) => void                  | -          |
+| onOpenChange | 下拉框展开或收起时触发                                     | (open: boolean) => void                    | -          |
 | onClear      | 点击清除按钮时触发                                         | () => void                                 | -          |
 
 ## Option API

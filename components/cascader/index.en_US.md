@@ -32,6 +32,8 @@ A cascading selection box.
 | :------------ | :------------------------------------------------------------------------------------------------------------------ | :--------------------- | :---------------- |
 | value         | Controlled array of path values (e.g., `['zhejiang', 'hangzhou', 'xihu']`).                                         | `(string \| number)[]` | -                 |
 | defaultValue  | Initial path value in uncontrolled mode.                                                                            | `(string \| number)[]` | `[]`              |
+| open          | Controlled dropdown visibility.                                                                                     | `boolean`              | -                 |
+| defaultOpen   | Initial dropdown visibility in uncontrolled mode.                                                                   | `boolean`              | `false`           |
 | onChange      | Called when a path is selected or cleared.                                                                           | `(value) => void`       | -                 |
 | options       | Tree-structured data source for cascading options.                                                                  | `CascaderOption[]`     | `[]`              |
 | placeholder   | Fallback placeholder text displayed when no path is selected.                                                       | `string`               | `"Please select"` |

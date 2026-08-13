@@ -73,8 +73,8 @@ export default function AppHeader() {
         children: [
           { key: "/guide/quick-started", title: externalTitle(t("menu.quick_start")) },
           {
-            key: "/guide/usage-with-nuxt",
-            title: externalTitle(t("menu.usage_with_nuxt")),
+            key: "/guide/usage-with-next",
+            title: externalTitle(t("menu.usage_with_next")),
           },
           { key: "/guide/language", title: externalTitle(t("menu.language")) },
           { key: "/guide/change-log", title: externalTitle(t("menu.change_log")) },
