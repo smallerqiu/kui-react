@@ -31,7 +31,6 @@ export interface ModalProps {
   onCancel?: () => void;
   onOpenChange?: (opened: boolean) => void;
   content?: React.ReactNode;
-  footerSlot?: React.ReactNode;
   children?: React.ReactNode;
 }
 
@@ -58,7 +57,6 @@ const Modal: React.FC<ModalProps> = ({
   onCancel,
   onOpenChange,
   content,
-  footerSlot,
   children,
 }) => {
   const config = useContext(ConfigContext);
@@ -197,17 +195,14 @@ const Modal: React.FC<ModalProps> = ({
 
   let contentNode = content;
   if (!contentNode) {
-    const footerContent =
-      footer === true
-        ? footerSlot || (
-            <>
-              <Button onClick={cancel}>{cancelLabel}</Button>
-              <Button onClick={ok} type="primary" loading={loading}>
-                {okLabel}
-              </Button>
-            </>
-          )
-        : footer;
+    const footerContent = footer === true ? (
+      <>
+        <Button onClick={cancel}>{cancelLabel}</Button>
+        <Button onClick={ok} type="primary" loading={loading}>
+          {okLabel}
+        </Button>
+      </>
+    ) : footer;
 
     contentNode = (
       <div className="k-modal-content" tabIndex={0}>

@@ -53,6 +53,7 @@
 | sample     | 页签样式是否为简洁样式                | boolean                  | false  |
 | animated   | 是否使用动画切换 Tabs                 | boolean                  | true   |
 | centered   | 是否居中显示标签                      | boolean                  | false  |
+| extra      | 标签栏右侧的额外内容                  | ReactNode                | -      |
 | onRemove   | tab关闭时的回调，返回关闭的tab的key值 | (key: string) => void | -      |
 | onChange   | 切换面板的回调                        | (key: string) => void | -      |
 | onTabClick | tab点击时的回调                       | (key: string) => void | -      |

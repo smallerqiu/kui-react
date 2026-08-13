@@ -18,7 +18,7 @@ export interface DrawerProps {
   cancelText?: string;
   placement?: DrawerPlacementsType;
   closable?: boolean;
-  footer?: boolean;
+  footer?: boolean | React.ReactNode;
   maskClosable?: boolean;
   target?: () => HTMLElement;
   mask?: boolean;
@@ -28,7 +28,6 @@ export interface DrawerProps {
   onCancel?: () => void;
   onClose?: () => void;
   onOpenChange?: (opened: boolean) => void;
-  footerSlot?: React.ReactNode;
   children?: React.ReactNode;
 }
 
@@ -54,7 +53,6 @@ const Drawer: React.FC<DrawerProps> = ({
   onCancel,
   onClose,
   onOpenChange,
-  footerSlot,
   children,
 }) => {
   const config = useContext(ConfigContext);
@@ -127,18 +125,18 @@ const Drawer: React.FC<DrawerProps> = ({
   const okLabel = okText || locale?.k?.common?.ok;
   const cancelLabel = cancelText || locale?.k?.common?.cancel;
 
-  const hasFooter = footer || !!footerSlot;
+  const hasFooter = footer !== false && footer != null;
 
   const footerNode = hasFooter ? (
     <div className="k-drawer-footer">
-      {footerSlot || (
+      {footer === true ? (
         <>
           <Button onClick={cancel}>{cancelLabel}</Button>
           <Button type="primary" onClick={ok} loading={loading}>
             {okLabel}
           </Button>
         </>
-      )}
+      ) : footer}
     </div>
   ) : null;
 

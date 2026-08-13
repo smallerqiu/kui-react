@@ -41,6 +41,7 @@ When users need to select within a numerical range/custom range, it can be conti
 | Property       | Description                                                                                       | Type                                | Default |
 | -------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------- | ------- |
 | value          | Controlled current value                                                                          | number, number[]                    | -       |
+| defaultValue   | Initial value in uncontrolled mode                                                                | number, number[]                    | 0       |
 | min            | Minimum value                                                                                     | number                              | 0       |
 | max            | Maximum value                                                                                     | number                              | 100     |
 | range          | Whether to support sliding on both sides simultaneously                                           | boolean                                | false   |

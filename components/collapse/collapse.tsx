@@ -5,22 +5,26 @@ import type { CollapsePanelProps } from "./collapse-panel";
 
 export interface CollapseProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
   openKeys?: (string | number)[];
+  defaultOpenKeys?: (string | number)[];
   accordion?: boolean;
   sample?: boolean;
   onChange?: (key: string | number) => void;
+  onOpenKeysChange?: (keys: (string | number)[]) => void;
   children?: React.ReactNode;
 }
 
 const Collapse: React.FC<CollapseProps> = ({
   openKeys,
+  defaultOpenKeys = [],
   accordion = false,
   sample = false,
   onChange,
+  onOpenKeysChange,
   children,
   className = "",
   ...rest
 }) => {
-  const [innerActiveKeys, setInnerActiveKeys] = useState<(string | number)[]>(openKeys ?? []);
+  const [innerActiveKeys, setInnerActiveKeys] = useState<(string | number)[]>(defaultOpenKeys);
   const activeKeys = openKeys ?? innerActiveKeys;
 
   const handleExpand = (key: string | number) => {
@@ -36,6 +40,7 @@ const Collapse: React.FC<CollapseProps> = ({
     }
 
     if (openKeys === undefined) setInnerActiveKeys(nextKeys);
+    onOpenKeysChange?.(nextKeys);
     onChange?.(key);
   };
 

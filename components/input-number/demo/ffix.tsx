@@ -13,7 +13,7 @@ export default function App() {
         <InputNumber
           placeholder="请填写您的薪资"
           icon={LogoYen}
-          suffixSlot={
+          suffix={
             <Tooltip title="此处如果不知道怎么填，请咨询管理员">
               <Button icon={CircleQuestionMark} />
             </Tooltip>
@@ -21,8 +21,8 @@ export default function App() {
         />
         <InputNumber
           placeholder="Please input amount"
-          prefixSlot={<Button icon={UserPlus} />}
-          suffixSlot={<Button>Top up</Button>}
+          prefix={<Button icon={UserPlus} />}
+          suffix={<Button>Top up</Button>}
         />
       </Space>
     </>

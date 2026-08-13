@@ -83,7 +83,7 @@ export default function App() {
         open={show2}
         title="I am custom title"
         onClose={() => setShow2(false)}
-        footerSlot={
+        footer={
           <Space>
             <Button onClick={() => setShow2(false)}>Cancel</Button>
             <Button type="danger">Reject</Button>

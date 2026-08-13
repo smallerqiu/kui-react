@@ -9,7 +9,7 @@ import { isValidBig, normalize } from "../utils/number";
 
 export interface InputNumberProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "onChange" | "defaultValue"
+  "onChange" | "defaultValue" | "prefix"
 > {
   value?: number | string;
   defaultValue?: number | string;
@@ -22,16 +22,14 @@ export interface InputNumberProps extends Omit<
   disabled?: boolean;
   readOnly?: boolean;
   controls?: boolean;
-  suffix?: string;
-  prefix?: string;
+  suffix?: React.ReactNode;
+  prefix?: React.ReactNode;
   theme?: ThemeType;
   shape?: ShapeType;
   icon?: IconType[];
   size?: SizeType;
   placeholder?: string;
   onChange?: (value: number | undefined) => void;
-  suffixSlot?: React.ReactNode;
-  prefixSlot?: React.ReactNode;
 }
 
 const InputNumber: React.FC<InputNumberProps> = ({
@@ -54,8 +52,6 @@ const InputNumber: React.FC<InputNumberProps> = ({
   size,
   placeholder,
   onChange,
-  suffixSlot,
-  prefixSlot,
   ...rest
 }) => {
   const parentSize = useContext(SizeContext);
@@ -167,8 +163,8 @@ const InputNumber: React.FC<InputNumberProps> = ({
       readOnly={readOnly}
       clearable={false}
       placeholder={placeholder}
-      suffix={suffixSlot || suffix}
-      prefix={prefixSlot || prefix}
+      suffix={suffix}
+      prefix={prefix}
       size={size || parentSize}
       icon={icon}
       shape={shape}

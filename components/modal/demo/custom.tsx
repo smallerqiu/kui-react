@@ -78,7 +78,7 @@ export default function App() {
         title="Custom footer"
         open={open === 2}
         onClose={close}
-        footerSlot={
+        footer={
           <Button icon={Save} onClick={close} type="primary">
             Save
           </Button>
