@@ -15,3 +15,8 @@ class ResizeObserverMock implements ResizeObserver {
 }
 
 globalThis.ResizeObserver ??= ResizeObserverMock;
+
+Object.defineProperty(HTMLCanvasElement.prototype, "getContext", {
+  configurable: true,
+  value: () => null,
+});

@@ -79,5 +79,6 @@
 | cancelText | 取消按钮文字                                                                                                               | string     | 取消   |
 | icon       | 弹框的图标，type 为 toast 可用 ，默认可选值为 success，warning, error, info, 也可以自定义，参照 [Icon](/components/icon)值 | string     | -      |
 | color      | 弹框的图标的颜色，type 为 toast 可用                                                                                       | string     | -      |
+| type       | `modal.show` 的弹框类型，可选 `info`、`success`、`warning`、`error`、`confirm`                                              | ToastType  | info   |
 | onOk       | 点击确定的回调                                                                                                             | () => void | -      |
 | onCancel   | 点击取消的回调                                                                                                             | () => void | -      |

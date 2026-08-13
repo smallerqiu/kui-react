@@ -79,5 +79,6 @@ Parameter options is an object, specific description as follows:
 | cancelText | Cancel button text                                                                                                                                            | string     | Cancel  |
 | icon       | Modal icon, available when type is toast, default optional values are success, warning, error, info, can also be customized, refer to /components/icon values | string     | -       |
 | color      | Modal icon color, available when type is toast                                                                                                                | string     | -       |
+| type       | Modal type for `modal.show`: `info`, `success`, `warning`, `error`, or `confirm`                                                                              | ToastType  | info    |
 | onOk       | Callback when OK is clicked                                                                                                                                   | () => void | -       |
 | onCancel   | Callback when Cancel is clicked                                                                                                                               | () => void | -       |

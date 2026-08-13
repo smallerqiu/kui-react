@@ -42,9 +42,15 @@
     "build:cjs": "vite build --config vite.config.lib.ts",
     "build:css": "vite build --config vite.config.css.ts",
     "build:docs": "vite build --config vite.config.docs.ts",
-    "build": "npm run typecheck && npm run build:es && npm run build:cjs && npm run build:css",
-    "eslint": "npx eslint components",
-    "test": "vitest run"
+    "build:lib": "npm run build:es && npm run build:cjs && npm run build:css",
+    "build": "npm run typecheck && npm run build:lib",
+    "lint": "eslint . --cache --cache-location node_modules/.cache/eslint/.eslintcache",
+    "lint:fix": "npm run lint -- --fix",
+    "eslint": "npm run lint",
+    "check:api-docs": "node --experimental-strip-types scripts/check-api-docs.ts",
+    "package:check": "node scripts/check-package.mjs",
+    "test": "vitest run",
+    "verify": "npm run lint && npm run check:api-docs && npm run typecheck && npm run test && npm run build:lib && npm run build:docs && npm run package:check"
   },
   "repository": {
     "type": "git",
