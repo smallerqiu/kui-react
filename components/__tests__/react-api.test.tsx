@@ -8,20 +8,32 @@ import {
   ConfigProvider,
   Collapse,
   CollapsePanel,
+  ColorPicker,
   DatePicker,
+  Drawer,
+  Form,
+  FormItem,
   Input,
   InputNumber,
   Menu,
+  Modal,
   Poptip,
+  Popconfirm,
   Radio,
   Select,
   Slider,
   Switch,
   TabPanel,
   Tabs,
+  Table,
   Tooltip,
+  TreeSelect,
+  Tree,
+  Upload,
+  modal,
 } from "react-kui";
 import zhCN from "../locale/zh-CN";
+import enUS from "../locale/en";
 import Transition from "../base/transition";
 
 describe("React controlled and uncontrolled conventions", () => {
@@ -70,6 +82,41 @@ describe("React controlled and uncontrolled conventions", () => {
     expect(screen.getByDisplayValue("10")).not.toBeNull();
   });
 
+  it("updates Form models immutably and validates and resets fields", () => {
+    const model = { account: { name: "" } };
+    const onChange = vi.fn();
+    const onSubmit = vi.fn();
+    const onReset = vi.fn();
+    render(
+      <Form model={model} onChange={onChange} onSubmit={onSubmit} onReset={onReset}>
+        <FormItem label="Name" prop="account.name" rules={{ required: true, message: "Required" }}>
+          <Input />
+        </FormItem>
+      </Form>
+    );
+    fireEvent.submit(document.querySelector("form")!);
+    expect(onSubmit).toHaveBeenCalledWith({ valid: false });
+    expect(screen.getByText("Required")).not.toBeNull();
+    fireEvent.change(screen.getByRole("textbox"), { target: { value: "Alice" } });
+    expect(model.account.name).toBe("");
+    expect(onChange).toHaveBeenLastCalledWith({ account: { name: "Alice" } });
+    fireEvent.reset(document.querySelector("form")!);
+    expect(onChange).toHaveBeenLastCalledWith({ account: { name: undefined } });
+    expect(onReset).toHaveBeenCalledOnce();
+  });
+
+  it("places text affixes inline and React nodes in InputGroup", () => {
+    const { unmount } = render(<Input prefix="¥" suffix="CNY" />);
+    expect(document.querySelector(".k-input-prefix")?.textContent).toBe("¥");
+    expect(document.querySelector(".k-input-suffix")?.textContent).toBe("CNY");
+    expect(document.querySelector(".k-input-group")).toBeNull();
+    unmount();
+
+    render(<Input prefix={<button>Prefix action</button>} suffix={<button>Suffix action</button>} />);
+    expect(document.querySelector(".k-input-group-prefix button")?.textContent).toBe("Prefix action");
+    expect(document.querySelector(".k-input-group-suffix button")?.textContent).toBe("Suffix action");
+  });
+
   it("supports controlled and uncontrolled Collapse open keys", () => {
     const onOpenKeysChange = vi.fn();
     const { rerender } = render(
@@ -103,6 +150,51 @@ describe("React controlled and uncontrolled conventions", () => {
     expect(screen.getByPlaceholderText(zhCN.k.datePicker.endDate)).not.toBeNull();
   });
 
+  it("renders DatePicker mode panels and respects disabled dates", () => {
+    const onChange = vi.fn();
+    const { unmount } = render(
+      <DatePicker
+        defaultOpen
+        defaultValue="2025-06-10"
+        disabledDate={(date) => date.getDate() === 11}
+        onChange={onChange}
+      />
+    );
+    const disabledDay = [...document.querySelectorAll<HTMLElement>(".k-picker-day")].find(
+      (node) => !node.classList.contains("k-picker-day-out") && node.textContent === "11"
+    );
+    expect(disabledDay?.classList.contains("k-picker-day-disabled")).toBe(true);
+    fireEvent.click(disabledDay!);
+    expect(onChange).not.toHaveBeenCalled();
+    unmount();
+
+    render(<DatePicker mode="time" defaultOpen defaultValue="10:20:30" />);
+    expect(document.querySelectorAll(".k-picker-time-col")).toHaveLength(3);
+  });
+
+  it("emits a complete DatePicker range and uses ConfigProvider locale", () => {
+    const onChange = vi.fn();
+    const { unmount } = render(<DatePicker mode="dateRange" defaultOpen onChange={onChange} />);
+    const days = document.querySelectorAll<HTMLElement>(
+      ".k-picker-day:not(.k-picker-day-out):not(.k-picker-day-disabled)"
+    );
+    fireEvent.click(days[5]);
+    expect(onChange).not.toHaveBeenCalled();
+    fireEvent.click(days[10]);
+    expect(onChange).toHaveBeenCalledWith(
+      expect.arrayContaining([expect.any(String), expect.any(String)]),
+      expect.arrayContaining([expect.any(String), expect.any(String)])
+    );
+    unmount();
+
+    render(
+      <ConfigProvider locale={enUS}>
+        <DatePicker mode="year" />
+      </ConfigProvider>
+    );
+    expect(screen.getByPlaceholderText(enUS.k.datePicker.selectYear)).not.toBeNull();
+  });
+
   it("requests Menu expansion without mutating controlled open keys", () => {
     const onOpenChange = vi.fn();
     render(
@@ -116,6 +208,38 @@ describe("React controlled and uncontrolled conventions", () => {
     fireEvent.click(screen.getByText("Parent"));
     expect(onOpenChange).toHaveBeenCalledWith(["parent"]);
     expect(document.querySelector(".k-menu-submenu-open")).toBeNull();
+  });
+
+  it("keeps inline Menu content mounted through its collapse transition and selects items", async () => {
+    const onSelect = vi.fn();
+    render(
+      <Menu
+        mode="inline"
+        defaultOpenKeys={["parent"]}
+        onSelect={onSelect}
+        items={[{ key: "parent", title: "Parent", children: [{ key: "child", title: "Child" }] }]}
+      />
+    );
+    await waitFor(() => expect(screen.getByText("Child")).not.toBeNull());
+    fireEvent.click(screen.getByText("Child"));
+    expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ key: "child" }));
+    fireEvent.click(screen.getByText("Parent"));
+    expect(screen.getByText("Child")).not.toBeNull();
+    await waitFor(() => expect(screen.queryByText("Child")).toBeNull());
+  });
+
+  it("animates an expanded inline submenu when inlineCollapsed changes", async () => {
+    const items = [
+      { key: "parent", title: "Parent", children: [{ key: "child", title: "Child" }] },
+    ];
+    const { rerender } = render(
+      <Menu mode="inline" defaultOpenKeys={["parent"]} items={items} inlineCollapsed={false} />
+    );
+    await waitFor(() => expect(screen.getByText("Child")).not.toBeNull());
+    rerender(<Menu mode="inline" defaultOpenKeys={["parent"]} items={items} inlineCollapsed />);
+    expect(screen.getByText("Child")).not.toBeNull();
+    await waitFor(() => expect(screen.queryByText("Child")).toBeNull());
+    expect(document.querySelector(".k-menu-inline-collapsed")).not.toBeNull();
   });
 
   it("keeps controlled Tabs and Slider values stable while requesting changes", () => {
@@ -150,6 +274,159 @@ describe("React controlled and uncontrolled conventions", () => {
     fireEvent.click(dots[1]);
     expect(onChange).toHaveBeenCalledWith(1);
     expect(dots[0].classList.contains("k-carousel-dots-active")).toBe(true);
+  });
+
+  it("supports Table selection, sorting, loading, and empty states", async () => {
+    const onSelectedKeysChange = vi.fn();
+    const onSort = vi.fn();
+    const columns = [{ key: "name", title: "Name", sorter: true }];
+    const { rerender } = render(
+      <Table
+        checkable
+        selectedKeys={[]}
+        data={[{ key: "one", name: "Alice" }]}
+        columns={columns}
+        onSelectedKeysChange={onSelectedKeysChange}
+        onSort={onSort}
+      />
+    );
+    fireEvent.keyDown(document.querySelector(".k-table-body tbody .k-checkbox")!, {
+      key: " ",
+      code: "Space",
+    });
+    expect(onSelectedKeysChange).toHaveBeenCalledWith(["one"]);
+    expect((document.querySelector(".k-table-body input") as HTMLInputElement).checked).toBe(false);
+    fireEvent.click(document.querySelector(".k-table-sorter-up")!);
+    expect(onSort).toHaveBeenCalledWith({ key: "name", order: "asc" });
+
+    rerender(<Table data={[]} columns={columns} emptyText="Nothing here" loading />);
+    expect(screen.getByText("Nothing here")).not.toBeNull();
+    expect(document.querySelector(".k-spin")).not.toBeNull();
+  });
+
+  it("supports Tree selection, controlled expansion, and async loading", async () => {
+    const onSelectedKeysChange = vi.fn();
+    const onExpandedKeysChange = vi.fn();
+    const loadData = vi.fn().mockResolvedValue(undefined);
+    render(
+      <Tree
+        data={[{ key: "parent", title: "Parent", isLeaf: false }]}
+        expandedKeys={[]}
+        selectedKeys={[]}
+        loadData={loadData}
+        onSelectedKeysChange={onSelectedKeysChange}
+        onExpandedKeysChange={onExpandedKeysChange}
+      />
+    );
+    fireEvent.click(screen.getByText("Parent"));
+    expect(onSelectedKeysChange).toHaveBeenCalledWith(["parent"]);
+    expect(document.querySelector(".k-tree-title-selected")).toBeNull();
+    fireEvent.click(document.querySelector(".k-tree-arrow")!);
+    await waitFor(() => expect(loadData).toHaveBeenCalledWith(expect.objectContaining({ key: "parent" })));
+    await waitFor(() => expect(onExpandedKeysChange).toHaveBeenCalledWith(["parent"]));
+    expect(document.querySelector(".k-tree-arrow-open")).toBeNull();
+  });
+
+  it("validates Upload file size before creating a request", () => {
+    const onSizeError = vi.fn();
+    const onChange = vi.fn();
+    const xhr = vi.fn();
+    vi.stubGlobal("XMLHttpRequest", xhr);
+    render(<Upload action="/upload" maxSize={1} onSizeError={onSizeError} onChange={onChange} />);
+    const file = new File([new Uint8Array(2048)], "large.txt", { type: "text/plain" });
+    fireEvent.change(document.querySelector(".k-upload-file")!, { target: { files: [file] } });
+    expect(onSizeError).toHaveBeenCalledWith(
+      expect.objectContaining({ file: expect.objectContaining({ status: "error" }) })
+    );
+    expect(onChange).toHaveBeenCalled();
+    expect(xhr).not.toHaveBeenCalled();
+    vi.unstubAllGlobals();
+  });
+
+  it("transforms Upload files, reports progress, and aborts when removed", async () => {
+    class FakeXHR {
+      static instances: FakeXHR[] = [];
+      upload: {
+        onloadstart: (() => void) | null;
+        onprogress: ((event: { lengthComputable: boolean; loaded: number; total: number }) => void) | null;
+      } = { onloadstart: null, onprogress: null };
+      readyState = 0;
+      status = 0;
+      responseText = "";
+      onerror: (() => void) | null = null;
+      onreadystatechange: (() => void) | null = null;
+      abort = vi.fn();
+      open = vi.fn();
+      setRequestHeader = vi.fn();
+      send = vi.fn();
+      constructor() {
+        FakeXHR.instances.push(this);
+      }
+    }
+    vi.stubGlobal("XMLHttpRequest", FakeXHR);
+    const transformFile = vi.fn(async (file: File) => file);
+    const onChange = vi.fn();
+    render(<Upload action="/upload" transformFile={transformFile} onChange={onChange} />);
+    const file = new File(["content"], "data.txt", { type: "text/plain" });
+    fireEvent.change(document.querySelector(".k-upload-file")!, { target: { files: [file] } });
+    await waitFor(() => expect(FakeXHR.instances).toHaveLength(1));
+    const request = FakeXHR.instances[0];
+    expect(transformFile).toHaveBeenCalledWith(file);
+    expect(request.send).toHaveBeenCalledWith(expect.any(FormData));
+    request.upload.onloadstart?.();
+    request.upload.onprogress?.({ lengthComputable: true, loaded: 1, total: 2 });
+    expect(onChange).toHaveBeenLastCalledWith(
+      expect.objectContaining({ file: expect.objectContaining({ percent: 50 }) })
+    );
+    fireEvent.click(document.querySelector(".k-upload-file-item-remove")!);
+    expect(request.abort).toHaveBeenCalledOnce();
+    vi.unstubAllGlobals();
+  });
+
+  it("focuses Modal, handles Escape, restores focus, and renders a ReactNode footer", async () => {
+    const onOpenChange = vi.fn();
+    render(
+      <>
+        <button autoFocus>Before modal</button>
+        <Modal
+          defaultOpen
+          title="Dialog title"
+          footer={<button>Custom footer</button>}
+          onOpenChange={onOpenChange}
+        >
+          Dialog body
+        </Modal>
+      </>
+    );
+    await waitFor(() => expect(document.activeElement).toBe(document.querySelector(".k-modal-wrap")));
+    expect(screen.getByText("Custom footer")).not.toBeNull();
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    await waitFor(() =>
+      expect(document.activeElement).toBe(screen.getByRole("button", { name: "Before modal" }))
+    );
+  });
+
+  it("supports Drawer mask closing and omits footer markup when disabled", async () => {
+    const onOpenChange = vi.fn();
+    render(
+      <Drawer defaultOpen title="Drawer title" footer={false} onOpenChange={onOpenChange}>
+        Drawer body
+      </Drawer>
+    );
+    await waitFor(() => expect(document.activeElement).toBe(document.querySelector(".k-drawer-wrap")));
+    expect(document.querySelector(".k-drawer-footer")).toBeNull();
+    fireEvent.click(document.querySelector(".k-drawer-mask")!);
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it("creates and destroys global modal instances", async () => {
+    const instance = modal.info({ title: "Global title", content: "Global content" });
+    await waitFor(() => expect(screen.getByText("Global title")).not.toBeNull());
+    expect(screen.getByText("Global content")).not.toBeNull();
+    instance.destroy();
+    expect(screen.queryByText("Global title")).toBeNull();
+    modal.destroyAll();
   });
 
   it("supports uncontrolled Select value and visibility", async () => {
@@ -191,6 +468,51 @@ describe("React controlled and uncontrolled conventions", () => {
     await waitFor(() => expect(onChange).toHaveBeenCalledWith("one"));
   });
 
+  it("filters Select options and clears uncontrolled multiple values", () => {
+    const onChange = vi.fn();
+    render(
+      <Select
+        defaultOpen
+        filterable
+        multiple
+        defaultValue={["one", "two"]}
+        options={[
+          { label: "One", value: "one" },
+          { label: "Two", value: "two" },
+        ]}
+        onChange={onChange}
+      />
+    );
+    expect(document.querySelectorAll(".k-select-tag")).toHaveLength(2);
+    fireEvent.change(document.querySelector(".k-select-search")!, { target: { value: "Two" } });
+    expect(document.querySelectorAll(".k-select-item")).toHaveLength(1);
+    fireEvent.click(document.querySelector(".k-select-clearable")!);
+    expect(onChange).toHaveBeenLastCalledWith([]);
+    expect(document.querySelectorAll(".k-select-tag")).toHaveLength(0);
+  });
+
+  it("renders and clears TreeSelect multiple tags without mutating controlled values", () => {
+    const onChange = vi.fn();
+    const onClear = vi.fn();
+    render(
+      <TreeSelect
+        multiple
+        value={["one", "two"]}
+        treeData={[
+          { key: "one", title: "One" },
+          { key: "two", title: "Two" },
+        ]}
+        onChange={onChange}
+        onClear={onClear}
+      />
+    );
+    expect(document.querySelectorAll(".k-tree-select-tag")).toHaveLength(2);
+    fireEvent.click(document.querySelector(".k-tree-select-clearable")!);
+    expect(onChange).toHaveBeenCalledWith([]);
+    expect(onClear).toHaveBeenCalledOnce();
+    expect(document.querySelectorAll(".k-tree-select-tag")).toHaveLength(2);
+  });
+
   it("requests changes without mutating controlled Poptip visibility", async () => {
     const onOpenChange = vi.fn();
     render(
@@ -212,6 +534,48 @@ describe("React controlled and uncontrolled conventions", () => {
     );
     fireEvent.mouseEnter(screen.getByRole("button", { name: "Target" }));
     await waitFor(() => expect(onShowChange).toHaveBeenCalledWith(true));
+  });
+
+  it("renders Poptip placement and arrow and keeps content during its exit transition", async () => {
+    const onOpenChange = vi.fn();
+    render(
+      <Poptip defaultOpen placement="bottom-left" content="Popover body" onOpenChange={onOpenChange}>
+        <button>Popover target</button>
+      </Poptip>
+    );
+    const poptip = document.querySelector(".k-poptip");
+    expect(poptip?.getAttribute("k-placement")).not.toBeNull();
+    expect(poptip?.querySelector(".k-poptip-arrow")).not.toBeNull();
+    fireEvent.click(document.body);
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(screen.getByText("Popover body")).not.toBeNull();
+    await waitFor(() => expect(screen.queryByText("Popover body")).toBeNull());
+  });
+
+  it("renders Popconfirm arrow and handles cancellation", async () => {
+    const onCancel = vi.fn();
+    const onOpenChange = vi.fn();
+    render(
+      <Popconfirm defaultOpen title="Delete item?" onCancel={onCancel} onOpenChange={onOpenChange}>
+        <button>Delete</button>
+      </Popconfirm>
+    );
+    expect(document.querySelector(".k-popconfirm-arrow")).not.toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: zhCN.k.common.cancel }));
+    expect(onCancel).toHaveBeenCalledOnce();
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    await waitFor(() => expect(screen.queryByText("Delete item?")).toBeNull());
+  });
+
+  it("renders ColorPicker arrow and closes on outside pointer input", async () => {
+    const onOpenChange = vi.fn();
+    render(<ColorPicker defaultOpen placement="top-right" onOpenChange={onOpenChange} />);
+    const dropdown = document.querySelector(".k-color-picker-dropdown");
+    expect(dropdown?.getAttribute("k-placement")).not.toBeNull();
+    expect(dropdown?.querySelector(".k-color-picker-arrow")).not.toBeNull();
+    fireEvent.mouseDown(document.body);
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    await waitFor(() => expect(document.querySelector(".k-color-picker-dropdown")).toBeNull());
   });
 });
 

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useId, useState, type CSSProperties, type ReactNode } from "react";
 import type { IconType } from "../icon";
 import Icon from "../icon";
@@ -42,15 +43,15 @@ export const MenuItem: React.FC<MenuItemProps> = ({
       ? subMenuContext.keyPath.length * 16 + 16
       : undefined;
 
-  const classNames = [
+  const classNames = clsx(
     `k-${preCls}-item`,
-    active && `k-${preCls}-item-active`,
-    selected && `k-${preCls}-item-selected`,
-    disabled && `k-${preCls}-item-disabled`,
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    {
+      [`k-${preCls}-item-active`]: active,
+      [`k-${preCls}-item-selected`]: selected,
+      [`k-${preCls}-item-disabled`]: disabled,
+    },
+    className
+  );
 
   const titleNode = <span className={`k-${preCls}-title-content`}>{title ?? children}</span>;
 

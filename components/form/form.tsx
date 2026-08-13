@@ -60,6 +60,32 @@ const getByPath = (object: Record<string, unknown>, path: string) => {
   return { parent, key, value: parent?.[key] };
 };
 
+const setByPath = (object: Record<string, unknown>, path: string, value: unknown) => {
+  const keys = path.replace(/\[(\w+)\]/g, ".$1").replace(/^\./, "").split(".");
+  const result: Record<string, unknown> = { ...object };
+  let source: unknown = object;
+  let target: Record<string, unknown> = result;
+  keys.forEach((key, index) => {
+    if (index === keys.length - 1) {
+      target[key] = value;
+      return;
+    }
+    const sourceValue =
+      typeof source === "object" && source !== null
+        ? (source as Record<string, unknown>)[key]
+        : undefined;
+    const next = Array.isArray(sourceValue)
+      ? [...sourceValue]
+      : typeof sourceValue === "object" && sourceValue !== null
+        ? { ...(sourceValue as Record<string, unknown>) }
+        : {};
+    target[key] = next;
+    target = next as Record<string, unknown>;
+    source = sourceValue;
+  });
+  return result;
+};
+
 const Form = forwardRef<FormExpose, FormProps>(function Form(
   {
     layout = "horizontal",
@@ -82,11 +108,10 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
   ref
 ) {
   const itemsRef = useRef(new Map<string, FormItemHandle>());
-  const setValue = useCallback((path: string, value: unknown) => {
-    const { parent, key } = getByPath(model, path);
-    if (parent) parent[key] = value;
-    onChange?.(model);
-  }, [model, onChange]);
+  const setValue = useCallback(
+    (path: string, value: unknown) => onChange?.(setByPath(model, path, value)),
+    [model, onChange]
+  );
   const validate = (callback?: (result: FormSubmitEvent) => void) => {
     let valid = true;
     for (const item of itemsRef.current.values()) {
@@ -96,10 +121,12 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
     return valid;
   };
   const reset = () => {
+    let nextModel = model;
     for (const item of itemsRef.current.values()) {
-      setValue(item.prop, undefined);
+      nextModel = setByPath(nextModel, item.prop, undefined);
       item.reset();
     }
+    onChange?.(nextModel);
     onReset?.();
   };
   const submit = () => onSubmit?.({ valid: validate() });

@@ -64,6 +64,8 @@ const Drawer: React.FC<DrawerProps> = ({
   const [opened, setOpened] = useState(false);
   const [rendered, setRendered] = useState(false);
   const hideTimer = useRef<NodeJS.Timeout | null>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const previousFocus = useRef<HTMLElement | null>(null);
 
   const toggle = useCallback((value: boolean) => {
     if (value && hideTimer.current) {
@@ -71,13 +73,16 @@ const Drawer: React.FC<DrawerProps> = ({
       hideTimer.current = null;
     }
     if (value) {
+      previousFocus.current = document.activeElement as HTMLElement | null;
       setRendered(true);
       setTimeout(() => {
         setVisible(true);
         setOpened(true);
+        wrapRef.current?.focus();
       }, 0);
     } else {
       setVisible(false);
+      previousFocus.current?.focus();
       if (hideTimer.current) clearTimeout(hideTimer.current);
       hideTimer.current = setTimeout(() => setOpened(false), 300);
     }
@@ -173,7 +178,12 @@ const Drawer: React.FC<DrawerProps> = ({
           />
         </Transition>
       )}
-      <div className="k-drawer-wrap" tabIndex={-1} style={{ display: opened ? undefined : "none" }}>
+      <div
+        ref={wrapRef}
+        className="k-drawer-wrap"
+        tabIndex={-1}
+        style={{ display: opened ? undefined : "none" }}
+      >
         <div
           className={clsx(
             "k-drawer-box",

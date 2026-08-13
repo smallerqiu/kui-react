@@ -240,7 +240,8 @@ export default function Table<T extends object = Record<string, unknown>>({
         }
       }
     });
-    onSelectAll?.(checked, commitSelection(next));
+    const keys = commitSelection(next);
+    onSelectAll?.(checked, keys);
   };
   const toggleOne = (event: ChangeEvent, record: T) => {
     const key = keyOf(record);
@@ -251,7 +252,8 @@ export default function Table<T extends object = Record<string, unknown>>({
     } else {
       next.delete(key);
     }
-    onSelect?.(record, event.checked, commitSelection(next));
+    const keys = commitSelection(next);
+    onSelect?.(record, event.checked, keys);
   };
   const changeSort = (column: Column<T>) => {
     if (!column.sorter) return;
@@ -356,12 +358,17 @@ export default function Table<T extends object = Record<string, unknown>>({
   const tbody = (
     <tbody>
       {processed.map((record, rowIndex) => (
-        <tr key={keyOf(record)} onClick={() => onRowClick?.(record, rowIndex)}>
+        <tr
+          key={keyOf(record)}
+          onClick={(event) => {
+            if ((event.target as HTMLElement).closest(".k-checkbox")) return;
+            onRowClick?.(record, rowIndex);
+          }}
+        >
           {checkable && (
             <td
               className="k-table-cell-fix-left"
               style={{ width: 50, left: 0 }}
-              onClick={(event) => event.stopPropagation()}
             >
               <Checkbox
                 checked={selected.has(keyOf(record))}

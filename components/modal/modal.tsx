@@ -73,7 +73,9 @@ const Modal: React.FC<ModalProps> = ({
   const [mousedownIn, setMousedownIn] = useState(false);
   const startPos = useRef({ x: 0, y: 0 });
   const refModal = useRef<HTMLDivElement>(null);
+  const refWrap = useRef<HTMLDivElement>(null);
   const refHeader = useRef<HTMLDivElement>(null);
+  const previousFocus = useRef<HTMLElement | null>(null);
   const hideTimer = useRef<NodeJS.Timeout | null>(null);
 
   const getOffset = (el: HTMLElement) => ({
@@ -95,10 +97,12 @@ const Modal: React.FC<ModalProps> = ({
       hideTimer.current = null;
     }
     if (value) {
+      previousFocus.current = document.activeElement as HTMLElement | null;
       setRendered(true);
       setTimeout(() => {
         setVisible(true);
         setShowInner(true);
+        refWrap.current?.focus();
         setTimeout(() => {
           if (draggable && refModal.current) {
             setLeftPos((document.body.offsetWidth - refModal.current.offsetWidth) / 2);
@@ -108,6 +112,7 @@ const Modal: React.FC<ModalProps> = ({
       }, 0);
     } else {
       setVisible(false);
+      previousFocus.current?.focus();
       if (hideTimer.current) clearTimeout(hideTimer.current);
       hideTimer.current = setTimeout(() => setShowInner(false), 300);
     }
@@ -232,7 +237,7 @@ const Modal: React.FC<ModalProps> = ({
     "k-modal-draggable": draggable,
     "k-modal-maximized": maximized,
     "k-modal-centered": centered,
-    "k-modal-has-footer": footer !== null,
+    "k-modal-has-footer": footer !== false && footer != null,
   });
 
   if (!rendered) return null;
@@ -245,6 +250,7 @@ const Modal: React.FC<ModalProps> = ({
         </Transition>
       )}
       <div
+        ref={refWrap}
         className="k-modal-wrap"
         tabIndex={-1}
         role="dialog"

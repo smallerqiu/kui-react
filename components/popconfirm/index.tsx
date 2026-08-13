@@ -120,15 +120,19 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
     window.addEventListener("resize", updatePosition);
     return () => {
       window.removeEventListener("resize", updatePosition);
-      document.removeEventListener("click", outsideClick);
     };
-  }, [outsideClick, updatePosition]);
+  }, [updatePosition]);
+
+  useEffect(() => {
+    if (!visible) return;
+    document.addEventListener("click", outsideClick);
+    return () => document.removeEventListener("click", outsideClick);
+  }, [outsideClick, visible]);
 
   const showPopconfirm = () => {
     if (showTimer.current) clearTimeout(showTimer.current);
     if (!rendered) {
       setRendered(true);
-      document.addEventListener("click", outsideClick);
       setTimeout(() => {
         updateShow(true);
         setTimeout(updatePosition, 0);

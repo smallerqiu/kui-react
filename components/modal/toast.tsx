@@ -1,4 +1,5 @@
 import { CircleAlert, CircleCheck, CircleQuestionMark, CircleX, Info } from "kui-icons";
+import clsx from "clsx";
 import { useContext, useState } from "react";
 import { Button } from "../button";
 import { ConfigContext } from "../config/config-context";
@@ -82,7 +83,7 @@ export default function Toast({
   return (
     <Modal
       open={open}
-      className={["k-toast", `k-toast-${type}`].join(" ")}
+      className={clsx("k-toast", `k-toast-${type}`)}
       maskClosable={false}
       content={body}
       onClose={hide}

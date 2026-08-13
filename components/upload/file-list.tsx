@@ -1,4 +1,5 @@
 import { CircleCheck, CircleX, FileText, Info, X } from "kui-icons";
+import clsx from "clsx";
 import type { ReactNode } from "react";
 import { Button } from "../button";
 import Icon from "../icon";
@@ -38,8 +39,9 @@ export default function FileList({
         return (
           <div
             key={item.uid ?? index}
-            className={[`k-upload-file-${type}-item`, `k-upload-file-status-${item.status}`].join(
-              " "
+            className={clsx(
+              `k-upload-file-${type}-item`,
+              `k-upload-file-status-${item.status}`
             )}
           >
             <div className={`k-upload-${picture ? "picture" : "file"}-preview`}>
