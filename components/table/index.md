@@ -51,6 +51,10 @@ const columns = [
 
 - 一个普通的表格
 
+[树形数据](./demo/tree.tsx?show=vertical)
+
+- 数据包含 `children` 时自动启用树形表格，支持受控展开、默认展开、缩进、勾选和点击行展开。
+
 [基本用法(使用render)](./demo/base-render.tsx?show=vertical)
 
 - 使用自定义`render`来初始化表格
@@ -108,6 +112,12 @@ const columns = [
 | header       | 自定义表头内容            | ReactNode                                                                    | -        |
 | footer       | 自定义表尾内容            | ReactNode                                                                    | -        |
 | rowKey       | 勾选时的依据              | string \| (record: T) => string \| number                                   | key      |
+| childrenColumnName | 子节点字段名 | string | children |
+| expandedKeys | 受控展开行 key 集合 | (string \| number)[] | - |
+| defaultExpandedKeys | 默认展开行 key 集合 | (string \| number)[] | [] |
+| defaultExpandAllRows | 默认展开所有树节点 | boolean | false |
+| expandRowByClick | 点击行时展开或收起 | boolean | false |
+| indentSize | 每级树节点缩进距离 | number | 20 |
 | scroll       | 表格滚动区域              | { x?: number \| string; y?: number \| string }                              | {}       |
 | striped      | 是否展示斑马条纹          | boolean                                                                         | false    |
 | onRowClick   | 单击某一行时触发          | (record: T, index: number) => void                                           | -        |
@@ -115,6 +125,8 @@ const columns = [
 | onSelect     | 点击复选框时触发          | (record: T, selected: boolean, selectedKeys: (string \| number)[]) => void   | -        |
 | onSelectAll  | 点击Table头部复选框时触发 | (selected: boolean, selectedKeys: (string \| number)[]) => void              | -        |
 | onSelectedKeysChange | 勾选 key 集合变化时触发 | (selectedKeys: (string \| number)[]) => void                              | -        |
+| onExpand | 展开状态变化时触发 | (expanded: boolean, record: T) => void | - |
+| onExpandedKeysChange | 展开 key 集合变化时触发 | (expandedKeys: (string \| number)[]) => void | - |
 
 ## Column API
 

@@ -1,73 +1,32 @@
 import clsx from "clsx";
-import { ChevronDown, ChevronUp } from "kui-icons";
+import { ChevronDown, ChevronRight, Triangle } from "kui-icons";
 import {
-  useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
   type CSSProperties,
-  type HTMLAttributes,
   type ReactNode,
   type UIEvent,
 } from "react";
 import { Checkbox, type ChangeEvent } from "../checkbox";
-import type { SizeType } from "../const/types";
 import Empty from "../empty";
 import Icon from "../icon";
 import Spin from "../spin";
+import type { Column, SortState, TableKey, TableProps } from "./types";
+import {
+  countColumnLeaves,
+  flattenColumns,
+  flattenTreeData,
+  getRecordValue,
+} from "./utils";
 
-export interface SortState {
-  key: string;
-  order: null | "desc" | "asc";
-}
-export interface Column<T = Record<string, unknown>> {
-  key: string;
-  title: ReactNode;
-  width?: number;
-  fixed?: "left" | "right";
-  sorter?: boolean | ((state: SortState) => void);
-  render?(value: unknown, record: T, rowIndex: number, column: Column<T>): ReactNode;
-  renderHeader?(column: Column<T>, index: number): ReactNode;
-  colSpan?: number | ((record: T, index: number) => number);
-  rowSpan?: number | ((record: T, index: number) => number);
-  children?: Column<T>[];
-}
-export interface TableProps<T = Record<string, unknown>> extends Omit<
-  HTMLAttributes<HTMLDivElement>,
-  "onSelect"
-> {
-  data?: T[];
-  columns?: Column<T>[];
-  selectedKeys?: Array<string | number>;
-  defaultSelectedKeys?: Array<string | number>;
-  disabledKeys?: Array<string | number>;
-  rowKey?: string | ((record: T) => string | number);
-  scroll?: { x?: number | string; y?: number | string };
-  size?: SizeType;
-  striped?: boolean;
-  bordered?: boolean;
-  checkable?: boolean;
-  loading?: boolean;
-  emptyText?: string;
-  header?: ReactNode;
-  footer?: ReactNode;
-  onSort?: (state: SortState) => void;
-  onRowClick?: (record: T, index: number) => void;
-  onSelect?: (record: T, selected: boolean, selectedKeys: Array<string | number>) => void;
-  onSelectAll?: (selected: boolean, selectedKeys: Array<string | number>) => void;
-  onSelectedKeysChange?: (selectedKeys: Array<string | number>) => void;
-}
+export type { Column, SortState, TableKey, TableProps } from "./types";
 interface MatrixCell {
   rowSpan: number;
   colSpan: number;
   show: boolean;
 }
-
-const flatten = <T,>(columns: Column<T>[]): Column<T>[] =>
-  columns.flatMap((column) => (column.children?.length ? flatten(column.children) : column));
-const leafCount = <T,>(column: Column<T>): number =>
-  column.children?.length ? column.children.reduce((sum, child) => sum + leafCount(child), 0) : 1;
 
 export default function Table<T extends object = Record<string, unknown>>({
   data = [],
@@ -76,6 +35,12 @@ export default function Table<T extends object = Record<string, unknown>>({
   defaultSelectedKeys = [],
   disabledKeys = [],
   rowKey = "key",
+  childrenColumnName = "children",
+  expandedKeys,
+  defaultExpandedKeys = [],
+  defaultExpandAllRows = false,
+  expandRowByClick = false,
+  indentSize = 20,
   scroll = {},
   size,
   striped,
@@ -90,6 +55,8 @@ export default function Table<T extends object = Record<string, unknown>>({
   onSelect,
   onSelectAll,
   onSelectedKeysChange,
+  onExpand,
+  onExpandedKeysChange,
   className,
   ...rest
 }: TableProps<T>) {
@@ -97,20 +64,38 @@ export default function Table<T extends object = Record<string, unknown>>({
   const bodyRef = useRef<HTMLDivElement>(null);
   const controlledSelection = selectedKeys !== undefined;
   const [innerSelected, setInnerSelected] = useState(new Set(selectedKeys ?? defaultSelectedKeys));
+  const [innerExpanded, setInnerExpanded] = useState(
+    () =>
+      new Set<TableKey>(
+        defaultExpandAllRows
+          ? flattenTreeData({
+              data,
+              childrenColumnName,
+              getKey: (record) => {
+                if (typeof rowKey === "function") return rowKey(record);
+                const key = getRecordValue(record, rowKey);
+                return typeof key === "string" || typeof key === "number" ? key : "";
+              },
+            })
+              .filter((row) => row.hasChildren)
+              .map((row) =>
+                typeof rowKey === "function"
+                  ? rowKey(row.record)
+                  : ((getRecordValue(row.record, rowKey) as TableKey) ?? "")
+              )
+          : defaultExpandedKeys
+      )
+  );
   const [sort, setSort] = useState<SortState>({ key: "", order: null });
   const [ping, setPing] = useState({ left: false, right: false });
   const [scrollbarWidth, setScrollbarWidth] = useState(0);
   const selected = controlledSelection ? new Set(selectedKeys) : innerSelected;
-  const leaves = useMemo(() => flatten(columns), [columns]);
+  const currentExpanded = expandedKeys === undefined ? innerExpanded : new Set(expandedKeys);
+  const leaves = useMemo(() => flattenColumns(columns), [columns]);
   const split = scroll.y != null;
-  const valueOf = useCallback(
-    <T extends object>(record: T, key: string): unknown =>
-      key in record ? (record as Record<string, unknown>)[key] : undefined,
-    []
-  );
   const keyOf = (record: T) => {
     if (typeof rowKey === "function") return rowKey(record);
-    const key = valueOf(record, rowKey);
+    const key = getRecordValue(record, rowKey);
     return typeof key === "string" || typeof key === "number" ? key : "";
   };
   const isDisabled = (key: string | number) => disabledKeys.includes(key);
@@ -130,7 +115,7 @@ export default function Table<T extends object = Record<string, unknown>>({
       items.forEach((item) => {
         rows[level].push({
           ...item,
-          headerColSpan: leafCount(item),
+          headerColSpan: countColumnLeaves(item),
           headerRowSpan: item.children?.length ? 1 : maxDepth - level,
         });
         if (item.children?.length) visit(item.children, level + 1);
@@ -168,16 +153,16 @@ export default function Table<T extends object = Record<string, unknown>>({
       "k-table-cell-sorter": column.sorter,
     });
 
-  const processed = useMemo(() => {
-    const result = [...data];
+  const sortRecords = (records: T[]) => {
+    const result = [...records];
     if (
       sort.key &&
       sort.order &&
       leaves.find((column) => column.key === sort.key)?.sorter === true
     ) {
       result.sort((a, b) => {
-        const first = valueOf(a, sort.key),
-          second = valueOf(b, sort.key);
+        const first = getRecordValue(a, sort.key),
+          second = getRecordValue(b, sort.key);
         if (first === second) return 0;
         const comparison =
           (typeof first === "number" && typeof second === "number") ||
@@ -190,12 +175,21 @@ export default function Table<T extends object = Record<string, unknown>>({
       });
     }
     return result;
-  }, [data, leaves, sort, valueOf]);
+  };
+  const allRows = flattenTreeData({ data, childrenColumnName, getKey: keyOf });
+  const rows = flattenTreeData({
+    data,
+    childrenColumnName,
+    expandedKeys: currentExpanded,
+    getKey: keyOf,
+    sortRecords,
+  });
+  const treeEnabled = allRows.some((row) => row.hasChildren);
   const matrix = useMemo(() => {
-    const result: MatrixCell[][] = processed.map(() =>
+    const result: MatrixCell[][] = rows.map(() =>
       leaves.map(() => ({ rowSpan: 1, colSpan: 1, show: true }))
     );
-    processed.forEach((record, row) =>
+    rows.forEach(({ record }, row) =>
       leaves.forEach((column, col) => {
         if (!result[row][col].show) return;
         const rowSpan =
@@ -216,9 +210,11 @@ export default function Table<T extends object = Record<string, unknown>>({
       })
     );
     return result;
-  }, [leaves, processed]);
+  }, [leaves, rows]);
 
-  const enabled = data.filter((record) => !isDisabled(keyOf(record)));
+  const enabled = allRows
+    .map((row) => row.record)
+    .filter((record) => !isDisabled(keyOf(record)));
   const checkedCount = enabled.filter((record) => selected.has(keyOf(record))).length;
   const allChecked = enabled.length > 0 && checkedCount === enabled.length;
   const indeterminate = checkedCount > 0 && checkedCount < enabled.length;
@@ -230,7 +226,7 @@ export default function Table<T extends object = Record<string, unknown>>({
   };
   const toggleAll = ({ checked }: ChangeEvent) => {
     const next = new Set(selected);
-    data.forEach((record) => {
+    allRows.forEach(({ record }) => {
       const key = keyOf(record);
       if (!isDisabled(key)) {
         if (checked) {
@@ -254,6 +250,16 @@ export default function Table<T extends object = Record<string, unknown>>({
     }
     const keys = commitSelection(next);
     onSelect?.(record, event.checked, keys);
+  };
+  const toggleExpand = (record: T) => {
+    const key = keyOf(record);
+    const next = new Set(currentExpanded);
+    const nextExpanded = !next.has(key);
+    if (nextExpanded) next.add(key);
+    else next.delete(key);
+    if (expandedKeys === undefined) setInnerExpanded(next);
+    onExpandedKeysChange?.([...next]);
+    onExpand?.(nextExpanded, record);
   };
   const changeSort = (column: Column<T>) => {
     if (!column.sorter) return;
@@ -328,13 +334,15 @@ export default function Table<T extends object = Record<string, unknown>>({
                 {column.sorter && (
                   <span className="k-table-sorter">
                     <Icon
-                      type={ChevronUp}
+                      type={Triangle}
+                      reverseFill
                       className={clsx("k-table-sorter-up", {
                         "k-table-sorter-active": sort.key === column.key && sort.order === "asc",
                       })}
                     />
                     <Icon
-                      type={ChevronDown}
+                      type={Triangle}
+                      reverseFill
                       className={clsx("k-table-sorter-down", {
                         "k-table-sorter-active": sort.key === column.key && sort.order === "desc",
                       })}
@@ -357,11 +365,12 @@ export default function Table<T extends object = Record<string, unknown>>({
   );
   const tbody = (
     <tbody>
-      {processed.map((record, rowIndex) => (
+      {rows.map(({ record, depth, hasChildren }, rowIndex) => (
         <tr
           key={keyOf(record)}
           onClick={(event) => {
-            if ((event.target as HTMLElement).closest(".k-checkbox")) return;
+            if ((event.target as HTMLElement).closest(".k-checkbox, .k-table-tree-toggle")) return;
+            if (expandRowByClick && hasChildren) toggleExpand(record);
             onRowClick?.(record, rowIndex);
           }}
         >
@@ -380,7 +389,9 @@ export default function Table<T extends object = Record<string, unknown>>({
           {leaves.map((column, colIndex) => {
             const cell = matrix[rowIndex]?.[colIndex];
             if (!cell?.show) return null;
-            const value = valueOf(record, column.key);
+            const value = getRecordValue(record, column.key);
+            const content =
+              column.render?.(value, record, rowIndex, column) ?? (value as ReactNode);
             return (
               <td
                 key={column.key}
@@ -389,7 +400,28 @@ export default function Table<T extends object = Record<string, unknown>>({
                 className={fixedClass(column, colIndex)}
                 style={fixed[column.key]}
               >
-                {column.render?.(value, record, rowIndex, column) ?? (value as ReactNode)}
+                {treeEnabled && colIndex === 0 ? (
+                  <div className="k-table-tree-cell" style={{ paddingLeft: depth * indentSize }}>
+                    {hasChildren ? (
+                      <button
+                        type="button"
+                        className="k-table-tree-toggle"
+                        aria-label={currentExpanded.has(keyOf(record)) ? "Collapse row" : "Expand row"}
+                        aria-expanded={currentExpanded.has(keyOf(record))}
+                        onClick={() => toggleExpand(record)}
+                      >
+                        <Icon
+                          type={currentExpanded.has(keyOf(record)) ? ChevronDown : ChevronRight}
+                        />
+                      </button>
+                    ) : (
+                      <span className="k-table-tree-indent" />
+                    )}
+                    <span className="k-table-tree-content">{content}</span>
+                  </div>
+                ) : (
+                  content
+                )}
               </td>
             );
           })}
@@ -409,7 +441,7 @@ export default function Table<T extends object = Record<string, unknown>>({
       {showBody && tbody}
     </table>
   );
-  const empty = !data.length || !columns.length;
+  const empty = !rows.length || !columns.length;
   return (
     <div
       {...rest}

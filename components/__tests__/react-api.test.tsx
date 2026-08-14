@@ -305,6 +305,46 @@ describe("React controlled and uncontrolled conventions", () => {
     expect(document.querySelector(".k-spin")).not.toBeNull();
   });
 
+  it("supports controlled Table tree expansion", () => {
+    const onExpand = vi.fn();
+    const onExpandedKeysChange = vi.fn();
+    const data = [
+      {
+        key: "parent",
+        name: "Parent row",
+        children: [{ key: "child", name: "Child row" }],
+      },
+    ];
+    const columns = [{ key: "name", title: "Name" }];
+    const { rerender } = render(
+      <Table
+        data={data}
+        columns={columns}
+        expandedKeys={[]}
+        onExpand={onExpand}
+        onExpandedKeysChange={onExpandedKeysChange}
+      />
+    );
+
+    expect(screen.queryByText("Child row")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Expand row" }));
+    expect(onExpand).toHaveBeenCalledWith(true, data[0]);
+    expect(onExpandedKeysChange).toHaveBeenCalledWith(["parent"]);
+    expect(screen.queryByText("Child row")).toBeNull();
+
+    rerender(
+      <Table
+        data={data}
+        columns={columns}
+        expandedKeys={["parent"]}
+        onExpand={onExpand}
+        onExpandedKeysChange={onExpandedKeysChange}
+      />
+    );
+    expect(screen.getByText("Child row")).not.toBeNull();
+    expect(document.querySelectorAll(".k-table-body tbody tr")).toHaveLength(2);
+  });
+
   it("supports Tree selection, controlled expansion, and async loading", async () => {
     const onSelectedKeysChange = vi.fn();
     const onExpandedKeysChange = vi.fn();

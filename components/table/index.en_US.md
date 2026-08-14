@@ -51,6 +51,10 @@ const columns = [
 
 - A regular table.
 
+[Tree Data](./demo/tree.tsx?show=vertical)
+
+- Tree mode is enabled automatically when records contain `children`. Controlled expansion, default expansion, indentation, selection, and row-click expansion are supported.
+
 [Basic Usage (Using render)](./demo/base-render.tsx?show=vertical)
 
 - Use custom `render` to initialize the table.
@@ -108,6 +112,12 @@ const columns = [
 | header       | Custom table header content                              | ReactNode                                                                    | -       |
 | footer       | Custom table footer content                              | ReactNode                                                                    | -       |
 | rowKey       | Basis for selection                                      | string \| (record: T) => string \| number                                   | key     |
+| childrenColumnName | Field containing child records | string | children |
+| expandedKeys | Controlled expanded row keys | (string \| number)[] | - |
+| defaultExpandedKeys | Initially expanded row keys | (string \| number)[] | [] |
+| defaultExpandAllRows | Expand every tree node initially | boolean | false |
+| expandRowByClick | Toggle expansion by clicking a row | boolean | false |
+| indentSize | Indentation per tree level | number | 20 |
 | scroll       | Scrollable table area                                    | { x?: number \| string; y?: number \| string }                              | {}      |
 | striped      | Whether to display zebra stripes                         | boolean                                                                         | false   |
 | onRowClick   | Triggered when clicking a row                            | (record: T, index: number) => void                                           | -       |
@@ -115,6 +125,8 @@ const columns = [
 | onSelect     | Triggered when clicking the checkbox                     | (record: T, selected: boolean, selectedKeys: (string \| number)[]) => void   | -       |
 | onSelectAll  | Triggered when clicking the header checkbox of the Table | (selected: boolean, selectedKeys: (string \| number)[]) => void              | -       |
 | onSelectedKeysChange | Called when selected keys change                 | (selectedKeys: (string \| number)[]) => void                                | -       |
+| onExpand | Called when a row expands or collapses | (expanded: boolean, record: T) => void | - |
+| onExpandedKeysChange | Called when expanded keys change | (expandedKeys: (string \| number)[]) => void | - |
 
 ## Column API
 
