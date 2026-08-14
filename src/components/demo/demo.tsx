@@ -13,7 +13,7 @@ import {
 import * as JSXRuntime from "react/jsx-runtime";
 import * as ReactKUI from "react-kui";
 import * as Share from "react-kui/utils/share";
-import { Badge, Button, message, Tooltip, type BadgeStatusType } from "react-kui";
+import { Badge, Button, message, RadioGroup, Tooltip, type BadgeStatusType } from "react-kui";
 import dayjs from "dayjs";
 import { transform } from "sucrase";
 
@@ -23,18 +23,23 @@ export interface DemoProps {
   descriptionHtml?: string;
   source: string;
   highlightedSource?: string;
+  javaScriptSource: string;
+  highlightedJavaScriptSource?: string;
   direction?: string;
   modules?: Record<string, unknown>;
   children?: ReactNode;
 }
 
 type BuildState = { state: BadgeStatusType; text: string };
+type CodeLanguage = "ts" | "js";
 
 export default function Demo({
   title,
   descriptionHtml,
   source,
   highlightedSource,
+  javaScriptSource,
+  highlightedJavaScriptSource,
   direction = "horizontal",
   modules = {},
   children,
@@ -46,22 +51,50 @@ export default function Demo({
     text: "Editable",
   });
   const [error, setError] = useState("");
-  const codeRef = useRef<HTMLElement>(null);
+  const [codeLanguage, setCodeLanguage] = useState<CodeLanguage>("ts");
+  const codeRefs = useRef<Record<CodeLanguage, HTMLElement | null>>({ ts: null, js: null });
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const originalSource = useRef(source);
-  const originalHighlightedSource = useRef(highlightedSource);
+  const originalSources = useRef<Record<CodeLanguage, string>>({
+    ts: source,
+    js: javaScriptSource,
+  });
+  const originalHighlightedSources = useRef<Record<CodeLanguage, string | undefined>>({
+    ts: highlightedSource,
+    js: highlightedJavaScriptSource,
+  });
+  const draftSources = useRef<Record<CodeLanguage, string>>({
+    ts: source,
+    js: javaScriptSource,
+  });
+  const draftHighlightedSources = useRef<Record<CodeLanguage, string | undefined>>({
+    ts: highlightedSource,
+    js: highlightedJavaScriptSource,
+  });
+  const codeLangOptions = [
+    { value: "ts", label: "TS" },
+    { value: "js", label: "JS" },
+  ];
 
   const setCodeNode = useCallback(
-    (node: HTMLElement | null) => {
-      codeRef.current = node;
+    (language: CodeLanguage, node: HTMLElement | null) => {
+      codeRefs.current[language] = node;
       if (!node) return;
-      if (highlightedSource) {
-        node.innerHTML = highlightedSource;
+      const highlightedDraft = draftHighlightedSources.current[language];
+      if (highlightedDraft !== undefined) {
+        node.innerHTML = highlightedDraft;
       } else {
-        node.textContent = source;
+        node.textContent = draftSources.current[language];
       }
     },
-    [highlightedSource, source]
+    []
+  );
+  const setTypeScriptCodeNode = useCallback(
+    (node: HTMLElement | null) => setCodeNode("ts", node),
+    [setCodeNode]
+  );
+  const setJavaScriptCodeNode = useCallback(
+    (node: HTMLElement | null) => setCodeNode("js", node),
+    [setCodeNode]
   );
 
   useEffect(() => () => clearTimeout(timerRef.current), []);
@@ -104,26 +137,46 @@ export default function Demo({
     }
   };
 
-  const scheduleCompile = () => {
+  const scheduleCompile = (language: CodeLanguage) => {
+    const codeNode = codeRefs.current[language];
+    if (codeNode) {
+      draftSources.current[language] = codeNode.innerText;
+      draftHighlightedSources.current[language] = codeNode.innerHTML;
+    }
     setBuildState({ state: "default", text: "Building..." });
     clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => compile(codeRef.current?.innerText || ""), 500);
+    timerRef.current = setTimeout(
+      () => compile(codeRefs.current[language]?.innerText || ""),
+      500
+    );
   };
 
   const restore = () => {
-    if (codeRef.current) {
-      if (originalHighlightedSource.current) {
-        codeRef.current.innerHTML = originalHighlightedSource.current;
+    const originalSource = originalSources.current[codeLanguage];
+    const originalHighlightedSource = originalHighlightedSources.current[codeLanguage];
+    draftSources.current[codeLanguage] = originalSource;
+    draftHighlightedSources.current[codeLanguage] = originalHighlightedSource;
+    const codeNode = codeRefs.current[codeLanguage];
+    if (codeNode) {
+      if (originalHighlightedSource !== undefined) {
+        codeNode.innerHTML = originalHighlightedSource;
       } else {
-        codeRef.current.textContent = originalSource.current;
+        codeNode.textContent = originalSource;
       }
     }
-    compile(originalSource.current);
+    compile(originalSource);
+  };
+
+  const switchCodeLanguage = (language: CodeLanguage) => {
+    if (language === codeLanguage) return;
+    clearTimeout(timerRef.current);
+    setCodeLanguage(language);
+    compile(codeRefs.current[language]?.innerText || draftSources.current[language]);
   };
 
   const copy = async () => {
     const copied = await Share.copyToClipboard(
-      codeRef.current?.innerText || originalSource.current
+      codeRefs.current[codeLanguage]?.innerText || draftSources.current[codeLanguage]
     );
     if (copied) {
       message.success("Copied!");
@@ -151,6 +204,15 @@ export default function Demo({
           <div className="k-code-box">
             <div className="k-code-tools" contentEditable={false}>
               <Badge status={buildState.state} text={buildState.text} />
+              <RadioGroup<CodeLanguage>
+                options={codeLangOptions}
+                value={codeLanguage}
+                onChange={(value) => {
+                  if (value === "ts" || value === "js") switchCodeLanguage(value);
+                }}
+                type="button"
+                size="small"
+              />
               <Tooltip title="Copy code">
                 <Button type="text" size="small" icon={Copy} onClick={() => void copy()} />
               </Tooltip>
@@ -158,14 +220,24 @@ export default function Demo({
                 <Button type="text" size="small" icon={Undo2} onClick={restore} />
               </Tooltip>
             </div>
-            <pre className="k-code k-scroll">
+            <pre className="k-code k-scroll" hidden={codeLanguage !== "ts"}>
               <code
-                ref={setCodeNode}
+                ref={setTypeScriptCodeNode}
                 className="hljs language-tsx"
                 contentEditable
                 suppressContentEditableWarning
                 spellCheck={false}
-                onInput={scheduleCompile}
+                onInput={() => scheduleCompile("ts")}
+              />
+            </pre>
+            <pre className="k-code k-scroll" hidden={codeLanguage !== "js"}>
+              <code
+                ref={setJavaScriptCodeNode}
+                className="hljs language-jsx"
+                contentEditable
+                suppressContentEditableWarning
+                spellCheck={false}
+                onInput={() => scheduleCompile("js")}
               />
             </pre>
           </div>

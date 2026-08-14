@@ -15,11 +15,12 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       port: 7006,
+      strictPort: true,
     },
     plugins: [reactMarkdown(), react(), babel({ presets: [reactCompilerPreset()] }), banner()],
     resolve: {
       alias: {
-        "@": path.resolve(import.meta.dirname, "/"),
+        "@": path.resolve(import.meta.dirname, "./"),
         "react-kui": path.resolve(import.meta.dirname, "./components"),
         // "kui-icons": `${import.meta.env.VITE_APP_IMPORT_URL}/js/kui-icons.esm.js`,
       },
@@ -58,7 +59,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     optimizeDeps: {
-      exclude: ["kui-react"],
+      exclude: ["react-kui"],
     },
   };
 });

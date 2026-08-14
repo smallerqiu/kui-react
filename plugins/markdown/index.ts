@@ -3,6 +3,7 @@ import hljs from "highlight.js";
 import MarkdownIt, { type MarkdownIt as MarkdownItType } from "markdown-it";
 import anchor from "markdown-it-anchor";
 import path from "path";
+import ts from "typescript";
 import { type Plugin } from "vite";
 
 interface LiveDemo {
@@ -11,10 +12,22 @@ interface LiveDemo {
   title: string;
   source: string;
   highlightedSource: string;
+  javaScriptSource: string;
+  highlightedJavaScriptSource: string;
   direction: string;
   description: string;
   localModules: string[];
 }
+
+export const toJavaScriptTsx = (source: string): string =>
+  ts.transpileModule(source, {
+    fileName: "demo.tsx",
+    compilerOptions: {
+      jsx: ts.JsxEmit.Preserve,
+      module: ts.ModuleKind.ESNext,
+      target: ts.ScriptTarget.ESNext,
+    },
+  }).outputText;
 
 export default function vitePluginKuiMd(): Plugin {
   const markdown: MarkdownItType = new MarkdownIt({
@@ -50,6 +63,10 @@ export default function vitePluginKuiMd(): Plugin {
           const absolutePath = path.resolve(path.dirname(id), src);
           const source = fs.readFileSync(absolutePath, "utf-8");
           const highlightedSource = hljs.highlight(source, { language: "tsx" }).value;
+          const javaScriptSource = toJavaScriptTsx(source);
+          const highlightedJavaScriptSource = hljs.highlight(javaScriptSource, {
+            language: "jsx",
+          }).value;
           const params = new URLSearchParams(query.replace(/^\?/, ""));
           const show = params.get("show");
           const useDemo = params.get("demo") !== "false";
@@ -66,6 +83,8 @@ export default function vitePluginKuiMd(): Plugin {
             title,
             source,
             highlightedSource,
+            javaScriptSource,
+            highlightedJavaScriptSource,
             direction,
             description,
             localModules,
@@ -120,6 +139,8 @@ export default function vitePluginKuiMd(): Plugin {
             descriptionHtml: ${JSON.stringify(demo.description)},
             source: ${JSON.stringify(demo.source)},
             highlightedSource: ${JSON.stringify(demo.highlightedSource)},
+            javaScriptSource: ${JSON.stringify(demo.javaScriptSource)},
+            highlightedJavaScriptSource: ${JSON.stringify(demo.highlightedJavaScriptSource)},
             direction: ${JSON.stringify(demo.direction)},
             modules: ${moduleMaps[demoIndex]}
           }, createElement(LiveDemo${demoIndex}))`,
