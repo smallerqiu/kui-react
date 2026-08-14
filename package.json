@@ -1,6 +1,7 @@
 {
   "name": "react-kui",
   "version": "3.0.0",
+  "packageManager": "pnpm@11.21.0",
   "description": "A high quality UI components Library with React",
   "main": "./lib/index.cjs",
   "module": "./es/index.js",
@@ -36,21 +37,21 @@
   ],
   "scripts": {
     "dev": "vite --config vite.config.docs.ts",
-    "start": "npm run dev",
+    "start": "pnpm dev",
     "typecheck": "tsc -b",
     "build:es": "vite build --config vite.config.ts",
     "build:cjs": "vite build --config vite.config.lib.ts",
     "build:css": "vite build --config vite.config.css.ts",
     "build:docs": "vite build --config vite.config.docs.ts",
-    "build:lib": "npm run build:es && npm run build:cjs && npm run build:css",
-    "build": "npm run typecheck && npm run build:lib",
+    "build:lib": "pnpm build:es && pnpm build:cjs && pnpm build:css",
+    "build": "pnpm typecheck && pnpm build:lib",
     "lint": "eslint . --cache --cache-location node_modules/.cache/eslint/.eslintcache",
-    "lint:fix": "npm run lint -- --fix",
-    "eslint": "npm run lint",
+    "lint:fix": "pnpm lint -- --fix",
+    "eslint": "pnpm lint",
     "check:api-docs": "node --experimental-strip-types scripts/check-api-docs.ts",
     "package:check": "node scripts/check-package.mjs",
     "test": "vitest run",
-    "verify": "npm run lint && npm run check:api-docs && npm run typecheck && npm run test && npm run build:lib && npm run build:docs && npm run package:check"
+    "verify": "pnpm lint && pnpm check:api-docs && pnpm typecheck && pnpm test && pnpm build:lib && pnpm build:docs && pnpm package:check &&pnpm check:api-docs"
   },
   "repository": {
     "type": "git",
