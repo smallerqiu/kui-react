@@ -8,6 +8,7 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
   count?: string | number;
   dot?: boolean;
   pill?: boolean;
+  active?: boolean;
   color?: string;
   status?: BadgeStatusType;
   text?: React.ReactNode;
@@ -19,6 +20,7 @@ const Badge: React.FC<BadgeProps> = ({
   count,
   dot = false,
   pill = false,
+  active = false,
   color,
   status = "default",
   text,
@@ -45,6 +47,7 @@ const Badge: React.FC<BadgeProps> = ({
     const isHexColor = color && /^#/.test(color);
 
     const dotClasses = clsx("k-badge-status-dot", {
+      "k-badge-status-active": active,
       [`k-badge-status-${status}`]: status,
       [`k-badge-status-${color}`]: color && !isHexColor,
     });
