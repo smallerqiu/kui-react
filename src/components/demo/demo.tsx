@@ -220,24 +220,14 @@ export default function Demo({
                 <Button type="text" size="small" icon={Undo2} onClick={restore} />
               </Tooltip>
             </div>
-            <pre className="k-code k-scroll" hidden={codeLanguage !== "ts"}>
+            <pre className="k-code k-scroll" key={codeLanguage}>
               <code
-                ref={setTypeScriptCodeNode}
-                className="hljs language-tsx"
+                ref={codeLanguage === "ts" ? setTypeScriptCodeNode : setJavaScriptCodeNode}
+                className={`hljs language-${codeLanguage === "ts" ? "tsx" : "jsx"}`}
                 contentEditable
                 suppressContentEditableWarning
                 spellCheck={false}
-                onInput={() => scheduleCompile("ts")}
-              />
-            </pre>
-            <pre className="k-code k-scroll" hidden={codeLanguage !== "js"}>
-              <code
-                ref={setJavaScriptCodeNode}
-                className="hljs language-jsx"
-                contentEditable
-                suppressContentEditableWarning
-                spellCheck={false}
-                onInput={() => scheduleCompile("js")}
+                onInput={() => scheduleCompile(codeLanguage)}
               />
             </pre>
           </div>

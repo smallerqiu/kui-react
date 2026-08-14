@@ -9,7 +9,7 @@ import type { PlacementsType } from "../const/types";
 import Icon from "../icon";
 import zhCN from "../locale/zh-CN";
 import { setPlacement } from "../utils/placement";
-import { getChildren } from "../utils/react-node";
+import { getChildren, setRef } from "../utils/react-node";
 
 export interface PopconfirmProps {
   dark?: boolean;
@@ -166,9 +166,16 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
       firstChild
     )
   ) {
+    const childProps = firstChild.props;
     triggerNode = React.cloneElement(firstChild, {
-      ref: setSelectionRef,
-      onClick: showPopconfirm,
+      ref: (node) => {
+        setRef(childProps.ref, node);
+        setSelectionRef(node);
+      },
+      onClick: (event) => {
+        childProps.onClick?.(event);
+        showPopconfirm();
+      },
     });
   } else {
     triggerNode = (

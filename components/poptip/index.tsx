@@ -4,7 +4,7 @@ import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import type { PlacementsType } from "../const/types";
 import { setPlacement } from "../utils/placement";
-import { getChildren } from "../utils/react-node";
+import { getChildren, setRef } from "../utils/react-node";
 
 export interface PoptipProps {
   dark?: boolean;
@@ -167,9 +167,39 @@ const Poptip: React.FC<PoptipProps> = ({
       firstChild
     )
   ) {
+    const childProps = firstChild.props;
+    const mergedTriggerProps: React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement> = {
+      ref: (node) => {
+        setRef(childProps.ref, node);
+        setSelectionRef(node);
+      },
+      onMouseLeave: (event) => {
+        childProps.onMouseLeave?.(event);
+        hidePoptip();
+      },
+    };
+    if (trigger === "click") {
+      mergedTriggerProps.onClick = (event) => {
+        childProps.onClick?.(event);
+        showPoptip();
+      };
+    } else if (trigger === "hover") {
+      mergedTriggerProps.onMouseEnter = (event) => {
+        childProps.onMouseEnter?.(event);
+        showPoptip();
+      };
+    } else {
+      mergedTriggerProps.onFocus = (event) => {
+        childProps.onFocus?.(event);
+        showPoptip();
+      };
+      mergedTriggerProps.onBlur = (event) => {
+        childProps.onBlur?.(event);
+        hidePoptip();
+      };
+    }
     triggerNode = React.cloneElement(firstChild, {
-      ref: setSelectionRef,
-      ...triggerProps,
+      ...mergedTriggerProps,
     });
   } else {
     triggerNode = (

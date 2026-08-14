@@ -6,7 +6,7 @@ import type { PlacementsType } from "../const/types";
 import { colors } from "../const/var";
 import { isColor } from "../utils/color";
 import { setPlacement } from "../utils/placement";
-import { getChildren } from "../utils/react-node";
+import { getChildren, setRef } from "../utils/react-node";
 
 export interface TooltipProps {
   open?: boolean;
@@ -144,9 +144,28 @@ const Tooltip: React.FC<TooltipProps> = ({
       firstChild
     )
   ) {
+    const childProps = firstChild.props;
     triggerNode = React.cloneElement(firstChild, {
-      ref: setSelectionRef,
-      ...triggerProps,
+      ref: (node) => {
+        setRef(childProps.ref, node);
+        setSelectionRef(node);
+      },
+      onMouseEnter: (event) => {
+        childProps.onMouseEnter?.(event);
+        mouseEnter();
+      },
+      onMouseLeave: (event) => {
+        childProps.onMouseLeave?.(event);
+        hide();
+      },
+      onTouchStart: (event) => {
+        childProps.onTouchStart?.(event);
+        mouseEnter();
+      },
+      onTouchEnd: (event) => {
+        childProps.onTouchEnd?.(event);
+        hide();
+      },
     });
   } else {
     triggerNode = (

@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import React from "react";
 import { describe, expect, it, vi } from "vitest";
 import {
   Button,
@@ -534,6 +535,46 @@ describe("React controlled and uncontrolled conventions", () => {
     );
     fireEvent.mouseEnter(screen.getByRole("button", { name: "Target" }));
     await waitFor(() => expect(onShowChange).toHaveBeenCalledWith(true));
+  });
+
+  it("supports element triggers without replacing their refs or event handlers", async () => {
+    const tooltipMouseEnter = vi.fn();
+    const poptipClick = vi.fn((event: React.MouseEvent) => event.preventDefault());
+    const popconfirmClick = vi.fn((event: React.MouseEvent) => event.preventDefault());
+    const tooltipRef = React.createRef<HTMLAnchorElement>();
+
+    render(
+      <>
+        <Tooltip title="How to behave?">
+          <a ref={tooltipRef} href="#tooltip" onMouseEnter={tooltipMouseEnter}>
+            Tooltip link
+          </a>
+        </Tooltip>
+        <Poptip trigger="click" content="Poptip content">
+          <a href="#poptip" onClick={poptipClick}>
+            Poptip link
+          </a>
+        </Poptip>
+        <Popconfirm title="Confirm?">
+          <a href="#popconfirm" onClick={popconfirmClick}>
+            Popconfirm link
+          </a>
+        </Popconfirm>
+      </>
+    );
+
+    fireEvent.mouseEnter(screen.getByRole("link", { name: "Tooltip link" }));
+    expect(tooltipMouseEnter).toHaveBeenCalledOnce();
+    expect(tooltipRef.current).toBe(screen.getByRole("link", { name: "Tooltip link" }));
+    await waitFor(() => expect(screen.getByText("How to behave?")).not.toBeNull());
+
+    fireEvent.click(screen.getByRole("link", { name: "Poptip link" }));
+    expect(poptipClick).toHaveBeenCalledOnce();
+    await waitFor(() => expect(screen.getByText("Poptip content")).not.toBeNull());
+
+    fireEvent.click(screen.getByRole("link", { name: "Popconfirm link" }));
+    expect(popconfirmClick).toHaveBeenCalledOnce();
+    await waitFor(() => expect(screen.getByText("Confirm?")).not.toBeNull());
   });
 
   it("renders Poptip placement and arrow and keeps content during its exit transition", async () => {

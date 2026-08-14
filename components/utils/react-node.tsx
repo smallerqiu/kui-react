@@ -1,5 +1,13 @@
 import React from "react";
 
+export function setRef<T>(ref: React.Ref<T> | undefined, node: T | null) {
+  if (typeof ref === "function") {
+    ref(node);
+  } else if (ref) {
+    ref.current = node;
+  }
+}
+
 export function cloneNodes(vnode: React.ReactNode, props: React.HTMLAttributes<HTMLElement>) {
   if (React.Children.count(vnode) === 1) {
     return React.cloneElement(vnode as React.ReactElement, props);
