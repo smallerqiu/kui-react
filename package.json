@@ -24,6 +24,7 @@
     },
     "./style": "./style/index.css",
     "./style.css": "./style/index.css",
+    "./style/*": "./style/*",
     "./locale/*": {
       "types": "./types/locale/*.d.ts",
       "import": "./es/locale/*.js",

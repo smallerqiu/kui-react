@@ -160,9 +160,19 @@ export function setPlacement({
     else if (calcTop + pickerH > clientHeight) calcTop = clientHeight - pickerH;
   }
 
-  // 赋值
-  top.current = calcTop + scrollTop;
-  left.current = calcLeft + scrollLeft;
+  // 将视口坐标换算为弹层实际定位容器的坐标。这样弹层被 Portal 到
+  // ConfigProvider 指定的局部主题容器时，位置仍然准确。
+  const offsetParent = refPopper.current?.offsetParent as HTMLElement | null;
+  const isDocumentRoot =
+    !offsetParent || offsetParent === document.body || offsetParent === document.documentElement;
+  if (isDocumentRoot) {
+    top.current = calcTop + scrollTop;
+    left.current = calcLeft + scrollLeft;
+  } else {
+    const parentRect = offsetParent.getBoundingClientRect();
+    top.current = calcTop - parentRect.top + offsetParent.scrollTop;
+    left.current = calcLeft - parentRect.left + offsetParent.scrollLeft;
+  }
   transOrigin.current = `${originX} ${originY}`;
 
   if (currentPlacement.current !== finalPlacement) {

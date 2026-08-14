@@ -6,10 +6,10 @@
   vertical-align: middle;
   color: var(--kui-color-text);
   background: none;
-  font-size: 14px;
+  font-size: var(--kui-font-size);
   position: relative;
   border: 1px solid var(--kui-color-border);
-  min-height: 32px;
+  min-height: var(--kui-control-height);
   border-radius: var(--kui-border-radius);
   background-color: var(--kui-color-bg);
   cursor: default;
@@ -38,12 +38,12 @@
 
   .k-icon-calendar {
     color: var(--kui-color-icon);
-    font-size: 14px;
+    font-size: var(--kui-font-size);
     margin-left: 4px;
   }
   .k-icon-clean {
     color: var(--kui-color-icon);
-    font-size: 14px;
+    font-size: var(--kui-font-size);
     position: absolute;
     z-index: 10;
     right: 8px;
@@ -60,7 +60,7 @@
     background: none;
     outline: none;
     line-height: 1;
-    font-size: 14px;
+    font-size: var(--kui-font-size);
     padding: 0;
     margin: 0;
   }
@@ -130,8 +130,8 @@
 .k-datepicker-overlay {
   position: absolute;
   z-index: 1003;
-  background: var(--kui-color-bg-pop);
-  box-shadow: var(--kui-pop-shadow);
+  background: var(--kui-popup-bg);
+  box-shadow: var(--kui-popup-shadow);
   border-radius: var(--kui-border-radius);
   overflow: hidden;
   display: flex;
@@ -157,14 +157,14 @@
 }
 
 .k-datepicker-sm {
-  min-height: 24px;
+  min-height: var(--kui-control-height-sm);
 
   padding: 0 var(--kui-padding-inline-sm);
   .k-icon {
-    font-size: 12px;
+    font-size: var(--kui-font-size-sm);
   }
   .k-datepicker-input {
-    font-size: 12px;
+    font-size: var(--kui-font-size-sm);
   }
   .k-datepicker-selection {
     white-space: nowrap;
@@ -176,13 +176,13 @@
 }
 
 .k-datepicker-lg {
-  min-height: 40px;
+  min-height: var(--kui-control-height-lg);
   padding: 0 9px;
   .k-datepicker-input {
-    font-size: 16px;
+    font-size: var(--kui-font-size-lg);
   }
   .k-icon {
-    font-size: 16px;
+    font-size: var(--kui-font-size-lg);
     right: 10px;
   }
   .k-icon-clean {
@@ -252,7 +252,7 @@
       text-align: center;
       line-height: 36px;
       color: var(--kui-color-text-placeholder);
-      font-size: 12px;
+      font-size: var(--kui-font-size-sm);
     }
   }
   .k-picker-day {
@@ -265,9 +265,9 @@
     overflow: hidden;
     border: 1px solid transparent;
     width: 32px;
-    height: 32px;
-    line-height: 32px;
-    font-size: 14px;
+    height: var(--kui-control-height);
+    line-height: var(--kui-control-height);
+    font-size: var(--kui-font-size);
     margin: 2px;
     box-sizing: border-box;
 
@@ -304,7 +304,7 @@
     }
   }
   .k-picker-header-label {
-    font-size: 14px;
+    font-size: var(--kui-font-size);
     color: var(--kui-color-text);
     cursor: pointer;
     font-weight: bold;
@@ -330,7 +330,7 @@
     width: calc((100% - 20px) / 3);
     text-align: center;
     display: flex;
-    font-size: 14px;
+    font-size: var(--kui-font-size);
     align-items: center;
     justify-content: center;
     border-radius: var(--kui-border-radius);
@@ -345,19 +345,19 @@
   .k-picker-day-selected,
   .k-picker-year-selected,
   .k-picker-month-selected {
-    color: #fff;
+    color: var(--kui-color-text-on-solid);
     font-weight: bold;
     background: var(--kui-color-primary);
     &:hover {
       background: var(--kui-color-primary);
     }
     &::after {
-      background-color: #fff;
+      background-color: var(--kui-color-text-on-solid);
     }
   }
   .k-picker-footer {
     box-sizing: border-box;
-    font-size: 14px;
+    font-size: var(--kui-font-size);
     border-top: 1px solid var(--kui-color-border);
     display: flex;
     align-items: center;
@@ -366,11 +366,11 @@
   .k-picker-footer-time-split {
     width: 40px;
     position: relative;
-    height: 40px;
+    height: var(--kui-control-height-lg);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: var(--kui-font-size-lg);
   }
   .k-picker-footer-time {
     padding: 12px;
@@ -423,8 +423,8 @@
     }
   }
   .k-picker-time-item {
-    height: 32px;
-    line-height: 32px;
+    height: var(--kui-control-height);
+    line-height: var(--kui-control-height);
     cursor: pointer;
     color: var(--kui-color-text);
     font-size: 13px;

@@ -11,12 +11,12 @@
   border: 1px solid var(--kui-color-border);
   border-radius: var(--kui-border-radius);
   background-color: var(--kui-color-bg);
-  transition: border 0.2s ease-in-out;
+  transition: border var(--kui-motion-duration) var(--kui-motion-easing);
   box-sizing: border-box;
-  font-size: 14px;
+  font-size: var(--kui-font-size);
   padding: 0 8px;
   gap: 6px;
-  height: 32px;
+  height: var(--kui-control-height);
   overflow: hidden;
   line-height: 1.571;
 
@@ -29,7 +29,7 @@
   }
 
   .k-input-icon {
-    font-size: 16px;
+    font-size: var(--kui-font-size-lg);
     color: var(--kui-color-icon);
   }
 
@@ -44,7 +44,7 @@
   .k-input-password-icon {
     color: var(--kui-color-icon);
     cursor: pointer;
-    transition: font-size 0.2s ease-in-out;
+    transition: font-size var(--kui-motion-duration) var(--kui-motion-easing);
 
     &:hover {
       color: var(--kui-color-text-title);
@@ -55,7 +55,7 @@
     padding-left: 0;
     border: none;
     padding: 0;
-    font-size: 14px;
+    font-size: var(--kui-font-size);
     color: var(--kui-color-text);
     background-color: transparent;
     background-image: none;
@@ -84,7 +84,7 @@
     line-height: 1;
     -webkit-user-select: none;
     user-select: none;
-    transition: font-size 0.2s ease-in-out;
+    transition: font-size var(--kui-motion-duration) var(--kui-motion-easing);
     display: flex;
 
     &:hover {
@@ -92,8 +92,8 @@
     }
 
     .k-icon {
-      font-size: 16px;
-      transition: font-size 0.2s ease-in-out;
+      font-size: var(--kui-font-size-lg);
+      transition: font-size var(--kui-motion-duration) var(--kui-motion-easing);
       color: var(--kui-color-icon);
     }
   }
@@ -122,9 +122,9 @@
   box-sizing: border-box;
   display: inline-block;
   width: 100%;
-  height: 32px;
+  height: var(--kui-control-height);
   padding: 4px 8px;
-  font-size: 14px;
+  font-size: var(--kui-font-size);
   margin: 0;
   border: 1px solid var(--kui-color-border);
   border-radius: var(--kui-border-radius);
@@ -133,7 +133,7 @@
   background-image: none;
   position: relative;
   cursor: text;
-  transition: border 0.3s ease-in-out;
+  transition: border var(--kui-motion-duration-slow) var(--kui-motion-easing);
   line-height: 1.571;
 
   &:focus {
@@ -167,17 +167,17 @@
     caret-color: var(--kui-color-text);
     -webkit-text-fill-color: var(--kui-color-text);
     transition:
-      border 0.3s ease-in-out,
+      border var(--kui-motion-duration-slow) var(--kui-motion-easing),
       background-color 999999s ease-out 0s;
   }
 }
 
 .k-textarea {
   max-width: 100%;
-  min-height: 32px;
+  min-height: var(--kui-control-height);
   height: auto;
   vertical-align: bottom;
-  font-size: 14px;
+  font-size: var(--kui-font-size);
   line-height: 1.571;
   resize: vertical;
   outline: none;
@@ -216,12 +216,12 @@
 }
 
 .k-textarea-sm {
-  font-size: 12px;
+  font-size: var(--kui-font-size-sm);
   padding: 2px var(--kui-padding-inline-sm);
 }
 
 .k-textarea-lg {
-  font-size: 16px;
+  font-size: var(--kui-font-size-lg);
   padding: 4px 10px;
 }
 .k-textarea-lg:not(.k-textarea-square) {
@@ -229,53 +229,53 @@
 }
 .k-input-sm[data-single] {
   padding: 2px var(--kui-padding-inline-sm);
-  height: 24px;
-  font-size: 12px;
+  height: var(--kui-control-height-sm);
+  font-size: var(--kui-font-size-sm);
 }
 
 .k-input-sm[data-multiple] {
   padding: 0 var(--kui-padding-inline-sm);
   gap: 4px;
-  height: 24px;
-  font-size: 12px;
+  height: var(--kui-control-height-sm);
+  font-size: var(--kui-font-size-sm);
 
   .k-input-text {
-    font-size: 12px;
+    font-size: var(--kui-font-size-sm);
     padding: 2px 0;
   }
 
   .k-input-clearable {
-    font-size: 14px;
+    font-size: var(--kui-font-size);
   }
 
   .k-input-icon {
-    font-size: 14px;
+    font-size: var(--kui-font-size);
   }
 
   .k-input-suffix {
     .k-icon {
-      font-size: 12px;
+      font-size: var(--kui-font-size-sm);
     }
   }
 
   .k-input-group-suffix,
   .k-input-group-prefix {
-    height: 24px;
-    font-size: 12px;
+    height: var(--kui-control-height-sm);
+    font-size: var(--kui-font-size-sm);
   }
 }
 
 .k-input-lg[data-single] {
   padding: 2px 10px;
-  height: 40px;
-  font-size: 16px;
+  height: var(--kui-control-height-lg);
+  font-size: var(--kui-font-size-lg);
   border-radius: var(--kui-border-radius-lg);
 }
 
 .k-input-group-suffix,
 .k-input-group-prefix {
-  height: 40px;
-  font-size: 14px;
+  height: var(--kui-control-height-lg);
+  font-size: var(--kui-font-size);
 }
 
 .k-input-group-suffix {
@@ -293,12 +293,12 @@
 }
 
 .k-input-lg[data-multiple] {
-  height: 40px;
+  height: var(--kui-control-height-lg);
   border-radius: var(--kui-border-radius-lg);
 
   .k-input-text {
     padding: 2px 0;
-    font-size: 16px;
+    font-size: var(--kui-font-size-lg);
   }
 
   .k-input-clearable {
@@ -306,7 +306,7 @@
   }
 
   .k-input-icon {
-    font-size: 16px;
+    font-size: var(--kui-font-size-lg);
   }
 
   .k-input-suffix {
@@ -364,12 +364,12 @@
   display: flex;
   border-radius: var(--kui-border-radius);
   flex: 1;
-  height: 32px;
+  height: var(--kui-control-height);
   line-height: 1;
   box-sizing: border-box;
   align-items: center;
-  font-size: 14px;
-  transition: font-size 0.3s ease-in-out;
+  font-size: var(--kui-font-size);
+  transition: font-size var(--kui-motion-duration-slow) var(--kui-motion-easing);
 
   > .k-icon {
     margin: 0 8px;
@@ -453,25 +453,25 @@
 .k-input-group-sm {
   .k-input-group-suffix,
   .k-input-group-prefix {
-    height: 24px;
-    font-size: 12px;
+    height: var(--kui-control-height-sm);
+    font-size: var(--kui-font-size-sm);
   }
 
   .k-input-number-suffix,
   .k-input-number-prefix {
-    font-size: 12px;
+    font-size: var(--kui-font-size-sm);
   }
 }
 
 .k-input-group-lg {
   .k-input-group-suffix,
   .k-input-group-prefix {
-    height: 40px;
-    font-size: 16px;
+    height: var(--kui-control-height-lg);
+    font-size: var(--kui-font-size-lg);
   }
 
   .k-input-number-suffix,
   .k-input-number-prefix {
-    font-size: 16px;
+    font-size: var(--kui-font-size-lg);
   }
 }
