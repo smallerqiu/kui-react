@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import type { HTMLAttributes, ReactNode } from "react";
 import StatNumber from "./stat-number";
+import type { ShapeType, ThemeType } from "../const/types";
 
 export interface StatNumberItem {
   value: number;
@@ -24,6 +25,8 @@ export interface StatCardProps extends Omit<HTMLAttributes<HTMLDivElement>, "tit
   statNumberType?: "rollup" | "countup";
   reverse?: boolean;
   bordered?: boolean;
+  theme?: ThemeType;
+  shape?: ShapeType;
   prefix?: ReactNode;
   suffix?: ReactNode;
 }
@@ -36,13 +39,26 @@ export default function StatCard({
   statNumberType = "countup",
   reverse = false,
   bordered = false,
+  theme = "fill",
+  shape = "round",
   prefix,
   suffix,
   className,
   ...rest
 }: StatCardProps) {
   return (
-    <div {...rest} className={clsx("k-stat-card", { "k-stat-card-bordered": bordered }, className)}>
+    <div
+      {...rest}
+      className={clsx(
+        "k-stat-card",
+        {
+          "k-stat-card-bordered": bordered,
+          [`k-stat-card-${theme}`]: theme,
+          [`k-stat-card-${shape}`]: shape,
+        },
+        className
+      )}
+    >
       {title != null && <div className="k-stat-card-title">{title}</div>}
       <div className="k-stat-card-items">
         {items.map((item, index) => (

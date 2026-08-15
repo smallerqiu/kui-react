@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { ChevronsLeft, ChevronsRight, ChevronUp, Ellipsis } from "kui-icons";
 import React, { useContext, useState } from "react";
 import { ConfigContext } from "../config/config-context";
-import type { SizeType, ThemeType } from "../const/types";
+import type { ShapeType, SizeType, ThemeType } from "../const/types";
 import Icon from "../icon";
 import InputNumber from "../input-number";
 import zhCN from "../locale/zh-CN";
@@ -14,6 +14,7 @@ export interface PageProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "o
   showTotal?: boolean;
   showElevator?: boolean;
   theme?: ThemeType;
+  shape?: ShapeType;
   sizeData?: number[];
   size?: SizeType;
   total?: number;
@@ -28,6 +29,7 @@ const Page: React.FC<PageProps> = ({
   showTotal = true,
   showElevator = false,
   theme = "fill",
+  shape = "round",
   sizeData = [10, 15, 20, 30, 40],
   size,
   total = 0,
@@ -152,7 +154,13 @@ const Page: React.FC<PageProps> = ({
 
   const classes = clsx(
     "k-page",
-    { "k-page-sm": size === "small", "k-page-fill": theme === "fill", "k-page-disabled": disabled },
+    {
+      "k-page-sm": size === "small",
+      "k-page-fill": theme === "fill",
+      "k-page-outline": theme === "outline",
+      "k-page-disabled": disabled,
+      [`k-page-${shape}`]: shape,
+    },
     className
   );
 

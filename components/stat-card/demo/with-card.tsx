@@ -5,10 +5,10 @@ export default function App() {
   const [value, setValue] = useState(12345.67);
   return (
     <Space vertical className="demo-view-fill">
-      <Card bordered={false}>
+      <Card theme="plain">
         <StatNumber value={value} prefix="$" suffix="%" style={{ fontSize: "2em" }} />
       </Card>
-      <Card bordered={false} title="Today's Trends">
+      <Card theme="plain" title="Today's Trends">
         <StatNumber
           value={value}
           suffix="%"
@@ -16,7 +16,7 @@ export default function App() {
           prefix={<Icon type={ArrowUp} />}
         />
       </Card>
-      <Card bordered={false} title="Yesterday's Trend">
+      <Card theme="plain" title="Yesterday's Trend">
         <StatNumber
           value={value}
           suffix="%"

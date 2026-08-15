@@ -3,22 +3,22 @@ import {
   Button,
   Checkbox,
   CheckboxGroup,
-  type ShapeType,
-  type SizeType,
-  type ThemeType,
   DatePicker,
+  Form,
+  FormItem,
   Input,
-  TextArea,
   InputNumber,
-  RadioGroup,
   Option,
+  RadioGroup,
   Select,
   Slider,
   Space,
   Switch,
+  TextArea,
   TreeSelect,
-  Form,
-  FormItem,
+  type ShapeType,
+  type SizeType,
+  type ThemeType,
 } from "react-kui";
 const treeData = [
   {
@@ -34,7 +34,7 @@ export default function App() {
   const [disabled, setDisabled] = useState(false),
     [size, setSize] = useState<SizeType>("medium"),
     [shape, setShape] = useState<ShapeType>("round"),
-    [theme, setTheme] = useState<ThemeType>("default");
+    [theme, setTheme] = useState<ThemeType>("fill");
   return (
     <>
       <Space>
@@ -63,7 +63,7 @@ export default function App() {
           <RadioGroup
             value={theme}
             onChange={setTheme}
-            options={["default", "fill", "outline"].map((value) => ({ value, label: value }))}
+            options={["fill", "outline"].map((value) => ({ value, label: value }))}
           />
         </FormItem>
         <FormItem label="Size">

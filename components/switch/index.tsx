@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { Loading } from "kui-icons";
 import React, { useState } from "react";
-import type { SizeType, ValueType } from "../const/types";
+import type { ShapeType, SizeType, ValueType } from "../const/types";
 import Icon from "../icon";
 import { getValueWithType } from "../utils/checked";
 
@@ -16,6 +16,7 @@ export interface SwitchProps extends Omit<
   disabled?: boolean;
   loading?: boolean;
   size?: SizeType;
+  shape?: ShapeType;
   trueText?: string;
   falseText?: string;
   checkedChildren?: React.ReactNode;
@@ -31,6 +32,7 @@ const Switch: React.FC<SwitchProps> = ({
   disabled = false,
   loading = false,
   size,
+  shape = "round",
   trueText,
   falseText,
   checkedChildren,
@@ -62,6 +64,7 @@ const Switch: React.FC<SwitchProps> = ({
       "k-switch-disabled": disabled || loading,
       [`k-switch-${type}`]: type,
       "k-switch-sm": size === "small",
+      [`k-switch-${shape}`]: shape,
     },
     className
   );

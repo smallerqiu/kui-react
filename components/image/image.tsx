@@ -16,6 +16,7 @@ import Icon from "../icon";
 import { ImageGroupContext } from "./image-group-context";
 import createInstance, { type ImagePreviewInstance } from "./instance";
 import type { ImagePreviewProps } from "./preview";
+import type { ShapeType, ThemeType } from "../const/types";
 import { loadImage } from "./utils";
 
 export interface ImageRef {
@@ -38,6 +39,8 @@ export interface ImageProps extends Omit<HTMLAttributes<HTMLDivElement>, "onSwit
   panel?: ReactNode;
   onClose?: () => void;
   onSwitch?: (index: number) => void;
+  theme?: ThemeType;
+  shape?: ShapeType;
 }
 
 const KImage = forwardRef<ImageRef, ImageProps>(function KImage(
@@ -56,6 +59,8 @@ const KImage = forwardRef<ImageRef, ImageProps>(function KImage(
     panel,
     onClose,
     onSwitch,
+    theme = "plain",
+    shape = "round",
     className,
     style,
     children,
@@ -142,7 +147,7 @@ const KImage = forwardRef<ImageRef, ImageProps>(function KImage(
   return (
     <div
       {...rest}
-      className={clsx("k-image", className)}
+      className={clsx("k-image", `k-image-${theme}`, `k-image-${shape}`, className)}
       style={{ ...style, width: dimension(width), height: dimension(height) }}
       onClick={handleClick}
     >

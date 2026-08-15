@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { CircleAlert, CircleCheck, CircleX, Info, X } from "kui-icons";
 import React, { useState } from "react";
 import Icon, { type IconType } from "../icon";
+import type { ShapeType, ThemeType } from "../const/types";
 
 export interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
   type?: "info" | "success" | "warning" | "error";
@@ -11,6 +12,8 @@ export interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
   message?: React.ReactNode;
   description?: React.ReactNode;
   bordered?: boolean;
+  theme?: ThemeType;
+  shape?: ShapeType;
   onClose?: (e: React.MouseEvent<HTMLElement>) => void;
   children?: React.ReactNode;
 }
@@ -23,6 +26,8 @@ const Alert: React.FC<AlertProps> = ({
   message,
   description,
   bordered = false,
+  theme = "fill",
+  shape = "round",
   onClose,
   children,
   className = "",
@@ -63,6 +68,8 @@ const Alert: React.FC<AlertProps> = ({
       "k-alert-has-icon": showIcon,
       "k-alert-has-close": closable,
       "k-alert-bordered": bordered,
+      [`k-alert-theme-${theme}`]: theme,
+      [`k-alert-shape-${shape}`]: shape,
       "k-alert-has-description": description,
     },
     className

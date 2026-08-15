@@ -2,9 +2,12 @@ import clsx from "clsx";
 import React from "react";
 import { Avatar } from "../avatar";
 import Icon, { type IconType } from "../icon";
+import type { ShapeType, ThemeType } from "../const/types";
 
 export interface CardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   bordered?: boolean;
+  theme?: ThemeType;
+  shape?: ShapeType;
   title?: React.ReactNode;
   icon?: IconType[];
   extra?: React.ReactNode;
@@ -14,6 +17,8 @@ export interface CardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "t
 
 const Card: React.FC<CardProps> = ({
   bordered = false,
+  theme = "fill",
+  shape = "round",
   title,
   icon,
   extra,
@@ -33,7 +38,12 @@ const Card: React.FC<CardProps> = ({
 
   const classes = clsx(
     "k-card",
-    { "k-card-bordered": bordered, "k-card-has-cover": !!coverNode },
+    {
+      "k-card-bordered": bordered,
+      "k-card-has-cover": !!coverNode,
+      [`k-card-${theme}`]: theme,
+      [`k-card-${shape}`]: shape,
+    },
     className
   );
 

@@ -2,12 +2,15 @@ import clsx from "clsx";
 import React, { useState } from "react";
 import { getChildren } from "../utils/react-node";
 import type { CollapsePanelProps } from "./collapse-panel";
+import type { ShapeType, ThemeType } from "../const/types";
 
 export interface CollapseProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
   openKeys?: (string | number)[];
   defaultOpenKeys?: (string | number)[];
   accordion?: boolean;
   sample?: boolean;
+  theme?: ThemeType;
+  shape?: ShapeType;
   onChange?: (key: string | number) => void;
   onOpenKeysChange?: (keys: (string | number)[]) => void;
   children?: React.ReactNode;
@@ -18,6 +21,8 @@ const Collapse: React.FC<CollapseProps> = ({
   defaultOpenKeys = [],
   accordion = false,
   sample = false,
+  theme = "outline",
+  shape = "round",
   onChange,
   onOpenKeysChange,
   children,
@@ -44,7 +49,13 @@ const Collapse: React.FC<CollapseProps> = ({
     onChange?.(key);
   };
 
-  const classes = clsx("k-collapse", { "k-collapse-sample": sample }, className);
+  const classes = clsx(
+    "k-collapse",
+    { "k-collapse-sample": sample },
+    `k-collapse-${theme}`,
+    `k-collapse-${shape}`,
+    className
+  );
 
   const childList = getChildren(children);
 

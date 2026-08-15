@@ -26,7 +26,7 @@ export default function App() {
         options={options}
       />
       <Select filterable theme="outline" options={options} placeholder="Outline theme" />
-      <Select bordered={false} theme="solid" options={options} placeholder="No Border" />
+      <Select theme="plain" options={options} placeholder="Plain" />
     </Space>
   );
 }

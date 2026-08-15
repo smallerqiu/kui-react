@@ -14,6 +14,17 @@ export default function App() {
     <Space vertical>
       <Page page={page} pageSize={pageSize} total={50} onChange={onChange} />
       <Page page={page} pageSize={pageSize} total={50} onChange={onChange} disabled />
+      <code>theme &amp; shape</code>
+      <Page
+        page={page}
+        pageSize={pageSize}
+        total={50}
+        theme="outline"
+        shape="round"
+        onChange={onChange}
+      />
+      <Page page={page} pageSize={pageSize} total={50} shape="circle" onChange={onChange} />
+      <Page page={page} pageSize={pageSize} total={50} shape="square" onChange={onChange} />
     </Space>
   );
 }

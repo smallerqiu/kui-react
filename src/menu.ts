@@ -86,7 +86,7 @@ const navData = [
         icon: Languages,
       },
       { title: "更新日志", sub: "Change Log", name: "change-log", icon: FileText },
-      // { title: "定制主题", sub: "Themes", name: "theme", icon: "theme" },
+      { title: "定制主题", sub: "Themes", name: "theme", icon: Palette },
       { title: "暗色模式", sub: "Dark Mode", name: "dark-mode", icon: PaintBucket },
       {
         title: "组件总览",

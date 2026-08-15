@@ -1,4 +1,5 @@
 import type { HTMLAttributes, ReactNode } from "react";
+import type { ShapeType } from "../const/types";
 import type { SizeType } from "../const/types";
 
 export type TableKey = string | number;
@@ -41,6 +42,7 @@ export interface TableProps<T = Record<string, unknown>> extends Omit<
   size?: SizeType;
   striped?: boolean;
   bordered?: boolean;
+  shape?: ShapeType;
   checkable?: boolean;
   loading?: boolean;
   emptyText?: string;

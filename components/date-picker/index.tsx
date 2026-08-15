@@ -628,7 +628,7 @@ export default function DatePicker({
     "k-datepicker",
     {
       "k-datepicker-opened": visible,
-      "k-datepicker-borderless": !bordered,
+      "k-datepicker-borderless": !bordered || theme === "plain",
       "k-datepicker-sm": size === "small",
       "k-datepicker-lg": size === "large",
       "k-datepicker-disabled": disabled,

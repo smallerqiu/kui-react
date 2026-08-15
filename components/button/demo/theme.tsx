@@ -41,6 +41,19 @@ export default function App() {
         </Button>
         <Button theme="fill">default</Button>
       </Space>
+      <code>shape</code>
+      <Space size="small">
+        <Button type="primary" shape="round">
+          Round
+        </Button>
+        <Button type="danger" shape="circle">
+          Circle
+        </Button>
+        <Button type="warning" shape="square">
+          Square
+        </Button>
+        <Button theme="fill">default</Button>
+      </Space>
     </Space>
   );
 }

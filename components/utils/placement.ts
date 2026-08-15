@@ -3,6 +3,40 @@
 
 import type { RefObject } from "react";
 
+const popupThemeSources = new Map<HTMLElement, HTMLElement>();
+let popupThemeObserver: MutationObserver | null = null;
+
+const syncPopupTheme = (popup: HTMLElement, source: HTMLElement) => {
+  const owner = source.closest<HTMLElement>("[theme-mode]");
+  const mode = owner?.getAttribute("theme-mode");
+  const currentMode = popup.getAttribute("theme-mode");
+  if (mode === "light" || mode === "dark") {
+    if (currentMode !== mode) popup.setAttribute("theme-mode", mode);
+  } else if (currentMode !== null) {
+    popup.removeAttribute("theme-mode");
+  }
+};
+
+const inheritPopupTheme = (popup: HTMLElement, source: HTMLElement) => {
+  popupThemeSources.set(popup, source);
+  syncPopupTheme(popup, source);
+  if (popupThemeObserver || typeof document === "undefined") return;
+  popupThemeObserver = new MutationObserver(() => {
+    popupThemeSources.forEach((themeSource, themePopup) => {
+      if (!themePopup.isConnected || !themeSource.isConnected) {
+        popupThemeSources.delete(themePopup);
+        return;
+      }
+      syncPopupTheme(themePopup, themeSource);
+    });
+  });
+  popupThemeObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["theme-mode"],
+    subtree: true,
+  });
+};
+
 interface PlacementOptions {
   refSelection: RefObject<HTMLElement | null>;
   refPopper: RefObject<HTMLElement | null>;
@@ -28,6 +62,9 @@ export function setPlacement({
   offset = 3,
 }: PlacementOptions) {
   if (!refPopper) return;
+  if (refPopper.current && refSelection.current) {
+    inheritPopupTheme(refPopper.current, refSelection.current);
+  }
   // 模式检测 & 基准矩形
   // 是否是鼠标右键/坐标模式
   const isMouseMode = position && typeof position.x === "number" && typeof position.y === "number";

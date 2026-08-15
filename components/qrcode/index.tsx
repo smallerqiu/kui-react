@@ -15,6 +15,7 @@ import { Button } from "../button";
 import { ConfigContext } from "../config/config-context";
 import zhCN from "../locale/zh-CN";
 import Spin from "../spin";
+import type { ShapeType, ThemeType } from "../const/types";
 
 export type QRCodeStatus = "active" | "loading" | "expired" | "scanned";
 export type QRCodeErrorLevel = "L" | "M" | "Q" | "H";
@@ -27,6 +28,8 @@ export interface QRCodeProps extends Omit<HTMLAttributes<HTMLDivElement>, "child
   colorDark?: string;
   colorLight?: string;
   bordered?: boolean;
+  shape?: ShapeType;
+  theme?: ThemeType;
   status?: QRCodeStatus;
   logo?: string;
   logoSize?: number;
@@ -47,6 +50,8 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
     colorDark = "var(--kui-color-reverse)",
     colorLight = "var(--kui-color-bg)",
     bordered = true,
+    shape = "round",
+    theme = "outline",
     status = "active",
     logo = "",
     logoSize,
@@ -74,7 +79,7 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
     if (!input.trim().startsWith("var(")) return input;
     const element = document.createElement("span");
     element.style.color = input;
-    document.body.appendChild(element);
+    (canvasRef.current?.parentElement || document.body).appendChild(element);
     const computed = getComputedStyle(element).color;
     element.remove();
     try {
@@ -172,6 +177,7 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["theme-mode"],
+      subtree: true,
     });
     return () => observer.disconnect();
   }, [draw]);
@@ -187,7 +193,13 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
   return (
     <div
       {...rest}
-      className={clsx("k-qrcode", { "k-qrcode-borderless": !bordered }, className)}
+      className={clsx(
+        "k-qrcode",
+        `k-qrcode-${shape}`,
+        `k-qrcode-${theme}`,
+        { "k-qrcode-plain": !bordered },
+        className
+      )}
       style={{ ...style, width: size, height: size }}
     >
       <canvas ref={canvasRef} style={{ width: size, height: size, display: "block" }} />

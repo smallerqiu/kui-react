@@ -12,7 +12,7 @@ export default function App() {
         </Button>
       </Space>
       <QRCode value={url} size={128} logo="/favicon.png" ref={ref} />
-      <Poptip content={<QRCode value={url} size={128} bordered={false} logo="/favicon.png" />}>
+      <Poptip content={<QRCode value={url} size={128} theme="plain" logo="/favicon.png" />}>
         <Button type="primary">Hover me</Button>
       </Poptip>
     </Space>

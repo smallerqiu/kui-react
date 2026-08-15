@@ -1,5 +1,5 @@
 import Color, { type ColorInstance, type ColorObject } from "color";
-import { useEffect, useRef, type MouseEvent as ReactMouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 import { clamp } from "../utils/share";
 export interface PaintProps {
   hue?: number;
@@ -9,7 +9,12 @@ export interface PaintProps {
 export default function Paint({ hue = 0, value, onUpdateRGB }: PaintProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dragCleanupRef = useRef<() => void>(() => undefined);
+  const draggingRef = useRef(false);
   const hsv = Color(value).hsv().object();
+  const [dotPosition, setDotPosition] = useState(() => ({
+    x: (hsv.s / 100) * 234 - 7,
+    y: (1 - hsv.v / 100) * 136 - 7,
+  }));
   useEffect(() => {
     const canvas = canvasRef.current,
       context = canvas?.getContext("2d");
@@ -27,18 +32,32 @@ export default function Paint({ hue = 0, value, onUpdateRGB }: PaintProps) {
     context.fillStyle = black;
     context.fillRect(0, 0, canvas.width, canvas.height);
   }, [hue]);
+  useEffect(() => {
+    if (draggingRef.current) return;
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setDotPosition({
+      x: (hsv.s / 100) * rect.width - 7,
+      y: (1 - hsv.v / 100) * rect.height - 7,
+    });
+  }, [value]);
   useEffect(() => () => dragCleanupRef.current(), []);
   const start = (event: ReactMouseEvent) => {
+    draggingRef.current = true;
     const move = (x: number, y: number) => {
       const rect = canvasRef.current!.getBoundingClientRect();
-      const saturation = (clamp(x - rect.left, 0, rect.width) / rect.width) * 100;
-      const brightness = (1 - clamp(y - rect.top, 0, rect.height) / rect.height) * 100;
+      const localX = clamp(x - rect.left, 0, rect.width);
+      const localY = clamp(y - rect.top, 0, rect.height);
+      const saturation = (localX / rect.width) * 100;
+      const brightness = (1 - localY / rect.height) * 100;
+      setDotPosition({ x: localX - 7, y: localY - 7 });
       onUpdateRGB?.(Color().hsv(hue, saturation, brightness).rgb().object());
     };
     move(event.clientX, event.clientY);
     const mousemove = (item: MouseEvent) => move(item.clientX, item.clientY);
     dragCleanupRef.current();
     const up = () => {
+      draggingRef.current = false;
       document.removeEventListener("mousemove", mousemove);
       document.removeEventListener("mouseup", up);
     };
@@ -57,7 +76,7 @@ export default function Paint({ hue = 0, value, onUpdateRGB }: PaintProps) {
       />
       <span
         className="k-color-picker-paint-dot"
-        style={{ left: (hsv.s / 100) * 234 - 7, top: (1 - hsv.v / 100) * 136 - 7 }}
+        style={{ left: dotPosition.x, top: dotPosition.y }}
       />
     </div>
   );

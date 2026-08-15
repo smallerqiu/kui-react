@@ -24,7 +24,7 @@ export default function App() {
       <Cascader {...common} arrowIcon={ArrowDown} placeholder="Custom Arrow" />
       <Cascader {...common} icon={Search} placeholder="With Icon" />
       <Cascader {...common} theme="solid" placeholder="Solid" />
-      <Cascader {...common} theme="solid" bordered={false} placeholder="No Border" />
+      <Cascader {...common} theme="plain" placeholder="Plain" />
       <Cascader {...common} size="large" placeholder="Large Size (38px)" />
       <Cascader {...common} placeholder="Default Size (32px)" />
       <Cascader {...common} size="small" placeholder="Small Size (24px)" />

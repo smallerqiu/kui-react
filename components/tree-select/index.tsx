@@ -243,7 +243,7 @@ export default function TreeSelect({
       "k-tree-select-disabled": disabled,
       "k-tree-select-block": block,
       "k-tree-select-opened": visible,
-      "k-tree-select-borderless": !bordered,
+      "k-tree-select-borderless": !bordered || theme === "plain",
       "k-tree-select-lg": size === "large",
       "k-tree-select-sm": size === "small",
       "k-tree-select-fill": theme === "fill",

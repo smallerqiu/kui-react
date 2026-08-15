@@ -695,7 +695,7 @@ const Select: React.FC<SelectProps> = ({
       "k-select-disabled": disabled,
       "k-select-block": block,
       "k-select-opened": visible,
-      "k-select-borderless": bordered === false,
+      "k-select-borderless": bordered === false || theme === "plain",
       "k-select-lg": size === "large",
       "k-select-sm": size === "small",
       "k-select-fill": theme === "fill",

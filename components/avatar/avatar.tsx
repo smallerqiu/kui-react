@@ -97,6 +97,7 @@ const Avatar: React.FC<AvatarProps> = ({
       "k-avatar-image": src,
       "k-avatar-icon": icon || hasIcon,
       "k-avatar-square": shapeVal === "square",
+      "k-avatar-round": shapeVal === "round",
     },
     className
   );

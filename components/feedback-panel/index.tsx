@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { CircleCheck, CircleX, Info, TriangleAlert } from "kui-icons";
 import { isValidElement, type HTMLAttributes, type ReactNode } from "react";
-import type { FeedbackPanelKind } from "../const/types";
+import type { FeedbackPanelKind, ShapeType, ThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
 
 export interface FeedbackPanelProps extends HTMLAttributes<HTMLElement> {
@@ -11,6 +11,8 @@ export interface FeedbackPanelProps extends HTMLAttributes<HTMLElement> {
   symbol?: IconType[] | ReactNode;
   compact?: boolean;
   actions?: ReactNode;
+  theme?: ThemeType;
+  shape?: ShapeType;
 }
 
 const symbols: Record<FeedbackPanelKind, IconType[]> = {
@@ -27,6 +29,8 @@ export default function FeedbackPanel({
   symbol,
   compact = false,
   actions,
+  theme = "outline",
+  shape = "round",
   children,
   className,
   ...rest
@@ -44,6 +48,8 @@ export default function FeedbackPanel({
       className={clsx(
         "k-feedback-panel",
         `k-feedback-panel-${kind}`,
+        `k-feedback-panel-theme-${theme}`,
+        `k-feedback-panel-shape-${shape}`,
         { "k-feedback-panel-compact": compact },
         className
       )}

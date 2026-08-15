@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React from "react";
-import type { DirectionType } from "../const/types";
+import type { DirectionType, ShapeType } from "../const/types";
 import { getChildren } from "../utils/react-node";
 
 export interface DescriptionsItemProps {
@@ -85,6 +85,7 @@ export interface DescriptionsProps extends Omit<React.HTMLAttributes<HTMLDivElem
   title?: React.ReactNode;
   extra?: React.ReactNode;
   size?: "medium" | "small";
+  shape?: ShapeType;
   children?: React.ReactNode;
 }
 
@@ -95,6 +96,7 @@ const Descriptions: React.FC<DescriptionsProps> = ({
   title,
   extra,
   size,
+  shape = "round",
   children,
   className = "",
   ...rest
@@ -176,6 +178,7 @@ const Descriptions: React.FC<DescriptionsProps> = ({
       "k-descriptions-bordered": bordered,
       "k-descriptions-medium": size === "medium",
       "k-descriptions-sm": size === "small",
+      [`k-descriptions-${shape}`]: shape,
     },
     className
   );

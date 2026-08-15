@@ -185,7 +185,7 @@ export default function Cascader({
     {
       "k-cascader-disabled": disabled,
       "k-cascader-opened": visible,
-      "k-cascader-borderless": !bordered,
+      "k-cascader-borderless": !bordered || theme === "plain",
       "k-cascader-circle": shape === "circle",
       "k-cascader-square": shape === "square",
       "k-cascader-fill": theme === "fill",
