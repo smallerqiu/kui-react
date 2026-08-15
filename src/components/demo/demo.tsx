@@ -1,4 +1,9 @@
+import { CodeJar, type CodeJar as CodeJarInstance } from "codejar";
 import clsx from "clsx";
+import hljs from "highlight.js/lib/core";
+import javascript from "highlight.js/lib/languages/javascript";
+import typescript from "highlight.js/lib/languages/typescript";
+import xml from "highlight.js/lib/languages/xml";
 import { Copy, ListChevronsDownUp, ListChevronsUpDown, Undo2 } from "kui-icons";
 import * as Icons from "kui-icons";
 import * as React from "react";
@@ -33,13 +38,15 @@ export interface DemoProps {
 type BuildState = { state: BadgeStatusType; text: string };
 type CodeLanguage = "ts" | "js";
 
+hljs.registerLanguage("xml", xml);
+hljs.registerLanguage("javascript", javascript);
+hljs.registerLanguage("typescript", typescript);
+
 export default function Demo({
   title,
   descriptionHtml,
   source,
-  highlightedSource,
   javaScriptSource,
-  highlightedJavaScriptSource,
   direction = "horizontal",
   modules = {},
   children,
@@ -52,52 +59,29 @@ export default function Demo({
   });
   const [error, setError] = useState("");
   const [codeLanguage, setCodeLanguage] = useState<CodeLanguage>("ts");
-  const codeRefs = useRef<Record<CodeLanguage, HTMLElement | null>>({ ts: null, js: null });
+  const codeRef = useRef<HTMLDivElement | null>(null);
+  const codeJarRef = useRef<CodeJarInstance | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const originalSources = useRef<Record<CodeLanguage, string>>({
     ts: source,
     js: javaScriptSource,
   });
-  const originalHighlightedSources = useRef<Record<CodeLanguage, string | undefined>>({
-    ts: highlightedSource,
-    js: highlightedJavaScriptSource,
-  });
   const draftSources = useRef<Record<CodeLanguage, string>>({
     ts: source,
     js: javaScriptSource,
-  });
-  const draftHighlightedSources = useRef<Record<CodeLanguage, string | undefined>>({
-    ts: highlightedSource,
-    js: highlightedJavaScriptSource,
   });
   const codeLangOptions = [
     { value: "ts", label: "TS" },
     { value: "js", label: "JS" },
   ];
 
-  const setCodeNode = useCallback(
-    (language: CodeLanguage, node: HTMLElement | null) => {
-      codeRefs.current[language] = node;
-      if (!node) return;
-      const highlightedDraft = draftHighlightedSources.current[language];
-      if (highlightedDraft !== undefined) {
-        node.innerHTML = highlightedDraft;
-      } else {
-        node.textContent = draftSources.current[language];
-      }
+  useEffect(
+    () => () => {
+      codeJarRef.current?.destroy();
+      clearTimeout(timerRef.current);
     },
     []
   );
-  const setTypeScriptCodeNode = useCallback(
-    (node: HTMLElement | null) => setCodeNode("ts", node),
-    [setCodeNode]
-  );
-  const setJavaScriptCodeNode = useCallback(
-    (node: HTMLElement | null) => setCodeNode("js", node),
-    [setCodeNode]
-  );
-
-  useEffect(() => () => clearTimeout(timerRef.current), []);
 
   const compile = (nextSource: string) => {
     try {
@@ -137,33 +121,40 @@ export default function Demo({
     }
   };
 
-  const scheduleCompile = (language: CodeLanguage) => {
-    const codeNode = codeRefs.current[language];
-    if (codeNode) {
-      draftSources.current[language] = codeNode.innerText;
-      draftHighlightedSources.current[language] = codeNode.innerHTML;
-    }
+  const scheduleCompile = useCallback((language: CodeLanguage, nextSource: string) => {
+    draftSources.current[language] = nextSource;
     setBuildState({ state: "default", text: "Building..." });
     clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(
-      () => compile(codeRefs.current[language]?.innerText || ""),
-      500
+    timerRef.current = setTimeout(() => compile(nextSource), 500);
+  }, []);
+
+  useEffect(() => {
+    const editor = codeRef.current;
+    if (!expanded || !editor) return;
+    codeJarRef.current?.destroy();
+    const language = codeLanguage;
+    const jar = CodeJar(
+      editor,
+      (element) => {
+        element.innerHTML = hljs.highlight(element.textContent || "", {
+          language: language === "ts" ? "tsx" : "jsx",
+        }).value;
+      },
+      { tab: "  ", spellcheck: false }
     );
-  };
+    jar.updateCode(draftSources.current[language], false);
+    jar.onUpdate((code) => scheduleCompile(language, code));
+    codeJarRef.current = jar;
+    return () => {
+      jar.destroy();
+      if (codeJarRef.current === jar) codeJarRef.current = null;
+    };
+  }, [codeLanguage, expanded, scheduleCompile]);
 
   const restore = () => {
     const originalSource = originalSources.current[codeLanguage];
-    const originalHighlightedSource = originalHighlightedSources.current[codeLanguage];
     draftSources.current[codeLanguage] = originalSource;
-    draftHighlightedSources.current[codeLanguage] = originalHighlightedSource;
-    const codeNode = codeRefs.current[codeLanguage];
-    if (codeNode) {
-      if (originalHighlightedSource !== undefined) {
-        codeNode.innerHTML = originalHighlightedSource;
-      } else {
-        codeNode.textContent = originalSource;
-      }
-    }
+    codeJarRef.current?.updateCode(originalSource);
     compile(originalSource);
   };
 
@@ -171,12 +162,12 @@ export default function Demo({
     if (language === codeLanguage) return;
     clearTimeout(timerRef.current);
     setCodeLanguage(language);
-    compile(codeRefs.current[language]?.innerText || draftSources.current[language]);
+    compile(draftSources.current[language]);
   };
 
   const copy = async () => {
     const copied = await Share.copyToClipboard(
-      codeRefs.current[codeLanguage]?.innerText || draftSources.current[codeLanguage]
+      codeJarRef.current?.toString() || draftSources.current[codeLanguage]
     );
     if (copied) {
       message.success("Copied!");
@@ -220,16 +211,7 @@ export default function Demo({
                 <Button type="text" size="small" icon={Undo2} onClick={restore} />
               </Tooltip>
             </div>
-            <pre className="k-code k-scroll" key={codeLanguage}>
-              <code
-                ref={codeLanguage === "ts" ? setTypeScriptCodeNode : setJavaScriptCodeNode}
-                className={`hljs language-${codeLanguage === "ts" ? "tsx" : "jsx"}`}
-                contentEditable
-                suppressContentEditableWarning
-                spellCheck={false}
-                onInput={() => scheduleCompile(codeLanguage)}
-              />
-            </pre>
+            <div ref={codeRef} className="k-code k-scroll hljs" key={codeLanguage} />
           </div>
         )}
         {direction !== "horizontal" && (
