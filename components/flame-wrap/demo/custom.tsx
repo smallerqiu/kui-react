@@ -1,4 +1,4 @@
-import { FlameWrap } from "react-kui";
+import { Card, FlameWrap } from "react-kui";
 
 export default function App() {
   return (
@@ -17,12 +17,12 @@ export default function App() {
           background: "var(--kui-color-bg-component)",
         }}
       >
-        <div style={{ padding: 32 }}>
+        <Card style={{ padding: 32 }}>
           <h3 style={{ margin: "0 0 8px" }}>Warm flame</h3>
           <p style={{ margin: 0, color: "var(--kui-color-text-secondary)" }}>
             可以调整颜色、火焰高度、火星、烟雾和燃烧速度。
           </p>
-        </div>
+        </Card>
       </FlameWrap>
     </div>
   );

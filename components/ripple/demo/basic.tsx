@@ -1,16 +1,14 @@
-import { Button, Ripple, Space, Tag } from "react-kui";
+import { Button, Card, Ripple, Space, Tag } from "react-kui";
 
 export default function App() {
   return (
     <Ripple
       style={{
         minHeight: 260,
-        border: "1px solid var(--kui-color-border)",
         borderRadius: "var(--kui-card-radius)",
-        background: "var(--kui-color-bg-component)",
       }}
     >
-      <div style={{ padding: 32 }}>
+      <Card style={{ padding: 32 }}>
         <Tag color="blue">Interactive surface</Tag>
         <h3 style={{ margin: "18px 0 8px" }}>点击任意位置，观察水波扩散</h3>
         <p style={{ margin: "0 0 24px", color: "var(--kui-color-text-secondary)" }}>
@@ -20,7 +18,7 @@ export default function App() {
           <Button type="primary">Primary</Button>
           <Button>Default</Button>
         </Space>
-      </div>
+      </Card>
     </Ripple>
   );
 }

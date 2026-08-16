@@ -1,6 +1,6 @@
 import * as icons from "kui-icons";
 import { useMemo, useState } from "react";
-import { Affix, Flex, Grid, GridItem, Icon, Input, Tag, type IconType } from "react-kui";
+import { Affix, Flex, Grid, GridItem, Icon, Input, message, Tag, type IconType } from "react-kui";
 import { copyToClipboard } from "react-kui/utils/share";
 import "./search.less";
 import { tags } from "./tags";
@@ -28,13 +28,22 @@ export default function App() {
   }, [query]);
   const apps = matches.filter((name) => !name.startsWith("Logo"));
   const logos = matches.filter((name) => name.startsWith("Logo"));
+  const copyHandle = (name: string) => {
+    copyToClipboard(name).then((result) => {
+      if (result) {
+        message.success("Copied！");
+      } else {
+        message.error("Copy failed");
+      }
+    });
+  };
   const section = (title: string, items: string[]) =>
     items.length ? (
       <>
         <h3>{title}</h3>
         <Grid className="icon-list" itemMinWidth={56} xGap={8} yGap={8}>
           {items.map((name) => (
-            <GridItem key={name} className="icon-item" onClick={() => void copyToClipboard(name)}>
+            <GridItem key={name} className="icon-item" onClick={() => copyHandle(name)}>
               <Icon type={iconMap[name]} strokeWidth={1} />
               <span className="item-tip">{name}</span>
             </GridItem>
