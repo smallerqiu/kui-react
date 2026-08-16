@@ -100,7 +100,20 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     const iconType = loading ? Loading : icon;
 
     if (iconType) {
-      childNodes.push(<Icon key="btn-icon" type={iconType} spin={loading} />);
+      childNodes.push(
+        loading ? (
+          <span
+            key="btn-loading-icon"
+            className={clsx("k-btn-loading-icon", {
+              "k-btn-loading-icon-replace": !!icon,
+            })}
+          >
+            <Icon type={iconType} spin />
+          </span>
+        ) : (
+          <Icon key="btn-icon" type={iconType} />
+        )
+      );
     }
 
     const processedChildren = getChildren(children).map((c, index) => {
