@@ -14,7 +14,13 @@ export default function App() {
       </Space>
       <br />
       <br />
-      <Space>
+      <Space vertical>
+        <AvatarGroup size="small">
+          <Avatar>U</Avatar>
+          <Avatar>UI</Avatar>
+          <Avatar src="https://cdn.chuchur.com/img/chick.jpeg" />
+          <Avatar src="https://cdn.chuchur.com/img/monkey.jpeg" />
+        </AvatarGroup>
         <AvatarGroup>
           <Avatar>U</Avatar>
           <Avatar>USER</Avatar>
@@ -24,6 +30,14 @@ export default function App() {
           <Avatar src="https://cdn.chuchur.com/img/chick.jpeg" />
           <Avatar src="https://cdn.chuchur.com/img/monkey.jpeg" />
         </AvatarGroup>
+        <AvatarGroup size="large" spacing={4} maxCount={4}>
+          <Avatar>U</Avatar>
+          <Avatar>UI</Avatar>
+          <Avatar src="https://cdn.chuchur.com/img/chick.jpeg" />
+          <Avatar src="https://cdn.chuchur.com/img/monkey.jpeg" />
+          <Avatar icon={Heart} />
+        </AvatarGroup>
+        <code>large · spacing: 4</code>
       </Space>
     </>
   );

@@ -7,6 +7,7 @@ import { AvatarGroupContext } from "./avatar-group-context";
 
 export interface AvatarGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   maxCount?: number;
+  spacing?: number;
   shape?: ShapeType;
   size?: number | "large" | "small" | "default";
   children?: React.ReactNode;
@@ -14,18 +15,21 @@ export interface AvatarGroupProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const AvatarGroup: React.FC<AvatarGroupProps> = ({
   maxCount,
+  spacing,
   shape = "circle",
   size = "default",
   children,
   className = "",
+  style,
   ...rest
 }) => {
   const childList = getChildren(children);
   let childrenToShow = [...childList];
 
-  if (maxCount && maxCount < childList.length) {
-    childrenToShow = childList.slice(0, maxCount);
-    const restCount = childList.length - maxCount;
+  if (maxCount != null && maxCount >= 0 && maxCount < childList.length) {
+    const visibleCount = Math.floor(maxCount);
+    childrenToShow = childList.slice(0, visibleCount);
+    const restCount = childList.length - visibleCount;
     childrenToShow.push(
       <Avatar key="avatar-rest-count" shape={shape} size={size}>
         {`+${restCount}`}
@@ -34,10 +38,19 @@ const AvatarGroup: React.FC<AvatarGroupProps> = ({
   }
 
   const classes = clsx("k-avatar-group", className);
+  const defaultOverlap =
+    typeof size === "number"
+      ? Math.max(0, Math.round(size / 4))
+      : { small: 6, default: 8, large: 10 }[size];
+  const overlap = Math.max(0, spacing ?? defaultOverlap);
+  const groupStyle = {
+    ...style,
+    "--kui-avatar-group-overlap": `-${overlap}px`,
+  } as React.CSSProperties;
 
   return (
     <AvatarGroupContext.Provider value={{ shape, size }}>
-      <div className={classes} {...rest}>
+      <div className={classes} style={groupStyle} {...rest}>
         {childrenToShow}
       </div>
     </AvatarGroupContext.Provider>
