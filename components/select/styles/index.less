@@ -4,16 +4,17 @@
   display: inline-flex;
   min-width: 80px;
   vertical-align: middle;
-  color: var(--kui-color-text);
+  color: var(--kui-control-text);
   font-size: var(--kui-font-size);
+  position: relative;
   outline: none;
   box-sizing: border-box;
   align-items: center;
-  border-radius: var(--kui-border-radius);
-  border: 1px solid var(--kui-color-border);
+  border-radius: var(--kui-popup-radius);
+  border: 1px solid var(--kui-control-border);
   padding: 0 8px;
   transition: border var(--kui-motion-duration-slow) var(--kui-motion-easing);
-  line-height: 1.571;
+  line-height: var(--kui-line-height);
   position: relative;
   &:not(.k-select-disabled, .k-select-borderless):focus {
     outline: var(--kui-focus-ring-width) solid var(--kui-color-outline);
@@ -66,7 +67,7 @@
       background: none;
       outline: none;
       font-size: var(--kui-font-size);
-      color: var(--kui-color-text);
+      color: var(--kui-control-text);
     }
   }
 
@@ -80,9 +81,9 @@
 
     .k-select-tag {
       padding: 2px 5px;
-      border: 1px solid var(--kui-color-border);
+      border: 1px solid var(--kui-control-border);
       background-color: var(--kui-color-bg-component);
-      border-radius: var(--kui-border-radius);
+      border-radius: var(--kui-control-radius);
       display: inline-flex;
       align-items: center;
       font-size: var(--kui-font-size-sm);
@@ -120,6 +121,7 @@
   &-placeholder {
     font-size: var(--kui-font-size);
     z-index: 0;
+    line-height: var(--kui-line-height);
     overflow: hidden;
     text-overflow: ellipsis;
     color: var(--kui-color-text-placeholder);
@@ -139,7 +141,7 @@
     background: transparent;
     box-sizing: border-box;
     width: 100%;
-    line-height: 1.571;
+    line-height: var(--kui-line-height);
     cursor: pointer;
     font-size: var(--kui-font-size);
     transition: font-size 0.25s ease-in-out;
@@ -150,9 +152,8 @@
     box-sizing: border-box;
     transform: rotate(0deg);
     transform-origin: center;
-    transition:
-      transform var(--kui-motion-duration-slow) var(--kui-motion-easing),
-      font-size 0.25s ease-in-out;
+    transition: transform var(--kui-motion-duration-slow) var(--kui-motion-easing);
+    transition: font-size 0.25s ease-in-out;
     color: var(--kui-color-icon);
     margin-left: 8px;
 
@@ -182,7 +183,7 @@
   .k-select-search-mirror,
   .k-select-search {
     font-size: var(--kui-font-size);
-    color: var(--kui-color-text);
+    color: var(--kui-control-text);
   }
 
   &.k-select-circle {
@@ -243,12 +244,12 @@
 .k-select-dropdown {
   -webkit-user-select: none;
   user-select: none;
-  border-radius: var(--kui-popup-radius);
+  border-radius: var(--kui-control-radius);
   width: auto;
   max-height: 200px;
   overflow: auto;
   background-color: var(--kui-popup-bg);
-  border: 1px solid var(--kui-color-pop-border);
+  border: 1px solid var(--kui-popup-border);
   box-sizing: border-box;
   box-shadow: var(--kui-popup-shadow);
 
@@ -267,7 +268,7 @@
   .k-select-loading {
     padding: 10px;
     font-size: var(--kui-font-size);
-    color: var(--kui-color-text);
+    color: var(--kui-control-text);
     display: flex;
     align-items: center;
 
@@ -285,7 +286,7 @@
     line-height: 1;
     padding: 8px 8px;
     clear: both;
-    color: var(--kui-color-text);
+    color: var(--kui-control-text);
     font-size: var(--kui-font-size);
     white-space: nowrap;
     list-style: none;
@@ -295,7 +296,7 @@
     text-overflow: ellipsis;
     cursor: pointer;
     position: relative;
-    border-radius: var(--kui-border-radius);
+    border-radius: var(--kui-control-radius);
     margin-bottom: 1px;
 
     &:not(.k-select-item-disabled, .k-select-item-selected):hover {
@@ -431,7 +432,7 @@
   .k-select-search-mirror,
   .k-select-search {
     font-size: var(--kui-font-size-sm);
-    color: var(--kui-color-text);
+    color: var(--kui-control-text);
   }
 }
 
@@ -509,7 +510,7 @@
 
 .k-select-disabled {
   color: var(--kui-color-text-disabled);
-  background: var(--kui-color-bg-component-disabled);
+  background: var(--kui-control-bg-disabled);
 
   .k-select-label {
     cursor: not-allowed;

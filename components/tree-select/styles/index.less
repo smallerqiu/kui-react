@@ -4,17 +4,18 @@
   display: inline-flex;
   min-width: 80px;
   vertical-align: middle;
-  color: var(--kui-color-text);
+  color: var(--kui-control-text);
   font-size: var(--kui-font-size);
+  position: relative;
   outline: none;
   box-sizing: border-box;
   align-items: center;
-  background-color: var(--kui-color-bg);
-  border-radius: var(--kui-border-radius);
-  border: 1px solid var(--kui-color-border);
+  background-color: var(--kui-control-bg);
+  border-radius: var(--kui-popup-radius);
+  border: 1px solid var(--kui-control-border);
   padding: 0 8px;
   transition: border var(--kui-motion-duration-slow) var(--kui-motion-easing);
-  line-height: 1.571;
+  line-height: var(--kui-line-height);
   position: relative;
   &:not(.k-tree-select-disabled, .k-tree-select-borderless):focus {
     outline: var(--kui-focus-ring-width) solid var(--kui-color-outline);
@@ -66,7 +67,7 @@
       background: none;
       outline: none;
       font-size: var(--kui-font-size);
-      color: var(--kui-color-text);
+      color: var(--kui-control-text);
     }
   }
 
@@ -80,9 +81,9 @@
 
     .k-tree-select-tag {
       padding: 2px 5px;
-      border: 1px solid var(--kui-color-border);
-      background-color: var(--kui-color-border);
-      border-radius: var(--kui-border-radius);
+      border: 1px solid var(--kui-control-border);
+      background-color: var(--kui-control-border);
+      border-radius: var(--kui-control-radius);
       display: inline-flex;
       align-items: center;
       font-size: var(--kui-font-size-sm);
@@ -122,6 +123,7 @@
   &-placeholder {
     font-size: var(--kui-font-size);
     z-index: 0;
+    line-height: var(--kui-line-height);
     overflow: hidden;
     text-overflow: ellipsis;
     color: var(--kui-color-text-placeholder);
@@ -141,7 +143,7 @@
     background: transparent;
     box-sizing: border-box;
     width: 100%;
-    line-height: 1.571;
+    line-height: var(--kui-line-height);
     cursor: pointer;
     font-size: var(--kui-font-size);
     transition: font-size 0.25s ease-in-out;
@@ -152,9 +154,8 @@
     box-sizing: border-box;
     transform: rotate(0deg);
     transform-origin: center;
-    transition:
-      transform var(--kui-motion-duration-slow) var(--kui-motion-easing),
-      font-size 0.25s ease-in-out;
+    transition: transform var(--kui-motion-duration-slow) var(--kui-motion-easing);
+    transition: font-size 0.25s ease-in-out;
     color: var(--kui-color-icon);
     margin-left: 8px;
 
@@ -184,7 +185,7 @@
   .k-tree-select-search-mirror,
   .k-tree-select-search {
     font-size: var(--kui-font-size);
-    color: var(--kui-color-text);
+    color: var(--kui-control-text);
   }
 
   &.k-tree-select-circle {
@@ -246,7 +247,7 @@
 .k-tree-select-dropdown {
   -webkit-user-select: none;
   user-select: none;
-  border-radius: var(--kui-popup-radius);
+  border-radius: var(--kui-control-radius);
   width: inherit;
   max-height: 272px;
   overflow: auto;
@@ -258,12 +259,12 @@
   z-index: 1003;
   padding: 5px;
   box-sizing: border-box;
-  border: 1px solid var(--kui-color-pop-border);
+  border: 1px solid var(--kui-popup-border);
 
   .k-tree-select-loading {
     padding: 10px;
     font-size: var(--kui-font-size);
-    color: var(--kui-color-text);
+    color: var(--kui-control-text);
     display: flex;
     align-items: center;
 
@@ -349,7 +350,7 @@
   .k-tree-select-search-mirror,
   .k-tree-select-search {
     font-size: var(--kui-font-size-sm);
-    color: var(--kui-color-text);
+    color: var(--kui-control-text);
   }
 }
 
@@ -428,7 +429,7 @@
 
 .k-tree-select-disabled {
   color: var(--kui-color-text-disabled);
-  background: var(--kui-color-bg-component-disabled);
+  background: var(--kui-control-bg-disabled);
 
   .k-tree-select-label {
     cursor: not-allowed;

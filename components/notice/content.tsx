@@ -83,3 +83,13 @@ export default function Content({
     </div>
   );
 }
+
+export type MessagePanelProps = Omit<ContentProps, "noticeType">;
+export function MessagePanel(props: MessagePanelProps) {
+  return <Content {...props} noticeType="message" />;
+}
+
+export type NoticePanelProps = Omit<ContentProps, "noticeType">;
+export function NoticePanel(props: NoticePanelProps) {
+  return <Content {...props} noticeType="notice" />;
+}

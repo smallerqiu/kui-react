@@ -1,13 +1,13 @@
 @import "../../styles/less-css-var.less";
 .k-btn {
-  color: var(--kui-color-text);
+  color: var(--kui-control-text);
   font-size: var(--kui-font-size);
   height: var(--kui-control-height);
   line-height: 1;
   padding: 0 15px;
   box-sizing: border-box;
   flex-shrink: 0;
-  border-radius: var(--kui-border-radius);
+  border-radius: var(--kui-control-radius);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -78,7 +78,7 @@
 }
 
 .k-btn-dashed {
-  border-color: var(--kui-color-border);
+  border-color: var(--kui-control-border);
 }
 
 .k-btn-text {
@@ -128,7 +128,7 @@
 }
 .k-btn-default:not(.k-btn-outline, .k-btn-dashed, .k-btn-fill, .k-btn-solid, .k-btn-card) {
   border: none;
-  background-color: var(--kui-color-bg-component);
+  background-color: var(--kui-theme-fill-bg);
   &:not(:disabled):hover {
     background-color: var(--kui-color-bg-component-hover);
   }
@@ -204,7 +204,7 @@
   }
 
   &.k-btn-default {
-    border-color: var(--kui-color-border);
+    border-color: var(--kui-control-border);
   }
   &.k-btn-pink {
     color: var(--kui-color-pink-3);
@@ -400,7 +400,7 @@
   &:disabled {
     background: none;
     &::before {
-      background-color: var(--kui-color-bg-component-disabled);
+      background-color: var(--kui-control-bg-disabled);
     }
   }
 }
@@ -425,7 +425,7 @@
   }
 }
 .k-btn:not(.k-btn-link, .k-btn-text, .k-btn-solid):disabled {
-  background-color: var(--kui-color-bg-component-disabled);
+  background-color: var(--kui-control-bg-disabled);
 }
 .k-btn:disabled {
   cursor: not-allowed;

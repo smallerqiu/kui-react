@@ -24,6 +24,38 @@ export interface PoptipProps {
   children?: React.ReactNode;
 }
 
+export type PoptipPanelProps = Omit<PoptipProps, "children" | "open" | "defaultOpen" | "show">;
+
+export function PoptipPanel({ dark, title, content, width, placement = "top" }: PoptipPanelProps) {
+  return (
+    <div
+      {...({ "k-placement": placement } as React.HTMLAttributes<HTMLDivElement>)}
+      className={clsx("k-poptip", "k-poptip-has-arrow", "k-poptip-panel", {
+        "k-poptip-dark": dark,
+      })}
+      style={{ width: typeof width === "number" ? `${width}px` : width }}
+    >
+      <div className="k-poptip-content">
+        {title ? <div className="k-poptip-title">{title}</div> : null}
+        <div className="k-poptip-body">{content}</div>
+        <div className="k-poptip-arrow">
+          <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
+            <path
+              id="ot"
+              d="m24,0.97087l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+            />
+            <path
+              id="in"
+              stroke="currentcolor"
+              d="m24,0l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const Poptip: React.FC<PoptipProps> = ({
   dark = false,
   open,
@@ -88,24 +120,30 @@ const Poptip: React.FC<PoptipProps> = ({
     if (visible) updatePosition();
   }, [title, updatePosition, visible]);
 
-  const updateShow = useCallback((value: boolean) => {
-    if (externalOpen === undefined) setVisible(value);
-    onOpenChange?.(value);
-    onShowChange?.(value);
-    if (!value) onClose?.();
-  }, [externalOpen, onClose, onOpenChange, onShowChange]);
+  const updateShow = useCallback(
+    (value: boolean) => {
+      if (externalOpen === undefined) setVisible(value);
+      onOpenChange?.(value);
+      onShowChange?.(value);
+      if (!value) onClose?.();
+    },
+    [externalOpen, onClose, onOpenChange, onShowChange]
+  );
 
-  const outsideClick = useCallback((e: MouseEvent) => {
-    const ctx = refSelection.current;
-    if (
-      refPopper.current &&
-      !refPopper.current.contains(e.target as Node) &&
-      ctx &&
-      !ctx.contains(e.target as Node)
-    ) {
-      updateShow(false);
-    }
-  }, [updateShow]);
+  const outsideClick = useCallback(
+    (e: MouseEvent) => {
+      const ctx = refSelection.current;
+      if (
+        refPopper.current &&
+        !refPopper.current.contains(e.target as Node) &&
+        ctx &&
+        !ctx.contains(e.target as Node)
+      ) {
+        updateShow(false);
+      }
+    },
+    [updateShow]
+  );
 
   useEffect(() => {
     window.addEventListener("resize", updatePosition);
@@ -168,16 +206,17 @@ const Poptip: React.FC<PoptipProps> = ({
     )
   ) {
     const childProps = firstChild.props;
-    const mergedTriggerProps: React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement> = {
-      ref: (node) => {
-        setRef(childProps.ref, node);
-        setSelectionRef(node);
-      },
-      onMouseLeave: (event) => {
-        childProps.onMouseLeave?.(event);
-        hidePoptip();
-      },
-    };
+    const mergedTriggerProps: React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement> =
+      {
+        ref: (node) => {
+          setRef(childProps.ref, node);
+          setSelectionRef(node);
+        },
+        onMouseLeave: (event) => {
+          childProps.onMouseLeave?.(event);
+          hidePoptip();
+        },
+      };
     if (trigger === "click") {
       mergedTriggerProps.onClick = (event) => {
         childProps.onClick?.(event);

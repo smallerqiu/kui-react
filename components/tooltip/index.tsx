@@ -24,6 +24,32 @@ export interface TooltipProps {
   children?: React.ReactNode;
 }
 
+export type TooltipPanelProps = Omit<TooltipProps, "children" | "open" | "defaultOpen" | "show">;
+
+export function TooltipPanel({ title, color, width, placement = "top" }: TooltipPanelProps) {
+  const bgColor = isColor(color)
+    ? colors.some((preset) => preset === color)
+      ? `var(--kui-color-${color})`
+      : color
+    : undefined;
+  return (
+    <div
+      {...({ "k-placement": placement } as React.HTMLAttributes<HTMLDivElement>)}
+      className={clsx("k-tooltip", "k-tooltip-has-arrow", "k-tooltip-panel")}
+      style={{ width: typeof width === "number" ? `${width}px` : width }}
+    >
+      <div className="k-tooltip-content" style={{ backgroundColor: bgColor }}>
+        <div className="k-tooltip-title">{title}</div>
+        <div className="k-tooltip-arrow">
+          <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 7">
+            <path d="M24 0V1C20 1 18.5 2 16.5 4C14.5 6 14 7 12 7C10 7 9.5 6 7.5 4C5.5 2 4 1 0 1V0H24Z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const Tooltip: React.FC<TooltipProps> = ({
   open,
   defaultOpen = false,

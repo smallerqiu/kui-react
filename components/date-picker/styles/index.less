@@ -4,14 +4,14 @@
   display: inline-flex;
   box-sizing: border-box;
   vertical-align: middle;
-  color: var(--kui-color-text);
+  color: var(--kui-control-text);
   background: none;
   font-size: var(--kui-font-size);
   position: relative;
-  border: 1px solid var(--kui-color-border);
+  border: 1px solid var(--kui-control-border);
   min-height: var(--kui-control-height);
-  border-radius: var(--kui-border-radius);
-  background-color: var(--kui-color-bg);
+  border-radius: var(--kui-control-radius);
+  background-color: var(--kui-control-bg);
   cursor: default;
   -webkit-user-select: none;
   user-select: none;
@@ -132,20 +132,25 @@
   z-index: 1003;
   background: var(--kui-popup-bg);
   box-shadow: var(--kui-popup-shadow);
-  border-radius: var(--kui-border-radius);
+  border-radius: var(--kui-control-radius);
   overflow: hidden;
   display: flex;
   flex-direction: row;
-  border: 1px solid var(--kui-color-pop-border);
+  border: 1px solid var(--kui-popup-border);
   -webkit-user-select: none;
   user-select: none;
+  width: 272px;
+}
+.k-datepicker-panel {
+  position: relative;
+  z-index: auto;
 }
 .k-picker-presets {
   display: flex;
   flex-direction: column;
   min-width: 90px;
   max-width: 200px;
-  border-right: 1px solid var(--kui-color-border);
+  border-right: 1px solid var(--kui-control-border);
   padding: 8px;
   box-sizing: border-box;
   overflow: hidden auto;
@@ -193,7 +198,7 @@
 .k-datepicker-disabled {
   color: var(--kui-color-text-disabled);
   cursor: not-allowed;
-  background: var(--kui-color-bg-component-disabled);
+  background: var(--kui-control-bg-disabled);
 }
 .k-datepicker-disabled:not(.k-datepicker-fill) {
   border-color: var(--kui-color-border-disabled);
@@ -212,18 +217,18 @@
 }
 
 .k-picker-container {
-  width: 272px;
   display: flex;
   flex-direction: column;
+  width: 100%;
   .k-picker-extra-header,
   .k-picker-extra-footer {
     padding: 10px;
   }
   .k-picker-extra-header {
-    border-bottom: 1px solid var(--kui-color-border);
+    border-bottom: 1px solid var(--kui-control-border);
   }
   .k-picker-extra-footer {
-    border-top: 1px solid var(--kui-color-border);
+    border-top: 1px solid var(--kui-control-border);
   }
   .k-picker-header {
     text-align: center;
@@ -257,8 +262,8 @@
   }
   .k-picker-day {
     cursor: pointer;
-    color: var(--kui-color-text);
-    border-radius: var(--kui-border-radius);
+    color: var(--kui-control-text);
+    border-radius: var(--kui-control-radius);
     position: relative;
     display: inline-block;
     text-align: center;
@@ -305,7 +310,7 @@
   }
   .k-picker-header-label {
     font-size: var(--kui-font-size);
-    color: var(--kui-color-text);
+    color: var(--kui-control-text);
     cursor: pointer;
     font-weight: bold;
     flex: 1;
@@ -333,7 +338,7 @@
     font-size: var(--kui-font-size);
     align-items: center;
     justify-content: center;
-    border-radius: var(--kui-border-radius);
+    border-radius: var(--kui-control-radius);
     cursor: pointer;
     &:hover {
       background: var(--kui-color-item-hover);
@@ -358,7 +363,7 @@
   .k-picker-footer {
     box-sizing: border-box;
     font-size: var(--kui-font-size);
-    border-top: 1px solid var(--kui-color-border);
+    border-top: 1px solid var(--kui-control-border);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -380,6 +385,7 @@
     align-items: center;
     cursor: pointer;
     flex: 1;
+    color: var(--kui-control-text);
     &:hover {
       background: var(--kui-color-item-hover);
     }
@@ -394,7 +400,7 @@
   .k-picker-time-picker {
     display: flex;
     height: 282px;
-    border-top: 1px solid var(--kui-color-border);
+    border-top: 1px solid var(--kui-control-border);
   }
   .k-picker-time-col {
     flex: 1;
@@ -418,15 +424,15 @@
       height: 152px;
     }
     &:nth-last-child(2) {
-      border-left: 1px solid var(--kui-color-border);
-      border-right: 1px solid var(--kui-color-border);
+      border-left: 1px solid var(--kui-control-border);
+      border-right: 1px solid var(--kui-control-border);
     }
   }
   .k-picker-time-item {
     height: var(--kui-control-height);
     line-height: var(--kui-control-height);
     cursor: pointer;
-    color: var(--kui-color-text);
+    color: var(--kui-control-text);
     font-size: 13px;
     opacity: 0.6;
     transition: all 0.2s;
@@ -439,7 +445,7 @@
     }
   }
   .k-picker-time-item.active {
-    background: var(--kui-color-item-selected);
+    background: var(--kui-color-item-active);
     color: var(--kui-color-primary);
     font-weight: bold;
     opacity: 1;
@@ -448,7 +454,7 @@
   .k-picker-day-disabled,
   .k-picker-time-disabled {
     color: var(--kui-color-text-disabled);
-    opacity: 0.7;
+    opacity: var(--kui-disabled-opacity);
     cursor: not-allowed;
   }
 }

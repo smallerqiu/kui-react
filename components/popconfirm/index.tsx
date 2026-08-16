@@ -30,6 +30,57 @@ export interface PopconfirmProps {
   children?: React.ReactNode;
 }
 
+export type PopconfirmPanelProps = Omit<
+  PopconfirmProps,
+  "children" | "open" | "defaultOpen" | "show"
+>;
+
+export function PopconfirmPanel({
+  title,
+  width,
+  placement = "top",
+  okText = "Ok",
+  cancelText = "Cancel",
+  onOk,
+  onCancel,
+}: PopconfirmPanelProps) {
+  return (
+    <div
+      {...({ "k-placement": placement } as React.HTMLAttributes<HTMLDivElement>)}
+      className="k-popconfirm k-popconfirm-has-arrow k-popconfirm-panel"
+      style={{ width: typeof width === "number" ? `${width}px` : width }}
+    >
+      <div className="k-popconfirm-content">
+        <div className="k-popconfirm-body">
+          <Icon type={CircleQuestionMark} />
+          <div className="k-popconfirm-title">{title}</div>
+        </div>
+        <div className="k-popconfirm-footer">
+          <Button size="small" onClick={onCancel}>
+            {cancelText}
+          </Button>
+          <Button size="small" type="primary" onClick={onOk}>
+            {okText}
+          </Button>
+        </div>
+        <div className="k-popconfirm-arrow">
+          <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
+            <path
+              id="ot"
+              d="m24,0.97087l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+            />
+            <path
+              id="in"
+              stroke="currentcolor"
+              d="m24,0l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const Popconfirm: React.FC<PopconfirmProps> = ({
   dark = false,
   open,
@@ -98,23 +149,29 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
     if (visible) updatePosition();
   }, [title, updatePosition, visible]);
 
-  const updateShow = useCallback((value: boolean) => {
-    if (externalOpen === undefined) setVisible(value);
-    onOpenChange?.(value);
-    onShowChange?.(value);
-  }, [externalOpen, onOpenChange, onShowChange]);
+  const updateShow = useCallback(
+    (value: boolean) => {
+      if (externalOpen === undefined) setVisible(value);
+      onOpenChange?.(value);
+      onShowChange?.(value);
+    },
+    [externalOpen, onOpenChange, onShowChange]
+  );
 
-  const outsideClick = useCallback((e: MouseEvent) => {
-    const ctx = refSelection.current;
-    if (
-      refPopper.current &&
-      !refPopper.current.contains(e.target as Node) &&
-      ctx &&
-      !ctx.contains(e.target as Node)
-    ) {
-      updateShow(false);
-    }
-  }, [updateShow]);
+  const outsideClick = useCallback(
+    (e: MouseEvent) => {
+      const ctx = refSelection.current;
+      if (
+        refPopper.current &&
+        !refPopper.current.contains(e.target as Node) &&
+        ctx &&
+        !ctx.contains(e.target as Node)
+      ) {
+        updateShow(false);
+      }
+    },
+    [updateShow]
+  );
 
   useEffect(() => {
     window.addEventListener("resize", updatePosition);

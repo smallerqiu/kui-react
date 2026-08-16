@@ -1,4 +1,4 @@
 export { modal } from "./api";
 export type { ModalApi, ModalApiProps, ModalInstance } from "./api";
-export { default } from "./modal";
-export type { ModalProps } from "./modal";
+export { default, ModalPanel } from "./modal";
+export type { ModalPanelProps, ModalProps } from "./modal";

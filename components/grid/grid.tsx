@@ -13,6 +13,7 @@ export interface GridProps extends HTMLAttributes<HTMLDivElement> {
   itemMinWidth?: number;
   align?: CSSProperties["alignItems"];
   justify?: CSSProperties["justifyItems"];
+  flow?: CSSProperties["gridAutoFlow"];
   debug?: boolean;
 }
 
@@ -27,6 +28,7 @@ export default function Grid({
   itemMinWidth,
   align,
   justify,
+  flow = "row",
   debug = false,
   className,
   style,
@@ -68,6 +70,7 @@ export default function Grid({
     gridAutoRows: autoRows,
     alignItems: align,
     justifyItems: justify,
+    gridAutoFlow: flow,
   };
   if (debug && typeof activeCols === "number") {
     gridStyle.backgroundImage = `repeating-linear-gradient(to right, rgba(255,0,0,.05) 0, rgba(255,0,0,.05) ${100 / activeCols}%, transparent ${100 / activeCols}%, transparent ${200 / activeCols}%)`;

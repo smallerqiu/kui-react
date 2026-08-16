@@ -30,7 +30,7 @@
     border-radius: 10px;
     position: absolute;
     cursor: grab;
-    background: #fff;
+    background: var(--kui-color-control-thumb);
     top: 50%;
     outline: var(--kui-focus-ring-width) solid transparent;
     outline-offset: 1px;
@@ -71,7 +71,7 @@
     cursor: pointer;
     height: 4px;
     border-radius: 2px;
-    background: var(--kui-color-bg-component);
+    background: var(--kui-theme-fill-bg);
     position: absolute;
     width: 100%;
     top: 14px;
@@ -181,7 +181,7 @@
 }
 
 .k-slider-disabled {
-  opacity: 0.5;
+  opacity: var(--kui-disabled-opacity);
   cursor: not-allowed;
 
   .k-slider-thumb,

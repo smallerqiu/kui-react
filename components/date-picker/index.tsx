@@ -84,6 +84,8 @@ export interface DatePickerProps extends Omit<
   onEndDateChange?: (value: DatePickerOutput) => void;
   onOpenChange?: (open: boolean) => void;
   onClear?: () => void;
+  /** Render only the picker panel without a trigger or portal. */
+  panelOnly?: boolean;
 }
 
 const defaultFormat = (mode: DatePickerModeType) =>
@@ -137,6 +139,7 @@ export default function DatePicker({
   onEndDateChange,
   onOpenChange,
   onClear,
+  panelOnly = false,
   className,
   style,
   ...rest
@@ -164,9 +167,9 @@ export default function DatePicker({
   const [inner, setInner] = useState<Dayjs[]>(initial);
   const values =
     controlled !== undefined || startDate !== undefined || endDate !== undefined ? initial : inner;
-  const [visibleState, setVisibleState] = useState(defaultOpen);
-  const visible = open ?? visibleState;
-  const [rendered, setRendered] = useState(open ?? defaultOpen);
+  const [visibleState, setVisibleState] = useState(defaultOpen || panelOnly);
+  const visible = panelOnly || (open ?? visibleState);
+  const [rendered, setRendered] = useState(panelOnly || (open ?? defaultOpen));
   const [panelDate, setPanelDate] = useState(initial[0] ?? dayjs());
   const [view, setView] = useState<"date" | "month" | "year" | "time">(
     mode === "year" ? "year" : mode === "month" ? "month" : mode === "time" ? "time" : "date"
@@ -194,11 +197,15 @@ export default function DatePicker({
   const leftRef = useRef(0);
   const timeColRefs = useRef<Partial<Record<UnitType, HTMLUListElement | null>>>({});
 
-  const setOpen = useCallback((next: boolean) => {
-    if (open === undefined) setVisibleState(next);
-    setRendered(true);
-    onOpenChange?.(next);
-  }, [onOpenChange, open]);
+  const setOpen = useCallback(
+    (next: boolean) => {
+      if (panelOnly) return;
+      if (open === undefined) setVisibleState(next);
+      setRendered(true);
+      onOpenChange?.(next);
+    },
+    [onOpenChange, open, panelOnly]
+  );
   const updatePosition = useCallback(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -217,7 +224,7 @@ export default function DatePicker({
     setPosition({ left: leftRef.current, top: topRef.current, origin: transOriginRef.current });
   }, [placement]);
   useEffect(() => {
-    if (!visible) return;
+    if (!visible || panelOnly) return;
     requestAnimationFrame(updatePosition);
     const outside = (event: globalThis.MouseEvent) => {
       const target = event.target as Node;
@@ -237,7 +244,7 @@ export default function DatePicker({
       window.removeEventListener("resize", updatePosition);
       window.removeEventListener("scroll", updatePosition, true);
     };
-  }, [visible, updatePosition, isRange, draft, values, fmt, setOpen]);
+  }, [visible, updatePosition, isRange, draft, values, fmt, setOpen, panelOnly]);
 
   const output = (item: Dayjs) =>
     valueType === "date"
@@ -524,87 +531,95 @@ export default function DatePicker({
           : datePanel;
   const extra = (content: DatePickerProps["header"]) =>
     typeof content === "function" ? content({ emit: emitExternal }) : content;
-  const overlay = rendered && (
-    <Teleport to="body">
-      <Transition show={visible} name="k-date-picker" nodeRef={overlayRef}>
-        <div
-          ref={overlayRef}
-          className={clsx("k-datepicker-overlay", {
-            "k-datepicker-range": isRange,
-            "k-datepicker-with-time": hasTime,
-          })}
-          {...({ mode, "k-placement": currentPlacement } as Record<string, string>)}
-          style={{
-            position: "absolute",
-            zIndex: 1050,
-            left: position.left,
-            top: position.top,
-            transformOrigin: position.origin,
-          }}
-        >
-          {presets?.length ? (
-            <div className="k-picker-presets">
-              {presets.map((preset) => (
-                <Button
-                  key={preset.label}
-                  size="small"
-                  onClick={() => emitExternal(preset.value())}
-                >
-                  {preset.label}
-                </Button>
-              ))}
-            </div>
-          ) : null}
-          <div className="k-picker-container">
-            {header && <div className="k-picker-extra-header">{extra(header)}</div>}
-            {view !== "time" && headerNode}
-            {panel}
-            {hasTime && mode !== "time" && (
-              <div className="k-picker-footer">
-                {mode === "dateTimeRange" ? (
-                  <>
-                    <span
-                      className={clsx("k-picker-footer-time", {
-                        active: view === "time" && timeEditSide === "start",
-                      })}
-                      onClick={() => {
-                        setTimeEditSide("start");
-                        setView(view === "time" && timeEditSide === "start" ? "date" : "time");
-                      }}
-                    >
-                      {draft[0]?.format("HH:mm:ss") ?? "--:--:--"}
-                    </span>
-                    <span className="k-picker-footer-time-split">
-                      <Icon type={ArrowRight} />
-                    </span>
-                    <span
-                      className={clsx("k-picker-footer-time", {
-                        active: view === "time" && timeEditSide === "end",
-                      })}
-                      onClick={() => {
-                        setTimeEditSide("end");
-                        setView(view === "time" && timeEditSide === "end" ? "date" : "time");
-                      }}
-                    >
-                      {draft[1]?.format("HH:mm:ss") ?? "--:--:--"}
-                    </span>
-                  </>
-                ) : (
-                  <span
-                    className={clsx("k-picker-footer-time", { active: view === "time" })}
-                    onClick={() => setView(view === "time" ? "date" : "time")}
-                  >
-                    {(draft[0] ?? dayjs()).format("HH:mm:ss")}
-                  </span>
-                )}
-              </div>
-            )}
-            {footer && <div className="k-picker-extra-footer">{extra(footer)}</div>}
-          </div>
+  const overlayContent = (
+    <div
+      ref={overlayRef}
+      className={clsx("k-datepicker-overlay", {
+        "k-datepicker-range": isRange,
+        "k-datepicker-with-time": hasTime,
+        "k-datepicker-panel": panelOnly,
+      })}
+      {...({ mode, "k-placement": currentPlacement } as Record<string, string>)}
+      style={
+        panelOnly
+          ? undefined
+          : {
+              position: "absolute",
+              zIndex: 1050,
+              left: position.left,
+              top: position.top,
+              transformOrigin: position.origin,
+            }
+      }
+    >
+      {presets?.length ? (
+        <div className="k-picker-presets">
+          {presets.map((preset) => (
+            <Button key={preset.label} size="small" onClick={() => emitExternal(preset.value())}>
+              {preset.label}
+            </Button>
+          ))}
         </div>
-      </Transition>
-    </Teleport>
+      ) : null}
+      <div className="k-picker-container">
+        {header && <div className="k-picker-extra-header">{extra(header)}</div>}
+        {view !== "time" && headerNode}
+        {panel}
+        {hasTime && mode !== "time" && (
+          <div className="k-picker-footer">
+            {mode === "dateTimeRange" ? (
+              <>
+                <span
+                  className={clsx("k-picker-footer-time", {
+                    active: view === "time" && timeEditSide === "start",
+                  })}
+                  onClick={() => {
+                    setTimeEditSide("start");
+                    setView(view === "time" && timeEditSide === "start" ? "date" : "time");
+                  }}
+                >
+                  {draft[0]?.format("HH:mm:ss") ?? "--:--:--"}
+                </span>
+                <span className="k-picker-footer-time-split">
+                  <Icon type={ArrowRight} />
+                </span>
+                <span
+                  className={clsx("k-picker-footer-time", {
+                    active: view === "time" && timeEditSide === "end",
+                  })}
+                  onClick={() => {
+                    setTimeEditSide("end");
+                    setView(view === "time" && timeEditSide === "end" ? "date" : "time");
+                  }}
+                >
+                  {draft[1]?.format("HH:mm:ss") ?? "--:--:--"}
+                </span>
+              </>
+            ) : (
+              <span
+                className={clsx("k-picker-footer-time", { active: view === "time" })}
+                onClick={() => setView(view === "time" ? "date" : "time")}
+              >
+                {(draft[0] ?? dayjs()).format("HH:mm:ss")}
+              </span>
+            )}
+          </div>
+        )}
+        {footer && <div className="k-picker-extra-footer">{extra(footer)}</div>}
+      </div>
+    </div>
   );
+  const overlay =
+    rendered &&
+    (panelOnly ? (
+      overlayContent
+    ) : (
+      <Teleport to="body">
+        <Transition show={visible} name="k-date-picker" nodeRef={overlayRef}>
+          {overlayContent}
+        </Transition>
+      </Teleport>
+    ));
   const datePickerPlaceholders: Record<DatePickerModeType, string> = {
     year: locale.k.datePicker.selectYear,
     month: locale.k.datePicker.selectMonth,
@@ -614,9 +629,7 @@ export default function DatePicker({
     dateRange: locale.k.datePicker.selectDate,
     dateTimeRange: locale.k.datePicker.selectDate,
   };
-  const customPlaceholders = Array.isArray(placeholder)
-    ? placeholder
-    : [placeholder, placeholder];
+  const customPlaceholders = Array.isArray(placeholder) ? placeholder : [placeholder, placeholder];
   const placeholders = isRange
     ? [
         customPlaceholders[0] || locale.k.datePicker.startDate,
@@ -638,6 +651,8 @@ export default function DatePicker({
     },
     className
   );
+  if (panelOnly) return overlay;
+
   return (
     <>
       <div {...rest} ref={rootRef} className={classes} style={style} tabIndex={disabled ? -1 : 0}>
@@ -707,4 +722,9 @@ export default function DatePicker({
       {overlay}
     </>
   );
+}
+
+export type DatePickerPanelProps = Omit<DatePickerProps, "panelOnly" | "open" | "defaultOpen">;
+export function DatePickerPanel(props: DatePickerPanelProps) {
+  return <DatePicker {...props} panelOnly />;
 }

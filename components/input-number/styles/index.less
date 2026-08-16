@@ -4,11 +4,11 @@
   position: relative;
   display: inline-flex;
   width: 100%;
-  color: var(--kui-color-text);
+  color: var(--kui-control-text);
   align-items: center;
-  border: 1px solid var(--kui-color-border);
-  border-radius: var(--kui-border-radius);
-  background-color: var(--kui-color-bg);
+  border: 1px solid var(--kui-control-border);
+  border-radius: var(--kui-control-radius);
+  background-color: var(--kui-control-bg);
   transition: border var(--kui-motion-duration) var(--kui-motion-easing);
   box-sizing: border-box;
   gap: var(--kui-padding-inline);
@@ -43,7 +43,7 @@
   display: flex;
   flex-direction: column;
   color: var(--kui-color-icon);
-  border-left: 1px solid var(--kui-color-border);
+  border-left: 1px solid var(--kui-control-border);
   font-size: 11px;
   justify-content: center;
   align-items: center;
@@ -72,7 +72,7 @@
   }
 
   &:last-child {
-    border-top: 1px solid var(--kui-color-border);
+    border-top: 1px solid var(--kui-control-border);
   }
 }
 
@@ -82,13 +82,13 @@
   height: 30px;
   padding: 4px 0;
   font-size: var(--kui-font-size);
-  color: var(--kui-color-text);
+  color: var(--kui-control-text);
   background-color: transparent;
   background-image: none;
   box-sizing: border-box;
   flex: 1;
   min-width: 10px;
-  line-height: 1.571;
+  line-height: var(--kui-line-height);
   outline: none;
 }
 .k-input-number-focus {
@@ -139,7 +139,7 @@
   display: flex;
 
   &:hover {
-    color: var(--kui-color-text);
+    color: var(--kui-control-text);
   }
 
   .k-icon {
@@ -234,7 +234,7 @@
 .k-input-number-disabled {
   cursor: not-allowed;
   color: var(--kui-color-text-disabled);
-  background: var(--kui-color-bg-component-disabled);
+  background: var(--kui-control-bg-disabled);
 
   & * {
     cursor: not-allowed;

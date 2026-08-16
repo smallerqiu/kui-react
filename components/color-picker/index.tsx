@@ -36,6 +36,8 @@ export interface ColorPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "
   onUpdateMode?: (mode: ColorMode) => void;
   onOpenChange?: (open: boolean) => void;
   children?: ReactNode;
+  /** Render only the color panel without a trigger or portal. */
+  panelOnly?: boolean;
 }
 
 export default function ColorPicker({
@@ -56,6 +58,7 @@ export default function ColorPicker({
   onOpenChange,
   className,
   children,
+  panelOnly = false,
   ...rest
 }: ColorPickerProps) {
   const controlled = value;
@@ -66,7 +69,7 @@ export default function ColorPicker({
   const [currentHue, setCurrentHue] = useState(initialColor.hue());
   const [currentAlpha, setCurrentAlpha] = useState(initialColor.alpha());
   const [innerOpen, setInnerOpen] = useState(defaultOpen);
-  const currentOpen = openProp ?? innerOpen;
+  const currentOpen = panelOnly || (openProp ?? innerOpen);
   const [position, setPosition] = useState({ left: 0, top: 0, origin: "bottom" });
   const [currentPlacement, setCurrentPlacement] = useState(placement);
   const triggerRef = useRef<HTMLElement>(null);
@@ -112,12 +115,15 @@ export default function ColorPicker({
     setCurrentPlacement(placementRef.current as DropPlacementsType);
     setPosition({ left: leftRef.current, top: topRef.current, origin: transOriginRef.current });
   }, [placement]);
-  const setVisible = useCallback((next: boolean) => {
-    if (disabled) return;
-    if (openProp === undefined) setInnerOpen(next);
-    onOpenChange?.(next);
-    if (next) requestAnimationFrame(updatePosition);
-  }, [disabled, onOpenChange, openProp, updatePosition]);
+  const setVisible = useCallback(
+    (next: boolean) => {
+      if (disabled || panelOnly) return;
+      if (openProp === undefined) setInnerOpen(next);
+      onOpenChange?.(next);
+      if (next) requestAnimationFrame(updatePosition);
+    },
+    [disabled, onOpenChange, openProp, panelOnly, updatePosition]
+  );
   // 清理未完成的隐藏定时器，防止在组件卸载后调用 setState
   useEffect(
     () => () => {
@@ -130,7 +136,7 @@ export default function ColorPicker({
     updatePositionRef.current = updatePosition;
   });
   useEffect(() => {
-    if (!currentOpen) return;
+    if (!currentOpen || panelOnly) return;
     const outside = (event: MouseEvent) => {
       if (
         !popoverRef.current?.contains(event.target as Node) &&
@@ -148,7 +154,7 @@ export default function ColorPicker({
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("scroll", handleScroll, true);
     };
-  }, [currentOpen, setVisible]);
+  }, [currentOpen, panelOnly, setVisible]);
   const mouseEnter = () => {
     if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     setVisible(true);
@@ -160,8 +166,7 @@ export default function ColorPicker({
     trigger === "hover"
       ? { onMouseEnter: mouseEnter, onMouseLeave: mouseLeave }
       : { onClick: () => setVisible(!currentOpen) };
-  const customTrigger =
-    children && isValidElement(children) ? children : null;
+  const customTrigger = children && isValidElement(children) ? children : null;
   const triggerNode = customTrigger ? (
     <span
       ref={triggerRef}
@@ -202,109 +207,126 @@ export default function ColorPicker({
       </div>
     </div>
   );
-  const dropdown = (
-    <Teleport to="body">
-      <Transition show={currentOpen} name="k-color-picker" timeout={200} nodeRef={popoverRef}>
-        <div
-          ref={popoverRef}
-          {...({ "k-placement": currentPlacement } as HTMLAttributes<HTMLDivElement>)}
-          className={clsx("k-color-picker-dropdown", {
-            "k-color-picker-disabled-alpha": disabledAlpha,
-          })}
-          style={{
-            left: position.left,
-            top: position.top,
-            transformOrigin: position.origin,
-          }}
-          onMouseEnter={() => hideTimerRef.current && clearTimeout(hideTimerRef.current)}
-          onMouseLeave={
-            trigger === "hover"
-              ? () => {
-                  hideTimerRef.current = setTimeout(() => setVisible(false), 300);
-                }
-              : undefined
-          }
-        >
-          <div className="k-color-picker-body">
-            <Paint
-              hue={currentHue}
-              value={color}
-              onUpdateRGB={(rgb: ColorObject) =>
-                update(Color({ ...rgb, alpha: currentAlpha }).rgb())
-              }
-            />
-            <div className="k-color-picker-bar">
-              <div className="k-color-picker-avatar">
-                <div
-                  className="k-color-picker-avatar-inner"
-                  style={{ backgroundColor: color.string() }}
-                />
-              </div>
-              <div className="k-color-picker-bar-box">
-                <Hue
-                  hue={currentHue}
-                  onUpdateHue={(hue) => {
-                    setCurrentHue(hue);
-                    update(color.hue(hue).rgb());
-                  }}
-                />
-                {!disabledAlpha && (
-                  <Alpha
-                    value={color}
-                    onUpdateAlpha={(alpha) => {
-                      setCurrentAlpha(alpha);
-                      update(color.alpha(alpha).rgb());
-                    }}
-                  />
-                )}
-              </div>
-            </div>
-            <Mode
-              mode={mode}
-              value={color}
-              disabledAlpha={disabledAlpha}
-              onUpdateMode={(next) => {
-                if (modeProp === undefined) setInnerMode(next);
-                onUpdateMode?.(next);
-                update(color, next);
-              }}
-              onUpdateColorValue={(next) => {
-                setCurrentAlpha(next.alpha());
-                if (next.saturationv() > 0) setCurrentHue(next.hue());
-                update(next);
-              }}
-            />
-            <Presets
-              presets={presets}
-              color={color}
-              onUpdateColor={(next) => {
-                setCurrentAlpha(next.alpha());
-                setCurrentHue(next.hue());
-                update(next.rgb());
-              }}
+  const dropdownContent = (
+    <div
+      ref={popoverRef}
+      {...({ "k-placement": currentPlacement } as HTMLAttributes<HTMLDivElement>)}
+      className={clsx("k-color-picker-dropdown", {
+        "k-color-picker-disabled-alpha": disabledAlpha,
+        "k-color-picker-panel": panelOnly,
+      })}
+      style={
+        panelOnly
+          ? undefined
+          : {
+              left: position.left,
+              top: position.top,
+              transformOrigin: position.origin,
+            }
+      }
+      onMouseEnter={() => hideTimerRef.current && clearTimeout(hideTimerRef.current)}
+      onMouseLeave={
+        trigger === "hover"
+          ? () => {
+              hideTimerRef.current = setTimeout(() => setVisible(false), 300);
+            }
+          : undefined
+      }
+    >
+      <div className="k-color-picker-body">
+        <Paint
+          hue={currentHue}
+          value={color}
+          onUpdateRGB={(rgb: ColorObject) => update(Color({ ...rgb, alpha: currentAlpha }).rgb())}
+        />
+        <div className="k-color-picker-bar">
+          <div className="k-color-picker-avatar">
+            <div
+              className="k-color-picker-avatar-inner"
+              style={{ backgroundColor: color.string() }}
             />
           </div>
-          <div className="k-color-picker-arrow">
-            <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
-              <path
-                id="ot"
-                d="m24,0.97087l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+          <div className="k-color-picker-bar-box">
+            <Hue
+              hue={currentHue}
+              onUpdateHue={(hue) => {
+                setCurrentHue(hue);
+                update(color.hue(hue).rgb());
+              }}
+            />
+            {!disabledAlpha && (
+              <Alpha
+                value={color}
+                onUpdateAlpha={(alpha) => {
+                  setCurrentAlpha(alpha);
+                  update(color.alpha(alpha).rgb());
+                }}
               />
-              <path
-                id="in"
-                stroke="currentcolor"
-                d="m24,0l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
-              />
-            </svg>
+            )}
           </div>
         </div>
+        <Mode
+          mode={mode}
+          value={color}
+          disabledAlpha={disabledAlpha}
+          onUpdateMode={(next) => {
+            if (modeProp === undefined) setInnerMode(next);
+            onUpdateMode?.(next);
+            update(color, next);
+          }}
+          onUpdateColorValue={(next) => {
+            setCurrentAlpha(next.alpha());
+            if (next.saturationv() > 0) setCurrentHue(next.hue());
+            update(next);
+          }}
+        />
+        <Presets
+          presets={presets}
+          color={color}
+          onUpdateColor={(next) => {
+            setCurrentAlpha(next.alpha());
+            setCurrentHue(next.hue());
+            update(next.rgb());
+          }}
+        />
+      </div>
+      <div className="k-color-picker-arrow">
+        <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
+          <path
+            id="ot"
+            d="m24,0.97087l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+          />
+          <path
+            id="in"
+            stroke="currentcolor"
+            d="m24,0l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+          />
+        </svg>
+      </div>
+    </div>
+  );
+  const dropdown = panelOnly ? (
+    dropdownContent
+  ) : (
+    <Teleport to="body">
+      <Transition show={currentOpen} name="k-color-picker" timeout={200} nodeRef={popoverRef}>
+        {dropdownContent}
       </Transition>
     </Teleport>
   );
+  if (panelOnly) return dropdown;
   return (
     <>
       {triggerNode}
       {dropdown}
     </>
   );
+}
+
+export type ColorPickerPanelProps = Omit<
+  ColorPickerProps,
+  "panelOnly" | "open" | "defaultOpen" | "children"
+>;
+export function ColorPickerPanel(props: ColorPickerPanelProps) {
+  return <ColorPicker {...props} panelOnly />;
 }

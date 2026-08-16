@@ -23,9 +23,7 @@ function RoutedPage() {
   const location = useLocation();
   const page = pages.get(location.pathname);
   return page ? (
-    <Suspense fallback={<div className="content-inner">Loading...</div>}>
-      {page}
-    </Suspense>
+    <Suspense fallback={<div className="content-inner">Loading...</div>}>{page}</Suspense>
   ) : (
     <Navigate to="/guide/quick-started-en" replace />
   );

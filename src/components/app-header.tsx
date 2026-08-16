@@ -55,7 +55,9 @@ export default function AppHeader() {
   const [themeColor, setThemeColor] = useState(
     () => localStorage.getItem("themeColor") || DEFAULT_THEME_COLOR
   );
-  const [themeMode, setThemeMode] = useState(() => localStorage.getItem("theme-mode") || "light");
+  const [themeMode, setThemeMode] = useState(
+    () => document.documentElement.getAttribute("theme-mode") || "light"
+  );
 
   const withLang = (path: string) => `${path}${lang === "en" ? "-en" : ""}`;
   const externalTitle = (title: ReactNode) => (
@@ -104,11 +106,7 @@ export default function AppHeader() {
   };
 
   useEffect(() => {
-    const savedMode = localStorage.getItem("theme-mode");
     const savedColor = localStorage.getItem("themeColor");
-    if (savedMode) {
-      document.documentElement.setAttribute("theme-mode", savedMode);
-    }
     if (savedColor) updateThemeColorStyle(savedColor);
   }, []);
 

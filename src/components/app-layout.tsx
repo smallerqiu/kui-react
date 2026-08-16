@@ -1,12 +1,11 @@
 import clsx from "clsx";
 import { ChevronLeft, ChevronRight, Menu as MenuIcon, X } from "kui-icons";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Link, useLocation } from "react-router";
 import { Button, Content, Icon, Layout, Menu, MenuGroup, MenuItem, Sider } from "react-kui";
+import { Link, useLocation } from "react-router";
 import { useDocs } from "../context";
 import { navData, routeData, type RouteItem } from "../menu";
 import AppHeader from "./app-header";
-
 const OPEN_KEYS = navData.map((group) => group.key);
 
 export default function AppLayout({ children }: { children: ReactNode }) {
