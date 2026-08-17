@@ -1,6 +1,14 @@
 import clsx from "clsx";
 import { ChevronLeft, ChevronRight, X } from "kui-icons";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { Button } from "../button";
 import Icon from "../icon";
 import { getChildren } from "../utils/react-node";
 import type { TabPanelProps } from "./tab-panel";
@@ -40,7 +48,7 @@ const Tabs: React.FC<TabsProps> = ({
   const inkBarRef = useRef<HTMLDivElement>(null);
 
   // Parse panels from children
-  const childList = getChildren(children);
+  const childList = useMemo(() => getChildren(children), [children]);
 
   // Determine initial active key from first panel if not provided
   const firstKey =
@@ -56,7 +64,7 @@ const Tabs: React.FC<TabsProps> = ({
     (child) => React.isValidElement(child) && child.key === activeKey
   );
   const [scrollable, setScrollable] = useState(false);
-  const [navOffsetLeft, setNavOffsetLeft] = useState(0);
+  const navOffsetRef = useRef(0);
   const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
   const [nextBtnDisabled, setNextBtnDisabled] = useState(false);
 
@@ -73,65 +81,50 @@ const Tabs: React.FC<TabsProps> = ({
     [card, sample]
   );
 
+  const getMaxOffset = useCallback(() => {
+    const navBoxEl = navBoxRef.current;
+    const navEl = navRef.current;
+    if (!navBoxEl || !navEl) return 0;
+    return Math.max(0, navEl.scrollWidth - navBoxEl.clientWidth);
+  }, []);
+
+  const applyOffset = useCallback(
+    (offset: number) => {
+      const navScrollEl = navScrollRef.current;
+      if (!navScrollEl) return;
+      const maxOffset = getMaxOffset();
+      const next = Math.min(0, Math.max(-maxOffset, offset));
+      navOffsetRef.current = next;
+      setPrevBtnDisabled(next >= -0.5);
+      setNextBtnDisabled(maxOffset <= 0.5 || next <= -maxOffset + 0.5);
+      navScrollEl.style.transform = `translate3d(${next}px,0,0)`;
+    },
+    [getMaxOffset]
+  );
+
+  const updateNav = useCallback(() => {
+    const maxOffset = getMaxOffset();
+    setScrollable(maxOffset > 0.5);
+    applyOffset(navOffsetRef.current);
+  }, [applyOffset, getMaxOffset]);
+
   const resetActivePosition = useCallback(
     (index: number) => {
       const navEl = navRef.current;
       const navBoxEl = navBoxRef.current;
-      const navScrollEl = navScrollRef.current;
-      if (!navEl || !navBoxEl || !navScrollEl) return;
-
+      if (!navEl || !navBoxEl) return;
       const target = navEl.children[index] as HTMLElement;
       if (!target) return;
 
-      const clientWidth = navBoxEl.clientWidth;
-      let navLeft = navOffsetLeft;
-      const { offsetLeft, offsetWidth } = target;
-
-      if (navLeft + offsetLeft < 0) {
-        navLeft = -offsetLeft;
-      } else if (clientWidth - navLeft < offsetLeft + offsetWidth) {
-        navLeft -= offsetLeft + offsetWidth + navLeft - clientWidth + 2;
-      }
-
-      setNavOffsetLeft(navLeft);
-      navScrollEl.style.transform = `translate3d(${navLeft}px,0,0)`;
+      const left = target.offsetLeft;
+      const right = left + target.offsetWidth;
+      let next = navOffsetRef.current;
+      if (left + next < 0) next = -left;
+      else if (right + next > navBoxEl.clientWidth) next = navBoxEl.clientWidth - right;
+      applyOffset(next);
     },
-    [navOffsetLeft]
+    [applyOffset]
   );
-
-  const updateNav = useCallback(() => {
-    const navBoxEl = navBoxRef.current;
-    if (!navBoxEl) return;
-    setScrollable(navBoxEl.scrollWidth > navBoxEl.clientWidth);
-  }, []);
-
-  const resetNavPosition = useCallback(() => {
-    setTimeout(() => {
-      const navScrollEl = navScrollRef.current;
-      const navBoxEl = navBoxRef.current;
-      if (!navScrollEl || !navBoxEl) return;
-      const totalWidth = navScrollEl.offsetWidth;
-      const clientWidth = navBoxEl.clientWidth;
-      let navLeft = navOffsetLeft;
-
-      if (clientWidth + navLeft < clientWidth) {
-        navLeft = clientWidth - totalWidth;
-      }
-      if (navLeft > 0) navLeft = 0;
-
-      setNavOffsetLeft(navLeft);
-      setNextBtnDisabled(navLeft === clientWidth - totalWidth);
-      setPrevBtnDisabled(navLeft === 0);
-      navScrollEl.style.transform = `translate3d(${navLeft}px,0,0)`;
-
-      const idx = childList.findIndex((c) => React.isValidElement(c) && c.key === activeKey);
-      if (idx >= 0) {
-        resetActivePosition(idx);
-        updateInkBarPosition(idx);
-      }
-      updateNav();
-    }, 0);
-  }, [navOffsetLeft, activeKey, childList, resetActivePosition, updateInkBarPosition, updateNav]);
 
   // Recalculate on active change
   useEffect(() => {
@@ -145,33 +138,40 @@ const Tabs: React.FC<TabsProps> = ({
     }
   }, [activeKey, childList, resetActivePosition, updateInkBarPosition, updateNav]);
 
-  useEffect(() => {
-    window.addEventListener("resize", resetNavPosition);
-    return () => window.removeEventListener("resize", resetNavPosition);
-  }, [resetNavPosition]);
+  useLayoutEffect(() => {
+    const updateLayout = () => {
+      updateNav();
+      if (currentIndex >= 0) {
+        resetActivePosition(currentIndex);
+        updateInkBarPosition(currentIndex);
+      }
+    };
+    let frame = requestAnimationFrame(updateLayout);
+    const scheduleUpdate = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(updateLayout);
+    };
+    const observer =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(scheduleUpdate);
+    if (observer) {
+      if (navBoxRef.current) observer.observe(navBoxRef.current);
+      if (navRef.current) observer.observe(navRef.current);
+    } else {
+      window.addEventListener("resize", scheduleUpdate);
+    }
+    return () => {
+      cancelAnimationFrame(frame);
+      if (observer) observer.disconnect();
+      else window.removeEventListener("resize", scheduleUpdate);
+    };
+  }, [childList.length, currentIndex, resetActivePosition, updateInkBarPosition, updateNav]);
 
   const scroll = (direction: "left" | "right") => {
-    const navScrollEl = navScrollRef.current;
     const navBoxEl = navBoxRef.current;
-    if (!navScrollEl || !navBoxEl) return;
-
-    const totalWidth = navScrollEl.offsetWidth;
+    if (!navBoxEl) return;
     const clientWidth = navBoxEl.clientWidth;
-    let navLeft = navOffsetLeft;
-
-    if (direction === "right") {
-      const endWidth = totalWidth - clientWidth + navLeft;
-      if (endWidth > clientWidth) navLeft -= clientWidth;
-      else if (endWidth > 0) navLeft -= endWidth;
-    } else {
-      if (navLeft < -clientWidth) navLeft += clientWidth;
-      else if (navLeft < 0) navLeft = 0;
-    }
-
-    setNextBtnDisabled(navLeft === clientWidth - totalWidth);
-    setPrevBtnDisabled(navLeft === 0);
-    setNavOffsetLeft(navLeft);
-    navScrollEl.style.transform = `translate3d(${navLeft}px,0,0)`;
+    const delta = direction === "right" ? -clientWidth : clientWidth;
+    applyOffset(navOffsetRef.current + delta);
   };
 
   const closeTab = (key: string, e: React.MouseEvent) => {
@@ -245,14 +245,15 @@ const Tabs: React.FC<TabsProps> = ({
           className={clsx("k-tabs-nav-container", { "k-tabs-nav-container-scroll": scrollable })}
         >
           {scrollable ? (
-            <span
-              className={clsx("k-tabs-tab-btn-prev", {
-                "k-tabs-tab-btn-prev-disabled": prevBtnDisabled,
-              })}
+            <Button
+              type="text"
+              size="large"
+              disabled={prevBtnDisabled}
+              className={clsx("k-tabs-tab-btn-prev", {})}
               onClick={() => scroll("left")}
             >
               <Icon type={ChevronLeft} />
-            </span>
+            </Button>
           ) : null}
           <div className="k-tabs-nav-wrap" ref={navBoxRef}>
             <div className="k-tabs-nav" ref={navScrollRef}>
@@ -263,20 +264,23 @@ const Tabs: React.FC<TabsProps> = ({
             </div>
           </div>
           {scrollable ? (
-            <span
-              className={clsx("k-tabs-tab-btn-next", {
-                "k-tabs-tab-btn-next-disabled": nextBtnDisabled,
-              })}
+            <Button
+              type="text"
+              size="large"
+              disabled={nextBtnDisabled}
+              className={clsx("k-tabs-tab-btn-next", {})}
               onClick={() => scroll("right")}
             >
               <Icon type={ChevronRight} />
-            </span>
+            </Button>
           ) : null}
         </div>
         {extra ? <div className="k-tabs-extra">{extra}</div> : null}
       </div>
-      <div className="k-tabs-content" style={paneStyle}>
-        {panelNodes}
+      <div className="k-tabs-wrapper">
+        <div className="k-tabs-content" style={paneStyle}>
+          {panelNodes}
+        </div>
       </div>
     </div>
   );

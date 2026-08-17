@@ -11,35 +11,35 @@ Provide peer areas to accommodate and display large chunks of content, keeping t
 
 ## Examples
 
-[Basic Usage](./demo/basic.tsx)
+[Basic Usage](./demo/basic.tsx?show=vertical)
 
 - The first item is selected by default.
 
-[Disabled](./demo/disabled.tsx)
+[Disabled](./demo/disabled.tsx?show=vertical)
 
 - Disable a specific tab.
 
-[Centered](./demo/centered.tsx)
+[Centered](./demo/centered.tsx?show=vertical)
 
 - Tabs are centered.
 
-[Icon](./demo/icon.tsx)
+[Icon](./demo/icon.tsx?show=vertical)
 
 - Tabs with icons.
 
-[Extra Content](./demo/extra.tsx)
+[Extra Content](./demo/extra.tsx?show=vertical)
 
 - You can add extra operations to the right of the tabs.
 
-[Card-style Tabs](./demo/card.tsx)
+[Card-style Tabs](./demo/card.tsx?show=vertical)
 
 - Another style of tabs.
 
-[Add and Close Tabs](./demo/closable.tsx)
+[Add and Close Tabs](./demo/closable.tsx?show=vertical)
 
 - Only card-style tabs support adding and closing options. Use `closable={false}` to disable closing.
 
-[Minimalist Tabs](./demo/sample.tsx)
+[Minimalist Tabs](./demo/sample.tsx?show=vertical)
 
 - Simple card presentation mode.
 

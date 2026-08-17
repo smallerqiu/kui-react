@@ -32,7 +32,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     <Layout className="root">
       <AppHeader />
       <Layout className="main">
-        <Sider className={clsx("docs-k-layout-sider", { "docs-k-layout-sider-show": showNav })}>
+        <Sider
+          className={clsx("docs-k-layout-sider", { "docs-k-layout-sider-show": showNav })}
+          width={272}
+        >
           <Button
             size="large"
             icon={showNav ? X : MenuIcon}

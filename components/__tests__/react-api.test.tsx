@@ -263,6 +263,61 @@ describe("React controlled and uncontrolled conventions", () => {
     expect(screen.getByRole("slider").getAttribute("aria-valuenow")).toBe("10");
   });
 
+  it("clamps scrollable Tabs navigation and keeps the active tab visible", async () => {
+    const originalResizeObserver = globalThis.ResizeObserver;
+    let triggerResize = () => {};
+    class MockResizeObserver {
+      constructor(callback: ResizeObserverCallback) {
+        triggerResize = () => callback([], this as unknown as ResizeObserver);
+      }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
+    vi.stubGlobal("ResizeObserver", MockResizeObserver);
+    const panels = Array.from({ length: 6 }, (_, index) => (
+      <TabPanel key={`tab-${index}`} title={`Tab ${index}`}>
+        Content {index}
+      </TabPanel>
+    ));
+    const { rerender } = render(<Tabs value="tab-0">{panels}</Tabs>);
+    const wrap = document.querySelector<HTMLElement>(".k-tabs-nav-wrap")!;
+    const inner = document.querySelector<HTMLElement>(".k-tabs-nav-inner")!;
+    Object.defineProperty(wrap, "clientWidth", { configurable: true, value: 200 });
+    Object.defineProperty(inner, "scrollWidth", { configurable: true, value: 600 });
+    Array.from(inner.children).forEach((tab, index) => {
+      Object.defineProperty(tab, "offsetLeft", { configurable: true, value: index * 100 });
+      Object.defineProperty(tab, "offsetWidth", { configurable: true, value: 100 });
+    });
+
+    rerender(<Tabs value="tab-5">{panels}</Tabs>);
+    await waitFor(() =>
+      expect(document.querySelector<HTMLElement>(".k-tabs-nav")?.style.transform).toBe(
+        "translate3d(-400px,0,0)"
+      )
+    );
+    const previous = document.querySelector<HTMLButtonElement>(".k-tabs-tab-btn-prev")!;
+    const next = document.querySelector<HTMLButtonElement>(".k-tabs-tab-btn-next")!;
+    expect(previous.disabled).toBe(false);
+    expect(next.disabled).toBe(true);
+
+    fireEvent.click(previous);
+    expect(document.querySelector<HTMLElement>(".k-tabs-nav")?.style.transform).toBe(
+      "translate3d(-200px,0,0)"
+    );
+    expect(next.disabled).toBe(false);
+
+    Object.defineProperty(wrap, "clientWidth", { configurable: true, value: 100 });
+    triggerResize();
+    await waitFor(() =>
+      expect(document.querySelector<HTMLElement>(".k-tabs-nav")?.style.transform).toBe(
+        "translate3d(-500px,0,0)"
+      )
+    );
+    expect(next.disabled).toBe(true);
+    vi.stubGlobal("ResizeObserver", originalResizeObserver);
+  });
+
   it("keeps controlled Carousel position stable while requesting navigation", () => {
     const onChange = vi.fn();
     render(

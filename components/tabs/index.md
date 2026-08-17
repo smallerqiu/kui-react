@@ -11,35 +11,35 @@
 
 ## 代码演示
 
-[基本用法](./demo/basic.tsx)
+[基本用法](./demo/basic.tsx?show=vertical)
 
 - 默认选中第一项。
 
-[禁用](./demo/disabled.tsx)
+[禁用](./demo/disabled.tsx?show=vertical)
 
 - 禁用某一项。
 
-[居中](./demo/centered.tsx)
+[居中](./demo/centered.tsx?show=vertical)
 
 - 标签居中展示。
 
-[图标](./demo/icon.tsx)
+[图标](./demo/icon.tsx?show=vertical)
 
 - 有图标的标签。
 
-[附加内容](./demo/extra.tsx)
+[附加内容](./demo/extra.tsx?show=vertical)
 
 - 可以在页签右边添加附加操作。
 
-[卡片式页签](./demo/card.tsx)
+[卡片式页签](./demo/card.tsx?show=vertical)
 
 - 另一种样式的页签。
 
-[新增和关闭页签](./demo/closable.tsx)
+[新增和关闭页签](./demo/closable.tsx?show=vertical)
 
 - 只有卡片样式的页签支持新增和关闭选项。 使用 `closable={false}` 禁止关闭。
 
-[极简式页签](./demo/sample.tsx)
+[极简式页签](./demo/sample.tsx?show=vertical)
 
 - 简单的卡片呈现模式。
 
