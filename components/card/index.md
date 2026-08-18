@@ -12,6 +12,10 @@
 
 - 通过 `title` 和 `icon` 可设置标题和图标
 
+[卡片尺寸](./demo/size.tsx)
+
+- 使用 `size` 调整卡片头部和内容区域的间距密度。
+
 [边框](./demo/border.tsx)
 
 - `bordered` 可以设置是否显示边框
@@ -28,20 +32,21 @@
 
 - Card 与其他表面组件共用 `theme` 和 `shape` 外观体系。
 
-| 属性     | 说明             | 类型         | 默认值 |
-| -------- | ---------------- | ------------ | ------ |
-| title    | 卡片的标题       | ReactNode    | -      |
-| icon     | 卡片标题的图标   | IconType[]   | -      |
-| bordered | 卡片是否显示边框 | boolean         | false  |
-| theme    | 外观主题 | default,fill,outline,plain | fill |
-| shape    | 外框形状 | round,square,circle | round |
-| extra    | 卡片标题扩展     | ReactNode    | -      |
-| cover    | 卡片封面         | string,ReactNode | -   |
+| 属性     | 说明             | 类型                       | 默认值 |
+| -------- | ---------------- | -------------------------- | ------ |
+| title    | 卡片的标题       | ReactNode                  | -      |
+| icon     | 卡片标题的图标   | IconType[]                 | -      |
+| bordered | 卡片是否显示边框 | boolean                    | false  |
+| theme    | 外观主题         | default,fill,outline,plain | fill   |
+| shape    | 外框形状         | round,square,circle        | round  |
+| size     | 卡片尺寸         | small,medium,large         | medium |
+| extra    | 卡片标题扩展     | ReactNode                  | -      |
+| cover    | 卡片封面         | string,ReactNode           | -      |
 
 ### CardMeta
 
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| avatar | 头像 | string,ReactNode | - |
-| title | 标题 | ReactNode | - |
-| description | 描述 | ReactNode | - |
+| 属性        | 说明 | 类型             | 默认值 |
+| ----------- | ---- | ---------------- | ------ |
+| avatar      | 头像 | string,ReactNode | -      |
+| title       | 标题 | ReactNode        | -      |
+| description | 描述 | ReactNode        | -      |
