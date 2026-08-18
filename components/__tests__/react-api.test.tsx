@@ -559,8 +559,8 @@ describe("React controlled and uncontrolled conventions", () => {
     const select = document.querySelector<HTMLElement>(".k-select");
     expect(select).not.toBeNull();
     fireEvent.focus(select!);
-    fireEvent.keyDown(document, { key: "ArrowDown" });
-    fireEvent.keyDown(document, { key: "Enter" });
+    fireEvent.keyDown(select!, { key: "ArrowDown" });
+    fireEvent.keyDown(select!, { key: "Enter" });
     await waitFor(() => expect(onChange).toHaveBeenCalledWith("one"));
   });
 

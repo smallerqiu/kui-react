@@ -44,6 +44,7 @@ Dropdown selector.
 | placement    | Dropdown placement                                                                 | DropPlacementsType                         | bottom-left   |
 | block        | Whether to fill the parent width                                                   | boolean                                    | false         |
 | filterable   | Whether search filtering is enabled                                                | boolean                                    | false         |
+| allowCreate  | Allow creating a unique option from input in multiple mode                         | boolean                                    | false         |
 | loadingText  | Loading-state text                                                                 | string                                     | -             |
 | arrowIcon    | Custom dropdown arrow icon                                                         | IconType[]                                 | -             |
 | width        | Component width                                                                   | string, number                             | -             |

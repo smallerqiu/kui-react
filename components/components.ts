@@ -4,6 +4,9 @@ export type { AffixProps } from "./affix";
 export { default as Alert } from "./alert";
 export type { AlertProps } from "./alert";
 
+export { default as AutoComplete } from "./auto-complete";
+export type { AutoCompleteOption, AutoCompleteProps } from "./auto-complete";
+
 export { Anchor, AnchorLink } from "./anchor";
 export type { AnchorLinkProps, AnchorProps } from "./anchor";
 
@@ -97,6 +100,9 @@ export type { IconProps, IconType } from "./icon";
 export { Input, InputGroup, TextArea } from "./input";
 export type { InputGroupProps, InputProps, TextAreaProps } from "./input";
 
+export { default as InputTag } from "./input-tag";
+export type { InputTagProps } from "./input-tag";
+
 export { default as InputNumber } from "./input-number";
 export type { InputNumberProps } from "./input-number";
 
@@ -121,6 +127,9 @@ export type {
 
 export { default as message } from "./message";
 export type { MessageOptions } from "./message";
+
+export { default as Mentions } from "./mentions";
+export type { MentionOption, MentionsProps } from "./mentions";
 export { MessagePanel } from "./notice/content";
 export type { MessagePanelProps } from "./notice/content";
 
@@ -186,6 +195,9 @@ export type { SpaceProps } from "./space";
 export { default as Spin } from "./spin";
 export type { SpinProps } from "./spin";
 
+export { Step, default as Steps } from "./steps";
+export type { StepProps, StepsProps, StepStatus } from "./steps";
+
 export { default as KSwitch, default as Switch } from "./switch";
 export type { SwitchProps } from "./switch";
 
@@ -197,6 +209,9 @@ export type { Column, SortState, TableKey, TableProps } from "./table";
 
 export { default as Tooltip, TooltipPanel } from "./tooltip";
 export type { TooltipPanelProps, TooltipProps } from "./tooltip";
+
+export { default as Tour } from "./tour";
+export type { TourProps, TourStep } from "./tour";
 
 export { TabPanel, Tabs } from "./tabs";
 export type { TabPanelProps, TabsProps } from "./tabs";

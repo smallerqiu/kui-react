@@ -25,6 +25,10 @@
 
 - 通过设置 `filterable` 值来呈现过滤模式 > filterable 和 onSearch 不可以同时使用, 搜索的结果会被过滤
 
+[创建选项](./demo/allow-create.tsx)
+
+- 多选模式下开启 `allowCreate`，输入内容并按回车可创建并选中一个不重复的新选项
+
 [尺寸](./demo/size.tsx)
 
 - 通过 `width` 和 `size` 可控制组件尺寸大小
@@ -44,6 +48,7 @@
 | placement    | 下拉框弹出位置                                             | DropPlacementsType                         | bottom-left |
 | block        | 是否撑满父容器宽度                                         | boolean                                    | false      |
 | filterable   | 是否允许搜索过滤                                           | boolean                                    | false      |
+| allowCreate  | 多选时是否允许输入并创建新选项                             | boolean                                    | false      |
 | loadingText  | 加载状态提示文字                                           | string                                     | -          |
 | arrowIcon    | 自定义下拉箭头图标                                         | IconType[]                                 | -          |
 | width        | 组件宽度                                                   | string,number                              | -          |

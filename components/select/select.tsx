@@ -42,6 +42,8 @@ export interface SelectProps extends Omit<
   defaultOpen?: boolean;
   clearable?: boolean;
   filterable?: boolean;
+  /** Allow creating a new option from the search text in multiple mode. */
+  allowCreate?: boolean;
   block?: boolean;
   disabled?: boolean;
   multiple?: boolean;
@@ -76,6 +78,7 @@ const Select: React.FC<SelectProps> = ({
   defaultOpen = false,
   clearable = true,
   filterable = false,
+  allowCreate = false,
   block = false,
   disabled = false,
   multiple = false,
@@ -131,8 +134,8 @@ const Select: React.FC<SelectProps> = ({
 
   const [queryInputVisible, setQueryInputVisible] = useState(false);
   const [queryKey, setQueryKey] = useState("");
+  const [createdOptions, setCreatedOptions] = useState<SelectOption[]>([]);
   const [minWidth, setMinWidth] = useState(0);
-  const [queryInputFocused, setQueryInputFocused] = useState(false);
   const transOrigin = useRef("bottom");
   const left = useRef(0);
   const top = useRef(0);
@@ -144,7 +147,6 @@ const Select: React.FC<SelectProps> = ({
     placement,
   });
   const [activeIndex, setActiveIndex] = useState(-1);
-  const [ctxFocused, setCtxFocused] = useState(false);
 
   const refPopper = useRef<HTMLDivElement>(null);
   const refSelection = useRef<HTMLDivElement>(null);
@@ -156,6 +158,7 @@ const Select: React.FC<SelectProps> = ({
   const openRaf = useRef(0);
 
   const hasSearchEvent = !!onSearch;
+  const searchable = filterable || hasSearchEvent || (multiple && allowCreate);
 
   // Update placement position
   const updatePosition = () => {
@@ -239,31 +242,34 @@ const Select: React.FC<SelectProps> = ({
 
   const optionsData = useMemo(() => {
     if (loading) return [];
+    let source: SelectOption[];
     if (options && options.length > 0) {
-      return options;
+      source = options;
+    } else {
+      source = [];
+      getChildren(children).forEach((child) => {
+        if (React.isValidElement<React.ComponentProps<typeof Option>>(child)) {
+          const childProps = child.props;
+          const { label, value: val, disabled: d } = childProps;
+          const candidateLabel = label ?? childProps.children ?? val;
+          source.push({
+            value: val,
+            disabled: d,
+            label:
+              typeof candidateLabel === "string" || typeof candidateLabel === "number"
+                ? candidateLabel
+                : val,
+          });
+        }
+      });
     }
-
-    const data: SelectOption[] = [];
-    const childList = getChildren(children);
-
-    childList.forEach((child) => {
-      if (React.isValidElement<React.ComponentProps<typeof Option>>(child)) {
-        const childProps = child.props;
-        const { label, value: val, disabled: d } = childProps;
-        const candidateLabel = label ?? childProps.children ?? val;
-        const resolvedLabel =
-          typeof candidateLabel === "string" || typeof candidateLabel === "number"
-            ? candidateLabel
-            : val;
-        data.push({
-          value: val,
-          disabled: d,
-          label: resolvedLabel,
-        });
-      }
-    });
-    return data;
-  }, [options, loading, children]);
+    return [
+      ...source,
+      ...createdOptions.filter(
+        (created) => !source.some((option) => option.value === created.value)
+      ),
+    ];
+  }, [options, loading, children, createdOptions]);
 
   const scrollOptionIntoView = (index: number) => {
     const containerEl = refPopper.current;
@@ -278,52 +284,6 @@ const Select: React.FC<SelectProps> = ({
     const targetScroll = optionTop - containerHeight / 2 + optionHeight / 2;
     containerEl.scrollTop = targetScroll;
   };
-
-  // Keyboard navigation
-  const onKeydown = (e: KeyboardEvent) => {
-    if ((!visible || optionsData.length === 0) && ctxFocused) {
-      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-        toggle();
-      }
-      return;
-    }
-    if (visible) {
-      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-        const filtered = filterOptions();
-        const direction = e.key === "ArrowDown" ? 1 : -1;
-        let index = activeIndex;
-        for (let count = 0; count < filtered.length; count += 1) {
-          index = (index + direction + filtered.length) % filtered.length;
-          if (!filtered[index]?.disabled) {
-            setActiveIndex(index);
-            setTimeout(() => scrollOptionIntoView(index), 0);
-            break;
-          }
-        }
-        e.preventDefault();
-      } else if (e.key === "Enter" && activeIndex >= 0 && (ctxFocused || queryInputFocused)) {
-        const filtered = filterOptions();
-        const item = filtered[activeIndex];
-        if (item && !item.disabled) {
-          handleSelect({ label: item.label, value: item.value });
-        }
-        e.preventDefault();
-      } else if (e.key === "Escape" && (ctxFocused || queryInputFocused)) {
-        setVisible(false);
-        onOpenChange?.(false);
-        clearQuery();
-        e.preventDefault();
-      }
-    }
-  };
-  const handleDocumentKeydown = useEffectEvent(onKeydown);
-
-  useEffect(() => {
-    document.addEventListener("keydown", handleDocumentKeydown);
-    return () => {
-      document.removeEventListener("keydown", handleDocumentKeydown);
-    };
-  }, []);
 
   const labelText = useMemo(() => {
     if (!optionsData || optionsData.length === 0) {
@@ -346,7 +306,7 @@ const Select: React.FC<SelectProps> = ({
 
   function clearQuery() {
     setActiveIndex(-1);
-    if (filterable || hasSearchEvent) {
+    if (searchable) {
       if (clearQueryTimer.current) clearTimeout(clearQueryTimer.current);
       clearQueryTimer.current = setTimeout(() => {
         setQueryKey("");
@@ -377,12 +337,13 @@ const Select: React.FC<SelectProps> = ({
         nextValue.push(val);
       }
       setTimeout(updatePosition, 0);
-      if (hasSearchEvent || filterable) {
+      if (searchable) {
         if (queryInputRef.current) {
           queryInputRef.current.value = "";
           queryInputRef.current.style.width = "";
         }
         setQueryKey("");
+        setActiveIndex(optionsData.findIndex((option) => option.value === val));
         showQuery();
       }
     } else {
@@ -437,7 +398,6 @@ const Select: React.FC<SelectProps> = ({
     if (queryInputVisible) {
       setTimeout(() => {
         queryInputRef.current?.focus();
-        setQueryInputFocused(true);
       });
     }
   };
@@ -468,11 +428,10 @@ const Select: React.FC<SelectProps> = ({
   };
 
   const showQuery = () => {
-    if (filterable || hasSearchEvent) {
+    if (searchable) {
       setQueryInputVisible(true);
       setTimeout(() => {
         queryInputRef.current?.focus();
-        setQueryInputFocused(true);
       }, 0);
     }
   };
@@ -514,6 +473,91 @@ const Select: React.FC<SelectProps> = ({
       ? optionsData.filter((item) => String(item.label).toLowerCase().includes(key.toLowerCase()))
       : optionsData;
   }
+
+  const moveActive = (direction: 1 | -1) => {
+    const filtered = filterOptions();
+    if (!filtered.length) {
+      setActiveIndex(-1);
+      return;
+    }
+    let index = activeIndex;
+    for (let count = 0; count < filtered.length; count += 1) {
+      index = (index + direction + filtered.length) % filtered.length;
+      if (!filtered[index]?.disabled) {
+        setActiveIndex(index);
+        setTimeout(() => scrollOptionIntoView(index), 0);
+        return;
+      }
+    }
+  };
+
+  const resetQueryInput = () => {
+    setQueryKey("");
+    if (queryInputRef.current) {
+      queryInputRef.current.value = "";
+      queryInputRef.current.style.width = "";
+    }
+  };
+
+  const createFromQuery = () => {
+    if (!multiple || !allowCreate) return false;
+    const newValue = queryKey.trim();
+    if (!newValue) return false;
+    const normalized = newValue.toLocaleLowerCase();
+    const existing = optionsData.find(
+      (option) =>
+        String(option.value).trim().toLocaleLowerCase() === normalized ||
+        String(option.label).trim().toLocaleLowerCase() === normalized
+    );
+    if (existing) {
+      if (!existing.disabled && !isChecked(existing.value)) handleSelect(existing);
+      else {
+        resetQueryInput();
+        setActiveIndex(optionsData.findIndex((option) => option.value === existing.value));
+        showQuery();
+      }
+      return true;
+    }
+    const option = { label: newValue, value: newValue };
+    setCreatedOptions((current) => [...current, option]);
+    handleSelect(option);
+    return true;
+  };
+
+  const closeDropdown = () => {
+    if (!visible) return;
+    setVisible(false);
+    onOpenChange?.(false);
+    clearQuery();
+  };
+
+  const onKeydown = (e: React.KeyboardEvent<HTMLDivElement | HTMLInputElement>) => {
+    if (disabled) return;
+    if (!visible) {
+      if (["Enter", " ", "ArrowDown", "ArrowUp"].includes(e.key)) {
+        toggle(true);
+        if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+          setTimeout(() => moveActive(e.key === "ArrowDown" ? 1 : -1), 0);
+        }
+        e.preventDefault();
+      }
+      return;
+    }
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      moveActive(e.key === "ArrowDown" ? 1 : -1);
+      e.preventDefault();
+    } else if (e.key === "Enter") {
+      const item = filterOptions()[activeIndex];
+      if (item && !item.disabled) {
+        handleSelect(item);
+        e.preventDefault();
+      } else if (createFromQuery()) e.preventDefault();
+    } else if (e.key === "Escape") {
+      closeDropdown();
+      refSelection.current?.focus();
+      e.preventDefault();
+    } else if (e.key === "Tab") closeDropdown();
+  };
 
   const renderOptions = () => {
     const nodes = filterOptions();
@@ -608,12 +652,15 @@ const Select: React.FC<SelectProps> = ({
       e.stopPropagation();
       searchInput(e);
     },
-    onKeyDown: queryKeydown,
+    onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => {
+      queryKeydown(event);
+      onKeydown(event);
+      event.stopPropagation();
+    },
     onBlur: () => {
       if (!visible) {
         setQueryInputVisible(false);
       }
-      setQueryInputFocused(false);
     },
   };
 
@@ -677,7 +724,7 @@ const Select: React.FC<SelectProps> = ({
   const childNode: React.ReactNode[] = [labelsNode];
   if (placeNode) childNode.push(placeNode);
 
-  if ((filterable || hasSearchEvent) && !multiple) {
+  if (searchable && !multiple) {
     childNode.push(queryNode);
   }
 
@@ -703,7 +750,7 @@ const Select: React.FC<SelectProps> = ({
       "k-select-circle": shape === "circle" && !multiple,
       "k-select-square": shape === "square",
       "k-select-multiple": multiple,
-      "k-select-show-search": queryInputFocused,
+      "k-select-show-search": queryInputVisible,
       "k-select-show-tags": multiple && !isEmpty(labelText),
       "k-select-has-clear": showClear,
     },
@@ -720,8 +767,11 @@ const Select: React.FC<SelectProps> = ({
       className={rootClasses}
       style={rootStyles}
       onClick={() => toggle()}
-      onFocus={() => setCtxFocused(true)}
-      onBlur={() => setCtxFocused(false)}
+      onKeyDown={onKeydown}
+      role="combobox"
+      aria-expanded={visible}
+      aria-haspopup="listbox"
+      aria-disabled={disabled || undefined}
       ref={refSelection}
       {...rest}
     >
