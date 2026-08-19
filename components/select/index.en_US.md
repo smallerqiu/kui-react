@@ -35,39 +35,39 @@ Dropdown selector.
 
 ## Select API
 
-| Property     | Description                                                                       | Type                                       | Default       |
-| ------------ | --------------------------------------------------------------------------------- | ------------------------------------------ | ------------- |
-| value        | Controlled selected value                                                        | string, number, (string\|number)[]         | -             |
-| defaultValue | Initial selected value in uncontrolled mode                                      | string, number, (string\|number)[]         | -             |
-| open         | Controlled dropdown visibility                                                    | boolean                                    | -             |
-| defaultOpen  | Initial dropdown visibility in uncontrolled mode                                  | boolean                                    | false         |
-| placement    | Dropdown placement                                                                 | DropPlacementsType                         | bottom-left   |
-| block        | Whether to fill the parent width                                                   | boolean                                    | false         |
-| filterable   | Whether search filtering is enabled                                                | boolean                                    | false         |
-| allowCreate  | Allow creating a unique option from input in multiple mode                         | boolean                                    | false         |
-| loadingText  | Loading-state text                                                                 | string                                     | -             |
-| arrowIcon    | Custom dropdown arrow icon                                                         | IconType[]                                 | -             |
-| width        | Component width                                                                   | string, number                             | -             |
-| placeholder  | Default text of selector                                                          | string                                     | Please select |
-| disabled     | Whether current item is disabled                                                  | boolean                                       | false         |
-| size         | Component size, provides two sizes: `small`, `large`, default is normal           | string                                     | -             |
-| emptyText    | Prompt displayed when no data                                                     | string                                     | 'No data yet' |
-| maxTagCount  | Maximum number of tags to display, excess shown with ellipsis                     | number                                     | -             |
-| multiple     | Whether to display in multiple selection mode                                     | boolean                                       | false         |
-| loading      | Whether to show asynchronous loading                                              | boolean                                       | false         |
-| clearable    | Whether options can be cleared                                                    | boolean                                       | false         |
-| bordered     | Whether to show border                                                            | boolean                                       | true          |
-| extendWidth  | Whether dropdown width matches input width                                        | boolean                                       | true          |
-| showArrow    | Whether to show dropdown button                                                   | boolean                                       | true          |
-| options      | options data, if set, no need to manually construct Option nodes                  | SelectOption[]                             | []            |
-| theme        | The theme of Select                                                               | string                                     | fill          |
-| icon         | Custom icon                                                                       | string                                     | -             |
-| shape        | When shape='circle', displays rounded corners                                     | string                                     | -             |
-| onSelect     | Triggered when an item is selected                                                | (option: SelectOption) => void             | -             |
-| onChange     | Triggered when option state changes, returns selected value                       | (value: SelectValue) => void | -             |
-| onOpenChange | Triggered when dropdown expands or collapses                                      | (open: boolean) => void                    | -             |
-| onSearch     | Triggered during search                                                           | (e: InputEvent) => void                    | -             |
-| onClear      | Triggered when the clear button is clicked                                        | () => void                                 | -             |
+| Property     | Description                                                               | Type                               | Default       |
+| ------------ | ------------------------------------------------------------------------- | ---------------------------------- | ------------- |
+| value        | Controlled selected value                                                 | string, number, (string\|number)[] | -             |
+| defaultValue | Initial selected value in uncontrolled mode                               | string, number, (string\|number)[] | -             |
+| open         | Controlled dropdown visibility                                            | boolean                            | -             |
+| defaultOpen  | Initial dropdown visibility in uncontrolled mode                          | boolean                            | false         |
+| placement    | Dropdown placement                                                        | DropPlacementsType                 | bottom-left   |
+| block        | Whether to fill the parent width                                          | boolean                            | false         |
+| filterable   | Whether search filtering is enabled                                       | boolean                            | false         |
+| allowCreate  | Allow creating a unique option from input in multiple mode                | boolean                            | false         |
+| loadingText  | Loading-state text                                                        | string                             | -             |
+| arrowIcon    | Custom dropdown arrow icon                                                | IconType[]                         | -             |
+| width        | Component width                                                           | string, number                     | -             |
+| placeholder  | Default text of selector                                                  | string                             | Please select |
+| disabled     | Whether current item is disabled                                          | boolean                            | false         |
+| size         | Component size, provides two sizes: `small`, `large`, default is normal   | string                             | -             |
+| emptyText    | Prompt displayed when no data                                             | string                             | 'No data yet' |
+| maxTagCount  | Maximum visible tags in multiple mode; excess tags are shown in a Tooltip | number                             | -             |
+| multiple     | Whether to display in multiple selection mode                             | boolean                            | false         |
+| loading      | Whether to show asynchronous loading                                      | boolean                            | false         |
+| clearable    | Whether options can be cleared                                            | boolean                            | false         |
+| bordered     | Whether to show border                                                    | boolean                            | true          |
+| extendWidth  | Whether dropdown width matches input width                                | boolean                            | true          |
+| showArrow    | Whether to show dropdown button                                           | boolean                            | true          |
+| options      | options data, if set, no need to manually construct Option nodes          | SelectOption[]                     | []            |
+| theme        | The theme of Select                                                       | string                             | fill          |
+| icon         | Custom icon                                                               | string                             | -             |
+| shape        | When shape='circle', displays rounded corners                             | string                             | -             |
+| onSelect     | Triggered when an item is selected                                        | (option: SelectOption) => void     | -             |
+| onChange     | Triggered when option state changes, returns selected value               | (value: SelectValue) => void       | -             |
+| onOpenChange | Triggered when dropdown expands or collapses                              | (open: boolean) => void            | -             |
+| onSearch     | Triggered during search                                                   | (e: InputEvent) => void            | -             |
+| onClear      | Triggered when the clear button is clicked                                | () => void                         | -             |
 
 ## Option API
 
@@ -76,4 +76,4 @@ Dropdown selector.
 | key      | Same meaning as value.                                | string, number | -       |
 | value    | Option value, used for filtering by default, required | string, number | -       |
 | label    | Option display content                                | string, number | -       |
-| disabled | Whether current item is disabled                      | boolean           | false   |
+| disabled | Whether current item is disabled                      | boolean        | false   |

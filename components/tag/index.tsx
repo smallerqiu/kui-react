@@ -8,6 +8,7 @@ import { isColor } from "../utils/color";
 
 export interface TagProps extends React.HTMLAttributes<HTMLDivElement> {
   closeable?: boolean;
+  compact?: boolean;
   color?: ColorType;
   shape?: ShapeType;
   icon?: IconType[];
@@ -19,6 +20,7 @@ export interface TagProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Tag: React.FC<TagProps> = ({
   closeable = false,
+  compact = false,
   color,
   shape,
   icon,
@@ -55,6 +57,7 @@ const Tag: React.FC<TagProps> = ({
       "k-tag-square": shape === "square",
       "k-tag-has-color": isCustomColor,
       "k-tag-closeable": closeable,
+      "k-tag-compact": compact,
       "k-tag-hidden": hidden,
       "k-tag-fill": theme === "fill",
     },

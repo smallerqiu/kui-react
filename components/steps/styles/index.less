@@ -6,7 +6,7 @@
   display: flex;
   flex: 1;
   min-width: 0;
-  color: var(--kui-color-font-light);
+  color: var(--kui-color-text-description);
 }
 .k-step-main {
   display: flex;
@@ -21,15 +21,17 @@
   justify-content: center;
   width: 28px;
   height: 28px;
-  border: 1px solid var(--kui-color-border);
-  border-radius: 50%;
+  border: 1px solid var(--kui-control-border);
+  border-radius: var(--kui-shape-circle);
+  background: var(--kui-control-bg);
+  transition: all var(--kui-motion-duration-slow) var(--kui-motion-easing);
 }
 .k-step-line {
   flex: 1;
   min-width: 24px;
   height: 1px;
   margin: 14px 12px 0;
-  background: var(--kui-color-border);
+  background: var(--kui-control-border);
 }
 .k-step:last-child .k-step-line {
   visibility: hidden;
@@ -38,8 +40,9 @@
   min-width: 0;
 }
 .k-step-title {
-  color: var(--kui-color-font);
+  color: var(--kui-color-text-title);
   white-space: nowrap;
+  font-weight: 500;
 }
 .k-step-description {
   margin-top: 6px;
@@ -47,7 +50,7 @@
 }
 .k-step-finish .k-step-dot,
 .k-step-process .k-step-dot {
-  color: #fff;
+  color: var(--kui-color-text-on-solid);
   border-color: var(--kui-color-primary);
   background: var(--kui-color-primary);
 }
@@ -80,7 +83,7 @@
   position: absolute;
   top: 38px;
   bottom: 10px;
-  left: 13px;
+  left: 15px;
   width: 1px;
   min-width: 0;
   height: auto;

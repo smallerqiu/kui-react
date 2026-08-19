@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ChevronDown, CircleX, LoaderCircle, X } from "kui-icons";
+import { ChevronDown, CircleX, LoaderCircle } from "kui-icons";
 import {
   useCallback,
   useContext,
@@ -17,6 +17,9 @@ import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../cons
 import Empty from "../empty";
 import Icon, { type IconType } from "../icon";
 import zhCN from "../locale/zh-CN";
+import Space from "../space";
+import Tag from "../tag";
+import Tooltip from "../tooltip";
 import Tree, { type TreeExpandEvent, type TreeNode } from "../tree";
 import { buildTree } from "../tree/utils";
 
@@ -257,7 +260,11 @@ export default function TreeSelect({
     },
     className
   );
-  const displayedLabels = maxTagCount && maxTagCount > 0 ? labels.slice(0, maxTagCount) : labels;
+  const hasDisplayLimit = typeof maxTagCount === "number" && Number.isFinite(maxTagCount);
+  const displayCount = hasDisplayLimit ? Math.max(0, Math.floor(maxTagCount)) : labels.length;
+  const displayedLabels = labels.slice(0, displayCount);
+  const hiddenLabels = labels.slice(displayCount);
+  const tagSize = size || "medium";
 
   const search = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
@@ -344,26 +351,49 @@ export default function TreeSelect({
         tabIndex={disabled ? -1 : 0}
         className={classes}
         style={{ ...style, width: width ? `${width}px` : style?.width }}
-      onClick={toggleOpen}
+        onClick={toggleOpen}
       >
         {icon && <Icon type={icon} className="k-tree-select-icon" />}
         <div className="k-tree-select-selection">
           {multiple ? (
             <div className="k-tree-select-labels">
               {displayedLabels.map((label, index) => (
-                <span className="k-tree-select-tag" key={`${currentValue[index]}-${index}`}>
+                <Tag
+                  key={`${currentValue[index]}-${index}`}
+                  size={tagSize}
+                  shape={shape}
+                  theme="default"
+                  compact
+                  closeable={!disabled}
+                  onClose={() => remove(index)}
+                >
                   {label}
-                  <Icon
-                    type={X}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      remove(index);
-                    }}
-                  />
-                </span>
+                </Tag>
               ))}
-              {maxTagCount && labels.length > maxTagCount ? (
-                <span className="k-tree-select-tag">+{labels.length - maxTagCount}...</span>
+              {hiddenLabels.length ? (
+                <Tooltip
+                  title={
+                    <Space wrap size={4}>
+                      {hiddenLabels.map((label, index) => (
+                        <Tag
+                          key={`${label}-${index}`}
+                          size="small"
+                          shape={shape}
+                          theme="fill"
+                          compact
+                          closeable={!disabled}
+                          onClose={() => remove(displayCount + index)}
+                        >
+                          {label}
+                        </Tag>
+                      ))}
+                    </Space>
+                  }
+                >
+                  <Tag size={tagSize} shape={shape} theme="default" compact>
+                    +{hiddenLabels.length}...
+                  </Tag>
+                </Tooltip>
               ) : null}
               {searchNode}
             </div>

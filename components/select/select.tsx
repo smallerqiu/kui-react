@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ChevronDown, CircleX, Loading, X } from "kui-icons";
+import { ChevronDown, CircleX, Loading } from "kui-icons";
 import React, { useContext, useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
@@ -7,6 +7,9 @@ import { ConfigContext } from "../config/config-context";
 import Empty from "../empty";
 import Icon, { type IconType } from "../icon";
 import zhCN from "../locale/zh-CN";
+import Space from "../space";
+import Tag from "../tag";
+import Tooltip from "../tooltip";
 import { isEmpty } from "../utils/number";
 import { setPlacement } from "../utils/placement";
 import { getChildren } from "../utils/react-node";
@@ -114,9 +117,7 @@ const Select: React.FC<SelectProps> = ({
   const [rendered, setRendered] = useState(visible);
   if (visible && !rendered) setRendered(true);
   const [internalValue, setInternalValue] = useState<(string | number)[]>(
-    multiple
-      ? (Array.isArray(defaultValue) ? defaultValue : [])
-      : normalizeValue(defaultValue)
+    multiple ? (Array.isArray(defaultValue) ? defaultValue : []) : normalizeValue(defaultValue)
   );
   const controlled = value !== undefined;
   const controlledValue = value;
@@ -402,9 +403,8 @@ const Select: React.FC<SelectProps> = ({
     }
   };
 
-  const removeTag = (e: React.MouseEvent, index: number) => {
+  const removeTag = (index: number) => {
     if (disabled) return;
-    e.stopPropagation();
 
     const nextValue = [...currentValue];
     nextValue.splice(index, 1);
@@ -686,22 +686,51 @@ const Select: React.FC<SelectProps> = ({
     ) : null;
 
   const renderTags = () => {
-    const tags = labelText.map((label, i) => {
-      return (
-        <span className="k-select-tag" key={`${label}-${i}`}>
-          {label}
-          <Icon type={X} onClick={(e) => removeTag(e, i)} />
-        </span>
+    const hasDisplayLimit = typeof maxTagCount === "number" && Number.isFinite(maxTagCount);
+    const displayCount = hasDisplayLimit ? Math.max(0, Math.floor(maxTagCount)) : labelText.length;
+    const visibleLabels = labelText.slice(0, displayCount);
+    const hiddenLabels = labelText.slice(displayCount);
+    const tagSize = size || "medium";
+    const tags: React.ReactNode[] = visibleLabels.map((label, index) => (
+      <Tag
+        key={`${label}-${index}`}
+        size={tagSize}
+        shape={shape}
+        theme="default"
+        compact
+        closeable={!disabled}
+        onClose={() => removeTag(index)}
+      >
+        {label}
+      </Tag>
+    ));
+    if (hiddenLabels.length) {
+      tags.push(
+        <Tooltip
+          key="tag-more"
+          title={
+            <Space wrap size={4}>
+              {hiddenLabels.map((label, index) => (
+                <Tag
+                  key={`${label}-${index}`}
+                  size="small"
+                  shape={shape}
+                  theme="fill"
+                  compact
+                  closeable={!disabled}
+                  onClose={() => removeTag(displayCount + index)}
+                >
+                  {label}
+                </Tag>
+              ))}
+            </Space>
+          }
+        >
+          <Tag size={tagSize} shape={shape} theme="default" compact>
+            +{hiddenLabels.length}...
+          </Tag>
+        </Tooltip>
       );
-    });
-    if (maxTagCount && maxTagCount > 0 && tags.length > maxTagCount) {
-      const sliced = tags.slice(0, maxTagCount);
-      sliced.push(
-        <span className="k-select-tag" key="tag-more">
-          +{labelText.length - maxTagCount}...
-        </span>
-      );
-      return sliced;
     }
     return tags;
   };
