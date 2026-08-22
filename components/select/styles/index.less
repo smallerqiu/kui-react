@@ -1,8 +1,9 @@
 @import "../../styles/less-css-var.less";
+@import "../../styles/motion.less";
 
 .k-select {
   display: inline-flex;
-  min-width: 80px;
+  min-width: 160px;
   vertical-align: middle;
   color: var(--kui-control-text);
   font-size: var(--kui-font-size);
@@ -318,6 +319,14 @@
   }
 }
 
+.k-select-dropdown-virtual {
+  overflow: hidden;
+
+  .k-virtual-list-item > .k-select-item {
+    height: calc(100% - 1px);
+  }
+}
+
 .k-select-dropdown-multiple {
   .k-select-item {
     padding-right: 31px;
@@ -327,6 +336,11 @@
 .k-select-dropdown-sm {
   .k-select-item {
     font-size: var(--kui-font-size-sm);
+  }
+}
+.k-select-dropdown-lg {
+  .k-select-item {
+    font-size: var(--kui-font-size-lg);
   }
 }
 
@@ -339,7 +353,7 @@
   }
 
   .k-select-selection {
-    min-height: 22px;
+    min-height: calc(var(--kui-control-height-sm) - 2px);
   }
 
   &.k-select-show-tags {
@@ -361,8 +375,8 @@
   }
 
   .k-select-label {
-    line-height: 22px;
-    height: 22px;
+    line-height: calc(var(--kui-control-height-sm) - 2px);
+    height: calc(var(--kui-control-height-sm) - 2px);
     font-size: var(--kui-font-size-sm);
   }
 
@@ -408,7 +422,7 @@
 
   .k-select-selection {
     font-size: var(--kui-font-size-lg);
-    min-height: 38px;
+    min-height: calc(var(--kui-control-height-lg) - 2px);
   }
   &.k-select-show-tags {
     padding-inline: var(--kui-padding-tag-box-inline-lg);
@@ -431,8 +445,8 @@
   }
 
   .k-select-label {
-    line-height: 38px;
-    height: 38px;
+    line-height: calc(var(--kui-control-height-lg) - 2px);
+    height: calc(var(--kui-control-height-lg) - 2px);
     font-size: var(--kui-font-size-lg);
   }
 
@@ -523,24 +537,12 @@
   }
 }
 
-@keyframes drop-down {
-  0% {
-    opacity: 0;
-    transform: scaleY(0);
-  }
-
-  to {
-    opacity: 1;
-    transform: scaleY(1);
-  }
-}
-
 .k-select-enter-active {
   transform-origin: 0 0;
-  animation: drop-down 0.3s;
+  animation: k-motion-scale-y-in 0.3s;
 }
 
 .k-select-leave-active {
   transform-origin: 0 0;
-  animation: drop-down 0.3s reverse;
+  animation: k-motion-scale-y-in 0.3s reverse;
 }
