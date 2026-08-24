@@ -35,6 +35,10 @@ export const SubMenu: React.FC<SubMenuProps> = ({
   icon,
   children,
 }) => {
+  const dropdownContext = useDropdownContext();
+  const menuContext = useMenuContext();
+  const subMenuContext = useSubMenuContext();
+
   const generatedKey = useId();
   const currentKey = itemKey ?? menuKey ?? generatedKey;
   const refSelection = useRef<HTMLDivElement | null>(null);
@@ -50,10 +54,20 @@ export const SubMenu: React.FC<SubMenuProps> = ({
     origin: "bottom left",
   });
   const [minWidth, setMinWidth] = useState("");
+  // Prevents popup flash at (0,0) before first positioning calculation
+  const [popupPositioned, setPopupPositioned] = useState(false);
+  const [prevPopupInlineCollapsed, setPrevPopupInlineCollapsed] = useState(
+    Boolean(menuContext?.popupInlineCollapsed)
+  );
 
-  const dropdownContext = useDropdownContext();
-  const menuContext = useMenuContext();
-  const subMenuContext = useSubMenuContext();
+  // Reset positioning when transitioning to inline-collapsed popup mode
+  // (adjusting state during render — avoids synchronous setState in effect)
+  if (prevPopupInlineCollapsed !== Boolean(menuContext?.popupInlineCollapsed)) {
+    setPrevPopupInlineCollapsed(Boolean(menuContext?.popupInlineCollapsed));
+    if (menuContext?.popupInlineCollapsed) {
+      setPopupPositioned(false);
+    }
+  }
   const popTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const positionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const openRaf = useRef(0);
@@ -116,6 +130,7 @@ export const SubMenu: React.FC<SubMenuProps> = ({
       placement: placementRef.current,
       origin: originRef.current,
     });
+    setPopupPositioned(true);
   }, [menuContext, subMenuContext]);
 
   const schedulePosition = useCallback(() => {
@@ -167,6 +182,7 @@ export const SubMenu: React.FC<SubMenuProps> = ({
       top: `${position.top}px`,
       left: `${left}px`,
       transformOrigin: position.origin,
+      visibility: popup && !popupPositioned ? "hidden" : undefined,
     } as CSSProperties,
     onMouseEnter: () => {
       clearCurrentPopTimer();

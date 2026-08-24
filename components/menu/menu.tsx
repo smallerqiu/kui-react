@@ -82,8 +82,55 @@ export const Menu: React.FC<MenuProps> = ({
   const overflowWidth = useRef(0);
   const [visibleCount, setVisibleCount] = useState(Number.POSITIVE_INFINITY);
 
+  // --- tempOpenKeys: save/restore openKeys during mode switch & collapse ---
+  // Using useState so React tracks changes and the value is available during render.
+  const [tempOpenKeys, setTempOpenKeys] = useState<string[]>([]);
+
+  // Render-time change detection (React "adjusting state when prop changes" pattern)
+  const [prevMode, setPrevMode] = useState(mode);
+  const [prevInlineCollapsed, setPrevInlineCollapsed] = useState(inlineCollapsed);
+  const [prevOpenKeys, setPrevOpenKeys] = useState(openKeys);
+
+  // Effect-time change detection (refs, only read/written inside effects)
+  const prevCollapsedEffectRef = useRef(inlineCollapsed);
+  const prevModeEffectRef = useRef(mode);
+
+  // Sync collapseState when inlineCollapsed prop changes
   if (collapseState.inlineCollapsed !== inlineCollapsed) {
     setCollapseState({ inlineCollapsed, popupReady: false });
+  }
+
+  // Mode switch: save/restore openKeys (adjusting state during render)
+  if (prevMode !== mode) {
+    setPrevMode(mode);
+    if (mode === "vertical") {
+      const current = openKeys ?? internalOpenKeys;
+      if (current.length > 0) setTempOpenKeys([...current]);
+      if (openKeys === undefined) setInternalOpenKeys([]);
+    } else if (!inlineCollapsed && tempOpenKeys.length > 0) {
+      if (openKeys === undefined) setInternalOpenKeys([...tempOpenKeys]);
+    }
+  }
+
+  // inlineCollapsed: save/restore openKeys (adjusting state during render)
+  if (prevInlineCollapsed !== inlineCollapsed) {
+    setPrevInlineCollapsed(inlineCollapsed);
+    if (inlineCollapsed) {
+      const current = openKeys ?? internalOpenKeys;
+      if (current.length > 0) setTempOpenKeys([...current]);
+      if (openKeys === undefined) setInternalOpenKeys([]);
+    } else if (tempOpenKeys.length > 0) {
+      if (openKeys === undefined) setInternalOpenKeys([...tempOpenKeys]);
+    }
+  }
+
+  // openKeys prop sync: store in temp when collapsed/vertical so the
+  // parent-updated value is available for restoration later.
+  if (prevOpenKeys !== openKeys) {
+    setPrevOpenKeys(openKeys);
+    if (openKeys && (inlineCollapsed || mode === "vertical")) {
+      setTempOpenKeys([...openKeys]);
+    }
   }
 
   const currentSelectedKeys = value ?? selectedKeys ?? internalSelectedKeys;
@@ -94,21 +141,47 @@ export const Menu: React.FC<MenuProps> = ({
     collapseState.inlineCollapsed === inlineCollapsed &&
     collapseState.popupReady;
 
+  // inlineCollapsed: popup-ready timer + onOpenChange side effect.
+  // No synchronous setState in the effect body — state adjustments happen
+  // during render above; this effect only emits side effects and starts the
+  // deferred popup-ready timer.
   useEffect(() => {
-    if (inlineCollapsed) {
-      collapseTimer.current = setTimeout(() => {
-        setCollapseState((current) =>
-          current.inlineCollapsed ? { ...current, popupReady: true } : current
-        );
-        collapseTimer.current = null;
-      }, 200);
+    const changed = prevCollapsedEffectRef.current !== inlineCollapsed;
+    prevCollapsedEffectRef.current = inlineCollapsed;
+
+    if (changed) {
+      if (inlineCollapsed) {
+        onOpenChange?.([]);
+        collapseTimer.current = setTimeout(() => {
+          setCollapseState((current) =>
+            current.inlineCollapsed ? { ...current, popupReady: true } : current
+          );
+          collapseTimer.current = null;
+        }, 200);
+      } else if (tempOpenKeys.length > 0) {
+        onOpenChange?.([...tempOpenKeys]);
+      }
     }
 
     return () => {
       if (collapseTimer.current) clearTimeout(collapseTimer.current);
       collapseTimer.current = null;
     };
-  }, [inlineCollapsed]);
+  }, [inlineCollapsed, tempOpenKeys]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // mode switch: onOpenChange side effect only
+  useEffect(() => {
+    const changed = prevModeEffectRef.current !== mode;
+    prevModeEffectRef.current = mode;
+
+    if (!changed) return;
+
+    if (mode === "vertical") {
+      onOpenChange?.([]);
+    } else if (!inlineCollapsed && tempOpenKeys.length > 0) {
+      onOpenChange?.([...tempOpenKeys]);
+    }
+  }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const selectedKeysChange = (key: string, selected: boolean, keyPath: string[]) => {
     keyPath = keyPath.filter((itemKey) => itemKey !== overflowMenuKey);
@@ -121,6 +194,10 @@ export const Menu: React.FC<MenuProps> = ({
     onSelect?.({ key, keyPath });
 
     if (mode === "horizontal" || mode === "vertical" || inlineCollapsed) {
+      const current = openKeys ?? internalOpenKeys;
+      if (current.length > 0) {
+        setTempOpenKeys([...current]);
+      }
       if (openKeys === undefined) setInternalOpenKeys([]);
       onOpenChange?.([]);
     }
