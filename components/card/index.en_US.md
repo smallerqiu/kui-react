@@ -24,7 +24,7 @@ The most basic card container, can carry text, lists, images, paragraphs, often 
 
 - Control the border with the `bordered` property and the title with the `title` property.
 
-[Cover](./demo/cover.tsx)
+[Cover](./demo/cover.tsx?show=vertical)
 
 - Use `cover` and `CardMeta` to display a card with cover content.
 

@@ -9,6 +9,9 @@ Turns continuous input into an editable tag collection.
 [Controlled](./demo/controlled.tsx)
 [Separators](./demo/separators.tsx)
 [Limit](./demo/limit.tsx)
+[Size](./demo/size.tsx?show=vertical)
+
+- Different sizes.
 [Appearance](./demo/appearance.tsx)
 
 ## InputTag API

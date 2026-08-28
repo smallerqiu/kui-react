@@ -12,6 +12,10 @@
 
 [数量限制](./demo/limit.tsx)
 
+[尺寸](./demo/size.tsx?show=vertical)
+
+- 不同的尺寸。
+
 [尺寸、主题与形状](./demo/appearance.tsx)
 
 ## InputTag API

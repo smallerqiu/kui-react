@@ -24,7 +24,7 @@
 
 - 通过 `bordered` 属性控制边框，通过 `title` 属性控制标题。
 
-[封面卡片](./demo/cover.tsx)
+[封面卡片](./demo/cover.tsx?show=vertical)
 
 - 使用 `cover` 和 `CardMeta` 展示带封面的内容卡片。
 

@@ -61,7 +61,7 @@ const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
     className,
     ...rest
   },
-  ref
+  ref,
 ) {
   const normalize = useCallback(
     (source: unknown) =>
@@ -70,14 +70,14 @@ const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
         .filter((character) => (validator ? validator(character) : true))
         .join("")
         .slice(0, Math.max(0, length)),
-    [length, type, validator]
+    [length, type, validator],
   );
   const [innerValue, setInnerValue] = useState(() => normalize(defaultValue));
   const currentValue = normalize(value ?? innerValue);
   const inputs = useRef<Array<HTMLInputElement | null>>([]);
   const focusedIndex = useRef(-1);
   const chars = Array.from({ length: Math.max(0, length) }, (_, index) =>
-    currentValue.charAt(index)
+    currentValue.charAt(index),
   );
 
   const focus = useCallback(
@@ -85,7 +85,7 @@ const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
       if (disabled || length <= 0) return;
       inputs.current[Math.max(0, Math.min(index, length - 1))]?.focus();
     },
-    [currentValue.length, disabled, length]
+    [currentValue.length, disabled, length],
   );
   const blur = useCallback(() => inputs.current[focusedIndex.current]?.blur(), []);
   useImperativeHandle(ref, () => ({ focus, blur }), [blur, focus]);
@@ -116,8 +116,7 @@ const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
     } else if (event.key === "Backspace" || event.key === "Delete") {
       if (readOnly) return;
       event.preventDefault();
-      const target =
-        event.key === "Backspace" && !chars[index] ? Math.max(0, index - 1) : index;
+      const target = event.key === "Backspace" && !chars[index] ? Math.max(0, index - 1) : index;
       const source = currentValue.split("");
       source.splice(target, 1);
       updateValue(source.join(""));
@@ -142,7 +141,7 @@ const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
           [`k-input-otp-${theme}`]: theme,
           [`k-input-otp-${shape}`]: shape,
         },
-        className
+        className,
       )}
       role="group"
       aria-disabled={disabled || undefined}
@@ -153,7 +152,9 @@ const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
             <span className="k-input-otp-separator">{separator}</span>
           )}
           <input
-            ref={(element) => { inputs.current[index] = element; }}
+            ref={(element) => {
+              inputs.current[index] = element;
+            }}
             className="k-input-otp-item"
             value={character}
             type={mask ? "password" : "text"}

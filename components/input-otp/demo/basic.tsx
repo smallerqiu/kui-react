@@ -7,7 +7,11 @@ export default function App() {
   return (
     <Space vertical size="large">
       <div>Value: {value || "-"}</div>
-      <InputOTP value={value} onChange={setValue} onComplete={(code) => message.success(`complete: ${code}`)} />
+      <InputOTP
+        value={value}
+        onChange={setValue}
+        onComplete={(code) => message.success(`complete: ${code}`)}
+      />
       <InputOTP value={text} onChange={setText} type="text" length={4} mask />
       <InputOTP defaultValue="123456" size="small" disabled />
     </Space>

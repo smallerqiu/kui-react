@@ -18,7 +18,7 @@
 
 [组合展示](./demo/with-card.tsx)
 
-[趋势状态](./demo/trend.tsx)
+[趋势状态](./demo/trend.tsx?show=vertical)
 
 - 结合`Card` 组件展示更多自定义数据
 

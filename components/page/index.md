@@ -21,6 +21,10 @@
 
 - 展示小尺寸。
 
+[简单模式](./demo/simple.tsx?show=vertical)
+
+- 使用简单模式展示紧凑的分页器。
+
 ## API
 
 | 属性         | 说明                                     | 类型                                 | 默认值           |
@@ -32,6 +36,8 @@
 | showSizer    | 是否显示页码组                           | boolean                                 | false            |
 | showTotal    | 是否显示总数                             | boolean                                 | false            |
 | showElevator | 是否显示页码阶梯                         | boolean                                 | false            |
+| simple      | 是否使用简单分页模式                     | boolean                                 | false            |
+| shape       | 分页器形状                               | ShapeType                               | round            |
 | sizeData     | 自定义页码组数据                         | number[]                             | [10,15,20,30,40] |
 | size         | 值为'small' 时，呈现小尺寸               | string                               | -                |
 | theme        | 主题                                     | string                               | fill             |

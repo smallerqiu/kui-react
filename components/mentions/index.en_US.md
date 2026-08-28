@@ -8,6 +8,13 @@ Insert structured mentions into multiline text.
 
 [Triggers](./demo/triggers.tsx)
 [Filter](./demo/filter.tsx)
+[Remote Search](./demo/remote.tsx?show=vertical)
+
+- Load mention options asynchronously after entering a trigger character.
+
+[Size](./demo/size.tsx?show=vertical)
+
+- Shows small, medium, and large sizes.
 [Appearance](./demo/appearance.tsx)
 [Empty](./demo/empty.tsx)
 [Rows](./demo/rows.tsx)
@@ -27,6 +34,8 @@ Insert structured mentions into multiline text.
 | theme        | Theme                        | fill\|outline\|plain           | fill        |
 | shape        | Shape                        | circle\|square\|round\|default | default     |
 | emptyText    | Empty-state text             | string                         | No data     |
+| loading      | Whether to show loading      | boolean                       | false       |
+| loadingText  | Loading text                 | string                        | Searching   |
 | filterOption | Custom filter                | function                       | -           |
 | onChange     | Text change                  | function                       | -           |
 | onSelect     | Mention selected             | function                       | -           |

@@ -14,8 +14,12 @@ export default function App() {
   );
   return (
     <Space wrap>
-      <Card cover={cover} style={{ maxWidth: 360 }}>{meta}</Card>
-      <Card cover={cover} bordered style={{ maxWidth: 360 }}>{meta}</Card>
+      <Card cover={cover} style={{ maxWidth: 360 }}>
+        {meta}
+      </Card>
+      <Card cover={cover} theme="outline" style={{ maxWidth: 360 }}>
+        {meta}
+      </Card>
     </Space>
   );
 }

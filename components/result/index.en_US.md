@@ -2,21 +2,21 @@
 
 Displays an operation result or HTTP status page.
 
-[Success](./demo/basic.tsx)
+[Success](./demo/basic.tsx?show=vertical)
 
-[Error](./demo/error.tsx)
+[Error](./demo/error.tsx?show=vertical)
 
-[Info](./demo/info.tsx)
+[Info](./demo/info.tsx?show=vertical)
 
-[Warning](./demo/warning.tsx)
+[Warning](./demo/warning.tsx?show=vertical)
 
-[403](./demo/403.tsx)
+[403](./demo/403.tsx?show=vertical)
 
-[404](./demo/404.tsx)
+[404](./demo/404.tsx?show=vertical)
 
-[500](./demo/500.tsx)
+[500](./demo/500.tsx?show=vertical)
 
-[Custom](./demo/custom.tsx)
+[Custom](./demo/custom.tsx?show=vertical)
 
 ## API
 

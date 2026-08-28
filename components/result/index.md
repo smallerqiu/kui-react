@@ -2,21 +2,21 @@
 
 展示操作结果或 HTTP 状态页面。
 
-[成功](./demo/basic.tsx)
+[成功](./demo/basic.tsx?show=vertical)
 
-[错误](./demo/error.tsx)
+[错误](./demo/error.tsx?show=vertical)
 
-[信息](./demo/info.tsx)
+[信息](./demo/info.tsx?show=vertical)
 
-[警告](./demo/warning.tsx)
+[警告](./demo/warning.tsx?show=vertical)
 
-[403](./demo/403.tsx)
+[403](./demo/403.tsx?show=vertical)
 
-[404](./demo/404.tsx)
+[404](./demo/404.tsx?show=vertical)
 
-[500](./demo/500.tsx)
+[500](./demo/500.tsx?show=vertical)
 
-[自定义](./demo/custom.tsx)
+[自定义](./demo/custom.tsx?show=vertical)
 
 ## API
 

@@ -111,6 +111,7 @@ const navData = [
     children: [
       { title: "涟漪", sub: "Ripple", name: "ripple", icon: CircleDot },
       { title: "火焰边框", sub: "FlameWrap", name: "flame-wrap", icon: Flame },
+      { title: "动效", sub: "Motion", name: "motion", icon: Loader },
     ],
   },
   {
@@ -146,6 +147,7 @@ const navData = [
       },
       { title: "导航菜单", sub: "Menu", name: "menu", icon: Menu },
       { title: "分页", sub: "Page", name: "page", icon: SquareChevronRight },
+      { title: "页面头部", sub: "PageHeader", name: "page-header", icon: PanelsTopLeft },
       { title: "步骤条", sub: "Steps", name: "steps", icon: ListChevronsUpDown },
       { title: "标签页", sub: "Tabs", name: "tabs", icon: AppWindow },
       { title: "回到顶部", sub: "BackTop", name: "back-top", icon: ArrowUpToLine },
@@ -182,6 +184,7 @@ const navData = [
         name: "date-picker",
         icon: Calendar,
       },
+      { title: "日历", sub: "Calendar", name: "calendar", icon: Calendar },
       { title: "上传", sub: "Upload", name: "upload", icon: Upload },
       { title: "滑动输入条", sub: "Slider", name: "slider", icon: Settings2 },
       { title: "表单", sub: "Form", name: "form", icon: Form },
@@ -194,6 +197,7 @@ const navData = [
       { title: "头像", sub: "Avatar", name: "avatar", icon: SmilePlus },
       { title: "卡片", sub: "Card", name: "card", icon: CreditCard },
       { title: "功能卡片", sub: "FeatureCard", name: "feature-card", icon: CreditCard },
+      { title: "选择卡片", sub: "CheckCard", name: "check-card", icon: SquareCheck },
       { title: "走马灯", sub: "Carousel", name: "carousel", icon: GalleryHorizontal },
       {
         title: "折叠面板",
@@ -221,6 +225,9 @@ const navData = [
         name: "stat-card",
         icon: ChartColumnDecreasing,
       },
+      { title: "看板", sub: "Kanban", name: "kanban", icon: PanelsTopLeft },
+      { title: "列表面板", sub: "ListPanel", name: "list-panel", icon: List },
+      { title: "排版", sub: "Typography", name: "typography", icon: TextAlignStart },
       { title: "表格", sub: "Table", name: "table", icon: Table },
       { title: "时间轴", sub: "TimeLine", name: "time-line", icon: List },
       { title: "树形控件", sub: "Tree", name: "tree", icon: FolderTree },
@@ -277,7 +284,7 @@ const navData = [
 ];
 
 const routeData = navData.flatMap(({ key, children }) =>
-  children.map((item) => ({ ...item, key }))
+  children.map((item) => ({ ...item, key })),
 );
 
 export type RouteItem = (typeof routeData)[number];

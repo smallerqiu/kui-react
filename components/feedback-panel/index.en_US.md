@@ -2,9 +2,9 @@
 
 Presents feedback, supporting details, and follow-up actions.
 
-[Basic](./demo/basic.tsx)
+[Basic](./demo/basic.tsx?show=vertical)
 
-[Kinds](./demo/kinds.tsx)
+[Kinds](./demo/kinds.tsx?show=vertical)
 
 ## API
 

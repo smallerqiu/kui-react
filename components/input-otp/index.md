@@ -2,21 +2,37 @@
 
 用于输入短信验证码、一次性密码等定长内容。
 
-[基础用法](./demo/basic.tsx)
+[基础用法](./demo/basic.tsx?show=vertical)
 
-[长度](./demo/length.tsx)
+- 支持逐位输入、整段粘贴、键盘移动和完成事件。
 
-[粘贴](./demo/paste.tsx)
+[自定义长度](./demo/length.tsx?show=vertical)
 
-[分隔符](./demo/separator.tsx)
+- 通过 `length` 设置验证码位数。
 
-[尺寸](./demo/size.tsx)
+[主题与形状](./demo/theme.tsx?show=vertical)
 
-[状态](./demo/state.tsx)
+- 提供亮色、描边、下划线主题，以及方形、圆角和圆形外观。
 
-[主题](./demo/theme.tsx)
+[尺寸](./demo/size.tsx?show=vertical)
 
-[校验](./demo/validator.tsx)
+- 提供小、默认和大三种尺寸。
+
+[禁用与只读](./demo/state.tsx?show=vertical)
+
+- 禁用状态不可交互，只读状态仍可聚焦和复制。
+
+[分隔符](./demo/separator.tsx?show=vertical)
+
+- 通过 `separator` 设置字段之间的内容。
+
+[粘贴验证码](./demo/paste.tsx?show=vertical)
+
+- 粘贴完整验证码时自动切割，并依次填入对应字段。
+
+[输入验证](./demo/validator.tsx?show=vertical)
+
+- `type` 提供默认字符验证，也可通过 `validator` 自定义允许输入的字符。
 
 ## API
 

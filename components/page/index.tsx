@@ -9,6 +9,7 @@ import zhCN from "../locale/zh-CN";
 import Select from "../select/select";
 
 export interface PageProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+  simple?: boolean;
   disabled?: boolean;
   showSizer?: boolean;
   showTotal?: boolean;
@@ -24,6 +25,7 @@ export interface PageProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "o
 }
 
 const Page: React.FC<PageProps> = ({
+  simple = false,
   disabled = false,
   showSizer = false,
   showTotal = true,
@@ -132,7 +134,7 @@ const Page: React.FC<PageProps> = ({
           onClick={() => toPage(currentPage - 5)}
         >
           <Icon type={prevHover ? ChevronsLeft : Ellipsis} />
-        </li>
+        </li>,
       );
     }
     if (showNextMore) {
@@ -145,7 +147,7 @@ const Page: React.FC<PageProps> = ({
           onClick={() => toPage(currentPage + 5)}
         >
           <Icon type={nextHover ? ChevronsRight : Ellipsis} />
-        </li>
+        </li>,
       );
     }
 
@@ -161,7 +163,7 @@ const Page: React.FC<PageProps> = ({
       "k-page-disabled": disabled,
       [`k-page-${shape}`]: shape,
     },
-    className
+    className,
   );
 
   const sizeOptions = sizeData.map((s) => ({
@@ -191,7 +193,7 @@ const Page: React.FC<PageProps> = ({
         </li>
 
         {/* First page */}
-        {pageCount > 0 && (
+        {!simple && pageCount > 0 && (
           <li
             className={clsx("k-pager-item", { "k-pager-item-active": currentPage === 1 })}
             onClick={() => toPage(1)}
@@ -201,10 +203,10 @@ const Page: React.FC<PageProps> = ({
         )}
 
         {/* Middle pages */}
-        {renderPageItems()}
+        {!simple && renderPageItems()}
 
         {/* Last page */}
-        {pageCount > 1 && (
+        {!simple && pageCount > 1 && (
           <li
             className={clsx("k-pager-item", { "k-pager-item-active": currentPage === pageCount })}
             onClick={() => toPage(pageCount)}
@@ -213,6 +215,13 @@ const Page: React.FC<PageProps> = ({
           </li>
         )}
 
+        {simple && (
+          <li className="k-page-simple-number" aria-current="page">
+            <span>{currentPage}</span>
+            <span>/</span>
+            <span>{pageCount}</span>
+          </li>
+        )}
         {/* Next */}
         <li
           className={clsx("k-pager-item k-pager-next", {
@@ -225,7 +234,7 @@ const Page: React.FC<PageProps> = ({
       </ul>
 
       {/* Page size sizer */}
-      {showSizer && (
+      {!simple && showSizer && (
         <div className="k-page-sizer">
           <Select
             value={currentPageSize}
@@ -242,7 +251,7 @@ const Page: React.FC<PageProps> = ({
       )}
 
       {/* Elevator */}
-      {showElevator && (
+      {!simple && showElevator && (
         <div className="k-page-options">
           <span>{locale?.k?.page?.goto}</span>
           <InputNumber

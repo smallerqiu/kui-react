@@ -4,6 +4,15 @@ export type { AffixProps } from "./affix";
 export { default as Alert } from "./alert";
 export type { AlertProps } from "./alert";
 
+export { default as Calendar } from "./calendar";
+export type { CalendarDateCell, CalendarEventData, CalendarProps } from "./calendar";
+
+export { default as Kanban } from "./kanban";
+export type { KanbanColumnData, KanbanItemData, KanbanMoveEvent, KanbanProps } from "./kanban";
+
+export { default as ListPanel } from "./list-panel";
+export type { ListPanelProps } from "./list-panel";
+
 export { default as AutoComplete } from "./auto-complete";
 export type { AutoCompleteOption, AutoCompleteProps } from "./auto-complete";
 
@@ -34,20 +43,30 @@ export type { CarouselItemProps, CarouselProps, CarouselRef } from "./carousel";
 export { Checkbox, CheckboxGroup } from "./checkbox";
 export type { ChangeEvent, CheckboxGroupProps, CheckboxOption, CheckboxProps } from "./checkbox";
 
+export { CheckCard, CheckCardGroup } from "./check-card";
+export type {
+  CheckCardChangeEvent,
+  CheckCardGroupProps,
+  CheckCardOption,
+  CheckCardProps,
+  CheckCardTheme,
+  CheckCardValue,
+} from "./check-card";
+
 export { Collapse, CollapsePanel } from "./collapse";
 export type { CollapsePanelProps, CollapseProps } from "./collapse";
 
-export { ColorPickerPanel, default as ColorPicker } from "./color-picker";
+export { default as ColorPicker, ColorPickerPanel } from "./color-picker";
 export type { ColorPickerPanelProps, ColorPickerProps } from "./color-picker";
 
-export { DatePickerPanel, default as DatePicker } from "./date-picker";
+export { default as DatePicker, DatePickerPanel } from "./date-picker";
 export type {
   DatePickerInput,
   DatePickerModeType,
   DatePickerOutput,
+  DatePickerPanelProps,
   DatePickerPreset,
   DatePickerProps,
-  DatePickerPanelProps,
   DatePickerValueType,
 } from "./date-picker";
 
@@ -143,6 +162,9 @@ export type { NoticePanelProps } from "./notice/content";
 
 export { default as Page } from "./page";
 export type { PageProps } from "./page";
+
+export { default as PageHeader } from "./page-header";
+export type { PageHeaderProps } from "./page-header";
 
 export { default as Poptip, PoptipPanel } from "./poptip";
 export type { PoptipPanelProps, PoptipProps } from "./poptip";
@@ -266,3 +288,21 @@ export type {
   UploadStatusType,
   ValueType,
 } from "./const/types";
+export { default as VirtualList } from "./virtual-list";
+export type { VirtualListKey, VirtualListProps, VirtualListRef } from "./virtual-list";
+export { getVirtualRange } from "./virtual-list/range";
+
+export {
+  default as Typography,
+  TypographyParagraph,
+  TypographyText,
+  TypographyTitle,
+} from "./typography";
+export type {
+  TypographyCopyableOptions,
+  TypographyEditableOptions,
+  TypographyEllipsisOptions,
+  TypographyProps,
+  TypographyTag,
+  TypographyType,
+} from "./typography";

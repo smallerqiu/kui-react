@@ -6,7 +6,12 @@ export default function App() {
       kind="positive"
       heading="Workspace created."
       description="Member permissions and default views have been configured."
-      actions={<Space><Button type="primary">Open workspace</Button><Button>View Settings</Button></Space>}
+      actions={
+        <Space>
+          <Button type="primary">Open workspace</Button>
+          <Button>View Settings</Button>
+        </Space>
+      }
     />
   );
 }

@@ -2,21 +2,37 @@
 
 Input for verification codes, one-time passwords, and other fixed-length values.
 
-[Basic](./demo/basic.tsx)
+[Basic](./demo/basic.tsx?show=vertical)
 
-[Length](./demo/length.tsx)
+- Supports per-digit input, full-code paste, keyboard navigation, and completion events.
 
-[Paste](./demo/paste.tsx)
+[Custom length](./demo/length.tsx?show=vertical)
 
-[Separator](./demo/separator.tsx)
+- Set the number of code digits with `length`.
 
-[Size](./demo/size.tsx)
+[Theme and shape](./demo/theme.tsx?show=vertical)
 
-[State](./demo/state.tsx)
+- Provides light, outline, and underlined themes with square, round, and circular shapes.
 
-[Theme](./demo/theme.tsx)
+[Size](./demo/size.tsx?show=vertical)
 
-[Validator](./demo/validator.tsx)
+- Provides small, default, and large sizes.
+
+[Disabled and read-only](./demo/state.tsx?show=vertical)
+
+- Disabled state prevents interaction while read-only state remains focusable and copyable.
+
+[Separator](./demo/separator.tsx?show=vertical)
+
+- Set content between OTP fields with `separator`.
+
+[Paste code](./demo/paste.tsx?show=vertical)
+
+- Pasting a complete code splits it into the corresponding fields automatically.
+
+[Validation](./demo/validator.tsx?show=vertical)
+
+- `type` provides default character validation, and `validator` can customize allowed characters.
 
 ## API
 

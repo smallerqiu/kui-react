@@ -26,8 +26,11 @@ export interface MentionsProps extends Omit<
   shape?: ShapeType;
   theme?: ThemeType;
   emptyText?: string;
+  loading?: boolean;
+  loadingText?: string;
   filterOption?: (query: string, option: MentionOption) => boolean;
   onChange?: (value: string) => void;
+  onSearch?: (query: string) => void;
   onSelect?: (option: MentionOption, trigger: string) => void;
 }
 type Query = { start: number; trigger: string; text: string };
@@ -71,8 +74,11 @@ const Mentions: React.FC<MentionsProps> = ({
   shape,
   theme = "fill",
   emptyText,
+  loading = false,
+  loadingText = "Searching",
   filterOption,
   onChange,
+  onSearch,
   onSelect,
   className,
   ...rest
@@ -92,13 +98,13 @@ const Mentions: React.FC<MentionsProps> = ({
   const current = value ?? inner;
   const normalized = useMemo(
     () => options.map((item) => (typeof item === "string" ? { value: item, label: item } : item)),
-    [options]
+    [options],
   );
   const getMatches = (state: Query) =>
     normalized.filter((option) =>
       filterOption
         ? filterOption(state.text, option)
-        : option.value.toLocaleLowerCase().includes(state.text.toLocaleLowerCase())
+        : option.value.toLocaleLowerCase().includes(state.text.toLocaleLowerCase()),
     );
   const updatePosition = () => {
     if (!query || !textareaRef.current || !dropdownRef.current) return;
@@ -133,9 +139,13 @@ const Mentions: React.FC<MentionsProps> = ({
       )
         found = { start, trigger, text: prefix.slice(start + trigger.length) };
     });
-    setQuery(found);
+    const nextQuery = found as Query | null;
+    setQuery(nextQuery);
     setActive(0);
-    if (found) setShown(getMatches(found));
+    if (nextQuery) {
+      setShown(getMatches(nextQuery));
+      onSearch?.(nextQuery.text);
+    }
   };
   const positionDropdown = useEffectEvent(updatePosition);
   useEffect(() => {
@@ -160,7 +170,7 @@ const Mentions: React.FC<MentionsProps> = ({
     const state = query;
     const caret = textarea.selectionStart;
     setValue(
-      `${current.slice(0, state.start)}${state.trigger}${option.value} ${current.slice(caret)}`
+      `${current.slice(0, state.start)}${state.trigger}${option.value} ${current.slice(caret)}`,
     );
     setQuery(null);
     onSelect?.(option, state.trigger);
@@ -191,7 +201,7 @@ const Mentions: React.FC<MentionsProps> = ({
           if (!query) return;
           if ((event.key === "ArrowDown" || event.key === "ArrowUp") && shown.length) {
             setActive(
-              (active + (event.key === "ArrowDown" ? 1 : -1) + shown.length) % shown.length
+              (active + (event.key === "ArrowDown" ? 1 : -1) + shown.length) % shown.length,
             );
             event.preventDefault();
           } else if (event.key === "Enter" && shown.length) {
@@ -215,7 +225,9 @@ const Mentions: React.FC<MentionsProps> = ({
             }}
             role="listbox"
           >
-            {shown.length ? (
+            {loading ? (
+              <div className="k-mentions-loading">{loadingText}</div>
+            ) : shown.length ? (
               <ul>
                 {shown.map((option, index) => (
                   <li

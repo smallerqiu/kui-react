@@ -2,9 +2,9 @@
 
 集中展示操作结果、说明和后续动作。
 
-[基础用法](./demo/basic.tsx)
+[基础用法](./demo/basic.tsx?show=vertical)
 
-[状态类型](./demo/kinds.tsx)
+[状态类型](./demo/kinds.tsx?show=vertical)
 
 ## API
 

@@ -1,5 +1,5 @@
-import { Card, Space } from "react-kui";
 import type { SizeType } from "react-kui";
+import { Card, Space } from "react-kui";
 
 const sizes: SizeType[] = ["small", "medium", "large"];
 

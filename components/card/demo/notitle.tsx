@@ -1,4 +1,4 @@
-import { Space, Card } from "react-kui";
+import { Card, Space } from "react-kui";
 const Content = () => (
   <>
     <div>card content</div>
