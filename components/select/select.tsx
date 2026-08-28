@@ -14,6 +14,7 @@ import { isEmpty } from "../utils/number";
 import { setPlacement } from "../utils/placement";
 import { getChildren } from "../utils/react-node";
 import Option, { type OptionSelectEvent } from "./option";
+import VirtualList from "../virtual-list";
 
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 
@@ -60,6 +61,9 @@ export interface SelectProps extends Omit<
   loadingText?: string;
   icon?: IconType[];
   shape?: ShapeType;
+  virtual?: boolean;
+  itemHeight?: number;
+  overscan?: number;
   arrowIcon?: IconType[];
   onSearch?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onChange?: (value: SelectValue) => void;
@@ -95,6 +99,9 @@ const Select: React.FC<SelectProps> = ({
   loadingText,
   icon,
   shape,
+  virtual = false,
+  itemHeight = 33,
+  overscan = 5,
   arrowIcon,
   onSearch,
   onChange,
@@ -117,7 +124,7 @@ const Select: React.FC<SelectProps> = ({
   const [rendered, setRendered] = useState(visible);
   if (visible && !rendered) setRendered(true);
   const [internalValue, setInternalValue] = useState<(string | number)[]>(
-    multiple ? (Array.isArray(defaultValue) ? defaultValue : []) : normalizeValue(defaultValue)
+    multiple ? (Array.isArray(defaultValue) ? defaultValue : []) : normalizeValue(defaultValue),
   );
   const controlled = value !== undefined;
   const controlledValue = value;
@@ -130,7 +137,7 @@ const Select: React.FC<SelectProps> = ({
             : []
           : normalizeValue(controlledValue)
         : internalValue,
-    [controlled, controlledValue, internalValue, multiple]
+    [controlled, controlledValue, internalValue, multiple],
   );
 
   const [queryInputVisible, setQueryInputVisible] = useState(false);
@@ -267,7 +274,7 @@ const Select: React.FC<SelectProps> = ({
     return [
       ...source,
       ...createdOptions.filter(
-        (created) => !source.some((option) => option.value === created.value)
+        (created) => !source.some((option) => option.value === created.value),
       ),
     ];
   }, [options, loading, children, createdOptions]);
@@ -507,7 +514,7 @@ const Select: React.FC<SelectProps> = ({
     const existing = optionsData.find(
       (option) =>
         String(option.value).trim().toLocaleLowerCase() === normalized ||
-        String(option.label).trim().toLocaleLowerCase() === normalized
+        String(option.label).trim().toLocaleLowerCase() === normalized,
     );
     if (existing) {
       if (!existing.disabled && !isChecked(existing.value)) handleSelect(existing);
@@ -626,7 +633,19 @@ const Select: React.FC<SelectProps> = ({
         {loading ? (
           loadingNode
         ) : optionNodes.length ? (
-          <ul>{optionNodes}</ul>
+          virtual ? (
+            <VirtualList
+              data={filterOptions()}
+              height={Math.min(200, optionNodes.length * itemHeight)}
+              itemHeight={itemHeight}
+              overscan={overscan}
+              itemKey={(_, index) => index}
+            >
+              {(_, index) => optionNodes[index]}
+            </VirtualList>
+          ) : (
+            <ul>{optionNodes}</ul>
+          )
         ) : (
           <Empty onClick={emptyClick} description={emptyText || locale?.k?.select?.emptyText} />
         )}
@@ -729,7 +748,7 @@ const Select: React.FC<SelectProps> = ({
           <Tag size={tagSize} shape={shape} theme="default" compact>
             +{hiddenLabels.length}...
           </Tag>
-        </Tooltip>
+        </Tooltip>,
       );
     }
     return tags;
@@ -783,7 +802,7 @@ const Select: React.FC<SelectProps> = ({
       "k-select-show-tags": multiple && !isEmpty(labelText),
       "k-select-has-clear": showClear,
     },
-    className
+    className,
   );
 
   const clearNode = showClear ? (

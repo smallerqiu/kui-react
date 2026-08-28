@@ -35,6 +35,10 @@ Dropdown selector.
 
 ## Select API
 
+[Virtual Scrolling](./demo/virtual.tsx?show=vertical)
+
+- Use virtual scrolling to efficiently display many options.
+
 | Property     | Description                                                               | Type                               | Default       |
 | ------------ | ------------------------------------------------------------------------- | ---------------------------------- | ------------- |
 | value        | Controlled selected value                                                 | string, number, (string\|number)[] | -             |
