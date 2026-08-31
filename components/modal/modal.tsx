@@ -26,7 +26,6 @@ export interface ModalProps {
   loading?: boolean;
   footer?: boolean | React.ReactNode;
   escKey?: boolean;
-  /** 只渲染弹窗面板本身，不包含遮罩、动画与全局事件，与 kui-vue 一致 */
   panelOnly?: boolean;
   onClose?: () => void;
   onOk?: () => void;
@@ -67,6 +66,7 @@ const Modal: React.FC<ModalProps> = ({
   const [innerOpen, setInnerOpen] = useState(defaultOpen);
   const currentOpen = open ?? innerOpen;
 
+  // Vue's v-show equivalent: always rendered but controlled by visibility
   const [visible, setVisible] = useState(false);
   const [showInner, setShowInner] = useState(false);
   const [rendered, setRendered] = useState(false);
@@ -78,8 +78,7 @@ const Modal: React.FC<ModalProps> = ({
   const refModal = useRef<HTMLDivElement>(null);
   const refWrap = useRef<HTMLDivElement>(null);
   const refHeader = useRef<HTMLDivElement>(null);
-  const previousFocus = useRef<HTMLElement | null>(null);
-  const hideTimer = useRef<NodeJS.Timeout | null>(null);
+  const hideTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const getOffset = (el: HTMLElement) => ({
     left: el.offsetLeft,
@@ -94,34 +93,37 @@ const Modal: React.FC<ModalProps> = ({
     }
   }, []);
 
+  // Core toggle logic - mirrors Vue's toggle function
   const toggle = useCallback(
     (value: boolean) => {
-      if (value && hideTimer.current) {
-        clearTimeout(hideTimer.current);
-        hideTimer.current = null;
-      }
-      if (value) {
-        previousFocus.current = document.activeElement as HTMLElement | null;
+      if (!rendered && value) {
         setRendered(true);
+        return;
+      }
+
+      if (value) {
+        // Reset position when opening
+        setLeftPos(0);
+        setTopPos(top);
+        setVisible(true);
+        setShowInner(true);
+        refWrap.current?.focus();
         setTimeout(() => {
-          setVisible(true);
-          setShowInner(true);
-          refWrap.current?.focus();
-          setTimeout(() => {
-            if (draggable && refModal.current) {
-              setLeftPos((document.body.offsetWidth - refModal.current.offsetWidth) / 2);
-            }
-            updateOrigin();
-          }, 0);
+          if (draggable && refModal.current) {
+            setLeftPos((document.body.offsetWidth - refModal.current.offsetWidth) / 2);
+          }
+          updateOrigin();
         }, 0);
       } else {
+        // Closing: immediate hide mask, delayed hide content
         setVisible(false);
-        previousFocus.current?.focus();
-        if (hideTimer.current) clearTimeout(hideTimer.current);
-        hideTimer.current = setTimeout(() => setShowInner(false), 300);
+        if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+        hideTimerRef.current = setTimeout(() => {
+          setShowInner(false);
+        }, 300);
       }
     },
-    [draggable, updateOrigin]
+    [draggable, updateOrigin, rendered, top]
   );
 
   const requestOpen = useCallback(
@@ -132,13 +134,59 @@ const Modal: React.FC<ModalProps> = ({
     [onOpenChange, open]
   );
 
+  // Watch currentOpen and trigger toggle
   useEffect(() => {
     if (panelOnly) return;
-    const timer = setTimeout(() => toggle(currentOpen), 0);
+    const timer = setTimeout(() => {
+      if (currentOpen && !rendered) {
+        setRendered(true);
+        toggle(true);
+      } else if (currentOpen !== visible) {
+        toggle(currentOpen);
+      }
+    }, 0);
     return () => clearTimeout(timer);
-  }, [currentOpen, panelOnly, toggle]);
+  }, [currentOpen, panelOnly, toggle, rendered, visible]);
 
-  // Dragging
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    };
+  }, []);
+
+  const close = useCallback(() => {
+    requestOpen(false);
+    onClose?.();
+  }, [onClose, requestOpen]);
+
+  const escToClose = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    },
+    [close]
+  );
+
+  useEffect(() => {
+    if (panelOnly) return;
+    document.addEventListener("keydown", escToClose);
+    return () => {
+      document.removeEventListener("keydown", escToClose);
+    };
+  }, [escKey, escToClose, panelOnly]);
+
+  const ok = () => onOk?.();
+  const cancel = () => {
+    requestOpen(false);
+    onCancel?.();
+  };
+
+  const clickMaskToClose = (e: React.MouseEvent) => {
+    if (!loading && maskClosable && !refModal.current?.contains(e.target as Node) && !mousedownIn) {
+      close();
+    }
+  };
+
   const mousemove = useCallback(
     (e: MouseEvent) => {
       if (isMousePressed && draggable) {
@@ -173,44 +221,17 @@ const Modal: React.FC<ModalProps> = ({
     [draggable, visible]
   );
 
-  const close = useCallback(() => {
-    requestOpen(false);
-    onClose?.();
-  }, [onClose, requestOpen]);
-
-  const escToClose = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
-    },
-    [close]
-  );
-
   useEffect(() => {
     if (panelOnly) return;
     document.addEventListener("mousedown", handleMouseDown);
     document.addEventListener("mousemove", mousemove);
     document.addEventListener("mouseup", mouseup);
-    if (escKey) document.addEventListener("keydown", escToClose);
     return () => {
       document.removeEventListener("mousedown", handleMouseDown);
       document.removeEventListener("mousemove", mousemove);
       document.removeEventListener("mouseup", mouseup);
-      if (escKey) document.removeEventListener("keydown", escToClose);
-      if (hideTimer.current) clearTimeout(hideTimer.current);
     };
-  }, [escKey, escToClose, handleMouseDown, mousemove, mouseup, panelOnly]);
-
-  const ok = () => onOk?.();
-  const cancel = () => {
-    requestOpen(false);
-    onCancel?.();
-  };
-
-  const clickMaskToClose = (e: React.MouseEvent) => {
-    if (!loading && maskClosable && !refModal.current?.contains(e.target as Node) && !mousedownIn) {
-      close();
-    }
-  };
+  }, [handleMouseDown, mousemove, mouseup, panelOnly]);
 
   const okLabel = okText || locale?.k?.common?.ok;
   const cancelLabel = cancelText || locale?.k?.common?.cancel;
@@ -245,7 +266,7 @@ const Modal: React.FC<ModalProps> = ({
     );
   }
 
-  // panelOnly：直接渲染弹窗面板本身，无遮罩、无动画、无 Teleport
+  // panelOnly mode
   if (panelOnly) {
     return (
       <div
@@ -279,10 +300,11 @@ const Modal: React.FC<ModalProps> = ({
   const modalEl = (
     <div className={classes}>
       {mask && (
-        <Transition name="k-modal-fade" show={visible} timeout={400}>
+        <Transition show={visible} name="k-modal-fade" timeout={400}>
           <div className="k-modal-mask" />
         </Transition>
       )}
+      {/* Key difference: showInner controls display, not visibility of element */}
       <div
         ref={refWrap}
         className="k-modal-wrap"
@@ -291,19 +313,12 @@ const Modal: React.FC<ModalProps> = ({
         style={{ display: showInner ? undefined : "none" }}
         onClick={clickMaskToClose}
       >
-        <div
-          ref={refModal}
-          className={clsx(
-            "k-modal-inner",
-            visible
-              ? "k-modal-zoom-enter-from k-modal-zoom-enter-active"
-              : "k-modal-zoom-leave-from k-modal-zoom-leave-active k-modal-zoom-leave-to"
-          )}
-          style={modalStyle || undefined}
-        >
-          {contentNode}
-          <div tabIndex={0} />
-        </div>
+        <Transition show={visible} name="k-modal-zoom" timeout={250}>
+          <div ref={refModal} className="k-modal-inner" style={modalStyle || undefined}>
+            {contentNode}
+            <div tabIndex={0} />
+          </div>
+        </Transition>
       </div>
     </div>
   );
@@ -318,7 +333,6 @@ export type ModalPanelProps = Omit<
   "open" | "defaultOpen" | "mask" | "maskClosable" | "centered" | "draggable" | "maximized"
 >;
 
-/** 与 kui-vue 一致：`ModalPanel` 是 `panelOnly` 模式的 `Modal` */
 export function ModalPanel(props: ModalPanelProps) {
   return <Modal {...props} panelOnly />;
 }

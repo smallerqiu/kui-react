@@ -45,10 +45,11 @@ export default function Toast({
   const messages = (locale ?? zhCN)?.k?.common;
   const [open, setOpen] = useState(true);
   const [loading, setLoading] = useState(false);
-  const hide = () => {
+
+  const handleClose = () => {
     setOpen(false);
-    setTimeout(() => onDestroy?.(), 300);
   };
+
   const ok = async () => {
     try {
       const result = onOk?.();
@@ -56,15 +57,18 @@ export default function Toast({
         setLoading(true);
         await result;
       }
-      hide();
     } catch {
       setLoading(false);
+    } finally {
+      handleClose();
     }
   };
+
   const cancel = () => {
     onCancel?.();
-    hide();
+    handleClose();
   };
+
   const body = (
     <>
       <div className="k-toast-header">
@@ -80,13 +84,19 @@ export default function Toast({
       </div>
     </>
   );
+
   return (
     <Modal
       open={open}
       className={clsx("k-toast", `k-toast-${type}`)}
       maskClosable={false}
       content={body}
-      onClose={hide}
+      onClose={handleClose}
+      onOpenChange={(opened) => {
+        if (!opened) {
+          onDestroy?.();
+        }
+      }}
     />
   );
 }
