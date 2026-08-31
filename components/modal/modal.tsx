@@ -26,6 +26,8 @@ export interface ModalProps {
   loading?: boolean;
   footer?: boolean | React.ReactNode;
   escKey?: boolean;
+  /** 只渲染弹窗面板本身，不包含遮罩、动画与全局事件，与 kui-vue 一致 */
+  panelOnly?: boolean;
   onClose?: () => void;
   onOk?: () => void;
   onCancel?: () => void;
@@ -52,6 +54,7 @@ const Modal: React.FC<ModalProps> = ({
   loading = false,
   footer = true,
   escKey = true,
+  panelOnly = false,
   onClose,
   onOk,
   onCancel,
@@ -130,9 +133,10 @@ const Modal: React.FC<ModalProps> = ({
   );
 
   useEffect(() => {
+    if (panelOnly) return;
     const timer = setTimeout(() => toggle(currentOpen), 0);
     return () => clearTimeout(timer);
-  }, [currentOpen, toggle]);
+  }, [currentOpen, panelOnly, toggle]);
 
   // Dragging
   const mousemove = useCallback(
@@ -182,6 +186,7 @@ const Modal: React.FC<ModalProps> = ({
   );
 
   useEffect(() => {
+    if (panelOnly) return;
     document.addEventListener("mousedown", handleMouseDown);
     document.addEventListener("mousemove", mousemove);
     document.addEventListener("mouseup", mouseup);
@@ -193,7 +198,7 @@ const Modal: React.FC<ModalProps> = ({
       if (escKey) document.removeEventListener("keydown", escToClose);
       if (hideTimer.current) clearTimeout(hideTimer.current);
     };
-  }, [escKey, escToClose, handleMouseDown, mousemove, mouseup]);
+  }, [escKey, escToClose, handleMouseDown, mousemove, mouseup, panelOnly]);
 
   const ok = () => onOk?.();
   const cancel = () => {
@@ -236,6 +241,20 @@ const Modal: React.FC<ModalProps> = ({
         )}
         <div className="k-modal-body">{children}</div>
         {footer !== false && <div className="k-modal-footer">{footerContent}</div>}
+      </div>
+    );
+  }
+
+  // panelOnly：直接渲染弹窗面板本身，无遮罩、无动画、无 Teleport
+  if (panelOnly) {
+    return (
+      <div
+        className={clsx("k-modal", "k-modal-panel", className)}
+        style={{ width: typeof width === "number" ? `${width}px` : width }}
+      >
+        <div className="k-modal-wrap">
+          <div className="k-modal-inner">{contentNode}</div>
+        </div>
       </div>
     );
   }
@@ -299,58 +318,7 @@ export type ModalPanelProps = Omit<
   "open" | "defaultOpen" | "mask" | "maskClosable" | "centered" | "draggable" | "maximized"
 >;
 
-export function ModalPanel({
-  className,
-  title,
-  width = 520,
-  showClose = true,
-  footer = true,
-  okText = "Ok",
-  cancelText = "Cancel",
-  loading,
-  onClose,
-  onOk,
-  onCancel,
-  content,
-  children,
-}: ModalPanelProps) {
-  const footerContent =
-    footer === true ? (
-      <>
-        <Button onClick={onCancel}>{cancelText}</Button>
-        <Button onClick={onOk} type="primary" loading={loading}>
-          {okText}
-        </Button>
-      </>
-    ) : (
-      footer
-    );
-  return (
-    <div className={clsx("k-modal", "k-modal-panel", className)} style={{ width }}>
-      <div className="k-modal-wrap">
-        <div className="k-modal-inner">
-          {content ?? (
-            <div className="k-modal-content" tabIndex={0}>
-              {showClose && (
-                <Button
-                  icon={X}
-                  size="small"
-                  onClick={onClose}
-                  className="k-modal-close"
-                  type="text"
-                />
-              )}
-              {title !== undefined && (
-                <div className="k-modal-header">
-                  <div className="k-modal-header-inner">{title}</div>
-                </div>
-              )}
-              <div className="k-modal-body">{children}</div>
-              {footer !== false && <div className="k-modal-footer">{footerContent}</div>}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+/** 与 kui-vue 一致：`ModalPanel` 是 `panelOnly` 模式的 `Modal` */
+export function ModalPanel(props: ModalPanelProps) {
+  return <Modal {...props} panelOnly />;
 }

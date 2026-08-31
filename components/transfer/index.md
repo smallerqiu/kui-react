@@ -45,5 +45,8 @@
 | disabled | 是否禁用 | boolean | false |
 | theme | 主题 | ThemeType | outline |
 | filterOption | 自定义筛选 | (keyword, item) => boolean | - |
+| item | 自定义列表项渲染 | (item) => ReactNode | - |
+| footer | 自定义列表底部渲染 | (direction) => ReactNode | - |
 | onChange | 移动回调 | (event) => void | - |
 | onSelectChange | 选择变化回调 | (sourceKeys, targetKeys) => void | - |
+| onSearch | 搜索框内容变化回调 | (direction, value) => void | - |

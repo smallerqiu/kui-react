@@ -120,6 +120,7 @@ const columns = [
 | indentSize | Indentation per tree level | number | 20 |
 | scroll       | Scrollable table area                                    | { x?: number \| string; y?: number \| string }                              | {}      |
 | striped      | Whether to display zebra stripes                         | boolean                                                                         | false   |
+| shape        | Shape                                                    | ShapeType                                                                       | -       |
 | onRowClick   | Triggered when clicking a row                            | (record: T, index: number) => void                                           | -       |
 | onSort       | Triggered when clicking to sort                          | (state: SortState) => void                                                   | -       |
 | onSelect     | Triggered when clicking the checkbox                     | (record: T, selected: boolean, selectedKeys: (string \| number)[]) => void   | -       |

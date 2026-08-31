@@ -146,8 +146,12 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
     item.xhr = xhr;
     xhr.open(method, action);
     Object.entries(headers ?? {}).forEach(([key, value]) => xhr.setRequestHeader(key, value));
-    const fail = () => {
+    // 失败时给出提示文案，与 kui-vue 的修复保持一致
+    const fail = (detail?: string) => {
       item.status = "error";
+      item.errorText = detail
+        ? `${messages?.k?.upload?.failed ?? "上传失败"}: ${detail}`
+        : (messages?.k?.upload?.failed ?? "上传失败");
       if (item.uid) pendingRef.current.delete(item.uid);
       update(item);
     };
@@ -174,7 +178,7 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
         }
         if (item.uid) pendingRef.current.delete(item.uid);
         update(item);
-      } else fail();
+      } else fail(String(xhr.status));
     };
     xhr.send(body);
   };

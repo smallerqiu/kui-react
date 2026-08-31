@@ -11,6 +11,7 @@ import {
 import { Button } from "../button";
 import Checkbox, { type ChangeEvent } from "../checkbox";
 import Icon from "../icon";
+import VirtualList from "../virtual-list";
 import { buildTree, updateParentIndeterminate, type TreeNode } from "./utils";
 
 export interface TreeExpandEvent {
@@ -39,6 +40,14 @@ export interface TreeProps extends Omit<
   checkStrictly?: boolean;
   selectAsCheck?: boolean;
   queryKey?: string;
+  /** 开启虚拟滚动，用于高效渲染大量节点 */
+  virtual?: boolean;
+  /** 虚拟滚动容器高度，`virtual` 开启时生效 */
+  height?: number | string;
+  /** 虚拟滚动时每个节点的高度，单位 `px` */
+  itemHeight?: number;
+  /** 虚拟滚动时视口外额外渲染的节点数量 */
+  overscan?: number;
   renderTitle?: (node: TreeNode) => ReactNode;
   renderExtra?: (node: TreeNode) => ReactNode;
   onExpand?: (result: TreeExpandEvent) => void;
@@ -82,6 +91,10 @@ export default function Tree({
   checkStrictly,
   selectAsCheck,
   queryKey,
+  virtual = false,
+  height = 300,
+  itemHeight = 28,
+  overscan = 5,
   renderTitle,
   renderExtra,
   onExpand,
@@ -109,21 +122,18 @@ export default function Tree({
   const selected = selectedKeys ?? innerSelected;
   const expanded = expandedKeys ?? innerExpanded;
   const checked = checkedKeys ?? innerChecked;
-  const flat = useMemo(
-    () => {
-      void version;
-      return buildTree({
-        data,
-        selectedKeys: selected,
-        expandedKeys: expanded,
-        checkedKeys: checked,
-        hasLoad: !!loadData,
-        checkable,
-        checkStrictly,
-      });
-    },
-    [data, selected, expanded, checked, loadData, checkable, checkStrictly, version]
-  );
+  const flat = useMemo(() => {
+    void version;
+    return buildTree({
+      data,
+      selectedKeys: selected,
+      expandedKeys: expanded,
+      checkedKeys: checked,
+      hasLoad: !!loadData,
+      checkable,
+      checkStrictly,
+    });
+  }, [data, selected, expanded, checked, loadData, checkable, checkStrictly, version]);
   const byKey = useMemo(() => new Map(flat.map((node) => [node.key, node])), [flat]);
 
   const commitExpanded = (keys: string[]) => {
@@ -159,7 +169,7 @@ export default function Tree({
   const toggleCheck = (event: ChangeEvent, node: TreeNode) => {
     if (node.disabled) return;
     const states = new Map(
-      flat.map((item) => [item.key, { checked: checked.includes(item.key), indeterminate: false }])
+      flat.map((item) => [item.key, { checked: checked.includes(item.key), indeterminate: false }]),
     );
     states.get(node.key)!.checked = event.checked;
     if (!checkStrictly) {
@@ -218,7 +228,7 @@ export default function Tree({
     setVersion((value) => value + 1);
   };
   const visible = flat.filter((node) => {
-    if (queryKey?.trim() && !String(node.title ?? "").includes(queryKey)) return false;
+    if (queryKey?.trim() && !String(node.title ?? "").toLocaleLowerCase().includes(queryKey.toLocaleLowerCase())) return false;
     let current = node;
     while (current.parentKey) {
       const parent = byKey.get(current.parentKey);
@@ -228,122 +238,139 @@ export default function Tree({
     return true;
   });
 
+  const renderNode = (node: TreeNode) => (
+    <div
+      key={node.key}
+      className={clsx("k-tree-item", {
+        "k-tree-item-disabled": node.disabled,
+        "k-tree-item-drop": dropKey === node.key,
+        "k-tree-item-extra-hidden": !showExtra,
+        "k-tree-item-selected": directory && selected.includes(node.key),
+      })}
+      onClick={
+        directory
+          ? () => {
+              selectNode(node);
+              void expand(node);
+            }
+          : undefined
+      }
+    >
+      {node.visiblePrefixes?.map((line, prefix) => (
+        <span key={prefix} className={line ? "k-tree-indent-line" : "k-tree-indent-empty"} />
+      ))}
+      {!node.isLeaf ? (
+        <span
+          className={clsx("k-tree-arrow", {
+            "k-tree-arrow-open": expanded.includes(node.key),
+          })}
+          onClick={(event) => {
+            event.stopPropagation();
+            void expand(node);
+          }}
+        >
+          <Button
+            size="small"
+            type="text"
+            loading={loadingKeys.has(node.key)}
+            icon={
+              showLine
+                ? expanded.includes(node.key)
+                  ? CircleMinus
+                  : CirclePlus
+                : ChevronRight
+            }
+          />
+        </span>
+      ) : (
+        <span className="k-tree-arrow-placeholder" />
+      )}
+      {checkable && (
+        <Checkbox
+          checked={checked.includes(node.key)}
+          indeterminate={!!node.indeterminate}
+          disabled={node.disabled}
+          onChange={(event) => toggleCheck(event, node)}
+        />
+      )}
+      <span
+        className={clsx("k-tree-title", {
+          "k-tree-title-selected": selected.includes(node.key),
+        })}
+        draggable={draggable && !node.disabled}
+        onClick={!directory ? () => selectNode(node) : undefined}
+        onDragStart={(event) => {
+          if (!draggable || node.disabled) return;
+          dragRef.current = node;
+          event.dataTransfer.effectAllowed = "move";
+          onDragStart?.(node, event);
+        }}
+        onDragOver={(event) => {
+          if (draggable) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = "move";
+          }
+        }}
+        onDragEnter={(event) => {
+          if (draggable && dragRef.current?.key !== node.key && !node.disabled) {
+            event.preventDefault();
+            setDropKey(node.key);
+            onDragEnter?.(node, event);
+          }
+        }}
+        onDragLeave={(event) => {
+          if (dropKey === node.key) setDropKey(undefined);
+          onDragLeave?.(node, event);
+        }}
+        onDrop={(event) => {
+          const dragNode = dragRef.current;
+          if (!draggable || !dragNode || dragNode.key === node.key || node.disabled) return;
+          event.preventDefault();
+          moveRawNode(dragNode.key, node.key);
+          setDropKey(undefined);
+          onDrop?.({ dragNode, dropNode: node }, event);
+          dragRef.current = null;
+        }}
+        onDragEnd={(event) => {
+          setDropKey(undefined);
+          dragRef.current = null;
+          onDragEnd?.(node, event);
+        }}
+      >
+        {node.icon && showIcon && <Icon type={node.icon} className="k-tree-icon" />}
+        {renderTitle?.(node) ?? node.title}
+      </span>
+      {renderExtra && <span className="k-tree-item-extra">{renderExtra(node)}</span>}
+    </div>
+  );
+
   return (
     <div
       {...rest}
       className={clsx(
         "k-tree",
         { "k-tree-show-line": showLine, "k-tree-directory": directory },
-        className
+        className,
       )}
     >
-      <div className="k-tree-node-list">
-        {visible.map((node, index) => (
-          <div
-            key={node.key || index}
-            className={clsx("k-tree-item", {
-              "k-tree-item-disabled": node.disabled,
-              "k-tree-item-drop": dropKey === node.key,
-              "k-tree-item-extra-hidden": !showExtra,
-              "k-tree-item-selected": directory && selected.includes(node.key),
-            })}
-            onClick={
-              directory
-                ? () => {
-                    selectNode(node);
-                    void expand(node);
-                  }
-                : undefined
-            }
-          >
-            {node.visiblePrefixes?.map((line, prefix) => (
-              <span key={prefix} className={line ? "k-tree-indent-line" : "k-tree-indent-empty"} />
-            ))}
-            {!node.isLeaf ? (
-              <span
-                className={clsx("k-tree-arrow", {
-                  "k-tree-arrow-open": expanded.includes(node.key),
-                })}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  void expand(node);
-                }}
-              >
-                <Button
-                  size="small"
-                  type="text"
-                  loading={loadingKeys.has(node.key)}
-                  icon={
-                    showLine
-                      ? expanded.includes(node.key)
-                        ? CircleMinus
-                        : CirclePlus
-                      : ChevronRight
-                  }
-                />
-              </span>
-            ) : (
-              <span className="k-tree-arrow-placeholder" />
-            )}
-            {checkable && (
-              <Checkbox
-                checked={checked.includes(node.key)}
-                indeterminate={!!node.indeterminate}
-                disabled={node.disabled}
-                onChange={(event) => toggleCheck(event, node)}
-              />
-            )}
-            <span
-              className={clsx("k-tree-title", {
-                "k-tree-title-selected": selected.includes(node.key),
-              })}
-              draggable={draggable && !node.disabled}
-              onClick={!directory ? () => selectNode(node) : undefined}
-              onDragStart={(event) => {
-                if (!draggable || node.disabled) return;
-                dragRef.current = node;
-                event.dataTransfer.effectAllowed = "move";
-                onDragStart?.(node, event);
-              }}
-              onDragOver={(event) => {
-                if (draggable) {
-                  event.preventDefault();
-                  event.dataTransfer.dropEffect = "move";
-                }
-              }}
-              onDragEnter={(event) => {
-                if (draggable && dragRef.current?.key !== node.key && !node.disabled) {
-                  event.preventDefault();
-                  setDropKey(node.key);
-                  onDragEnter?.(node, event);
-                }
-              }}
-              onDragLeave={(event) => {
-                if (dropKey === node.key) setDropKey(undefined);
-                onDragLeave?.(node, event);
-              }}
-              onDrop={(event) => {
-                const dragNode = dragRef.current;
-                if (!draggable || !dragNode || dragNode.key === node.key || node.disabled) return;
-                event.preventDefault();
-                moveRawNode(dragNode.key, node.key);
-                setDropKey(undefined);
-                onDrop?.({ dragNode, dropNode: node }, event);
-                dragRef.current = null;
-              }}
-              onDragEnd={(event) => {
-                setDropKey(undefined);
-                dragRef.current = null;
-                onDragEnd?.(node, event);
-              }}
-            >
-              {node.icon && showIcon && <Icon type={node.icon} className="k-tree-icon" />}
-              {renderTitle?.(node) ?? node.title}
-            </span>
-            {renderExtra && <span className="k-tree-item-extra">{renderExtra(node)}</span>}
-          </div>
-        ))}
-      </div>
+      {virtual ? (
+        <VirtualList
+          data={visible}
+          height={height}
+          itemHeight={itemHeight}
+          overscan={overscan}
+          itemKey="key"
+          className="k-tree-node-list"
+        >
+          {(node) => renderNode(node)}
+        </VirtualList>
+      ) : (
+        <div className="k-tree-node-list">
+          {visible.map((node) => renderNode(node))}
+        </div>
+      )}
     </div>
   );
 }
+
+

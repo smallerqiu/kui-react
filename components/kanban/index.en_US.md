@@ -34,3 +34,7 @@ Displays tasks in status columns and supports drag-and-drop movement.
 | theme | Theme | ThemeType | fill |
 | onMove | Called when a card moves | (event) => void | - |
 | onItemClick | Called when a card is clicked | (item, column) => void | - |
+| columnTitle | Custom column title renderer | (column, items) => ReactNode | - |
+| item | Custom card renderer | (item, column, index) => ReactNode | - |
+| empty | Custom empty column renderer | (column) => ReactNode | - |
+| footer | Custom column footer renderer | (column, items) => ReactNode | - |

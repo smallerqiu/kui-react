@@ -41,6 +41,7 @@ Freely output colors.
 | size          | Picker size                                                     | `SizeType`                | -           |
 | placement     | Popup placement                                                 | `DropPlacementsType`      | `bottom-left` |
 | children      | Custom trigger element                                          | `ReactNode`               | -           |
+| panelOnly     | Render only the color panel, without a trigger or portal        | `boolean`                 | false       |
 | onUpdateMode  | Called when the color mode changes                              | `(mode: ColorMode) => void` | -         |
 | onChange      | Called when the color value changes                             | `(color: string) => void` | -           |
 | onOpenChange  | Called when the popup opens or closes                           | `(open: boolean) => void` | -           |

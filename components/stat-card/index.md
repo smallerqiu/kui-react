@@ -33,6 +33,8 @@
 | separator      | 分隔符                    | string            | -         |
 | reverse        | 数值/数值描述是否反相排列 | boolean              | false     |
 | bordered       | 是否显示边框              | boolean              | false     |
+| theme          | 主题                      | ThemeType            | -         |
+| shape          | 形状                      | ShapeType            | -         |
 
 ### items Options
 

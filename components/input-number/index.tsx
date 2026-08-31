@@ -22,6 +22,8 @@ export interface InputNumberProps extends Omit<
   disabled?: boolean;
   readOnly?: boolean;
   controls?: boolean;
+  /** 是否允许通过上下方向键调整数值 */
+  keyboard?: boolean;
   suffix?: React.ReactNode;
   prefix?: React.ReactNode;
   theme?: ThemeType;
@@ -44,6 +46,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
   disabled = false,
   readOnly = false,
   controls = true,
+  keyboard = true,
   suffix,
   prefix,
   theme = "fill",
@@ -131,6 +134,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!keyboard) return;
     if (e.key === "ArrowUp") {
       e.preventDefault();
       stepAction("up");

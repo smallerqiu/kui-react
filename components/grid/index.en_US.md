@@ -86,6 +86,7 @@ You can manually resize the browser window to observe the effect.
 | itemMinWidth | Auto-fill mode. Set the minimum width of child items. Grid will automatically calculate the number of columns based on container width. | number                   | -       |
 | align        | Vertical alignment of child items within grid cells                                                                                     | string (center, start..) | -       |
 | justify      | Horizontal alignment of child items within grid cells.                                                                                  | string (center, start..) | -       |
+| flow         | Grid auto-placement mode, maps to `grid-auto-flow`                                                                                      | string (row, column, dense..) | row  |
 | debug        | Debug mode. When enabled, red transparent background columns are displayed to facilitate developer layout alignment.                    | boolean                     | false   |
 
 ## GridItem API

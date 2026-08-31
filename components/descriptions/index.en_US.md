@@ -38,6 +38,7 @@ Commonly seen in detail page information display.
 | layout   | Description layout                                                              | horizontal \| vertical     | horizontal |
 | size     | Set the size of the list. Can be set to medium, small                           | default \| medium \| small | default    |
 | title    | The title of the description list, displayed at the very top                    | string, ReactNode               | -          |
+| shape    | Shape                                                                          | ShapeType                       | -          |
 
 ## Item props
 

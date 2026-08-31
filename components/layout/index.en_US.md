@@ -39,11 +39,11 @@ Assists with page-level overall layout.
 
 - Left navigation + Middle dashboard + Right detail panel (Right Sider).
 
-[Modern Enterprise Admin Console](./demo/messaging-collaboration.tsx?show=vertical)
+[Messaging & Collaboration](./demo/messaging-collaboration.tsx?show=vertical)
 
-- The most common "sidebar navigation + top toolbar" structure, suitable for SaaS products, CMS backends, or ERP systems.
-- Layout logic: The outer Layout includes the Sider, while the inner Layout contains the Header, Content, and Footer.
-- Matching components: Menu (vertical mode), Breadcrumb, Avatar.
+- Scenario: Customer service systems, Slack-like apps, in-app direct messages.
+- Key points: The Content area hosts the message stream, while the Footer serves as a fixed-height input area.
+- This case demonstrates how the Footer can carry complex interactions (text box, emoji button, send key).
 
 [Visual Editor Layout (IDE / Low-code Layout)](./demo/low-code-layout.tsx?show=vertical)
 

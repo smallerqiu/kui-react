@@ -39,6 +39,7 @@ Switch selector.
 | loading            | Loading state; interaction is disabled while loading                      | boolean                  | false   |
 | type               | Theme color, can pass `success`, `warning`, `danger`, `primary`           | string                   | -       |
 | size               | Component size, when value is `small` displays small size                 | string                   | -       |
+| shape              | Shape                                                                     | ShapeType                | -       |
 | checkedChildren    | Custom content for the checked state                            | ReactNode                     | -       |
 | unCheckedChildren  | Custom content for the unchecked state                          | ReactNode                     | -       |
 | trueText           | Text displayed when `checked` is `true`                                   | string                   | -       |

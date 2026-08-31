@@ -67,6 +67,9 @@ Dropdown selector.
 | theme        | The theme of Select                                                       | string                             | fill          |
 | icon         | Custom icon                                                               | string                             | -             |
 | shape        | When shape='circle', displays rounded corners                             | string                             | -             |
+| virtual      | Whether to enable virtual scrolling for large option lists                | boolean                            | false         |
+| itemHeight   | Height of each option in pixels when virtual scrolling is enabled         | number                             | 32            |
+| overscan     | Number of extra options rendered outside the viewport                     | number                             | 5             |
 | onSelect     | Triggered when an item is selected                                        | (option: SelectOption) => void     | -             |
 | onChange     | Triggered when option state changes, returns selected value               | (value: SelectValue) => void       | -             |
 | onOpenChange | Triggered when dropdown expands or collapses                              | (open: boolean) => void            | -             |

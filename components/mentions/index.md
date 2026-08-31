@@ -42,6 +42,9 @@
 | emptyText    | 空状态说明       | string                         | 暂无数据    |
 | loading      | 是否显示加载状态 | boolean                        | false       |
 | loadingText  | 加载状态文案     | string                         | Searching   |
+| clearable    | 是否显示清除按钮 | boolean                        | true        |
 | filterOption | 自定义过滤       | function                       | -           |
 | onChange     | 文本变化         | (value:string)=>void           | -           |
 | onSelect     | 选择提及         | (option,trigger)=>void         | -           |
+| onSearch     | 搜索词变化       | (query:string)=>void           | -           |
+| onClear      | 点击清除按钮     | ()=>void                       | -           |

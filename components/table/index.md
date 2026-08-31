@@ -42,7 +42,7 @@ const columns = [
   },
 ];
 
-<Table :data="dataSource" :columns="columns" />;
+<Table data={dataSource} columns={columns} />;
 ```
 
 ## 代码演示
@@ -105,7 +105,7 @@ const columns = [
 | defaultSelectedKeys | 非受控模式下的初始勾选 key 集合 | (string \| number)[]                                                   | []       |
 | disabledKeys | 禁用的key集合             | (string \| number)[]                                                        | -        |
 | size         | 值为`small`时展示紧凑模式 | string                                                                       | -        |
-| emptyText    | 没有数据时展示的提示      | string                                                                       | 赞无数据 |
+| emptyText    | 没有数据时展示的提示      | string                                                                       | 暂无数据 |
 | loading      | 表格异步加载模式          | boolean                                                                         | false    |
 | data         | 显示的结构化数据          | T[]                                                                          | []       |
 | columns      | 表格列的配置描述，        | Column[]                                                                     | []       |
@@ -120,6 +120,7 @@ const columns = [
 | indentSize | 每级树节点缩进距离 | number | 20 |
 | scroll       | 表格滚动区域              | { x?: number \| string; y?: number \| string }                              | {}       |
 | striped      | 是否展示斑马条纹          | boolean                                                                         | false    |
+| shape        | 形状                      | ShapeType                                                                       | -        |
 | onRowClick   | 单击某一行时触发          | (record: T, index: number) => void                                           | -        |
 | onSort       | 点击排序时触发            | (state: SortState) => void                                                   | -        |
 | onSelect     | 点击复选框时触发          | (record: T, selected: boolean, selectedKeys: (string \| number)[]) => void   | -        |

@@ -23,13 +23,19 @@
 
 - 指定 `mode` 可以改变呈现方向
 
-## API
+## TimeLine API
 
-| 属性  | 说明                                                                                   | 类型        | 默认值 |
-| ----- | -------------------------------------------------------------------------------------- | ----------- | ------ |
-| icon  | 时间轴 `item` 图标                                                                     | string      | -      |
-| dot   | 自定义时间轴节点                                                                       | ReactNode   | -      |
-| color | 时间轴 `item` 图标颜色                                                                 | string      | -      |
-| time  | 时间文本                                                                               | string      | -      |
-| extra | 自定义辅助内容                                                                         | string,ReactNode | -      |
-| mode  | 通过设置 `mode` 可以改变时间轴和内容的相对位置 `left` ,`center`, `alternate` , `right` | string      | left   |
+| 属性 | 说明                                                                                   | 类型                                        | 默认值 |
+| ---- | -------------------------------------------------------------------------------------- | ------------------------------------------- | ------ |
+| mode | 通过设置 `mode` 可以改变时间轴和内容的相对位置 `left` ,`center`, `alternate` , `right` | left,right,center,alternate                 | left   |
+
+## TimeLineItem API
+
+| 属性  | 说明                   | 类型           | 默认值 |
+| ----- | ---------------------- | -------------- | ------ |
+| dot   | 自定义时间轴节点       | ReactNode      | -      |
+| icon  | 时间轴节点图标         | IconType[]     | -      |
+| color | 时间轴节点图标颜色     | string         | -      |
+| time  | 时间文本               | ReactNode      | -      |
+| extra | 自定义辅助内容         | ReactNode      | -      |
+| children | 节点内容            | ReactNode      | -      |

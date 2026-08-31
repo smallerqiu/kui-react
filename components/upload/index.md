@@ -77,7 +77,7 @@
 | limit          | 最多允许上传文件个数                                                                                                           | number                         | -      |
 | minSize        | 上传文件最小单位(KB)                                                                                                           | string                         | -      |
 | maxSize        | 上传文件最大单位(KB)                                                                                                           | string                         | -      |
-| transformFile  | 在上传之前转换文件。支持返回一个 Promise 对象                                                                                  | (file: File) => Promise<File\> | -      |
+| transformFile   | 在上传之前转换文件。支持返回一个 Promise 对象                                                                                 | (file: File) => Promise<File\> | -      |
 | type           | 选择上传文件之后, 所呈现的形式                                                                                                 | [picture,list]                 | -      |
 
 ## Event API

@@ -37,6 +37,8 @@ Content area that can be collapsed/expanded.
 | defaultOpenKeys | Initially expanded panel names in uncontrolled mode                              | string[]                        | []      |
 | accordion | Whether to enable accordion mode. When enabled, at most one panel can be expanded at a time | boolean                            | false   |
 | sample    | Whether to enable simple mode                                                               | boolean                            | false   |
+| theme     | Theme                                                                                       | ThemeType                          | -       |
+| shape     | Shape                                                                                       | ShapeType                          | -       |
 | onChange  | Callback triggered when switching panels, returns the `name` of the current tab             | (key: string \| number) => void | -       |
 | onOpenKeysChange | Callback with all expanded keys when expansion changes                           | (keys: (string \| number)[]) => void | - |
 

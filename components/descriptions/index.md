@@ -38,6 +38,7 @@
 | layout   | 描述布局                                  | horizontal \| vertical     | horizontal |
 | size     | 设置列表的大小。可以设置为 medium 、small | default \| medium \| small | default    |
 | title    | 描述列表的标题，显示在最顶部              | string,ReactNode                | -          |
+| shape    | 形状                                      | ShapeType                       | -          |
 
 ## Item props
 

@@ -27,14 +27,12 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
       disabled = false,
       onChange,
       className = "",
-      onInput,
       ...rest
     },
-    ref
+    ref,
   ) => {
     const [innerValue, setInnerValue] = useState(defaultValue);
     const currentValue = value ?? innerValue;
-
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       const v = e.target.value;
       if (value === undefined) {
@@ -42,7 +40,6 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
       }
       onChange?.(v);
     };
-
     const classes = clsx(
       "k-textarea",
       {
@@ -54,9 +51,8 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
         "k-textarea-circle": shape === "circle",
         "k-textarea-lg": size === "large",
       },
-      className
+      className,
     );
-
     return (
       <textarea
         ref={ref}
@@ -66,12 +62,12 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
         disabled={disabled}
         value={currentValue ?? ""}
         onChange={handleChange}
-        onInput={onInput}
         {...rest}
       />
     );
-  }
+  },
 );
+
 TextArea.displayName = "TextArea";
 
 export default TextArea;

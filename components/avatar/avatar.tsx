@@ -10,7 +10,11 @@ export interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   shape?: ShapeType;
   size?: number | "large" | "small" | "default";
   src?: string;
+  /** 图片的替代文本，与 kui-vue `avatar/avatar.tsx:29` 一致 */
+  alt?: string;
   children?: React.ReactNode;
+  /** 图片加载失败时触发；返回 `false` 可阻止降级到图标或文本 */
+  onError?: (event: React.SyntheticEvent<HTMLImageElement>) => boolean | void;
 }
 
 const Avatar: React.FC<AvatarProps> = ({
@@ -18,7 +22,9 @@ const Avatar: React.FC<AvatarProps> = ({
   shape = "circle",
   size = "default",
   src,
+  alt,
   children,
+  onError,
   className = "",
   style,
   ...rest
@@ -28,6 +34,14 @@ const Avatar: React.FC<AvatarProps> = ({
   const rootRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLSpanElement>(null);
   const [textStyles, setTextStyles] = useState<React.CSSProperties>({});
+  const [imageFailed, setImageFailed] = useState(false);
+
+  // src 变化时重新尝试加载
+  useEffect(() => setImageFailed(false), [src]);
+
+  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
+    if (onError?.(event) !== false) setImageFailed(true);
+  };
 
   const computedSize = group?.size || size;
   const computedShape = group?.shape || shape;
@@ -104,10 +118,11 @@ const Avatar: React.FC<AvatarProps> = ({
 
   return (
     <div ref={rootRef} className={rootClasses} style={rootStyles} {...rest}>
-      {icon ? (
+      {/* 与 kui-vue 一致：优先渲染图片，失败后降级到图标或文本 */}
+      {src && !imageFailed ? (
+        <img src={src} alt={alt ?? ""} onError={handleImageError} />
+      ) : icon ? (
         <Icon type={icon} />
-      ) : src ? (
-        <img src={src} alt="" />
       ) : isText ? (
         <span ref={innerRef} className="k-avatar-string" style={textStyles}>
           {childList[0]}

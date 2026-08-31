@@ -44,6 +44,7 @@
 | maximized    | 弹框是否可以最大化显示 , confirm 模式不可用   | boolean                  | false  |
 | maskClosable | 是否点击遮罩关闭弹窗                          | boolean                  | false  |
 | escKey       | 是否支持按 Esc 关闭                           | boolean                  | true   |
+| panelOnly    | 只渲染弹窗面板本身，不包含遮罩、动画与全局事件 | boolean                  | false  |
 | footer       | 当`footer=false`时不展示底部按钮              | boolean,ReactNode             | true   |
 | loading      | 为`true`时此时确定按钮为加载状态              | boolean                  | false  |
 | top          | 窗口距离顶部的距离                            | number                | 100    |

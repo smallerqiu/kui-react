@@ -77,3 +77,4 @@
 | onEndDateChange | 范围选择结束日期变化时触发                                                                                      | (value: DatePickerOutput) => void                           | -          |
 | onOpenChange | 下拉框展开或收起时触发                                                                                             | (opened: boolean) => void                                   | -          |
 | onClear      | 点击清除按钮时触发                                                                                                 | () => void                                                  | -          |
+| panelOnly    | 只渲染选择面板，不包含触发元素与弹层                                                                               | boolean                                                     | false      |

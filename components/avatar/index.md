@@ -28,6 +28,8 @@
 | shape | 指定头像的形状 circle,square | string                     | circle  |
 | size  | 设置头像的大小               | large,small,default,number | default |
 | src   | 图片类头像的资源地址         | string                     | -       |
+| alt   | 图片的替代文本               | string                     | -       |
+| onError | 图片加载失败时触发，返回 `false` 可阻止降级到图标或文本 | (event) => boolean \| void | - |
 
 ## AvatarGroup API
 

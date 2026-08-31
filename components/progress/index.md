@@ -19,9 +19,9 @@
 
 - 圆形的进度条。
 
-[盘仪表进度条](./demo/dashboard.tsx)
+[仪表盘进度条](./demo/dashboard.tsx)
 
-- 盘仪表进度条。可通过`gapDegree`调节缺口大小。`strokeLinecap="square|round"` 可以调整进度条边缘的形状。
+- 仪表盘进度条。可通过`gapDegree`调节缺口大小。`strokeLinecap="square|round"` 可以调整进度条边缘的形状。
 
 [动态展示](./demo/dynamic.tsx)
 

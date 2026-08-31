@@ -41,6 +41,7 @@
 | size          | 颜色选择器尺寸                                     | `SizeType`                | -           |
 | placement     | 弹层位置                                           | `DropPlacementsType`      | `bottom-left` |
 | children      | 自定义触发元素                                     | `ReactNode`               | -           |
+| panelOnly     | 只渲染颜色面板，不包含触发元素与弹层               | `boolean`                 | false       |
 | onUpdateMode  | 颜色模式更新时触发                                 | `(mode: ColorMode) => void` | -         |
 | onChange      | 颜色值改变时触发                                   | `(color: string) => void` | -           |
 | onOpenChange  | 颜色选择器展开或收起时触发                         | `(open: boolean) => void` | -           |

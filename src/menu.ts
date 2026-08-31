@@ -4,6 +4,7 @@ import {
   AppWindow,
   AppWindowMac,
   ArrowDownNarrowWide,
+  ArrowLeftRight,
   ArrowUpToLine,
   BellDot,
   BetweenVerticalEnd,
@@ -231,6 +232,8 @@ const navData = [
       { title: "表格", sub: "Table", name: "table", icon: Table },
       { title: "时间轴", sub: "TimeLine", name: "time-line", icon: List },
       { title: "树形控件", sub: "Tree", name: "tree", icon: FolderTree },
+      { title: "穿梭框", sub: "Transfer", name: "transfer", icon: ArrowLeftRight },
+      { title: "虚拟列表", sub: "VirtualList", name: "virtual-list", icon: List },
     ],
   },
   {

@@ -93,6 +93,7 @@ export type {
   FormProps,
   FormRule,
   FormSubmitEvent,
+  FormValidateTrigger,
 } from "./form";
 
 export { default as Flex } from "./flex";
@@ -220,14 +221,14 @@ export type { SpinProps } from "./spin";
 export { Step, default as Steps } from "./steps";
 export type { StepProps, StepsProps, StepStatus } from "./steps";
 
-export { default as KSwitch, default as Switch } from "./switch";
+export { default as Switch } from "./switch";
 export type { SwitchProps } from "./switch";
 
 export { Splitter, SplitterPanel } from "./splitter";
 export type { SplitterPanelProps, SplitterProps } from "./splitter";
 
-export { default as Table } from "./table";
-export type { Column, SortState, TableKey, TableProps } from "./table";
+export { default as Table, TableColumnSetting } from "./table";
+export type { Column, SortState, TableKey, TableProps, TableTreeRow } from "./table";
 
 export { default as Tooltip, TooltipPanel } from "./tooltip";
 export type { TooltipPanelProps, TooltipProps } from "./tooltip";

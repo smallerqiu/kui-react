@@ -71,3 +71,16 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 | block    | Whether to inherit the parent width                                                 | boolean   | false   |
 | compact  | Whether to use compact mode                                                         | boolean   | false   |
 | size     | Spacing of child components, optional values `small`, `large`, default not selected | string | -       |
+
+## TextArea API
+
+| Property     | Description                                                                | Type                        | Default |
+| ------------ | -------------------------------------------------------------------------- | --------------------------- | ------- |
+| value        | Controlled input value                                                     | string, number              | -       |
+| defaultValue | Initial value in uncontrolled mode                                         | string, number              | ""      |
+| size         | Size, optional values `small`, `large`, default not selected                | string                      | -       |
+| theme        | Theme                                                                      | ThemeType                   | fill    |
+| shape        | Shape                                                                      | ShapeType                   | -       |
+| rows         | Default row count                                                          | number                      | 2       |
+| disabled     | Whether disabled                                                           | boolean                     | false   |
+| onChange     | Callback when the content changes                                          | (value: string) => void     | -       |

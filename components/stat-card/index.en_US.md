@@ -33,6 +33,8 @@ Can be used in BI/Dashboard scenarios, business backend oriented, intuitive.
 | separator      | Separator                                                | string              | -         |
 | reverse        | Whether to reverse number/number description arrangement | boolean                | false     |
 | bordered       | Show border or not                                       | boolean                | false     |
+| theme          | Theme                                                    | ThemeType              | -         |
+| shape          | Shape                                                    | ShapeType              | -         |
 
 ### items Options
 

@@ -29,7 +29,7 @@
 
 - 标识开关操作仍在执行中。
 
-### API
+## API
 
 | 属性               | 说明                                                      | 类型                     | 默认值 |
 | ------------------ | --------------------------------------------------------- | ------------------------ | ------ |
@@ -39,6 +39,7 @@
 | loading            | 加载状态，加载时不可操作                                  | boolean                  | false  |
 | type               | 主题颜色 可传入 `success`，`warning`，`danger`，`primary` | string                   | -      |
 | size               | 组件尺寸，值为`small`展示小尺寸                           | string                   | -      |
+| shape              | 形状                                                      | ShapeType                | -      |
 | checkedChildren    | 选中时的自定义内容                                 | ReactNode                     | -      |
 | unCheckedChildren  | 未选中时的自定义内容                               | ReactNode                     | -      |
 | trueText           | 当 `checked` 为 `true` 时显示的文字                       | string                   | -      |

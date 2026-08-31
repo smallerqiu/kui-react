@@ -28,6 +28,8 @@ Used to represent users or things, supports image, icon, or character display.
 | shape    | Specify the shape of the avatar: circle, square | string                        | circle  |
 | size     | Set the size of the avatar                      | large, small, default, number | default |
 | src      | Resource address for image avatar               | string                        | -       |
+| alt      | Alternative text for the image                  | string                        | -       |
+| onError  | Called when the image fails to load; return `false` to prevent falling back to the icon or text | (event) => boolean \| void | - |
 
 ## AvatarGroup API
 

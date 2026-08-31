@@ -35,6 +35,7 @@
 | content   | 显示的正文内容                                                                                                                                                             | ReactNode     | -      |
 | placement | 提示框出现的位置，可选值为`top`，`top-left`，`top-right`，`bottom`，`bottom-left`，`bottom-right`，`left`，`left-top`，`left-bottom`，`right`，`right-top`，`right-bottom` | string        | top    |
 | width     | 展示的宽度,默认为内容区域的大小                                                                                                                                            | string,number | -      |
+| panelOnly | 只渲染浮层本身，不包含触发元素、定位与动画                                                                                                                                 | boolean       | false  |
 | open      | 受控的显示状态                                                                                                                                                             | boolean       | -      |
 | show      | 已废弃，请使用 `open`                                                                                                                                                      | boolean       | -      |
 | defaultOpen | 非受控模式的初始显示状态                                                                                                                                                 | boolean       | false  |

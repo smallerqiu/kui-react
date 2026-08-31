@@ -16,6 +16,7 @@ export default function App() {
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
 | locale | Component library locale configuration | Locale \| null | null |
+| getPopupContainer | Container the popups render into, defaults to `body` | () => HTMLElement \| null \| undefined | - |
 
 ## Example
 

@@ -45,5 +45,8 @@ Moves and manages data between two lists.
 | disabled | Whether disabled | boolean | false |
 | theme | Theme | ThemeType | outline |
 | filterOption | Custom filter | (keyword, item) => boolean | - |
+| item | Custom list item renderer | (item) => ReactNode | - |
+| footer | Custom list footer renderer | (direction) => ReactNode | - |
 | onChange | Move callback | (event) => void | - |
 | onSelectChange | Selection callback | (sourceKeys, targetKeys) => void | - |
+| onSearch | Search box callback | (direction, value) => void | - |

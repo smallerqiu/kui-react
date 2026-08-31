@@ -34,3 +34,7 @@
 | theme | 主题 | ThemeType | fill |
 | onMove | 卡片移动回调 | (event) => void | - |
 | onItemClick | 卡片点击回调 | (item, column) => void | - |
+| columnTitle | 自定义列标题渲染 | (column, items) => ReactNode | - |
+| item | 自定义卡片渲染 | (item, column, index) => ReactNode | - |
+| empty | 自定义空列渲染 | (column) => ReactNode | - |
+| footer | 自定义列底部渲染 | (column, items) => ReactNode | - |

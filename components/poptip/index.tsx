@@ -17,6 +17,8 @@ export interface PoptipProps {
   width?: number | string;
   trigger?: "click" | "hover" | "focus";
   placement?: PlacementsType;
+  /** 只渲染浮层本身，不包含触发元素、定位与动画，与 kui-vue 一致 */
+  panelOnly?: boolean;
   onClose?: () => void;
   onOpenChange?: (open: boolean) => void;
   /** @deprecated Use `onOpenChange` instead. */
@@ -26,34 +28,8 @@ export interface PoptipProps {
 
 export type PoptipPanelProps = Omit<PoptipProps, "children" | "open" | "defaultOpen" | "show">;
 
-export function PoptipPanel({ dark, title, content, width, placement = "top" }: PoptipPanelProps) {
-  return (
-    <div
-      {...({ "k-placement": placement } as React.HTMLAttributes<HTMLDivElement>)}
-      className={clsx("k-poptip", "k-poptip-has-arrow", "k-poptip-panel", {
-        "k-poptip-dark": dark,
-      })}
-      style={{ width: typeof width === "number" ? `${width}px` : width }}
-    >
-      <div className="k-poptip-content">
-        {title ? <div className="k-poptip-title">{title}</div> : null}
-        <div className="k-poptip-body">{content}</div>
-        <div className="k-poptip-arrow">
-          <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
-            <path
-              id="ot"
-              d="m24,0.97087l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
-            />
-            <path
-              id="in"
-              stroke="currentcolor"
-              d="m24,0l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
-            />
-          </svg>
-        </div>
-      </div>
-    </div>
-  );
+export function PoptipPanel(props: PoptipPanelProps) {
+  return <Poptip {...props} panelOnly />;
 }
 
 const Poptip: React.FC<PoptipProps> = ({
@@ -66,6 +42,7 @@ const Poptip: React.FC<PoptipProps> = ({
   width,
   trigger = "hover",
   placement = "top",
+  panelOnly = false,
   onClose,
   onOpenChange,
   onShowChange,
@@ -117,8 +94,9 @@ const Poptip: React.FC<PoptipProps> = ({
   }, [placement]);
 
   useEffect(() => {
-    if (visible) updatePosition();
-  }, [title, updatePosition, visible]);
+    if (panelOnly || !visible) return;
+    updatePosition();
+  }, [panelOnly, title, updatePosition, visible]);
 
   const updateShow = useCallback(
     (value: boolean) => {
@@ -146,11 +124,12 @@ const Poptip: React.FC<PoptipProps> = ({
   );
 
   useEffect(() => {
+    if (panelOnly) return;
     window.addEventListener("resize", updatePosition);
     return () => {
       window.removeEventListener("resize", updatePosition);
     };
-  }, [updatePosition]);
+  }, [panelOnly, updatePosition]);
 
   useEffect(() => {
     if (!visible) return;
@@ -294,6 +273,37 @@ const Poptip: React.FC<PoptipProps> = ({
       </div>
     </Transition>
   ) : null;
+
+  // panelOnly：直接渲染浮层本身，无触发元素、无 Teleport、无动画与定位
+  if (panelOnly) {
+    return (
+      <div
+        {...({ "k-placement": placement } as React.HTMLAttributes<HTMLDivElement>)}
+        className={clsx(`k-${preCls}`, `k-${preCls}-has-arrow`, `k-${preCls}-panel`, {
+          [`k-${preCls}-dark`]: dark,
+        })}
+        style={{ width: width ? (typeof width === "number" ? `${width}px` : width) : undefined }}
+      >
+        <div className={`k-${preCls}-content`}>
+          {title ? <div className={`k-${preCls}-title`}>{title}</div> : null}
+          <div className={`k-${preCls}-body`}>{content}</div>
+          <div className={`k-${preCls}-arrow`}>
+            <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
+              <path
+                id="ot"
+                d="m24,0.97087l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+              />
+              <path
+                stroke="currentcolor"
+                id="in"
+                d="m24,0l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

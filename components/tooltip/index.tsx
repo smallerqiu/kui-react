@@ -18,6 +18,8 @@ export interface TooltipProps {
   disabled?: boolean;
   width?: number | string;
   placement?: PlacementsType;
+  /** 只渲染浮层本身，不包含触发元素、定位与动画，与 kui-vue 一致 */
+  panelOnly?: boolean;
   onOpenChange?: (open: boolean) => void;
   /** @deprecated Use `onOpenChange` instead. */
   onShowChange?: (show: boolean) => void;
@@ -26,28 +28,8 @@ export interface TooltipProps {
 
 export type TooltipPanelProps = Omit<TooltipProps, "children" | "open" | "defaultOpen" | "show">;
 
-export function TooltipPanel({ title, color, width, placement = "top" }: TooltipPanelProps) {
-  const bgColor = isColor(color)
-    ? colors.some((preset) => preset === color)
-      ? `var(--kui-color-${color})`
-      : color
-    : undefined;
-  return (
-    <div
-      {...({ "k-placement": placement } as React.HTMLAttributes<HTMLDivElement>)}
-      className={clsx("k-tooltip", "k-tooltip-has-arrow", "k-tooltip-panel")}
-      style={{ width: typeof width === "number" ? `${width}px` : width }}
-    >
-      <div className="k-tooltip-content" style={{ backgroundColor: bgColor }}>
-        <div className="k-tooltip-title">{title}</div>
-        <div className="k-tooltip-arrow">
-          <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 7">
-            <path d="M24 0V1C20 1 18.5 2 16.5 4C14.5 6 14 7 12 7C10 7 9.5 6 7.5 4C5.5 2 4 1 0 1V0H24Z" />
-          </svg>
-        </div>
-      </div>
-    </div>
-  );
+export function TooltipPanel(props: TooltipPanelProps) {
+  return <Tooltip {...props} panelOnly />;
 }
 
 const Tooltip: React.FC<TooltipProps> = ({
@@ -59,6 +41,7 @@ const Tooltip: React.FC<TooltipProps> = ({
   disabled = false,
   width,
   placement = "top",
+  panelOnly = false,
   onOpenChange,
   onShowChange,
   children,
@@ -109,17 +92,19 @@ const Tooltip: React.FC<TooltipProps> = ({
   }, [placement]);
 
   useEffect(() => {
-    if (visible) updatePosition();
-  }, [title, updatePosition, visible]);
+    if (panelOnly || !visible) return;
+    updatePosition();
+  }, [panelOnly, title, updatePosition, visible]);
 
   useEffect(() => {
+    if (panelOnly) return;
     window.addEventListener("resize", updatePosition);
     return () => {
       window.removeEventListener("resize", updatePosition);
       if (hideTimer.current) clearTimeout(hideTimer.current);
       if (showTimer.current) clearTimeout(showTimer.current);
     };
-  }, [updatePosition]);
+  }, [panelOnly, updatePosition]);
 
   const updateShow = (value: boolean) => {
     if (externalOpen === undefined) setVisible(value);
@@ -255,6 +240,34 @@ const Tooltip: React.FC<TooltipProps> = ({
       </div>
     </Transition>
   ) : null;
+
+  // panelOnly：直接渲染浮层本身，无触发元素、无 Teleport、无动画与定位
+  if (panelOnly) {
+    return (
+      <div
+        {...({ "k-placement": placement } as React.HTMLAttributes<HTMLDivElement>)}
+        className={clsx(
+          `k-${preCls}`,
+          {
+            [`k-${preCls}-${color}`]: color && !isColor(color),
+            [`k-${preCls}-has-color`]: isColor(color),
+          },
+          `k-${preCls}-has-arrow`,
+          `k-${preCls}-panel`
+        )}
+        style={{ width: width ? (typeof width === "number" ? `${width}px` : width) : undefined }}
+      >
+        <div className={`k-${preCls}-content`} style={{ backgroundColor: bgColor }}>
+          <div className={`k-${preCls}-title`}>{title}</div>
+          <div className={`k-${preCls}-arrow`}>
+            <svg style={{ fill: arrowFill }} viewBox="0 0 24 7">
+              <path d="M24 0V1C20 1 18.5 2 16.5 4C14.5 6 14 7 12 7C10 7 9.5 6 7.5 4C5.5 2 4 1 0 1V0H24Z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

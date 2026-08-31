@@ -31,6 +31,7 @@
 | width      | 展示的宽度,默认为内容区域的大小                                                                                                                                            | string       | -      |
 | okText     | 确定按钮的文字，                                                                                                                                                           | string       | 确定   |
 | open       | 受控的显示状态                                                                                                                                                             | boolean      | -      |
+| panelOnly  | 只渲染浮层本身，不包含触发元素、定位与动画                                                                                                                                 | boolean      | false  |
 | show       | 已废弃，请使用 `open`                                                                                                                                                      | boolean      | -      |
 | defaultOpen | 非受控模式的初始显示状态                                                                                                                                                 | boolean      | false  |
 | dark       | 是否展示暗色主题                                                                                                                                                           | boolean         | false  |

@@ -34,6 +34,8 @@
 | description | 警告提示的辅助性文字介绍                                            | string       | -       |
 | showIcon    | 是否显示图标                                                        | boolean         | false   |
 | bordered    | 是否展示边框                                                        | boolean         | false   |
+| theme       | 主题                                                                | ThemeType       | -       |
+| shape       | 形状                                                                | ShapeType       | -       |
 | closable    | 是否显示关闭按钮                                                    | boolean         | false   |
 | onClose     | 关闭时触发的回调函数                                                | ()=>void     | -       |
 | icon        | 自定义的图标                                                        | IconPath[]   | -       |

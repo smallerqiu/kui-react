@@ -62,6 +62,14 @@ export interface TreeSelectProps extends Omit<
   treeSelectedKeys?: string[];
   treeExpandedAll?: boolean;
   treeLoadData?: (node: TreeNode) => Promise<unknown>;
+  /** 下拉菜单是否开启虚拟滚动 */
+  virtual?: boolean;
+  /** 下拉菜单虚拟滚动时的容器高度 */
+  virtualHeight?: number;
+  /** 虚拟滚动时每个项目的高度 */
+  itemHeight?: number;
+  /** 虚拟滚动时视口外额外渲染的项目数量 */
+  overscan?: number;
   onChange?: (value: TreeSelectValue) => void;
   onTreeSelect?: (value: string, label: string, selected: boolean) => void;
   onSearch?: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -115,6 +123,10 @@ export default function TreeSelect({
   treeSelectedKeys,
   treeExpandedAll,
   treeLoadData,
+  virtual = false,
+  virtualHeight = 300,
+  itemHeight = 28,
+  overscan = 5,
   onChange,
   onTreeSelect,
   onSearch,
@@ -323,6 +335,10 @@ export default function TreeSelect({
               selectAsCheck={treeCheckable}
               loadData={treeLoadData}
               queryKey={query}
+              virtual={virtual}
+              height={virtualHeight}
+              itemHeight={itemHeight}
+              overscan={overscan}
               onSelect={select}
               onExpand={(event) => onTreeExpand?.(event)}
               onExpandedKeysChange={(keys) => {

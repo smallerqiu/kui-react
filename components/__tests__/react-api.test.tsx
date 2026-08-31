@@ -579,12 +579,12 @@ describe("React controlled and uncontrolled conventions", () => {
         onChange={onChange}
       />
     );
-    expect(document.querySelectorAll(".k-select-tag")).toHaveLength(2);
+    expect(document.querySelectorAll(".k-select-labels .k-tag")).toHaveLength(2);
     fireEvent.change(document.querySelector(".k-select-search")!, { target: { value: "Two" } });
     expect(document.querySelectorAll(".k-select-item")).toHaveLength(1);
     fireEvent.click(document.querySelector(".k-select-clearable")!);
     expect(onChange).toHaveBeenLastCalledWith([]);
-    expect(document.querySelectorAll(".k-select-tag")).toHaveLength(0);
+    expect(document.querySelectorAll(".k-select-labels .k-tag")).toHaveLength(0);
   });
 
   it("renders and clears TreeSelect multiple tags without mutating controlled values", () => {
@@ -602,11 +602,11 @@ describe("React controlled and uncontrolled conventions", () => {
         onClear={onClear}
       />
     );
-    expect(document.querySelectorAll(".k-tree-select-tag")).toHaveLength(2);
+    expect(document.querySelectorAll(".k-tree-select-labels .k-tag")).toHaveLength(2);
     fireEvent.click(document.querySelector(".k-tree-select-clearable")!);
     expect(onChange).toHaveBeenCalledWith([]);
     expect(onClear).toHaveBeenCalledOnce();
-    expect(document.querySelectorAll(".k-tree-select-tag")).toHaveLength(2);
+    expect(document.querySelectorAll(".k-tree-select-labels .k-tag")).toHaveLength(2);
   });
 
   it("requests changes without mutating controlled Poptip visibility", async () => {

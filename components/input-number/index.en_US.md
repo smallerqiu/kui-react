@@ -45,6 +45,7 @@ When standard numerical values need to be obtained.
 | suffix     | Custom suffix                                                               | string, ReactNode                        | -         |
 | prefix     | Prefix content                                                              | string, ReactNode                        | -         |
 | controls   | Whether to show increase/decrease buttons                                   | boolean                                | true      |
+| keyboard   | Whether the value can be adjusted with the up/down arrow keys               | boolean                                | true      |
 | clearable  | Whether to show clear button                                                | boolean                                | false     |
 | theme      | The component renders the theme                                             | string                              | fill      |
 | onChange   | Change callback                                                             | (value: number) => void             | -         |

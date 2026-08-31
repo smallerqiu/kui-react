@@ -36,6 +36,9 @@ Insert structured mentions into multiline text.
 | emptyText    | Empty-state text             | string                         | No data     |
 | loading      | Whether to show loading      | boolean                       | false       |
 | loadingText  | Loading text                 | string                        | Searching   |
+| clearable    | Whether to show the clear button | boolean                    | true        |
 | filterOption | Custom filter                | function                       | -           |
 | onChange     | Text change                  | function                       | -           |
 | onSelect     | Mention selected             | function                       | -           |
+| onSearch     | Search query changed         | function                       | -           |
+| onClear      | Clear button clicked         | function                       | -           |

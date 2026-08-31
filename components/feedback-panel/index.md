@@ -16,4 +16,6 @@
 | symbol | 自定义图标或内容 | IconType[],ReactNode | - |
 | compact | 紧凑模式 | boolean | false |
 | actions | 操作区域 | ReactNode | - |
+| theme | 主题样式 | outline,filled,borderless | outline |
+| shape | 形状 | round,square | round |
 | children | 详情内容 | ReactNode | - |

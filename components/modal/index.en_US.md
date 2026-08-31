@@ -44,6 +44,7 @@ Modal dialog box.
 | maximized    | Whether the modal can be maximized, not available in confirm mode           | boolean                  | false   |
 | maskClosable | Whether clicking the mask closes the modal                                  | boolean                  | false   |
 | escKey       | Whether to support closing with Esc key                                     | boolean                  | true    |
+| panelOnly    | Render only the modal panel, without mask, animation, or global events      | boolean                  | false   |
 | footer       | When `footer=false`, the bottom button is not displayed.                    | boolean,ReactNode             | true    |
 | loading      | When set to `true`, the confirm button will be in a loading state           | boolean                  | false   |
 | top          | Distance from the top of the window                                         | number                | 100     |

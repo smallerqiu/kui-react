@@ -48,6 +48,14 @@ export interface TableProps<T = Record<string, unknown>> extends Omit<
   emptyText?: string;
   header?: ReactNode;
   footer?: ReactNode;
+  /** 开启虚拟滚动，用于高效渲染大量行 */
+  virtual?: boolean;
+  /** 虚拟滚动时每行的高度，单位 `px` */
+  itemHeight?: number;
+  /** 虚拟滚动时视口外额外渲染的行数量 */
+  overscan?: number;
+  /** 隐藏的列 key 集合 */
+  hiddenColumnKeys?: (string | number)[];
   onSort?: (state: SortState) => void;
   onRowClick?: (record: T, index: number) => void;
   onSelect?: (record: T, selected: boolean, selectedKeys: TableKey[]) => void;

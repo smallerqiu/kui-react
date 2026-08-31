@@ -1,9 +1,11 @@
 import clsx from "clsx";
+import { CircleX } from "kui-icons";
 import React, { useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 import Empty from "../empty";
+import Icon from "../icon";
 import { TextArea } from "../input";
 import { setPlacement } from "../utils/placement";
 
@@ -28,10 +30,13 @@ export interface MentionsProps extends Omit<
   emptyText?: string;
   loading?: boolean;
   loadingText?: string;
+  /** 是否显示清除按钮，与 kui-vue `mentions/index.tsx:37` 一致，默认开启 */
+  clearable?: boolean;
   filterOption?: (query: string, option: MentionOption) => boolean;
   onChange?: (value: string) => void;
   onSearch?: (query: string) => void;
   onSelect?: (option: MentionOption, trigger: string) => void;
+  onClear?: () => void;
 }
 type Query = { start: number; trigger: string; text: string };
 const caretPosition = (element: HTMLTextAreaElement) => {
@@ -76,11 +81,14 @@ const Mentions: React.FC<MentionsProps> = ({
   emptyText,
   loading = false,
   loadingText = "Searching",
+  clearable = true,
   filterOption,
   onChange,
   onSearch,
   onSelect,
+  onClear,
   className,
+  disabled,
   ...rest
 }) => {
   const [inner, setInner] = useState(defaultValue);
@@ -164,6 +172,12 @@ const Mentions: React.FC<MentionsProps> = ({
     if (value === undefined) setInner(next);
     onChange?.(next);
   };
+  const clear = () => {
+    setValue("");
+    setQuery(null);
+    onClear?.();
+    textareaRef.current?.focus();
+  };
   const choose = (option: MentionOption) => {
     const textarea = textareaRef.current;
     if (!query || option.disabled || !textarea) return;
@@ -181,7 +195,12 @@ const Mentions: React.FC<MentionsProps> = ({
     });
   };
   return (
-    <div ref={rootRef} className={clsx("k-mentions", className)}>
+    <div
+      ref={rootRef}
+      className={clsx("k-mentions", className, {
+        "k-mentions-has-clear": clearable && !!current && !disabled,
+      })}
+    >
       <TextArea
         {...rest}
         ref={textareaRef}
@@ -210,6 +229,9 @@ const Mentions: React.FC<MentionsProps> = ({
           } else if (event.key === "Escape") setQuery(null);
         }}
       />
+      {clearable && current && !disabled && (
+        <Icon className="k-mentions-clearable" type={CircleX} onClick={clear} />
+      )}
       <Teleport to="body">
         <Transition show={!!query} name="k-select" nodeRef={dropdownRef}>
           <div

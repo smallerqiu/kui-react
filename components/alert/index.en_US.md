@@ -35,5 +35,7 @@ Warning prompts to display information that needs attention.
 | showIcon    | Whether to show the icon                                                         | boolean         | false   |
 | closable    | Whether to show the close button                                                 | boolean         | false   |
 | bordered    | Whether to display the border                                                    | boolean         | false   |
+| theme       | Theme                                                                            | ThemeType       | -       |
+| shape       | Shape                                                                            | ShapeType       | -       |
 | onClose     | Callback function triggered when closing                                         | ()=>void     | -       |
 | icon        | Custom icon                                                                      | IconPath[]   | -       |

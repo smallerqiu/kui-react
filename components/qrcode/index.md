@@ -44,6 +44,8 @@
 | logoBorder | Logo 是否开启白色隔离保护边框。开启后会在 Logo 外围自动绘制一圈背景色保护带，防止二维码矩阵格子死死贴住 Logo 导致视觉杂乱。                                                                                       | `boolean`                                         | `true`                       |
 | margin     | 二维码矩阵区域四周的空白边距（即白边格子的层数）。                                                                                                                                                                | `number`                                          | `0`                          |
 | errorLevel | 二维码的容错率纠错级别。可选值：`'L'` (7%), `'M'` (15%), `'Q'` (25%), `'H'` (30%)。<br>_注：如果需要在正中心嵌入 Logo，建议维持在 'M' 或强行改为 'H'，以确保中心被遮挡后依然能百分百被识别。_                     | `'L' \| 'M' \| 'Q' \| 'H'`                        | `'M'`                        |
+| shape | 二维码形状 | `ShapeType` | - |
+| theme | 二维码主题 | `ThemeType` | - |
 | loadingContent | 自定义 `loading` 状态的遮罩内容。 | `ReactNode` | - |
 | expiredContent | 自定义 `expired` 状态的遮罩内容。 | `ReactNode` | - |
 | scannedContent | 自定义 `scanned` 状态的遮罩内容。 | `ReactNode` | - |

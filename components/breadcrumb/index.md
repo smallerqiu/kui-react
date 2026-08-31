@@ -22,11 +22,18 @@
 
 - 通过 `separator` 设置分隔符
 
+## Breadcrumb API
+
+| 属性      | 说明         | 类型        | 默认值 |
+| --------- | ------------ | ----------- | ------ |
+| separator | 自定义分隔符 | ReactNode   | /      |
+| children  | 面包屑节点   | ReactNode   | -      |
+
 ## BreadcrumbItem API
 
-| 属性      | 说明                                                     | 类型   | 默认值 |
-| --------- | -------------------------------------------------------- | ------ | ------ |
-| separator | 自定义分隔符                                             | string | /      |
-| href      | 自定义链接函数                                           | string | -      |
-| replace   | 路由跳转时，开启 `replace` 将不会向 `history` 添加新记录 | boolean   | false  |
-| icon      | 按钮的图标                                               | string | -      |
+| 属性    | 说明                                                     | 类型      | 默认值 |
+| ------- | -------------------------------------------------------- | --------- | ------ |
+| href    | 自定义链接地址                                           | string    | -      |
+| replace | 路由跳转时，开启 `replace` 将不会向 `history` 添加新记录 | boolean   | false  |
+| icon    | 节点的图标                                               | ReactNode | -      |
+| children | 节点内容                                                | ReactNode | -      |

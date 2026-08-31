@@ -45,6 +45,7 @@
 | suffix     | 自定义后缀                                                 | string,ReactNode                         | -         |
 | prefix     | 前缀内容                                                   | string,ReactNode                         | -         |
 | controls   | 是否显示增减按钮                                           | boolean                                | true      |
+| keyboard   | 是否允许通过上下方向键调整数值                             | boolean                                | true      |
 | clearable  | 是否显示清除按钮                                           | boolean                                | false     |
 | theme      | 组件呈现主题                                               | string                              | fill      |
 | onChange   | 变化回调                                                   | (value: number) => void             | -         |

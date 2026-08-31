@@ -9,34 +9,31 @@ A form with data collection, validation, and submission functions, including che
 
 ## Examples
 
-In `Modal` or `Drawer`, if you need to reset the form when opening the Modal or Drawer, please use asynchronous methods:
+In `Modal` or `Drawer`, if you need to reset the form when opening, use the `ref` after the panel content has rendered:
 
-```javascript
-// The component is not fully rendered before opening, reading the dom object is undefined at this time,
-// The child component is not fully rendered, this.$refs.form is undefined, so it cannot be reset.
-// Use asynchronous method.
-// Of course, you can also reset the form when Modal or Drawer @close.
-export default {
-  methods: {
-    open() {
-      this.visible = true; // Open the modal first
-      this.reset();
-    },
-    close() {
-      this.reset();
-      this.visible = false; // Close the modal after
-    },
-    reset() {
-      this.$nextTick(() => {
-        this.$refs.form.reset();
-      });
-      // or
-      setTimeout(() => {
-        this.$refs.form.reset();
-      }, 0);
-    },
-  },
-};
+```tsx
+import { useRef, useState } from "react";
+import { Button, Form, Modal, type FormExpose } from "react-kui";
+
+function Demo() {
+  const [open, setOpen] = useState(false);
+  const formRef = useRef<FormExpose>(null);
+
+  const openModal = () => {
+    setOpen(true);
+    // Reset after the panel content has rendered
+    requestAnimationFrame(() => formRef.current?.reset());
+  };
+
+  return (
+    <>
+      <Button onClick={openModal}>Open</Button>
+      <Modal open={open} onOpenChange={setOpen}>
+        <Form ref={formRef} model={{}} />
+      </Modal>
+    </>
+  );
+}
 ```
 
 [Typical Form](./demo/basic.tsx?show=vertical)
@@ -89,18 +86,18 @@ export default {
 
 | Property | Description                                                                      | Type                                                     | Default |
 | -------- | -------------------------------------------------------------------------------- | -------------------------------------------------------- | ------- |
-| test     | Method for validating a single field in a form                                   | (key:string)=>void                                       | -       |
+| test     | Method for validating a single field in a form                                   | (key: string) => boolean \| Promise&lt;boolean&gt; \| undefined | -       |
 | reset    | Reset the entire form, clearing all field values and removing validation results | ()=>void                                                 | -       |
 | submit   | Submit the form and validate                                                     | ()=>void                                                 | -       |
-| validate | Validate the form                                                                | (callback?: (result: { valid: boolean }) => void) =>void | -       |
+| validate | Validate the form. Returns a Promise when an async validator is used             | (callback?: (result: { valid: boolean }) => void) => boolean \| Promise&lt;boolean&gt; | - |
 
 ## FormItem API
 
-| Property | Description                                                                     | Type       | Default |
-| -------- | ------------------------------------------------------------------------------- | ---------- | ------- |
-| prop     | Corresponds to the field in the form domain model. Required for form validation | string     | -       |
-| label    | Label text                                                                      | string     | -       |
-| rules    | Form validation rules                                                           | FormRule[] | -       |
+| Property        | Description                                                                     | Type                                     | Default |
+| --------------- | ------------------------------------------------------------------------------- | ---------------------------------------- | ------- |
+| prop            | Corresponds to the field in the form domain model. Required for form validation | string                                   | -       |
+| label           | Label text                                                                      | ReactNode                                | -       |
+| rules           | Form validation rules                                                           | FormRule[]                               | -       |
 
 ## rules API
 
@@ -108,8 +105,9 @@ export default {
 | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------- |
 | required  | Whether it is a required field                                                                                                                                                                 | boolean                                                                    | false   |
 | message   | Prompt message when validation fails                                                                                                                                                           | string                                                                  | -       |
-| validator | Custom validation method, see example                                                                                                                                                          | (rule: FormRule, value: unknown, callback: (error?: Error) => void) => void | - |
+| validator | Custom validation method. Supports the callback form and async functions                                                                                                                          | (rule: FormRule, value: unknown, callback: (error?: Error \| string) => void) => void \| Promise&lt;unknown&gt; | - |
 | type      | Data type validation. Provides three validation methods: `mobile` (phone), `mail` (email), `number` (numeric type judgment)                                                                    | string                                                                  | -       |
 | pattern   | Custom regular expression validation. For example, password strength containing numbers, letters, and special symbols can be written as `/(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{6,20}/` | string                                                                  | -       |
+| trigger   | When this rule runs. Defaults to `change` when unset                                                                                                                                        | change, blur or an array of them                                        | -       |
 | min       | Minimum field length validation                                                                                                                                                                | number                                                                  | -       |
 | max       | Maximum field length validation                                                                                                                                                                | number                                                                  | -       |

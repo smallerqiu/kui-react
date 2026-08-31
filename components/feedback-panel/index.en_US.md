@@ -16,4 +16,6 @@ Presents feedback, supporting details, and follow-up actions.
 | symbol | Custom icon or content | IconType[],ReactNode | - |
 | compact | Compact layout | boolean | false |
 | actions | Action content | ReactNode | - |
+| theme | Appearance | outline,filled,borderless | outline |
+| shape | Shape | round,square | round |
 | children | Detail content | ReactNode | - |

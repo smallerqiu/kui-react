@@ -22,6 +22,8 @@ export interface PopconfirmProps {
   okText?: string;
   cancelText?: string;
   placement?: PlacementsType;
+  /** 只渲染浮层本身，不包含触发元素、定位与动画，与 kui-vue 一致 */
+  panelOnly?: boolean;
   onCancel?: () => void;
   onOk?: () => void;
   onOpenChange?: (open: boolean) => void;
@@ -35,50 +37,9 @@ export type PopconfirmPanelProps = Omit<
   "children" | "open" | "defaultOpen" | "show"
 >;
 
-export function PopconfirmPanel({
-  title,
-  width,
-  placement = "top",
-  okText = "Ok",
-  cancelText = "Cancel",
-  onOk,
-  onCancel,
-}: PopconfirmPanelProps) {
-  return (
-    <div
-      {...({ "k-placement": placement } as React.HTMLAttributes<HTMLDivElement>)}
-      className="k-popconfirm k-popconfirm-has-arrow k-popconfirm-panel"
-      style={{ width: typeof width === "number" ? `${width}px` : width }}
-    >
-      <div className="k-popconfirm-content">
-        <div className="k-popconfirm-body">
-          <Icon type={CircleQuestionMark} />
-          <div className="k-popconfirm-title">{title}</div>
-        </div>
-        <div className="k-popconfirm-footer">
-          <Button size="small" onClick={onCancel}>
-            {cancelText}
-          </Button>
-          <Button size="small" type="primary" onClick={onOk}>
-            {okText}
-          </Button>
-        </div>
-        <div className="k-popconfirm-arrow">
-          <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
-            <path
-              id="ot"
-              d="m24,0.97087l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
-            />
-            <path
-              id="in"
-              stroke="currentcolor"
-              d="m24,0l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
-            />
-          </svg>
-        </div>
-      </div>
-    </div>
-  );
+/** 与 kui-vue 一致：`PopconfirmPanel` 是 `panelOnly` 模式的 `Popconfirm` */
+export function PopconfirmPanel(props: PopconfirmPanelProps) {
+  return <Popconfirm {...props} panelOnly />;
 }
 
 const Popconfirm: React.FC<PopconfirmProps> = ({
@@ -91,6 +52,7 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   okText,
   cancelText,
   placement = "top",
+  panelOnly = false,
   onCancel,
   onOk,
   onOpenChange,
@@ -146,8 +108,9 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   }, [placement]);
 
   useEffect(() => {
-    if (visible) updatePosition();
-  }, [title, updatePosition, visible]);
+    if (panelOnly || !visible) return;
+    updatePosition();
+  }, [panelOnly, title, updatePosition, visible]);
 
   const updateShow = useCallback(
     (value: boolean) => {
@@ -174,11 +137,12 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   );
 
   useEffect(() => {
+    if (panelOnly) return;
     window.addEventListener("resize", updatePosition);
     return () => {
       window.removeEventListener("resize", updatePosition);
     };
-  }, [updatePosition]);
+  }, [panelOnly, updatePosition]);
 
   useEffect(() => {
     if (!visible) return;
@@ -298,6 +262,47 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
       </div>
     </Transition>
   ) : null;
+
+  // panelOnly：直接渲染浮层本身，无触发元素、无 Teleport、无动画与定位
+  if (panelOnly) {
+    return (
+      <div
+        {...({ "k-placement": placement } as React.HTMLAttributes<HTMLDivElement>)}
+        className={clsx(`k-${preCls}`, `k-${preCls}-has-arrow`, `k-${preCls}-panel`, {
+          [`k-${preCls}-dark`]: dark,
+        })}
+        style={{ width: width ? (typeof width === "number" ? `${width}px` : width) : undefined }}
+      >
+        <div className={`k-${preCls}-content`}>
+          <div className={`k-${preCls}-body`}>
+            <Icon type={CircleQuestionMark} />
+            <div className={`k-${preCls}-title`}>{title}</div>
+          </div>
+          <div className={`k-${preCls}-footer`}>
+            <Button size="small" onClick={cancel}>
+              {cancelText || locale?.k?.common?.cancel}
+            </Button>
+            <Button size="small" type="primary" onClick={ok}>
+              {okText || locale?.k?.common?.ok}
+            </Button>
+          </div>
+          <div className={`k-${preCls}-arrow`}>
+            <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
+              <path
+                id="ot"
+                d="m24,0.97087l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+              />
+              <path
+                id="in"
+                stroke="currentcolor"
+                d="m24,0l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

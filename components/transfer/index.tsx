@@ -32,6 +32,8 @@ export interface TransferProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   footer?: (direction: "left" | "right") => React.ReactNode;
   onChange?: (event: TransferChangeEvent) => void;
   onSelectChange?: (sourceKeys: Array<string | number>, targetKeys: Array<string | number>) => void;
+  /** 搜索框内容变化时触发，与 kui-vue `transfer/index.tsx:43` 一致 */
+  onSearch?: (direction: "left" | "right", value: string) => void;
 }
 
 export default function Transfer({
@@ -48,6 +50,7 @@ export default function Transfer({
   footer,
   onChange,
   onSelectChange,
+  onSearch,
   className,
   ...rest
 }: TransferProps) {
@@ -110,13 +113,15 @@ export default function Transfer({
             <div className="k-transfer-search">
               <Input
                 value={queries[side]}
-                onChange={(value) =>
+                onChange={(value) => {
+                  const text = String(value);
                   setQueries((old) => {
                     const next = [...old] as [string, string];
-                    next[side] = String(value);
+                    next[side] = text;
                     return next;
-                  })
-                }
+                  });
+                  onSearch?.(side === 0 ? "left" : "right", text);
+                }}
                 placeholder="Search"
               />
             </div>

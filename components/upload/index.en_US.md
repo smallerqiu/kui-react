@@ -78,7 +78,7 @@ Uploading is the process of publishing information (web pages, text, images, vid
 | limit          | Maximum number of files allowed to upload                                                                   | number                         | -       |
 | minSize        | Minimum file size unit for upload (KB)                                                                      | string                         | -       |
 | maxSize        | Maximum file size unit for upload (KB)                                                                      | string                         | -       |
-| transformFile  | Transform file before uploading. Supports returning a Promise object                                        | (file: File) => Promise<File\> | -       |
+| transformFile   | Transform file before uploading. Supports returning a Promise object                                       | (file: File) => Promise<File\> | -       |
 | type           | After selecting the file to upload, the displayed format                                                    | [picture,list]                 | -       |
 
 ## Event API
@@ -91,3 +91,4 @@ Uploading is the process of publishing information (web pages, text, images, vid
 | onExceed       | Callback when limit is exceeded                           | () => void                             |
 | onSizeError    | Callback when minSize, maxSize error occurs               | (event: UploadChangeEvent) => void     |
 | onBeforeUpload | Callback before upload                                    | (item: UploadFile, file: File) => void \| boolean |
+

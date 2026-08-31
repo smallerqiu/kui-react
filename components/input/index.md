@@ -71,3 +71,16 @@
 | block   | 是否继承父集宽度                               | boolean   | false  |
 | compact | 是否使用紧促模式                               | boolean   | false  |
 | size    | 子组件的间距,可选值 `small`、`large`，默认不选 | string | -      |
+
+## TextArea API
+
+| 属性         | 说明                                                        | 类型                          | 默认值 |
+| ------------ | ----------------------------------------------------------- | ----------------------------- | ------ |
+| value        | 受控输入值                                                  | string、number                | -      |
+| defaultValue | 非受控模式下的初始输入值                                    | string、number                | ""     |
+| size         | 尺寸，可选值 `small`、`large`，默认不选                     | string                        | -      |
+| theme        | 主题                                                        | ThemeType                     | fill   |
+| shape        | 形状                                                        | ShapeType                     | -      |
+| rows         | 默认行数                                                    | number                        | 2      |
+| disabled     | 是否禁用                                                    | boolean                       | false  |
+| onChange     | 内容变化时的回调                                            | (value: string) => void       | -      |

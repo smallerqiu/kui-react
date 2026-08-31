@@ -13,15 +13,13 @@ import { Checkbox, type ChangeEvent } from "../checkbox";
 import Empty from "../empty";
 import Icon from "../icon";
 import Spin from "../spin";
+import { getVirtualRange } from "../virtual-list/range";
 import type { Column, SortState, TableKey, TableProps } from "./types";
-import {
-  countColumnLeaves,
-  flattenColumns,
-  flattenTreeData,
-  getRecordValue,
-} from "./utils";
+import { countColumnLeaves, flattenColumns, flattenTreeData, getRecordValue } from "./utils";
 
-export type { Column, SortState, TableKey, TableProps } from "./types";
+export type { Column, SortState, TableKey, TableProps, TableTreeRow } from "./types";
+export { TableColumnSetting } from "./column-setting";
+export type { TableColumnSettingProps } from "./column-setting";
 interface MatrixCell {
   rowSpan: number;
   colSpan: number;
@@ -51,6 +49,10 @@ export default function Table<T extends object = Record<string, unknown>>({
   emptyText,
   header,
   footer,
+  virtual = false,
+  itemHeight = 40,
+  overscan = 5,
+  hiddenColumnKeys = [],
   onSort,
   onRowClick,
   onSelect,
@@ -82,18 +84,24 @@ export default function Table<T extends object = Record<string, unknown>>({
               .map((row) =>
                 typeof rowKey === "function"
                   ? rowKey(row.record)
-                  : ((getRecordValue(row.record, rowKey) as TableKey) ?? "")
+                  : ((getRecordValue(row.record, rowKey) as TableKey) ?? ""),
               )
-          : defaultExpandedKeys
-      )
+          : defaultExpandedKeys,
+      ),
   );
   const [sort, setSort] = useState<SortState>({ key: "", order: null });
   const [ping, setPing] = useState({ left: false, right: false });
   const [scrollbarWidth, setScrollbarWidth] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(0);
   const selected = controlledSelection ? new Set(selectedKeys) : innerSelected;
   const currentExpanded = expandedKeys === undefined ? innerExpanded : new Set(expandedKeys);
-  const leaves = useMemo(() => flattenColumns(columns), [columns]);
+  const leaves = useMemo(
+    () => flattenColumns(columns).filter((col) => !hiddenColumnKeys.includes(col.key)),
+    [columns, hiddenColumnKeys],
+  );
   const split = scroll.y != null;
+  const virtualEnabled = virtual && split;
   const keyOf = (record: T) => {
     if (typeof rowKey === "function") return rowKey(record);
     const key = getRecordValue(record, rowKey);
@@ -107,14 +115,14 @@ export default function Table<T extends object = Record<string, unknown>>({
       items.forEach((item) =>
         item.children?.length
           ? depth(item.children, level + 1)
-          : (maxDepth = Math.max(maxDepth, level))
+          : (maxDepth = Math.max(maxDepth, level)),
       );
     depth(columns);
-    const rows: Array<Array<Column<T> & { headerColSpan: number; headerRowSpan: number }>> = [];
+    const headerRows: Array<Array<Column<T> & { headerColSpan: number; headerRowSpan: number }>> = [];
     const visit = (items: Column<T>[], level: number) => {
-      rows[level] ??= [];
+      headerRows[level] ??= [];
       items.forEach((item) => {
-        rows[level].push({
+        headerRows[level].push({
           ...item,
           headerColSpan: countColumnLeaves(item),
           headerRowSpan: item.children?.length ? 1 : maxDepth - level,
@@ -123,7 +131,7 @@ export default function Table<T extends object = Record<string, unknown>>({
       });
     };
     visit(columns, 0);
-    return { rows, maxDepth };
+    return { rows: headerRows, maxDepth };
   }, [columns]);
 
   const fixed = useMemo(() => {
@@ -185,10 +193,20 @@ export default function Table<T extends object = Record<string, unknown>>({
     getKey: keyOf,
     sortRecords,
   });
+  const virtualRange = useMemo(() => {
+    if (!virtualEnabled) return { start: 0, end: rows.length, offset: 0, total: 0 };
+    return getVirtualRange({
+      count: rows.length,
+      scrollTop,
+      viewportHeight,
+      itemHeight,
+      overscan,
+    });
+  }, [virtualEnabled, rows.length, scrollTop, viewportHeight, itemHeight, overscan]);
   const treeEnabled = allRows.some((row) => row.hasChildren);
   const matrix = useMemo(() => {
     const result: MatrixCell[][] = rows.map(() =>
-      leaves.map(() => ({ rowSpan: 1, colSpan: 1, show: true }))
+      leaves.map(() => ({ rowSpan: 1, colSpan: 1, show: true })),
     );
     rows.forEach(({ record }, row) =>
       leaves.forEach((column, col) => {
@@ -208,14 +226,12 @@ export default function Table<T extends object = Record<string, unknown>>({
               const cell = result[row + r]?.[col + c];
               if (cell) cell.show = false;
             }
-      })
+      }),
     );
     return result;
   }, [leaves, rows]);
 
-  const enabled = allRows
-    .map((row) => row.record)
-    .filter((record) => !isDisabled(keyOf(record)));
+  const enabled = allRows.map((row) => row.record).filter((record) => !isDisabled(keyOf(record)));
   const checkedCount = enabled.filter((record) => selected.has(keyOf(record))).length;
   const allChecked = enabled.length > 0 && checkedCount === enabled.length;
   const indeterminate = checkedCount > 0 && checkedCount < enabled.length;
@@ -281,6 +297,7 @@ export default function Table<T extends object = Record<string, unknown>>({
   };
   const handleScroll = (event: UIEvent<HTMLDivElement>) => {
     const target = event.currentTarget;
+    setScrollTop(target.scrollTop);
     if (split && headerRef.current) headerRef.current.scrollLeft = target.scrollLeft;
     const max = Math.max(0, target.scrollWidth - target.clientWidth);
     setPing({ left: target.scrollLeft > 0.5, right: target.scrollLeft < max - 0.5 });
@@ -289,7 +306,19 @@ export default function Table<T extends object = Record<string, unknown>>({
     const body = bodyRef.current;
     if (!body) return;
     setScrollbarWidth(split ? body.offsetWidth - body.clientWidth - (bordered ? 1 : 0) : 0);
+    setViewportHeight(body.clientHeight);
   }, [bordered, data, split]);
+
+  useEffect(() => {
+    const body = bodyRef.current;
+    if (!body || !virtualEnabled) return;
+    const handleResize = () => setViewportHeight(body.clientHeight);
+    if (typeof ResizeObserver !== "undefined") {
+      const observer = new ResizeObserver(handleResize);
+      observer.observe(body);
+      return () => observer.disconnect();
+    }
+  }, [virtualEnabled]);
 
   const colgroup = (headerTable = false) => (
     <colgroup>
@@ -364,11 +393,28 @@ export default function Table<T extends object = Record<string, unknown>>({
       ))}
     </thead>
   );
+  const renderedRows = useMemo(() => {
+    const start = virtualRange.start;
+    const end = virtualRange.end;
+    return rows.slice(start, end).map((row, idx) => ({
+      ...row,
+      rowIndex: start + idx,
+    }));
+  }, [rows, virtualRange]);
+
   const tbody = (
     <tbody>
-      {rows.map(({ record, depth, hasChildren }, rowIndex) => (
+      {virtualEnabled && virtualRange.offset > 0 && (
+        <tr aria-hidden="true">
+          <td
+            colSpan={leaves.length + (checkable ? 1 : 0)}
+            style={{ height: virtualRange.offset }}
+          />
+        </tr>
+      )}
+      {renderedRows.map(({ record, depth, hasChildren, rowIndex }) => (
         <tr
-          key={keyOf(record)}
+          key={`${keyOf(record)}-${rowIndex}`}
           onClick={(event) => {
             if ((event.target as HTMLElement).closest(".k-checkbox, .k-table-tree-toggle")) return;
             if (expandRowByClick && hasChildren) toggleExpand(record);
@@ -376,10 +422,7 @@ export default function Table<T extends object = Record<string, unknown>>({
           }}
         >
           {checkable && (
-            <td
-              className="k-table-cell-fix-left"
-              style={{ width: 50, left: 0 }}
-            >
+            <td className="k-table-cell-fix-left" style={{ width: 50, left: 0 }}>
               <Checkbox
                 checked={selected.has(keyOf(record))}
                 disabled={isDisabled(keyOf(record))}
@@ -407,7 +450,9 @@ export default function Table<T extends object = Record<string, unknown>>({
                       <button
                         type="button"
                         className="k-table-tree-toggle"
-                        aria-label={currentExpanded.has(keyOf(record)) ? "Collapse row" : "Expand row"}
+                        aria-label={
+                          currentExpanded.has(keyOf(record)) ? "Collapse row" : "Expand row"
+                        }
                         aria-expanded={currentExpanded.has(keyOf(record))}
                         onClick={() => toggleExpand(record)}
                       >
@@ -428,6 +473,21 @@ export default function Table<T extends object = Record<string, unknown>>({
           })}
         </tr>
       ))}
+      {virtualEnabled &&
+        virtualRange.offset + (virtualRange.end - virtualRange.start) * itemHeight <
+          virtualRange.total && (
+          <tr aria-hidden="true">
+            <td
+              colSpan={leaves.length + (checkable ? 1 : 0)}
+              style={{
+                height:
+                  virtualRange.total -
+                  virtualRange.offset -
+                  (virtualRange.end - virtualRange.start) * itemHeight,
+              }}
+            />
+          </tr>
+        )}
     </tbody>
   );
   const tableStyle: CSSProperties = {
@@ -457,7 +517,7 @@ export default function Table<T extends object = Record<string, unknown>>({
           "k-table-ping-left": ping.left,
           "k-table-ping-right": ping.right,
         },
-        className
+        className,
       )}
     >
       {header && <div className="k-table-header">{header}</div>}

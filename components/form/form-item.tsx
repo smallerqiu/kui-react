@@ -16,7 +16,7 @@ import zhCN from "../locale/zh-CN";
 import { Col, Row } from "../row-col";
 import type { FormItemHandle } from "./form";
 import { FormContext } from "./form-context";
-import type { ColProps, FormRule } from "./types";
+import type { ColProps, FormRule, FormValidateTrigger } from "./types";
 
 export interface FormItemProps {
   label?: ReactNode;
@@ -26,6 +26,25 @@ export interface FormItemProps {
   rules?: FormRule | FormRule[];
   children?: ReactNode;
 }
+
+interface RuleResult {
+  ok: boolean;
+  message?: string;
+}
+
+const PASS: RuleResult = { ok: true };
+
+const isPromiseLike = (value: unknown): value is PromiseLike<unknown> =>
+  typeof value === "object" &&
+  value !== null &&
+  typeof (value as PromiseLike<unknown>).then === "function";
+
+/** 与 kui-vue `form-item.tsx` 的 `matchesTrigger` 保持一致 */
+const matchesTrigger = (rule: FormRule, trigger: FormValidateTrigger) => {
+  if (!rule.trigger) return trigger === "change";
+  const triggers = Array.isArray(rule.trigger) ? rule.trigger : [rule.trigger];
+  return triggers.includes(trigger);
+};
 
 export default function FormItem({
   label,
@@ -41,10 +60,8 @@ export default function FormItem({
   const [valid, setValid] = useState(true);
   const [message, setMessage] = useState<string>();
 
-  const validate = useCallback((ruleInput?: FormRule | FormRule[]) => {
-    const list = ruleInput ? (Array.isArray(ruleInput) ? ruleInput : [ruleInput]) : [];
-    const value = prop ? form?.getValue(prop) : undefined;
-    for (const rule of [...list].sort((item) => (item.required ? -1 : 0))) {
+  const runRule = useCallback(
+    (rule: FormRule, value: unknown): RuleResult | Promise<RuleResult> => {
       let passed = true;
       let errorMessage = rule.message;
       if (rule.required) {
@@ -52,8 +69,9 @@ export default function FormItem({
           ? value.length > 0
           : value !== null && value !== undefined && value !== "" && value !== false;
         errorMessage ||= messages?.required?.replace("{label}", String(label ?? prop ?? ""));
-      } else if (rule.pattern) passed = rule.pattern.test(String(value ?? ""));
-      else if (rule.type === "mail") {
+      } else if (rule.pattern) {
+        passed = rule.pattern.test(String(value ?? ""));
+      } else if (rule.type === "mail") {
         passed = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/.test(String(value ?? ""));
         errorMessage ||= messages?.email;
       } else if (rule.type === "mobile") {
@@ -66,27 +84,79 @@ export default function FormItem({
           (rule.max === undefined || Number(value) <= rule.max);
         errorMessage ||= messages?.number;
       } else if (rule.validator) {
-        rule.validator(rule, value, (error) => {
+        const returned = rule.validator(rule, value, (error) => {
           passed = !error;
           if (error) errorMessage = error.message;
         });
+        // kui-vue 会 await validator 返回的 Promise，这里保持一致
+        if (isPromiseLike(returned)) {
+          return Promise.resolve(returned).then(
+            (resolved) =>
+              resolved === false ? ({ ok: false, message: errorMessage } as RuleResult) : PASS,
+            (error: unknown) => {
+              if (error instanceof Error)
+                return { ok: false, message: error.message || errorMessage };
+              if (typeof error === "string") return { ok: false, message: error };
+              return { ok: false, message: errorMessage };
+            }
+          );
+        }
       } else if (rule.min !== undefined || rule.max !== undefined) {
-        const length = typeof value === "string" || Array.isArray(value) ? value.length : Number(value);
+        const length =
+          typeof value === "string" || Array.isArray(value) ? value.length : Number(value);
         passed =
           (rule.min === undefined || length >= rule.min) &&
           (rule.max === undefined || length <= rule.max);
         errorMessage ||= "Incorrect length";
       }
-      if (!passed) {
+      return passed ? PASS : { ok: false, message: errorMessage };
+    },
+    [label, messages, prop]
+  );
+
+  const validate = useCallback(
+    (
+      ruleInput?: FormRule | FormRule[],
+      trigger?: FormValidateTrigger
+    ): boolean | Promise<boolean> => {
+      const list = ruleInput ? (Array.isArray(ruleInput) ? ruleInput : [ruleInput]) : [];
+      // 指定触发时机时只校验匹配的规则；手动调用与提交校验不区分时机，全部校验
+      const target = trigger ? list.filter((rule) => matchesTrigger(rule, trigger)) : list;
+      if (target.length === 0) return true;
+      const value = prop ? form?.getValue(prop) : undefined;
+      const sorted = [...target].sort((item) => (item.required ? -1 : 0));
+
+      const applyFailure = (result: RuleResult) => {
         setValid(false);
-        setMessage(errorMessage);
+        setMessage(result.message);
         return false;
+      };
+      const runRest = async (start: number): Promise<boolean> => {
+        for (let index = start; index < sorted.length; index++) {
+          const result = await runRule(sorted[index], value);
+          if (!result.ok) return applyFailure(result);
+        }
+        setValid(true);
+        setMessage(undefined);
+        return true;
+      };
+
+      for (let index = 0; index < sorted.length; index++) {
+        const result = runRule(sorted[index], value);
+        if (isPromiseLike(result)) {
+          return Promise.resolve(result).then((resolved) =>
+            resolved.ok ? runRest(index + 1) : applyFailure(resolved)
+          );
+        }
+        if (!result.ok) return applyFailure(result);
       }
-    }
-    setValid(true);
-    setMessage(undefined);
-    return true;
-  }, [form, label, messages, prop]);
+      setValid(true);
+      setMessage(undefined);
+      return true;
+    },
+    [form, prop, runRule]
+  );
+
   const handle = useMemo<FormItemHandle | null>(
     () =>
       prop
@@ -122,6 +192,7 @@ export default function FormItem({
       shape?: ShapeType;
       value?: unknown;
       onChange?: (value: unknown) => void;
+      onBlur?: (...args: unknown[]) => void;
     };
     if (!isValidElement<ControlProps>(child)) return child;
     const injected: ControlProps = {
@@ -137,7 +208,12 @@ export default function FormItem({
       injected.onChange = (value: unknown) => {
         form?.setValue(prop, value);
         original?.(value);
-        validate(effectiveRules);
+        validate(effectiveRules, "change");
+      };
+      const originalBlur = child.props.onBlur;
+      injected.onBlur = (...args: unknown[]) => {
+        originalBlur?.(...args);
+        validate(effectiveRules, "blur");
       };
     }
     return cloneElement(child, injected);

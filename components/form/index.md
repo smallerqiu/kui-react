@@ -9,34 +9,31 @@
 
 ## 代码演示
 
-在 `Modal` `Drawer` 中 , 如果要在打开Modal 或者 Drawer 的时候对表单 进行重置, 请使用异步 :
+在 `Modal`、`Drawer` 中，如果要在打开的时候对表单进行重置，请通过 `ref` 在弹窗内容渲染完成后调用：
 
-```javascript
-// 组件在open 的之前 也就是没有完全渲染完毕, 这个时候 读取 dom 对象是 undefined,
-// 子组件没有渲染完毕 this.$refs.form 为 undefined, 所以无法重置
-// 使用异步方式
-// 当然也在  Modal 或者 Drawer @close 的时候 重置表单
-export default {
-  methods: {
-    open() {
-      this.visible = true; //先打开弹窗
-      this.reset();
-    },
-    close() {
-      this.reset();
-      this.visible = false; //后关闭弹窗
-    },
-    reset() {
-      this.$nextTick(() => {
-        this.$refs.form.reset();
-      });
-      // 或者
-      setTimeout(() => {
-        this.$refs.form.reset();
-      }, 0);
-    },
-  },
-};
+```tsx
+import { useRef, useState } from "react";
+import { Button, Form, type FormExpose } from "react-kui";
+
+function Demo() {
+  const [open, setOpen] = useState(false);
+  const formRef = useRef<FormExpose>(null);
+
+  const openModal = () => {
+    setOpen(true);
+    // 弹窗内容渲染完成后再重置
+    requestAnimationFrame(() => formRef.current?.reset());
+  };
+
+  return (
+    <>
+      <Button onClick={openModal}>打开</Button>
+      <Modal open={open} onOpenChange={setOpen}>
+        <Form ref={formRef} model={{}} />
+      </Modal>
+    </>
+  );
+}
 ```
 
 [典型表单](./demo/basic.tsx?show=vertical)
@@ -89,18 +86,18 @@ export default {
 
 | 属性     | 说明                                                   | 类型                                                     | 默认值 |
 | -------- | ------------------------------------------------------ | -------------------------------------------------------- | ------ |
-| test     | 对表单单个字段进行校验的方法                           | (key:string)=>void                                       | -      |
+| test     | 对表单单个字段进行校验的方法                           | (key: string) => boolean \| Promise&lt;boolean&gt; \| undefined | -      |
 | reset    | 对整个表单进行重置，将所有字段值重置为空并移除校验结果 | ()=>void                                                 | -      |
 | submit   | 提交表单，并验证                                       | ()=>void                                                 | -      |
-| validate | 验证表单                                               | (callback?: (result: { valid: boolean }) => void) =>void | -      |
+| validate | 验证表单，存在异步校验规则时返回 Promise               | (callback?: (result: { valid: boolean }) => void) => boolean \| Promise&lt;boolean&gt; | - |
 
 ## FormItem API
 
-| 属性  | 说明                                        | 类型       | 默认值 |
-| ----- | ------------------------------------------- | ---------- | ------ |
-| prop  | 对应表单域 model 里的字段，表单验证必须字段 | string     | -      |
-| label | 标签文本                                    | string     | -      |
-| rules | 表单验证规则                                | FormRule[] | -      |
+| 属性              | 说明                                              | 类型                                   | 默认值 |
+| ----------------- | ------------------------------------------------- | -------------------------------------- | ------ |
+| prop              | 对应表单域 model 里的字段，表单验证必须字段       | string                                 | -      |
+| label             | 标签文本                                          | ReactNode                              | -      |
+| rules             | 表单验证规则                                      | FormRule[]                             | -      |
 
 ## rules API
 
@@ -108,8 +105,9 @@ export default {
 | --------- | --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------ |
 | required  | 是否必填字段                                                                                                          | boolean                                                                    | false  |
 | message   | 校验不通过提示语                                                                                                      | string                                                                  | -      |
-| validator | 自定义校验方法，可参见示例                                                                                            | (rule: FormRule, value: unknown, callback: (error?: Error) => void) => void | - |
+| validator | 自定义校验方法，支持 callback 与异步函数两种写法                                                                      | (rule: FormRule, value: unknown, callback: (error?: Error \| string) => void) => void \| Promise&lt;unknown&gt; | - |
 | type      | 数据类型校验，提供三种校验方式 `mobile`手机， `mail`邮箱， `number`数字类型判断                                       | string                                                                  | -      |
 | pattern   | 自定义正则校验，比喻密码强度包含数字，字母，特殊符号可以这么写 `/(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{6,20}/` | string                                                                  | -      |
+| trigger   | 该规则在何时触发校验，未设置时默认在 `change` 时校验                                                                  | change,blur 或其数组                                                    | -      |
 | min       | 字段长度最小值校验                                                                                                    | number                                                                  | -      |
 | max       | 字段长度最大值校验                                                                                                    | number                                                                  | -      |

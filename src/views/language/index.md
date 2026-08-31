@@ -16,6 +16,7 @@ export default function App() {
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | locale | 组件库语言配置 | Locale \| null | null |
+| getPopupContainer | 弹层渲染的容器，默认渲染到 `body` | () => HTMLElement \| null \| undefined | - |
 
 ## 示例
 
