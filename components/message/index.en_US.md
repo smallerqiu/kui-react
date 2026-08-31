@@ -27,6 +27,8 @@ Globally display operation feedback information.
 
 [Custom Duration](./demo/close.tsx)
 
+- Customize configuration where `duration` controls auto-close time
+
 [Grouping](./demo/grouping.tsx)
 
 - Update an existing message by using the same `grouping` key.

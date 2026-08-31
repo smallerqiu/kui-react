@@ -6,11 +6,27 @@ Displays progress through a task or workflow.
 
 [Basic](./demo/basic.tsx?show=vertical)
 
+- Basic usage of Steps, showing horizontal step flow
+
 [Vertical](./demo/vertical.tsx?show=vertical)
+
+- Display steps in vertical direction
+
 [Statuses](./demo/status.tsx?show=vertical)
+
+- Display different step statuses (in progress, completed, error, etc.)
+
 [Clickable](./demo/clickable.tsx?show=vertical)
+
+- Steps can be clicked to navigate to corresponding step
+
 [Custom icons](./demo/icon.tsx?show=vertical)
+
+- Customize icons for steps
+
 [Controlled](./demo/controlled.tsx?show=vertical)
+
+- Manage step status in controlled mode
 
 ## Steps API
 

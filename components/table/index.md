@@ -95,6 +95,14 @@ const columns = [
 
 - 选择不同配置组合查看效果。
 
+[虚拟滚动](./demo/virtual.tsx?show=vertical)
+
+- 大数据量时设置 `virtual`，仅渲染可视区域内的行。虚拟滚动要求行高度固定。
+
+[列设置](./demo/column-setting.tsx?show=vertical)
+
+- 使用 `TableColumnSetting` 组件可以动态显示/隐藏列。
+
 ## Table API
 
 | 属性         | 说明                      | 类型                                                                         | 默认值   |
@@ -120,6 +128,10 @@ const columns = [
 | indentSize | 每级树节点缩进距离 | number | 20 |
 | scroll       | 表格滚动区域              | { x?: number \| string; y?: number \| string }                              | {}       |
 | striped      | 是否展示斑马条纹          | boolean                                                                         | false    |
+| virtual      | 是否启用虚拟滚动          | boolean                                                                         | false    |
+| itemHeight   | 虚拟滚动行高度            | number                                                                          | 40       |
+| overscan     | 虚拟滚动视口外预渲染行数  | number                                                                          | 5        |
+| hiddenColumnKeys | 隐藏的列 key 集合     | (string \| number)[]                                                        | []       |
 | shape        | 形状                      | ShapeType                                                                       | -        |
 | onRowClick   | 单击某一行时触发          | (record: T, index: number) => void                                           | -        |
 | onSort       | 点击排序时触发            | (state: SortState) => void                                                   | -        |

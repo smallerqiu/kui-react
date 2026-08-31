@@ -51,7 +51,7 @@ export default function FeedbackPanel({
         `k-feedback-panel-theme-${theme}`,
         `k-feedback-panel-shape-${shape}`,
         { "k-feedback-panel-compact": compact },
-        className
+        className,
       )}
       aria-live="polite"
     >
@@ -60,9 +60,7 @@ export default function FeedbackPanel({
       </div>
       <div className="k-feedback-panel-main">
         {heading != null && <div className="k-feedback-panel-heading">{heading}</div>}
-        {description != null && (
-          <div className="k-feedback-panel-description">{description}</div>
-        )}
+        {description != null && <div className="k-feedback-panel-description">{description}</div>}
         {children != null && <div className="k-feedback-panel-details">{children}</div>}
         {actions != null && <div className="k-feedback-panel-actions">{actions}</div>}
       </div>

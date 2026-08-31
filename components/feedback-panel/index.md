@@ -4,7 +4,11 @@
 
 [基础用法](./demo/basic.tsx?show=vertical)
 
+- 反馈面板的基本用法说明
+
 [状态类型](./demo/kinds.tsx?show=vertical)
+
+- 演示不同的状态类型变体
 
 ## API
 

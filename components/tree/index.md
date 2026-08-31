@@ -34,6 +34,10 @@
 
 - 展示目录、连接线、拖动、复选框、图标、扩展
 
+[虚拟滚动](./demo/virtual.tsx)
+
+- 大数据量时设置 `virtual`，仅渲染可视区域内的节点。虚拟滚动要求节点高度固定。
+
 ## Tree API
 
 | 属性          | 说明                                                         | 类型                              | 默认值 |
@@ -60,6 +64,10 @@
 | loading       | 异步加载状态                                                 | boolean                              | false  |
 | loadData      | 异步加载数据的方法                                           | (node: TreeNode) => Promise<unknown\> | -   |
 | directory     | 是不显示为目录树                                             | boolean                              | false  |
+| virtual       | 是否启用虚拟滚动                                             | boolean                           | false  |
+| height        | 虚拟滚动视口高度                                             | number \| string                  | 300    |
+| itemHeight    | 虚拟滚动节点高度                                             | number                            | 28     |
+| overscan      | 可视区域外预渲染的节点数量                                   | number                            | 5      |
 
 ## TreeNode API
 

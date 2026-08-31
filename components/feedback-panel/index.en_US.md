@@ -4,7 +4,11 @@ Presents feedback, supporting details, and follow-up actions.
 
 [Basic](./demo/basic.tsx?show=vertical)
 
+- Basic usage of FeedbackPanel
+
 [Kinds](./demo/kinds.tsx?show=vertical)
+
+- Demonstrate different feedback kinds
 
 ## API
 

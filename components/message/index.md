@@ -27,6 +27,8 @@
 
 [自定义时长](./demo/close.tsx)
 
+- 可以自定义配置，其中 `duration` 控制自动关闭时长
+
 [合并更新](./demo/grouping.tsx)
 
 - 使用相同的 `grouping` 更新已有消息。
