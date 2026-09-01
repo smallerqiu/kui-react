@@ -39,7 +39,7 @@ const Thumb = forwardRef<HTMLDivElement, ThumbProps>(function Thumb(
     onDragStart,
     onKeyDown,
   },
-  ref
+  ref,
 ) {
   const [hovered, setHovered] = useState(false);
   const percent = max === min ? 0 : Math.max(0, Math.min(100, ((value - min) / (max - min)) * 100));
@@ -68,6 +68,7 @@ const Thumb = forwardRef<HTMLDivElement, ThumbProps>(function Thumb(
         aria-valuemax={max}
         aria-valuenow={value}
         aria-disabled={disabled}
+        aria-orientation={vertical ? "vertical" : "horizontal"}
         tabIndex={disabled ? undefined : 0}
         className={clsx("k-slider-thumb", {
           "is-dragging": dragging,
@@ -80,6 +81,7 @@ const Thumb = forwardRef<HTMLDivElement, ThumbProps>(function Thumb(
           if (!disabled) onDragStart?.(event);
         }}
         onTouchStart={(event) => {
+          event.preventDefault();
           event.stopPropagation();
           if (!disabled) onDragStart?.(event);
         }}

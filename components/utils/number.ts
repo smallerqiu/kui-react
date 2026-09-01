@@ -61,12 +61,19 @@ const toBigSafe = (val: unknown) => {
 
 import type { SliderProps } from "../slider";
 
-export const getClosestStep = (val: number, { min, max, step, marks }: SliderProps) => {
+export const getClosestStep = (
+  val: number,
+  { min = 0, max = 100, step = 1, marks }: SliderProps,
+) => {
   const bMin = toBigSafe(min);
   const bMax = toBigSafe(max);
   const bVal = toBigSafe(val);
 
-  const markValues = marks ? Object.keys(marks).map(Number) : [];
+  const markValues = marks
+    ? Object.keys(marks)
+        .map(Number)
+        .filter((value) => Number.isFinite(value) && value >= min && value <= max)
+    : [];
 
   // 如果 step 为 null，强制吸附到最近的 mark 点
   if (step === null || step === undefined) {
@@ -83,7 +90,8 @@ export const getClosestStep = (val: number, { min, max, step, marks }: SliderPro
   }
 
   // 存在步长 step
-  const bStep = toBigSafe(step || 1);
+  const parsedStep = toBigSafe(step);
+  const bStep = parsedStep.gt(0) ? parsedStep : new Big(1);
   const diff = bVal.minus(bMin);
   const stepCount = Math.round(Number(diff.div(bStep)));
   let closest = bMin.plus(bStep.times(stepCount));
