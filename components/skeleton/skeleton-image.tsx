@@ -1,7 +1,8 @@
 import clsx from "clsx";
 import { Images } from "kui-icons";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import Icon from "../icon";
+import { useSkeletonLoading } from "./use-skeleton-loading";
 
 export interface SkeletonImageProps extends React.HTMLAttributes<HTMLDivElement> {
   animated?: boolean;
@@ -22,47 +23,38 @@ const SkeletonImage: React.FC<SkeletonImageProps> = ({
   className = "",
   ...rest
 }) => {
-  const [show, setShow] = useState(loading);
-  const [previousLoading, setPreviousLoading] = useState(loading);
-  if (previousLoading !== loading) {
-    setPreviousLoading(loading);
-    if (loading) setShow(true);
-  }
-  const timer = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    if (!loading) {
-      if (timer.current) clearTimeout(timer.current);
-      timer.current = setTimeout(() => setShow(false), delay);
-    }
-    return () => {
-      if (timer.current) clearTimeout(timer.current);
-    };
-  }, [loading, delay]);
+  const show = useSkeletonLoading(loading, delay);
 
   const wrapperClasses = clsx(
     "k-skeleton k-skeleton-ele",
     { "k-skeleton-animated": animated },
-    className
+    className,
   );
 
   const innerStyle: React.CSSProperties = {};
-  if (radius) innerStyle.borderRadius = `${radius}px`;
-  if (typeof size === "number" && !isNaN(size)) {
-    innerStyle.width = `${size}px`;
-    innerStyle.height = `${size}px`;
+  if (radius !== undefined) innerStyle.borderRadius = `${radius}px`;
+  if (typeof size === "number" && Number.isFinite(size)) {
+    const value = Math.max(0, size);
+    innerStyle.width = `${value}px`;
+    innerStyle.height = `${value}px`;
+    innerStyle.minWidth = `${value}px`;
+    innerStyle.minHeight = `${value}px`;
   }
   if (Array.isArray(size)) {
-    innerStyle.width = `${size[0]}px`;
-    innerStyle.height = `${size[1]}px`;
+    const width = Number.isFinite(size[0]) ? Math.max(0, size[0]) : 96;
+    const height = Number.isFinite(size[1]) ? Math.max(0, size[1]) : width;
+    innerStyle.width = `${width}px`;
+    innerStyle.height = `${height}px`;
+    innerStyle.minWidth = `${width}px`;
+    innerStyle.minHeight = `${height}px`;
   }
 
   return (
-    <div className={wrapperClasses} {...rest}>
-      {children && !show ? (
+    <div className={wrapperClasses} {...rest} aria-busy={loading || undefined}>
+      {children != null && !show ? (
         children
       ) : (
-        <span className="k-skeleton-image" style={innerStyle}>
+        <span className="k-skeleton-image" style={innerStyle} aria-hidden="true">
           <Icon type={Images} className="k-skeleton-image-icon" />
         </span>
       )}

@@ -1,6 +1,7 @@
 import clsx from "clsx";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import type { ShapeType, SizeType } from "../const/types";
+import { useSkeletonLoading } from "./use-skeleton-loading";
 
 export interface SkeletonButtonProps extends React.HTMLAttributes<HTMLDivElement> {
   animated?: boolean;
@@ -8,7 +9,7 @@ export interface SkeletonButtonProps extends React.HTMLAttributes<HTMLDivElement
   delay?: number;
   block?: boolean;
   width?: number;
-  size?: SizeType;
+  size?: SizeType | "default";
   shape?: ShapeType;
   children?: React.ReactNode;
 }
@@ -25,42 +26,30 @@ const SkeletonButton: React.FC<SkeletonButtonProps> = ({
   className = "",
   ...rest
 }) => {
-  const [show, setShow] = useState(loading);
-  const [previousLoading, setPreviousLoading] = useState(loading);
-  if (previousLoading !== loading) {
-    setPreviousLoading(loading);
-    if (loading) setShow(true);
-  }
-  const timer = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    if (!loading) {
-      if (timer.current) clearTimeout(timer.current);
-      timer.current = setTimeout(() => setShow(false), delay);
-    }
-    return () => {
-      if (timer.current) clearTimeout(timer.current);
-    };
-  }, [loading, delay]);
+  const show = useSkeletonLoading(loading, delay);
 
   const wrapperClasses = clsx(
     "k-skeleton k-skeleton-ele",
     { "k-skeleton-animated": animated, "k-skeleton-block": block },
-    className
+    className,
   );
 
   const innerStyle: React.CSSProperties = {};
-  if (width) innerStyle.width = `${width}px`;
+  if (width !== undefined) innerStyle.width = `${width}px`;
 
   const innerClasses = clsx("k-skeleton-btn", {
     "k-skeleton-btn-lg": size === "large",
     "k-skeleton-btn-sm": size === "small",
-    [`k-skeleton-btn-${shape}`]: shape && shape !== "round",
+    [`k-skeleton-btn-${shape}`]: !!shape && shape !== "default",
   });
 
   return (
-    <div className={wrapperClasses} {...rest}>
-      {children && !show ? children : <span className={innerClasses} style={innerStyle} />}
+    <div className={wrapperClasses} {...rest} aria-busy={loading || undefined}>
+      {children != null && !show ? (
+        children
+      ) : (
+        <span className={innerClasses} style={innerStyle} aria-hidden="true" />
+      )}
     </div>
   );
 };

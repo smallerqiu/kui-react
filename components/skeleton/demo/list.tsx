@@ -12,7 +12,7 @@ export default function App() {
     () => () => {
       if (timer.current) clearTimeout(timer.current);
     },
-    []
+    [],
   );
   const reload = () => {
     setLoading(true);

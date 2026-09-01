@@ -1,13 +1,14 @@
 import clsx from "clsx";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import type { SizeType } from "../const/types";
+import { useSkeletonLoading } from "./use-skeleton-loading";
 
 export interface SkeletonTextProps extends React.HTMLAttributes<HTMLDivElement> {
   animated?: boolean;
   loading?: boolean;
   delay?: number;
   width?: number;
-  size?: SizeType;
+  size?: SizeType | "default";
   children?: React.ReactNode;
 }
 
@@ -21,32 +22,16 @@ const SkeletonText: React.FC<SkeletonTextProps> = ({
   className = "",
   ...rest
 }) => {
-  const [show, setShow] = useState(loading);
-  const [previousLoading, setPreviousLoading] = useState(loading);
-  if (previousLoading !== loading) {
-    setPreviousLoading(loading);
-    if (loading) setShow(true);
-  }
-  const timer = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    if (!loading) {
-      if (timer.current) clearTimeout(timer.current);
-      timer.current = setTimeout(() => setShow(false), delay);
-    }
-    return () => {
-      if (timer.current) clearTimeout(timer.current);
-    };
-  }, [loading, delay]);
+  const show = useSkeletonLoading(loading, delay);
 
   const wrapperClasses = clsx(
     "k-skeleton k-skeleton-ele",
     { "k-skeleton-animated": animated },
-    className
+    className,
   );
 
   const innerStyle: React.CSSProperties = {};
-  if (width) innerStyle.width = `${width}px`;
+  if (width !== undefined) innerStyle.width = `${width}px`;
 
   const innerClasses = clsx("k-skeleton-text", {
     "k-skeleton-text-lg": size === "large",
@@ -54,8 +39,12 @@ const SkeletonText: React.FC<SkeletonTextProps> = ({
   });
 
   return (
-    <div className={wrapperClasses} {...rest}>
-      {children && !show ? children : <span className={innerClasses} style={innerStyle} />}
+    <div className={wrapperClasses} {...rest} aria-busy={loading || undefined}>
+      {children != null && !show ? (
+        children
+      ) : (
+        <span className={innerClasses} style={innerStyle} aria-hidden="true" />
+      )}
     </div>
   );
 };

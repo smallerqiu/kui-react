@@ -1,6 +1,7 @@
 import clsx from "clsx";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import type { ShapeType, SizeType } from "../const/types";
+import { useSkeletonLoading } from "./use-skeleton-loading";
 
 export interface SkeletonAvatarConfig {
   size?: SizeType;
@@ -11,7 +12,9 @@ export interface SkeletonProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   animated?: boolean;
   loading?: boolean;
   delay?: number;
+  /** @deprecated Use titleWidth instead. */
   title?: number;
+  titleWidth?: number;
   rows?: number;
   avatar?: boolean | SkeletonAvatarConfig;
   children?: React.ReactNode;
@@ -21,32 +24,15 @@ const Skeleton: React.FC<SkeletonProps> = ({
   animated = false,
   loading = false,
   delay = 500,
-  title = 35,
+  title,
+  titleWidth = 35,
   rows = 3,
   avatar,
   children,
   className = "",
   ...rest
 }) => {
-  const [show, setShow] = useState(loading);
-  const [previousLoading, setPreviousLoading] = useState(loading);
-  if (previousLoading !== loading) {
-    setPreviousLoading(loading);
-    if (loading) setShow(true);
-  }
-  const timer = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    if (!loading) {
-      if (timer.current) clearTimeout(timer.current);
-      timer.current = setTimeout(() => {
-        setShow(false);
-      }, delay);
-    }
-    return () => {
-      if (timer.current) clearTimeout(timer.current);
-    };
-  }, [loading, delay]);
+  const show = useSkeletonLoading(loading, delay);
 
   const renderAvatar = () => {
     if (!avatar) return null;
@@ -64,17 +50,24 @@ const Skeleton: React.FC<SkeletonProps> = ({
     });
 
     return (
-      <div className="k-skeleton-header">
+      <div className="k-skeleton-header" aria-hidden="true">
         <span className={avatarClasses} />
       </div>
     );
   };
 
   const renderContent = () => {
-    const lines = new Array(rows).fill("");
+    const rowCount = Number.isFinite(rows) ? Math.max(0, Math.floor(rows)) : 3;
+    const rawTitleWidth = title ?? titleWidth;
+    const normalizedTitleWidth = Number.isFinite(rawTitleWidth)
+      ? Math.min(100, Math.max(0, rawTitleWidth))
+      : 35;
+    const lines = new Array(rowCount).fill("");
     return (
-      <div className="k-skeleton-content">
-        {title > 0 ? <div className="k-skeleton-title" style={{ width: `${title}%` }} /> : null}
+      <div className="k-skeleton-content" aria-hidden="true">
+        {normalizedTitleWidth > 0 ? (
+          <div className="k-skeleton-title" style={{ width: `${normalizedTitleWidth}%` }} />
+        ) : null}
         <ul className="k-skeleton-paragraph">
           {lines.map((_, i) => (
             <li key={i} />
@@ -87,8 +80,8 @@ const Skeleton: React.FC<SkeletonProps> = ({
   const classes = clsx("k-skeleton", { "k-skeleton-animated": animated }, className);
 
   return (
-    <div className={classes} {...rest}>
-      {children && !show ? children : [renderAvatar(), renderContent()]}
+    <div className={classes} {...rest} aria-busy={loading || undefined}>
+      {children != null && !show ? children : [renderAvatar(), renderContent()]}
     </div>
   );
 };

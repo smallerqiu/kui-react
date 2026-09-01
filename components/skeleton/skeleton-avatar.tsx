@@ -1,6 +1,7 @@
 import clsx from "clsx";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import type { ShapeType, SizeType } from "../const/types";
+import { useSkeletonLoading } from "./use-skeleton-loading";
 
 export interface SkeletonAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   animated?: boolean;
@@ -8,7 +9,7 @@ export interface SkeletonAvatarProps extends React.HTMLAttributes<HTMLDivElement
   loading?: boolean;
   delay?: number;
   shape?: ShapeType;
-  size?: number | SizeType;
+  size?: number | SizeType | "default";
   children?: React.ReactNode;
 }
 
@@ -23,28 +24,12 @@ const SkeletonAvatar: React.FC<SkeletonAvatarProps> = ({
   className = "",
   ...rest
 }) => {
-  const [show, setShow] = useState(loading);
-  const [previousLoading, setPreviousLoading] = useState(loading);
-  if (previousLoading !== loading) {
-    setPreviousLoading(loading);
-    if (loading) setShow(true);
-  }
-  const timer = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    if (!loading) {
-      if (timer.current) clearTimeout(timer.current);
-      timer.current = setTimeout(() => setShow(false), delay);
-    }
-    return () => {
-      if (timer.current) clearTimeout(timer.current);
-    };
-  }, [loading, delay]);
+  const show = useSkeletonLoading(loading, delay);
 
   const wrapperClasses = clsx(
     "k-skeleton k-skeleton-ele",
     { "k-skeleton-animated": animated },
-    className
+    className,
   );
 
   const innerStyle: React.CSSProperties = {};
@@ -52,19 +37,24 @@ const SkeletonAvatar: React.FC<SkeletonAvatarProps> = ({
     innerStyle.width = `${size}px`;
     innerStyle.height = `${size}px`;
   }
-  if (radius) {
+  if (radius !== undefined) {
     innerStyle.borderRadius = `${radius}px`;
   }
 
+  const avatarShape = shape || "circle";
   const innerClasses = clsx("k-skeleton-avatar", {
     "k-skeleton-avatar-lg": size === "large",
     "k-skeleton-avatar-sm": size === "small",
-    [`k-skeleton-avatar-${shape}`]: shape && shape !== "round",
+    [`k-skeleton-avatar-${avatarShape}`]: true,
   });
 
   return (
-    <div className={wrapperClasses} {...rest}>
-      {children && !show ? children : <span className={innerClasses} style={innerStyle} />}
+    <div className={wrapperClasses} {...rest} aria-busy={loading || undefined}>
+      {children != null && !show ? (
+        children
+      ) : (
+        <span className={innerClasses} style={innerStyle} aria-hidden="true" />
+      )}
     </div>
   );
 };
