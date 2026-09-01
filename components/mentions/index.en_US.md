@@ -18,7 +18,7 @@ Insert structured mentions into multiline text.
 
 [Remote Search](./demo/remote.tsx?show=vertical)
 
-- Load mention options asynchronously after entering a trigger character.
+- Enter at least one character after a trigger to call `onSearch` and load options asynchronously.
 
 [Size](./demo/size.tsx?show=vertical)
 
@@ -34,7 +34,7 @@ Insert structured mentions into multiline text.
 
 [Rows](./demo/rows.tsx)
 
-- Controls the input height with `rows`.
+- Controls the input height with `rows`; use 1 for a single-line input appearance.
 
 [Placement](./demo/placement.tsx)
 
@@ -42,23 +42,23 @@ Insert structured mentions into multiline text.
 
 ## Mentions API
 
-| Property     | Description                  | Type                           | Default     |
-| ------------ | ---------------------------- | ------------------------------ | ----------- |
-| value        | Controlled text              | string                         | -           |
-| defaultValue | Initial text                 | string                         | ''          |
-| options      | Suggestions                  | (string\|MentionOption)[]      | []          |
-| triggers     | Trigger strings              | string[]                       | ['@']       |
-| rows         | Textarea rows                | number                         | 2           |
-| placement    | Preferred dropdown placement | DropPlacementsType             | bottom-left |
-| size         | Size                         | small\|medium\|large           | medium      |
-| theme        | Theme                        | fill\|outline\|plain           | fill        |
-| shape        | Shape                        | circle\|square\|round\|default | default     |
-| emptyText    | Empty-state text             | string                         | No data     |
-| loading      | Whether to show loading      | boolean                       | false       |
-| loadingText  | Loading text                 | string                        | Searching   |
-| clearable    | Whether to show the clear button | boolean                    | true        |
-| filterOption | Custom filter                | function                       | -           |
-| onChange     | Text change                  | function                       | -           |
-| onSelect     | Mention selected             | function                       | -           |
-| onSearch     | Search query changed         | function                       | -           |
-| onClear      | Clear button clicked         | function                       | -           |
+| Property     | Description                          | Type                                | Default     |
+| ------------ | ------------------------------------ | ----------------------------------- | ----------- |
+| value        | Controlled text                      | string                              | -           |
+| defaultValue | Initial text                         | string                              | ''          |
+| options      | Suggestions                          | (string\|MentionOption)[]           | []          |
+| triggers     | Trigger strings                      | string[]                            | ['@']       |
+| rows         | Textarea rows                        | number                              | 1           |
+| placement    | Preferred dropdown placement         | DropPlacementsType                  | bottom-left |
+| size         | Size                                 | small\|medium\|large                | medium      |
+| theme        | Theme                                | fill\|outline\|plain                | fill        |
+| shape        | Shape                                | circle\|square\|round\|default      | default     |
+| emptyText    | Empty-state text                     | string                              | No data     |
+| loading      | Whether to show loading              | boolean                             | false       |
+| loadingText  | Loading text                         | string                              | -           |
+| clearable    | Whether to show the clear button     | boolean                             | true        |
+| filterOption | Custom filter                        | function                            | -           |
+| onChange     | Text change                          | function                            | -           |
+| onSelect     | Mention selected                     | function                            | -           |
+| onSearch     | Remote search with query and trigger | (query:string,trigger:string)=>void | -           |
+| onClear      | Clear button clicked                 | function                            | -           |

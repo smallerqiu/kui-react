@@ -12,13 +12,16 @@ export default function App() {
     if (timer.current) clearTimeout(timer.current);
     setLoading(true);
     timer.current = setTimeout(() => {
-      setOptions(members.filter((member) => member.toLowerCase().includes(query.toLowerCase())));
+      setOptions(
+        members.filter((member) => member.toLocaleLowerCase().includes(query.toLocaleLowerCase())),
+      );
       setLoading(false);
-    }, 500);
+    }, 1000);
   };
   return (
     <Mentions
       value={value}
+      clearable
       onChange={setValue}
       onSearch={search}
       loading={loading}
