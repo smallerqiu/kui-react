@@ -62,6 +62,7 @@ const Tooltip: React.FC<TooltipProps> = ({
   const [top, setTop] = useState(0);
   const [currentPlacement, setCurrentPlacement] = useState(placement);
   const [transOrigin, setTransOrigin] = useState("bottom");
+  const [anchorVisible, setAnchorVisible] = useState(panelOnly);
 
   const refPopper = useRef<HTMLDivElement>(null);
   const refSelection = useRef<HTMLElement>(null);
@@ -69,42 +70,68 @@ const Tooltip: React.FC<TooltipProps> = ({
   const transOriginRef = useRef("bottom");
   const topRef = useRef(0);
   const leftRef = useRef(0);
+  const positionFrame = useRef(0);
   const hideTimer = useRef<NodeJS.Timeout | null>(null);
   const showTimer = useRef<NodeJS.Timeout | null>(null);
 
   const updatePosition = useCallback(() => {
-    if (!refSelection.current || !refPopper.current) return;
-    placementRef.current = placement;
-
-    setPlacement({
-      refSelection,
-      refPopper,
-      currentPlacement: placementRef,
-      transOrigin: transOriginRef,
-      top: topRef,
-      left: leftRef,
+    cancelAnimationFrame(positionFrame.current);
+    positionFrame.current = requestAnimationFrame(() => {
+      if (!visible || !anchorVisible || !refSelection.current || !refPopper.current) return;
+      placementRef.current = placement;
+      setPlacement({
+        refSelection,
+        refPopper,
+        currentPlacement: placementRef,
+        transOrigin: transOriginRef,
+        top: topRef,
+        left: leftRef,
+      });
+      setCurrentPlacement(placementRef.current as PlacementsType);
+      setTransOrigin(transOriginRef.current);
+      setTop(topRef.current);
+      setLeft(leftRef.current);
     });
-
-    setCurrentPlacement(placementRef.current as PlacementsType);
-    setTransOrigin(transOriginRef.current);
-    setTop(topRef.current);
-    setLeft(leftRef.current);
-  }, [placement]);
+  }, [anchorVisible, placement, visible]);
 
   useEffect(() => {
-    if (panelOnly || !visible) return;
+    if (panelOnly || !visible || !anchorVisible) return;
     updatePosition();
-  }, [panelOnly, title, updatePosition, visible]);
+  }, [anchorVisible, panelOnly, title, updatePosition, visible]);
 
   useEffect(() => {
     if (panelOnly) return;
+    const selection = refSelection.current;
+    let intersectionObserver: IntersectionObserver | null = null;
+    let resizeObserver: ResizeObserver | null = null;
+    const handlePosition = () => updatePosition();
+    document.addEventListener("scroll", handlePosition, true);
     window.addEventListener("resize", updatePosition);
+    if (selection && typeof IntersectionObserver !== "undefined") {
+      intersectionObserver = new IntersectionObserver(([entry]) => {
+        setAnchorVisible(entry.isIntersecting);
+        if (entry.isIntersecting) updatePosition();
+      });
+      intersectionObserver.observe(selection);
+    } else {
+      setAnchorVisible(true);
+      updatePosition();
+    }
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(updatePosition);
+      if (selection) resizeObserver.observe(selection);
+      if (refPopper.current) resizeObserver.observe(refPopper.current);
+    }
     return () => {
+      cancelAnimationFrame(positionFrame.current);
+      intersectionObserver?.disconnect();
+      resizeObserver?.disconnect();
+      document.removeEventListener("scroll", handlePosition, true);
       window.removeEventListener("resize", updatePosition);
       if (hideTimer.current) clearTimeout(hideTimer.current);
       if (showTimer.current) clearTimeout(showTimer.current);
     };
-  }, [panelOnly, updatePosition]);
+  }, [panelOnly, rendered, updatePosition]);
 
   const updateShow = (value: boolean) => {
     if (externalOpen === undefined) setVisible(value);
@@ -114,6 +141,7 @@ const Tooltip: React.FC<TooltipProps> = ({
 
   const mouseEnter = () => {
     if (disabled) return;
+    if (hideTimer.current) clearTimeout(hideTimer.current);
     if (showTimer.current) clearTimeout(showTimer.current);
     if (!rendered) {
       setRendered(true);
@@ -143,6 +171,7 @@ const Tooltip: React.FC<TooltipProps> = ({
     onMouseLeave: hide,
     onTouchStart: mouseEnter,
     onTouchEnd: hide,
+    onTouchMove: updatePosition,
   };
   const setSelectionRef = (node: HTMLElement | null) => {
     refSelection.current = node;
@@ -177,6 +206,10 @@ const Tooltip: React.FC<TooltipProps> = ({
         childProps.onTouchEnd?.(event);
         hide();
       },
+      onTouchMove: (event) => {
+        childProps.onTouchMove?.(event);
+        updatePosition();
+      },
     });
   } else {
     triggerNode = (
@@ -201,7 +234,7 @@ const Tooltip: React.FC<TooltipProps> = ({
     : undefined;
 
   const overlayNode = rendered ? (
-    <Transition show={visible} name={`k-${preCls}`} nodeRef={refPopper} appear>
+    <Transition show={visible && anchorVisible} name={`k-${preCls}`} nodeRef={refPopper} appear>
       <div
         ref={refPopper}
         {...({ "k-placement": currentPlacement } as React.HTMLAttributes<HTMLDivElement>)}
