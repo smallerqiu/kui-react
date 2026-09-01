@@ -7,9 +7,10 @@ import {
   type ReactNode,
 } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router";
-import { modal } from "react-kui";
+import { loading, modal } from "react-kui";
 import AppLayout from "./components/app-layout";
 import Home from "./views";
+import Playground from "./views/playground";
 
 type PageModule = { default: ComponentType };
 const componentDocs = import.meta.glob<PageModule>("../components/**/index*.md");
@@ -32,16 +33,25 @@ function RoutedPage() {
   useEffect(() => () => modal.destroyAll(), [location.pathname]);
   const page = pages.get(location.pathname);
   return page ? (
-    <Suspense fallback={<div className="content-inner">Loading...</div>}>{page}</Suspense>
+    <Suspense fallback={<RouteLoading />}>{page}</Suspense>
   ) : (
     <Navigate to="/guide/quick-started-en" replace />
   );
+}
+
+function RouteLoading() {
+  useEffect(() => {
+    loading.start();
+    return () => loading.finish();
+  }, []);
+  return null;
 }
 
 export default function AppRouter() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/playground" element={<Playground />} />
       <Route
         path="/*"
         element={

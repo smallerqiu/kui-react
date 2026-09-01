@@ -152,7 +152,7 @@ const Tooltip: React.FC<TooltipProps> = ({
   if (
     firstChild &&
     React.isValidElement<React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement> }>(
-      firstChild
+      firstChild,
     )
   ) {
     const childProps = firstChild.props;
@@ -201,7 +201,7 @@ const Tooltip: React.FC<TooltipProps> = ({
     : undefined;
 
   const overlayNode = rendered ? (
-    <Transition show={visible} name={`k-${preCls}`} nodeRef={refPopper}>
+    <Transition show={visible} name={`k-${preCls}`} nodeRef={refPopper} appear>
       <div
         ref={refPopper}
         {...({ "k-placement": currentPlacement } as React.HTMLAttributes<HTMLDivElement>)}
@@ -211,7 +211,7 @@ const Tooltip: React.FC<TooltipProps> = ({
             [`k-${preCls}-${color}`]: color && !isColor(color),
             [`k-${preCls}-has-color`]: isColor(color),
           },
-          `k-${preCls}-has-arrow`
+          `k-${preCls}-has-arrow`,
         )}
         style={{
           left: `${left}px`,
@@ -253,7 +253,7 @@ const Tooltip: React.FC<TooltipProps> = ({
             [`k-${preCls}-has-color`]: isColor(color),
           },
           `k-${preCls}-has-arrow`,
-          `k-${preCls}-panel`
+          `k-${preCls}-panel`,
         )}
         style={{ width: width ? (typeof width === "number" ? `${width}px` : width) : undefined }}
       >

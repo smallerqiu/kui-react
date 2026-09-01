@@ -118,7 +118,7 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
       onOpenChange?.(value);
       onShowChange?.(value);
     },
-    [externalOpen, onOpenChange, onShowChange]
+    [externalOpen, onOpenChange, onShowChange],
   );
 
   const outsideClick = useCallback(
@@ -133,7 +133,7 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
         updateShow(false);
       }
     },
-    [updateShow]
+    [updateShow],
   );
 
   useEffect(() => {
@@ -184,7 +184,7 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   if (
     firstChild &&
     React.isValidElement<React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement> }>(
-      firstChild
+      firstChild,
     )
   ) {
     const childProps = firstChild.props;
@@ -209,7 +209,7 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   const preCls = "popconfirm";
 
   const overlayNode = rendered ? (
-    <Transition show={visible} name={`k-${preCls}`} nodeRef={refPopper}>
+    <Transition show={visible} name={`k-${preCls}`} nodeRef={refPopper} appear>
       <div
         ref={refPopper}
         {...({ "k-placement": currentPlacement } as React.HTMLAttributes<HTMLDivElement>)}

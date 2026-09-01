@@ -105,7 +105,7 @@ const Poptip: React.FC<PoptipProps> = ({
       onShowChange?.(value);
       if (!value) onClose?.();
     },
-    [externalOpen, onClose, onOpenChange, onShowChange]
+    [externalOpen, onClose, onOpenChange, onShowChange],
   );
 
   const outsideClick = useCallback(
@@ -120,7 +120,7 @@ const Poptip: React.FC<PoptipProps> = ({
         updateShow(false);
       }
     },
-    [updateShow]
+    [updateShow],
   );
 
   useEffect(() => {
@@ -181,7 +181,7 @@ const Poptip: React.FC<PoptipProps> = ({
   if (
     firstChild &&
     React.isValidElement<React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement> }>(
-      firstChild
+      firstChild,
     )
   ) {
     const childProps = firstChild.props;
@@ -230,7 +230,7 @@ const Poptip: React.FC<PoptipProps> = ({
   const preCls = "poptip";
 
   const overlayNode = rendered ? (
-    <Transition show={visible} name={`k-${preCls}`} nodeRef={refPopper}>
+    <Transition show={visible} name={`k-${preCls}`} nodeRef={refPopper} appear>
       <div
         ref={refPopper}
         {...({ "k-placement": currentPlacement } as React.HTMLAttributes<HTMLDivElement>)}
