@@ -1,5 +1,13 @@
-import { createElement, lazy, Suspense, type ComponentType, type ReactNode } from "react";
+import {
+  createElement,
+  lazy,
+  Suspense,
+  useEffect,
+  type ComponentType,
+  type ReactNode,
+} from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router";
+import { modal } from "react-kui";
 import AppLayout from "./components/app-layout";
 import Home from "./views";
 
@@ -15,12 +23,13 @@ for (const [file, loader] of [...Object.entries(componentDocs), ...Object.entrie
   const english = file.includes("en_US");
   pages.set(
     `/${isComponent ? "components" : "guide"}/${part}${english ? "-en" : ""}`,
-    createElement(lazy(loader))
+    createElement(lazy(loader)),
   );
 }
 
 function RoutedPage() {
   const location = useLocation();
+  useEffect(() => () => modal.destroyAll(), [location.pathname]);
   const page = pages.get(location.pathname);
   return page ? (
     <Suspense fallback={<div className="content-inner">Loading...</div>}>{page}</Suspense>

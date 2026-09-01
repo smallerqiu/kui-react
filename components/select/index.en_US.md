@@ -25,6 +25,10 @@ Dropdown selector.
 
 - Set the `filterable` value to present filtering mode. > `filterable` and `onSearch` cannot be used simultaneously; search results will be filtered.
 
+[Create Options](./demo/allow-create.tsx)
+
+- Enable `allowCreate` in multiple mode to create and select an option from the current input.
+
 [Size](./demo/size.tsx)
 
 - Control component size via `width` and `size`.
@@ -33,11 +37,11 @@ Dropdown selector.
 
 - Some strange things.
 
-## Select API
-
 [Virtual Scrolling](./demo/virtual.tsx?show=vertical)
 
 - Use virtual scrolling to efficiently display many options.
+
+## Select API
 
 | Property     | Description                                                               | Type                               | Default       |
 | ------------ | ------------------------------------------------------------------------- | ---------------------------------- | ------------- |

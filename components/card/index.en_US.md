@@ -28,6 +28,12 @@ The most basic card container, can carry text, lists, images, paragraphs, often 
 
 - Use `cover` and `CardMeta` to display a card with cover content.
 
+[Appearance and Shape](./demo/appearance.tsx)
+
+- Use `theme`, `shape`, and `size` to adjust the card appearance.
+
+## Card API
+
 | Property | Description                        | Type                       | Default |
 | -------- | ---------------------------------- | -------------------------- | ------- |
 | title    | Card title                         | ReactNode                  | -       |

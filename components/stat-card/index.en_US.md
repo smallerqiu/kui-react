@@ -18,6 +18,8 @@ Can be used in BI/Dashboard scenarios, business backend oriented, intuitive.
 
 [Combination Display](./demo/with-card.tsx)
 
+- Combines multiple statistics inside a card container.
+
 [Trend Status](./demo/trend.tsx?show=vertical)
 
 - Show more custom data combined with the `Card` component

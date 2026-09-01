@@ -31,7 +31,8 @@ const publicProps: Array<{ name: string; modulePath: string }> = [];
 readSource(barrelPath).forEachChild((node) => {
   if (!ts.isExportDeclaration(node) || !node.isTypeOnly || !node.moduleSpecifier) return;
   const modulePath = (node.moduleSpecifier as ts.StringLiteral).text;
-  node.exportClause?.elements.forEach((element) => {
+  if (!node.exportClause || !ts.isNamedExports(node.exportClause)) return;
+  node.exportClause.elements.forEach((element) => {
     const name = element.name.text;
     if (name.endsWith("Props")) publicProps.push({ name, modulePath });
   });
@@ -110,10 +111,65 @@ for (const item of publicProps) {
   }
 }
 
+const demoFailures: string[] = [];
+const componentRoot = path.join(root, "components");
+for (const entry of fs.readdirSync(componentRoot, { withFileTypes: true })) {
+  if (!entry.isDirectory()) continue;
+  const componentDirectory = path.join(componentRoot, entry.name);
+  const demoDirectory = path.join(componentDirectory, "demo");
+  for (const documentationFile of ["index.md", "index.en_US.md"]) {
+    const documentationPath = path.join(componentDirectory, documentationFile);
+    if (!fs.existsSync(documentationPath)) continue;
+    const relativeDocumentationPath = path.relative(root, documentationPath);
+    const lines = fs.readFileSync(documentationPath, "utf8").split(/\r?\n/);
+    const demoLinkPattern = /^\[.+\]\(\.\/demo\/([^)?#]+)(?:\?[^)]*)?\)\s*$/;
+    const referencedDemos = new Set<string>();
+    lines.forEach((line, index) => {
+      const match = line.match(demoLinkPattern);
+      if (!match) return;
+      referencedDemos.add(match[1]);
+      let nextLine = index + 1;
+      while (nextLine < lines.length && !lines[nextLine].trim()) nextLine += 1;
+      if (nextLine >= lines.length || !/^-\s+\S/.test(lines[nextLine])) {
+        demoFailures.push(
+          `${relativeDocumentationPath}:${index + 1} demo is missing a description`,
+        );
+      }
+    });
+
+    if (!fs.existsSync(demoDirectory)) continue;
+    const isReferenced = (file: string) => {
+      const extension = path.extname(file);
+      const stem = path.basename(file, extension);
+      const alternate = stem.endsWith("-en")
+        ? `${stem.slice(0, -3)}${extension}`
+        : `${stem}-en${extension}`;
+      return referencedDemos.has(file) || referencedDemos.has(alternate);
+    };
+    fs.readdirSync(demoDirectory)
+      .filter((file) => /\.(vue|tsx)$/.test(file))
+      .filter((file) =>
+        /export\s+default\b/.test(fs.readFileSync(path.join(demoDirectory, file), "utf8")),
+      )
+      .filter((file) => !isReferenced(file))
+      .forEach((file) => {
+        demoFailures.push(`${relativeDocumentationPath} does not reference demo/${file}`);
+      });
+  }
+}
+
 if (failures.length) {
   console.error("API documentation is missing public props:\n");
   failures.forEach((failure) => console.error(`- ${failure}`));
   process.exitCode = 1;
 } else {
   console.log(`API documentation check passed (${publicProps.length} public Props types).`);
+}
+
+if (demoFailures.length) {
+  console.error("Demo documentation is incomplete:\n");
+  demoFailures.forEach((failure) => console.error(`- ${failure}`));
+  process.exitCode = 1;
+} else {
+  console.log("Demo documentation check passed.");
 }

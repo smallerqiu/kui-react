@@ -26,11 +26,12 @@
 
 [自定义时长](./demo/close.tsx)
 
+- 使用 `duration` 控制自动关闭时长，默认值为 `3s`。
+
 [合并更新](./demo/grouping.tsx)
 
 - 使用相同的 `grouping` 更新已有通知。
 
-- 可以自定义配置，其中 `duration` 来控制自动关闭时长,默认 `3s`
 
 ## API
 

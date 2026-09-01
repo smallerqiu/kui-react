@@ -40,7 +40,11 @@ import Transition from "../base/transition";
 describe("React controlled and uncontrolled conventions", () => {
   it("uses defaultChecked only as the initial Checkbox state", () => {
     const onChange = vi.fn();
-    render(<Checkbox defaultChecked onChange={onChange}>Remember</Checkbox>);
+    render(
+      <Checkbox defaultChecked onChange={onChange}>
+        Remember
+      </Checkbox>,
+    );
     const input = screen.getByRole("checkbox");
     expect((input as HTMLInputElement).checked).toBe(true);
     fireEvent.click(input);
@@ -53,9 +57,11 @@ describe("React controlled and uncontrolled conventions", () => {
     const switchChange = vi.fn();
     render(
       <>
-        <Radio checked={false} onChange={radioChange}>Radio</Radio>
+        <Radio checked={false} onChange={radioChange}>
+          Radio
+        </Radio>
         <Switch checked={false} onChange={switchChange} />
-      </>
+      </>,
     );
     const radio = screen.getByRole("radio");
     const button = screen.getByRole("button");
@@ -74,7 +80,7 @@ describe("React controlled and uncontrolled conventions", () => {
       <>
         <Input value="fixed" clearable onChange={onInputChange} />
         <InputNumber value={10} onChange={onNumberChange} />
-      </>
+      </>,
     );
     fireEvent.click(document.querySelector(".k-input-clearable")!);
     expect(screen.getByDisplayValue("fixed")).not.toBeNull();
@@ -93,7 +99,7 @@ describe("React controlled and uncontrolled conventions", () => {
         <FormItem label="Name" prop="account.name" rules={{ required: true, message: "Required" }}>
           <Input />
         </FormItem>
-      </Form>
+      </Form>,
     );
     fireEvent.submit(document.querySelector("form")!);
     expect(onSubmit).toHaveBeenCalledWith({ valid: false });
@@ -113,18 +119,28 @@ describe("React controlled and uncontrolled conventions", () => {
     expect(document.querySelector(".k-input-group")).toBeNull();
     unmount();
 
-    render(<Input prefix={<button>Prefix action</button>} suffix={<button>Suffix action</button>} />);
-    expect(document.querySelector(".k-input-group-prefix button")?.textContent).toBe("Prefix action");
-    expect(document.querySelector(".k-input-group-suffix button")?.textContent).toBe("Suffix action");
+    render(
+      <Input prefix={<button>Prefix action</button>} suffix={<button>Suffix action</button>} />,
+    );
+    expect(document.querySelector(".k-input-group-prefix button")?.textContent).toBe(
+      "Prefix action",
+    );
+    expect(document.querySelector(".k-input-group-suffix button")?.textContent).toBe(
+      "Suffix action",
+    );
   });
 
   it("supports controlled and uncontrolled Collapse open keys", () => {
     const onOpenKeysChange = vi.fn();
     const { rerender } = render(
       <Collapse defaultOpenKeys={["one"]} onOpenKeysChange={onOpenKeysChange}>
-        <CollapsePanel key="one" title="One">First</CollapsePanel>
-        <CollapsePanel key="two" title="Two">Second</CollapsePanel>
-      </Collapse>
+        <CollapsePanel key="one" title="One">
+          First
+        </CollapsePanel>
+        <CollapsePanel key="two" title="Two">
+          Second
+        </CollapsePanel>
+      </Collapse>,
     );
     expect(document.querySelectorAll(".k-collapse-item-active")).toHaveLength(1);
     fireEvent.click(screen.getByText("Two"));
@@ -132,9 +148,13 @@ describe("React controlled and uncontrolled conventions", () => {
 
     rerender(
       <Collapse openKeys={["one"]} onOpenKeysChange={onOpenKeysChange}>
-        <CollapsePanel key="one" title="One">First</CollapsePanel>
-        <CollapsePanel key="two" title="Two">Second</CollapsePanel>
-      </Collapse>
+        <CollapsePanel key="one" title="One">
+          First
+        </CollapsePanel>
+        <CollapsePanel key="two" title="Two">
+          Second
+        </CollapsePanel>
+      </Collapse>,
     );
     fireEvent.click(screen.getByText("Two"));
     expect(onOpenKeysChange).toHaveBeenLastCalledWith(["one", "two"]);
@@ -159,10 +179,10 @@ describe("React controlled and uncontrolled conventions", () => {
         defaultValue="2025-06-10"
         disabledDate={(date) => date.getDate() === 11}
         onChange={onChange}
-      />
+      />,
     );
     const disabledDay = [...document.querySelectorAll<HTMLElement>(".k-picker-day")].find(
-      (node) => !node.classList.contains("k-picker-day-out") && node.textContent === "11"
+      (node) => !node.classList.contains("k-picker-day-out") && node.textContent === "11",
     );
     expect(disabledDay?.classList.contains("k-picker-day-disabled")).toBe(true);
     fireEvent.click(disabledDay!);
@@ -177,21 +197,21 @@ describe("React controlled and uncontrolled conventions", () => {
     const onChange = vi.fn();
     const { unmount } = render(<DatePicker mode="dateRange" defaultOpen onChange={onChange} />);
     const days = document.querySelectorAll<HTMLElement>(
-      ".k-picker-day:not(.k-picker-day-out):not(.k-picker-day-disabled)"
+      ".k-picker-day:not(.k-picker-day-out):not(.k-picker-day-disabled)",
     );
     fireEvent.click(days[5]);
     expect(onChange).not.toHaveBeenCalled();
     fireEvent.click(days[10]);
     expect(onChange).toHaveBeenCalledWith(
       expect.arrayContaining([expect.any(String), expect.any(String)]),
-      expect.arrayContaining([expect.any(String), expect.any(String)])
+      expect.arrayContaining([expect.any(String), expect.any(String)]),
     );
     unmount();
 
     render(
       <ConfigProvider locale={enUS}>
         <DatePicker mode="year" />
-      </ConfigProvider>
+      </ConfigProvider>,
     );
     expect(screen.getByPlaceholderText(enUS.k.datePicker.selectYear)).not.toBeNull();
   });
@@ -204,7 +224,7 @@ describe("React controlled and uncontrolled conventions", () => {
         openKeys={[]}
         onOpenChange={onOpenChange}
         items={[{ key: "parent", title: "Parent", children: [{ key: "child", title: "Child" }] }]}
-      />
+      />,
     );
     fireEvent.click(screen.getByText("Parent"));
     expect(onOpenChange).toHaveBeenCalledWith(["parent"]);
@@ -219,7 +239,7 @@ describe("React controlled and uncontrolled conventions", () => {
         defaultOpenKeys={["parent"]}
         onSelect={onSelect}
         items={[{ key: "parent", title: "Parent", children: [{ key: "child", title: "Child" }] }]}
-      />
+      />,
     );
     await waitFor(() => expect(screen.getByText("Child")).not.toBeNull());
     fireEvent.click(screen.getByText("Child"));
@@ -234,7 +254,7 @@ describe("React controlled and uncontrolled conventions", () => {
       { key: "parent", title: "Parent", children: [{ key: "child", title: "Child" }] },
     ];
     const { rerender } = render(
-      <Menu mode="inline" defaultOpenKeys={["parent"]} items={items} inlineCollapsed={false} />
+      <Menu mode="inline" defaultOpenKeys={["parent"]} items={items} inlineCollapsed={false} />,
     );
     await waitFor(() => expect(screen.getByText("Child")).not.toBeNull());
     rerender(<Menu mode="inline" defaultOpenKeys={["parent"]} items={items} inlineCollapsed />);
@@ -249,11 +269,15 @@ describe("React controlled and uncontrolled conventions", () => {
     render(
       <>
         <Tabs value="one" onChange={onTabChange}>
-          <TabPanel key="one" title="One">First</TabPanel>
-          <TabPanel key="two" title="Two">Second</TabPanel>
+          <TabPanel key="one" title="One">
+            First
+          </TabPanel>
+          <TabPanel key="two" title="Two">
+            Second
+          </TabPanel>
         </Tabs>
         <Slider value={10} min={0} max={10} onChange={onSliderChange} />
-      </>
+      </>,
     );
     fireEvent.click(screen.getByText("Two"));
     expect(onTabChange).toHaveBeenCalledWith("two");
@@ -293,8 +317,8 @@ describe("React controlled and uncontrolled conventions", () => {
     rerender(<Tabs value="tab-5">{panels}</Tabs>);
     await waitFor(() =>
       expect(document.querySelector<HTMLElement>(".k-tabs-nav")?.style.transform).toBe(
-        "translate3d(-400px,0,0)"
-      )
+        "translate3d(-400px,0,0)",
+      ),
     );
     const previous = document.querySelector<HTMLButtonElement>(".k-tabs-tab-btn-prev")!;
     const next = document.querySelector<HTMLButtonElement>(".k-tabs-tab-btn-next")!;
@@ -303,7 +327,7 @@ describe("React controlled and uncontrolled conventions", () => {
 
     fireEvent.click(previous);
     expect(document.querySelector<HTMLElement>(".k-tabs-nav")?.style.transform).toBe(
-      "translate3d(-200px,0,0)"
+      "translate3d(-200px,0,0)",
     );
     expect(next.disabled).toBe(false);
 
@@ -311,8 +335,8 @@ describe("React controlled and uncontrolled conventions", () => {
     triggerResize();
     await waitFor(() =>
       expect(document.querySelector<HTMLElement>(".k-tabs-nav")?.style.transform).toBe(
-        "translate3d(-500px,0,0)"
-      )
+        "translate3d(-500px,0,0)",
+      ),
     );
     expect(next.disabled).toBe(true);
     vi.stubGlobal("ResizeObserver", originalResizeObserver);
@@ -324,7 +348,7 @@ describe("React controlled and uncontrolled conventions", () => {
       <Carousel value={0} onChange={onChange}>
         <CarouselItem>Slide one</CarouselItem>
         <CarouselItem>Slide two</CarouselItem>
-      </Carousel>
+      </Carousel>,
     );
     const dots = document.querySelectorAll(".k-carousel-dots li");
     fireEvent.click(dots[1]);
@@ -344,7 +368,7 @@ describe("React controlled and uncontrolled conventions", () => {
         columns={columns}
         onSelectedKeysChange={onSelectedKeysChange}
         onSort={onSort}
-      />
+      />,
     );
     fireEvent.keyDown(document.querySelector(".k-table-body tbody .k-checkbox")!, {
       key: " ",
@@ -378,7 +402,7 @@ describe("React controlled and uncontrolled conventions", () => {
         expandedKeys={[]}
         onExpand={onExpand}
         onExpandedKeysChange={onExpandedKeysChange}
-      />
+      />,
     );
 
     expect(screen.queryByText("Child row")).toBeNull();
@@ -394,7 +418,7 @@ describe("React controlled and uncontrolled conventions", () => {
         expandedKeys={["parent"]}
         onExpand={onExpand}
         onExpandedKeysChange={onExpandedKeysChange}
-      />
+      />,
     );
     expect(screen.getByText("Child row")).not.toBeNull();
     expect(document.querySelectorAll(".k-table-body tbody tr")).toHaveLength(2);
@@ -412,13 +436,15 @@ describe("React controlled and uncontrolled conventions", () => {
         loadData={loadData}
         onSelectedKeysChange={onSelectedKeysChange}
         onExpandedKeysChange={onExpandedKeysChange}
-      />
+      />,
     );
     fireEvent.click(screen.getByText("Parent"));
     expect(onSelectedKeysChange).toHaveBeenCalledWith(["parent"]);
     expect(document.querySelector(".k-tree-title-selected")).toBeNull();
     fireEvent.click(document.querySelector(".k-tree-arrow")!);
-    await waitFor(() => expect(loadData).toHaveBeenCalledWith(expect.objectContaining({ key: "parent" })));
+    await waitFor(() =>
+      expect(loadData).toHaveBeenCalledWith(expect.objectContaining({ key: "parent" })),
+    );
     await waitFor(() => expect(onExpandedKeysChange).toHaveBeenCalledWith(["parent"]));
     expect(document.querySelector(".k-tree-arrow-open")).toBeNull();
   });
@@ -432,7 +458,7 @@ describe("React controlled and uncontrolled conventions", () => {
     const file = new File([new Uint8Array(2048)], "large.txt", { type: "text/plain" });
     fireEvent.change(document.querySelector(".k-upload-file")!, { target: { files: [file] } });
     expect(onSizeError).toHaveBeenCalledWith(
-      expect.objectContaining({ file: expect.objectContaining({ status: "error" }) })
+      expect.objectContaining({ file: expect.objectContaining({ status: "error" }) }),
     );
     expect(onChange).toHaveBeenCalled();
     expect(xhr).not.toHaveBeenCalled();
@@ -444,7 +470,8 @@ describe("React controlled and uncontrolled conventions", () => {
       static instances: FakeXHR[] = [];
       upload: {
         onloadstart: (() => void) | null;
-        onprogress: ((event: { lengthComputable: boolean; loaded: number; total: number }) => void) | null;
+        onprogress:
+          ((event: { lengthComputable: boolean; loaded: number; total: number }) => void) | null;
       } = { onloadstart: null, onprogress: null };
       readyState = 0;
       status = 0;
@@ -472,7 +499,7 @@ describe("React controlled and uncontrolled conventions", () => {
     request.upload.onloadstart?.();
     request.upload.onprogress?.({ lengthComputable: true, loaded: 1, total: 2 });
     expect(onChange).toHaveBeenLastCalledWith(
-      expect.objectContaining({ file: expect.objectContaining({ percent: 50 }) })
+      expect.objectContaining({ file: expect.objectContaining({ percent: 50 }) }),
     );
     fireEvent.click(document.querySelector(".k-upload-file-item-remove")!);
     expect(request.abort).toHaveBeenCalledOnce();
@@ -492,14 +519,16 @@ describe("React controlled and uncontrolled conventions", () => {
         >
           Dialog body
         </Modal>
-      </>
+      </>,
     );
-    await waitFor(() => expect(document.activeElement).toBe(document.querySelector(".k-modal-wrap")));
+    await waitFor(() =>
+      expect(document.activeElement).toBe(document.querySelector(".k-modal-wrap")),
+    );
     expect(screen.getByText("Custom footer")).not.toBeNull();
     fireEvent.keyDown(document, { key: "Escape" });
     expect(onOpenChange).toHaveBeenCalledWith(false);
     await waitFor(() =>
-      expect(document.activeElement).toBe(screen.getByRole("button", { name: "Before modal" }))
+      expect(document.activeElement).toBe(screen.getByRole("button", { name: "Before modal" })),
     );
   });
 
@@ -508,9 +537,11 @@ describe("React controlled and uncontrolled conventions", () => {
     render(
       <Drawer defaultOpen title="Drawer title" footer={false} onOpenChange={onOpenChange}>
         Drawer body
-      </Drawer>
+      </Drawer>,
     );
-    await waitFor(() => expect(document.activeElement).toBe(document.querySelector(".k-drawer-wrap")));
+    await waitFor(() =>
+      expect(document.activeElement).toBe(document.querySelector(".k-drawer-wrap")),
+    );
     expect(document.querySelector(".k-drawer-footer")).toBeNull();
     fireEvent.click(document.querySelector(".k-drawer-mask")!);
     expect(onOpenChange).toHaveBeenCalledWith(false);
@@ -521,8 +552,21 @@ describe("React controlled and uncontrolled conventions", () => {
     await waitFor(() => expect(screen.getByText("Global title")).not.toBeNull());
     expect(screen.getByText("Global content")).not.toBeNull();
     instance.destroy();
-    expect(screen.queryByText("Global title")).toBeNull();
+    await waitFor(() => expect(screen.queryByText("Global title")).toBeNull());
     modal.destroyAll();
+  });
+
+  it("destroys global modals after confirming or pressing Escape", async () => {
+    modal.success({ title: "Success modal", content: "Saved" });
+    await waitFor(() => expect(screen.getByText("Success modal")).not.toBeNull());
+    fireEvent.click(screen.getByRole("button", { name: /OK|确定/ }));
+    expect(screen.getByText("Success modal")).not.toBeNull();
+    await waitFor(() => expect(screen.queryByText("Success modal")).toBeNull());
+
+    modal.info({ title: "Escape modal", content: "Close me" });
+    await waitFor(() => expect(screen.getByText("Escape modal")).not.toBeNull());
+    fireEvent.keyDown(document, { key: "Escape" });
+    await waitFor(() => expect(screen.queryByText("Escape modal")).toBeNull());
   });
 
   it("supports uncontrolled Select value and visibility", async () => {
@@ -536,7 +580,7 @@ describe("React controlled and uncontrolled conventions", () => {
           { label: "Two", value: "two" },
         ]}
         onChange={onChange}
-      />
+      />,
     );
     expect(document.querySelector(".k-select-dropdown")).not.toBeNull();
     fireEvent.click(screen.getByText("Two"));
@@ -546,7 +590,9 @@ describe("React controlled and uncontrolled conventions", () => {
 
   it("closes an uncontrolled Select on outside click", async () => {
     const onOpenChange = vi.fn();
-    render(<Select defaultOpen options={[{ label: "One", value: "one" }]} onOpenChange={onOpenChange} />);
+    render(
+      <Select defaultOpen options={[{ label: "One", value: "one" }]} onOpenChange={onOpenChange} />,
+    );
     expect(document.querySelector(".k-select-opened")).not.toBeNull();
     fireEvent.click(document.body);
     await waitFor(() => expect(document.querySelector(".k-select-opened")).toBeNull());
@@ -577,7 +623,7 @@ describe("React controlled and uncontrolled conventions", () => {
           { label: "Two", value: "two" },
         ]}
         onChange={onChange}
-      />
+      />,
     );
     expect(document.querySelectorAll(".k-select-labels .k-tag")).toHaveLength(2);
     fireEvent.change(document.querySelector(".k-select-search")!, { target: { value: "Two" } });
@@ -600,7 +646,7 @@ describe("React controlled and uncontrolled conventions", () => {
         ]}
         onChange={onChange}
         onClear={onClear}
-      />
+      />,
     );
     expect(document.querySelectorAll(".k-tree-select-labels .k-tag")).toHaveLength(2);
     fireEvent.click(document.querySelector(".k-tree-select-clearable")!);
@@ -614,7 +660,7 @@ describe("React controlled and uncontrolled conventions", () => {
     render(
       <Poptip open={false} trigger="click" content="Details" onOpenChange={onOpenChange}>
         <Button>Open</Button>
-      </Poptip>
+      </Poptip>,
     );
     fireEvent.click(screen.getByRole("button", { name: "Open" }));
     await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(true));
@@ -626,7 +672,7 @@ describe("React controlled and uncontrolled conventions", () => {
     render(
       <Tooltip show={false} title="Help" onShowChange={onShowChange}>
         <button>Target</button>
-      </Tooltip>
+      </Tooltip>,
     );
     fireEvent.mouseEnter(screen.getByRole("button", { name: "Target" }));
     await waitFor(() => expect(onShowChange).toHaveBeenCalledWith(true));
@@ -655,7 +701,7 @@ describe("React controlled and uncontrolled conventions", () => {
             Popconfirm link
           </a>
         </Popconfirm>
-      </>
+      </>,
     );
 
     fireEvent.mouseEnter(screen.getByRole("link", { name: "Tooltip link" }));
@@ -675,9 +721,14 @@ describe("React controlled and uncontrolled conventions", () => {
   it("renders Poptip placement and arrow and keeps content during its exit transition", async () => {
     const onOpenChange = vi.fn();
     render(
-      <Poptip defaultOpen placement="bottom-left" content="Popover body" onOpenChange={onOpenChange}>
+      <Poptip
+        defaultOpen
+        placement="bottom-left"
+        content="Popover body"
+        onOpenChange={onOpenChange}
+      >
         <button>Popover target</button>
-      </Poptip>
+      </Poptip>,
     );
     const poptip = document.querySelector(".k-poptip");
     expect(poptip?.getAttribute("k-placement")).not.toBeNull();
@@ -694,7 +745,7 @@ describe("React controlled and uncontrolled conventions", () => {
     render(
       <Popconfirm defaultOpen title="Delete item?" onCancel={onCancel} onOpenChange={onOpenChange}>
         <button>Delete</button>
-      </Popconfirm>
+      </Popconfirm>,
     );
     expect(document.querySelector(".k-popconfirm-arrow")).not.toBeNull();
     fireEvent.click(screen.getByRole("button", { name: zhCN.k.common.cancel }));
@@ -722,18 +773,18 @@ describe("Transition", () => {
     const { rerender } = render(
       <Transition show={false} timeout={0} onAfterEnter={onAfterEnter} onAfterLeave={onAfterLeave}>
         <div>Animated content</div>
-      </Transition>
+      </Transition>,
     );
     rerender(
       <Transition show timeout={0} onAfterEnter={onAfterEnter} onAfterLeave={onAfterLeave}>
         <div>Animated content</div>
-      </Transition>
+      </Transition>,
     );
     await waitFor(() => expect(onAfterEnter).toHaveBeenCalledOnce());
     rerender(
       <Transition show={false} timeout={0} onAfterEnter={onAfterEnter} onAfterLeave={onAfterLeave}>
         <div>Animated content</div>
-      </Transition>
+      </Transition>,
     );
     await waitFor(() => expect(onAfterLeave).toHaveBeenCalledOnce());
     expect(screen.queryByText("Animated content")).toBeNull();
@@ -752,7 +803,7 @@ describe("ConfigProvider", () => {
     render(
       <ConfigProvider locale={locale}>
         <Select />
-      </ConfigProvider>
+      </ConfigProvider>,
     );
     expect(screen.getByText("Choose an item")).not.toBeNull();
   });

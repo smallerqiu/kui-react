@@ -6,11 +6,19 @@
 
 [基础用法](./demo/basic.tsx)
 
+- 将引导步骤定位到页面中的真实目标。
+
 [受控模式](./demo/controlled.tsx)
+
+- 从外部控制显示状态和当前步骤。
 
 [蒙层](./demo/mask.tsx)
 
+- 控制是否展示页面遮罩。
+
 [弹出位置](./demo/placement.tsx)
+
+- 为不同目标指定适合的引导卡片方向。
 
 ## Tour API
 

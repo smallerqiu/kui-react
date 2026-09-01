@@ -31,29 +31,30 @@
 
 ## API
 
-| 属性         | 说明                                          | 类型                  | 默认值 |
-| ------------ | --------------------------------------------- | --------------------- | ------ |
-| open         | 受控的对话框显示状态                         | boolean                  | -      |
-| defaultOpen  | 非受控模式的初始显示状态                     | boolean                  | false  |
-| title        | 对话框标题                                    | string                | -      |
-| width        | 对话框宽度                                    | number, string        | 520    |
-| okText       | 确定按钮文字                                  | string                | 确定   |
-| cancelText   | 取消按钮文字                                  | string                | 取消   |
-| draggable    | 弹框是否可拖动, confirm 模式不可用            | boolean                  | false  |
-| centered     | 窗口是否可以居中 , confirm 模式不可用         | boolean                  | false  |
-| maximized    | 弹框是否可以最大化显示 , confirm 模式不可用   | boolean                  | false  |
-| maskClosable | 是否点击遮罩关闭弹窗                          | boolean                  | false  |
-| escKey       | 是否支持按 Esc 关闭                           | boolean                  | true   |
+| 属性         | 说明                                           | 类型                     | 默认值 |
+| ------------ | ---------------------------------------------- | ------------------------ | ------ |
+| open         | 受控的对话框显示状态                           | boolean                  | -      |
+| defaultOpen  | 非受控模式的初始显示状态                       | boolean                  | false  |
+| title        | 对话框标题                                     | string                   | -      |
+| width        | 对话框宽度                                     | number, string           | 520    |
+| okText       | 确定按钮文字                                   | string                   | 确定   |
+| cancelText   | 取消按钮文字                                   | string                   | 取消   |
+| draggable    | 弹框是否可拖动, confirm 模式不可用             | boolean                  | false  |
+| centered     | 窗口是否可以居中 , confirm 模式不可用          | boolean                  | false  |
+| maximized    | 弹框是否可以最大化显示 , confirm 模式不可用    | boolean                  | false  |
+| maskClosable | 是否点击遮罩关闭弹窗                           | boolean                  | false  |
+| escKey       | 是否支持按 Esc 关闭                            | boolean                  | true   |
 | panelOnly    | 只渲染弹窗面板本身，不包含遮罩、动画与全局事件 | boolean                  | false  |
-| footer       | 当`footer=false`时不展示底部按钮              | boolean,ReactNode             | true   |
-| loading      | 为`true`时此时确定按钮为加载状态              | boolean                  | false  |
-| top          | 窗口距离顶部的距离                            | number                | 100    |
-| showClose    | 是否展示关闭按钮                              | boolean                  | true   |
-| mask         | 是否展示蒙层                                  | boolean                  | true   |
-| onOk         | 点击确定的回调，`注意：不会关闭 Modal`        | () => void            | -      |
-| onCancel     | 点击取消的回调                                | () => void            | -      |
-| onClose      | 窗口关闭的回调                                | () => void            | -      |
-| onOpenChange | 打开或者窗口关闭的回调                        | (opened:boolean) => void | -      |
+| footer       | 当`footer=false`时不展示底部按钮               | boolean,ReactNode        | true   |
+| loading      | 为`true`时此时确定按钮为加载状态               | boolean                  | false  |
+| top          | 窗口距离顶部的距离                             | number                   | 100    |
+| showClose    | 是否展示关闭按钮                               | boolean                  | true   |
+| mask         | 是否展示蒙层                                   | boolean                  | true   |
+| onOk         | 点击确定的回调，`注意：不会关闭 Modal`         | () => void               | -      |
+| onCancel     | 点击取消的回调                                 | () => void               | -      |
+| onClose      | 窗口关闭的回调                                 | () => void               | -      |
+| onAfterClose | 关闭动画结束后的回调                           | () => void               | -      |
+| onOpenChange | 打开或者窗口关闭的回调                         | (opened:boolean) => void | -      |
 
 ## Modal.method()
 
@@ -70,6 +71,14 @@
 - modal.show(options)
 - modal.destroyAll()
 
+命令式 Modal 挂载在全局 `body` 下，不属于当前页面组件的生命周期。如果希望切换路由时自动关闭，可以监听路由位置变化并统一销毁：
+
+```tsx
+const location = useLocation();
+
+useEffect(() => () => modal.destroyAll(), [location.pathname]);
+```
+
 参数 options 为对象，具体说明如下：
 
 | 属性       | 说明                                                                                                                       | 类型       | 默认值 |
@@ -80,6 +89,6 @@
 | cancelText | 取消按钮文字                                                                                                               | string     | 取消   |
 | icon       | 弹框的图标，type 为 toast 可用 ，默认可选值为 success，warning, error, info, 也可以自定义，参照 [Icon](/components/icon)值 | string     | -      |
 | color      | 弹框的图标的颜色，type 为 toast 可用                                                                                       | string     | -      |
-| type       | `modal.show` 的弹框类型，可选 `info`、`success`、`warning`、`error`、`confirm`                                              | ToastType  | info   |
+| type       | `modal.show` 的弹框类型，可选 `info`、`success`、`warning`、`error`、`confirm`                                             | ToastType  | info   |
 | onOk       | 点击确定的回调                                                                                                             | () => void | -      |
 | onCancel   | 点击取消的回调                                                                                                             | () => void | -      |

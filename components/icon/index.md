@@ -20,6 +20,8 @@ export default function Demo() {
 
 [IconList](./demo/search.tsx?demo=false)
 
+- 搜索并浏览全部图标。
+
 [基本用法](./demo/basic.tsx)
 
 - 可以通过 `type`、`size` 、`color` 属性分别设置图标的类型、大小、颜色,也可以通过设置 `spin` 属性来实现动画旋转效果。
@@ -31,7 +33,7 @@ export default function Demo() {
 | type        | 图标类型。遵循图标的命名规范        | IconPath[]        | -      |
 | size        | 图标的大小，单位是 px               | string,number     | -      |
 | color       | 图标的颜色                          | string            | -      |
-| spin        | 是否有旋转动画                      | boolean              | false  |
+| spin        | 是否有旋转动画                      | boolean           | false  |
 | strokeWidth | 图标的线条粗细                      | number            | 2      |
 | onClick     | 点击事件                            | (e:Event) => void | -      |
-| reverseFill | 图标边框和反相填充,仅支持闭合的图标 | boolean              | false  |
+| reverseFill | 图标边框和反相填充,仅支持闭合的图标 | boolean           | false  |

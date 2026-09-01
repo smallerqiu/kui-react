@@ -6,13 +6,27 @@ Turns continuous input into an editable tag collection.
 
 [Basic](./demo/basic.tsx)
 
+- Press Enter to add and Backspace to remove tags.
+
 [Controlled](./demo/controlled.tsx)
+
+- Manage the tag collection with `value` and `onChange`.
+
 [Separators](./demo/separators.tsx)
+
+- Commit tags with comma or semicolon.
+
 [Limit](./demo/limit.tsx)
+
+- Use `max` to limit total tags and `maxTagCount` to limit visible tags.
+
 [Size](./demo/size.tsx?show=vertical)
 
 - Different sizes.
+
 [Appearance](./demo/appearance.tsx)
+
+- Shows theme, shape, and disabled states.
 
 ## InputTag API
 

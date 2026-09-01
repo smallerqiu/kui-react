@@ -58,6 +58,10 @@ Similar to the Select selection control, when the selectable data structure is a
 | emptyText         | Prompt displayed when no data                                             | string                                | 'No data yet' |
 | multiple          | Whether to display in multiple selection mode                             | boolean                               | false         |
 | loading           | Asynchronous loading state                                                | boolean                               | false         |
+| virtual           | Whether to enable virtual scrolling                                       | boolean                               | false         |
+| virtualHeight     | Virtual scrolling viewport height                                         | number                                | 300           |
+| itemHeight        | Virtual node height                                                       | number                                | 28            |
+| overscan          | Extra nodes rendered outside the viewport                                 | number                                | 5             |
 | clearable         | Whether options can be cleared                                            | boolean                               | false         |
 | bordered          | Whether to show border                                                    | boolean                               | true          |
 | showArrow         | Whether to show dropdown button                                           | boolean                               | true          |

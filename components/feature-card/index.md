@@ -4,6 +4,8 @@
 
 [基础用法](./demo/basic.tsx?show=vertical)
 
+- 展示包含图标、标题和描述的基础功能卡片。
+
 [边框](./demo/bordered.tsx?show=vertical)
 
 - 通过 `bordered` 控制是否显示边框。

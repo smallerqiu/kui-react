@@ -6,9 +6,19 @@ Introduces real interface targets one step at a time without owning business sta
 
 [Basic](./demo/basic.tsx)
 
+- Positions each guide step around a real page target.
+
 [Controlled](./demo/controlled.tsx)
+
+- Controls visibility and the current step externally.
+
 [Mask](./demo/mask.tsx)
+
+- Controls whether the page mask is displayed.
+
 [Placement](./demo/placement.tsx)
+
+- Places guide cards around different targets.
 
 ## Tour API
 

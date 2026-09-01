@@ -6,17 +6,27 @@
 
 [基础用法](./demo/basic.tsx)
 
+- 回车创建标签，退格删除最后一项。
+
 [受控值](./demo/controlled.tsx)
+
+- 使用 `value` 和 `onChange` 管理标签集合。
 
 [分隔符](./demo/separators.tsx)
 
+- 使用逗号或分号快速提交标签。
+
 [数量限制](./demo/limit.tsx)
+
+- 使用 `max` 限制标签总数，使用 `maxTagCount` 限制展示数量。
 
 [尺寸](./demo/size.tsx?show=vertical)
 
 - 不同的尺寸。
 
 [尺寸、主题与形状](./demo/appearance.tsx)
+
+- 展示主题、形状和禁用状态。
 
 ## InputTag API
 

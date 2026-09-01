@@ -34,6 +34,10 @@ Folders, organizational structures, biological classifications, countries and re
 
 - Displays directories, connecting lines, drag-and-drop, checkboxes, icons, and extensions.
 
+[Virtual Scrolling](./demo/virtual.tsx?show=vertical)
+
+- Enable virtual scrolling to render large trees efficiently.
+
 ## Tree API
 
 | Property      | Description                                                                                                       | Type                              | Default |
@@ -60,6 +64,10 @@ Folders, organizational structures, biological classifications, countries and re
 | loading       | Asynchronous loading state                                                                                        | boolean                              | false   |
 | loadData      | Method to asynchronously load data                                                                                | (node: TreeNode) => Promise<unknown\> | -    |
 | directory     | Does not display as a directory tree                                                                              | boolean                              | false   |
+| virtual       | Whether to enable virtual scrolling                                                                               | boolean                              | false   |
+| height        | Virtual scrolling viewport height                                                                                 | number                               | 300     |
+| itemHeight    | Virtual node height                                                                                               | number                               | 28      |
+| overscan      | Extra nodes rendered outside the viewport                                                                         | number                               | 5       |
 
 ## Tree Events
 

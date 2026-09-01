@@ -32,9 +32,11 @@ function showModal(props: ModalApiProps): ModalInstance {
     destroy() {
       if (destroyed) return;
       destroyed = true;
-      root.unmount();
-      container.remove();
       instances.delete(instance);
+      setTimeout(() => {
+        root.unmount();
+        container.remove();
+      }, 0);
     },
   };
   flushSync(() => root.render(<Toast {...props} onDestroy={instance.destroy} />));

@@ -57,6 +57,10 @@
 | emptyText         | 没有数据时展示的提示                                 | string                                | '暂无数据'  |
 | multiple          | 是否呈现多选模式                                     | boolean                               | false       |
 | loading           | 异步加载状态                                         | boolean                               | false       |
+| virtual           | 是否启用虚拟滚动                                     | boolean                               | false       |
+| virtualHeight     | 虚拟滚动视口高度                                     | number                                | 300         |
+| itemHeight        | 虚拟滚动节点高度                                     | number                                | 28          |
+| overscan          | 可视区域外预渲染的节点数量                           | number                                | 5           |
 | clearable         | 是否可以清空选项                                     | boolean                               | false       |
 | bordered          | 是否显示边框                                         | boolean                               | true        |
 | showArrow         | 是否显示下拉按钮                                     | boolean                               | true        |

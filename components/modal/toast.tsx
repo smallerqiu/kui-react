@@ -1,6 +1,6 @@
 import { CircleAlert, CircleCheck, CircleQuestionMark, CircleX, Info } from "kui-icons";
 import clsx from "clsx";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { Button } from "../button";
 import { ConfigContext } from "../config/config-context";
 import Icon, { type IconType } from "../icon";
@@ -45,6 +45,13 @@ export default function Toast({
   const messages = (locale ?? zhCN)?.k?.common;
   const [open, setOpen] = useState(true);
   const [loading, setLoading] = useState(false);
+  const destroyRequestedRef = useRef(false);
+
+  const requestDestroy = () => {
+    if (destroyRequestedRef.current) return;
+    destroyRequestedRef.current = true;
+    onDestroy?.();
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -92,10 +99,9 @@ export default function Toast({
       maskClosable={false}
       content={body}
       onClose={handleClose}
+      onAfterClose={requestDestroy}
       onOpenChange={(opened) => {
-        if (!opened) {
-          onDestroy?.();
-        }
+        if (!opened) setOpen(false);
       }}
     />
   );

@@ -6,9 +6,15 @@
 
 [基础用法](./demo/basic.tsx)
 
+- 输入 @ 后可通过键盘选择提及项。
+
 [多个触发字符](./demo/triggers.tsx)
 
+- 同时支持成员提及和话题关联。
+
 [自定义过滤](./demo/filter.tsx)
+
+- 自定义候选项的匹配规则。
 
 [远程搜索](./demo/remote.tsx?show=vertical)
 
@@ -20,11 +26,19 @@
 
 [尺寸、主题与形状](./demo/appearance.tsx)
 
+- 展示不同输入框外观。
+
 [空状态](./demo/empty.tsx)
+
+- 没有匹配结果时展示 Empty。
 
 [行数](./demo/rows.tsx)
 
+- 使用 `rows` 控制输入区域行数。
+
 [下拉位置](./demo/placement.tsx)
+
+- 下拉菜单跟随光标，并在空间不足时自动翻转。
 
 ## Mentions API
 

@@ -6,8 +6,16 @@ Insert structured mentions into multiline text.
 
 [Basic](./demo/basic.tsx)
 
+- Type @ and select a mention with the keyboard.
+
 [Triggers](./demo/triggers.tsx)
+
+- Supports both people and topic triggers.
+
 [Filter](./demo/filter.tsx)
+
+- Customize suggestion matching.
+
 [Remote Search](./demo/remote.tsx?show=vertical)
 
 - Load mention options asynchronously after entering a trigger character.
@@ -15,10 +23,22 @@ Insert structured mentions into multiline text.
 [Size](./demo/size.tsx?show=vertical)
 
 - Shows small, medium, and large sizes.
+
 [Appearance](./demo/appearance.tsx)
+
+- Shows different input appearances.
+
 [Empty](./demo/empty.tsx)
+
+- Displays Empty when no mention matches.
+
 [Rows](./demo/rows.tsx)
+
+- Controls the input height with `rows`.
+
 [Placement](./demo/placement.tsx)
+
+- Anchors the menu to the caret and flips it when space is insufficient.
 
 ## Mentions API
 

@@ -31,6 +31,7 @@ export interface ModalProps {
   onOk?: () => void;
   onCancel?: () => void;
   onOpenChange?: (opened: boolean) => void;
+  onAfterClose?: () => void;
   content?: React.ReactNode;
   children?: React.ReactNode;
 }
@@ -58,6 +59,7 @@ const Modal: React.FC<ModalProps> = ({
   onOk,
   onCancel,
   onOpenChange,
+  onAfterClose,
   content,
   children,
 }) => {
@@ -113,7 +115,7 @@ const Modal: React.FC<ModalProps> = ({
             setLeftPos((document.body.offsetWidth - refModal.current.offsetWidth) / 2);
           }
           updateOrigin();
-        }, 0);
+        }, 100);
       } else {
         // Closing: immediate hide mask, delayed hide content
         setVisible(false);
@@ -123,7 +125,7 @@ const Modal: React.FC<ModalProps> = ({
         }, 300);
       }
     },
-    [draggable, updateOrigin, rendered, top]
+    [draggable, updateOrigin, rendered, top],
   );
 
   const requestOpen = useCallback(
@@ -131,7 +133,7 @@ const Modal: React.FC<ModalProps> = ({
       if (open === undefined) setInnerOpen(next);
       onOpenChange?.(next);
     },
-    [onOpenChange, open]
+    [onOpenChange, open],
   );
 
   // Watch currentOpen and trigger toggle
@@ -164,11 +166,11 @@ const Modal: React.FC<ModalProps> = ({
     (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
     },
-    [close]
+    [close],
   );
 
   useEffect(() => {
-    if (panelOnly) return;
+    if (panelOnly || !escKey) return;
     document.addEventListener("keydown", escToClose);
     return () => {
       document.removeEventListener("keydown", escToClose);
@@ -198,7 +200,7 @@ const Modal: React.FC<ModalProps> = ({
         e.preventDefault();
       }
     },
-    [draggable, isMousePressed, updateOrigin]
+    [draggable, isMousePressed, updateOrigin],
   );
 
   const mouseup = useCallback(() => {
@@ -218,7 +220,7 @@ const Modal: React.FC<ModalProps> = ({
       }
       setMousedownIn(visible && !!refModal.current?.contains(e.target as Node));
     },
-    [draggable, visible]
+    [draggable, visible],
   );
 
   useEffect(() => {
@@ -313,7 +315,7 @@ const Modal: React.FC<ModalProps> = ({
         style={{ display: showInner ? undefined : "none" }}
         onClick={clickMaskToClose}
       >
-        <Transition show={visible} name="k-modal-zoom" timeout={250}>
+        <Transition show={visible} name="k-modal-zoom" timeout={250} onAfterLeave={onAfterClose}>
           <div ref={refModal} className="k-modal-inner" style={modalStyle || undefined}>
             {contentNode}
             <div tabIndex={0} />

@@ -18,6 +18,8 @@
 
 [组合展示](./demo/with-card.tsx)
 
+- 在卡片容器中组合展示多个统计指标。
+
 [趋势状态](./demo/trend.tsx?show=vertical)
 
 - 结合`Card` 组件展示更多自定义数据

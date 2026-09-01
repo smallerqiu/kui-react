@@ -4,6 +4,8 @@ Displays a product capability or feature highlight.
 
 [Basic](./demo/basic.tsx?show=vertical)
 
+- Displays a basic feature card with an icon, title, and description.
+
 [Bordered](./demo/bordered.tsx?show=vertical)
 
 - Use `bordered` to control whether the border is displayed.

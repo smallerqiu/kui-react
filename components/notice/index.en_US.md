@@ -26,11 +26,12 @@ Display notification reminder information in the four corners of the system. Oft
 
 [Custom Duration](./demo/close.tsx)
 
+- Use `duration` to control the automatic closing time; the default is `3s`.
+
 [Grouping](./demo/grouping.tsx)
 
 - Update an existing notice by using the same `grouping` key.
 
-- Can be custom configured. Use `duration` to control the auto-close duration (default `3s`).
 
 ## API
 

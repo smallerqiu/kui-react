@@ -95,6 +95,14 @@ const columns = [
 
 - Select different configuration combinations to see the effects.
 
+[Virtual Scrolling](./demo/virtual.tsx?show=vertical)
+
+- Enable virtual scrolling for large data sets; it also works with fixed columns and striped rows.
+
+[Column Settings](./demo/column-setting.tsx?show=vertical)
+
+- Use `hiddenColumnKeys` to control which columns are hidden.
+
 ## Table API
 
 | Property     | Description                                              | Type                                                                         | Default |
@@ -120,6 +128,10 @@ const columns = [
 | indentSize | Indentation per tree level | number | 20 |
 | scroll       | Scrollable table area                                    | { x?: number \| string; y?: number \| string }                              | {}      |
 | striped      | Whether to display zebra stripes                         | boolean                                                                         | false   |
+| virtual      | Whether to enable virtual scrolling                      | boolean                                                                       | false   |
+| itemHeight   | Virtual row height                                       | number                                                                        | 40      |
+| overscan     | Extra virtual rows rendered outside the viewport         | number                                                                        | 5       |
+| hiddenColumnKeys | Hidden column key collection                         | (string \| number)[]                                                         | []      |
 | shape        | Shape                                                    | ShapeType                                                                       | -       |
 | onRowClick   | Triggered when clicking a row                            | (record: T, index: number) => void                                           | -       |
 | onSort       | Triggered when clicking to sort                          | (state: SortState) => void                                                   | -       |

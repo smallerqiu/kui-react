@@ -6,15 +6,27 @@
 
 [基础用法](./demo/basic.tsx)
 
+- 支持自由输入、过滤和键盘选择。
+
 [受控值](./demo/controlled.tsx)
+
+- 使用 `value` 和 `onChange` 从外部控制输入内容。
 
 [自定义过滤](./demo/filter.tsx)
 
+- 使用 `filterOption` 定义候选项匹配规则。
+
 [尺寸、主题与形状](./demo/appearance.tsx)
+
+- 展示不同 `size`、`theme` 和 `shape` 组合。
 
 [空输入时展示](./demo/show-on-empty.tsx)
 
+- 默认空输入聚焦时不展开，设置 `showOnEmpty` 后可展示全部建议。
+
 [远程搜索](./demo/remote.tsx)
+
+- 监听 `onSearch` 获取远程建议，并通过 `loading` 展示加载状态。
 
 ## AutoComplete API
 

@@ -31,29 +31,30 @@ Modal dialog box.
 
 ## API
 
-| Property     | Description                                                                 | Type                  | Default |
-| ------------ | --------------------------------------------------------------------------- | --------------------- | ------- |
-| open         | Controlled dialog visibility                                                | boolean                  | -       |
-| defaultOpen  | Initial visibility in uncontrolled mode                                     | boolean                  | false   |
-| title        | Dialog title                                                                | string                | -       |
-| width        | Dialog width                                                                | number, string        | 520     |
-| okText       | OK button text                                                              | string                | OK      |
-| cancelText   | Cancel button text                                                          | string                | Cancel  |
-| draggable    | Whether the modal can be dragged, not available in confirm mode             | boolean                  | false   |
-| centered     | Whether the window can be centered, not available in confirm mode           | boolean                  | false   |
-| maximized    | Whether the modal can be maximized, not available in confirm mode           | boolean                  | false   |
-| maskClosable | Whether clicking the mask closes the modal                                  | boolean                  | false   |
-| escKey       | Whether to support closing with Esc key                                     | boolean                  | true    |
-| panelOnly    | Render only the modal panel, without mask, animation, or global events      | boolean                  | false   |
-| footer       | When `footer=false`, the bottom button is not displayed.                    | boolean,ReactNode             | true    |
-| loading      | When set to `true`, the confirm button will be in a loading state           | boolean                  | false   |
-| top          | Distance from the top of the window                                         | number                | 100     |
-| showClose    | Whether to display the close button                                         | boolean                  | true    |
-| mask         | Whether to show the mask                                                    | boolean                  | true    |
-| onOk         | Callback when OK is clicked, `Note: will not close Modal`                   | () => void            | -       |
-| onCancel     | Callback when Cancel is clicked                                             | () => void            | -       |
-| onClose      | Callback when window closes                                                 | () => void            | -       |
-| onOpenChange | Callback for opening or closing a window                                    | (opened:boolean) => void | -       |
+| Property     | Description                                                            | Type                     | Default |
+| ------------ | ---------------------------------------------------------------------- | ------------------------ | ------- |
+| open         | Controlled dialog visibility                                           | boolean                  | -       |
+| defaultOpen  | Initial visibility in uncontrolled mode                                | boolean                  | false   |
+| title        | Dialog title                                                           | string                   | -       |
+| width        | Dialog width                                                           | number, string           | 520     |
+| okText       | OK button text                                                         | string                   | OK      |
+| cancelText   | Cancel button text                                                     | string                   | Cancel  |
+| draggable    | Whether the modal can be dragged, not available in confirm mode        | boolean                  | false   |
+| centered     | Whether the window can be centered, not available in confirm mode      | boolean                  | false   |
+| maximized    | Whether the modal can be maximized, not available in confirm mode      | boolean                  | false   |
+| maskClosable | Whether clicking the mask closes the modal                             | boolean                  | false   |
+| escKey       | Whether to support closing with Esc key                                | boolean                  | true    |
+| panelOnly    | Render only the modal panel, without mask, animation, or global events | boolean                  | false   |
+| footer       | When `footer=false`, the bottom button is not displayed.               | boolean,ReactNode        | true    |
+| loading      | When set to `true`, the confirm button will be in a loading state      | boolean                  | false   |
+| top          | Distance from the top of the window                                    | number                   | 100     |
+| showClose    | Whether to display the close button                                    | boolean                  | true    |
+| mask         | Whether to show the mask                                               | boolean                  | true    |
+| onOk         | Callback when OK is clicked, `Note: will not close Modal`              | () => void               | -       |
+| onCancel     | Callback when Cancel is clicked                                        | () => void               | -       |
+| onClose      | Callback when window closes                                            | () => void               | -       |
+| onAfterClose | Callback after the close animation finishes                            | () => void               | -       |
+| onOpenChange | Callback for opening or closing a window                               | (opened:boolean) => void | -       |
 
 ## Modal.method()
 
@@ -69,6 +70,14 @@ Also provides global configuration and global destruction methods:
 
 - modal.show(options)
 - modal.destroyAll()
+
+Imperative modals are mounted globally under `body` and are not owned by the current page component. Destroy them when the route location changes:
+
+```tsx
+const location = useLocation();
+
+useEffect(() => () => modal.destroyAll(), [location.pathname]);
+```
 
 Parameter options is an object, specific description as follows:
 
