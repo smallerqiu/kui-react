@@ -33,9 +33,9 @@ import {
   Upload,
   modal,
 } from "react-kui";
-import zhCN from "../locale/zh-CN";
-import enUS from "../locale/en";
-import Transition from "../base/transition";
+import Transition from "../components/base/transition";
+import enUS from "../components/locale/en";
+import zhCN from "../components/locale/zh-CN";
 
 describe("React controlled and uncontrolled conventions", () => {
   it("uses defaultChecked only as the initial Checkbox state", () => {

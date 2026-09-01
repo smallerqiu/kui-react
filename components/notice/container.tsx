@@ -1,22 +1,26 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import Transition from "../base/transition";
 import Content, { type ContentProps } from "./content";
 
 interface NoticeItem extends ContentProps {
   key: string;
+  closing?: boolean;
+  afterClose?: () => void;
 }
 export interface NoticeContainerApi {
   show: (options: ContentProps) => () => void;
-  clean: () => void;
+  clean: (afterClean?: () => void) => void;
 }
 let count = 0;
 
 const Container = forwardRef<NoticeContainerApi, { type: "message" | "notice" }>(function Container(
   { type },
-  ref
+  ref,
 ) {
   const [items, setItems] = useState<NoticeItem[]>([]);
   const itemsRef = useRef<NoticeItem[]>([]);
   const timersRef = useRef(new Map<string, ReturnType<typeof setTimeout>>());
+  const afterCleanRef = useRef<(() => void) | null>(null);
   const updateItems = (next: NoticeItem[]) => {
     itemsRef.current = next;
     setItems(next);
@@ -25,13 +29,37 @@ const Container = forwardRef<NoticeContainerApi, { type: "message" | "notice" }>
     const timer = timersRef.current.get(key);
     if (timer) clearTimeout(timer);
     timersRef.current.delete(key);
-    updateItems(itemsRef.current.filter((item) => item.key !== key));
-    callback?.();
+    const item = itemsRef.current.find((current) => current.key === key);
+    if (!item || item.closing) return;
+    updateItems(
+      itemsRef.current.map((current) =>
+        current.key === key ? { ...current, closing: true, afterClose: callback } : current,
+      ),
+    );
   };
-  const clean = () => {
+  const finishClose = (key: string) => {
+    const item = itemsRef.current.find((current) => current.key === key);
+    if (!item?.closing) return;
+    const next = itemsRef.current.filter((current) => current.key !== key);
+    updateItems(next);
+    item.afterClose?.();
+    if (next.length === 0 && afterCleanRef.current) {
+      const afterClean = afterCleanRef.current;
+      afterCleanRef.current = null;
+      afterClean();
+    }
+  };
+  const clean = (afterClean?: () => void) => {
+    if (afterClean) afterCleanRef.current = afterClean;
     timersRef.current.forEach(clearTimeout);
     timersRef.current.clear();
-    updateItems([]);
+    if (itemsRef.current.length === 0) {
+      const callback = afterCleanRef.current;
+      afterCleanRef.current = null;
+      callback?.();
+      return;
+    }
+    itemsRef.current.forEach((item) => item.onClose?.());
   };
   useImperativeHandle(ref, () => ({
     show(options) {
@@ -72,15 +100,25 @@ const Container = forwardRef<NoticeContainerApi, { type: "message" | "notice" }>
     () => () => {
       timersRef.current.forEach(clearTimeout);
       timersRef.current.clear();
+      afterCleanRef.current = null;
     },
-    []
+    [],
   );
   return (
     <div className={`k-${type}`}>
-      {items.map(({ key, ...item }) => (
-        <div key={key} className={`k-${type}-slide-enter-active`}>
-          <Content {...item} />
-        </div>
+      {items.map(({ key, closing, ...item }) => (
+        <Transition
+          key={key}
+          show={!closing}
+          name={`k-${type}-slide`}
+          appear
+          timeout={300}
+          onAfterLeave={() => finishClose(key)}
+        >
+          <div>
+            <Content {...item} />
+          </div>
+        </Transition>
       ))}
     </div>
   );

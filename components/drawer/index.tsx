@@ -61,30 +61,21 @@ const Drawer: React.FC<DrawerProps> = ({
   const currentOpen = open ?? innerOpen;
 
   const [visible, setVisible] = useState(false);
-  const [opened, setOpened] = useState(false);
   const [rendered, setRendered] = useState(false);
-  const hideTimer = useRef<NodeJS.Timeout | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
 
   const toggle = useCallback((value: boolean) => {
-    if (value && hideTimer.current) {
-      clearTimeout(hideTimer.current);
-      hideTimer.current = null;
-    }
     if (value) {
       previousFocus.current = document.activeElement as HTMLElement | null;
       setRendered(true);
       setTimeout(() => {
         setVisible(true);
-        setOpened(true);
         wrapRef.current?.focus();
       }, 0);
     } else {
       setVisible(false);
       previousFocus.current?.focus();
-      if (hideTimer.current) clearTimeout(hideTimer.current);
-      hideTimer.current = setTimeout(() => setOpened(false), 300);
     }
   }, []);
 
@@ -93,7 +84,7 @@ const Drawer: React.FC<DrawerProps> = ({
       if (open === undefined) setInnerOpen(next);
       onOpenChange?.(next);
     },
-    [onOpenChange, open]
+    [onOpenChange, open],
   );
 
   const close = useCallback(() => {
@@ -101,9 +92,12 @@ const Drawer: React.FC<DrawerProps> = ({
     onClose?.();
   }, [onClose, requestOpen]);
 
-  const escToClose = useCallback((e: KeyboardEvent) => {
-    if (e.key === "Escape") close();
-  }, [close]);
+  const escToClose = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    },
+    [close],
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => toggle(currentOpen), 0);
@@ -116,7 +110,6 @@ const Drawer: React.FC<DrawerProps> = ({
       if (escKey) document.removeEventListener("keydown", escToClose);
       const t = target?.();
       if (t) t.style.overflow = "";
-      if (hideTimer.current) clearTimeout(hideTimer.current);
     };
   }, [escKey, escToClose, target]);
 
@@ -141,7 +134,9 @@ const Drawer: React.FC<DrawerProps> = ({
             {okLabel}
           </Button>
         </>
-      ) : footer}
+      ) : (
+        footer
+      )}
     </div>
   ) : null;
 
@@ -178,30 +173,19 @@ const Drawer: React.FC<DrawerProps> = ({
           />
         </Transition>
       )}
-      <div
-        ref={wrapRef}
-        className="k-drawer-wrap"
-        tabIndex={-1}
-        style={{ display: opened ? undefined : "none" }}
-      >
-        <div
-          className={clsx(
-            "k-drawer-box",
-            visible
-              ? `k-drawer-${placement}-enter-from k-drawer-${placement}-enter-active`
-              : `k-drawer-${placement}-leave-from k-drawer-${placement}-leave-active k-drawer-${placement}-leave-to`
-          )}
-          style={drawerStyle}
-        >
-          <div className="k-drawer-content">
-            <div className="k-drawer-header">
-              {closeNode}
-              <div className="k-drawer-header-inner">{title}</div>
+      <div ref={wrapRef} className="k-drawer-wrap" tabIndex={-1}>
+        <Transition show={visible} name={`k-drawer-${placement}`} timeout={200} appear>
+          <div className="k-drawer-box" style={drawerStyle}>
+            <div className="k-drawer-content">
+              <div className="k-drawer-header">
+                {closeNode}
+                <div className="k-drawer-header-inner">{title}</div>
+              </div>
+              <div className="k-drawer-body">{children}</div>
+              {footerNode}
             </div>
-            <div className="k-drawer-body">{children}</div>
-            {footerNode}
           </div>
-        </div>
+        </Transition>
       </div>
     </div>
   );

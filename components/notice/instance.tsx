@@ -21,15 +21,22 @@ export const createInstance = (type: "message" | "notice"): NoticeInstance => {
         ref={(value) => {
           api = value;
         }}
-      />
-    )
+      />,
+    ),
   );
+  let destroying = false;
   return {
     show: (options) => api?.show(options) ?? (() => undefined),
     clean: () => api?.clean(),
     destroy: () => {
-      root.unmount();
-      container.remove();
+      if (destroying) return;
+      destroying = true;
+      const remove = () => {
+        root.unmount();
+        container.remove();
+      };
+      if (api) api.clean(() => setTimeout(remove, 0));
+      else remove();
     },
   };
 };

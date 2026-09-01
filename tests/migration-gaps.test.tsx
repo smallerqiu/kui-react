@@ -10,7 +10,7 @@ describe("Form validation parity with kui-vue", () => {
         <FormItem label="Name" prop="name" rules={{ required: true, message: "Required" }}>
           <Input />
         </FormItem>
-      </Form>
+      </Form>,
     );
     fireEvent.submit(document.querySelector("form")!);
     expect(onSubmit).toHaveBeenCalledWith({ valid: false });
@@ -32,7 +32,7 @@ describe("Form validation parity with kui-vue", () => {
         >
           <Input />
         </FormItem>
-      </Form>
+      </Form>,
     );
     fireEvent.submit(document.querySelector("form")!);
     await waitFor(() => expect(onSubmit).toHaveBeenCalledWith({ valid: false }));
@@ -52,7 +52,7 @@ describe("Form validation parity with kui-vue", () => {
         >
           <Input />
         </FormItem>
-      </Form>
+      </Form>,
     );
     fireEvent.submit(document.querySelector("form")!);
     await waitFor(() => expect(onSubmit).toHaveBeenCalledWith({ valid: false }));
@@ -70,7 +70,7 @@ describe("Form validation parity with kui-vue", () => {
         >
           <Input />
         </FormItem>
-      </Form>
+      </Form>,
     );
     const input = screen.getByRole("textbox");
 
@@ -120,7 +120,7 @@ describe("Upload error reporting parity with kui-vue", () => {
     xhr.readyState = 4;
     xhr.onreadystatechange?.();
     await waitFor(() =>
-      expect(document.querySelector(".k-upload-file-status-text")?.textContent).toContain("500")
+      expect(document.querySelector(".k-upload-file-status-text")?.textContent).toContain("500"),
     );
     vi.unstubAllGlobals();
   });

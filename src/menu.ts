@@ -112,7 +112,7 @@ const navData = [
     children: [
       { title: "涟漪", sub: "Ripple", name: "ripple", icon: CircleDot },
       { title: "火焰边框", sub: "FlameWrap", name: "flame-wrap", icon: Flame },
-      { title: "动效", sub: "Motion", name: "motion", icon: Loader },
+      // { title: "动效", sub: "Motion", name: "motion", icon: Loader },
     ],
   },
   {

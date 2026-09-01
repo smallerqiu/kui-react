@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import type { DropPlacementsType, TriggerType } from "../const/types";
@@ -42,6 +42,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   const initialOpen = externalOpen ?? defaultOpen;
   const [visible, setVisible] = useState(initialOpen);
   const [rendered, setRendered] = useState(initialOpen);
+  const [positioned, setPositioned] = useState(false);
   const [previousOpen, setPreviousOpen] = useState(externalOpen);
   if (previousOpen !== externalOpen) {
     setPreviousOpen(externalOpen);
@@ -65,6 +66,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   const showTimer = useRef<NodeJS.Timeout | null>(null);
   const positionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const initialPositionFrameRef = useRef<number | null>(null);
   const frameRef = useRef<number | null>(null);
   const contextmenuPosition = useRef<{ x: number; y: number } | null>(null);
 
@@ -75,9 +77,9 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   const updatePosition = useCallback(
     (e?: MouseEvent, requestedPlacement = placement) => {
-      if (!refPopper.current) return;
+      if (!refPopper.current) return false;
       const targetElement = refSelection.current;
-      if (!targetElement) return;
+      if (!targetElement) return false;
 
       const position =
         e != null
@@ -99,16 +101,33 @@ const Dropdown: React.FC<DropdownProps> = ({
       });
 
       setCurrentPlacement((current) =>
-        current === placementRef.current ? current : (placementRef.current as DropPlacementsType)
+        current === placementRef.current ? current : (placementRef.current as DropPlacementsType),
       );
       setTransOrigin((current) =>
-        current === transOriginRef.current ? current : transOriginRef.current
+        current === transOriginRef.current ? current : transOriginRef.current,
       );
       setTop((current) => (current === topRef.current ? current : topRef.current));
       setLeft((current) => (current === leftRef.current ? current : leftRef.current));
+      return true;
     },
-    [placement, refSelection, trigger]
+    [placement, refSelection, trigger],
   );
+
+  useLayoutEffect(() => {
+    if (!rendered || !visible || positioned) return;
+    if (updatePosition(undefined, placement)) {
+      initialPositionFrameRef.current = window.requestAnimationFrame(() => {
+        initialPositionFrameRef.current = null;
+        setPositioned(true);
+      });
+    }
+    return () => {
+      if (initialPositionFrameRef.current !== null) {
+        cancelAnimationFrame(initialPositionFrameRef.current);
+        initialPositionFrameRef.current = null;
+      }
+    };
+  }, [placement, positioned, rendered, updatePosition, visible]);
 
   const schedulePositionUpdate = useCallback(() => {
     if (frameRef.current !== null || typeof window === "undefined") return;
@@ -147,21 +166,24 @@ const Dropdown: React.FC<DropdownProps> = ({
     };
   }, [refSelection, schedulePositionUpdate, visible]);
 
-  const outsideClick = useCallback((e: MouseEvent) => {
-    const targetElement = refSelection.current;
-    if (!refPopper.current) return;
-    const clickedEl = e.target as HTMLElement;
+  const outsideClick = useCallback(
+    (e: MouseEvent) => {
+      const targetElement = refSelection.current;
+      if (!refPopper.current) return;
+      const clickedEl = e.target as HTMLElement;
 
-    if (
-      (!refPopper.current.contains(clickedEl) &&
-        targetElement &&
-        !targetElement.contains(clickedEl)) ||
-      (trigger === "contextmenu" && !refPopper.current.contains(clickedEl))
-    ) {
-      if (externalOpen === undefined) setVisible(false);
-      onOpenChange?.(false);
-    }
-  }, [externalOpen, onOpenChange, refSelection, trigger]);
+      if (
+        (!refPopper.current.contains(clickedEl) &&
+          targetElement &&
+          !targetElement.contains(clickedEl)) ||
+        (trigger === "contextmenu" && !refPopper.current.contains(clickedEl))
+      ) {
+        if (externalOpen === undefined) setVisible(false);
+        onOpenChange?.(false);
+      }
+    },
+    [externalOpen, onOpenChange, refSelection, trigger],
+  );
 
   useEffect(() => {
     if (visible) {
@@ -185,9 +207,12 @@ const Dropdown: React.FC<DropdownProps> = ({
     () => () => {
       clearPopTimer();
       if (positionTimer.current) clearTimeout(positionTimer.current);
+      if (initialPositionFrameRef.current !== null) {
+        cancelAnimationFrame(initialPositionFrameRef.current);
+      }
       if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
     },
-    []
+    [],
   );
 
   const openChange = (opened: boolean, e?: MouseEvent) => {
@@ -292,7 +317,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   const overlayNode =
     rendered && overlay ? (
-      <Transition show={visible} name="k-dropdown" nodeRef={refPopper}>
+      <Transition show={visible} name="k-dropdown" nodeRef={refPopper} appear>
         <div
           ref={refPopper}
           style={
@@ -301,6 +326,7 @@ const Dropdown: React.FC<DropdownProps> = ({
               top: `${top}px`,
               transformOrigin: transOrigin,
               ...style,
+              visibility: positioned ? style?.visibility : "hidden",
             } as React.CSSProperties
           }
           className={popperClasses}
