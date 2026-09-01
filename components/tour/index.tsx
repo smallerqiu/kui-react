@@ -1,8 +1,10 @@
 import clsx from "clsx";
+import { X } from "kui-icons";
 import React, { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import { Button } from "../button";
+import { toggleContainerScroll } from "../utils/react-node";
 
 export interface TourStep {
   target?: HTMLElement | null | (() => HTMLElement | null);
@@ -39,8 +41,18 @@ const Tour: React.FC<TourProps> = ({
   const [innerCurrent, setInnerCurrent] = useState(defaultCurrent);
   const [, refresh] = useState(0);
   const visible = open ?? innerOpen;
+  const [rendered, setRendered] = useState(visible);
+  const [previousVisible, setPreviousVisible] = useState(visible);
+  if (previousVisible !== visible) {
+    setPreviousVisible(visible);
+    if (visible) setRendered(true);
+  }
   const index = current ?? innerCurrent;
   const step = steps[index];
+  useEffect(() => {
+    toggleContainerScroll(document.body, visible);
+    return () => toggleContainerScroll(document.body, false);
+  }, [visible]);
   useEffect(() => {
     if (!visible) return;
     const update = () => refresh((n) => n + 1);
@@ -51,7 +63,7 @@ const Tour: React.FC<TourProps> = ({
       window.removeEventListener("scroll", update, true);
     };
   }, [visible]);
-  if (!step || typeof document === "undefined") return null;
+  if (!rendered || !step || typeof document === "undefined") return null;
   const target = typeof step.target === "function" ? step.target() : step.target;
   const rect = target?.getBoundingClientRect();
   const placement = step.placement ?? "bottom";
@@ -88,72 +100,86 @@ const Tour: React.FC<TourProps> = ({
               transform: "translateX(-50%)",
             }
     : { left: "50%", top: "50%", transform: "translate(-50%, -50%)" };
-  return createPortal(
-    <div className="k-tour-root">
-      <Transition show={visible} name="k-modal-fade">
-        <div className="k-tour-overlay">
-          {mask && <div className={clsx("k-tour-mask", { "k-tour-mask-spotlight": !!rect })} />}
-          {mask && rect && (
-            <div
-              className="k-tour-focus"
-              style={{
-                left: rect.left - 5,
-                top: rect.top - 5,
-                width: rect.width + 10,
-                height: rect.height + 10,
-              }}
+  return (
+    <Teleport to="body">
+      <div className="k-tour-root">
+        <Transition show={visible} name="k-modal-fade">
+          <div className="k-tour-overlay">
+            {mask && <div className={clsx("k-tour-mask", { "k-tour-mask-spotlight": !!rect })} />}
+            {mask && rect && (
+              <div
+                className="k-tour-focus"
+                style={{
+                  left: rect.left - 5,
+                  top: rect.top - 5,
+                  width: rect.width + 10,
+                  height: rect.height + 10,
+                }}
+              />
+            )}
+          </div>
+        </Transition>
+        <section
+          className={clsx("k-tour-panel", `k-tour-${placement}`)}
+          style={{ ...panelStyle, display: visible ? undefined : "none" }}
+          role="dialog"
+          aria-modal="true"
+        >
+          {rect && (
+            <div className="k-tour-arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 8">
+                <path
+                  className="k-tour-arrow-outline"
+                  d="m24,0.97087l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+                />
+                <path
+                  className="k-tour-arrow-inner"
+                  d="m24,0l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+                />
+              </svg>
+            </div>
+          )}
+          {closable && (
+            <Button
+              className="k-tour-close"
+              type="text"
+              size="small"
+              aria-label="Close"
+              onClick={close}
+              icon={X}
             />
           )}
-        </div>
-      </Transition>
-      <section
-        className={clsx("k-tour-panel", `k-tour-${placement}`)}
-        style={{ ...panelStyle, display: visible ? undefined : "none" }}
-        role="dialog"
-        aria-modal="true"
-      >
-        {closable && (
-          <Button
-            className="k-tour-close"
-            type="text"
-            size="small"
-            aria-label="Close"
-            onClick={close}
-          >
-            ×
-          </Button>
-        )}
-        {step.cover && <div className="k-tour-cover">{step.cover}</div>}
-        {step.title && <h3>{step.title}</h3>}
-        <div className="k-tour-description">{step.description}</div>
-        <footer>
-          <span>
-            {index + 1} / {steps.length}
-          </span>
-          <div className="k-tour-actions">
-            {index > 0 && (
-              <Button size="small" onClick={() => go(index - 1)}>
-                上一步
+          {step.cover && <div className="k-tour-cover">{step.cover}</div>}
+          {step.title && <h3>{step.title}</h3>}
+          <div className="k-tour-description">{step.description}</div>
+          <footer>
+            <span>
+              {index + 1} / {steps.length}
+            </span>
+            <div className="k-tour-actions">
+              {index > 0 && (
+                <Button size="small" onClick={() => go(index - 1)}>
+                  上一步
+                </Button>
+              )}
+              <Button
+                size="small"
+                type="primary"
+                onClick={() => {
+                  if (index < steps.length - 1) go(index + 1);
+                  else {
+                    onFinish?.();
+                    close();
+                  }
+                }}
+              >
+                {index < steps.length - 1 ? "下一步" : "完成"}
               </Button>
-            )}
-            <Button
-              size="small"
-              type="primary"
-              onClick={() => {
-                if (index < steps.length - 1) go(index + 1);
-                else {
-                  onFinish?.();
-                  close();
-                }
-              }}
-            >
-              {index < steps.length - 1 ? "下一步" : "完成"}
-            </Button>
-          </div>
-        </footer>
-      </section>
-    </div>,
-    document.body
+            </div>
+          </footer>
+        </section>
+      </div>
+    </Teleport>
   );
 };
 export default Tour;
