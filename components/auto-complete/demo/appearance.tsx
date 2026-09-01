@@ -1,5 +1,5 @@
 import { AutoComplete, Space } from "react-kui";
-const options = ["React", "Vue", "Solid"];
+const options = ["Vue", "Vite", "Vitest"];
 export default function App() {
   return (
     <Space vertical>

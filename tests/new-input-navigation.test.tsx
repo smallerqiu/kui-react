@@ -86,4 +86,24 @@ describe("new input and navigation components", () => {
     fireEvent.click(screen.getByText("Two"));
     expect(stepChange).toHaveBeenCalledWith(1);
   });
+
+  it("supports lazy and remote Mentions suggestions", () => {
+    const onSearch = vi.fn();
+    const { rerender } = render(<Mentions options={["old"]} onSearch={onSearch} />);
+    const textarea = screen.getByRole("textbox");
+
+    expect(textarea.getAttribute("rows")).toBe("1");
+    expect(document.querySelector(".k-mentions-dropdown")).toBeNull();
+
+    fireEvent.change(textarea, { target: { value: "plain", selectionStart: 5 } });
+    expect(onSearch).not.toHaveBeenCalled();
+
+    rerender(<Mentions triggers={["#"]} options={["old"]} onSearch={onSearch} />);
+    fireEvent.change(textarea, { target: { value: "#react", selectionStart: 6 } });
+    expect(onSearch).toHaveBeenLastCalledWith("react", "#");
+    expect(screen.queryByText("old")).toBeNull();
+
+    rerender(<Mentions triggers={["#"]} options={["React"]} onSearch={onSearch} />);
+    expect(screen.getByText("React")).not.toBeNull();
+  });
 });

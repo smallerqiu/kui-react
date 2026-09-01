@@ -1,6 +1,6 @@
 import { AutoComplete } from "react-kui";
 export default function App() {
   return (
-    <AutoComplete showOnEmpty options={["React", "Vue", "Solid"]} placeholder="空输入聚焦时展示" />
+    <AutoComplete showOnEmpty options={["Vue", "React", "Angular"]} placeholder="Please input" />
   );
 }

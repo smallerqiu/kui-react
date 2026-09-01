@@ -65,11 +65,34 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   ...rest
 }) => {
   const locale = useContext(ConfigContext)?.locale || zhCN;
+  const normalized = useMemo(
+    () => options.map((item) => (typeof item === "string" ? { value: item, label: item } : item)),
+    [options],
+  );
+  const initialCurrent = value ?? defaultValue;
+  const initiallyOpen = open ?? defaultOpen;
+  const initialShownOptions =
+    initiallyOpen && (initialCurrent || showOnEmpty) && !loading
+      ? normalized.filter((option) =>
+          typeof filterOption === "function"
+            ? filterOption(initialCurrent, option)
+            : !filterOption ||
+              option.value.toLocaleLowerCase().includes(initialCurrent.toLocaleLowerCase()),
+        )
+      : [];
   const [innerValue, setInnerValue] = useState(defaultValue);
   const [innerOpen, setInnerOpen] = useState(defaultOpen);
+  const [rendered, setRendered] = useState(
+    initiallyOpen && (loading || initialShownOptions.length > 0),
+  );
+  const [positioned, setPositioned] = useState(false);
   const [active, setActive] = useState(-1);
-  const [shownOptions, setShownOptions] = useState<AutoCompleteOption[]>([]);
+  const [shownOptions, setShownOptions] = useState<AutoCompleteOption[]>(initialShownOptions);
   const [suppressRemoteOptions, setSuppressRemoteOptions] = useState(false);
+  const [syncedOpenChange, setSyncedOpenChange] = useState<{
+    value: boolean;
+    revision: number;
+  } | null>(null);
   const [position, setPosition] = useState({ left: 0, top: 0, origin: "left top", width: 0 });
   const rootRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -80,17 +103,17 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   const current = value ?? innerValue;
   const requestedOpen = open ?? innerOpen;
   const visible = (loading || shownOptions.length > 0) && requestedOpen;
-  const normalized = useMemo(
-    () => options.map((item) => (typeof item === "string" ? { value: item, label: item } : item)),
-    [options]
-  );
   const getMatches = (input: string) =>
     normalized.filter((option) =>
       typeof filterOption === "function"
         ? filterOption(input, option)
-        : !filterOption || option.value.toLocaleLowerCase().includes(input.toLocaleLowerCase())
+        : !filterOption || option.value.toLocaleLowerCase().includes(input.toLocaleLowerCase()),
     );
   const setOpen = (next: boolean) => {
+    if (next) {
+      setRendered(true);
+      if (!requestedOpen) setPositioned(false);
+    }
     if (open === undefined) setInnerOpen(next);
     onOpenChange?.(next);
   };
@@ -98,6 +121,14 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
     const matches = getMatches(input);
     if (matches.length) setShownOptions(matches);
     return matches.length > 0;
+  };
+  const syncOpen = (next: boolean) => {
+    if (next) {
+      setRendered(true);
+      if (!requestedOpen) setPositioned(false);
+    }
+    if (open === undefined) setInnerOpen(next);
+    setSyncedOpenChange((state) => ({ value: next, revision: (state?.revision ?? 0) + 1 }));
   };
   const updatePosition = () => {
     if (!rootRef.current || !dropdownRef.current) return;
@@ -116,26 +147,27 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
       origin: originRef.current,
       width: rootRef.current.offsetWidth,
     });
+    setPositioned(true);
   };
-  const syncRemoteState = useEffectEvent(() => {
+  const [previousRemoteState, setPreviousRemoteState] = useState({ loading, normalized });
+  if (previousRemoteState.loading !== loading || previousRemoteState.normalized !== normalized) {
+    setPreviousRemoteState({ loading, normalized });
     if (loading) {
       setSuppressRemoteOptions(false);
-      if (current || showOnEmpty) setOpen(true);
-      return;
-    }
-    if (!current && !showOnEmpty) {
+      if (current || showOnEmpty) syncOpen(true);
+    } else if (!current && !showOnEmpty) {
       if (onSearch) setSuppressRemoteOptions(true);
-      setOpen(false);
-      return;
+      syncOpen(false);
+    } else {
+      const matched = commitMatches(current);
+      setSuppressRemoteOptions(!!onSearch && !matched);
+      syncOpen(matched);
     }
-    const matched = commitMatches(current);
-    setSuppressRemoteOptions(!!onSearch && !matched);
-    setOpen(matched);
-  });
+  }
+  const emitSyncedOpen = useEffectEvent((next: boolean) => onOpenChange?.(next));
   useEffect(() => {
-    const timer = setTimeout(syncRemoteState, 0);
-    return () => clearTimeout(timer);
-  }, [loading, normalized]);
+    if (syncedOpenChange) emitSyncedOpen(syncedOpenChange.value);
+  }, [syncedOpenChange]);
   useEffect(() => {
     if (!visible) return;
     const frame = requestAnimationFrame(updatePosition);
@@ -225,49 +257,53 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         onChange={handleInput}
         onKeyDown={handleKeyDown}
       />
-      <Teleport to="body">
-        <Transition show={visible} name="k-select" nodeRef={dropdownRef}>
-          <div
-            ref={dropdownRef}
-            className={clsx("k-select-dropdown", "k-auto-complete-dropdown", {
-              "k-select-dropdown-sm": size === "small",
-            })}
-            style={{
-              left: position.left,
-              top: position.top,
-              minWidth: position.width,
-              transformOrigin: position.origin,
-            }}
-            role="listbox"
-          >
-            {loading || suppressRemoteOptions ? (
-              <div className="k-select-loading">
-                <Icon type={Loading} spin />
-                <span>{loadingText || locale.k.select.loading}</span>
-              </div>
-            ) : (
-              <ul>
-                {shownOptions.map((option, index) => (
-                  <li
-                    key={option.value}
-                    role="option"
-                    aria-selected={active === index}
-                    aria-disabled={option.disabled || undefined}
-                    className={clsx("k-select-item", {
-                      "k-select-item-active": active === index,
-                      "k-select-item-disabled": option.disabled,
-                    })}
-                    onMouseDown={(event) => event.preventDefault()}
-                    onClick={() => choose(option)}
-                  >
-                    {option.label ?? option.value}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </Transition>
-      </Teleport>
+      {rendered && (
+        <Teleport to="body">
+          <Transition show={visible} name="k-select" nodeRef={dropdownRef} appear>
+            <div
+              ref={dropdownRef}
+              className={clsx("k-select-dropdown", "k-auto-complete-dropdown", {
+                "k-select-dropdown-sm": size === "small",
+                "k-select-dropdown-lg": size === "large",
+              })}
+              style={{
+                left: position.left,
+                top: position.top,
+                minWidth: position.width,
+                visibility: positioned ? undefined : "hidden",
+                transformOrigin: position.origin,
+              }}
+              role="listbox"
+            >
+              {loading || suppressRemoteOptions ? (
+                <div className="k-select-loading">
+                  <Icon type={Loading} spin />
+                  <span>{loadingText || locale.k.select.loading}</span>
+                </div>
+              ) : (
+                <ul>
+                  {shownOptions.map((option, index) => (
+                    <li
+                      key={option.value}
+                      role="option"
+                      aria-selected={active === index}
+                      aria-disabled={option.disabled || undefined}
+                      className={clsx("k-select-item", {
+                        "k-select-item-active": active === index,
+                        "k-select-item-disabled": option.disabled,
+                      })}
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={() => choose(option)}
+                    >
+                      {option.label ?? option.value}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </Transition>
+        </Teleport>
+      )}
     </div>
   );
 };

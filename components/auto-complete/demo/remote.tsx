@@ -11,7 +11,7 @@ export default function App() {
       clearTimeout(timer.current);
       controller.current?.abort();
     },
-    []
+    [],
   );
   const search = (keyword: string) => {
     clearTimeout(timer.current);
@@ -28,8 +28,9 @@ export default function App() {
       try {
         const response = await fetch(
           `https://dummyjson.com/products/search?q=${encodeURIComponent(keyword)}&limit=8&select=title`,
-          { signal: request.signal }
+          { signal: request.signal },
         );
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = (await response.json()) as { products: Array<{ title: string }> };
         setOptions(data.products.map((item) => item.title));
       } catch (error) {
@@ -45,7 +46,7 @@ export default function App() {
       onChange={setValue}
       options={options}
       loading={loading}
-      placeholder="输入商品名称"
+      placeholder="Please input."
       onSearch={search}
     />
   );
