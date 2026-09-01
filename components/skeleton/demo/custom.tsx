@@ -43,7 +43,7 @@ export default function App() {
             size="small"
             style={{ minWidth: 80, margin: "8px 0" }}
           >
-            <p>Tony Stark</p>
+            <p>Tony Stack</p>
           </SkeletonText>
           <SkeletonText animated loading={loading} size="small" style={{ minWidth: 130 }}>
             <span style={{ fontSize: 13, color: "#999" }}>I am Iron Man.</span>

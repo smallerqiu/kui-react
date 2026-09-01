@@ -13,12 +13,12 @@ import {
 } from "react-kui";
 const sizes = [
     { label: "Small", value: "small" },
-    { label: "Default", value: undefined },
+    { label: "Default", value: "default" },
     { label: "Large", value: "large" },
   ],
   btnShapes = [
     { label: "Round", value: "round" },
-    { label: "Default", value: undefined },
+    { label: "Default", value: "default" },
     { label: "Circle", value: "circle" },
   ],
   avatarShapes = [
@@ -28,8 +28,8 @@ const sizes = [
 export default function App() {
   const [animated, setAnimated] = useState(false),
     [block, setBlock] = useState(false),
-    [size, setSize] = useState<SizeType | undefined>(),
-    [btnShape, setBtnShape] = useState<ShapeType | undefined>("round"),
+    [size, setSize] = useState<SizeType | "default">("default"),
+    [btnShape, setBtnShape] = useState<ShapeType>("round"),
     [avatarShape, setAvatarShape] = useState<ShapeType>("square"),
     [radius, setRadius] = useState(10),
     [imgSize, setImgSize] = useState<number[]>([196, 96]);

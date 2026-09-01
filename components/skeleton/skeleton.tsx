@@ -81,7 +81,14 @@ const Skeleton: React.FC<SkeletonProps> = ({
 
   return (
     <div className={classes} {...rest} aria-busy={loading || undefined}>
-      {children != null && !show ? children : [renderAvatar(), renderContent()]}
+      {children != null && !show ? (
+        children
+      ) : (
+        <>
+          {renderAvatar()}
+          {renderContent()}
+        </>
+      )}
     </div>
   );
 };

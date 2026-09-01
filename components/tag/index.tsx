@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { X } from "kui-icons";
 import React, { useState } from "react";
+import Transition from "../base/transition";
 import { type ColorType, type ShapeType, type SizeType, type ThemeType } from "../const/types";
 import { colors } from "../const/var";
 import Icon, { type IconType } from "../icon";
@@ -33,15 +34,11 @@ const Tag: React.FC<TagProps> = ({
   ...rest
 }) => {
   const [visible, setVisible] = useState(true);
-  const [hidden, setHidden] = useState(false);
 
   const closeHandler = (e: React.MouseEvent) => {
     e.stopPropagation();
     onClose?.();
     setVisible(false);
-    setTimeout(() => {
-      setHidden(true);
-    }, 300);
   };
 
   const isPresetColor = color !== undefined && colors.some((preset) => preset === color);
@@ -58,24 +55,24 @@ const Tag: React.FC<TagProps> = ({
       "k-tag-has-color": isCustomColor,
       "k-tag-closeable": closeable,
       "k-tag-compact": compact,
-      "k-tag-hidden": hidden,
-      "k-tag-fill": theme === "fill",
+      [`k-tag-${theme}`]: !!theme,
     },
-    className
+    className,
   );
 
   const tagStyle: React.CSSProperties = {
     backgroundColor: isCustomColor ? color : undefined,
-    display: visible ? undefined : "none",
     ...style,
   };
 
   return (
-    <div className={tagClasses} style={tagStyle} {...rest}>
-      {icon && <Icon className="k-tag-icon" type={icon} />}
-      <span className="k-tag-text">{children}</span>
-      {closeable && <Icon className="k-tag-close" type={X} onClick={closeHandler} />}
-    </div>
+    <Transition show={visible} name="k-tag" timeout={200}>
+      <div className={tagClasses} style={tagStyle} {...rest}>
+        {icon && <Icon className="k-tag-icon" type={icon} />}
+        <span className="k-tag-text">{children}</span>
+        {closeable && <Icon className="k-tag-close" type={X} onClick={closeHandler} />}
+      </div>
+    </Transition>
   );
 };
 
