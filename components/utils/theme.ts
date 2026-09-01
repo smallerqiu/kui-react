@@ -1,5 +1,3 @@
-import { flushSync } from "react-dom";
-
 const THEME_KEY = "theme-mode";
 
 const toggleTheme = (): boolean => {
@@ -30,7 +28,6 @@ const Theme = {
     const transition = document.startViewTransition(async () => {
       toggleTheme();
       callback?.(willBeDark);
-      flushSync(() => {});
     });
 
     transition.ready.then(() => {
@@ -65,7 +62,7 @@ const Theme = {
           duration: 500,
           easing: "ease-in-out",
           pseudoElement,
-        }
+        },
       );
       animate.onfinish = () => {
         transition.skipTransition();

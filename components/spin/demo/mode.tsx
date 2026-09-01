@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Radio, RadioGroup, Switch, Spin } from "react-kui";
-type Mode = "bounce" | "flip" | "rotate" | "zoom";
+import { Radio, RadioGroup, Switch, Spin, type SpinModeType } from "react-kui";
 export default function App() {
   const [spinning, setSpinning] = useState(false),
-    [mode, setMode] = useState<Mode>("bounce");
+    [mode, setMode] = useState<SpinModeType>("bounce");
   return (
     <div>
       <Spin spinning={spinning} mode={mode}>
@@ -19,8 +18,8 @@ export default function App() {
       <Switch checked={spinning} onChange={(value) => setSpinning(Boolean(value))} />
       <br />
       <br />
-      <RadioGroup value={mode} onChange={(value) => setMode(value as Mode)}>
-        {(["bounce", "flip", "rotate", "zoom"] as Mode[]).map((value) => (
+      <RadioGroup value={mode} onChange={(value) => setMode(value as SpinModeType)}>
+        {(["bounce", "flip", "rotate", "zoom"] as SpinModeType[]).map((value) => (
           <Radio key={value} value={value} label={value[0].toUpperCase() + value.slice(1)} />
         ))}
       </RadioGroup>

@@ -12,13 +12,14 @@ describe.each(["message", "notice"] as const)("%s exit motion", (type) => {
     vi.useRealTimers();
   });
 
-  it("keeps the item mounted until its leave animation finishes", () => {
+  it("keeps the item mounted until its leave animation finishes", async () => {
     vi.useFakeTimers();
-    instance = createInstance(type);
     const onClose = vi.fn();
     let close = () => {};
-    act(() => {
+    await act(async () => {
+      instance = createInstance(type);
       close = instance!.show({ content: "Closing content", duration: 0, onClose });
+      await Promise.resolve();
     });
     const enteringItem = document.querySelector(`.k-${type}-slide-enter-active`);
 

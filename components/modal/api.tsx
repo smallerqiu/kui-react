@@ -1,4 +1,3 @@
-import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import { recordMousePoint } from "../config/context";
 import type { IconType } from "../icon";
@@ -39,7 +38,7 @@ function showModal(props: ModalApiProps): ModalInstance {
       }, 0);
     },
   };
-  flushSync(() => root.render(<Toast {...props} onDestroy={instance.destroy} />));
+  root.render(<Toast {...props} onDestroy={instance.destroy} />);
   instances.add(instance);
   return instance;
 }

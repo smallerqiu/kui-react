@@ -80,6 +80,7 @@ const Modal: React.FC<ModalProps> = ({
   const refModal = useRef<HTMLDivElement>(null);
   const refWrap = useRef<HTMLDivElement>(null);
   const refHeader = useRef<HTMLDivElement>(null);
+  const previousActiveRef = useRef<HTMLElement | null>(null);
   const hideTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const getOffset = (el: HTMLElement) => ({
@@ -104,6 +105,9 @@ const Modal: React.FC<ModalProps> = ({
       }
 
       if (value) {
+        if (document.activeElement instanceof HTMLElement) {
+          previousActiveRef.current = document.activeElement;
+        }
         // Reset position when opening
         setLeftPos(0);
         setTopPos(top);
@@ -181,6 +185,11 @@ const Modal: React.FC<ModalProps> = ({
   const cancel = () => {
     requestOpen(false);
     onCancel?.();
+  };
+  const afterClose = () => {
+    previousActiveRef.current?.focus();
+    previousActiveRef.current = null;
+    onAfterClose?.();
   };
 
   const clickMaskToClose = (e: React.MouseEvent) => {
@@ -315,7 +324,7 @@ const Modal: React.FC<ModalProps> = ({
         style={{ display: showInner ? undefined : "none" }}
         onClick={clickMaskToClose}
       >
-        <Transition show={visible} name="k-modal-zoom" timeout={250} onAfterLeave={onAfterClose}>
+        <Transition show={visible} name="k-modal-zoom" timeout={250} onAfterLeave={afterClose}>
           <div ref={refModal} className="k-modal-inner" style={modalStyle || undefined}>
             {contentNode}
             <div tabIndex={0} />

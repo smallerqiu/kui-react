@@ -22,9 +22,9 @@ When part of the page is waiting for asynchronous data or being rendered, approp
 
 ## Spin API
 
-| Property   | Description                                                  | Type                        | Default |
-| ---------- | ------------------------------------------------------------ | --------------------------- | ------- |
-| spinning   | Whether the component is loading                            | boolean                        | true    |
-| mode       | Display spin type, provides 4 display methods                | string                      | -       |
-| delay      | Delay time to display loading effect (prevent flickering)    | number (milliseconds)       | 500     |
-| size       | Set loading effect size                                      | `large`, `default`, `small` | -       |
+| Property | Description                                | Type                       | Default |
+| -------- | ------------------------------------------ | -------------------------- | ------- |
+| spinning | Whether the component is loading           | boolean                    | true    |
+| mode     | Loading animation type                     | bounce\|flip\|rotate\|zoom | rotate  |
+| delay    | Delay before showing to prevent flickering | number                     | 0       |
+| size     | Loading indicator size                     | small\|medium\|large       | medium  |

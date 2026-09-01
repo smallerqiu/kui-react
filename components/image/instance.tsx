@@ -1,4 +1,3 @@
-import { flushSync } from "react-dom";
 import { createRoot, type Root } from "react-dom/client";
 import Preview, { type ImagePreviewApi, type ImagePreviewProps } from "./preview";
 
@@ -12,23 +11,32 @@ export default function createInstance(props: ImagePreviewProps = {}): ImagePrev
   document.body.appendChild(container);
   const root: Root = createRoot(container);
   let api: ImagePreviewApi | null = null;
-  flushSync(() =>
-    root.render(
-      <Preview
-        {...props}
-        ref={(value) => {
-          api = value;
-        }}
-      />
-    )
+  let active = true;
+  const pending: Array<(current: ImagePreviewApi) => void> = [];
+  root.render(
+    <Preview
+      {...props}
+      ref={(value) => {
+        if (!value || !active) return;
+        api = value;
+        pending.splice(0).forEach((action) => action(value));
+      }}
+    />,
   );
+  const invoke = (action: (current: ImagePreviewApi) => void) => {
+    if (api) action(api);
+    else if (active) pending.push(action);
+  };
   return {
-    show: (options) => api?.show(options),
-    close: () => api?.close(),
-    togglePanel: () => api?.togglePanel(),
+    show: (options) => invoke((current) => current.show(options)),
+    close: () => invoke((current) => current.close()),
+    togglePanel: () => invoke((current) => current.togglePanel()),
     destroy: () => {
-      root.unmount();
+      if (!active) return;
+      active = false;
+      pending.length = 0;
       container.remove();
+      queueMicrotask(() => root.unmount());
     },
   };
 }

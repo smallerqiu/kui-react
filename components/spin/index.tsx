@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
-import type { SizeType, SpinModeType } from "../const/types.ts";
+import type { SizeType, SpinModeType } from "../const/types";
 
 export interface SpinProps extends React.HTMLAttributes<HTMLDivElement> {
   spinning?: boolean;
@@ -12,7 +12,7 @@ export interface SpinProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Spin: React.FC<SpinProps> = ({
   spinning: spinningProp = true,
-  delay = 500,
+  delay = 0,
   size,
   mode = "rotate",
   children,
@@ -20,25 +20,22 @@ const Spin: React.FC<SpinProps> = ({
   ...rest
 }) => {
   const [spinning, setSpinning] = useState(spinningProp);
-  const [previousSpinning, setPreviousSpinning] = useState(spinningProp);
-  if (previousSpinning !== spinningProp) {
-    setPreviousSpinning(spinningProp);
-    if (spinningProp) setSpinning(true);
+  const [previousState, setPreviousState] = useState({ spinningProp, delay });
+  if (previousState.spinningProp !== spinningProp || previousState.delay !== delay) {
+    setPreviousState({ spinningProp, delay });
+    if (!spinningProp) setSpinning(false);
+    else if (delay <= 0) setSpinning(true);
   }
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (spinningProp) {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-        timerRef.current = null;
-      }
-    } else {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    if (spinningProp && delay > 0) {
       timerRef.current = setTimeout(() => {
-        setSpinning(false);
+        setSpinning(true);
         timerRef.current = null;
       }, delay);
     }
@@ -59,7 +56,7 @@ const Spin: React.FC<SpinProps> = ({
       "k-spin-sm": size === "small",
       "k-spin-only": children == null,
     },
-    className
+    className,
   );
 
   const spinNode = <div className={spinClasses} />;
