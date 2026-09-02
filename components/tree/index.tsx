@@ -382,7 +382,7 @@ export default function Tree({
           itemKey="key"
           className="k-tree-node-list"
         >
-          {(node) => renderNode(node as TreeNode)}
+          {(node) => renderNode(node)}
         </VirtualList>
       ) : (
         <div className="k-tree-node-list">{visible.map((node) => renderNode(node))}</div>

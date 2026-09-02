@@ -22,18 +22,20 @@ Only renders data near the viewport to optimize large-list rendering performance
 
 - Tree renders only visible nodes near the current viewport.
 
+[Usage in TreeSelect](../tree-select/demo/virtual.tsx)
 
+- TreeSelect uses virtual scrolling in its dropdown tree for large data sets.
 
 ## API
 
-| Property   | Description                                       | Type                                   | Default |
-| ---------- | ------------------------------------------------- | -------------------------------------- | ------- |
-| data       | List data                                         | unknown[]                              | []      |
-| height     | Viewport height                                   | number\|string                         | 300     |
-| itemHeight | Fixed item height                                 | number                                 | 32      |
-| overscan   | Extra items rendered above and below the viewport | number                                 | 5       |
-| itemKey    | Unique field or key getter                        | string\|((item,index)=>string\|number) | -       |
-| onScroll   | Scroll callback                                   | (event: UIEvent) => void               | -       |
+| Property   | Description                                       | Type                                                   | Default |
+| ---------- | ------------------------------------------------- | ------------------------------------------------------ | ------- |
+| data       | List data                                         | T[]                                                    | []      |
+| height     | Viewport height                                   | number \| string                                       | 300     |
+| itemHeight | Fixed item height                                 | number                                                 | 32      |
+| overscan   | Extra items rendered above and below the viewport | number                                                 | 5       |
+| itemKey    | Unique field or key getter                        | string \| (item: T, index: number) => string \| number | -       |
+| onScroll   | Scroll callback                                   | (event: UIEvent) => void                               | -       |
 
 ## Methods
 

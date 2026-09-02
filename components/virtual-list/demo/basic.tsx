@@ -7,10 +7,9 @@ export default function App() {
   return (
     <VirtualList data={data} height={300} itemHeight={40} itemKey="id">
       {(item, index) => {
-        const row = item as (typeof data)[number];
         return (
           <div style={{ padding: "0 16px", lineHeight: "40px" }}>
-            {index + 1}. {row.label}
+            {index + 1}. {item.label}
           </div>
         );
       }}

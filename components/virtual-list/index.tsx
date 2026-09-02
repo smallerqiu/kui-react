@@ -1,6 +1,14 @@
 import clsx from "clsx";
-import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
-import { getVirtualRange } from "./range";
+import React, {
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+  type ForwardedRef,
+  type ReactElement,
+  type RefAttributes,
+} from "react";
+import { getVirtualRange, normalizeItemHeight } from "./range";
 
 export type VirtualListKey = string | number;
 export interface VirtualListRef {
@@ -20,114 +28,121 @@ export interface VirtualListProps<T = unknown> extends Omit<
   onScroll?: React.UIEventHandler<HTMLDivElement>;
 }
 
-const VirtualList = React.forwardRef<VirtualListRef, VirtualListProps>(
-  (
-    {
-      data = [],
-      height = 300,
-      itemHeight = 32,
-      overscan = 5,
-      itemKey,
-      children,
-      className,
-      style,
-      onScroll,
-      ...rest
-    },
+function VirtualListInner<T>(
+  {
+    data = [],
+    height = 300,
+    itemHeight = 32,
+    overscan = 5,
+    itemKey,
+    children,
+    className,
+    style,
+    onScroll,
+    ...rest
+  }: VirtualListProps<T>,
+  forwardedRef: ForwardedRef<VirtualListRef>,
+) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scrollTop, setScrollTop] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(0);
+  const safeItemHeight = normalizeItemHeight(itemHeight);
+  const range = getVirtualRange({
+    count: data.length,
+    scrollTop,
+    viewportHeight,
+    itemHeight: safeItemHeight,
+    overscan,
+  });
+  useEffect(() => {
+    const update = () => setViewportHeight(containerRef.current?.clientHeight ?? 0);
+    update();
+    if (typeof ResizeObserver === "undefined" || !containerRef.current) return;
+    const observer = new ResizeObserver(update);
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const maxScrollTop = Math.max(0, data.length * safeItemHeight - container.clientHeight);
+    if (container.scrollTop > maxScrollTop) {
+      container.scrollTop = maxScrollTop;
+      setScrollTop(maxScrollTop);
+    }
+  }, [data.length, safeItemHeight]);
+  useImperativeHandle(
     forwardedRef,
-  ) => {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const [scrollTop, setScrollTop] = useState(0);
-    const [viewportHeight, setViewportHeight] = useState(0);
-    const range = getVirtualRange({
-      count: data.length,
-      scrollTop,
-      viewportHeight,
-      itemHeight,
-      overscan,
-    });
-    useEffect(() => {
-      const update = () => setViewportHeight(containerRef.current?.clientHeight ?? 0);
-      update();
-      if (typeof ResizeObserver === "undefined" || !containerRef.current) return;
-      const observer = new ResizeObserver(update);
-      observer.observe(containerRef.current);
-      return () => observer.disconnect();
-    }, []);
-    useEffect(() => {
-      const container = containerRef.current;
-      if (!container) return;
-      const maxScrollTop = Math.max(0, data.length * itemHeight - container.clientHeight);
-      if (container.scrollTop > maxScrollTop) {
-        container.scrollTop = maxScrollTop;
-        setScrollTop(maxScrollTop);
-      }
-    }, [data, itemHeight]);
-    useImperativeHandle(
-      forwardedRef,
-      () => ({
-        container: containerRef.current,
-        scrollToIndex(index, align = "auto") {
-          const container = containerRef.current;
-          if (!container || !data.length) return;
-          const target = Math.max(0, Math.min(Math.floor(index), data.length - 1));
-          const top = target * itemHeight;
-          const bottom = top + itemHeight;
-          if (align === "start") container.scrollTop = top;
-          else if (align === "center")
-            container.scrollTop = top - container.clientHeight / 2 + itemHeight / 2;
-          else if (align === "end") container.scrollTop = bottom - container.clientHeight;
-          else if (top < container.scrollTop) container.scrollTop = top;
-          else if (bottom > container.scrollTop + container.clientHeight)
-            container.scrollTop = bottom - container.clientHeight;
-          setScrollTop(container.scrollTop);
-        },
-      }),
-      [data.length, itemHeight],
-    );
-    const getKey = (item: unknown, index: number): VirtualListKey => {
-      if (typeof itemKey === "function") return itemKey(item, index);
-      if (typeof itemKey === "string" && item && typeof item === "object") {
-        const value = (item as Record<string, unknown>)[itemKey];
-        if (typeof value === "string" || typeof value === "number") return value;
-      }
-      return index;
-    };
-    const actualHeight = typeof height === "number" ? `${height}px` : height;
-    return (
-      <div
-        {...rest}
-        ref={containerRef}
-        className={clsx("k-virtual-list", "k-scroll", className)}
-        style={{ ...style, height: actualHeight }}
-        onScroll={(event) => {
-          setScrollTop(event.currentTarget.scrollTop);
-          onScroll?.(event);
-        }}
-      >
-        <div className="k-virtual-list-spacer" style={{ height: `${range.total}px` }}>
-          <div
-            className="k-virtual-list-items"
-            style={{ transform: `translateY(${range.offset}px)` }}
-          >
-            {data.slice(range.start, range.end).map((item, localIndex) => {
-              const index = range.start + localIndex;
-              return (
-                <div
-                  key={getKey(item, index)}
-                  className="k-virtual-list-item"
-                  style={{ height: `${itemHeight}px` }}
-                  data-index={index}
-                >
-                  {children?.(item, index)}
-                </div>
-              );
-            })}
-          </div>
+    () => ({
+      container: containerRef.current,
+      scrollToIndex(index, align = "auto") {
+        const container = containerRef.current;
+        if (!container || !data.length) return;
+        const normalizedIndex = Number.isFinite(index) ? Math.floor(index) : 0;
+        const target = Math.max(0, Math.min(normalizedIndex, data.length - 1));
+        const top = target * safeItemHeight;
+        const bottom = top + safeItemHeight;
+        const maxScrollTop = Math.max(0, data.length * safeItemHeight - container.clientHeight);
+        let nextScrollTop = container.scrollTop;
+        if (align === "start") nextScrollTop = top;
+        else if (align === "center")
+          nextScrollTop = top - container.clientHeight / 2 + safeItemHeight / 2;
+        else if (align === "end") nextScrollTop = bottom - container.clientHeight;
+        else if (top < container.scrollTop) nextScrollTop = top;
+        else if (bottom > container.scrollTop + container.clientHeight)
+          nextScrollTop = bottom - container.clientHeight;
+        container.scrollTop = Math.max(0, Math.min(nextScrollTop, maxScrollTop));
+        setScrollTop(container.scrollTop);
+      },
+    }),
+    [data.length, safeItemHeight],
+  );
+  const getKey = (item: T, index: number): VirtualListKey => {
+    if (typeof itemKey === "function") return itemKey(item, index);
+    if (typeof itemKey === "string" && item && typeof item === "object") {
+      const value = (item as Record<string, unknown>)[itemKey];
+      if (typeof value === "string" || typeof value === "number") return value;
+    }
+    return index;
+  };
+  const actualHeight = typeof height === "number" ? `${height}px` : height;
+  return (
+    <div
+      {...rest}
+      ref={containerRef}
+      className={clsx("k-virtual-list", "k-scroll", className)}
+      style={{ ...style, height: actualHeight }}
+      onScroll={(event) => {
+        setScrollTop(event.currentTarget.scrollTop);
+        onScroll?.(event);
+      }}
+    >
+      <div className="k-virtual-list-spacer" style={{ height: `${range.total}px` }}>
+        <div
+          className="k-virtual-list-items"
+          style={{ transform: `translateY(${range.offset}px)` }}
+        >
+          {data.slice(range.start, range.end).map((item, localIndex) => {
+            const index = range.start + localIndex;
+            return (
+              <div
+                key={getKey(item, index)}
+                className="k-virtual-list-item"
+                style={{ height: `${safeItemHeight}px` }}
+                data-index={index}
+              >
+                {children?.(item, index)}
+              </div>
+            );
+          })}
         </div>
       </div>
-    );
-  },
-);
-VirtualList.displayName = "VirtualList";
+    </div>
+  );
+}
+const VirtualListBase = React.forwardRef(VirtualListInner);
+VirtualListBase.displayName = "VirtualList";
+const VirtualList = VirtualListBase as <T = unknown>(
+  props: VirtualListProps<T> & RefAttributes<VirtualListRef>,
+) => ReactElement | null;
 export default VirtualList;
