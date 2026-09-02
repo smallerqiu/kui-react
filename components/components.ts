@@ -294,7 +294,7 @@ export type { VirtualListKey, VirtualListProps, VirtualListRef } from "./virtual
 export { getVirtualRange } from "./virtual-list/range";
 
 export { default as Transfer } from "./transfer";
-export type { TransferChangeEvent, TransferItem, TransferProps } from "./transfer";
+export type { TransferChangeEvent, TransferItem, TransferKey, TransferProps } from "./transfer";
 
 export {
   default as Typography,

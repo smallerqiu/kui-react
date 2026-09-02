@@ -5,10 +5,17 @@ export default function App() {
   const [page, setPage] = useState(2);
   return (
     <Space vertical>
-      <Page page={page} onChange={(nextPage) => setPage(nextPage)} total={80} pageSize={10} />
       <Page
         page={page}
         onChange={(nextPage) => setPage(nextPage)}
+        simple
+        total={80}
+        pageSize={10}
+      />
+      <Page
+        page={page}
+        onChange={(nextPage) => setPage(nextPage)}
+        simple
         showElevator
         total={1000}
         pageSize={10}
@@ -16,6 +23,7 @@ export default function App() {
       <Page
         page={page}
         onChange={(nextPage) => setPage(nextPage)}
+        simple
         size="small"
         theme="outline"
         total={80}

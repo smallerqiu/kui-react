@@ -23,13 +23,19 @@ When an operation takes a long time to complete, display the current progress an
 
 - Specify the `mode` to change the display direction.
 
-## API
+## TimeLine API
 
-| Property | Description                                                                                                    | Type         | Default |
-| -------- | -------------------------------------------------------------------------------------------------------------- | ------------ | ------- |
-| icon     | Timeline `item` icon                                                                                           | string       | -       |
-| dot      | Custom timeline dot                                                                                           | ReactNode    | -       |
-| color    | Timeline `item` icon color                                                                                     | string       | -       |
-| time     | Time text                                                                                                      | string       | -       |
-| extra    | Custom auxiliary content                                                                                       | string, ReactNode | -       |
-| mode     | Can change relative position of timeline and content by setting `mode`: `left`, `center`, `alternate`, `right` | string       | left    |
+| Property | Description                                       | Type                                           | Default  |
+| -------- | ------------------------------------------------- | ---------------------------------------------- | -------- |
+| mode     | Relative position of the timeline and its content | `'left' \| 'right' \| 'center' \| 'alternate'` | `'left'` |
+
+## TimeLineItem API
+
+| Property | Description           | Type         | Default |
+| -------- | --------------------- | ------------ | ------- |
+| dot      | Custom timeline node  | `ReactNode`  | -       |
+| icon     | Timeline node icon    | `IconType[]` | -       |
+| color    | Timeline node color   | `string`     | -       |
+| time     | Time content          | `ReactNode`  | -       |
+| extra    | Auxiliary content     | `ReactNode`  | -       |
+| children | Timeline item content | `ReactNode`  | -       |

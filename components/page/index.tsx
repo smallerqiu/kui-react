@@ -161,6 +161,7 @@ const Page: React.FC<PageProps> = ({
       "k-page-fill": theme === "fill",
       "k-page-outline": theme === "outline",
       "k-page-disabled": disabled,
+      "k-page-simple": simple,
       [`k-page-${shape}`]: shape,
     },
     className,
@@ -173,7 +174,7 @@ const Page: React.FC<PageProps> = ({
 
   return (
     <div className={classes} {...rest}>
-      {showTotal ? (
+      {showTotal && !simple ? (
         <div className="k-page-number">
           <span>
             {locale?.k?.page?.total} {total} {locale?.k?.page?.items}
@@ -217,8 +218,25 @@ const Page: React.FC<PageProps> = ({
 
         {simple && (
           <li className="k-page-simple-number" aria-current="page">
-            <span>{currentPage}</span>
-            <span>/</span>
+            {showElevator ? (
+              <span className="k-page-simple-input">
+                <InputNumber
+                  value={currentPage}
+                  min={1}
+                  max={pageCount}
+                  controls={false}
+                  disabled={disabled}
+                  size={size}
+                  theme={theme}
+                  onChange={(nextPage) => {
+                    if (nextPage !== undefined) toPage(nextPage);
+                  }}
+                />
+              </span>
+            ) : (
+              <span>{currentPage}</span>
+            )}
+            <span aria-hidden="true">/</span>
             <span>{pageCount}</span>
           </li>
         )}

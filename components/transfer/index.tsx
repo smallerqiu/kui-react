@@ -1,52 +1,58 @@
 import clsx from "clsx";
-import { ArrowLeft, ArrowRight } from "kui-icons";
+import { ChevronLeft, ChevronRight, Search } from "kui-icons";
 import { useMemo, useState } from "react";
 import { Button } from "../button";
 import Checkbox from "../checkbox";
+import Empty from "../empty";
 import Input from "../input";
-import type { ThemeType } from "../const/types";
+
+export type TransferKey = string | number;
 
 export interface TransferItem {
-  key: string | number;
+  key: TransferKey;
   title: string;
   description?: string;
   disabled?: boolean;
   [key: string]: unknown;
 }
+
 export interface TransferChangeEvent {
-  targetKeys: Array<string | number>;
+  targetKeys: TransferKey[];
   direction: "left" | "right";
-  movedKeys: Array<string | number>;
+  movedKeys: TransferKey[];
 }
+
 export interface TransferProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
   dataSource?: TransferItem[];
-  targetKeys?: Array<string | number>;
-  defaultTargetKeys?: Array<string | number>;
+  targetKeys?: TransferKey[];
+  defaultTargetKeys?: TransferKey[];
   titles?: [React.ReactNode, React.ReactNode];
   operations?: [string, string];
   searchable?: boolean;
   disabled?: boolean;
-  theme?: ThemeType;
+  theme?: "outline" | "fill";
   filterOption?: (keyword: string, item: TransferItem) => boolean;
   item?: (item: TransferItem) => React.ReactNode;
   footer?: (direction: "left" | "right") => React.ReactNode;
   onChange?: (event: TransferChangeEvent) => void;
-  onSelectChange?: (sourceKeys: Array<string | number>, targetKeys: Array<string | number>) => void;
-  /** 搜索框内容变化时触发，与 kui-vue `transfer/index.tsx:43` 一致 */
+  onSelectChange?: (sourceKeys: TransferKey[], targetKeys: TransferKey[]) => void;
   onSearch?: (direction: "left" | "right", value: string) => void;
 }
 
+const EMPTY_ITEMS: TransferItem[] = [];
+const EMPTY_KEYS: TransferKey[] = [];
+
 export default function Transfer({
-  dataSource = [],
+  dataSource = EMPTY_ITEMS,
   targetKeys,
-  defaultTargetKeys = [],
+  defaultTargetKeys = EMPTY_KEYS,
   titles = ["Source", "Target"],
-  operations = ["Add", "Remove"],
+  operations = ["", ""],
   searchable = false,
   disabled = false,
   theme = "outline",
   filterOption,
-  item,
+  item: renderItem,
   footer,
   onChange,
   onSelectChange,
@@ -55,128 +61,245 @@ export default function Transfer({
   ...rest
 }: TransferProps) {
   const [innerTargets, setInnerTargets] = useState(defaultTargetKeys);
-  const [sourceSelected, setSourceSelected] = useState<Array<string | number>>([]);
-  const [targetSelected, setTargetSelected] = useState<Array<string | number>>([]);
-  const [queries, setQueries] = useState(["", ""]);
+  const [sourceSelected, setSourceSelected] = useState<TransferKey[]>([]);
+  const [targetSelected, setTargetSelected] = useState<TransferKey[]>([]);
+  const [queries, setQueries] = useState<[string, string]>(["", ""]);
   const targets = targetKeys ?? innerTargets;
-  const lists = useMemo(
-    () => [
-      dataSource.filter((item) => !targets.includes(item.key)),
-      dataSource.filter((item) => targets.includes(item.key)),
-    ],
-    [dataSource, targets],
+  const targetSet = useMemo(() => new Set(targets), [targets]);
+  const itemMap = useMemo(
+    () => new Map(dataSource.map((entry) => [entry.key, entry])),
+    [dataSource],
   );
-  const filter = (items: TransferItem[], query: string) =>
-    items.filter(
-      (item) =>
-        !query ||
-        (filterOption
-          ? filterOption(query, item)
-          : item.title.toLowerCase().includes(query.toLowerCase())),
-    );
+  const sourceItems = useMemo(
+    () => dataSource.filter((entry) => !targetSet.has(entry.key)),
+    [dataSource, targetSet],
+  );
+  const targetItems = useMemo(
+    () => dataSource.filter((entry) => targetSet.has(entry.key)),
+    [dataSource, targetSet],
+  );
+  const [previousDataSource, setPreviousDataSource] = useState(dataSource);
+  const [previousTargets, setPreviousTargets] = useState(targets);
+  if (previousDataSource !== dataSource || previousTargets !== targets) {
+    setPreviousDataSource(dataSource);
+    setPreviousTargets(targets);
+    setSourceSelected((keys) => keys.filter((key) => itemMap.has(key) && !targetSet.has(key)));
+    setTargetSelected((keys) => keys.filter((key) => itemMap.has(key) && targetSet.has(key)));
+  }
+
+  const filter = (items: TransferItem[], keyword: string) =>
+    keyword
+      ? items.filter((entry) =>
+          filterOption
+            ? filterOption(keyword, entry)
+            : `${entry.title} ${entry.description || ""}`
+                .toLowerCase()
+                .includes(keyword.toLowerCase()),
+        )
+      : items;
+
+  const visibleSource = filter(sourceItems, queries[0]);
+  const visibleTarget = filter(targetItems, queries[1]);
+
+  const notifySelection = (source: TransferKey[], target: TransferKey[]) => {
+    onSelectChange?.([...source], [...target]);
+  };
+
+  const toggle = (direction: "left" | "right", key: TransferKey) => {
+    if (disabled || itemMap.get(key)?.disabled) return;
+    if (direction === "left") {
+      const next = sourceSelected.includes(key)
+        ? sourceSelected.filter((entry) => entry !== key)
+        : [...sourceSelected, key];
+      setSourceSelected(next);
+      notifySelection(next, targetSelected);
+    } else {
+      const next = targetSelected.includes(key)
+        ? targetSelected.filter((entry) => entry !== key)
+        : [...targetSelected, key];
+      setTargetSelected(next);
+      notifySelection(sourceSelected, next);
+    }
+  };
+
+  const selectableKeys = (items: TransferItem[]) =>
+    items.filter((entry) => !entry.disabled).map((entry) => entry.key);
+
+  const toggleAll = (direction: "left" | "right", items: TransferItem[]) => {
+    if (disabled) return;
+    const selected = direction === "left" ? sourceSelected : targetSelected;
+    const keys = selectableKeys(items);
+    const unfilteredKeys = selected.filter((key) => !keys.includes(key));
+    const next =
+      keys.length > 0 && keys.every((key) => selected.includes(key))
+        ? unfilteredKeys
+        : [...unfilteredKeys, ...keys];
+    if (direction === "left") {
+      setSourceSelected(next);
+      notifySelection(next, targetSelected);
+    } else {
+      setTargetSelected(next);
+      notifySelection(sourceSelected, next);
+    }
+  };
+
   const move = (direction: "left" | "right") => {
+    if (disabled) return;
     const selected = direction === "right" ? sourceSelected : targetSelected;
-    const moved = lists[direction === "right" ? 0 : 1]
-      .filter((item) => selected.includes(item.key) && !item.disabled)
-      .map((item) => item.key);
-    if (!moved.length) return;
+    const movedKeys = selected.filter((key) => {
+      const entry = itemMap.get(key);
+      return entry && !entry.disabled;
+    });
+    if (!movedKeys.length) return;
+
     const next =
       direction === "right"
-        ? [...targets, ...moved]
-        : targets.filter((key) => !moved.includes(key));
+        ? [...new Set([...targets, ...movedKeys])]
+        : targets.filter((key) => !movedKeys.includes(key));
     if (targetKeys === undefined) setInnerTargets(next);
-    onChange?.({ targetKeys: next, direction, movedKeys: moved });
-    setSourceSelected([]);
-    setTargetSelected([]);
+    onChange?.({ targetKeys: next, direction, movedKeys: [...movedKeys] });
+
+    if (direction === "right") {
+      const nextSource = sourceSelected.filter((key) => !movedKeys.includes(key));
+      setSourceSelected(nextSource);
+      notifySelection(nextSource, targetSelected);
+    } else {
+      const nextTarget = targetSelected.filter((key) => !movedKeys.includes(key));
+      setTargetSelected(nextTarget);
+      notifySelection(sourceSelected, nextTarget);
+    }
   };
-  const toggle = (side: 0 | 1, key: string | number) => {
-    const setter = side === 0 ? setSourceSelected : setTargetSelected;
-    const selected = side === 0 ? sourceSelected : targetSelected;
-    const next = selected.includes(key)
-      ? selected.filter((item) => item !== key)
-      : [...selected, key];
-    setter(next);
-    onSelectChange?.(side === 0 ? next : sourceSelected, side === 1 ? next : targetSelected);
+
+  const updateSearch = (direction: "left" | "right", value: string) => {
+    const side = direction === "left" ? 0 : 1;
+    setQueries((current) => {
+      const next: [string, string] = [...current];
+      next[side] = value;
+      return next;
+    });
+    onSearch?.(direction, value);
   };
-  return (
-    <div
-      {...rest}
-      className={clsx("k-transfer", `k-transfer-${theme}`, disabled && "is-disabled", className)}
-    >
-      {[0, 1].map((side) => (
-        <div className="k-transfer-list" key={side}>
-          <div className="k-transfer-header">
-            <strong>{titles[side]}</strong>
-            <span>{lists[side].length}</span>
+
+  const renderList = (
+    direction: "left" | "right",
+    items: TransferItem[],
+    allItems: TransferItem[],
+    title: React.ReactNode,
+  ) => {
+    const selected = direction === "left" ? sourceSelected : targetSelected;
+    const enabledKeys = selectableKeys(items);
+    const selectedCount = allItems.filter((entry) => selected.includes(entry.key)).length;
+    const allChecked = enabledKeys.length > 0 && enabledKeys.every((key) => selected.includes(key));
+
+    return (
+      <section className="k-transfer-list">
+        <header className="k-transfer-header">
+          <Checkbox
+            checked={allChecked}
+            disabled={disabled || !enabledKeys.length}
+            onChange={() => toggleAll(direction, items)}
+          >
+            {title}
+          </Checkbox>
+          <span>
+            {selectedCount}/{allItems.length}
+          </span>
+        </header>
+        {searchable && (
+          <div className="k-transfer-search">
+            <Input
+              value={direction === "left" ? queries[0] : queries[1]}
+              disabled={disabled}
+              theme={theme}
+              clearable
+              icon={Search}
+              placeholder="Search"
+              onChange={(value) => updateSearch(direction, String(value))}
+            />
           </div>
-          {searchable && (
-            <div className="k-transfer-search">
-              <Input
-                value={queries[side]}
-                onChange={(value) => {
-                  const text = String(value);
-                  setQueries((old) => {
-                    const next = [...old] as [string, string];
-                    next[side] = text;
-                    return next;
-                  });
-                  onSearch?.(side === 0 ? "left" : "right", text);
-                }}
-                placeholder="Search"
-              />
-            </div>
-          )}
-          <div className="k-transfer-body">
-            {filter(lists[side], queries[side]).map((entry) => {
-              const selected = (side === 0 ? sourceSelected : targetSelected).includes(entry.key);
+        )}
+        <div
+          className="k-transfer-body"
+          role="listbox"
+          aria-label={typeof title === "string" ? title : direction}
+          aria-multiselectable="true"
+        >
+          {items.length ? (
+            items.map((entry) => {
+              const selectedItem = selected.includes(entry.key);
               return (
                 <div
                   key={entry.key}
                   className={clsx(
                     "k-transfer-item",
-                    selected && "is-selected",
+                    selectedItem && "is-selected",
                     entry.disabled && "is-disabled",
                   )}
-                  onClick={() => !disabled && !entry.disabled && toggle(side as 0 | 1, entry.key)}
+                  role="option"
+                  aria-selected={selectedItem}
+                  aria-disabled={disabled || entry.disabled}
+                  tabIndex={disabled || entry.disabled ? -1 : 0}
+                  onClick={() => toggle(direction, entry.key)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      toggle(direction, entry.key);
+                    }
+                  }}
                 >
-                  <Checkbox
-                    checked={selected}
-                    disabled={disabled || entry.disabled}
-                    onChange={() => undefined}
-                  />
+                  <span
+                    className="k-transfer-item-checkbox"
+                    onClick={(event) => event.stopPropagation()}
+                  >
+                    <Checkbox
+                      checked={selectedItem}
+                      disabled={disabled || entry.disabled}
+                      onChange={() => toggle(direction, entry.key)}
+                    />
+                  </span>
                   <span className="k-transfer-item-content">
-                    {item?.(entry) ?? (
-                      <>
-                        <span>{entry.title}</span>
-                        {entry.description && <small>{entry.description}</small>}
-                      </>
-                    )}
+                    {renderItem?.(entry) ?? entry.title}
+                    {entry.description && <small>{entry.description}</small>}
                   </span>
                 </div>
               );
-            })}
-          </div>
-          {footer && (
-            <div className="k-transfer-footer">{footer(side === 0 ? "left" : "right")}</div>
+            })
+          ) : (
+            <Empty />
           )}
         </div>
-      ))}
+        {footer && <footer className="k-transfer-footer">{footer(direction)}</footer>}
+      </section>
+    );
+  };
+
+  return (
+    <div
+      {...rest}
+      className={clsx("k-transfer", `k-transfer-${theme}`, disabled && "is-disabled", className)}
+    >
+      {renderList("left", visibleSource, sourceItems, titles[0])}
       <div className="k-transfer-operations">
         <Button
-          icon={ArrowRight}
+          type="primary"
+          size="small"
           disabled={disabled || !sourceSelected.length}
+          icon={ChevronRight}
           onClick={() => move("right")}
         >
           {operations[0]}
         </Button>
         <Button
-          icon={ArrowLeft}
+          type="primary"
+          size="small"
           disabled={disabled || !targetSelected.length}
+          icon={ChevronLeft}
           onClick={() => move("left")}
         >
           {operations[1]}
         </Button>
       </div>
+      {renderList("right", visibleTarget, targetItems, titles[1])}
     </div>
   );
 }

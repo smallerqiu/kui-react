@@ -21,12 +21,14 @@ export default function App() {
     new Promise<void>((resolve) => {
       count.current += 1;
       setTimeout(() => {
-        const next = structuredClone(data);
-        insert(next, node.key, [
-          { title: "Child Node", isLeaf: count.current >= 2, key: `${node.key}-0` },
-          { title: "Child Node", isLeaf: count.current >= 3, key: `${node.key}-1` },
-        ]);
-        setData(next);
+        setData((current) => {
+          const next = structuredClone(current);
+          insert(next, node.key, [
+            { title: "Child Node", isLeaf: count.current >= 2, key: `${node.key}-0` },
+            { title: "Child Node", isLeaf: count.current >= 3, key: `${node.key}-1` },
+          ]);
+          return next;
+        });
         resolve();
       }, 1000);
     });

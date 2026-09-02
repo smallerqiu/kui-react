@@ -1,4 +1,4 @@
-import Tree from '../index';
+import { Tree } from "react-kui";
 
 const data = Array.from({ length: 5000 }, (_, index) => ({
   key: `node-${index}`,

@@ -15,13 +15,15 @@ export default function App() {
           setSelected(event.targetKeys);
           setLog(`${event.direction === "right" ? "加入" : "移除"}：${event.movedKeys.join(", ")}`);
         }}
-        onSelectChange={(source, target) =>
-          setLog(`左侧已选 ${source.length} 项，右侧已选 ${target.length} 项`)
-        }
+        onSelectChange={(source, target) => {
+          if (source.length || target.length) {
+            setLog(`左侧已选 ${source.length} 项，右侧已选 ${target.length} 项`);
+          }
+        }}
         dataSource={items}
         operations={["加入", "移除"]}
       />
-      <p>{log}</p>
+      <p style={{ marginTop: 16, color: "var(--kui-color-text-description)" }}>{log}</p>
     </>
   );
 }

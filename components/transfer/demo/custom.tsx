@@ -19,12 +19,20 @@ export default function App() {
         `${item.title} ${roles[item.key]}`.toLowerCase().includes(keyword.toLowerCase())
       }
       item={(item) => (
-        <>
+        <span
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+            gap: 8,
+          }}
+        >
           <strong>{item.title}</strong>
           <Tag size="small" theme="plain">
             {roles[item.key]}
           </Tag>
-        </>
+        </span>
       )}
       footer={(direction) => (direction === "left" ? "可选择成员" : "当前项目成员")}
       titles={["候选成员", "已加入"]}

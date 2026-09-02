@@ -199,7 +199,8 @@ export default function Tree({
   };
   const selectNode = (node: TreeNode) => {
     if (node.disabled) return;
-    if (selectAsCheck) return toggleCheck({ checked: !checked.includes(node.key) }, node);
+    if (selectAsCheck && checkable)
+      return toggleCheck({ checked: !checked.includes(node.key) }, node);
     const keys = multiple
       ? selected.includes(node.key)
         ? selected.filter((key) => key !== node.key)
@@ -212,6 +213,10 @@ export default function Tree({
     onSelect?.(node, keys);
   };
   const moveRawNode = (dragKey: string, targetKey: string) => {
+    const rawDragNode = findRaw(data, dragKey);
+    const target = findRaw(data, targetKey);
+    if (!rawDragNode || !target || findRaw(rawDragNode.children ?? [], targetKey)) return false;
+
     let moved: TreeNode | undefined;
     const remove = (nodes: TreeNode[]): boolean => {
       const index = nodes.findIndex((item) => item.key === dragKey);
@@ -222,21 +227,40 @@ export default function Tree({
       return nodes.some((item) => item.children && remove(item.children));
     };
     remove(data);
-    const target = findRaw(data, targetKey);
-    if (moved && target) (target.children ??= []).push(moved);
+    if (!moved) return false;
+    (target.children ??= []).push(moved);
     if (!expanded.includes(targetKey)) commitExpanded([...expanded, targetKey]);
     setVersion((value) => value + 1);
-  };
-  const visible = flat.filter((node) => {
-    if (queryKey?.trim() && !String(node.title ?? "").toLocaleLowerCase().includes(queryKey.toLocaleLowerCase())) return false;
-    let current = node;
-    while (current.parentKey) {
-      const parent = byKey.get(current.parentKey);
-      if (!parent?.expanded) return false;
-      current = parent;
-    }
     return true;
-  });
+  };
+  const query = queryKey?.trim().toLocaleLowerCase() ?? "";
+  const visible = query
+    ? (() => {
+        const matchedKeys = new Set<string>();
+        flat.forEach((node) => {
+          if (
+            !String(node.title ?? "")
+              .toLocaleLowerCase()
+              .includes(query)
+          )
+            return;
+          let current: TreeNode | undefined = node;
+          while (current) {
+            matchedKeys.add(current.key);
+            current = current.parentKey ? byKey.get(current.parentKey) : undefined;
+          }
+        });
+        return flat.filter((node) => matchedKeys.has(node.key));
+      })()
+    : flat.filter((node) => {
+        let current = node;
+        while (current.parentKey) {
+          const parent = byKey.get(current.parentKey);
+          if (!parent?.expanded) return false;
+          current = parent;
+        }
+        return true;
+      });
 
   const renderNode = (node: TreeNode) => (
     <div
@@ -274,11 +298,7 @@ export default function Tree({
             type="text"
             loading={loadingKeys.has(node.key)}
             icon={
-              showLine
-                ? expanded.includes(node.key)
-                  ? CircleMinus
-                  : CirclePlus
-                : ChevronRight
+              showLine ? (expanded.includes(node.key) ? CircleMinus : CirclePlus) : ChevronRight
             }
           />
         </span>
@@ -326,9 +346,9 @@ export default function Tree({
           const dragNode = dragRef.current;
           if (!draggable || !dragNode || dragNode.key === node.key || node.disabled) return;
           event.preventDefault();
-          moveRawNode(dragNode.key, node.key);
+          const moved = moveRawNode(dragNode.key, node.key);
           setDropKey(undefined);
-          onDrop?.({ dragNode, dropNode: node }, event);
+          if (moved) onDrop?.({ dragNode, dropNode: node }, event);
           dragRef.current = null;
         }}
         onDragEnd={(event) => {
@@ -362,15 +382,11 @@ export default function Tree({
           itemKey="key"
           className="k-tree-node-list"
         >
-          {(node) => renderNode(node)}
+          {(node) => renderNode(node as TreeNode)}
         </VirtualList>
       ) : (
-        <div className="k-tree-node-list">
-          {visible.map((node) => renderNode(node))}
-        </div>
+        <div className="k-tree-node-list">{visible.map((node) => renderNode(node))}</div>
       )}
     </div>
   );
 }
-
-
