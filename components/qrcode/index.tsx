@@ -9,19 +9,19 @@ import {
   useImperativeHandle,
   useRef,
   type HTMLAttributes,
+  type KeyboardEvent,
   type ReactNode,
 } from "react";
 import { Button } from "../button";
 import { ConfigContext } from "../config/config-context";
+import type { QRCodeErrorLevel, QRCodeStatus, ShapeType, ThemeType } from "../const/types";
 import zhCN from "../locale/zh-CN";
 import Spin from "../spin";
-import type { ShapeType, ThemeType } from "../const/types";
 
-export type QRCodeStatus = "active" | "loading" | "expired" | "scanned";
-export type QRCodeErrorLevel = "L" | "M" | "Q" | "H";
 export interface QRCodeRef {
-  download: (fileName?: string) => void;
+  download: (fileName?: string) => Promise<void>;
 }
+
 export interface QRCodeProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
   value: string;
   size?: number;
@@ -42,6 +42,32 @@ export interface QRCodeProps extends Omit<HTMLAttributes<HTMLDivElement>, "child
   scannedContent?: ReactNode;
   onRefresh?: () => void;
 }
+
+const positive = (value: number, fallback: number) =>
+  Number.isFinite(value) && value > 0 ? value : fallback;
+
+const resolveColor = (input: string, parent: HTMLElement | null): string => {
+  if (!input.trim().startsWith("var(")) return input;
+  const element = document.createElement("span");
+  element.style.color = input;
+  (parent ?? document.body).appendChild(element);
+  const computed = getComputedStyle(element).color;
+  element.remove();
+  try {
+    return Color(computed).hex();
+  } catch {
+    return "#000000";
+  }
+};
+
+const loadImage = (src: string): Promise<HTMLImageElement | null> =>
+  new Promise((resolve) => {
+    const image = new Image();
+    image.crossOrigin = "anonymous";
+    image.onload = () => resolve(image);
+    image.onerror = () => resolve(null);
+    image.src = src;
+  });
 
 const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
   {
@@ -67,82 +93,72 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
     style,
     ...rest
   },
-  ref
+  ref,
 ) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const drawIdRef = useRef(0);
   const mountedRef = useRef(false);
+  const drawPromiseRef = useRef<Promise<void>>(Promise.resolve());
+  const safeSize = positive(size, 160);
+  const safeMargin = Number.isFinite(margin) ? Math.max(0, Math.floor(margin)) : 0;
   const { locale } = useContext(ConfigContext);
   const messages = (locale ?? zhCN)?.k?.qrcode;
-
-  const resolveColor = (input: string) => {
-    if (!input.trim().startsWith("var(")) return input;
-    const element = document.createElement("span");
-    element.style.color = input;
-    (canvasRef.current?.parentElement || document.body).appendChild(element);
-    const computed = getComputedStyle(element).color;
-    element.remove();
-    try {
-      return Color(computed).hex();
-    } catch {
-      return "#000000";
-    }
-  };
 
   const draw = useCallback(async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const drawId = ++drawIdRef.current;
-    const ratio = window.devicePixelRatio || 1;
-    const dark = resolveColor(colorDark);
-    const light = resolveColor(colorLight);
+    const ratio = positive(window.devicePixelRatio, 1);
+    const pixelSize = Math.max(1, Math.round(safeSize * ratio));
+    const dark = resolveColor(colorDark, canvas.parentElement);
+    const light = resolveColor(colorLight, canvas.parentElement);
     const memory = document.createElement("canvas");
     const options: QRCodeRenderersOptions = {
-      width: size * ratio,
-      margin,
+      width: pixelSize,
+      margin: safeMargin,
       color: { dark, light },
       errorCorrectionLevel: errorLevel,
     };
+
     try {
       await toCanvas(memory, value || " ", options);
-      if (drawId !== drawIdRef.current) return;
-      canvas.width = size * ratio;
-      canvas.height = size * ratio;
-      const context = canvas.getContext("2d");
-      if (!context) return;
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      context.drawImage(memory, 0, 0, canvas.width, canvas.height);
-      if (!logo) return;
-      const image = new Image();
-      image.crossOrigin = "anonymous";
-      image.onload = () => {
+      if (logo) {
+        const image = await loadImage(logo);
         if (drawId !== drawIdRef.current) return;
-        const finalSize = (logoSize ?? size * 0.22) * ratio;
-        const x = (canvas.width - finalSize) / 2;
-        const y = (canvas.height - finalSize) / 2;
-        context.save();
-        if (logoBorder) {
-          const border = finalSize + 6 * ratio;
-          context.fillStyle = light;
+        const context = memory.getContext("2d");
+        if (image && context) {
+          const requestedLogoSize = positive(logoSize ?? safeSize * 0.22, safeSize * 0.22);
+          const finalSize = Math.min(safeSize, requestedLogoSize) * ratio;
+          const radius = Math.min(Math.max(0, logoRadius), requestedLogoSize / 2) * ratio;
+          const x = (pixelSize - finalSize) / 2;
+          const y = (pixelSize - finalSize) / 2;
+          context.save();
+          if (logoBorder) {
+            const borderSize = Math.min(pixelSize, finalSize + 6 * ratio);
+            context.fillStyle = light;
+            context.beginPath();
+            context.roundRect(
+              (pixelSize - borderSize) / 2,
+              (pixelSize - borderSize) / 2,
+              borderSize,
+              borderSize,
+              Math.min(borderSize / 2, radius + 2 * ratio),
+            );
+            context.fill();
+          }
           context.beginPath();
-          context.roundRect(
-            (canvas.width - border) / 2,
-            (canvas.height - border) / 2,
-            border,
-            border,
-            (logoRadius + 2) * ratio
-          );
-          context.fill();
+          context.roundRect(x, y, finalSize, finalSize, radius);
+          context.clip();
+          context.drawImage(image, x, y, finalSize, finalSize);
+          context.restore();
         }
-        context.beginPath();
-        context.roundRect(x, y, finalSize, finalSize, logoRadius * ratio);
-        context.clip();
-        context.drawImage(image, x, y, finalSize, finalSize);
-        context.restore();
-      };
-      image.src = logo;
+      }
+      if (drawId !== drawIdRef.current) return;
+      canvas.width = pixelSize;
+      canvas.height = pixelSize;
+      canvas.getContext("2d")?.drawImage(memory, 0, 0, pixelSize, pixelSize);
     } catch (error) {
-      console.error("Failed to render QR code", error);
+      if (drawId === drawIdRef.current) console.error("Failed to render QR code", error);
     }
   }, [
     colorDark,
@@ -152,43 +168,60 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
     logoBorder,
     logoRadius,
     logoSize,
-    margin,
-    size,
+    safeMargin,
+    safeSize,
     value,
   ]);
 
+  const scheduleDraw = useCallback(() => {
+    const promise = draw();
+    drawPromiseRef.current = promise;
+    void promise;
+  }, [draw]);
+
   useEffect(() => {
-    // 与 Vue 版保持一致：首次挂载始终绘制；非 active 状态下冻结二维码，
-    // 回到 active 时再使用最新的 value 和配置重绘。
-    if (!mountedRef.current || status === "active") void draw();
+    if (!mountedRef.current || status === "active") scheduleDraw();
     mountedRef.current = true;
-  }, [draw, status]);
-  useEffect(
-    () => () => {
-      // 让尚未完成的 toCanvas / Logo onload 回调失效，避免卸载后继续绘制。
-      drawIdRef.current += 1;
-    },
-    []
-  );
+  }, [scheduleDraw, status]);
+
   useEffect(() => {
     const observer = new MutationObserver((records) => {
-      if (records.some((record) => record.attributeName === "theme-mode")) void draw();
+      if (status === "active" && records.some((record) => record.attributeName === "theme-mode")) {
+        scheduleDraw();
+      }
     });
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["theme-mode"],
-      subtree: true,
     });
     return () => observer.disconnect();
-  }, [draw]);
+  }, [scheduleDraw, status]);
+
+  useEffect(
+    () => () => {
+      drawIdRef.current += 1;
+    },
+    [],
+  );
+
   useImperativeHandle(ref, () => ({
-    download(fileName = "qrcode.png") {
+    async download(fileName = "qrcode.png") {
+      await drawPromiseRef.current;
+      const canvas = canvasRef.current;
+      if (!canvas) return;
       const anchor = document.createElement("a");
       anchor.download = fileName;
-      anchor.href = canvasRef.current?.toDataURL("image/png") ?? "";
+      anchor.href = canvas.toDataURL("image/png");
       anchor.click();
     },
   }));
+
+  const handleExpiredKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.target !== event.currentTarget || (event.key !== "Enter" && event.key !== " "))
+      return;
+    event.preventDefault();
+    onRefresh?.();
+  };
 
   return (
     <div
@@ -198,11 +231,11 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
         `k-qrcode-${shape}`,
         `k-qrcode-${theme}`,
         { "k-qrcode-plain": !bordered },
-        className
+        className,
       )}
-      style={{ ...style, width: size, height: size }}
+      style={{ ...style, width: safeSize, height: safeSize }}
     >
-      <canvas ref={canvasRef} style={{ width: size, height: size, display: "block" }} />
+      <canvas ref={canvasRef} style={{ width: safeSize, height: safeSize, display: "block" }} />
       {status !== "active" && (
         <div className="k-qrcode-mask">
           {status === "loading" && (
@@ -215,11 +248,17 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
             </div>
           )}
           {status === "expired" && (
-            <div className="k-qrcode-expired-wrapper" onClick={onRefresh}>
+            <div
+              className="k-qrcode-expired-wrapper"
+              role="button"
+              tabIndex={0}
+              onClick={onRefresh}
+              onKeyDown={handleExpiredKeyDown}
+            >
               {expiredContent ?? (
                 <>
                   <div className="k-qrcode-expired">{messages?.expired}</div>
-                  <Button size="small" type="text">
+                  <Button size="small" type="text" tabIndex={-1}>
                     {messages?.refresh}
                   </Button>
                 </>
@@ -234,4 +273,6 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
     </div>
   );
 });
+
+export type { QRCodeErrorLevel, QRCodeStatus } from "../const/types";
 export default QRCode;

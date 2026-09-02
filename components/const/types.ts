@@ -23,7 +23,8 @@ export type ShapeType = "circle" | "square" | "round" | "default";
 export type BooleanType = boolean | undefined;
 
 export type ButtonType = "primary" | "danger" | "warning" | "default" | "text" | "link";
-export type ThemeType = "outline" | "fill" | "plain" | "underlined" | "default" | "solid" | "dashed" | "card";
+export type ThemeType =
+  "outline" | "fill" | "plain" | "underlined" | "default" | "solid" | "dashed" | "card";
 
 export type RadioType = "radio" | "button";
 export type DirectionType = "horizontal" | "vertical" | "inline";
@@ -33,6 +34,8 @@ export type ColorType = (typeof colors)[number] | string;
 export type UploadStatusType = "success" | "error" | "uploading" | "waiting";
 
 export type SpinModeType = "bounce" | "flip" | "rotate" | "zoom";
+export type QRCodeStatus = "active" | "loading" | "expired" | "scanned";
+export type QRCodeErrorLevel = "L" | "M" | "Q" | "H";
 export type TriggerType = "hover" | "click" | "contextmenu";
 
 export type NoticeType = "info" | "success" | "warning" | "error" | "loading";
