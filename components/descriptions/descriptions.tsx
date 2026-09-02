@@ -1,17 +1,19 @@
 import clsx from "clsx";
-import React from "react";
-import type { DirectionType, ShapeType } from "../const/types";
+import React, { useRef } from "react";
+import type { DirectionType, ShapeType, SizeType } from "../const/types";
+import { useBreakpoint, type Breakpoint, type ResponsiveValue } from "../grid/useBreakpoint";
 import { getChildren } from "../utils/react-node";
 
 export interface DescriptionsItemProps {
-  label?: string;
+  label?: React.ReactNode;
   span?: number;
   children?: React.ReactNode;
 }
+export type DescriptionsColumn = ResponsiveValue<number>;
 
 // Internal rendering cell – not exported as a public component
 interface CellProps {
-  label?: string;
+  label?: React.ReactNode;
   span?: number;
   type?: "label" | "content";
   bordered?: boolean;
@@ -80,11 +82,11 @@ const Cell: React.FC<CellProps> = ({ label, span = 1, type, bordered, layout, ch
 
 export interface DescriptionsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   bordered?: boolean;
-  column?: number;
+  column?: DescriptionsColumn;
   layout?: DirectionType;
   title?: React.ReactNode;
   extra?: React.ReactNode;
-  size?: "medium" | "small";
+  size?: SizeType;
   shape?: ShapeType;
   children?: React.ReactNode;
 }
@@ -101,74 +103,91 @@ const Descriptions: React.FC<DescriptionsProps> = ({
   className = "",
   ...rest
 }) => {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const breakpoint = useBreakpoint(rootRef);
   const childList = getChildren(children);
   const isVertical = layout === "vertical";
 
-  type Row = React.ReactNode[];
-  const rows: Row[] = [];
-  let currentRow: Row = [];
-  let currentContentRow: Row = [];
+  const order: Breakpoint[] = ["xxl", "xl", "lg", "md", "sm", "xs"];
+  let activeColumn = typeof column === "number" ? column : 3;
+  if (typeof column === "object") {
+    const current = order.indexOf(breakpoint);
+    for (let index = current; index < order.length; index++) {
+      const candidate = column[order[index]];
+      if (candidate !== undefined) {
+        activeColumn = candidate;
+        break;
+      }
+    }
+  }
+  const safeColumn = Math.max(1, Math.floor(Number(activeColumn) || 1));
+  type LogicalItem = {
+    child: React.ReactElement<DescriptionsItemProps>;
+    index: number;
+    span: number;
+  };
+  const logicalRows: LogicalItem[][] = [];
+  let logicalRow: LogicalItem[] = [];
   let currentSpanSum = 0;
+
+  const finishRow = () => {
+    if (!logicalRow.length) return;
+    logicalRow[logicalRow.length - 1].span += safeColumn - currentSpanSum;
+    logicalRows.push(logicalRow);
+    logicalRow = [];
+    currentSpanSum = 0;
+  };
 
   childList.forEach((child, index) => {
     if (!React.isValidElement(child)) return;
-    const isLast = index === childList.length - 1;
-    const childProps = (child.props as DescriptionsItemProps) || {};
-    let span = Number(childProps.span || 1);
-    const label = childProps.label;
-    const content = childProps.children;
+    const item = child as React.ReactElement<DescriptionsItemProps>;
+    const parsedSpan = Math.floor(Number(item.props.span) || 1);
+    const span = Math.min(safeColumn, Math.max(1, parsedSpan));
+    if (currentSpanSum && currentSpanSum + span > safeColumn) finishRow();
+    logicalRow.push({ child: item, index, span });
+    currentSpanSum += span;
+    if (currentSpanSum === safeColumn) finishRow();
+  });
+  finishRow();
 
-    const remaining = column - currentSpanSum;
-    if (isLast) span = remaining;
-
+  const rows: React.ReactNode[][] = [];
+  logicalRows.forEach((items) => {
     if (isVertical) {
-      currentRow.push(
-        <Cell
-          key={`l-${index}`}
-          label={label}
-          span={span}
-          type="label"
-          layout={layout}
-          bordered={bordered}
-        />
-      );
-      currentContentRow.push(
-        <Cell key={`c-${index}`} span={span} layout={layout} bordered={bordered}>
-          {content}
-        </Cell>
-      );
-      currentSpanSum += span;
-
-      if (currentSpanSum >= column || isLast) {
-        rows.push(currentRow);
-        rows.push(currentContentRow);
-        currentRow = [];
-        currentContentRow = [];
-        currentSpanSum = 0;
-      }
-    } else {
-      if (bordered) {
-        currentRow.push(
-          <Cell key={`l-${index}`} label={label} bordered={bordered} span={1} type="label" />,
-          <Cell key={`c-${index}`} span={span * 2 - 1} bordered={bordered}>
-            {content}
+      rows.push(
+        items.map(({ child, index, span }) => (
+          <Cell
+            key={`l-${index}`}
+            label={child.props.label}
+            span={span}
+            type="label"
+            layout={layout}
+            bordered={bordered}
+          />
+        )),
+        items.map(({ child, index, span }) => (
+          <Cell key={`c-${index}`} span={span} layout={layout} bordered={bordered}>
+            {child.props.children}
           </Cell>
-        );
-      } else {
-        currentRow.push(
-          <Cell key={`i-${index}`} label={label} span={span}>
-            {content}
-          </Cell>
-        );
-      }
-      currentSpanSum += span;
-
-      if (currentSpanSum >= column || isLast) {
-        rows.push(currentRow);
-        currentRow = [];
-        currentSpanSum = 0;
-      }
+        )),
+      );
+      return;
     }
+    rows.push(
+      items.flatMap(({ child, index, span }) =>
+        bordered
+          ? [
+              <Cell key={`l-${index}`} label={child.props.label} bordered span={1} type="label" />,
+              <Cell key={`c-${index}`} span={span * 2 - 1} bordered>
+                {child.props.children}
+              </Cell>,
+            ]
+          : [
+              <Cell key={`i-${index}`} label={child.props.label} span={span}>
+                {child.props.children}
+              </Cell>,
+            ],
+      ),
+    );
   });
 
   const classes = clsx(
@@ -180,15 +199,17 @@ const Descriptions: React.FC<DescriptionsProps> = ({
       "k-descriptions-sm": size === "small",
       [`k-descriptions-${shape}`]: shape,
     },
-    className
+    className,
   );
 
   return (
-    <div className={classes} {...rest}>
-      <div className="k-descriptions-header">
-        <div className="k-descriptions-title">{title}</div>
-        {extra && <div className="k-descriptions-extra">{extra}</div>}
-      </div>
+    <div className={classes} {...rest} ref={rootRef}>
+      {title || extra ? (
+        <div className="k-descriptions-header">
+          <div className="k-descriptions-title">{title}</div>
+          {extra && <div className="k-descriptions-extra">{extra}</div>}
+        </div>
+      ) : null}
       <div className="k-descriptions-view">
         <table>
           <tbody>
@@ -202,12 +223,6 @@ const Descriptions: React.FC<DescriptionsProps> = ({
       </div>
     </div>
   );
-};
-
-// DescriptionsItem is used as a data-bearing child – it renders nothing by itself.
-// The Descriptions parent reads its props.
-export const DescriptionsItem: React.FC<DescriptionsItemProps> = ({ children }) => {
-  return <>{children}</>;
 };
 
 export default Descriptions;

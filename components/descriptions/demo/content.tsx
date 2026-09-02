@@ -22,13 +22,13 @@ export function DetailedItems() {
       <DescriptionsItem label="Paid time" span={3}>
         2022-05-03 12:15:33
       </DescriptionsItem>
-      <DescriptionsItem label="Status" span={5}>
+      <DescriptionsItem label="Status" span={3}>
         <Badge status="success" text="Shipped" />
       </DescriptionsItem>
       <DescriptionsItem label="Price">￥ 199.99</DescriptionsItem>
       <DescriptionsItem label="Discount Amount">￥ 0.99</DescriptionsItem>
       <DescriptionsItem label="Paid Amount">￥ 199.00</DescriptionsItem>
-      <DescriptionsItem label="Remark" span={5}>
+      <DescriptionsItem label="Remark" span={3}>
         Please deliver the goods to:
         <br />
         No. 188, Guanggu, Hongshan District, Wuhan City, Hubei Province
