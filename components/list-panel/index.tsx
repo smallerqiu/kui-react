@@ -4,7 +4,7 @@ import Card from "../card";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 
 export interface ListPanelProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
-  summary?: string | number | ReactNode;
+  summary?: ReactNode;
   bordered?: boolean;
   theme?: ThemeType;
   shape?: ShapeType;
@@ -31,8 +31,9 @@ export default function ListPanel({
   className,
   ...rest
 }: ListPanelProps) {
-  const hasToolbar =
-    filters || actions || summary !== undefined || (selectedCount > 0 && selection);
+  const hasSummary = summary != null;
+  const hasSelection = selectedCount > 0 && selection != null;
+  const hasToolbar = filters != null || actions != null || hasSummary || hasSelection;
   return (
     <Card
       {...rest}
@@ -44,21 +45,18 @@ export default function ListPanel({
     >
       {hasToolbar && (
         <div
-          className={clsx(
-            "k-list-panel-toolbar",
-            selectedCount > 0 && selection && "k-list-panel-toolbar-selection",
-          )}
+          className={clsx("k-list-panel-toolbar", hasSelection && "k-list-panel-toolbar-selection")}
         >
-          {selectedCount > 0 && selection ? (
+          {hasSelection ? (
             <div className="k-list-panel-selection">
               {typeof selection === "function" ? selection(selectedCount) : selection}
             </div>
           ) : (
             <>
-              <div className="k-list-panel-filters">{filters}</div>
-              {(summary !== undefined || actions) && (
+              {filters != null && <div className="k-list-panel-filters">{filters}</div>}
+              {(hasSummary || actions != null) && (
                 <div className="k-list-panel-toolbar-extra">
-                  {summary !== undefined && <div className="k-list-panel-summary">{summary}</div>}
+                  {hasSummary && <div className="k-list-panel-summary">{summary}</div>}
                   {actions}
                 </div>
               )}
@@ -67,7 +65,7 @@ export default function ListPanel({
         </div>
       )}
       <div className="k-list-panel-content">{children}</div>
-      {footer && <div className="k-list-panel-footer">{footer}</div>}
+      {footer != null && <div className="k-list-panel-footer">{footer}</div>}
     </Card>
   );
 }

@@ -14,31 +14,31 @@
 ```js
 const dataSource = [
   {
-    key: '1',
-    name: 'Li Lei',
+    key: "1",
+    name: "Li Lei",
     age: 32,
-    address: 'Wu Han Guanggu No. 328',
+    address: "Wu Han Guanggu No. 328",
   },
   {
-    key: '2',
-    name: 'Hu Cong',
+    key: "2",
+    name: "Hu Cong",
     age: 28,
-    address: 'Wu Han Guanggu No. 198',
+    address: "Wu Han Guanggu No. 198",
   },
 ];
 
 const columns = [
   {
-    title: 'Name',
-    key: 'name',
+    title: "Name",
+    key: "name",
   },
   {
-    title: 'Age',
-    key: 'age',
+    title: "Age",
+    key: "age",
   },
   {
-    title: 'Address',
-    key: 'address',
+    title: "Address",
+    key: "address",
   },
 ];
 
@@ -61,7 +61,7 @@ const columns = [
 
 [自定义表头](./demo/custom-header.tsx?show=vertical)
 
-- 一个可以自定义表头的表格 , 可以通过 `#header-`定义表头
+- 使用列配置的 `renderHeader` 自定义表头内容。
 
 [自定义页头和页脚](./demo/bordered.tsx?show=vertical)
 
@@ -81,7 +81,7 @@ const columns = [
 
 [固定头/列](./demo/fixed-col-header.tsx?show=vertical)
 
-- 对于列数很多的数据，可以固定前后的列，横向滚动查看其它数据，需要设置表格的宽度 `scroll.x` 和 `scroll.y `
+- 对于列数很多的数据，可以固定前后的列并横向滚动。`scroll.x` 设置内容的最小宽度，`scroll.y` 设置纵向滚动区域高度。
 
 [表头分组](./demo/header-span.tsx?show=vertical)
 
@@ -97,7 +97,7 @@ const columns = [
 
 [虚拟滚动](./demo/virtual.tsx?show=vertical)
 
-- 大数据量时设置 `virtual`，仅渲染可视区域内的行。虚拟滚动要求行高度固定。
+- 配合 `scroll.y` 虚拟化大量固定行高数据；支持固定列和斑马纹，不应与行列合并同时使用。
 
 [列设置](./demo/column-setting.tsx?show=vertical)
 
@@ -105,53 +105,53 @@ const columns = [
 
 ## Table API
 
-| 属性         | 说明                      | 类型                                                                         | 默认值   |
-| ------------ | ------------------------- | ---------------------------------------------------------------------------- | -------- |
-| bordered     | 是否显示边框              | boolean                                                                         | false    |
-| checkable    | 是否显示勾选框            | boolean                                                                         | false    |
-| selectedKeys | 勾选的key集合             | (string \| number)[]                                                        | -        |
-| defaultSelectedKeys | 非受控模式下的初始勾选 key 集合 | (string \| number)[]                                                   | []       |
-| disabledKeys | 禁用的key集合             | (string \| number)[]                                                        | -        |
-| size         | 值为`small`时展示紧凑模式 | string                                                                       | -        |
-| emptyText    | 没有数据时展示的提示      | string                                                                       | 暂无数据 |
-| loading      | 表格异步加载模式          | boolean                                                                         | false    |
-| data         | 显示的结构化数据          | T[]                                                                          | []       |
-| columns      | 表格列的配置描述，        | Column[]                                                                     | []       |
-| header       | 自定义表头内容            | ReactNode                                                                    | -        |
-| footer       | 自定义表尾内容            | ReactNode                                                                    | -        |
-| rowKey       | 勾选时的依据              | string \| (record: T) => string \| number                                   | key      |
-| childrenColumnName | 子节点字段名 | string | children |
-| expandedKeys | 受控展开行 key 集合 | (string \| number)[] | - |
-| defaultExpandedKeys | 默认展开行 key 集合 | (string \| number)[] | [] |
-| defaultExpandAllRows | 默认展开所有树节点 | boolean | false |
-| expandRowByClick | 点击行时展开或收起 | boolean | false |
-| indentSize | 每级树节点缩进距离 | number | 20 |
-| scroll       | 表格滚动区域              | { x?: number \| string; y?: number \| string }                              | {}       |
-| striped      | 是否展示斑马条纹          | boolean                                                                         | false    |
-| virtual      | 是否启用虚拟滚动          | boolean                                                                         | false    |
-| itemHeight   | 虚拟滚动行高度            | number                                                                          | 40       |
-| overscan     | 虚拟滚动视口外预渲染行数  | number                                                                          | 5        |
-| hiddenColumnKeys | 隐藏的列 key 集合     | (string \| number)[]                                                        | []       |
-| shape        | 形状                      | ShapeType                                                                       | -        |
-| onRowClick   | 单击某一行时触发          | (record: T, index: number) => void                                           | -        |
-| onSort       | 点击排序时触发            | (state: SortState) => void                                                   | -        |
-| onSelect     | 点击复选框时触发          | (record: T, selected: boolean, selectedKeys: (string \| number)[]) => void   | -        |
-| onSelectAll  | 点击Table头部复选框时触发 | (selected: boolean, selectedKeys: (string \| number)[]) => void              | -        |
-| onSelectedKeysChange | 勾选 key 集合变化时触发 | (selectedKeys: (string \| number)[]) => void                              | -        |
-| onExpand | 展开状态变化时触发 | (expanded: boolean, record: T) => void | - |
-| onExpandedKeysChange | 展开 key 集合变化时触发 | (expandedKeys: (string \| number)[]) => void | - |
+| 属性                 | 说明                            | 类型                                                                       | 默认值   |
+| -------------------- | ------------------------------- | -------------------------------------------------------------------------- | -------- |
+| bordered             | 是否显示边框                    | boolean                                                                    | false    |
+| checkable            | 是否显示勾选框                  | boolean                                                                    | false    |
+| selectedKeys         | 勾选的key集合                   | (string \| number)[]                                                       | -        |
+| defaultSelectedKeys  | 非受控模式下的初始勾选 key 集合 | (string \| number)[]                                                       | []       |
+| disabledKeys         | 禁用的key集合                   | (string \| number)[]                                                       | -        |
+| size                 | 值为`small`时展示紧凑模式       | string                                                                     | -        |
+| emptyText            | 没有数据时展示的提示            | string                                                                     | 暂无数据 |
+| loading              | 表格异步加载模式                | boolean                                                                    | false    |
+| data                 | 显示的结构化数据                | T[]                                                                        | []       |
+| columns              | 表格列的配置描述，              | Column[]                                                                   | []       |
+| header               | 自定义表头内容                  | ReactNode                                                                  | -        |
+| footer               | 自定义表尾内容                  | ReactNode                                                                  | -        |
+| rowKey               | 勾选时的依据                    | string \| (record: T) => string \| number                                  | key      |
+| childrenColumnName   | 子节点字段名                    | string                                                                     | children |
+| expandedKeys         | 受控展开行 key 集合             | (string \| number)[]                                                       | -        |
+| defaultExpandedKeys  | 默认展开行 key 集合             | (string \| number)[]                                                       | []       |
+| defaultExpandAllRows | 默认展开所有树节点              | boolean                                                                    | false    |
+| expandRowByClick     | 点击行时展开或收起              | boolean                                                                    | false    |
+| indentSize           | 每级树节点缩进距离              | number                                                                     | 20       |
+| scroll               | 表格滚动区域                    | { x?: number \| string; y?: number \| string }                             | {}       |
+| striped              | 是否展示斑马条纹                | boolean                                                                    | false    |
+| virtual              | 是否启用虚拟滚动                | boolean                                                                    | false    |
+| itemHeight           | 虚拟滚动行高度                  | number                                                                     | 44       |
+| overscan             | 虚拟滚动视口外预渲染行数        | number                                                                     | 5        |
+| hiddenColumnKeys     | 隐藏的列 key 集合               | (string \| number)[]                                                       | []       |
+| shape                | 形状                            | ShapeType                                                                  | round    |
+| onRowClick           | 单击某一行时触发                | (record: T, index: number) => void                                         | -        |
+| onSort               | 点击排序时触发                  | (state: SortState) => void                                                 | -        |
+| onSelect             | 点击复选框时触发                | (record: T, selected: boolean, selectedKeys: (string \| number)[]) => void | -        |
+| onSelectAll          | 点击Table头部复选框时触发       | (selected: boolean, selectedKeys: (string \| number)[]) => void            | -        |
+| onSelectedKeysChange | 勾选 key 集合变化时触发         | (selectedKeys: (string \| number)[]) => void                               | -        |
+| onExpand             | 展开状态变化时触发              | (expanded: boolean, record: T) => void                                     | -        |
+| onExpandedKeysChange | 展开 key 集合变化时触发         | (expandedKeys: (string \| number)[]) => void                               | -        |
 
 ## Column API
 
-| 属性    | 说明                             | 类型                                                                           | 默认值 |
-| ------- | -------------------------------- | ------------------------------------------------------------------------------ | ------ |
-| title   | 列头显示文字                     | string                                                                         | -      |
-| key     | 对应列内容的字段名               | string                                                                         | -      |
-| fixed   | 列固定的方向                     | left,right                                                                     | -      |
-| sorter  | 排序,为`true`时,本地排序         | boolean \| (state: SortState) => void                                          | -      |
-| width   | 列宽                             | number                                                                         | -      |
-| rowSpan | 行合并单位，为 0 时将不渲染当前行 | number \| (record: T, index: number) => number | - |
-| colSpan | 列合并单位，为 0 时将不渲染当前列 | number \| (record: T, index: number) => number | - |
-| render  | 自定义单元格渲染                 | (value: unknown, record: T, rowIndex: number, column: Column<T>) => ReactNode | - |
-| renderHeader | 自定义表头渲染               | (column: Column<T>, index: number) => ReactNode | - |
-| children | 嵌套表头子列                    | Column<T>[] | - |
+| 属性         | 说明                              | 类型                                                                          | 默认值 |
+| ------------ | --------------------------------- | ----------------------------------------------------------------------------- | ------ |
+| title        | 列头显示文字                      | string                                                                        | -      |
+| key          | 对应列内容的字段名                | string                                                                        | -      |
+| fixed        | 列固定的方向                      | `'left' \| 'right'`                                                           | -      |
+| sorter       | 排序,为`true`时,本地排序          | boolean \| (state: SortState) => void                                         | -      |
+| width        | 列宽                              | number                                                                        | -      |
+| rowSpan      | 行合并单位，为 0 时将不渲染当前行 | number \| (record: T, index: number) => number                                | -      |
+| colSpan      | 列合并单位，为 0 时将不渲染当前列 | number \| (record: T, index: number) => number                                | -      |
+| render       | 自定义单元格渲染                  | (value: unknown, record: T, rowIndex: number, column: Column<T>) => ReactNode | -      |
+| renderHeader | 自定义表头渲染                    | (column: Column<T>, index: number) => ReactNode                               | -      |
+| children     | 嵌套表头子列                      | Column<T>[]                                                                   | -      |

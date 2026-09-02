@@ -1,8 +1,9 @@
 /* eslint-disable react-refresh/only-export-components */
 import clsx from "clsx";
 import { Check, Copy, Pencil } from "kui-icons";
-import React, { useEffect, useState } from "react";
+import React, { isValidElement, useEffect, useRef, useState, type ReactNode } from "react";
 import Icon from "../icon";
+import Tooltip from "../tooltip";
 
 export type TypographyType = "secondary" | "success" | "warning" | "danger";
 export type TypographyTag = "span" | "p" | "div" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
@@ -43,6 +44,14 @@ export interface TypographyProps extends Omit<
   children?: React.ReactNode;
 }
 
+const getReactNodeText = (node: ReactNode): string => {
+  if (node == null || typeof node === "boolean") return "";
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(getReactNodeText).join("");
+  if (isValidElement<{ children?: ReactNode }>(node)) return getReactNodeText(node.props.children);
+  return "";
+};
+
 function createTypography(defaultTag: TypographyTag, name: string) {
   const Component = React.forwardRef<HTMLElement, TypographyProps>(
     (
@@ -69,14 +78,36 @@ function createTypography(defaultTag: TypographyTag, name: string) {
       },
       ref,
     ) => {
-      const text = value ?? (children !== undefined ? String(children) : defaultValue);
-      const [draft, setDraft] = useState(text);
+      const controlled = value !== undefined;
+      const initialText =
+        value ?? (children !== undefined ? getReactNodeText(children) : defaultValue);
+      const [innerValue, setInnerValue] = useState(initialText);
+      const [draft, setDraft] = useState(initialText);
       const [editing, setEditing] = useState(false);
       const [copied, setCopied] = useState(false);
       const [expanded, setExpanded] = useState(false);
+      const [edited, setEdited] = useState(false);
+      const copiedTimer = useRef<number | undefined>(undefined);
+      const text = controlled
+        ? value
+        : edited
+          ? innerValue
+          : children !== undefined
+            ? getReactNodeText(children)
+            : innerValue;
       useEffect(() => {
-        if (value !== undefined) setDraft(value);
-      }, [value]);
+        if (controlled) setDraft(value);
+      }, [controlled, value]);
+      useEffect(() => () => window.clearTimeout(copiedTimer.current), []);
+      const finishEdit = () => {
+        if (!editing) return;
+        setEditing(false);
+        if (!controlled) {
+          setInnerValue(draft);
+          setEdited(true);
+        }
+        onChange?.(draft);
+      };
       if (editing) {
         return (
           <input
@@ -87,13 +118,11 @@ function createTypography(defaultTag: TypographyTag, name: string) {
             autoFocus
             onChange={(event) => setDraft(event.target.value)}
             onBlur={() => {
-              setEditing(false);
-              onChange?.(draft);
+              finishEdit();
             }}
             onKeyDown={(event) => {
               if (event.key === "Enter") {
-                setEditing(false);
-                onChange?.(draft);
+                finishEdit();
               }
             }}
           />
@@ -106,12 +135,22 @@ function createTypography(defaultTag: TypographyTag, name: string) {
       );
       const isEllipsis = Boolean(ellipsis) && !expanded;
       const Tag = tag;
+      const copyOptions = typeof copyable === "object" ? copyable : undefined;
+      const editableOptions = typeof editable === "object" ? editable : undefined;
+      const tooltipTitle = options?.tooltip
+        ? typeof options.tooltip === "string"
+          ? options.tooltip
+          : text
+        : undefined;
+      const withTooltip = (node: ReactNode, title?: string) =>
+        title ? <Tooltip title={title}>{node}</Tooltip> : node;
       const copy = async () => {
         if (disabled) return;
         await navigator.clipboard?.writeText(text);
         setCopied(true);
         onCopy?.(text);
-        window.setTimeout(() => setCopied(false), 1500);
+        window.clearTimeout(copiedTimer.current);
+        copiedTimer.current = window.setTimeout(() => setCopied(false), 1500);
       };
       return (
         <Tag
@@ -133,12 +172,15 @@ function createTypography(defaultTag: TypographyTag, name: string) {
             className,
           )}
         >
-          <span
-            className={clsx("k-typography-content", isEllipsis && "is-ellipsis")}
-            style={isEllipsis ? { WebkitLineClamp: rows } : undefined}
-          >
-            {value ?? children ?? defaultValue}
-          </span>
+          {withTooltip(
+            <span
+              className={clsx("k-typography-content", isEllipsis && "is-ellipsis")}
+              style={isEllipsis ? { WebkitLineClamp: rows } : undefined}
+            >
+              {controlled ? value : edited ? innerValue : (children ?? innerValue)}
+            </span>,
+            isEllipsis ? tooltipTitle : undefined,
+          )}
           {options?.expandable && (
             <button
               className="k-typography-action k-typography-expand"
@@ -149,29 +191,33 @@ function createTypography(defaultTag: TypographyTag, name: string) {
               {expanded ? (options.collapseText ?? "Collapse") : (options.expandText ?? "More")}
             </button>
           )}
-          {editable && (
-            <button
-              className="k-typography-action"
-              disabled={disabled}
-              onClick={() => {
-                setDraft(text);
-                setEditing(true);
-              }}
-              aria-label="Edit"
-            >
-              <Icon type={Pencil} />
-            </button>
-          )}
-          {copyable && (
-            <button
-              className="k-typography-action"
-              disabled={disabled}
-              onClick={() => void copy()}
-              aria-label="Copy"
-            >
-              <Icon type={copied ? Check : Copy} />
-            </button>
-          )}
+          {editable &&
+            withTooltip(
+              <button
+                className="k-typography-action"
+                disabled={disabled}
+                onClick={() => {
+                  setDraft(text);
+                  setEditing(true);
+                }}
+                aria-label="Edit"
+              >
+                <Icon type={Pencil} />
+              </button>,
+              editableOptions?.tooltip,
+            )}
+          {copyable &&
+            withTooltip(
+              <button
+                className="k-typography-action"
+                disabled={disabled}
+                onClick={() => void copy()}
+                aria-label="Copy"
+              >
+                <Icon type={copied ? Check : Copy} />
+              </button>,
+              copied ? (copyOptions?.copiedTooltip ?? copyOptions?.tooltip) : copyOptions?.tooltip,
+            )}
         </Tag>
       );
     },
@@ -182,5 +228,5 @@ function createTypography(defaultTag: TypographyTag, name: string) {
 export const TypographyText = createTypography("span", "text");
 export const TypographyParagraph = createTypography("p", "paragraph");
 export const TypographyTitle = createTypography("h2", "title");
-const Typography = createTypography("span", "typography");
+const Typography = createTypography("span", "text");
 export default Typography;

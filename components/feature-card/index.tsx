@@ -4,9 +4,10 @@ import type { ShapeType, ThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
 
 export interface FeatureCardProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
-  icon?: IconType[];
+  icon?: IconType[] | ReactNode;
   title?: ReactNode;
   desc?: ReactNode;
+  extra?: ReactNode;
   bordered?: boolean;
   theme?: ThemeType;
   shape?: ShapeType;
@@ -33,15 +34,23 @@ export default function FeatureCard({
   color,
   iconBackground,
   children,
+  extra,
   onClick,
   className,
   ...rest
 }: FeatureCardProps) {
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.target !== event.currentTarget) return;
     if (!clickable || disabled || (event.key !== "Enter" && event.key !== " ")) return;
     event.preventDefault();
-    onClick?.(event as unknown as React.MouseEvent<HTMLDivElement>);
+    event.currentTarget.click();
   };
+  const isLibraryIcon =
+    Array.isArray(icon) &&
+    icon.every(
+      (item): item is IconType =>
+        typeof item === "object" && item != null && "d" in item && typeof item.d === "string",
+    );
 
   return (
     <div
@@ -72,16 +81,15 @@ export default function FeatureCard({
         className,
       )}
     >
-      {icon && (
-        <div className="k-feature-card-icon">
-          <Icon type={icon} />
-        </div>
+      {icon != null && (
+        <div className="k-feature-card-icon">{isLibraryIcon ? <Icon type={icon} /> : icon}</div>
       )}
       <div className="k-feature-card-content">
-        {title && <div className="k-feature-card-title">{title}</div>}
-        {desc && <div className="k-feature-card-desc">{desc}</div>}
+        {title != null && <div className="k-feature-card-title">{title}</div>}
+        {desc != null && <div className="k-feature-card-desc">{desc}</div>}
         {children}
       </div>
+      {extra != null && <div className="k-feature-card-extra">{extra}</div>}
     </div>
   );
 }

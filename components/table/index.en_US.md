@@ -14,35 +14,35 @@ Specify the table's data source data as an array.
 ```js
 const dataSource = [
   {
-    key: '1',
-    name: 'Li Lei',
+    key: "1",
+    name: "Li Lei",
     age: 32,
-    address: 'Wu Han Guanggu No. 328',
+    address: "Wu Han Guanggu No. 328",
   },
   {
-    key: '2',
-    name: 'Hu Cong',
+    key: "2",
+    name: "Hu Cong",
     age: 28,
-    address: 'Wu Han Guanggu No. 198',
+    address: "Wu Han Guanggu No. 198",
   },
 ];
 
 const columns = [
   {
-    title: 'Name',
-    key: 'name',
+    title: "Name",
+    key: "name",
   },
   {
-    title: 'Age',
-    key: 'age',
+    title: "Age",
+    key: "age",
   },
   {
-    title: 'Address',
-    key: 'address',
+    title: "Address",
+    key: "address",
   },
 ];
 
-<Table :data="dataSource" :columns="columns" />;
+<Table data={dataSource} columns={columns} />;
 ```
 
 ## Examples
@@ -61,7 +61,7 @@ const columns = [
 
 [Custom Table Header](./demo/custom-header.tsx?show=vertical)
 
-- A table with a customizable header. You can define the header via `#header-`.
+- Use the column `renderHeader` callback to customize header content.
 
 [Custom Header and Footer](./demo/bordered.tsx?show=vertical)
 
@@ -81,7 +81,7 @@ const columns = [
 
 [Fixed Header/Columns](./demo/fixed-col-header.tsx?show=vertical)
 
-- For data with many columns, you can fix the front and back columns and scroll horizontally to view other data. You need to set the table's width `scroll.x` and `scroll.y`.
+- For tables with many columns, fix columns on either side and scroll horizontally. `scroll.x` sets the minimum content width and `scroll.y` sets the vertical viewport height.
 
 [Header Grouping](./demo/header-span.tsx?show=vertical)
 
@@ -97,7 +97,7 @@ const columns = [
 
 [Virtual Scrolling](./demo/virtual.tsx?show=vertical)
 
-- Enable virtual scrolling for large data sets; it also works with fixed columns and striped rows.
+- Use virtual scrolling with `scroll.y` for large, fixed-height data sets. Fixed columns and striped rows are supported; cell spans should not be used in virtual mode.
 
 [Column Settings](./demo/column-setting.tsx?show=vertical)
 
@@ -105,53 +105,53 @@ const columns = [
 
 ## Table API
 
-| Property     | Description                                              | Type                                                                         | Default |
-| ------------ | -------------------------------------------------------- | ---------------------------------------------------------------------------- | ------- |
-| bordered     | Whether to display borders                               | boolean                                                                         | false   |
-| checkable    | Whether to show checkboxes                               | boolean                                                                         | false   |
-| selectedKeys | Collection of selected keys                              | (string \| number)[]                                                        | -       |
-| defaultSelectedKeys | Initial selected keys in uncontrolled mode       | (string \| number)[]                                                        | []      |
-| disabledKeys | Disabled key set                                         | (string \| number)[]                                                        | -       |
-| size         | Display compact mode when the value is `small`           | string                                                                       | -       |
-| emptyText    | Prompt displayed when there is no data                   | string                                                                       | No Data |
-| loading      | Table asynchronous loading mode                          | boolean                                                                         | false   |
-| data         | Structured data to be displayed                          | T[]                                                                          | []      |
-| columns      | Configuration description of table columns               | Column[]                                                                     | []      |
-| header       | Custom table header content                              | ReactNode                                                                    | -       |
-| footer       | Custom table footer content                              | ReactNode                                                                    | -       |
-| rowKey       | Basis for selection                                      | string \| (record: T) => string \| number                                   | key     |
-| childrenColumnName | Field containing child records | string | children |
-| expandedKeys | Controlled expanded row keys | (string \| number)[] | - |
-| defaultExpandedKeys | Initially expanded row keys | (string \| number)[] | [] |
-| defaultExpandAllRows | Expand every tree node initially | boolean | false |
-| expandRowByClick | Toggle expansion by clicking a row | boolean | false |
-| indentSize | Indentation per tree level | number | 20 |
-| scroll       | Scrollable table area                                    | { x?: number \| string; y?: number \| string }                              | {}      |
-| striped      | Whether to display zebra stripes                         | boolean                                                                         | false   |
-| virtual      | Whether to enable virtual scrolling                      | boolean                                                                       | false   |
-| itemHeight   | Virtual row height                                       | number                                                                        | 40      |
-| overscan     | Extra virtual rows rendered outside the viewport         | number                                                                        | 5       |
-| hiddenColumnKeys | Hidden column key collection                         | (string \| number)[]                                                         | []      |
-| shape        | Shape                                                    | ShapeType                                                                       | -       |
-| onRowClick   | Triggered when clicking a row                            | (record: T, index: number) => void                                           | -       |
-| onSort       | Triggered when clicking to sort                          | (state: SortState) => void                                                   | -       |
-| onSelect     | Triggered when clicking the checkbox                     | (record: T, selected: boolean, selectedKeys: (string \| number)[]) => void   | -       |
-| onSelectAll  | Triggered when clicking the header checkbox of the Table | (selected: boolean, selectedKeys: (string \| number)[]) => void              | -       |
-| onSelectedKeysChange | Called when selected keys change                 | (selectedKeys: (string \| number)[]) => void                                | -       |
-| onExpand | Called when a row expands or collapses | (expanded: boolean, record: T) => void | - |
-| onExpandedKeysChange | Called when expanded keys change | (expandedKeys: (string \| number)[]) => void | - |
+| Property             | Description                                              | Type                                                                       | Default  |
+| -------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------- | -------- |
+| bordered             | Whether to display borders                               | boolean                                                                    | false    |
+| checkable            | Whether to show checkboxes                               | boolean                                                                    | false    |
+| selectedKeys         | Collection of selected keys                              | (string \| number)[]                                                       | -        |
+| defaultSelectedKeys  | Initial selected keys in uncontrolled mode               | (string \| number)[]                                                       | []       |
+| disabledKeys         | Disabled key set                                         | (string \| number)[]                                                       | -        |
+| size                 | Display compact mode when the value is `small`           | string                                                                     | -        |
+| emptyText            | Prompt displayed when there is no data                   | string                                                                     | No Data  |
+| loading              | Table asynchronous loading mode                          | boolean                                                                    | false    |
+| data                 | Structured data to be displayed                          | T[]                                                                        | []       |
+| columns              | Configuration description of table columns               | Column[]                                                                   | []       |
+| header               | Custom table header content                              | ReactNode                                                                  | -        |
+| footer               | Custom table footer content                              | ReactNode                                                                  | -        |
+| rowKey               | Basis for selection                                      | string \| (record: T) => string \| number                                  | key      |
+| childrenColumnName   | Field containing child records                           | string                                                                     | children |
+| expandedKeys         | Controlled expanded row keys                             | (string \| number)[]                                                       | -        |
+| defaultExpandedKeys  | Initially expanded row keys                              | (string \| number)[]                                                       | []       |
+| defaultExpandAllRows | Expand every tree node initially                         | boolean                                                                    | false    |
+| expandRowByClick     | Toggle expansion by clicking a row                       | boolean                                                                    | false    |
+| indentSize           | Indentation per tree level                               | number                                                                     | 20       |
+| scroll               | Scrollable table area                                    | { x?: number \| string; y?: number \| string }                             | {}       |
+| striped              | Whether to display zebra stripes                         | boolean                                                                    | false    |
+| virtual              | Whether to enable virtual scrolling                      | boolean                                                                    | false    |
+| itemHeight           | Virtual row height                                       | number                                                                     | 44       |
+| overscan             | Extra virtual rows rendered outside the viewport         | number                                                                     | 5        |
+| hiddenColumnKeys     | Hidden column key collection                             | (string \| number)[]                                                       | []       |
+| shape                | Shape                                                    | ShapeType                                                                  | round    |
+| onRowClick           | Triggered when clicking a row                            | (record: T, index: number) => void                                         | -        |
+| onSort               | Triggered when clicking to sort                          | (state: SortState) => void                                                 | -        |
+| onSelect             | Triggered when clicking the checkbox                     | (record: T, selected: boolean, selectedKeys: (string \| number)[]) => void | -        |
+| onSelectAll          | Triggered when clicking the header checkbox of the Table | (selected: boolean, selectedKeys: (string \| number)[]) => void            | -        |
+| onSelectedKeysChange | Called when selected keys change                         | (selectedKeys: (string \| number)[]) => void                               | -        |
+| onExpand             | Called when a row expands or collapses                   | (expanded: boolean, record: T) => void                                     | -        |
+| onExpandedKeysChange | Called when expanded keys change                         | (expandedKeys: (string \| number)[]) => void                               | -        |
 
 ## Column API
 
-| Property | Description                                                        | Type                                                                           | Default |
-| -------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------- |
-| title    | Header display text                                                | string                                                                         | -       |
-| key      | Corresponding column field name                                    | string                                                                         | -       |
-| fixed    | Column fixed direction                                             | left,right                                                                     | -       |
-| sorter   | Sorting, when `true`, local sorting is enabled                     | boolean \| (state: SortState) => void                                          | -       |
-| width    | Column width                                                       | number                                                                         | -       |
-| rowSpan  | Row span, or a function returning it                                | number \| (record: T, index: number) => number | - |
-| colSpan  | Column span, or a function returning it                             | number \| (record: T, index: number) => number | - |
-| render   | Custom cell rendering                                               | (value: unknown, record: T, rowIndex: number, column: Column<T>) => ReactNode | - |
-| renderHeader | Custom header rendering                                         | (column: Column<T>, index: number) => ReactNode | - |
-| children | Nested header columns                                               | Column<T>[] | - |
+| Property     | Description                                    | Type                                                                          | Default |
+| ------------ | ---------------------------------------------- | ----------------------------------------------------------------------------- | ------- |
+| title        | Header display text                            | string                                                                        | -       |
+| key          | Corresponding column field name                | string                                                                        | -       |
+| fixed        | Column fixed direction                         | `'left' \| 'right'`                                                           | -       |
+| sorter       | Sorting, when `true`, local sorting is enabled | boolean \| (state: SortState) => void                                         | -       |
+| width        | Column width                                   | number                                                                        | -       |
+| rowSpan      | Row span, or a function returning it           | number \| (record: T, index: number) => number                                | -       |
+| colSpan      | Column span, or a function returning it        | number \| (record: T, index: number) => number                                | -       |
+| render       | Custom cell rendering                          | (value: unknown, record: T, rowIndex: number, column: Column<T>) => ReactNode | -       |
+| renderHeader | Custom header rendering                        | (column: Column<T>, index: number) => ReactNode                               | -       |
+| children     | Nested header columns                          | Column<T>[]                                                                   | -       |

@@ -9,7 +9,15 @@ export default function App() {
       <TypographyTitle tag="h4">Two lines</TypographyTitle>
       <TypographyParagraph ellipsis={2}>{text}</TypographyParagraph>
       <TypographyTitle tag="h4">Expandable</TypographyTitle>
-      <TypographyParagraph ellipsis={{ rows: 2, expandable: true, tooltip: true }}>
+      <TypographyParagraph
+        ellipsis={{
+          rows: 2,
+          expandable: true,
+          expandText: "More",
+          collapseText: "Collapse",
+          tooltip: true,
+        }}
+      >
         {text} {text}
       </TypographyParagraph>
     </div>

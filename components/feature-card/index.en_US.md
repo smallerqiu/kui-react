@@ -20,23 +20,24 @@ Displays a product capability or feature highlight.
 
 ## API
 
-| Property | Description | Type | Default |
-| --- | --- | --- | --- |
-| icon | Icon | IconType[] | - |
-| title | Title | ReactNode | - |
-| desc | Description | ReactNode | - |
-| bordered | Whether to show a border | boolean | false |
-| theme | Appearance theme | ThemeType | fill |
-| shape | Card shape | ShapeType | round |
-| size | Card size | small\|medium\|large | medium |
-| direction | Content direction | horizontal\|vertical | horizontal |
-| clickable | Enable interaction | boolean | false |
-| disabled | Disable interaction | boolean | false |
-| color | Icon accent color | string | - |
-| iconBackground | Icon container background | string | auto |
+| Property       | Description                                                | Type                    | Default    |
+| -------------- | ---------------------------------------------------------- | ----------------------- | ---------- |
+| icon           | Icon or custom icon node                                   | IconType[] \| ReactNode | -          |
+| title          | Title                                                      | ReactNode               | -          |
+| desc           | Description                                                | ReactNode               | -          |
+| extra          | Trailing content                                           | ReactNode               | -          |
+| bordered       | Whether to show a border                                   | boolean                 | false      |
+| theme          | Appearance theme                                           | ThemeType               | fill       |
+| shape          | Card shape                                                 | ShapeType               | round      |
+| size           | Card size                                                  | small\|medium\|large    | medium     |
+| direction      | Content direction                                          | horizontal\|vertical    | horizontal |
+| clickable      | Enable interaction, keyboard control, and button semantics | boolean                 | false      |
+| disabled       | Disable interaction                                        | boolean                 | false      |
+| color          | Icon accent color                                          | string                  | primary    |
+| iconBackground | Icon background, generated from `color` when omitted       | string                  | auto       |
 
 ## Events
 
-| Event | Description | Callback |
-| --- | --- | --- |
+| Event   | Description          | Callback                    |
+| ------- | -------------------- | --------------------------- |
 | onClick | Emitted when clicked | (event: MouseEvent) => void |

@@ -8,7 +8,8 @@ export default function App() {
         through the details at their own pace.
       </TypographyParagraph>
       <TypographyParagraph type="secondary">
-        Use semantic components instead of styling every piece of text independently.
+        Use semantic components instead of styling every piece of text independently. This keeps
+        spacing, color, and rhythm consistent across the interface.
       </TypographyParagraph>
       <TypographyText>Kui React Design · Typography</TypographyText>
     </>

@@ -50,7 +50,7 @@ export default function Table<T extends object = Record<string, unknown>>({
   header,
   footer,
   virtual = false,
-  itemHeight = 40,
+  itemHeight = 44,
   overscan = 5,
   hiddenColumnKeys = [],
   onSort,
@@ -96,10 +96,17 @@ export default function Table<T extends object = Record<string, unknown>>({
   const [viewportHeight, setViewportHeight] = useState(0);
   const selected = controlledSelection ? new Set(selectedKeys) : innerSelected;
   const currentExpanded = expandedKeys === undefined ? innerExpanded : new Set(expandedKeys);
-  const leaves = useMemo(
-    () => flattenColumns(columns).filter((col) => !hiddenColumnKeys.includes(col.key)),
-    [columns, hiddenColumnKeys],
-  );
+  const visibleColumns = useMemo(() => {
+    const filter = (items: Column<T>[]): Column<T>[] =>
+      items.flatMap((column) => {
+        if (hiddenColumnKeys.includes(column.key)) return [];
+        if (!column.children?.length) return [column];
+        const children = filter(column.children);
+        return children.length ? [{ ...column, children }] : [];
+      });
+    return filter(columns);
+  }, [columns, hiddenColumnKeys]);
+  const leaves = useMemo(() => flattenColumns(visibleColumns), [visibleColumns]);
   const split = scroll.y != null;
   const virtualEnabled = virtual && split;
   const keyOf = (record: T) => {
@@ -117,8 +124,9 @@ export default function Table<T extends object = Record<string, unknown>>({
           ? depth(item.children, level + 1)
           : (maxDepth = Math.max(maxDepth, level)),
       );
-    depth(columns);
-    const headerRows: Array<Array<Column<T> & { headerColSpan: number; headerRowSpan: number }>> = [];
+    depth(visibleColumns);
+    const headerRows: Array<Array<Column<T> & { headerColSpan: number; headerRowSpan: number }>> =
+      [];
     const visit = (items: Column<T>[], level: number) => {
       headerRows[level] ??= [];
       items.forEach((item) => {
@@ -130,28 +138,36 @@ export default function Table<T extends object = Record<string, unknown>>({
         if (item.children?.length) visit(item.children, level + 1);
       });
     };
-    visit(columns, 0);
+    visit(visibleColumns, 0);
     return { rows: headerRows, maxDepth };
-  }, [columns]);
+  }, [visibleColumns]);
 
   const fixed = useMemo(() => {
-    const styles: Record<string, CSSProperties> = {};
+    const header: Record<string, CSSProperties> = {};
+    const body: Record<string, CSSProperties> = {};
     let left = checkable ? 50 : 0;
     leaves.forEach((column) => {
       if (column.fixed === "left") {
-        styles[column.key] = { position: "sticky", left, transform: "translateZ(0)" };
+        const style: CSSProperties = { position: "sticky", left, transform: "translateZ(0)" };
+        header[column.key] = style;
+        body[column.key] = style;
         left += column.width ?? 150;
       }
     });
     let right = 0;
     [...leaves].reverse().forEach((column) => {
       if (column.fixed === "right") {
-        styles[column.key] = { position: "sticky", right, transform: "translateZ(0)" };
+        body[column.key] = { position: "sticky", right, transform: "translateZ(0)" };
+        header[column.key] = {
+          position: "sticky",
+          right: split ? right + scrollbarWidth : right,
+          transform: "translateZ(0)",
+        };
         right += column.width ?? 150;
       }
     });
-    return styles;
-  }, [checkable, leaves]);
+    return { header, body };
+  }, [checkable, leaves, scrollbarWidth, split]);
   const fixedClass = (column: Column<T>, index: number) =>
     clsx({
       "k-table-cell-fix-left": column.fixed === "left",
@@ -219,9 +235,19 @@ export default function Table<T extends object = Record<string, unknown>>({
           typeof column.colSpan === "function"
             ? column.colSpan(record, row)
             : (column.colSpan ?? 1);
-        result[row][col] = { rowSpan, colSpan, show: true };
-        for (let r = 0; r < rowSpan; r++)
-          for (let c = 0; c < colSpan; c++)
+        const normalizedRowSpan = Number.isFinite(rowSpan) ? Math.max(0, Math.floor(rowSpan)) : 1;
+        const normalizedColSpan = Number.isFinite(colSpan) ? Math.max(0, Math.floor(colSpan)) : 1;
+        if (normalizedRowSpan === 0 || normalizedColSpan === 0) {
+          result[row][col].show = false;
+          return;
+        }
+        result[row][col] = {
+          rowSpan: normalizedRowSpan,
+          colSpan: normalizedColSpan,
+          show: true,
+        };
+        for (let r = 0; r < normalizedRowSpan; r++)
+          for (let c = 0; c < normalizedColSpan; c++)
             if (r || c) {
               const cell = result[row + r]?.[col + c];
               if (cell) cell.show = false;
@@ -305,20 +331,24 @@ export default function Table<T extends object = Record<string, unknown>>({
   useEffect(() => {
     const body = bodyRef.current;
     if (!body) return;
-    setScrollbarWidth(split ? body.offsetWidth - body.clientWidth - (bordered ? 1 : 0) : 0);
-    setViewportHeight(body.clientHeight);
-  }, [bordered, data, split]);
-
-  useEffect(() => {
-    const body = bodyRef.current;
-    if (!body || !virtualEnabled) return;
-    const handleResize = () => setViewportHeight(body.clientHeight);
+    const measure = () => {
+      setScrollbarWidth(
+        split ? Math.max(0, body.offsetWidth - body.clientWidth - (bordered ? 1 : 0)) : 0,
+      );
+      setViewportHeight(body.clientHeight);
+      const max = Math.max(0, body.scrollWidth - body.clientWidth);
+      const nextPing = { left: body.scrollLeft > 0.5, right: body.scrollLeft < max - 0.5 };
+      setPing((current) =>
+        current.left === nextPing.left && current.right === nextPing.right ? current : nextPing,
+      );
+    };
+    measure();
     if (typeof ResizeObserver !== "undefined") {
-      const observer = new ResizeObserver(handleResize);
+      const observer = new ResizeObserver(measure);
       observer.observe(body);
       return () => observer.disconnect();
     }
-  }, [virtualEnabled]);
+  }, [bordered, split]);
 
   const colgroup = (headerTable = false) => (
     <colgroup>
@@ -339,14 +369,16 @@ export default function Table<T extends object = Record<string, unknown>>({
           {checkable && rowIndex === 0 && (
             <th
               rowSpan={headerInfo.maxDepth}
-              className="k-table-cell-fix-left"
+              className={clsx("k-table-cell-fix-left", {
+                "k-table-cell-fix-left-last": ping.left,
+              })}
               style={{ left: 0, zIndex: 3 }}
             >
               <Checkbox
                 checked={allChecked}
                 indeterminate={indeterminate}
                 onChange={toggleAll}
-                disabled={data.length > 0 && !enabled.length}
+                disabled={!enabled.length}
               />
             </th>
           )}
@@ -356,7 +388,7 @@ export default function Table<T extends object = Record<string, unknown>>({
               colSpan={column.headerColSpan}
               rowSpan={column.headerRowSpan}
               className={fixedClass(column, leaves.indexOf(column))}
-              style={fixed[column.key]}
+              style={fixed.header[column.key]}
               onClick={() => changeSort(column)}
             >
               <div className="k-table-header-col">
@@ -405,7 +437,7 @@ export default function Table<T extends object = Record<string, unknown>>({
   const tbody = (
     <tbody>
       {virtualEnabled && virtualRange.offset > 0 && (
-        <tr aria-hidden="true">
+        <tr className="k-table-virtual-spacer k-table-virtual-spacer-top" aria-hidden="true">
           <td
             colSpan={leaves.length + (checkable ? 1 : 0)}
             style={{ height: virtualRange.offset }}
@@ -414,7 +446,9 @@ export default function Table<T extends object = Record<string, unknown>>({
       )}
       {renderedRows.map(({ record, depth, hasChildren, rowIndex }) => (
         <tr
-          key={`${keyOf(record)}-${rowIndex}`}
+          key={keyOf(record)}
+          className={virtualEnabled && rowIndex % 2 === 1 ? "k-table-row-even" : undefined}
+          style={virtualEnabled ? { height: itemHeight } : undefined}
           onClick={(event) => {
             if ((event.target as HTMLElement).closest(".k-checkbox, .k-table-tree-toggle")) return;
             if (expandRowByClick && hasChildren) toggleExpand(record);
@@ -422,7 +456,12 @@ export default function Table<T extends object = Record<string, unknown>>({
           }}
         >
           {checkable && (
-            <td className="k-table-cell-fix-left" style={{ width: 50, left: 0 }}>
+            <td
+              className={clsx("k-table-cell-fix-left", {
+                "k-table-cell-fix-left-last": ping.left,
+              })}
+              style={{ width: 50, left: 0 }}
+            >
               <Checkbox
                 checked={selected.has(keyOf(record))}
                 disabled={isDisabled(keyOf(record))}
@@ -442,7 +481,7 @@ export default function Table<T extends object = Record<string, unknown>>({
                 rowSpan={cell.rowSpan > 1 ? cell.rowSpan : undefined}
                 colSpan={cell.colSpan > 1 ? cell.colSpan : undefined}
                 className={fixedClass(column, colIndex)}
-                style={fixed[column.key]}
+                style={fixed.body[column.key]}
               >
                 {treeEnabled && colIndex === 0 ? (
                   <div className="k-table-tree-cell" style={{ paddingLeft: depth * indentSize }}>
@@ -476,7 +515,7 @@ export default function Table<T extends object = Record<string, unknown>>({
       {virtualEnabled &&
         virtualRange.offset + (virtualRange.end - virtualRange.start) * itemHeight <
           virtualRange.total && (
-          <tr aria-hidden="true">
+          <tr className="k-table-virtual-spacer k-table-virtual-spacer-bottom" aria-hidden="true">
             <td
               colSpan={leaves.length + (checkable ? 1 : 0)}
               style={{
@@ -491,8 +530,8 @@ export default function Table<T extends object = Record<string, unknown>>({
     </tbody>
   );
   const tableStyle: CSSProperties = {
-    width: typeof scroll.x === "number" ? scroll.x : scroll.x,
-    minWidth: scroll.x ? undefined : "100%",
+    width: "100%",
+    minWidth: typeof scroll.x === "number" ? scroll.x : scroll.x || "100%",
     tableLayout: "fixed",
   };
   const renderTable = (showHeader: boolean, showBody: boolean, headerTable = false) => (
@@ -502,7 +541,7 @@ export default function Table<T extends object = Record<string, unknown>>({
       {showBody && tbody}
     </table>
   );
-  const empty = !rows.length || !columns.length;
+  const empty = !rows.length || !visibleColumns.length;
   return (
     <div
       {...rest}
@@ -516,6 +555,7 @@ export default function Table<T extends object = Record<string, unknown>>({
           [`k-table-${shape}`]: shape,
           "k-table-ping-left": ping.left,
           "k-table-ping-right": ping.right,
+          "k-table-virtual": virtualEnabled,
         },
         className,
       )}
@@ -530,7 +570,7 @@ export default function Table<T extends object = Record<string, unknown>>({
         className="k-table-body k-scroll"
         ref={bodyRef}
         style={{
-          overflowY: scroll.y ? "auto" : undefined,
+          overflowY: scroll.y ? "scroll" : "auto",
           overflowX: data.length ? "auto" : "hidden",
           maxHeight: scroll.y,
         }}

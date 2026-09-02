@@ -1,11 +1,12 @@
-import { CodeJar, type CodeJar as CodeJarInstance } from "codejar";
 import clsx from "clsx";
+import { CodeJar, type CodeJar as CodeJarInstance } from "codejar";
+import dayjs from "dayjs";
 import hljs from "highlight.js/lib/core";
 import javascript from "highlight.js/lib/languages/javascript";
 import typescript from "highlight.js/lib/languages/typescript";
 import xml from "highlight.js/lib/languages/xml";
-import { Copy, ListChevronsDownUp, ListChevronsUpDown, Play, Undo2 } from "kui-icons";
 import * as Icons from "kui-icons";
+import { Copy, ListChevronsDownUp, ListChevronsUpDown, Play, Undo2 } from "kui-icons";
 import * as React from "react";
 import {
   useCallback,
@@ -15,12 +16,11 @@ import {
   type ComponentType,
   type ReactNode,
 } from "react";
-import * as JSXRuntime from "react/jsx-runtime";
 import * as ReactKUI from "react-kui";
-import * as Share from "react-kui/utils/share";
 import { Badge, Button, message, RadioGroup, Tooltip, type BadgeStatusType } from "react-kui";
+import * as Share from "react-kui/utils/share";
 import { useNavigate } from "react-router";
-import dayjs from "dayjs";
+import * as JSXRuntime from "react/jsx-runtime";
 import { transform } from "sucrase";
 import { CodePen, CodeSandbox, Stackblitz } from "./icons";
 import { openCodePen, openCodeSandbox, openStackBlitz } from "./utils";
@@ -266,7 +266,7 @@ export default function Demo({
           </div>
         </div>
         {expanded && (
-          <div className="k-code-box">
+          <div className="k-code-box" style={{ height: `${!expanded ? "80px" : undefined}` }}>
             <div className="k-code-tools" contentEditable={false}>
               <Badge status={buildState.state} text={buildState.text} />
               {toolbar !== "status" && (
