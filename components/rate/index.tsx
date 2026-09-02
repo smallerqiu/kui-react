@@ -39,6 +39,7 @@ const Rate: React.FC<RateProps> = ({
   strokeWidth = 1,
   onChange,
   className = "",
+  style,
   ...rest
 }) => {
   const [innerValue, setInnerValue] = useState(defaultValue);
@@ -112,13 +113,14 @@ const Rate: React.FC<RateProps> = ({
         symbolReverseFill={symbolReverseFill}
         strokeWidth={strokeWidth}
         onUpdate={update}
-      />
+      />,
     );
   }
 
   const containerStyle: React.CSSProperties = {
     fontSize: numSize ? `${numSize}px` : undefined,
     color: color || undefined,
+    ...style,
   };
 
   return (

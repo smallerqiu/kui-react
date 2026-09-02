@@ -74,7 +74,7 @@ export { Descriptions, DescriptionsItem } from "./descriptions";
 export type { DescriptionsItemProps, DescriptionsProps } from "./descriptions";
 
 export { default as Drawer } from "./drawer";
-export type { DrawerProps } from "./drawer";
+export type { DrawerProps, DrawerTarget } from "./drawer";
 
 export { Dropdown, DropdownButton } from "./dropdown";
 export type { DropdownButtonProps, DropdownProps } from "./dropdown";

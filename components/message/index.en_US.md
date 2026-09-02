@@ -13,6 +13,10 @@ Globally display operation feedback information.
 
 - Informational feedback prompt.
 
+[Grouping](./demo/grouping.tsx)
+
+- Notifications with the same grouping will reuse the existing entry—only updating the content and resetting the timer without creating a new one.
+
 [Custom Icon](./demo/icon.tsx)
 
 - Custom icon.
@@ -28,12 +32,6 @@ Globally display operation feedback information.
 [Custom Duration](./demo/close.tsx)
 
 - Customize configuration where `duration` controls auto-close time
-
-[Grouping](./demo/grouping.tsx)
-
-- Update an existing message by using the same `grouping` key.
-
-- Use `duration` to control auto-close (default `3.5s`) and `closable` to show a close button.
 
 ## API
 
@@ -52,13 +50,13 @@ Also provides global configuration and global destruction methods:
 
 Parameter `options` is an object, specific description as follows:
 
-| Property | Description                                                                      | Type          | Default |
-| -------- | -------------------------------------------------------------------------------- | ------------- | ------- |
-| type     | Prompt type, provides four optional types: `info`, `success`, `error`, `warning` | string        | info    |
-| content  | Prompt content                                                                   | string, ReactNode | -       |
-| duration | Auto-close delay, in seconds, 0 means not auto-closed                            | number        | 3.5     |
-| closable | Whether it can be manually closed                                                | boolean       | false   |
-| icon     | Custom icon                                                                      | string        | -       |
-| color    | Custom icon color                                                                | string        | -       |
-| onClose  | Callback when closing                                                            | () => void    | -       |
-| grouping | Group key; messages with the same key reuse the existing entry and reset its timer | string      | -       |
+| Property | Description                                                                        | Type              | Default |
+| -------- | ---------------------------------------------------------------------------------- | ----------------- | ------- |
+| type     | Prompt type, provides four optional types: `info`, `success`, `error`, `warning`   | string            | info    |
+| content  | Prompt content                                                                     | string, ReactNode | -       |
+| duration | Auto-close delay, in seconds, 0 means not auto-closed                              | number            | 3.5     |
+| closable | Whether it can be manually closed                                                  | boolean           | false   |
+| icon     | Custom icon                                                                        | string            | -       |
+| color    | Custom icon color                                                                  | string            | -       |
+| onClose  | Callback when closing                                                              | () => void        | -       |
+| grouping | Group key; messages with the same key reuse the existing entry and reset its timer | string            | -       |

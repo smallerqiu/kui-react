@@ -23,7 +23,6 @@ export default function App() {
         ref={ref}
         style={{
           height: 300,
-          position: "relative",
           overflow: "hidden",
           borderRadius: 8,
           background: "rgba(130, 130, 130, 0.18)",
@@ -40,7 +39,7 @@ export default function App() {
         height="50%"
         footer={false}
         placement={placement}
-        target={() => ref.current ?? document.body}
+        target={ref}
         onClose={() => setOpen(false)}
       >
         <p>something ...</p>

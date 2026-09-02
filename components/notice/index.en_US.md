@@ -16,6 +16,10 @@ Display notification reminder information in the four corners of the system. Oft
 
 - Basic usage of `Notice`.
 
+[Grouping](./demo/grouping.tsx)
+
+- Notices with the same `grouping` reuse the existing entry, update its content, and reset its timer.
+
 [Notification with Icon](./demo/types.tsx)
 
 - Call different methods to display different types.
@@ -27,11 +31,6 @@ Display notification reminder information in the four corners of the system. Oft
 [Custom Duration](./demo/close.tsx)
 
 - Use `duration` to control the automatic closing time; the default is `3s`.
-
-[Grouping](./demo/grouping.tsx)
-
-- Update an existing notice by using the same `grouping` key.
-
 
 ## API
 
@@ -49,12 +48,12 @@ Also provides global configuration and global destruction methods:
 
 Parameter `options` is an object, specific description as follows:
 
-| Property | Description                                      | Type          | Default |
-| -------- | ------------------------------------------------ | ------------- | ------- |
-| title    | Notification title                               | string        | -       |
-| content  | Prompt content                                   | string, ReactNode | -       |
-| duration | Auto-close delay, in seconds, 0 means not closed | number        | 3.5     |
-| icon     | Custom icon                                      | string        | -       |
-| color    | Custom icon color                                | string        | -       |
-| onClose  | Callback when closing                            | () => void    | -       |
-| grouping | Group key; notices with the same key reuse the existing entry and reset its timer | string | - |
+| Property | Description                                                                       | Type              | Default |
+| -------- | --------------------------------------------------------------------------------- | ----------------- | ------- |
+| title    | Notification title                                                                | string            | -       |
+| content  | Prompt content                                                                    | string, ReactNode | -       |
+| duration | Auto-close delay, in seconds, 0 means not closed                                  | number            | 3.5     |
+| icon     | Custom icon                                                                       | string            | -       |
+| color    | Custom icon color                                                                 | string            | -       |
+| onClose  | Callback when closing                                                             | () => void        | -       |
+| grouping | Group key; notices with the same key reuse the existing entry and reset its timer | string            | -       |

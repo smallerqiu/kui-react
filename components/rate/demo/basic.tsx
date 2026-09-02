@@ -8,15 +8,15 @@ export default function App() {
       <code>value: {value}</code>
       <Rate value={value} onChange={setValue} />
       <code>show score</code>
-      <Rate value={2.5} showScore />
+      <Rate defaultValue={2.5} showScore />
       <code>size = 30</code>
-      <Rate size={30} value={2} />
+      <Rate size={30} defaultValue={2} />
       <code>custom icon</code>
-      <Rate icon={Heart} color="red" value={2.5} size={30} symbolReverseFill />
+      <Rate icon={Heart} color="red" defaultValue={2.5} size={30} symbolReverseFill />
       <code>allowHalf = true</code>
-      <Rate icon={Heart} allowHalf color="red" value={2.5} size={30} />
+      <Rate icon={Heart} allowHalf color="red" defaultValue={2.5} size={30} />
       <code>disabled (readonly)</code>
-      <Rate value={3.7} disabled showScore />
+      <Rate defaultValue={3.7} disabled showScore />
     </Space>
   );
 }

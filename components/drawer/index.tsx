@@ -1,12 +1,24 @@
 import clsx from "clsx";
 import { X } from "kui-icons";
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type RefObject,
+} from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import { Button } from "../button";
 import { ConfigContext } from "../config/config-context";
 import type { DrawerPlacementsType } from "../const/types";
 import zhCN from "../locale/zh-CN";
+import { toggleContainerScroll } from "../utils/react-node";
+
+export type DrawerTarget =
+  HTMLElement | RefObject<HTMLElement | null> | (() => HTMLElement | null | undefined);
 
 export interface DrawerProps {
   open?: boolean;
@@ -20,7 +32,7 @@ export interface DrawerProps {
   closable?: boolean;
   footer?: boolean | React.ReactNode;
   maskClosable?: boolean;
-  target?: () => HTMLElement;
+  target?: DrawerTarget;
   mask?: boolean;
   loading?: boolean;
   escKey?: boolean;
@@ -32,6 +44,15 @@ export interface DrawerProps {
 }
 
 const getBody = () => document.body;
+
+const ensurePositioningContext = (element: HTMLElement) => {
+  if (element === document.body || getComputedStyle(element).position !== "static") return;
+  const position = element.style.position;
+  element.style.position = "relative";
+  return () => {
+    if (element.style.position === "relative") element.style.position = position;
+  };
+};
 
 const Drawer: React.FC<DrawerProps> = ({
   open,
@@ -64,6 +85,14 @@ const Drawer: React.FC<DrawerProps> = ({
   const [rendered, setRendered] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
+
+  const resolveTarget = () => {
+    const candidate = typeof target === "function" ? target() : target;
+    if (candidate && "current" in candidate) return candidate.current ?? document.body;
+    return candidate ?? document.body;
+  };
+  const targetEl = resolveTarget();
+  const isBody = targetEl === document.body;
 
   const toggle = useCallback((value: boolean) => {
     if (value) {
@@ -108,10 +137,17 @@ const Drawer: React.FC<DrawerProps> = ({
     if (escKey) document.addEventListener("keydown", escToClose);
     return () => {
       if (escKey) document.removeEventListener("keydown", escToClose);
-      const t = target?.();
-      if (t) t.style.overflow = "";
     };
-  }, [escKey, escToClose, target]);
+  }, [escKey, escToClose]);
+
+  useEffect(() => {
+    toggleContainerScroll(targetEl, currentOpen);
+    return () => toggleContainerScroll(targetEl, false);
+  }, [currentOpen, targetEl]);
+
+  useLayoutEffect(() => {
+    if (rendered) return ensurePositioningContext(targetEl);
+  }, [rendered, targetEl]);
 
   const cancel = () => {
     onCancel?.();
@@ -143,9 +179,6 @@ const Drawer: React.FC<DrawerProps> = ({
   const closeNode = closable ? (
     <Button className="k-drawer-close" size="small" type="text" onClick={close} icon={X} />
   ) : null;
-
-  const targetEl = target?.() || document.body;
-  const isBody = targetEl === document.body;
 
   const drawerStyle: React.CSSProperties = {};
   if (placement === "left" || placement === "right") {
