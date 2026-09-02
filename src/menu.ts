@@ -37,6 +37,7 @@ import {
   Menu,
   MessageCircleCheck,
   MessageCircleMore,
+  MessageSquareCheck,
   MessageSquareMore,
   Minus,
   MirrorRectangular,

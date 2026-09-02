@@ -34,17 +34,17 @@ Previewable images.
 | src         | The default address of the image to display            | string                  | -       |
 | alt         | Alternative text for the image                         | string                  | -       |
 | data        | Preview image list                                     | string[]                | -       |
-| type        | Make Preview display video tag, values ['img','media'] | string                  | img     |
+| type        | Preview content type                                   | `'img'` \| `'media'`    | `img`   |
 | origin      | The large image displayed when clicking the image      | string                  | -       |
 | placeholder | The placeholder displayed when the image fails to load | string                  | -       |
 | imgStyle    | The style of the image                                 | Object                  | -       |
-| showPanel   | Whether to display the extension panel by default      | boolean                    | false   |
+| showPanel   | Whether to display the extension panel by default      | boolean                 | false   |
 | onClose     | Close trigger event                                    | () => void              | -       |
 | onSwitch    | Multi-image switch callback                            | (index: number) => void | -       |
 | theme       | Theme                                                  | ThemeType               | -       |
 | shape       | Shape                                                  | ShapeType               | -       |
 | tools       | Custom toolbar buttons                                 | ReactNode               | -       |
-| panel       | Custom extension panel                                 | ReactNode                    | -       |
+| panel       | Custom extension panel                                 | ReactNode               | -       |
 
 ## ImageGroup API
 

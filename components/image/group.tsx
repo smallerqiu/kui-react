@@ -6,16 +6,21 @@ export interface ImageGroupProps extends HTMLAttributes<HTMLDivElement> {
   data?: string[];
 }
 
-export default function ImageGroup({ data = [], className, children, ...rest }: ImageGroupProps) {
-  const sourcesRef = useRef([...data]);
+export default function ImageGroup({ data, className, children, ...rest }: ImageGroupProps) {
+  const sourcesRef = useRef<string[]>([]);
+  const dataRef = useRef(data);
   const previewRef = useRef<ImagePreviewInstance | null>(null);
+  useEffect(() => {
+    dataRef.current = data;
+  }, [data]);
   useEffect(() => () => previewRef.current?.destroy(), []);
   const context = useMemo<ImageGroupContextValue>(
     () => ({
       show(options) {
+        const previewData = dataRef.current ? [...dataRef.current] : [...sourcesRef.current];
         if (!previewRef.current)
-          previewRef.current = createInstance({ ...options, data: sourcesRef.current });
-        previewRef.current.show({ ...options, data: sourcesRef.current });
+          previewRef.current = createInstance({ ...options, data: previewData });
+        previewRef.current.show({ ...options, data: previewData });
       },
       register(src) {
         if (src && !sourcesRef.current.includes(src)) sourcesRef.current.push(src);
@@ -27,7 +32,7 @@ export default function ImageGroup({ data = [], className, children, ...rest }: 
         previewRef.current?.togglePanel();
       },
     }),
-    []
+    [],
   );
   return (
     <ImageGroupContext.Provider value={context}>

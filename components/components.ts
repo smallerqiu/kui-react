@@ -112,7 +112,7 @@ export { Grid, GridItem } from "./grid";
 export type { GridItemProps, GridProps } from "./grid";
 
 export { ImageGroup, KImage } from "./image";
-export type { ImageGroupProps, ImagePreviewProps, ImageProps, ImageRef } from "./image";
+export type { ImageGroupProps, ImagePreviewProps, ImageProps, ImageRef, ImageType } from "./image";
 
 export { default as Icon } from "./icon";
 export type { IconProps, IconType } from "./icon";

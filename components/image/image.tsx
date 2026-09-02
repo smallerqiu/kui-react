@@ -15,7 +15,7 @@ import {
 import Icon from "../icon";
 import { ImageGroupContext } from "./image-group-context";
 import createInstance, { type ImagePreviewInstance } from "./instance";
-import type { ImagePreviewProps } from "./preview";
+import type { ImagePreviewProps, ImageType } from "./preview";
 import type { ShapeType, ThemeType } from "../const/types";
 import { loadImage } from "./utils";
 
@@ -27,7 +27,7 @@ export interface ImageRef {
 export interface ImageProps extends Omit<HTMLAttributes<HTMLDivElement>, "onSwitch"> {
   alt?: string;
   src?: string;
-  type?: string;
+  type?: ImageType;
   origin?: string;
   height?: string | number;
   width?: string | number;
@@ -67,7 +67,7 @@ const KImage = forwardRef<ImageRef, ImageProps>(function KImage(
     onClick,
     ...rest
   },
-  ref
+  ref,
 ) {
   const group = useContext(ImageGroupContext);
   const previewRef = useRef<ImagePreviewInstance | null>(null);
@@ -79,12 +79,13 @@ const KImage = forwardRef<ImageRef, ImageProps>(function KImage(
   useEffect(() => {
     let active = true;
     if (!src) {
+      setLoading(false);
       setFailed(true);
       setImageUrl(placeholder);
       return;
     }
     setLoading(true);
-    loadImage(
+    const cancelLoad = loadImage(
       src,
       () => {
         if (active) {
@@ -99,10 +100,11 @@ const KImage = forwardRef<ImageRef, ImageProps>(function KImage(
           setFailed(true);
           setImageUrl(placeholder);
         }
-      }
+      },
     );
     return () => {
       active = false;
+      cancelLoad();
     };
   }, [placeholder, src]);
   useEffect(() => {
