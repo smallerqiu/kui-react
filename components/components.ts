@@ -249,7 +249,7 @@ export { default as TreeSelect } from "./tree-select";
 export type { TreeSelectProps } from "./tree-select";
 
 export { default as Cascader } from "./cascader";
-export type { CascaderOption, CascaderProps, CascaderValue } from "./cascader";
+export type { CascaderLoadData, CascaderOption, CascaderProps, CascaderValue } from "./cascader";
 
 export { default as Tag } from "./tag";
 export type { TagProps } from "./tag";

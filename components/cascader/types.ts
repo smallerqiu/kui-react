@@ -3,6 +3,10 @@ import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../cons
 import type { IconType } from "../icon";
 
 export type CascaderValue = Array<string | number>;
+export type CascaderLoadData = (
+  option: CascaderOption,
+  path: CascaderOption[],
+) => Promise<CascaderOption[] | void>;
 
 export interface CascaderOption {
   value: string | number;
@@ -29,6 +33,7 @@ export interface CascaderProps extends Omit<
   icon?: IconType[];
   arrowIcon?: IconType[];
   emptyText?: string;
+  loadData?: CascaderLoadData;
   disabled?: boolean;
   clearable?: boolean;
   size?: SizeType;
@@ -37,5 +42,6 @@ export interface CascaderProps extends Omit<
   separator?: string;
   placement?: DropPlacementsType;
   onChange?: (value: CascaderValue) => void;
+  onExpandChange?: (value: CascaderValue) => void;
   onOpenChange?: (open: boolean) => void;
 }
