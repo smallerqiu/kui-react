@@ -6,8 +6,12 @@ import {
   useState,
   type DragEvent,
   type HTMLAttributes,
+  type ReactElement,
   type ReactNode,
 } from "react";
+import { TransitionGroup } from "react-transition-group";
+import { getTransitionProps } from "../base/transition-props";
+import Transition from "../base/transition";
 import { Button } from "../button";
 import Checkbox, { type ChangeEvent } from "../checkbox";
 import Icon from "../icon";
@@ -72,6 +76,35 @@ const findRaw = (nodes: TreeNode[], key: string): TreeNode | undefined => {
     if (child) return child;
   }
 };
+
+function TreeTransitionNode({
+  children,
+  in: show,
+  appear,
+  onExited,
+}: {
+  children: ReactElement;
+  in?: boolean;
+  appear?: boolean;
+  onExited?: () => void;
+}) {
+  const nodeRef = useRef<HTMLDivElement>(null);
+  const transitionProps = getTransitionProps("k-tree-slide");
+  return (
+    <Transition
+      {...transitionProps}
+      show={show}
+      appear={appear}
+      nodeRef={nodeRef}
+      onAfterLeave={(element) => {
+        transitionProps.onAfterLeave?.(element);
+        onExited?.();
+      }}
+    >
+      {children}
+    </Transition>
+  );
+}
 
 export default function Tree({
   data = [],
@@ -385,7 +418,13 @@ export default function Tree({
           {(node) => renderNode(node)}
         </VirtualList>
       ) : (
-        <div className="k-tree-node-list">{visible.map((node) => renderNode(node))}</div>
+        <div className="k-tree-node-list">
+          <TransitionGroup component={null}>
+            {visible.map((node) => {
+              return <TreeTransitionNode key={node.key}>{renderNode(node)}</TreeTransitionNode>;
+            })}
+          </TransitionGroup>
+        </div>
       )}
     </div>
   );

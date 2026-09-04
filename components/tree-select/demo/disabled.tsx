@@ -13,7 +13,7 @@ export default function App() {
         value={value1}
         onChange={(v) => setValue1(v as Array<string | number>)}
         treeData={data}
-        treeExpandedKeys={expandedKeys}
+        treeDefaultExpandedKeys={expandedKeys}
         filterable
         disabled
         block
@@ -22,7 +22,7 @@ export default function App() {
         value={value1}
         onChange={(v) => setValue1(v as Array<string | number>)}
         treeData={data}
-        treeExpandedKeys={expandedKeys}
+        treeDefaultExpandedKeys={expandedKeys}
         multiple
         filterable
         disabled
@@ -33,7 +33,7 @@ export default function App() {
         value={value2}
         onChange={(v) => setValue2(v as Array<string | number>)}
         treeData={data}
-        treeExpandedKeys={expandedKeys}
+        treeDefaultExpandedKeys={expandedKeys}
         multiple
         treeCheckable
         maxTagCount={2}
@@ -44,7 +44,7 @@ export default function App() {
         value={value2}
         onChange={(v) => setValue2(v as Array<string | number>)}
         treeData={data}
-        treeExpandedKeys={expandedKeys}
+        treeDefaultExpandedKeys={expandedKeys}
         multiple
         treeCheckable
         maxTagCount={2}

@@ -13,7 +13,7 @@ export default function App() {
         value={value}
         onChange={(v) => setValue(v as Array<string | number>)}
         treeData={data}
-        treeExpandedKeys={expandedKeys}
+        treeDefaultExpandedKeys={expandedKeys}
         multiple
         block
         treeCheckable

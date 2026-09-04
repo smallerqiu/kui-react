@@ -143,6 +143,23 @@
   }
 }
 
+.k-tree-slide-enter-active,
+.k-tree-slide-leave-active {
+  overflow: hidden;
+  transition:
+    height var(--kui-motion-duration-slow) var(--kui-motion-easing),
+    margin var(--kui-motion-duration-slow) var(--kui-motion-easing),
+    padding var(--kui-motion-duration-slow) var(--kui-motion-easing),
+    opacity var(--kui-motion-duration-slow) var(--kui-motion-easing);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .k-tree-slide-enter-active,
+  .k-tree-slide-leave-active {
+    transition-duration: 0.01ms;
+  }
+}
+
 .k-tree-directory {
   position: relative;
 

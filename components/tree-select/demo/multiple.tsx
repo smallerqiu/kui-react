@@ -10,7 +10,7 @@ export default function App() {
         value={value1}
         onChange={(v) => setValue1(v as Array<string | number>)}
         treeData={data}
-        treeExpandedKeys={expandedKeys}
+        treeDefaultExpandedKeys={expandedKeys}
         multiple
         filterable
         clearable
@@ -22,7 +22,7 @@ export default function App() {
         value={value2}
         onChange={(v) => setValue2(v as Array<string | number>)}
         treeData={data}
-        treeExpandedKeys={expandedKeys}
+        treeDefaultExpandedKeys={expandedKeys}
         multiple
         maxTagCount={2}
         style={{ width: "100%" }}

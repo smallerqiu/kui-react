@@ -19,7 +19,7 @@ export default function App() {
         onChange={(v) => setValue(v as string | number | null)}
         treeData={data}
         treeShowLine
-        treeExpandedKeys={expandedKeys}
+        treeDefaultExpandedKeys={expandedKeys}
         block
       />
       <TreeSelect
@@ -28,7 +28,7 @@ export default function App() {
         onChange={(v) => setMultiple(v as Array<string | number>)}
         treeData={data}
         treeShowLine
-        treeExpandedKeys={expandedKeys}
+        treeDefaultExpandedKeys={expandedKeys}
         block
         multiple
       />
@@ -38,7 +38,7 @@ export default function App() {
         onChange={(v) => setMultiple(v as Array<string | number>)}
         treeData={data}
         treeShowLine
-        treeExpandedKeys={expandedKeys}
+        treeDefaultExpandedKeys={expandedKeys}
         block
         multiple
         maxTagCount={2}

@@ -61,6 +61,7 @@ export interface TreeSelectProps extends Omit<
   treeShowIcon?: boolean;
   treeCheckStrictly?: boolean;
   treeExpandedKeys?: string[];
+  treeDefaultExpandedKeys?: string[];
   treeCheckedKeys?: string[];
   treeSelectedKeys?: string[];
   treeExpandedAll?: boolean;
@@ -123,12 +124,13 @@ export default function TreeSelect({
   treeShowIcon = true,
   treeCheckStrictly,
   treeExpandedKeys,
+  treeDefaultExpandedKeys,
   treeCheckedKeys,
   treeSelectedKeys,
   treeExpandedAll,
   treeLoadData,
   virtual = false,
-  virtualHeight = 300,
+  virtualHeight = 260,
   itemHeight = 28,
   overscan = 5,
   onChange,
@@ -155,7 +157,19 @@ export default function TreeSelect({
   const [rendered, setRendered] = useState(visible);
   if (visible && !rendered) setRendered(true);
   const [query, setQuery] = useState("");
-  const [innerExpanded, setInnerExpanded] = useState<string[]>([]);
+  const [innerExpanded, setInnerExpanded] = useState<string[]>(() => {
+    if (treeDefaultExpandedKeys) return treeDefaultExpandedKeys;
+    if (!treeExpandedAll) return [];
+    const keys: string[] = [];
+    const collect = (nodes: TreeNode[]) => {
+      nodes.forEach((node) => {
+        if (node.children?.length || node.isLeaf === false) keys.push(node.key);
+        if (node.children?.length) collect(node.children);
+      });
+    };
+    collect(data);
+    return keys;
+  });
   const [innerChecked, setInnerChecked] = useState<string[]>([]);
   const expanded = treeExpandedKeys ?? innerExpanded;
   const checked = treeCheckedKeys ?? innerChecked;
@@ -163,6 +177,7 @@ export default function TreeSelect({
   const selectionRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const inputMirrorRef = useRef<HTMLSpanElement>(null);
   const currentPlacementRef = useRef<string>(placement);
   const originRef = useRef("top");
   const topRef = useRef(0);
@@ -280,9 +295,6 @@ export default function TreeSelect({
     setQuery("");
     onClear?.();
   };
-  const initialExpanded = treeExpandedAll
-    ? allNodes.filter((node) => !node.isLeaf).map((node) => node.key)
-    : undefined;
   const selectedForTree = treeSelectedKeys ?? currentValue;
   const checkedForTree = treeCheckedKeys ?? (treeCheckable ? currentValue : checked);
   const placeholderText = placeholder || locale?.k?.select?.placeholder;
@@ -318,6 +330,14 @@ export default function TreeSelect({
     setQuery(event.target.value);
     onSearch?.(event);
   };
+  useLayoutEffect(() => {
+    if (inputRef.current && inputMirrorRef.current) {
+      const availableWidth = Math.max((selectionRef.current?.clientWidth || 0) - 40, 7);
+      const contentWidth = Math.max(inputMirrorRef.current.offsetWidth + 2, 7);
+      inputRef.current.style.width = `${Math.min(contentWidth, availableWidth)}px`;
+    }
+    if (visible) updatePosition();
+  }, [query, visible, allNodes, loading, updatePosition]);
   const searchNode = (filterable || onSearch) && (
     <div className="k-tree-select-search-wrap" onClick={(event) => event.stopPropagation()}>
       <input
@@ -332,7 +352,9 @@ export default function TreeSelect({
             remove(currentValue.length - 1);
         }}
       />
-      <span className="k-tree-select-search-mirror">{query}</span>
+      <span ref={inputMirrorRef} className="k-tree-select-search-mirror">
+        {query}
+      </span>
     </div>
   );
   const overlay = rendered && (
@@ -366,7 +388,7 @@ export default function TreeSelect({
               showIcon={treeShowIcon}
               multiple={!!multiple || !!treeCheckable}
               checkStrictly={treeCheckStrictly}
-              expandedKeys={treeExpandedKeys ?? initialExpanded ?? expanded}
+              expandedKeys={expanded}
               selectedKeys={selectedForTree}
               checkedKeys={checkedForTree}
               selectAsCheck={treeCheckable}

@@ -63,7 +63,7 @@ export const Transition = forwardRef<HTMLElement, TransitionProps>(function Tran
     onAfterLeave,
     children,
   },
-  forwardedRef
+  forwardedRef,
 ) {
   const internalNodeRef = useRef<HTMLElement>(null);
   const lastElementRef = useRef<TransitionElement | null>(null);
@@ -83,7 +83,7 @@ export const Transition = forwardRef<HTMLElement, TransitionProps>(function Tran
       setRef(externalNodeRef, node);
       setRef(forwardedRef, node);
     },
-    [childRef, externalNodeRef, forwardedRef]
+    [childRef, externalNodeRef, forwardedRef],
   );
 
   const getNode = () => internalNodeRef.current;

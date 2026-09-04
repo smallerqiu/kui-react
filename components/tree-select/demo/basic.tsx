@@ -11,7 +11,7 @@ export default function App() {
         onChange={(v) => setValue(v as string | number | null)}
         treeData={data}
         treeShowLine
-        treeExpandedKeys={expandedKeys}
+        treeDefaultExpandedKeys={expandedKeys}
         block
       />
     </Space>
