@@ -10,6 +10,12 @@ const initial: UploadFile[] = [
     percent: 50,
   },
   {
+    url: "https://cdn.chuchur.com/upload/cat/cat1.jpg",
+    status: "success",
+    filename: "cat.jpg",
+    size: "180kb",
+  },
+  {
     url: "https://cdn.chuchur.com/upload/demo/test_300.jpg",
     status: "error",
     filename: "test.jpg",
@@ -39,11 +45,13 @@ export default function App() {
         action={action}
         name="file"
         type="picture"
+        sortable
         headers={headers}
         onChange={({ file, fileList }) => {
           if (file.status !== "uploading") console.log(file, fileList);
         }}
         fileList={files}
+        onSort={({ fileList }) => setFiles(fileList)}
         accept="image/*"
         uploadText="Upload Avatar"
       />

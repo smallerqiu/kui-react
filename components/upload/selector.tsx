@@ -50,7 +50,9 @@ export default function Selector({
   const directoryProps: InputHTMLAttributes<HTMLInputElement> & {
     webkitdirectory?: string;
   } = directory ? { webkitdirectory: "" } : {};
-  if (type === "picture" && limit && fileList.length >= limit) return null;
+  const normalizedLimit = limit != null && limit >= 0 ? Math.floor(limit) : undefined;
+  if (type === "picture" && normalizedLimit !== undefined && fileList.length >= normalizedLimit)
+    return null;
   const select = (files: FileList | null) => {
     if (files?.length) onSelect?.(files);
     setDragOver(false);
@@ -63,7 +65,16 @@ export default function Selector({
     <div className="k-upload-select">
       <div
         className={clsx("k-upload-add", { "k-upload-drag-over": dragOver })}
+        role="button"
+        tabIndex={disabled ? -1 : 0}
+        aria-disabled={disabled || undefined}
         onClick={() => !disabled && inputRef.current?.click()}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            if (!disabled) inputRef.current?.click();
+          }
+        }}
         onDragEnter={
           draggable
             ? (event) => {

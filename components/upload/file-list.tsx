@@ -1,8 +1,9 @@
-import { CircleCheck, CircleX, FileText, Info, X } from "kui-icons";
+import { CircleCheck, CircleX, FileText, Info, RotateCcw, X } from "kui-icons";
 import clsx from "clsx";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Button } from "../button";
 import Icon from "../icon";
+import { KImage } from "../image";
 import Progress from "../progress";
 import Tooltip from "../tooltip";
 import type { UploadFile } from "./index";
@@ -17,6 +18,11 @@ export interface UploadFileListProps {
   readOnly?: boolean;
   selector?: ReactNode;
   onRemove?: (index: number, file: UploadFile) => void;
+  sortable?: boolean;
+  preview?: boolean;
+  onSort?: (oldIndex: number, newIndex: number) => void;
+  onAbort?: (file: UploadFile) => void;
+  onRetry?: (file: UploadFile) => void;
 }
 export default function FileList({
   showUploadList = true,
@@ -27,7 +33,13 @@ export default function FileList({
   readOnly,
   selector,
   onRemove,
+  sortable,
+  preview: previewEnabled = true,
+  onSort,
+  onAbort,
+  onRetry,
 }: UploadFileListProps) {
+  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
   const picture = type === "picture";
   if (!showUploadList && !picture) return null;
   return (
@@ -37,15 +49,30 @@ export default function FileList({
           item.status === "success"
             ? locale?.k.upload.successful
             : item.errorText || locale?.k.upload.failed;
-        const preview = item.preview || item.url;
+        const source = item.preview || item.url;
         return (
           <div
             key={item.uid ?? index}
             className={clsx(`k-upload-file-${type}-item`, `k-upload-file-status-${item.status}`)}
+            draggable={picture && sortable && !disabled && !readOnly}
+            onDragStart={() => setDraggingIndex(index)}
+            onDragOver={(event) => {
+              if (draggingIndex !== null) event.preventDefault();
+            }}
+            onDrop={(event) => {
+              event.preventDefault();
+              if (draggingIndex !== null) onSort?.(draggingIndex, index);
+              setDraggingIndex(null);
+            }}
+            onDragEnd={() => setDraggingIndex(null)}
           >
             <div className={`k-upload-${picture ? "picture" : "file"}-preview`}>
-              {preview ? (
-                <img src={preview} alt="" />
+              {source ? (
+                previewEnabled ? (
+                  <KImage src={source} width="100%" height="100%" shape="square" />
+                ) : (
+                  <img src={source} alt="" />
+                )
               ) : (
                 <Icon type={FileText} strokeWidth={1} size={30} />
               )}
@@ -81,6 +108,24 @@ export default function FileList({
                 </div>
               )}
             </div>
+            {!readOnly &&
+              (item.status === "uploading" ? (
+                <Button
+                  type="text"
+                  size="small"
+                  icon={X}
+                  title="Cancel upload"
+                  onClick={() => onAbort?.(item)}
+                />
+              ) : item.status === "error" ? (
+                <Button
+                  type="text"
+                  size="small"
+                  icon={RotateCcw}
+                  title="Retry upload"
+                  onClick={() => onRetry?.(item)}
+                />
+              ) : null)}
             {!readOnly && (
               <Button
                 type="text"
