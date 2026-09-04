@@ -1,27 +1,32 @@
 import { useState } from "react";
-import { Space, DatePicker, type DatePickerInput } from "react-kui";
+import { Space, DatePicker, type DatePickerOutput } from "react-kui";
 export default function App() {
-  const [value1, setValue1] = useState<DatePickerInput[]>(["2025-10-01", "2025-11-25"]),
-    [value2, setValue2] = useState<DatePickerInput[]>([
-      "2025-09-01 10:10:10",
-      "2025-10-01 21:28:28",
-    ]);
+  const [query, setQuery] = useState({
+    startDate: "2025-10-01" as DatePickerOutput,
+    endDate: "2025-11-25" as DatePickerOutput,
+    startTime: "2025-09-01 10:10:10" as DatePickerOutput,
+    endTime: "2025-10-01 21:28:28" as DatePickerOutput,
+  });
   return (
     <Space wrap vertical>
-      <code>start date: {String(value1[0])}</code>
-      <code>end date: {String(value1[1])}</code>
+      <code>start date: {String(query.startDate)}</code>
+      <code>end date: {String(query.endDate)}</code>
       <DatePicker
         mode="dateRange"
-        value={value1}
-        onChange={(v) => setValue1(v as DatePickerInput[])}
+        startDate={query.startDate}
+        endDate={query.endDate}
+        onStartDateChange={(startDate) => setQuery((value) => ({ ...value, startDate }))}
+        onEndDateChange={(endDate) => setQuery((value) => ({ ...value, endDate }))}
       />
       <br />
-      <code>start date: {String(value2[0])}</code>
-      <code>end date: {String(value2[1])}</code>
+      <code>start date: {String(query.startTime)}</code>
+      <code>end date: {String(query.endTime)}</code>
       <DatePicker
         mode="dateTimeRange"
-        value={value2}
-        onChange={(v) => setValue2(v as DatePickerInput[])}
+        startDate={query.startTime}
+        endDate={query.endTime}
+        onStartDateChange={(startTime) => setQuery((value) => ({ ...value, startTime }))}
+        onEndDateChange={(endTime) => setQuery((value) => ({ ...value, endTime }))}
       />
     </Space>
   );

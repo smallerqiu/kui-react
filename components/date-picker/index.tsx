@@ -17,12 +17,14 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
   type HTMLAttributes,
   type MouseEvent,
   type ReactNode,
+  type SetStateAction,
 } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
@@ -167,28 +169,50 @@ export default function DatePicker({
       .filter((item): item is Dayjs => !!item);
   }, [controlled, defaultValue, startDate, endDate, isRange, fmt, valueType]);
   const [inner, setInner] = useState<Dayjs[]>(initial);
-  const values =
-    controlled !== undefined || startDate !== undefined || endDate !== undefined ? initial : inner;
+  const externallyControlled =
+    controlled !== undefined || startDate !== undefined || endDate !== undefined;
+  const values = externallyControlled ? initial : inner;
   const [visibleState, setVisibleState] = useState(defaultOpen || panelOnly);
   const visible = panelOnly || (open ?? visibleState);
   const [rendered, setRendered] = useState(panelOnly || (open ?? defaultOpen));
-  const [panelDate, setPanelDate] = useState(initial[0] ?? dayjs());
+  const syncSignature = `${fmt}:${values.map((item) => item.valueOf()).join(",")}`;
+  const [panelState, setPanelState] = useState({
+    signature: syncSignature,
+    value: initial[0] ?? dayjs(),
+  });
+  const panelDate =
+    panelState.signature === syncSignature ? panelState.value : (values[0] ?? panelState.value);
+  const setPanelDate = (action: SetStateAction<Dayjs>) => {
+    setPanelState((previous) => {
+      const current =
+        previous.signature === syncSignature ? previous.value : (values[0] ?? previous.value);
+      return {
+        signature: syncSignature,
+        value: typeof action === "function" ? action(current) : action,
+      };
+    });
+  };
   const [view, setView] = useState<"date" | "month" | "year" | "time">(
     mode === "year" ? "year" : mode === "month" ? "month" : mode === "time" ? "time" : "date",
   );
-  const [draft, setDraft] = useState<Dayjs[]>(initial);
+  const [draftState, setDraftState] = useState({ signature: syncSignature, value: initial });
+  const draft = draftState.signature === syncSignature ? draftState.value : values;
+  const setDraft = useCallback(
+    (next: Dayjs[]) => setDraftState({ signature: syncSignature, value: next }),
+    [syncSignature],
+  );
   const [hoverDate, setHoverDate] = useState<Dayjs | null>(null);
   const [timeEditSide, setTimeEditSide] = useState<"start" | "end">("start");
-  const [texts, setTexts] = useState<string[]>(initial.map((item) => item.format(fmt)));
-  const [syncedValues, setSyncedValues] = useState(values);
-  const [syncedFormat, setSyncedFormat] = useState(fmt);
-  if (syncedValues !== values || syncedFormat !== fmt) {
-    setSyncedValues(values);
-    setSyncedFormat(fmt);
-    setDraft(values);
-    setTexts(values.map((item) => item.format(fmt)));
-    if (values[0]) setPanelDate(values[0]);
-  }
+  const formattedValues = values.map((item) => item.format(fmt));
+  const [textState, setTextState] = useState({
+    signature: syncSignature,
+    value: formattedValues,
+  });
+  const texts = textState.signature === syncSignature ? textState.value : formattedValues;
+  const setTexts = useCallback(
+    (next: string[]) => setTextState({ signature: syncSignature, value: next }),
+    [syncSignature],
+  );
   const rootRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ left: 0, top: 0, origin: "left top" });
@@ -198,6 +222,12 @@ export default function DatePicker({
   const topRef = useRef(0);
   const leftRef = useRef(0);
   const timeColRefs = useRef<Partial<Record<UnitType, HTMLUListElement | null>>>({});
+  const draftRef = useRef(draft);
+  const panelDateRef = useRef(panelDate);
+  useEffect(() => {
+    draftRef.current = draft;
+    panelDateRef.current = panelDate;
+  }, [draft, panelDate]);
 
   const setOpen = useCallback(
     (next: boolean) => {
@@ -225,9 +255,18 @@ export default function DatePicker({
     setCurrentPlacement(placementRef.current as DropPlacementsType);
     setPosition({ left: leftRef.current, top: topRef.current, origin: transOriginRef.current });
   }, [placement]);
+  const bindOverlayRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      overlayRef.current = node;
+      if (node && visible && !panelOnly) updatePosition();
+    },
+    [panelOnly, updatePosition, visible],
+  );
+  useLayoutEffect(() => {
+    if (visible && !panelOnly) updatePosition();
+  }, [visible, panelOnly, updatePosition]);
   useEffect(() => {
     if (!visible || panelOnly) return;
-    requestAnimationFrame(updatePosition);
     const outside = (event: globalThis.MouseEvent) => {
       const target = event.target as Node;
       if (!rootRef.current?.contains(target) && !overlayRef.current?.contains(target)) {
@@ -246,7 +285,18 @@ export default function DatePicker({
       window.removeEventListener("resize", updatePosition);
       window.removeEventListener("scroll", updatePosition, true);
     };
-  }, [visible, updatePosition, isRange, draft, values, fmt, setOpen, panelOnly]);
+  }, [
+    visible,
+    updatePosition,
+    isRange,
+    draft,
+    values,
+    fmt,
+    setOpen,
+    panelOnly,
+    setDraft,
+    setTexts,
+  ]);
 
   const output = (item: Dayjs) =>
     valueType === "date"
@@ -257,12 +307,11 @@ export default function DatePicker({
           ? item.unix()
           : item.format(fmt);
   const commit = (next: Dayjs[], closePanel = false) => {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     if (isRange && next.length === 2 && next[1].isBefore(next[0])) next = [next[1], next[0]];
-    if (controlled === undefined && startDate === undefined && endDate === undefined)
-      setInner(next);
-    setDraft(next);
-    setTexts(next.map((item) => item.format(fmt)));
+    if (!externallyControlled) setInner(next);
+    setDraft(externallyControlled ? values : next);
+    setTexts(externallyControlled ? formattedValues : next.map((item) => item.format(fmt)));
     const result = next.map(output);
     const strings = next.map((item) => item.format(fmt));
     onChange?.(isRange ? result : (result[0] ?? null), isRange ? strings : (strings[0] ?? ""));
@@ -273,7 +322,7 @@ export default function DatePicker({
     if (closePanel) setOpen(false);
   };
   const choose = (date: Dayjs) => {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     if (disabledDate(date.toDate()) || (hasTime && disabledTime(date.toDate()))) return;
     if (isRange) {
       if (draft.length !== 1) {
@@ -299,15 +348,13 @@ export default function DatePicker({
     if (list.length) commit(list, true);
   };
   const clear = (event: MouseEvent) => {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     event.stopPropagation();
     commit([]);
-    setDraft([]);
-    setTexts([]);
     onClear?.();
   };
   const edit = (text: string, index: number) => {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     const next = texts.slice();
     next[index] = text;
     setTexts(next);
@@ -429,7 +476,7 @@ export default function DatePicker({
           </span>
         ))}
       </div>
-      <div className="v-dp-table" onMouseLeave={() => setHoverDate(null)}>
+      <div className="k-picker-date-grid" role="grid" onMouseLeave={() => setHoverDate(null)}>
         {calendar.map((date) => {
           const selected = draft.some((item) => item.isSame(date, "day"));
           const rangeEnd = draft[1] ?? hoverDate;
@@ -457,6 +504,9 @@ export default function DatePicker({
                 "k-picker-range-end": draft[1]?.isSame(date, "day"),
                 "k-picker-day-disabled": off,
               })}
+              role="gridcell"
+              aria-selected={selected || undefined}
+              aria-disabled={off || undefined}
               onClick={() =>
                 choose(
                   date.hour(panelDate.hour()).minute(panelDate.minute()).second(panelDate.second()),
@@ -520,13 +570,14 @@ export default function DatePicker({
   useEffect(() => {
     if (!visible || view !== "time") return;
     const index = mode === "dateTimeRange" && timeEditSide === "end" ? 1 : 0;
-    const active = draft[index] ?? panelDate;
-    requestAnimationFrame(() => {
+    const active = draftRef.current[index] ?? panelDateRef.current;
+    const frame = requestAnimationFrame(() => {
       (["hour", "minute", "second"] as const).forEach((unit) => {
         timeColRefs.current[unit]?.scrollTo({ top: active[unit]() * 32 + 16 });
       });
     });
-  }, [visible, view, timeEditSide, draft, mode, panelDate]);
+    return () => cancelAnimationFrame(frame);
+  }, [visible, view, timeEditSide, mode]);
   const panel =
     view === "year"
       ? yearPanel
@@ -539,13 +590,14 @@ export default function DatePicker({
     typeof content === "function" ? content({ emit: emitExternal }) : content;
   const overlayContent = (
     <div
-      ref={overlayRef}
+      ref={bindOverlayRef}
       className={clsx("k-datepicker-overlay", {
         "k-datepicker-range": isRange,
         "k-datepicker-with-time": hasTime,
         "k-datepicker-panel": panelOnly,
       })}
       {...({ mode, "k-placement": currentPlacement } as Record<string, string>)}
+      role="dialog"
       style={
         panelOnly
           ? undefined
@@ -569,7 +621,7 @@ export default function DatePicker({
       ) : null}
       <div className="k-picker-container">
         {header && <div className="k-picker-extra-header">{extra(header)}</div>}
-        {view !== "time" && headerNode}
+        {mode !== "time" && headerNode}
         {panel}
         {hasTime && mode !== "time" && (
           <div className="k-picker-footer">
@@ -621,7 +673,7 @@ export default function DatePicker({
       overlayContent
     ) : (
       <Teleport to="body">
-        <Transition show={visible} name="k-date-picker" nodeRef={overlayRef}>
+        <Transition show={visible} name="k-date-picker" nodeRef={overlayRef} appear>
           {overlayContent}
         </Transition>
       </Teleport>
@@ -669,6 +721,16 @@ export default function DatePicker({
         style={style}
         tabIndex={disabled ? -1 : 0}
         aria-readonly={readOnly || undefined}
+        aria-expanded={visible}
+        onKeyDown={(event) => {
+          if (event.key === "Escape" && visible) {
+            event.stopPropagation();
+            setOpen(false);
+          } else if ((event.key === "Enter" || event.key === " ") && !visible) {
+            event.preventDefault();
+            setOpen(true);
+          }
+        }}
       >
         <div
           className={clsx("k-datepicker-selection", {

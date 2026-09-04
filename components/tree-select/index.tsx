@@ -4,6 +4,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -22,6 +23,7 @@ import Tag from "../tag";
 import Tooltip from "../tooltip";
 import Tree, { type TreeExpandEvent, type TreeNode } from "../tree";
 import { buildTree } from "../tree/utils";
+import { setPlacement } from "../utils/placement";
 
 export type TreeSelectValue = string | number | Array<string | number> | null | undefined;
 
@@ -161,8 +163,21 @@ export default function TreeSelect({
   const selectionRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const currentPlacementRef = useRef<string>(placement);
+  const originRef = useRef("top");
+  const topRef = useRef(0);
+  const leftRef = useRef(0);
 
   const allNodes = useMemo(() => buildTree({ data, expandedKeys: expanded }), [data, expanded]);
+  const hasMatchingNode = useMemo(() => {
+    const keyword = query.trim().toLocaleLowerCase();
+    if (!keyword) return data.length > 0;
+    return allNodes.some((node) =>
+      String(node.title ?? "")
+        .toLocaleLowerCase()
+        .includes(keyword),
+    );
+  }, [allNodes, data.length, query]);
   const labels = useMemo(() => {
     const lookup = new Map(allNodes.map((node) => [node.key, String(node.title ?? node.key)]));
     return currentValue.map((item) => lookup.get(item) ?? item);
@@ -170,24 +185,32 @@ export default function TreeSelect({
 
   const updatePosition = useCallback(() => {
     const element = selectionRef.current;
-    if (!element) return;
-    const rect = element.getBoundingClientRect();
-    const above = placement.startsWith("top");
-    const overlayWidth = overlayRef.current?.offsetWidth ?? rect.width;
-    const overlayHeight = overlayRef.current?.offsetHeight ?? 0;
-    let left = rect.left;
-    if (placement.endsWith("right")) left = rect.right - overlayWidth;
-    else if (placement === "top" || placement === "bottom")
-      left = rect.left + (rect.width - overlayWidth) / 2;
+    if (!element || !overlayRef.current) return;
+    currentPlacementRef.current = placement;
+    setPlacement({
+      refSelection: selectionRef,
+      refPopper: overlayRef,
+      currentPlacement: currentPlacementRef,
+      transOrigin: originRef,
+      top: topRef,
+      left: leftRef,
+    });
     setPosition({
-      left: left + window.scrollX,
-      top: (above ? rect.top - overlayHeight : rect.bottom) + window.scrollY,
-      minWidth: rect.width,
-      origin: above ? "bottom" : "top",
+      left: leftRef.current,
+      top: topRef.current,
+      minWidth: element.offsetWidth,
+      origin: originRef.current,
     });
   }, [placement]);
+  const bindOverlayRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      overlayRef.current = node;
+      if (node) updatePosition();
+    },
+    [updatePosition],
+  );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!visible) return;
     updatePosition();
     const outside = (event: MouseEvent) => {
@@ -220,6 +243,12 @@ export default function TreeSelect({
     onOpenChange?.(next);
     if (next && (filterable || onSearch)) requestAnimationFrame(() => inputRef.current?.focus());
     if (!next) setQuery("");
+  };
+  const close = () => {
+    if (!visible) return;
+    if (openProp === undefined) setInnerOpen(false);
+    setQuery("");
+    onOpenChange?.(false);
   };
   const commit = (keys: string[]) => {
     if (readOnly) return;
@@ -308,9 +337,9 @@ export default function TreeSelect({
   );
   const overlay = rendered && (
     <Teleport to="body">
-      <Transition show={visible} name="k-tree-select" nodeRef={overlayRef}>
+      <Transition show={visible} name="k-tree-select" nodeRef={overlayRef} appear>
         <div
-          ref={overlayRef}
+          ref={bindOverlayRef}
           className={clsx("k-tree-select-dropdown", "k-scroll", {
             "k-tree-select-dropdown-multiple": multiple,
             "k-tree-select-dropdown-sm": size === "small",
@@ -329,7 +358,7 @@ export default function TreeSelect({
               <Icon type={LoaderCircle} spin />
               <span>{locale?.k?.select?.loading}</span>
             </div>
-          ) : data.length ? (
+          ) : hasMatchingNode ? (
             <Tree
               data={data}
               checkable={treeCheckable}
@@ -379,6 +408,19 @@ export default function TreeSelect({
         role="combobox"
         aria-expanded={visible}
         aria-readonly={readOnly || undefined}
+        aria-haspopup="tree"
+        onKeyDown={(event) => {
+          if (event.key === "Escape") {
+            event.stopPropagation();
+            close();
+          } else if (
+            (event.key === "Enter" || event.key === " " || event.key === "ArrowDown") &&
+            !visible
+          ) {
+            event.preventDefault();
+            toggleOpen();
+          }
+        }}
       >
         {icon && <Icon type={icon} className="k-tree-select-icon" />}
         <div className="k-tree-select-selection">
@@ -389,7 +431,7 @@ export default function TreeSelect({
                   key={`${currentValue[index]}-${index}`}
                   size={tagSize}
                   shape={shape}
-                  theme="default"
+                  theme={theme}
                   compact
                   closeable={!disabled && !readOnly}
                   onClose={() => remove(index)}
@@ -406,7 +448,7 @@ export default function TreeSelect({
                           key={`${label}-${index}`}
                           size="small"
                           shape={shape}
-                          theme="fill"
+                          theme={theme}
                           compact
                           closeable={!disabled && !readOnly}
                           onClose={() => remove(displayCount + index)}
@@ -417,7 +459,7 @@ export default function TreeSelect({
                     </Space>
                   }
                 >
-                  <Tag size={tagSize} shape={shape} theme="default" compact>
+                  <Tag size={tagSize} shape={shape} theme={theme} compact>
                     +{hiddenLabels.length}...
                   </Tag>
                 </Tooltip>

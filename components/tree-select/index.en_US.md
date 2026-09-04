@@ -36,6 +36,10 @@ Similar to the Select selection control, when the selectable data structure is a
 
 - Some strange and unusual things.
 
+[Virtual Scrolling](./demo/virtual.tsx)
+
+- Enable virtual scrolling for large data sets so only visible tree nodes are rendered.
+
 ## TreeSelect API
 
 | Property          | Description                                                               | Type                                  | Default       |
