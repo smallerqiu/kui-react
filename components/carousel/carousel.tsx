@@ -2,10 +2,12 @@ import clsx from "clsx";
 import { ArrowLeft, ArrowRight } from "kui-icons";
 import {
   Children,
+  Fragment,
   forwardRef,
   useCallback,
   useEffect,
   useImperativeHandle,
+  useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
@@ -43,39 +45,84 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
     vertical = false,
     dots = true,
     onChange,
+    onMouseEnter,
+    onMouseLeave,
     className,
     style,
     children,
     ...rest
   },
-  ref
+  ref,
 ) {
   const items = Children.toArray(children);
   const controlled = value;
   const [innerIndex, setInnerIndex] = useState(controlled ?? defaultValue ?? 0);
+  const looping = loop && items.length > 1;
+  const initialIndex = Math.max(0, Math.min(items.length - 1, controlled ?? defaultValue ?? 0));
+  const [position, setPosition] = useState(looping ? initialIndex + 1 : initialIndex);
+  const [animate, setAnimate] = useState(false);
   const [width, setWidth] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const current = Math.max(0, Math.min(items.length - 1, controlled ?? innerIndex));
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const element = rootRef.current;
     if (!element) return;
     const update = () => setWidth(element.offsetWidth);
     update();
+    setAnimate(true);
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(update);
     observer?.observe(element);
     return () => observer?.disconnect();
   }, []);
 
-  const goTo = useCallback((index: number) => {
+  useEffect(() => {
     if (!items.length) return;
-    const next = loop
-      ? ((index % items.length) + items.length) % items.length
-      : Math.max(0, Math.min(items.length - 1, index));
-    if (controlled === undefined) setInnerIndex(next);
-    onChange?.(next);
-  }, [controlled, items.length, loop, onChange]);
+    const next = Math.max(0, Math.min(items.length - 1, controlled ?? innerIndex));
+    if (controlled === undefined) {
+      if (next !== innerIndex) setInnerIndex(next);
+      if (innerIndex >= items.length) setPosition(looping ? next + 1 : next);
+      return;
+    }
+    setPosition(looping ? next + 1 : next);
+  }, [controlled, innerIndex, items.length, looping]);
+
+  const goTo = useCallback(
+    (index: number) => {
+      if (!items.length) return;
+      const next = loop
+        ? ((index % items.length) + items.length) % items.length
+        : Math.max(0, Math.min(items.length - 1, index));
+      if (next === current) return;
+      if (controlled === undefined) {
+        setInnerIndex(next);
+        setPosition(looping ? next + 1 : next);
+      }
+      onChange?.(next);
+    },
+    [controlled, current, items.length, loop, looping, onChange],
+  );
+
+  const move = useCallback(
+    (step: -1 | 1) => {
+      if (!items.length) return;
+      const next = loop
+        ? (current + step + items.length) % items.length
+        : Math.max(0, Math.min(items.length - 1, current + step));
+      if (next === current) {
+        if (timerRef.current) clearInterval(timerRef.current);
+        timerRef.current = null;
+        return;
+      }
+      if (controlled === undefined) {
+        setInnerIndex(next);
+        setPosition((previous) => (looping ? previous + step : next));
+      }
+      onChange?.(next);
+    },
+    [controlled, current, items.length, loop, looping, onChange],
+  );
 
   const stop = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -83,28 +130,46 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
   }, []);
   const play = useCallback(() => {
     stop();
-    if (autoplay && items.length > 1)
-      timerRef.current = setInterval(() => goTo(current + 1), delay);
-  }, [autoplay, current, delay, goTo, items.length, stop]);
+    if (autoplay && items.length > 1) timerRef.current = setInterval(() => move(1), delay);
+  }, [autoplay, delay, items.length, move, stop]);
 
   useEffect(() => {
     play();
     return stop;
   }, [play, stop]);
 
-  useImperativeHandle(ref, () => ({
-    next: () => goTo(current + 1),
-    prev: () => goTo(current - 1),
-    goTo,
-  }));
+  useImperativeHandle(
+    ref,
+    () => ({
+      next: () => move(1),
+      prev: () => move(-1),
+      goTo,
+    }),
+    [goTo, move],
+  );
 
   if (!items.length) return null;
+  const trackItems = looping
+    ? [
+        <Fragment key="clone-last">{items[items.length - 1]}</Fragment>,
+        ...items,
+        <Fragment key="clone-first">{items[0]}</Fragment>,
+      ]
+    : items;
   const wrapperStyle: CSSProperties = {
     transform: vertical
-      ? `translate3d(0, -${current * height}px, 0)`
-      : `translate3d(-${current * width}px, 0, 0)`,
-    width: vertical ? undefined : items.length * width,
-    height: vertical ? items.length * height : height,
+      ? `translate3d(0, -${position * height}px, 0)`
+      : `translate3d(-${position * width}px, 0, 0)`,
+    width: vertical ? undefined : trackItems.length * width,
+    height: vertical ? trackItems.length * height : height,
+    transitionDuration: animate ? undefined : "0s",
+  };
+
+  const handleTransitionEnd = () => {
+    if (!looping || (position !== 0 && position !== items.length + 1)) return;
+    setAnimate(false);
+    setPosition(position === 0 ? items.length : 1);
+    requestAnimationFrame(() => setAnimate(true));
   };
 
   return (
@@ -114,32 +179,58 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
         ref={rootRef}
         className={clsx("k-carousel", { "k-carousel-vertical": vertical }, className)}
         style={{ ...style, height }}
-        onMouseEnter={stop}
-        onMouseLeave={play}
+        onMouseEnter={(event) => {
+          stop();
+          onMouseEnter?.(event);
+        }}
+        onMouseLeave={(event) => {
+          play();
+          onMouseLeave?.(event);
+        }}
       >
-        <div className="k-carousel-wrapper" style={wrapperStyle}>
-          {items}
+        <div
+          className="k-carousel-wrapper"
+          style={wrapperStyle}
+          onTransitionEnd={handleTransitionEnd}
+        >
+          {trackItems}
         </div>
         {!vertical && items.length > 1 && (
           <>
-            <span className="k-carousel-arrow-left" onClick={() => goTo(current - 1)}>
+            <button
+              type="button"
+              className="k-carousel-arrow-left"
+              aria-label="Previous slide"
+              disabled={!loop && current === 0}
+              onClick={() => move(-1)}
+            >
               <Icon type={ArrowLeft} />
-            </span>
-            <span className="k-carousel-arrow-right" onClick={() => goTo(current + 1)}>
+            </button>
+            <button
+              type="button"
+              className="k-carousel-arrow-right"
+              aria-label="Next slide"
+              disabled={!loop && current === items.length - 1}
+              onClick={() => move(1)}
+            >
               <Icon type={ArrowRight} />
-            </span>
+            </button>
           </>
         )}
-        {dots && (
-          <ul className="k-carousel-dots">
+        {dots && items.length > 1 && (
+          <div className="k-carousel-dots" role="tablist" aria-label="Slides">
             {items.map((_, index) => (
-              <li
+              <button
+                type="button"
                 key={index}
                 className={current === index ? "k-carousel-dots-active" : undefined}
+                aria-label={`Go to slide ${index + 1}`}
+                aria-selected={current === index}
+                role="tab"
                 onClick={() => goTo(index)}
               />
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </CarouselContext.Provider>

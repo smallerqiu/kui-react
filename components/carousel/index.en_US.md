@@ -24,14 +24,22 @@ A set of rotating/carousel areas.
 
 ## API
 
-| Property   | Description                                                                    | Type    | Default |
-| ---------- | ------------------------------------------------------------------------------ | ------- | ------- |
-| value      | Controlled slide index, starting from 0                                      | number  | -       |
-| defaultValue | Initial slide index in uncontrolled mode                                   | number  | 0       |
-| loop       | Whether to enable loop                                                         | boolean    | true    |
-| vertical   | Whether to display in vertical mode                                            | boolean    | false   |
-| autoplay   | Whether to auto-switch                                                         | boolean    | false   |
-| delay      | The time interval for auto-switching, in milliseconds                          | number  | 3000    |
-| height     | The height of the slide                                                        | number  | 256(px) |
-| dots       | Whether to show the dots at the bottom of the gallery                          | boolean | true    |
-| onChange   | Called when the active slide changes                                           | (index: number) => void | - |
+| Property     | Description                                           | Type                    | Default |
+| ------------ | ----------------------------------------------------- | ----------------------- | ------- |
+| value        | Controlled slide index, starting from 0               | number                  | -       |
+| defaultValue | Initial slide index in uncontrolled mode              | number                  | 0       |
+| loop         | Whether to enable loop                                | boolean                 | true    |
+| vertical     | Whether to display in vertical mode                   | boolean                 | false   |
+| autoplay     | Whether to auto-switch                                | boolean                 | false   |
+| delay        | The time interval for auto-switching, in milliseconds | number                  | 3000    |
+| height       | The height of the slide                               | number                  | 256(px) |
+| dots         | Whether to show the dots at the bottom of the gallery | boolean                 | true    |
+| onChange     | Called when the active slide changes                  | (index: number) => void | -       |
+
+## CarouselRef
+
+| Method | Description               | Parameters      |
+| ------ | ------------------------- | --------------- |
+| next   | Go to the next slide      | -               |
+| prev   | Go to the previous slide  | -               |
+| goTo   | Go to the specified slide | (index: number) |

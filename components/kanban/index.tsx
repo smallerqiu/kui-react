@@ -1,7 +1,6 @@
 import clsx from "clsx";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Empty from "../empty";
-import type { ThemeType } from "../const/types";
 
 export interface KanbanColumnData {
   key: string | number;
@@ -17,6 +16,7 @@ export interface KanbanMoveEvent {
   from: string | number;
   to: string | number;
 }
+const toRenderKey = (value: unknown) => `${typeof value}:${String(value)}`;
 export interface KanbanProps extends React.HTMLAttributes<HTMLDivElement> {
   columns?: KanbanColumnData[];
   data?: KanbanItemData[];
@@ -25,7 +25,7 @@ export interface KanbanProps extends React.HTMLAttributes<HTMLDivElement> {
   draggable?: boolean;
   emptyText?: string;
   minColumnWidth?: number | string;
-  theme?: ThemeType;
+  theme?: "fill" | "outline";
   onMove?: (event: KanbanMoveEvent) => void;
   onItemClick?: (item: KanbanItemData, column: KanbanColumnData) => void;
   columnTitle?: (column: KanbanColumnData, items: KanbanItemData[]) => React.ReactNode;
@@ -39,7 +39,7 @@ export default function Kanban({
   rowKey = "id",
   statusKey = "status",
   draggable = true,
-  emptyText = "暂无数据",
+  emptyText,
   minColumnWidth = 250,
   theme = "fill",
   onMove,
@@ -55,6 +55,22 @@ export default function Kanban({
   const [draggingKey, setDraggingKey] = useState<unknown>();
   const [dragOverKey, setDragOverKey] = useState<string | number>();
   const width = typeof minColumnWidth === "number" ? `${minColumnWidth}px` : minColumnWidth;
+  const grouped = useMemo(() => {
+    const groups = new Map<string | number, KanbanItemData[]>();
+    columns.forEach((column) => groups.set(column.key, []));
+    data.forEach((entry) => {
+      const status = entry[statusKey];
+      if (typeof status !== "string" && typeof status !== "number") return;
+      groups.get(status)?.push(entry);
+    });
+    return groups;
+  }, [columns, data, statusKey]);
+  const move = (entry: KanbanItemData | undefined, column: KanbanColumnData) => {
+    if (!entry || entry[statusKey] === column.key) return;
+    const from = entry[statusKey];
+    if (typeof from !== "string" && typeof from !== "number") return;
+    onMove?.({ item: entry, from, to: column.key });
+  };
   return (
     <div
       {...rest}
@@ -67,11 +83,11 @@ export default function Kanban({
         } as React.CSSProperties
       }
     >
-      {columns.map((column) => {
-        const items = data.filter((entry) => entry[statusKey] === column.key);
+      {columns.map((column, columnIndex) => {
+        const items = grouped.get(column.key) || [];
         return (
           <section
-            key={column.key}
+            key={toRenderKey(column.key)}
             className={clsx(
               "k-kanban-column",
               dragOverKey === column.key && "k-kanban-column-drag-over",
@@ -79,21 +95,24 @@ export default function Kanban({
             onDragOver={(event) => {
               if (draggable) {
                 event.preventDefault();
+                event.dataTransfer.dropEffect = "move";
                 setDragOverKey(column.key);
               }
             }}
-            onDragLeave={() => setDragOverKey(undefined)}
-            onDrop={() => {
-              const moved = data.find((entry) => entry[rowKey] === draggingKey);
-              if (moved && moved[statusKey] !== column.key)
-                onMove?.({
-                  item: moved,
-                  from: moved[statusKey] as string | number,
-                  to: column.key,
-                });
+            onDragLeave={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget as Node | null))
+                setDragOverKey(undefined);
+            }}
+            onDrop={(event) => {
+              event.preventDefault();
+              move(
+                data.find((entry) => entry[rowKey] === draggingKey),
+                column,
+              );
               setDraggingKey(undefined);
               setDragOverKey(undefined);
             }}
+            aria-label={column.title}
           >
             <header className="k-kanban-column-header">
               {columnTitle?.(column, items) ?? (
@@ -104,17 +123,42 @@ export default function Kanban({
                 </>
               )}
             </header>
-            <div className="k-kanban-column-content">
+            <div className="k-kanban-column-content" role="list">
               {items.map((entry, index) => (
                 <div
-                  key={String(entry[rowKey])}
-                  className="k-kanban-item"
+                  key={toRenderKey(entry[rowKey])}
+                  className={clsx(
+                    "k-kanban-item",
+                    draggingKey === entry[rowKey] && "k-kanban-item-dragging",
+                  )}
                   draggable={draggable}
-                  onDragStart={() => setDraggingKey(entry[rowKey])}
+                  tabIndex={draggable || onItemClick ? 0 : undefined}
+                  role="listitem"
+                  aria-keyshortcuts={draggable ? "Alt+ArrowLeft Alt+ArrowRight" : undefined}
+                  onDragStart={(event) => {
+                    setDraggingKey(entry[rowKey]);
+                    event.dataTransfer.setData("text/plain", String(entry[rowKey]));
+                    event.dataTransfer.effectAllowed = "move";
+                  }}
                   onDragEnd={() => setDraggingKey(undefined)}
                   onClick={() => onItemClick?.(entry, column)}
+                  onKeyDown={(event) => {
+                    if (draggable && event.altKey) {
+                      const step =
+                        event.key === "ArrowLeft" ? -1 : event.key === "ArrowRight" ? 1 : 0;
+                      const target = columns[columnIndex + step];
+                      if (step && target) {
+                        event.preventDefault();
+                        move(entry, target);
+                      }
+                    }
+                    if (onItemClick && (event.key === "Enter" || event.key === " ")) {
+                      event.preventDefault();
+                      onItemClick(entry, column);
+                    }
+                  }}
                 >
-                  {item?.(entry, column, index)}
+                  {item?.(entry, column, index) ?? String(entry.title ?? entry[rowKey] ?? "")}
                 </div>
               ))}
               {!items.length && (empty?.(column) ?? <Empty description={emptyText} />)}

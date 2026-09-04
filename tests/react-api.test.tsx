@@ -16,6 +16,7 @@ import {
   FormItem,
   Input,
   InputNumber,
+  Kanban,
   Menu,
   Modal,
   Poptip,
@@ -374,10 +375,55 @@ describe("React controlled and uncontrolled conventions", () => {
         <CarouselItem>Slide two</CarouselItem>
       </Carousel>,
     );
-    const dots = document.querySelectorAll(".k-carousel-dots li");
+    const dots = document.querySelectorAll(".k-carousel-dots > button");
     fireEvent.click(dots[1]);
     expect(onChange).toHaveBeenCalledWith(1);
     expect(dots[0].classList.contains("k-carousel-dots-active")).toBe(true);
+  });
+
+  it("moves Kanban cards with the keyboard without mutating data", () => {
+    const data = [{ id: 1, status: "todo", title: "Task" }];
+    const onMove = vi.fn();
+    render(
+      <Kanban
+        columns={[
+          { key: "todo", title: "Todo" },
+          { key: "done", title: "Done" },
+        ]}
+        data={data}
+        onMove={onMove}
+      />,
+    );
+
+    fireEvent.keyDown(screen.getByText("Task"), { key: "ArrowRight", altKey: true });
+    expect(onMove).toHaveBeenCalledWith({ item: data[0], from: "todo", to: "done" });
+    expect(data[0].status).toBe("todo");
+  });
+
+  it("uses the ConfigProvider locale for empty Kanban columns", () => {
+    render(
+      <ConfigProvider locale={enUS}>
+        <Kanban columns={[{ key: "todo", title: "Todo" }]} />
+      </ConfigProvider>,
+    );
+    expect(screen.getByText("No Data")).not.toBeNull();
+  });
+
+  it("keeps numeric and string Kanban column keys distinct", () => {
+    render(
+      <Kanban
+        columns={[
+          { key: 1, title: "Number" },
+          { key: "1", title: "String" },
+        ]}
+        data={[
+          { id: 1, status: 1, title: "Numeric task" },
+          { id: 2, status: "1", title: "String task" },
+        ]}
+      />,
+    );
+    expect(screen.getByRole("region", { name: "Number" }).textContent).toContain("Numeric task");
+    expect(screen.getByRole("region", { name: "String" }).textContent).toContain("String task");
   });
 
   it("supports Table selection, sorting, loading, and empty states", async () => {
