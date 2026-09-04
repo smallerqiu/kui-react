@@ -14,6 +14,7 @@ export interface RadioProps extends Omit<React.HTMLAttributes<HTMLLabelElement>,
   onChange?: (e: ChangeEvent) => void;
   children?: React.ReactNode;
   disabled?: boolean;
+  readOnly?: boolean;
 }
 
 const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
@@ -29,9 +30,10 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
       children,
       className = "",
       disabled = false,
+      readOnly = false,
       ...rest
     },
-    ref
+    ref,
   ) => {
     const group = useContext(RadioGroupContext);
     const isGroup = !!group;
@@ -40,6 +42,7 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
     const [localChecked, setLocalChecked] = useState(defaultChecked);
     const isChecked = isGroup ? groupChecked : (checked ?? localChecked);
     const currentDisabled = disabled || (isGroup && group.disabled);
+    const currentReadOnly = readOnly || Boolean(isGroup && group.readOnly);
     const currentTheme = isGroup && group.theme ? group.theme : theme;
     const currentSize = isGroup && group.size ? group.size : size;
 
@@ -58,7 +61,7 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (currentDisabled || isChecked) return;
+      if (currentDisabled || currentReadOnly || isChecked) return;
       emitValue(e.target.checked);
     };
 
@@ -66,7 +69,7 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
       if (e.key === " ") {
         e.preventDefault();
         e.stopPropagation();
-        if (currentDisabled || isChecked) return;
+        if (currentDisabled || currentReadOnly || isChecked) return;
         emitValue(true);
       }
     };
@@ -76,11 +79,12 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
       {
         "k-radio-fill": currentTheme === "fill",
         "k-radio-disabled": currentDisabled,
+        "k-radio-readonly": currentReadOnly,
         "k-radio-checked": isChecked,
         "k-radio-lg": currentSize === "large",
         "k-radio-sm": currentSize === "small",
       },
-      className
+      className,
     );
 
     const labelNode = label || children;
@@ -91,6 +95,7 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
         className={classes}
         tabIndex={currentDisabled ? undefined : 0}
         onKeyDown={triggerCheck}
+        aria-readonly={currentReadOnly || undefined}
         {...rest}
       >
         <span className="k-radio-symbol">
@@ -99,6 +104,7 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
             tabIndex={-1}
             className="k-radio-input"
             disabled={currentDisabled}
+            readOnly={currentReadOnly}
             onChange={handleInputChange}
             checked={!!isChecked}
           />
@@ -106,7 +112,7 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
         {labelNode ? <span className="k-radio-label">{labelNode}</span> : null}
       </label>
     );
-  }
+  },
 );
 
 Radio.displayName = "Radio";

@@ -60,6 +60,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   onOpenChange,
   className,
   disabled,
+  readOnly,
   onFocus,
   onBlur,
   ...rest
@@ -110,6 +111,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         : !filterOption || option.value.toLocaleLowerCase().includes(input.toLocaleLowerCase()),
     );
   const setOpen = (next: boolean) => {
+    if (next && readOnly) return;
     if (next) {
       setRendered(true);
       if (!requestedOpen) setPositioned(false);
@@ -182,17 +184,19 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   }, [visible, shownOptions, loading]);
 
   const update = (next: string) => {
+    if (readOnly) return;
     if (value === undefined) setInnerValue(next);
     onChange?.(next);
   };
   const choose = (option: AutoCompleteOption) => {
-    if (option.disabled) return;
+    if (readOnly || option.disabled) return;
     update(option.value);
     onSelect?.(option.value, option);
     setOpen(false);
     setActive(-1);
   };
   const handleInput = (next: string) => {
+    if (readOnly) return;
     update(next);
     onSearch?.(next);
     if (!next && !showOnEmpty) {
@@ -209,6 +213,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
     setActive(-1);
   };
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (readOnly) return;
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       if (!shownOptions.length) return;
       if (!visible) setOpen(true);
@@ -235,6 +240,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         {...rest}
         value={current}
         disabled={disabled}
+        readOnly={readOnly}
         size={size}
         shape={shape}
         theme={theme}
@@ -244,7 +250,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         aria-expanded={visible}
         onFocus={(event) => {
           onFocus?.(event);
-          if (disabled) return;
+          if (disabled || readOnly) return;
           const matches = getMatches(current);
           if (matches.length) setShownOptions(matches);
           if ((current || showOnEmpty) && (matches.length || loading)) setOpen(true);

@@ -98,7 +98,7 @@ export default function FormItem({
                 return { ok: false, message: error.message || errorMessage };
               if (typeof error === "string") return { ok: false, message: error };
               return { ok: false, message: errorMessage };
-            }
+            },
           );
         }
       } else if (rule.min !== undefined || rule.max !== undefined) {
@@ -111,13 +111,13 @@ export default function FormItem({
       }
       return passed ? PASS : { ok: false, message: errorMessage };
     },
-    [label, messages, prop]
+    [label, messages, prop],
   );
 
   const validate = useCallback(
     (
       ruleInput?: FormRule | FormRule[],
-      trigger?: FormValidateTrigger
+      trigger?: FormValidateTrigger,
     ): boolean | Promise<boolean> => {
       const list = ruleInput ? (Array.isArray(ruleInput) ? ruleInput : [ruleInput]) : [];
       // 指定触发时机时只校验匹配的规则；手动调用与提交校验不区分时机，全部校验
@@ -145,7 +145,7 @@ export default function FormItem({
         const result = runRule(sorted[index], value);
         if (isPromiseLike(result)) {
           return Promise.resolve(result).then((resolved) =>
-            resolved.ok ? runRest(index + 1) : applyFailure(resolved)
+            resolved.ok ? runRest(index + 1) : applyFailure(resolved),
           );
         }
         if (!result.ok) return applyFailure(result);
@@ -154,7 +154,7 @@ export default function FormItem({
       setMessage(undefined);
       return true;
     },
-    [form, prop, runRule]
+    [form, prop, runRule],
   );
 
   const handle = useMemo<FormItemHandle | null>(
@@ -170,7 +170,7 @@ export default function FormItem({
             },
           }
         : null,
-    [prop, rules, validate]
+    [prop, rules, validate],
   );
   useEffect(() => {
     if (!handle || !form) return;
@@ -180,7 +180,7 @@ export default function FormItem({
 
   const effectiveRules = rules ?? (prop ? form?.rules?.[prop] : undefined) ?? [];
   const required = (Array.isArray(effectiveRules) ? effectiveRules : [effectiveRules]).some(
-    (rule) => rule.required
+    (rule) => rule.required,
   );
   const id = form?.name && prop ? `${form.name}_${prop}` : undefined;
   const childNodes = Children.map(children, (child) => {
@@ -188,6 +188,7 @@ export default function FormItem({
       id?: string;
       size?: SizeType;
       disabled?: boolean;
+      readOnly?: boolean;
       theme?: ThemeType;
       shape?: ShapeType;
       value?: unknown;
@@ -199,6 +200,7 @@ export default function FormItem({
       id: child.props.id ?? id,
       size: child.props.size ?? form?.size,
       disabled: child.props.disabled ?? form?.disabled,
+      readOnly: child.props.readOnly ?? form?.readOnly,
       theme: child.props.theme ?? form?.theme,
       shape: child.props.shape ?? form?.shape,
     };

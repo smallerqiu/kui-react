@@ -69,7 +69,7 @@ export default function App() {
               type="primary"
               onClick={() =>
                 ref.current?.validate(({ valid }) =>
-                  message[valid ? "success" : "error"](valid ? "success" : "failed")
+                  message[valid ? "success" : "error"](valid ? "success" : "failed"),
                 )
               }
             >

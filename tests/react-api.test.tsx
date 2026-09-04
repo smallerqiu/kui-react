@@ -161,6 +161,30 @@ describe("React controlled and uncontrolled conventions", () => {
     expect(document.querySelectorAll(".k-collapse-item-active")).toHaveLength(1);
   });
 
+  it("supports keyboard interaction and disabled Collapse panels", () => {
+    const onOpenKeysChange = vi.fn();
+    render(
+      <Collapse onOpenKeysChange={onOpenKeysChange}>
+        <CollapsePanel key="one" title="One">
+          First
+        </CollapsePanel>
+        <CollapsePanel key="two" title="Two" disabled>
+          Second
+        </CollapsePanel>
+      </Collapse>,
+    );
+    const headers = screen.getAllByRole("button");
+
+    fireEvent.keyDown(headers[0], { key: "Enter" });
+    expect(onOpenKeysChange).toHaveBeenLastCalledWith(["one"]);
+    expect(headers[0].getAttribute("aria-expanded")).toBe("true");
+
+    fireEvent.click(headers[1]);
+    fireEvent.keyDown(headers[1], { key: " " });
+    expect(onOpenKeysChange).toHaveBeenCalledTimes(1);
+    expect(headers[1].getAttribute("aria-disabled")).toBe("true");
+  });
+
   it("uses mode-specific and range DatePicker placeholders", () => {
     const { rerender } = render(<DatePicker mode="year" />);
     expect(screen.getByPlaceholderText(zhCN.k.datePicker.selectYear)).not.toBeNull();

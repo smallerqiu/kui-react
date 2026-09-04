@@ -27,7 +27,7 @@ export default function App() {
     () => () => {
       if (timer.current) clearInterval(timer.current);
     },
-    []
+    [],
   );
   const send = () => {
     if (timer.current) clearInterval(timer.current);
@@ -42,7 +42,7 @@ export default function App() {
           }
           return v - 1;
         }),
-      1000
+      1000,
     );
   };
   return (

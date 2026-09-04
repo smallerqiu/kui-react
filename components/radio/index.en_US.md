@@ -31,26 +31,28 @@ Radio button.
 
 ## Radio API
 
-| Property   | Description                        | Type                     | Default |
-| ---------- | ---------------------------------- | ------------------------ | ------- |
-| checked    | Controlled checked state           | boolean                  | -       |
-| defaultChecked | Initial checked state in uncontrolled mode | boolean          | false   |
-| label      | Text prompt                        | string, number           | -       |
-| value      | Value when used in combination     | string 、 number         | -       |
-| disabled   | Whether current item is disabled   | boolean                     | false   |
-| icon       | RadioButton icon                   | IconType                    | -       |
-| onChange   | Callback when option state changes | (e: ChangeEvent) => void | -       |
+| Property       | Description                                | Type                     | Default |
+| -------------- | ------------------------------------------ | ------------------------ | ------- |
+| checked        | Controlled checked state                   | boolean                  | -       |
+| defaultChecked | Initial checked state in uncontrolled mode | boolean                  | false   |
+| label          | Text prompt                                | string, number           | -       |
+| value          | Value when used in combination             | string 、 number         | -       |
+| disabled       | Whether current item is disabled           | boolean                  | false   |
+| readOnly       | Whether current item is read-only          | boolean                  | false   |
+| icon           | RadioButton icon                           | IconType                 | -       |
+| onChange       | Callback when option state changes         | (e: ChangeEvent) => void | -       |
 
 ## RadioGroup API
 
-| Property   | Description                                                                                    | Type                              | Default    |
-| ---------- | ---------------------------------------------------------------------------------------------- | --------------------------------- | ---------- |
-| value      | Controlled selected value                                                                  | string, number                    | -          |
-| defaultValue | Initial selected value in uncontrolled mode                                              | string, number                    | -          |
-| size       | Button size, optional values: `small`, `large`, default not selected                           | string                            | -          |
-| direction  | Layout direction, optional values: `horizontal`, `vertical`                                    | string                            | horizontal |
-| shape      | `button`'s shape property, displays rounded corners                                            | string                            | -          |
-| theme      | `button`'s theme property                                                                      | string                            | -          |
-| onChange   | Triggered when option state changes, returns currently selected item                           | (value: string \| number) => void | -          |
-| options    | Can specify child `radio` items                                                                | RadioOption[]                     | -          |
-| type       | If using `options` to render children and children are `button`, need to specify `type=button` | string                            | -          |
+| Property     | Description                                                                                    | Type                              | Default    |
+| ------------ | ---------------------------------------------------------------------------------------------- | --------------------------------- | ---------- |
+| value        | Controlled selected value                                                                      | string, number                    | -          |
+| defaultValue | Initial selected value in uncontrolled mode                                                    | string, number                    | -          |
+| readOnly     | Whether the group is read-only                                                                 | boolean                           | false      |
+| size         | Button size, optional values: `small`, `large`, default not selected                           | string                            | -          |
+| direction    | Layout direction, optional values: `horizontal`, `vertical`                                    | string                            | horizontal |
+| shape        | `button`'s shape property, displays rounded corners                                            | string                            | -          |
+| theme        | `button`'s theme property                                                                      | string                            | -          |
+| onChange     | Triggered when option state changes, returns currently selected item                           | (value: string \| number) => void | -          |
+| options      | Can specify child `radio` items                                                                | RadioOption[]                     | -          |
+| type         | If using `options` to render children and children are `button`, need to specify `type=button` | string                            | -          |

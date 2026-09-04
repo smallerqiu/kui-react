@@ -66,48 +66,49 @@ function Demo() {
 
 ## Form API
 
-| 属性       | 说明                                                                           | 类型                           | 默认值     |
-| ---------- | ------------------------------------------------------------------------------ | ------------------------------ | ---------- |
-| model      | 表单数据对象                                                                   | Object                         | -          |
-| rules      | 表单验证规则，                                                                 | boolean                           | false      |
-| name       | 表单名称，会作为表单字段 id 前缀使用                                           | string                         | -          |
-| labelCol   | label 标签布局，同 `<Col>` 组件，设置 span offset 值，如 {span: 3, offset: 12} | {span:number,offset:number}    | -          |
-| wrapperCol | 控件 标签布局，同 `<Col>` 组件，设置 span offset 值，如 {span: 15, offset: 12} | {span:number,offset:number}    | -          |
-| theme      | 组件呈现主题                                                                   | string                         | -          |
-| size       | 子组件的尺寸                                                                   | string                         | -          |
-| layout     | 表单布局                                                                       | [horizontal ,vertical ,inline] | horizontal |
-| shape      | 子组件的形状                                                                   | [circle,square]                | horizontal |
-| disabled   | 表单是否可用                                                                   | boolean                           | true       |
-| onReset    | 表单重置后的回调                                                               | ()=> void                      | -          |
-| onSubmit   | 提交表单时触发事件                                                             | (e: SubmitEvent)=> void        | -          |
-| onChange   | 表单模型值变化时触发                                                           | (model: Record<string, unknown>) => void | - |
+| 属性       | 说明                                                                           | 类型                                     | 默认值     |
+| ---------- | ------------------------------------------------------------------------------ | ---------------------------------------- | ---------- |
+| model      | 表单数据对象                                                                   | Object                                   | -          |
+| rules      | 表单验证规则，                                                                 | boolean                                  | false      |
+| name       | 表单名称，会作为表单字段 id 前缀使用                                           | string                                   | -          |
+| labelCol   | label 标签布局，同 `<Col>` 组件，设置 span offset 值，如 {span: 3, offset: 12} | {span:number,offset:number}              | -          |
+| wrapperCol | 控件 标签布局，同 `<Col>` 组件，设置 span offset 值，如 {span: 15, offset: 12} | {span:number,offset:number}              | -          |
+| theme      | 组件呈现主题                                                                   | string                                   | -          |
+| size       | 子组件的尺寸                                                                   | string                                   | -          |
+| layout     | 表单布局                                                                       | [horizontal ,vertical ,inline]           | horizontal |
+| shape      | 子组件的形状                                                                   | [circle,square]                          | horizontal |
+| disabled   | 表单是否可用                                                                   | boolean                                  | true       |
+| readOnly   | 表单及其子控件是否只读                                                         | boolean                                  | false      |
+| onReset    | 表单重置后的回调                                                               | ()=> void                                | -          |
+| onSubmit   | 提交表单时触发事件                                                             | (e: SubmitEvent)=> void                  | -          |
+| onChange   | 表单模型值变化时触发                                                           | (model: Record<string, unknown>) => void | -          |
 
 ## Form Expose API
 
-| 属性     | 说明                                                   | 类型                                                     | 默认值 |
-| -------- | ------------------------------------------------------ | -------------------------------------------------------- | ------ |
-| test     | 对表单单个字段进行校验的方法                           | (key: string) => boolean \| Promise&lt;boolean&gt; \| undefined | -      |
-| reset    | 对整个表单进行重置，将所有字段值重置为空并移除校验结果 | ()=>void                                                 | -      |
-| submit   | 提交表单，并验证                                       | ()=>void                                                 | -      |
-| validate | 验证表单，存在异步校验规则时返回 Promise               | (callback?: (result: { valid: boolean }) => void) => boolean \| Promise&lt;boolean&gt; | - |
+| 属性     | 说明                                                   | 类型                                                                                   | 默认值 |
+| -------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------- | ------ |
+| test     | 对表单单个字段进行校验的方法                           | (key: string) => boolean \| Promise&lt;boolean&gt; \| undefined                        | -      |
+| reset    | 对整个表单进行重置，将所有字段值重置为空并移除校验结果 | ()=>void                                                                               | -      |
+| submit   | 提交表单，并验证                                       | ()=>void                                                                               | -      |
+| validate | 验证表单，存在异步校验规则时返回 Promise               | (callback?: (result: { valid: boolean }) => void) => boolean \| Promise&lt;boolean&gt; | -      |
 
 ## FormItem API
 
-| 属性              | 说明                                              | 类型                                   | 默认值 |
-| ----------------- | ------------------------------------------------- | -------------------------------------- | ------ |
-| prop              | 对应表单域 model 里的字段，表单验证必须字段       | string                                 | -      |
-| label             | 标签文本                                          | ReactNode                              | -      |
-| rules             | 表单验证规则                                      | FormRule[]                             | -      |
+| 属性  | 说明                                        | 类型       | 默认值 |
+| ----- | ------------------------------------------- | ---------- | ------ |
+| prop  | 对应表单域 model 里的字段，表单验证必须字段 | string     | -      |
+| label | 标签文本                                    | ReactNode  | -      |
+| rules | 表单验证规则                                | FormRule[] | -      |
 
 ## rules API
 
-| 属性      | 说明                                                                                                                  | 类型                                                                    | 默认值 |
-| --------- | --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------ |
-| required  | 是否必填字段                                                                                                          | boolean                                                                    | false  |
-| message   | 校验不通过提示语                                                                                                      | string                                                                  | -      |
-| validator | 自定义校验方法，支持 callback 与异步函数两种写法                                                                      | (rule: FormRule, value: unknown, callback: (error?: Error \| string) => void) => void \| Promise&lt;unknown&gt; | - |
-| type      | 数据类型校验，提供三种校验方式 `mobile`手机， `mail`邮箱， `number`数字类型判断                                       | string                                                                  | -      |
-| pattern   | 自定义正则校验，比喻密码强度包含数字，字母，特殊符号可以这么写 `/(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{6,20}/` | string                                                                  | -      |
-| trigger   | 该规则在何时触发校验，未设置时默认在 `change` 时校验                                                                  | change,blur 或其数组                                                    | -      |
-| min       | 字段长度最小值校验                                                                                                    | number                                                                  | -      |
-| max       | 字段长度最大值校验                                                                                                    | number                                                                  | -      |
+| 属性      | 说明                                                                                                                  | 类型                                                                                                            | 默认值 |
+| --------- | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------ |
+| required  | 是否必填字段                                                                                                          | boolean                                                                                                         | false  |
+| message   | 校验不通过提示语                                                                                                      | string                                                                                                          | -      |
+| validator | 自定义校验方法，支持 callback 与异步函数两种写法                                                                      | (rule: FormRule, value: unknown, callback: (error?: Error \| string) => void) => void \| Promise&lt;unknown&gt; | -      |
+| type      | 数据类型校验，提供三种校验方式 `mobile`手机， `mail`邮箱， `number`数字类型判断                                       | string                                                                                                          | -      |
+| pattern   | 自定义正则校验，比喻密码强度包含数字，字母，特殊符号可以这么写 `/(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{6,20}/` | string                                                                                                          | -      |
+| trigger   | 该规则在何时触发校验，未设置时默认在 `change` 时校验                                                                  | change,blur 或其数组                                                                                            | -      |
+| min       | 字段长度最小值校验                                                                                                    | number                                                                                                          | -      |
+| max       | 字段长度最大值校验                                                                                                    | number                                                                                                          | -      |

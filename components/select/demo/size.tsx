@@ -12,7 +12,14 @@ export default function App() {
     <Space vertical block>
       <RadioGroup value={size} onChange={setSize} type="button" options={sizes} />
       <br />
-      <Select value={v1} onChange={(v) => typeof v === "number" && setV1(v)} size={size} filterable block options={data} />
+      <Select
+        value={v1}
+        onChange={(v) => typeof v === "number" && setV1(v)}
+        size={size}
+        filterable
+        block
+        options={data}
+      />
       <Select
         value={v2}
         onChange={(v) => Array.isArray(v) && setV2(v.map(Number))}

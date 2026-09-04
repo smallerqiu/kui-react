@@ -108,6 +108,7 @@ const Mentions: React.FC<MentionsProps> = ({
   onClear,
   className,
   disabled,
+  readOnly,
   ...rest
 }) => {
   const [inner, setInner] = useState(defaultValue);
@@ -168,6 +169,10 @@ const Mentions: React.FC<MentionsProps> = ({
     setPositioned(true);
   };
   const updateQuery = (text: string, caret: number, search = false) => {
+    if (readOnly) {
+      setQuery(null);
+      return;
+    }
     const prefix = text.slice(0, caret);
     let found: Query | null = null;
     triggers.forEach((trigger) => {
@@ -205,10 +210,12 @@ const Mentions: React.FC<MentionsProps> = ({
     };
   }, [query, shown, placement]);
   const setValue = (next: string) => {
+    if (readOnly) return;
     if (value === undefined) setInner(next);
     onChange?.(next);
   };
   const clear = (event: React.MouseEvent) => {
+    if (readOnly) return;
     event.stopPropagation();
     setValue("");
     setQuery(null);
@@ -217,7 +224,7 @@ const Mentions: React.FC<MentionsProps> = ({
   };
   const choose = (option: MentionOption) => {
     const textarea = textareaRef.current;
-    if (!query || option.disabled || !textarea) return;
+    if (readOnly || !query || option.disabled || !textarea) return;
     const state = query;
     const caret = textarea.selectionStart;
     setValue(
@@ -238,7 +245,8 @@ const Mentions: React.FC<MentionsProps> = ({
         "k-mentions-sm": size === "small",
         "k-mentions-lg": size === "large",
         "k-mentions-disabled": disabled,
-        "k-mentions-has-clear": clearable && !!current && !disabled,
+        "k-mentions-readonly": readOnly,
+        "k-mentions-has-clear": clearable && !!current && !disabled && !readOnly,
       })}
     >
       <TextArea
@@ -250,6 +258,7 @@ const Mentions: React.FC<MentionsProps> = ({
         shape={shape}
         theme={theme}
         disabled={disabled}
+        readOnly={readOnly}
         onChange={(text) => {
           setValue(text);
           if (textareaRef.current) updateQuery(text, textareaRef.current.selectionStart, true);
@@ -281,7 +290,7 @@ const Mentions: React.FC<MentionsProps> = ({
           } else if (event.key === "Escape") setQuery(null);
         }}
       />
-      {clearable && current && !disabled && (
+      {clearable && current && !disabled && !readOnly && (
         <Icon className="k-mentions-clearable" type={CircleX} onClick={clear} />
       )}
       {rendered && (

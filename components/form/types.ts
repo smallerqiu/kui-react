@@ -13,7 +13,7 @@ export interface FormRule {
   validator?: (
     rule: FormRule,
     value: unknown,
-    callback: (error?: Error) => void
+    callback: (error?: Error) => void,
   ) => void | Promise<unknown>;
   pattern?: RegExp;
   type?: "mobile" | "mail" | "number";

@@ -43,6 +43,7 @@
 | operations        | 向右、向左按钮文案 | [string, string]                     | ['', '']       |
 | searchable        | 是否可搜索         | boolean                              | false          |
 | disabled          | 是否禁用           | boolean                              | false          |
+| readOnly          | 是否只读           | boolean                              | false          |
 | theme             | 外观主题           | 'outline' \| 'fill'                  | outline        |
 | filterOption      | 自定义筛选         | (keyword, item) => boolean           | -              |
 | item              | 自定义列表项渲染   | (item) => ReactNode                  | -              |

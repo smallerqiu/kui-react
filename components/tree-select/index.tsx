@@ -42,6 +42,7 @@ export interface TreeSelectProps extends Omit<
   filterable?: boolean;
   block?: boolean;
   disabled?: boolean;
+  readOnly?: boolean;
   multiple?: boolean;
   loading?: boolean;
   bordered?: boolean;
@@ -103,6 +104,7 @@ export default function TreeSelect({
   filterable,
   block,
   disabled,
+  readOnly,
   multiple,
   loading,
   bordered = true,
@@ -211,7 +213,7 @@ export default function TreeSelect({
   }, [visible, labels.length, updatePosition]);
 
   const toggleOpen = () => {
-    if (disabled) return;
+    if (disabled || readOnly) return;
     const next = !visible;
     setRendered(true);
     if (openProp === undefined) setInnerOpen(next);
@@ -220,11 +222,13 @@ export default function TreeSelect({
     if (!next) setQuery("");
   };
   const commit = (keys: string[]) => {
+    if (readOnly) return;
     if (controlledValue === undefined) setInnerValue(keys);
     const result: TreeSelectValue = multiple || treeCheckable ? keys : (keys[0] ?? null);
     onChange?.(result);
   };
   const select = (node: TreeNode) => {
+    if (readOnly) return;
     const exists = currentValue.includes(node.key);
     const keys = multiple
       ? exists
@@ -242,6 +246,7 @@ export default function TreeSelect({
   const remove = (index: number) =>
     commit(currentValue.filter((_, itemIndex) => itemIndex !== index));
   const clear = () => {
+    if (readOnly) return;
     commit([]);
     setQuery("");
     onClear?.();
@@ -256,6 +261,7 @@ export default function TreeSelect({
     "k-tree-select",
     {
       "k-tree-select-disabled": disabled,
+      "k-tree-select-readonly": readOnly,
       "k-tree-select-block": block,
       "k-tree-select-opened": visible,
       "k-tree-select-borderless": !bordered || theme === "plain",
@@ -268,9 +274,9 @@ export default function TreeSelect({
       "k-tree-select-multiple": multiple,
       "k-tree-select-show-search": query,
       "k-tree-select-show-tags": multiple && labels.length,
-      "k-tree-select-has-clear": clearable && !disabled && currentValue.length,
+      "k-tree-select-has-clear": clearable && !disabled && !readOnly && currentValue.length,
     },
-    className
+    className,
   );
   const hasDisplayLimit = typeof maxTagCount === "number" && Number.isFinite(maxTagCount);
   const displayCount = hasDisplayLimit ? Math.max(0, Math.floor(maxTagCount)) : labels.length;
@@ -279,6 +285,7 @@ export default function TreeSelect({
   const tagSize = size || "medium";
 
   const search = (event: ChangeEvent<HTMLInputElement>) => {
+    if (readOnly) return;
     setQuery(event.target.value);
     onSearch?.(event);
   };
@@ -289,6 +296,7 @@ export default function TreeSelect({
         className="k-tree-select-search"
         autoComplete="off"
         value={query}
+        readOnly={readOnly}
         onChange={search}
         onKeyDown={(event) => {
           if (event.key === "Backspace" && !query && multiple && currentValue.length)
@@ -368,6 +376,9 @@ export default function TreeSelect({
         className={classes}
         style={{ ...style, width: width ? `${width}px` : style?.width }}
         onClick={toggleOpen}
+        role="combobox"
+        aria-expanded={visible}
+        aria-readonly={readOnly || undefined}
       >
         {icon && <Icon type={icon} className="k-tree-select-icon" />}
         <div className="k-tree-select-selection">
@@ -380,7 +391,7 @@ export default function TreeSelect({
                   shape={shape}
                   theme="default"
                   compact
-                  closeable={!disabled}
+                  closeable={!disabled && !readOnly}
                   onClose={() => remove(index)}
                 >
                   {label}
@@ -397,7 +408,7 @@ export default function TreeSelect({
                           shape={shape}
                           theme="fill"
                           compact
-                          closeable={!disabled}
+                          closeable={!disabled && !readOnly}
                           onClose={() => remove(displayCount + index)}
                         >
                           {label}
@@ -425,7 +436,7 @@ export default function TreeSelect({
         </div>
         <span className="k-tree-select-suffix">
           {showArrow && !onSearch && <Icon className="k-tree-select-arrow" type={arrowIcon} />}
-          {clearable && !disabled && currentValue.length > 0 && (
+          {clearable && !disabled && !readOnly && currentValue.length > 0 && (
             <Icon
               className="k-tree-select-clearable"
               type={CircleX}

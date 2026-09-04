@@ -14,6 +14,7 @@ export interface SwitchProps extends Omit<
   valueType?: ValueType;
   type?: string;
   disabled?: boolean;
+  readOnly?: boolean;
   loading?: boolean;
   size?: SizeType;
   shape?: ShapeType;
@@ -30,6 +31,7 @@ const Switch: React.FC<SwitchProps> = ({
   valueType = "boolean",
   type,
   disabled = false,
+  readOnly = false,
   loading = false,
   size,
   shape = "round",
@@ -46,7 +48,7 @@ const Switch: React.FC<SwitchProps> = ({
   const currentChecked = checked ?? innerChecked;
 
   const change = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (disabled || loading) {
+    if (disabled || readOnly || loading) {
       return;
     }
     const nextChecked = !currentChecked;
@@ -62,11 +64,12 @@ const Switch: React.FC<SwitchProps> = ({
     {
       "k-switch-checked": currentChecked,
       "k-switch-disabled": disabled || loading,
+      "k-switch-readonly": readOnly,
       [`k-switch-${type}`]: type,
       "k-switch-sm": size === "small",
       [`k-switch-${shape}`]: shape,
     },
-    className
+    className,
   );
 
   const loadNode = loading ? <Icon spin type={Loading} className="k-switch-loading" /> : null;
@@ -87,6 +90,7 @@ const Switch: React.FC<SwitchProps> = ({
       className={classes}
       onClick={change}
       disabled={disabled || loading}
+      aria-readonly={readOnly || undefined}
       type="button"
       {...rest}
     >

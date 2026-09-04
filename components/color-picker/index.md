@@ -26,22 +26,23 @@
 
 ## API
 
-| 属性          | 说明                                               | 类型                      | 默认值      |
-| ------------- | -------------------------------------------------- | ------------------------- | ----------- |
-| value         | 受控颜色值                                         | `string`                  | -           |
-| defaultValue  | 非受控初始颜色值                                   | `string`                  | `#000000ff` |
-| open          | 受控的弹层显示状态                                 | `boolean`                 | -           |
-| defaultOpen   | 非受控模式的初始弹层状态                           | `boolean`                 | `false`     |
-| mode          | 颜色展示类型，支持 `hex`、`rgb`、`hsl`             | `ColorMode`               | `hex`       |
-| presets       | 自定义颜色盘                                       | `string[]`                | 内置色盘    |
-| disabledAlpha | 是否禁用透明度                                     | `boolean`                 | `false`     |
-| disabled      | 是否禁用                                           | `boolean`                 | `false`     |
-| trigger       | 弹层触发方式                                       | `hover \| click`          | `click`     |
-| showText      | 是否展示颜色文字                                   | `boolean`                 | `false`     |
-| size          | 颜色选择器尺寸                                     | `SizeType`                | -           |
-| placement     | 弹层位置                                           | `DropPlacementsType`      | `bottom-left` |
-| children      | 自定义触发元素                                     | `ReactNode`               | -           |
-| panelOnly     | 只渲染颜色面板，不包含触发元素与弹层               | `boolean`                 | false       |
-| onUpdateMode  | 颜色模式更新时触发                                 | `(mode: ColorMode) => void` | -         |
-| onChange      | 颜色值改变时触发                                   | `(color: string) => void` | -           |
-| onOpenChange  | 颜色选择器展开或收起时触发                         | `(open: boolean) => void` | -           |
+| 属性          | 说明                                   | 类型                        | 默认值        |
+| ------------- | -------------------------------------- | --------------------------- | ------------- |
+| value         | 受控颜色值                             | `string`                    | -             |
+| defaultValue  | 非受控初始颜色值                       | `string`                    | `#000000ff`   |
+| open          | 受控的弹层显示状态                     | `boolean`                   | -             |
+| defaultOpen   | 非受控模式的初始弹层状态               | `boolean`                   | `false`       |
+| mode          | 颜色展示类型，支持 `hex`、`rgb`、`hsl` | `ColorMode`                 | `hex`         |
+| presets       | 自定义颜色盘                           | `string[]`                  | 内置色盘      |
+| disabledAlpha | 是否禁用透明度                         | `boolean`                   | `false`       |
+| disabled      | 是否禁用                               | `boolean`                   | `false`       |
+| readOnly      | 是否只读                               | `boolean`                   | `false`       |
+| trigger       | 弹层触发方式                           | `hover \| click`            | `click`       |
+| showText      | 是否展示颜色文字                       | `boolean`                   | `false`       |
+| size          | 颜色选择器尺寸                         | `SizeType`                  | -             |
+| placement     | 弹层位置                               | `DropPlacementsType`        | `bottom-left` |
+| children      | 自定义触发元素                         | `ReactNode`                 | -             |
+| panelOnly     | 只渲染颜色面板，不包含触发元素与弹层   | `boolean`                   | false         |
+| onUpdateMode  | 颜色模式更新时触发                     | `(mode: ColorMode) => void` | -             |
+| onChange      | 颜色值改变时触发                       | `(color: string) => void`   | -             |
+| onOpenChange  | 颜色选择器展开或收起时触发             | `(open: boolean) => void`   | -             |

@@ -11,6 +11,7 @@ const CheckCardGroup = React.forwardRef<HTMLDivElement, CheckCardGroupProps>(
       defaultValue,
       options,
       disabled = false,
+      readOnly = false,
       direction = "horizontal",
       theme = "outline",
       size = "medium",
@@ -29,16 +30,17 @@ const CheckCardGroup = React.forwardRef<HTMLDivElement, CheckCardGroupProps>(
     const currentValue = value ?? localValue;
     const select = useCallback(
       (nextValue: CheckCardValue) => {
-        if (disabled || currentValue === nextValue) return;
+        if (disabled || readOnly || currentValue === nextValue) return;
         if (value === undefined) setLocalValue(nextValue);
         onChange?.(nextValue);
       },
-      [currentValue, disabled, onChange, value],
+      [currentValue, disabled, onChange, readOnly, value],
     );
     const context = useMemo(
       () => ({
         value: currentValue,
         disabled,
+        readOnly,
         theme,
         size,
         shape,
@@ -49,7 +51,7 @@ const CheckCardGroup = React.forwardRef<HTMLDivElement, CheckCardGroupProps>(
         selectRelative: (key: CheckCardValue, offset: number) => {
           const entries = [...registry.entries()].filter(([, item]) => !item.disabled);
           const index = entries.findIndex(([entryKey]) => entryKey === key);
-          if (!entries.length) return;
+          if (!entries.length || readOnly) return;
           const next = entries[(Math.max(index, 0) + offset + entries.length) % entries.length];
           if (next) {
             select(next[0]);
@@ -57,7 +59,7 @@ const CheckCardGroup = React.forwardRef<HTMLDivElement, CheckCardGroupProps>(
           }
         },
       }),
-      [currentValue, disabled, registry, select, shape, size, theme],
+      [currentValue, disabled, readOnly, registry, select, shape, size, theme],
     );
     return (
       <CheckCardGroupContext.Provider value={context}>
@@ -66,6 +68,7 @@ const CheckCardGroup = React.forwardRef<HTMLDivElement, CheckCardGroupProps>(
           ref={ref}
           className={clsx("k-check-card-group", `k-check-card-group-${direction}`, className)}
           role="radiogroup"
+          aria-readonly={readOnly || undefined}
         >
           {options?.map((option) => <CheckCard key={option.value} {...option} />) ?? children}
         </div>

@@ -31,18 +31,19 @@ Switch selector.
 
 ### API
 
-| Property           | Description                                                               | Type                     | Default |
-| ------------------ | ------------------------------------------------------------------------- | ------------------------ | ------- |
-| checked            | Controlled switch state                                                   | boolean                     | -       |
-| defaultChecked     | Initial switch state in uncontrolled mode                                 | boolean                     | false   |
-| disabled           | Disable switch                                                            | boolean                     | false   |
-| loading            | Loading state; interaction is disabled while loading                      | boolean                  | false   |
-| type               | Theme color, can pass `success`, `warning`, `danger`, `primary`           | string                   | -       |
-| size               | Component size, when value is `small` displays small size                 | string                   | -       |
-| shape              | Shape                                                                     | ShapeType                | -       |
-| checkedChildren    | Custom content for the checked state                            | ReactNode                     | -       |
-| unCheckedChildren  | Custom content for the unchecked state                          | ReactNode                     | -       |
-| trueText           | Text displayed when `checked` is `true`                                   | string                   | -       |
-| falseText          | Text displayed when `checked` is `false`                                  | string                   | -       |
-| valueType          | The type of output value for the unit option                              | [string,number,boolean]     | boolean    |
-| onChange           | Triggered when `checked` changes, callback                                | (value: boolean) => void | -       |
+| Property          | Description                                                     | Type                     | Default |
+| ----------------- | --------------------------------------------------------------- | ------------------------ | ------- |
+| checked           | Controlled switch state                                         | boolean                  | -       |
+| defaultChecked    | Initial switch state in uncontrolled mode                       | boolean                  | false   |
+| disabled          | Disable switch                                                  | boolean                  | false   |
+| readOnly          | Make the switch read-only                                       | boolean                  | false   |
+| loading           | Loading state; interaction is disabled while loading            | boolean                  | false   |
+| type              | Theme color, can pass `success`, `warning`, `danger`, `primary` | string                   | -       |
+| size              | Component size, when value is `small` displays small size       | string                   | -       |
+| shape             | Shape                                                           | ShapeType                | -       |
+| checkedChildren   | Custom content for the checked state                            | ReactNode                | -       |
+| unCheckedChildren | Custom content for the unchecked state                          | ReactNode                | -       |
+| trueText          | Text displayed when `checked` is `true`                         | string                   | -       |
+| falseText         | Text displayed when `checked` is `false`                        | string                   | -       |
+| valueType         | The type of output value for the unit option                    | [string,number,boolean]  | boolean |
+| onChange          | Triggered when `checked` changes, callback                      | (value: boolean) => void | -       |

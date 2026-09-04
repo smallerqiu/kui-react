@@ -42,6 +42,7 @@ export interface UploadProps extends Omit<HTMLAttributes<HTMLDivElement>, "onCha
   type?: "list" | "picture";
   data?: Record<string, string | number | boolean | Blob>;
   disabled?: boolean;
+  readOnly?: boolean;
   directory?: boolean;
   multiple?: boolean;
   accept?: string;
@@ -83,6 +84,7 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
     type = "list",
     data = {},
     disabled,
+    readOnly,
     directory,
     multiple,
     accept,
@@ -108,7 +110,7 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
     children,
     ...rest
   },
-  ref
+  ref,
 ) {
   const { locale } = useContext(ConfigContext);
   const messages = locale ?? zhCN;
@@ -126,7 +128,7 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
         if (item.preview) URL.revokeObjectURL(item.preview);
       });
     },
-    []
+    [],
   );
   const update = (item: UploadFile, callback = onChange) => {
     const next = [...filesRef.current];
@@ -140,7 +142,7 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
     const body = new FormData();
     body.append(name, file);
     Object.entries(data).forEach(([key, value]) =>
-      body.append(key, value instanceof Blob ? value : String(value))
+      body.append(key, value instanceof Blob ? value : String(value)),
     );
     const xhr = new XMLHttpRequest();
     item.xhr = xhr;
@@ -183,6 +185,7 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
     xhr.send(body);
   };
   const select = (selected: FileList) => {
+    if (readOnly) return;
     const accepted = [...selected].filter((file) => file.name !== ".DS_Store");
     let exceeded = false;
     for (const file of accepted) {
@@ -216,7 +219,7 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
     onSelectFiles?.(filesRef.current);
   };
   const upload = () => {
-    if (!disabled)
+    if (!disabled && !readOnly)
       pendingRef.current.forEach((file, uid) => {
         const item = filesRef.current.find((entry) => entry.uid === uid);
         if (item?.status === "waiting") void send(item, file);
@@ -224,7 +227,7 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
   };
   useImperativeHandle(ref, () => ({ upload }));
   const remove = (index: number, item: UploadFile) => {
-    if (disabled) return;
+    if (disabled || readOnly) return;
     item.xhr?.abort();
     if (item.uid) pendingRef.current.delete(item.uid);
     if (item.preview) URL.revokeObjectURL(item.preview);
@@ -232,7 +235,7 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
     setFiles(filesRef.current);
     onRemove?.({ file: item, fileList: filesRef.current });
   };
-  const selector = (
+  const selector = readOnly ? null : (
     <Selector
       disabled={disabled}
       name={name}
@@ -259,10 +262,11 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
         "k-upload",
         {
           "k-upload-disabled": disabled,
+          "k-upload-readonly": readOnly,
           "k-upload-picture": type === "picture",
           "k-upload-drag": draggable,
         },
-        className
+        className,
       )}
     >
       {type !== "picture" && selector}
@@ -271,6 +275,7 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
         fileList={files}
         showUploadList={showUploadList}
         disabled={disabled}
+        readOnly={readOnly}
         locale={messages}
         onRemove={remove}
         selector={selector}

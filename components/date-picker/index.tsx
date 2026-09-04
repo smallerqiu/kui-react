@@ -59,6 +59,7 @@ export interface DatePickerProps extends Omit<
   mode?: DatePickerModeType;
   presets?: DatePickerPreset[];
   disabled?: boolean;
+  readOnly?: boolean;
   open?: boolean;
   defaultOpen?: boolean;
   clearable?: boolean;
@@ -118,6 +119,7 @@ export default function DatePicker({
   mode = "date",
   presets,
   disabled,
+  readOnly,
   open,
   defaultOpen = false,
   clearable = true,
@@ -172,7 +174,7 @@ export default function DatePicker({
   const [rendered, setRendered] = useState(panelOnly || (open ?? defaultOpen));
   const [panelDate, setPanelDate] = useState(initial[0] ?? dayjs());
   const [view, setView] = useState<"date" | "month" | "year" | "time">(
-    mode === "year" ? "year" : mode === "month" ? "month" : mode === "time" ? "time" : "date"
+    mode === "year" ? "year" : mode === "month" ? "month" : mode === "time" ? "time" : "date",
   );
   const [draft, setDraft] = useState<Dayjs[]>(initial);
   const [hoverDate, setHoverDate] = useState<Dayjs | null>(null);
@@ -204,7 +206,7 @@ export default function DatePicker({
       setRendered(true);
       onOpenChange?.(next);
     },
-    [onOpenChange, open, panelOnly]
+    [onOpenChange, open, panelOnly],
   );
   const updatePosition = useCallback(() => {
     const root = rootRef.current;
@@ -255,6 +257,7 @@ export default function DatePicker({
           ? item.unix()
           : item.format(fmt);
   const commit = (next: Dayjs[], closePanel = false) => {
+    if (readOnly) return;
     if (isRange && next.length === 2 && next[1].isBefore(next[0])) next = [next[1], next[0]];
     if (controlled === undefined && startDate === undefined && endDate === undefined)
       setInner(next);
@@ -270,6 +273,7 @@ export default function DatePicker({
     if (closePanel) setOpen(false);
   };
   const choose = (date: Dayjs) => {
+    if (readOnly) return;
     if (disabledDate(date.toDate()) || (hasTime && disabledTime(date.toDate()))) return;
     if (isRange) {
       if (draft.length !== 1) {
@@ -295,6 +299,7 @@ export default function DatePicker({
     if (list.length) commit(list, true);
   };
   const clear = (event: MouseEvent) => {
+    if (readOnly) return;
     event.stopPropagation();
     commit([]);
     setDraft([]);
@@ -302,6 +307,7 @@ export default function DatePicker({
     onClear?.();
   };
   const edit = (text: string, index: number) => {
+    if (readOnly) return;
     const next = texts.slice();
     next[index] = text;
     setTexts(next);
@@ -435,7 +441,7 @@ export default function DatePicker({
               draft[0].isBefore(rangeEnd) ? draft[0] : rangeEnd,
               draft[0].isBefore(rangeEnd) ? rangeEnd : draft[0],
               "day",
-              "[]"
+              "[]",
             )
           );
           const off = disabledDate(date.toDate());
@@ -453,7 +459,7 @@ export default function DatePicker({
               })}
               onClick={() =>
                 choose(
-                  date.hour(panelDate.hour()).minute(panelDate.minute()).second(panelDate.second())
+                  date.hour(panelDate.hour()).minute(panelDate.minute()).second(panelDate.second()),
                 )
               }
               onMouseEnter={() => isRange && setHoverDate(date)}
@@ -490,7 +496,7 @@ export default function DatePicker({
                     "k-picker-time-disabled": disabledTime(candidate.toDate()),
                   })}
                   onClick={() => {
-                    if (disabledTime(candidate.toDate())) return;
+                    if (readOnly || disabledTime(candidate.toDate())) return;
                     const next = draft.slice();
                     if (mode === "dateTimeRange") next[rangeIndex] = candidate;
                     else next[0] = candidate;
@@ -645,22 +651,30 @@ export default function DatePicker({
       "k-datepicker-sm": size === "small",
       "k-datepicker-lg": size === "large",
       "k-datepicker-disabled": disabled,
+      "k-datepicker-readonly": readOnly,
       "k-datepicker-fill": theme === "fill",
       "k-datepicker-circle": shape === "circle",
       "k-datepicker-square": shape === "square",
     },
-    className
+    className,
   );
   if (panelOnly) return overlay;
 
   return (
     <>
-      <div {...rest} ref={rootRef} className={classes} style={style} tabIndex={disabled ? -1 : 0}>
+      <div
+        {...rest}
+        ref={rootRef}
+        className={classes}
+        style={style}
+        tabIndex={disabled ? -1 : 0}
+        aria-readonly={readOnly || undefined}
+      >
         <div
           className={clsx("k-datepicker-selection", {
             "k-datepicker-has-clear": clearable && values.length,
           })}
-          onClick={() => !disabled && setOpen(!visible)}
+          onClick={() => !disabled && !readOnly && setOpen(!visible)}
         >
           {isRange ? (
             <>
@@ -669,12 +683,12 @@ export default function DatePicker({
                 size={inputSize}
                 value={texts[0] ?? ""}
                 placeholder={placeholders[0]}
-                readOnly={!editable || disabled}
+                readOnly={readOnly || !editable || disabled}
                 onClick={(event) => {
                   event.stopPropagation();
                   setTimeEditSide("start");
                 }}
-                onFocus={() => !disabled && setOpen(true)}
+                onFocus={() => !disabled && !readOnly && setOpen(true)}
                 onChange={(event) => edit(event.target.value, 0)}
                 onBlur={() => acceptInput(0)}
               />
@@ -686,12 +700,12 @@ export default function DatePicker({
                 size={inputSize}
                 value={texts[1] ?? ""}
                 placeholder={placeholders[1]}
-                readOnly={!editable || disabled}
+                readOnly={readOnly || !editable || disabled}
                 onClick={(event) => {
                   event.stopPropagation();
                   setTimeEditSide("end");
                 }}
-                onFocus={() => !disabled && setOpen(true)}
+                onFocus={() => !disabled && !readOnly && setOpen(true)}
                 onChange={(event) => edit(event.target.value, 1)}
                 onBlur={() => acceptInput(1)}
               />
@@ -702,9 +716,9 @@ export default function DatePicker({
               size={inputSize}
               value={texts[0] ?? ""}
               placeholder={placeholders[0]}
-              readOnly={!editable || disabled}
+              readOnly={readOnly || !editable || disabled}
               onClick={(event) => event.stopPropagation()}
-              onFocus={() => !disabled && setOpen(true)}
+              onFocus={() => !disabled && !readOnly && setOpen(true)}
               onChange={(event) => edit(event.target.value, 0)}
               onBlur={() => acceptInput(0)}
             />
@@ -714,7 +728,7 @@ export default function DatePicker({
             className="k-icon-calendar"
             strokeWidth={1.5}
           />
-          {clearable && !disabled && values.length > 0 && (
+          {clearable && !disabled && !readOnly && values.length > 0 && (
             <Icon type={CircleX} className="k-icon-clean" onClick={clear} />
           )}
         </div>

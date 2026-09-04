@@ -54,7 +54,7 @@ const Collapse: React.FC<CollapseProps> = ({
     { "k-collapse-sample": sample },
     `k-collapse-${theme}`,
     `k-collapse-${shape}`,
-    className
+    className,
   );
 
   const childList = getChildren(children);

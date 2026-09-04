@@ -35,6 +35,7 @@ export interface CascaderProps extends Omit<
   emptyText?: string;
   loadData?: CascaderLoadData;
   disabled?: boolean;
+  readOnly?: boolean;
   clearable?: boolean;
   size?: SizeType;
   expandTrigger?: "click" | "hover";

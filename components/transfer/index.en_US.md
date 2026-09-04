@@ -43,6 +43,7 @@ Move and select items between two lists.
 | operations        | Right and left operation labels | [string, string]                     | ['', '']       |
 | searchable        | Whether searchable              | boolean                              | false          |
 | disabled          | Whether disabled                | boolean                              | false          |
+| readOnly          | Whether read-only               | boolean                              | false          |
 | theme             | Appearance theme                | 'outline' \| 'fill'                  | outline        |
 | filterOption      | Custom filter                   | (keyword, item) => boolean           | -              |
 | item              | Custom list item renderer       | (item) => ReactNode                  | -              |

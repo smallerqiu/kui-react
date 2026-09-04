@@ -62,13 +62,14 @@
 | action         | 上传的地址                                                                                                                     | string                         | -      |
 | method         | 上传请求的 http method                                                                                                         | string                         | post   |
 | data           | 上传可能所需的其它参数                                                                                                         | Object                         | -      |
-| disabled       | 是否禁用                                                                                                                       | boolean                           | false  |
+| disabled       | 是否禁用                                                                                                                       | boolean                        | false  |
+| readOnly       | 是否只读；只展示文件，不允许上传或移除                                                                                         | boolean                        | false  |
 | headers        | 设置上传的请求头部                                                                                                             | Object                         | -      |
-| multiple       | 是否支持多选文件                                                                                                               | boolean                           | false  |
-| directory      | 是否支持上传目录                                                                                                               | boolean                           | false  |
-| showUploadList | 是否显示上传列表                                                                                                               | boolean                           | true   |
-| autoTrigger    | 是否自动上传                                                                                                                   | boolean                           | true   |
-| draggable      | 是否支持拖拽上传                                                                                                               | boolean                           | false  |
+| multiple       | 是否支持多选文件                                                                                                               | boolean                        | false  |
+| directory      | 是否支持上传目录                                                                                                               | boolean                        | false  |
+| showUploadList | 是否显示上传列表                                                                                                               | boolean                        | true   |
+| autoTrigger    | 是否自动上传                                                                                                                   | boolean                        | true   |
+| draggable      | 是否支持拖拽上传                                                                                                               | boolean                        | false  |
 | fileList       | 上传的文件列表                                                                                                                 | UploadFile[]                   | false  |
 | name           | 发到后台的文件参数名,默认`file`                                                                                                | string                         | 'file' |
 | uploadIcon     | 上传域的辅助图标                                                                                                               | string                         | Add    |
@@ -77,16 +78,16 @@
 | limit          | 最多允许上传文件个数                                                                                                           | number                         | -      |
 | minSize        | 上传文件最小单位(KB)                                                                                                           | string                         | -      |
 | maxSize        | 上传文件最大单位(KB)                                                                                                           | string                         | -      |
-| transformFile   | 在上传之前转换文件。支持返回一个 Promise 对象                                                                                 | (file: File) => Promise<File\> | -      |
+| transformFile  | 在上传之前转换文件。支持返回一个 Promise 对象                                                                                  | (file: File) => Promise<File\> | -      |
 | type           | 选择上传文件之后, 所呈现的形式                                                                                                 | [picture,list]                 | -      |
 
 ## Event API
 
-| 属性           | 说明                          | 属性                                   |
-| -------------- | ----------------------------- | -------------------------------------- |
-| onChange       | 上传中、完成、失败都会触发    | (event: UploadChangeEvent) => void     |
-| onSelectFiles  | 选中文件时触发,返回选中的文件 | (files: UploadFile[]) => void          |
-| onRemove       | 移除文件回调                  | (event: UploadChangeEvent) => void     |
-| onExceed       | limit异常时回调               | () => void                             |
-| onSizeError    | minSize, maxSize异常时回调    | (event: UploadChangeEvent) => void     |
+| 属性           | 说明                          | 属性                                              |
+| -------------- | ----------------------------- | ------------------------------------------------- |
+| onChange       | 上传中、完成、失败都会触发    | (event: UploadChangeEvent) => void                |
+| onSelectFiles  | 选中文件时触发,返回选中的文件 | (files: UploadFile[]) => void                     |
+| onRemove       | 移除文件回调                  | (event: UploadChangeEvent) => void                |
+| onExceed       | limit异常时回调               | () => void                                        |
+| onSizeError    | minSize, maxSize异常时回调    | (event: UploadChangeEvent) => void                |
 | onBeforeUpload | 上传之前的回调                | (item: UploadFile, file: File) => void \| boolean |

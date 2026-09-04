@@ -27,7 +27,7 @@ export function CollapseDemo({
 }) {
   return (
     <div className="demo-collapse">
-      <Collapse openKeys={["1"]} accordion={accordion} sample={sample}>
+      <Collapse defaultOpenKeys={[1]} accordion={accordion} sample={sample}>
         {Panels({ extra })}
       </Collapse>
     </div>

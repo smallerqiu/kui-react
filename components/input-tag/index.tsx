@@ -12,6 +12,7 @@ export interface InputTagProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   defaultValue?: string[];
   placeholder?: string;
   disabled?: boolean;
+  readOnly?: boolean;
   clearable?: boolean;
   block?: boolean;
   allowDuplicates?: boolean;
@@ -32,6 +33,7 @@ const InputTag: React.FC<InputTagProps> = ({
   defaultValue = [],
   placeholder,
   disabled = false,
+  readOnly = false,
   clearable = false,
   block = false,
   allowDuplicates = false,
@@ -58,6 +60,7 @@ const InputTag: React.FC<InputTagProps> = ({
     onChange?.(next);
   };
   const commit = (raw = draft) => {
+    if (disabled || readOnly) return;
     const text = raw.trim();
     if (!text || (max !== undefined && tags.length >= max)) {
       setDraft("");
@@ -75,13 +78,13 @@ const InputTag: React.FC<InputTagProps> = ({
     onAdd?.(text);
   };
   const remove = (index: number) => {
-    if (disabled || index < 0) return;
+    if (disabled || readOnly || index < 0) return;
     const removed = tags[index];
     update(tags.filter((_, itemIndex) => itemIndex !== index));
     onRemove?.(removed, index);
   };
   const clear = (event: React.MouseEvent) => {
-    if (disabled) return;
+    if (disabled || readOnly) return;
     event.stopPropagation();
     setDraft("");
     update([]);
@@ -110,6 +113,7 @@ const InputTag: React.FC<InputTagProps> = ({
         "k-input-tag",
         {
           "k-input-tag-disabled": disabled,
+          "k-input-tag-readonly": readOnly,
           "k-input-tag-has-clear": clearable && tags.length > 0,
           "k-input-tag-sm": size === "small",
           "k-input-tag-block": block,
@@ -117,9 +121,10 @@ const InputTag: React.FC<InputTagProps> = ({
           [`k-input-tag-${shape}`]: shape,
           [`k-input-tag-${theme}`]: theme,
         },
-        className
+        className,
       )}
       onClick={() => !disabled && inputRef.current?.focus()}
+      aria-readonly={readOnly || undefined}
     >
       {visibleTags.map((tag, index) => (
         <Tag
@@ -129,7 +134,7 @@ const InputTag: React.FC<InputTagProps> = ({
           shape={shape}
           theme="fill"
           compact
-          closeable={!disabled}
+          closeable={!disabled && !readOnly}
           onClose={() => remove(index)}
         >
           {tag}
@@ -146,7 +151,7 @@ const InputTag: React.FC<InputTagProps> = ({
                   shape={shape}
                   theme="fill"
                   compact
-                  closeable={!disabled}
+                  closeable={!disabled && !readOnly}
                   onClose={() => remove(displayCount + index)}
                 >
                   {tag}
@@ -170,6 +175,7 @@ const InputTag: React.FC<InputTagProps> = ({
         ref={inputRef}
         className="k-input-text k-input-tag-input"
         disabled={disabled}
+        readOnly={readOnly}
         value={draft}
         placeholder={!tags.length ? placeholder : undefined}
         onChange={inputHandler}
@@ -187,7 +193,7 @@ const InputTag: React.FC<InputTagProps> = ({
           }
         }}
       />
-      {clearable && tags.length > 0 && !disabled && (
+      {clearable && tags.length > 0 && !disabled && !readOnly && (
         <Icon className="k-input-tag-clearable" type={CircleX} onClick={clear} />
       )}
     </div>

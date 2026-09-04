@@ -53,6 +53,7 @@
 | arrowIcon         | 自定义下拉箭头图标                                   | IconType[]                            | -           |
 | placeholder       | 选择框默认文字                                       | string                                | 请选择      |
 | disabled          | 是否禁用当前项                                       | boolean                               | false       |
+| readOnly          | 是否只读                                             | boolean                               | false       |
 | size              | 组件尺寸大小,提供`small`,`large`两种尺寸，默认为正常 | string                                | -           |
 | emptyText         | 没有数据时展示的提示                                 | string                                | '暂无数据'  |
 | multiple          | 是否呈现多选模式                                     | boolean                               | false       |

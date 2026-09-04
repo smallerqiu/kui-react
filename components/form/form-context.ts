@@ -12,6 +12,7 @@ export interface FormContextValue {
   shape?: ShapeType;
   theme?: ThemeType;
   disabled?: boolean;
+  readOnly?: boolean;
   labelCol?: ColProps;
   wrapperCol?: ColProps;
   getValue: (path: string) => unknown;

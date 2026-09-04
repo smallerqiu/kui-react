@@ -50,6 +50,7 @@ export default function Cascader({
   emptyText,
   loadData,
   disabled,
+  readOnly,
   clearable = true,
   size,
   expandTrigger = "click",
@@ -161,7 +162,7 @@ export default function Cascader({
 
   const setOpen = useCallback(
     (next: boolean) => {
-      if (disabled || next === visible) return;
+      if (disabled || readOnly || next === visible) return;
       if (next) {
         setRendered(true);
         setActiveColumn(0);
@@ -169,7 +170,7 @@ export default function Cascader({
       if (openProp === undefined) setInnerOpen(next);
       onOpenChange?.(next);
     },
-    [disabled, onOpenChange, openProp, visible],
+    [disabled, onOpenChange, openProp, readOnly, visible],
   );
 
   useEffect(() => {
@@ -226,7 +227,7 @@ export default function Cascader({
   };
 
   const choose = (option: CascaderOption, column: number, hover = false) => {
-    if (option.disabled) return;
+    if (readOnly || option.disabled) return;
     const nextPath = [...activePath.slice(0, column), option];
     setActivePath(nextPath);
     const children = getOptionChildren(option);
@@ -242,6 +243,7 @@ export default function Cascader({
   };
 
   const clear = (event: MouseEvent) => {
+    if (readOnly) return;
     event.stopPropagation();
     setActivePath([]);
     setActiveColumn(0);
@@ -250,7 +252,7 @@ export default function Cascader({
 
   const keyboard = (event: KeyboardEvent<HTMLDivElement>) => {
     onKeyDown?.(event);
-    if (event.defaultPrevented || disabled) return;
+    if (event.defaultPrevented || disabled || readOnly) return;
     if (event.key === "Escape") {
       if (visible) {
         event.preventDefault();
@@ -336,11 +338,12 @@ export default function Cascader({
   };
 
   const hasValue = currentValue.length > 0;
-  const showClear = clearable && !disabled && hasValue;
+  const showClear = clearable && !disabled && !readOnly && hasValue;
   const classes = clsx(
     "k-cascader",
     {
       "k-cascader-disabled": disabled,
+      "k-cascader-readonly": readOnly,
       "k-cascader-opened": visible,
       "k-cascader-borderless": !bordered || theme === "plain",
       "k-cascader-circle": shape === "circle",
@@ -363,6 +366,7 @@ export default function Cascader({
         role="combobox"
         aria-expanded={visible}
         aria-disabled={disabled}
+        aria-readonly={readOnly || undefined}
         tabIndex={disabled ? -1 : 0}
         onKeyDown={keyboard}
         onClick={(event) => {

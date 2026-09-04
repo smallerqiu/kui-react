@@ -14,6 +14,7 @@ export interface RateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "o
   showScore?: boolean;
   tooltips?: string[];
   disabled?: boolean;
+  readOnly?: boolean;
   count?: number;
   character?: string | ((index: number) => React.ReactNode);
   icon?: IconType[] | ((index: number) => IconType[]);
@@ -32,6 +33,7 @@ const Rate: React.FC<RateProps> = ({
   showScore = false,
   tooltips = [],
   disabled = false,
+  readOnly = false,
   count = 5,
   character,
   icon,
@@ -48,6 +50,7 @@ const Rate: React.FC<RateProps> = ({
   const currentValue = value ?? innerValue;
 
   const update = (t: "C" | "M", index: number, percent: number) => {
+    if (readOnly) return;
     if (t === "M") {
       if (cleared) return;
       if (allowHalf) {
@@ -106,7 +109,7 @@ const Rate: React.FC<RateProps> = ({
         icon={icon}
         character={character}
         size={numSize}
-        disabled={disabled}
+        disabled={disabled || readOnly}
         percent={starPercent < 100 ? starPercent : undefined}
         tooltips={tooltips[i - 1]}
         index={i}
@@ -125,7 +128,12 @@ const Rate: React.FC<RateProps> = ({
 
   return (
     <div
-      className={clsx("k-rate", { "k-rate-disabled": disabled }, className)}
+      className={clsx(
+        "k-rate",
+        { "k-rate-disabled": disabled, "k-rate-readonly": readOnly },
+        className,
+      )}
+      aria-readonly={readOnly || undefined}
       style={containerStyle}
       onMouseLeave={mouseLeave}
       {...rest}

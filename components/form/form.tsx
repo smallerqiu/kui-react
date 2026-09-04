@@ -44,6 +44,7 @@ export interface FormProps extends Omit<
   theme?: ThemeType;
   shape?: ShapeType;
   disabled?: boolean;
+  readOnly?: boolean;
   onSubmit?: (event: FormSubmitEvent) => void;
   onReset?: () => void;
   onChange?: (model: Record<string, unknown>) => void;
@@ -61,6 +62,7 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
     theme,
     shape,
     disabled,
+    readOnly,
     onSubmit,
     onReset,
     onChange,
@@ -68,17 +70,17 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
     children,
     ...rest
   },
-  ref
+  ref,
 ) {
   const itemsRef = useRef(new Map<string, FormItemHandle>());
   const setValue = useCallback(
     (path: string, value: unknown) => onChange?.(setByPath(model, path, value)),
-    [model, onChange]
+    [model, onChange],
   );
   const validate = useCallback(
     (callback?: (result: FormSubmitEvent) => void) => {
       const results = [...itemsRef.current.values()].map((item) =>
-        item.validate(item.rules ?? rules?.[item.prop])
+        item.validate(item.rules ?? rules?.[item.prop]),
       );
       const settle = (valid: boolean) => {
         callback?.({ valid });
@@ -90,7 +92,7 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
       }
       return settle((results as boolean[]).every(Boolean));
     },
-    [rules]
+    [rules],
   );
   const reset = () => {
     let nextModel = model;
@@ -103,7 +105,10 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
   };
   const submit = () => {
     const result = validate();
-    if (result instanceof Promise) return result.then((valid) => { onSubmit?.({ valid }); });
+    if (result instanceof Promise)
+      return result.then((valid) => {
+        onSubmit?.({ valid });
+      });
     onSubmit?.({ valid: result });
   };
   useImperativeHandle(
@@ -117,7 +122,7 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
       },
       submit,
     }),
-    [rules, validate, submit]
+    [rules, validate, submit],
   );
   const context = useMemo<FormContextValue>(
     () => ({
@@ -129,6 +134,7 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
       shape,
       theme,
       disabled,
+      readOnly,
       labelCol,
       wrapperCol,
       getValue: (path) => getByPath(model, path).value,
@@ -136,7 +142,20 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
       register: (item) => itemsRef.current.set(item.prop, item),
       unregister: (prop) => itemsRef.current.delete(prop),
     }),
-    [model, rules, layout, name, size, shape, theme, disabled, labelCol, wrapperCol, setValue]
+    [
+      model,
+      rules,
+      layout,
+      name,
+      size,
+      shape,
+      theme,
+      disabled,
+      readOnly,
+      labelCol,
+      wrapperCol,
+      setValue,
+    ],
   );
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -152,7 +171,7 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
           "k-form",
           `k-form-${layout}`,
           { "k-form-lg": size === "large", "k-form-sm": size === "small" },
-          className
+          className,
         )}
         onSubmit={handleSubmit}
         onReset={(event) => {

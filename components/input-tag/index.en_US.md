@@ -36,6 +36,7 @@ Turns continuous input into an editable tag collection.
 | defaultValue    | Initial tags                                       | string[]                       | []      |
 | placeholder     | Placeholder                                        | string                         | -       |
 | disabled        | Disabled state                                     | boolean                        | false   |
+| readOnly        | Read-only while remaining focusable                | boolean                        | false   |
 | clearable       | Whether to show the clear button                   | boolean                        | false   |
 | block           | Fill the parent width                              | boolean                        | false   |
 | size            | Size                                               | small\|medium\|large           | medium  |

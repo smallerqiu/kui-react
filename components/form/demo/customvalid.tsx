@@ -16,7 +16,7 @@ export default function App() {
         value !== "" &&
         !/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value)
         ? new Error("Please enter the correct ID number")
-        : undefined
+        : undefined,
     );
   const validatePassword = (_: FormRule, value: unknown, cb: (e?: Error) => void) => {
     cb(!value ? new Error("Please input your password") : undefined);
@@ -28,7 +28,7 @@ export default function App() {
         ? new Error("Please input your password again")
         : value !== form.password
           ? new Error("The two passwords do not match.")
-          : undefined
+          : undefined,
     );
   const rules = {
     fullname: [
@@ -66,7 +66,7 @@ export default function App() {
             type="primary"
             onClick={() =>
               ref.current?.validate(({ valid }) =>
-                message[valid ? "success" : "error"](valid ? "success" : "failed")
+                message[valid ? "success" : "error"](valid ? "success" : "failed"),
               )
             }
           >

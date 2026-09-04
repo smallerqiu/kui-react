@@ -16,9 +16,13 @@ export interface CheckCardOption {
   symbol?: IconType[];
   checkedSymbol?: IconType[];
   disabled?: boolean;
+  readOnly?: boolean;
 }
 
-export interface CheckCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "title"> {
+export interface CheckCardProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange" | "title"
+> {
   checked?: boolean;
   defaultChecked?: boolean;
   value?: CheckCardValue;
@@ -28,6 +32,7 @@ export interface CheckCardProps extends Omit<React.HTMLAttributes<HTMLDivElement
   checkedSymbol?: IconType[];
   showIndicator?: boolean;
   disabled?: boolean;
+  readOnly?: boolean;
   theme?: CheckCardTheme;
   size?: SizeType;
   shape?: ShapeType;
@@ -35,11 +40,15 @@ export interface CheckCardProps extends Omit<React.HTMLAttributes<HTMLDivElement
   children?: React.ReactNode;
 }
 
-export interface CheckCardGroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface CheckCardGroupProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange"
+> {
   value?: CheckCardValue;
   defaultValue?: CheckCardValue;
   options?: CheckCardOption[];
   disabled?: boolean;
+  readOnly?: boolean;
   direction?: "horizontal" | "vertical";
   theme?: CheckCardTheme;
   size?: SizeType;

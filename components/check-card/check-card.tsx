@@ -17,6 +17,7 @@ const CheckCard = React.forwardRef<HTMLDivElement, CheckCardProps>(
       checkedSymbol,
       showIndicator = true,
       disabled = false,
+      readOnly = false,
       theme = "outline",
       size = "medium",
       shape = "round",
@@ -33,6 +34,7 @@ const CheckCard = React.forwardRef<HTMLDivElement, CheckCardProps>(
     const grouped = !!group && value !== undefined;
     const isChecked = grouped ? group.value === value : (checked ?? localChecked);
     const isDisabled = disabled || !!group?.disabled;
+    const isReadOnly = readOnly || !!group?.readOnly;
     const currentTheme = group?.theme ?? theme;
     const currentSize = group?.size ?? size;
     const currentShape = group?.shape ?? shape;
@@ -51,7 +53,7 @@ const CheckCard = React.forwardRef<HTMLDivElement, CheckCardProps>(
     };
 
     const select = () => {
-      if (isDisabled) return;
+      if (isDisabled || isReadOnly) return;
       if (grouped && value !== undefined) {
         if (isChecked) return;
         group.select(value);
@@ -64,7 +66,7 @@ const CheckCard = React.forwardRef<HTMLDivElement, CheckCardProps>(
     };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (isDisabled) return;
+      if (isDisabled || isReadOnly) return;
       if (event.key === " " || event.key === "Enter") {
         event.preventDefault();
         select();
@@ -93,12 +95,18 @@ const CheckCard = React.forwardRef<HTMLDivElement, CheckCardProps>(
           `k-check-card-${currentTheme}`,
           `k-check-card-${currentSize}`,
           `k-check-card-${currentShape}`,
-          { "is-checked": isChecked, "is-disabled": isDisabled, "has-symbol": !!symbolNode },
+          {
+            "is-checked": isChecked,
+            "is-disabled": isDisabled,
+            "is-readonly": isReadOnly,
+            "has-symbol": !!symbolNode,
+          },
           className,
         )}
         role={grouped ? "radio" : "checkbox"}
         aria-checked={isChecked}
         aria-disabled={isDisabled}
+        aria-readonly={isReadOnly || undefined}
         tabIndex={isDisabled ? -1 : isChecked || !grouped ? 0 : -1}
         onClick={select}
         onKeyDown={handleKeyDown}

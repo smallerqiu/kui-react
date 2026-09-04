@@ -31,21 +31,22 @@ Content area that can be collapsed/expanded.
 
 ## API
 
-| Property  | Description                                                                                 | Type                            | Default |
-| --------- | ------------------------------------------------------------------------------------------- | ------------------------------- | ------- |
-| openKeys  | The `name` of the currently expanded panels                                             | string[]                        | -       |
-| defaultOpenKeys | Initially expanded panel names in uncontrolled mode                              | string[]                        | []      |
-| accordion | Whether to enable accordion mode. When enabled, at most one panel can be expanded at a time | boolean                            | false   |
-| sample    | Whether to enable simple mode                                                               | boolean                            | false   |
-| theme     | Theme                                                                                       | ThemeType                          | -       |
-| shape     | Shape                                                                                       | ShapeType                          | -       |
-| onChange  | Callback triggered when switching panels, returns the `name` of the current tab             | (key: string \| number) => void | -       |
-| onOpenKeysChange | Callback with all expanded keys when expansion changes                           | (keys: (string \| number)[]) => void | - |
+| Property         | Description                                    | Type                                 | Default |
+| ---------------- | ---------------------------------------------- | ------------------------------------ | ------- |
+| openKeys         | Expanded panel keys in controlled mode         | (string \| number)[]                 | -       |
+| defaultOpenKeys  | Initially expanded keys in uncontrolled mode   | (string \| number)[]                 | []      |
+| accordion        | Whether at most one panel can be expanded      | boolean                              | false   |
+| sample           | Whether to enable simple mode                  | boolean                              | false   |
+| theme            | Theme                                          | ThemeType                            | outline |
+| shape            | Shape                                          | ShapeType                            | round   |
+| onChange         | Called with the key of the panel being toggled | (key: string \| number) => void      | -       |
+| onOpenKeysChange | Called with all expanded keys after a change   | (keys: (string \| number)[]) => void | -       |
 
 ## Panel
 
-| Property | Description                             | Type   | Default |
-| -------- | --------------------------------------- | ------ | ------- |
-| title    | The title of the currently active panel | string | -       |
-| key      | Unique identifier of the panel          | string | -       |
-| extra    | Card title extension                    | ReactNode   | -       |
+| Property | Description                    | Type             | Default |
+| -------- | ------------------------------ | ---------------- | ------- |
+| title    | Panel title                    | ReactNode        | -       |
+| key      | Unique panel identifier        | string \| number | -       |
+| disabled | Whether the panel is disabled  | boolean          | false   |
+| extra    | Extra content beside the title | ReactNode        | -       |

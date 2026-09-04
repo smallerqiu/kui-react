@@ -36,6 +36,7 @@
 | defaultValue    | 初始标签                            | string[]                       | []      |
 | placeholder     | 占位文本                            | string                         | -       |
 | disabled        | 禁用                                | boolean                        | false   |
+| readOnly        | 只读，允许聚焦和复制但不可修改      | boolean                        | false   |
 | clearable       | 是否显示一键清空按钮                | boolean                        | false   |
 | block           | 是否撑满父容器宽度                  | boolean                        | false   |
 | size            | 尺寸                                | small\|medium\|large           | medium  |

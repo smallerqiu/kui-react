@@ -49,16 +49,16 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 | defaultValue        | Initial input value in uncontrolled mode                            | string, number          | ""      |
 | size                | Button size, optional values `small`, `large`, default not selected | string                  | -       |
 | icon                | Input box icon                                                      | string                  | -       |
-| suffix              | Extension suffix                                                    | string, ReactNode            | -       |
-| prefix              | Extension prefix                                                    | string, ReactNode            | -       |
+| suffix              | Extension suffix                                                    | string, ReactNode       | -       |
+| prefix              | Extension prefix                                                    | string, ReactNode       | -       |
 | theme               | The theme of Input                                                  | string                  | fill    |
 | shape               | Input shape                                                         | ShapeType               | -       |
 | inputType           | Custom style class prefix                                           | string                  | input   |
 | controls            | Control area used by components such as InputNumber                 | ReactNode               | -       |
 | disabled            | Whether the input is disabled                                       | boolean                 | false   |
 | multiple            | Whether native multiple input is enabled                            | boolean                 | false   |
-| clearable           | Whether to show the clear button                                    | boolean                    | false   |
-| visiblePasswordIcon | Whether to show the toggle button or control password visibility    | boolean                    | true    |
+| clearable           | Whether to show the clear button                                    | boolean                 | false   |
+| visiblePasswordIcon | Whether to show the toggle button or control password visibility    | boolean                 | true    |
 | onSearch            | Search event callback                                               | (value: string) => void | -       |
 | onIconClick         | Callback for icon click event                                       | (e: Event) => void      | -       |
 | onClear             | Callback for pressing the clear button                              | () => void              | -       |
@@ -66,21 +66,21 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 
 ## Input Group API
 
-| Property | Description                                                                         | Type   | Default |
-| -------- | ----------------------------------------------------------------------------------- | ------ | ------- |
-| block    | Whether to inherit the parent width                                                 | boolean   | false   |
-| compact  | Whether to use compact mode                                                         | boolean   | false   |
-| size     | Spacing of child components, optional values `small`, `large`, default not selected | string | -       |
+| Property | Description                                                                         | Type    | Default |
+| -------- | ----------------------------------------------------------------------------------- | ------- | ------- |
+| block    | Whether to inherit the parent width                                                 | boolean | false   |
+| compact  | Whether to use compact mode                                                         | boolean | false   |
+| size     | Spacing of child components, optional values `small`, `large`, default not selected | string  | -       |
 
 ## TextArea API
 
-| Property     | Description                                                                | Type                        | Default |
-| ------------ | -------------------------------------------------------------------------- | --------------------------- | ------- |
-| value        | Controlled input value                                                     | string, number              | -       |
-| defaultValue | Initial value in uncontrolled mode                                         | string, number              | ""      |
-| size         | Size, optional values `small`, `large`, default not selected                | string                      | -       |
-| theme        | Theme                                                                      | ThemeType                   | fill    |
-| shape        | Shape                                                                      | ShapeType                   | -       |
-| rows         | Default row count                                                          | number                      | 2       |
-| disabled     | Whether disabled                                                           | boolean                     | false   |
-| onChange     | Callback when the content changes                                          | (value: string) => void     | -       |
+| Property     | Description                                                  | Type                    | Default |
+| ------------ | ------------------------------------------------------------ | ----------------------- | ------- |
+| value        | Controlled input value                                       | string, number          | -       |
+| defaultValue | Initial value in uncontrolled mode                           | string, number          | ""      |
+| size         | Size, optional values `small`, `large`, default not selected | string                  | -       |
+| theme        | Theme                                                        | ThemeType               | fill    |
+| shape        | Shape                                                        | ShapeType               | -       |
+| rows         | Default row count                                            | number                  | 2       |
+| disabled     | Whether disabled                                             | boolean                 | false   |
+| onChange     | Callback when the content changes                            | (value: string) => void | -       |

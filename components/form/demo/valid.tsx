@@ -63,7 +63,7 @@ export default function App() {
     () => () => {
       if (timer.current) clearInterval(timer.current);
     },
-    []
+    [],
   );
   const custom =
     (test: (v: unknown) => boolean, msg: string) =>
@@ -130,7 +130,7 @@ export default function App() {
           }
           return v - 1;
         }),
-      1000
+      1000,
     );
   };
   const setValue = () =>
@@ -264,7 +264,7 @@ export default function App() {
             type="primary"
             onClick={() =>
               ref.current?.validate(({ valid }) =>
-                message[valid ? "success" : "error"](valid ? "success" : "failed")
+                message[valid ? "success" : "error"](valid ? "success" : "failed"),
               )
             }
           >

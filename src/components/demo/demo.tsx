@@ -22,6 +22,7 @@ import * as Share from "react-kui/utils/share";
 import { useNavigate } from "react-router";
 import * as JSXRuntime from "react/jsx-runtime";
 import { transform } from "sucrase";
+import Transition from "../../../components/base/transition";
 import { CodePen, CodeSandbox, Stackblitz } from "./icons";
 import { openCodePen, openCodeSandbox, openStackBlitz } from "./utils";
 
@@ -265,8 +266,8 @@ export default function Demo({
             {error && <pre className="k-demo-error">{error}</pre>}
           </div>
         </div>
-        {expanded && (
-          <div className="k-code-box" style={{ height: `${!expanded ? "80px" : undefined}` }}>
+        <Transition show={expanded} name="k-collapse-slide" timeout={300}>
+          <div className="k-code-box">
             <div className="k-code-tools" contentEditable={false}>
               <Badge status={buildState.state} text={buildState.text} />
               {toolbar !== "status" && (
@@ -332,7 +333,7 @@ export default function Demo({
             </div>
             <div ref={codeRef} className="k-code k-scroll hljs" key={codeLanguage} />
           </div>
-        )}
+        </Transition>
         {direction !== "horizontal" && (
           <div className="k-code-actions">
             <Button

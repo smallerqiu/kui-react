@@ -30,6 +30,7 @@ export interface TransferProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   operations?: [string, string];
   searchable?: boolean;
   disabled?: boolean;
+  readOnly?: boolean;
   theme?: "outline" | "fill";
   filterOption?: (keyword: string, item: TransferItem) => boolean;
   item?: (item: TransferItem) => React.ReactNode;
@@ -50,6 +51,7 @@ export default function Transfer({
   operations = ["", ""],
   searchable = false,
   disabled = false,
+  readOnly = false,
   theme = "outline",
   filterOption,
   item: renderItem,
@@ -106,7 +108,7 @@ export default function Transfer({
   };
 
   const toggle = (direction: "left" | "right", key: TransferKey) => {
-    if (disabled || itemMap.get(key)?.disabled) return;
+    if (disabled || readOnly || itemMap.get(key)?.disabled) return;
     if (direction === "left") {
       const next = sourceSelected.includes(key)
         ? sourceSelected.filter((entry) => entry !== key)
@@ -126,7 +128,7 @@ export default function Transfer({
     items.filter((entry) => !entry.disabled).map((entry) => entry.key);
 
   const toggleAll = (direction: "left" | "right", items: TransferItem[]) => {
-    if (disabled) return;
+    if (disabled || readOnly) return;
     const selected = direction === "left" ? sourceSelected : targetSelected;
     const keys = selectableKeys(items);
     const unfilteredKeys = selected.filter((key) => !keys.includes(key));
@@ -144,7 +146,7 @@ export default function Transfer({
   };
 
   const move = (direction: "left" | "right") => {
-    if (disabled) return;
+    if (disabled || readOnly) return;
     const selected = direction === "right" ? sourceSelected : targetSelected;
     const movedKeys = selected.filter((key) => {
       const entry = itemMap.get(key);
@@ -197,6 +199,7 @@ export default function Transfer({
           <Checkbox
             checked={allChecked}
             disabled={disabled || !enabledKeys.length}
+            readOnly={readOnly}
             onChange={() => toggleAll(direction, items)}
           >
             {title}
@@ -254,6 +257,7 @@ export default function Transfer({
                     <Checkbox
                       checked={selectedItem}
                       disabled={disabled || entry.disabled}
+                      readOnly={readOnly}
                       onChange={() => toggle(direction, entry.key)}
                     />
                   </span>
@@ -276,14 +280,21 @@ export default function Transfer({
   return (
     <div
       {...rest}
-      className={clsx("k-transfer", `k-transfer-${theme}`, disabled && "is-disabled", className)}
+      className={clsx(
+        "k-transfer",
+        `k-transfer-${theme}`,
+        disabled && "is-disabled",
+        readOnly && "is-readonly",
+        className,
+      )}
+      aria-readonly={readOnly || undefined}
     >
       {renderList("left", visibleSource, sourceItems, titles[0])}
       <div className="k-transfer-operations">
         <Button
           type="primary"
           size="small"
-          disabled={disabled || !sourceSelected.length}
+          disabled={disabled || readOnly || !sourceSelected.length}
           icon={ChevronRight}
           onClick={() => move("right")}
         >
@@ -292,7 +303,7 @@ export default function Transfer({
         <Button
           type="primary"
           size="small"
-          disabled={disabled || !targetSelected.length}
+          disabled={disabled || readOnly || !targetSelected.length}
           icon={ChevronLeft}
           onClick={() => move("left")}
         >

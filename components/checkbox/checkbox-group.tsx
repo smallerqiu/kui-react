@@ -19,6 +19,7 @@ export interface CheckboxGroupProps<T extends string | number = string | number>
   defaultValue?: T[];
   theme?: ThemeType;
   disabled?: boolean;
+  readOnly?: boolean;
   options?: CheckboxOption[];
   direction?: DirectionType;
   size?: SizeType;
@@ -31,6 +32,7 @@ const CheckboxGroup = <T extends string | number = string | number>({
   defaultValue = [],
   theme = "fill",
   disabled = false,
+  readOnly = false,
   options,
   direction = "horizontal",
   size,
@@ -43,6 +45,7 @@ const CheckboxGroup = <T extends string | number = string | number>({
   const currentValue = value ?? innerValue;
 
   const handleCheckboxChange = (event: ChangeEvent) => {
+    if (readOnly) return;
     const checked = event.checked;
     const val = event.value as T;
     const nextValue = [...currentValue];
@@ -67,7 +70,7 @@ const CheckboxGroup = <T extends string | number = string | number>({
   const classes = clsx(
     "k-checkbox-group",
     { "k-checkbox-group-vertical": direction === "vertical" },
-    className
+    className,
   );
 
   const content =
@@ -78,15 +81,23 @@ const CheckboxGroup = <T extends string | number = string | number>({
             label={option.label}
             value={option.value}
             disabled={disabled || option.disabled}
+            readOnly={readOnly}
           />
         ))
       : children;
 
   return (
     <CheckboxGroupContext.Provider
-      value={{ value: currentValue, disabled, theme, size, onChange: handleCheckboxChange }}
+      value={{
+        value: currentValue,
+        disabled,
+        readOnly,
+        theme,
+        size,
+        onChange: handleCheckboxChange,
+      }}
     >
-      <div className={classes} {...rest}>
+      <div className={classes} aria-readonly={readOnly || undefined} {...rest}>
         {content}
       </div>
     </CheckboxGroupContext.Provider>

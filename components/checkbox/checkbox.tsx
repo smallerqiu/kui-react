@@ -20,6 +20,7 @@ export interface CheckboxProps extends Omit<React.HTMLAttributes<HTMLLabelElemen
   label?: React.ReactNode;
   theme?: ThemeType;
   disabled?: boolean;
+  readOnly?: boolean;
   indeterminate?: boolean;
   size?: SizeType;
   onChange?: (e: ChangeEvent) => void;
@@ -34,6 +35,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   label,
   theme = "fill",
   disabled = false,
+  readOnly = false,
   indeterminate = false,
   size,
   onChange,
@@ -49,6 +51,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   const [localChecked, setLocalChecked] = useState(defaultChecked);
   const isChecked = isGroup ? groupChecked : (checked ?? localChecked);
   const currentDisabled = disabled || (isGroup && group.disabled);
+  const currentReadOnly = readOnly || Boolean(isGroup && group.readOnly);
   const currentTheme = isGroup && group.theme ? group.theme : theme;
   const currentSize = isGroup && group.size ? group.size : size;
 
@@ -57,7 +60,9 @@ const Checkbox: React.FC<CheckboxProps> = ({
       setLocalChecked(newChecked);
     }
     const labelVal =
-      label || children || (typeof value === "string" || typeof value === "number" ? value : undefined);
+      label ||
+      children ||
+      (typeof value === "string" || typeof value === "number" ? value : undefined);
     const eventObj: ChangeEvent = {
       checked: newChecked,
       value: isGroup ? value : getValueWithType(newChecked, valueType),
@@ -68,7 +73,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (currentDisabled) return;
+    if (currentDisabled || currentReadOnly) return;
     emitValue(e.target.checked);
   };
 
@@ -76,7 +81,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
     if (e.key === " ") {
       e.preventDefault();
       e.stopPropagation();
-      if (currentDisabled) return;
+      if (currentDisabled || currentReadOnly) return;
       emitValue(!isChecked);
     }
   };
@@ -86,12 +91,13 @@ const Checkbox: React.FC<CheckboxProps> = ({
     {
       "k-checkbox-fill": currentTheme === "fill",
       "k-checkbox-disabled": currentDisabled,
+      "k-checkbox-readonly": currentReadOnly,
       "k-checkbox-checked": isChecked && !indeterminate,
       "k-checkbox-indeterminate": indeterminate && !isChecked,
       "k-checkbox-sm": currentSize === "small",
       "k-checkbox-lg": currentSize === "large",
     },
-    className
+    className,
   );
 
   const innerNode = isChecked ? <Icon type={Check} /> : null;
@@ -102,6 +108,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
       className={rootClasses}
       tabIndex={currentDisabled ? undefined : 0}
       onKeyDown={triggerCheck}
+      aria-readonly={currentReadOnly || undefined}
       {...rest}
     >
       <span className="k-checkbox-symbol">
@@ -110,6 +117,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
           tabIndex={-1}
           className="k-checkbox-input"
           disabled={currentDisabled}
+          readOnly={currentReadOnly}
           checked={!!isChecked}
           onChange={handleInputChange}
         />

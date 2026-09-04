@@ -31,21 +31,22 @@
 
 ## API
 
-| 属性      | 说明                                                          | 类型                            | 默认值 |
-| --------- | ------------------------------------------------------------- | ------------------------------- | ------ |
-| openKeys  | 当前展开面板的 `name`                                       | string[]                        | -      |
-| defaultOpenKeys | 非受控模式下默认展开面板的 `name`                         | string[]                        | []     |
-| accordion | 是否开启手风琴模式，开启后每次至多展开一个面板                | boolean                            | false  |
-| sample    | 是否开启简洁模式                                              | boolean                            | false  |
-| theme     | 主题                                                          | ThemeType                          | -      |
-| shape     | 形状                                                          | ShapeType                          | -      |
-| onChange  | 切换面板时触发回调，返回当前选项卡的 `name`                   | (key: string \| number) => void | -      |
-| onOpenKeysChange | 展开项变化时触发，返回全部展开项                           | (keys: (string \| number)[]) => void | - |
+| 属性             | 说明                               | 类型                                 | 默认值  |
+| ---------------- | ---------------------------------- | ------------------------------------ | ------- |
+| openKeys         | 受控模式下当前展开面板的 key       | (string \| number)[]                 | -       |
+| defaultOpenKeys  | 非受控模式下默认展开面板的 key     | (string \| number)[]                 | []      |
+| accordion        | 是否开启手风琴模式                 | boolean                              | false   |
+| sample           | 是否开启简洁模式                   | boolean                              | false   |
+| theme            | 主题                               | ThemeType                            | outline |
+| shape            | 形状                               | ShapeType                            | round   |
+| onChange         | 切换面板时触发，返回当前面板的 key | (key: string \| number) => void      | -       |
+| onOpenKeysChange | 展开项变化时触发，返回全部展开项   | (keys: (string \| number)[]) => void | -       |
 
 ## Panel
 
-| 属性  | 说明                 | 类型   | 默认值 |
-| ----- | -------------------- | ------ | ------ |
-| title | 当前激活的面板的标题 | string | -      |
-| key   | Panel 的唯一标识     | string | -      |
-| extra | 卡片标题扩展         | ReactNode   | -      |
+| 属性     | 说明             | 类型             | 默认值 |
+| -------- | ---------------- | ---------------- | ------ |
+| title    | 面板标题         | ReactNode        | -      |
+| key      | Panel 的唯一标识 | string \| number | -      |
+| disabled | 是否禁用         | boolean          | false  |
+| extra    | 标题右侧扩展内容 | ReactNode        | -      |

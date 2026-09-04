@@ -31,26 +31,28 @@
 
 ## API
 
-| 属性          | 说明                                          | 类型                  | 默认值 |
-| ------------- | --------------------------------------------- | --------------------- | ------ |
-| checked       | 受控的选中状态                                | boolean               | -      |
-| defaultChecked | 非受控模式的初始选中状态                    | boolean               | false  |
-| label         | 显示的文字                                    | string 、 number      | -      |
-| value         | 结合使用时表示的值                            | string、number        | -      |
-| disabled      | 是否禁用当前项                                | boolean                  | false  |
-| indeterminate | 组合辅助选项控制半选状态                      | boolean                  | false  |
-| theme         | 组件呈现主题,默认'fill'                       | string                | fill   |
-| valueType     | 单位选项的输出值的类型                        | [string,number,boolean]  | boolean   |
-| onChange      | 在选项状态发生改变时回调                      | (e:ChangeEvent)=>void | -      |
+| 属性           | 说明                     | 类型                    | 默认值  |
+| -------------- | ------------------------ | ----------------------- | ------- |
+| checked        | 受控的选中状态           | boolean                 | -       |
+| defaultChecked | 非受控模式的初始选中状态 | boolean                 | false   |
+| label          | 显示的文字               | string 、 number        | -       |
+| value          | 结合使用时表示的值       | string、number          | -       |
+| disabled       | 是否禁用当前项           | boolean                 | false   |
+| readOnly       | 是否只读当前项           | boolean                 | false   |
+| indeterminate  | 组合辅助选项控制半选状态 | boolean                 | false   |
+| theme          | 组件呈现主题,默认'fill'  | string                  | fill    |
+| valueType      | 单位选项的输出值的类型   | [string,number,boolean] | boolean |
+| onChange       | 在选项状态发生改变时回调 | (e:ChangeEvent)=>void   | -       |
 
 ## CheckboxGroup API
 
-| 属性       | 说明                                                 | 类型             | 默认值     |
-| ---------- | ---------------------------------------------------- | ---------------- | ---------- |
-| value      | 受控的当前选中值                                   | (string \| number)[] | -       |
-| defaultValue | 非受控模式的初始选中值                           | (string \| number)[] | []      |
-| disabled   | 是否禁用组件                                         | boolean             | false      |
-| onChange   | 在选项状态发生改变时触发，返回当前选中的项和状态     | (value: (string \| number)[]) => void | - |
-| direction  | 布局方向,可选值 `horizontal`、`vertical`             | string           | horizontal |
-| options    | 可以指定子项 `checkbox`                              | CheckboxOption[] | -          |
-| size       | 设置复选框的大小                                     | string           | -          |
+| 属性         | 说明                                             | 类型                                  | 默认值     |
+| ------------ | ------------------------------------------------ | ------------------------------------- | ---------- |
+| value        | 受控的当前选中值                                 | (string \| number)[]                  | -          |
+| defaultValue | 非受控模式的初始选中值                           | (string \| number)[]                  | []         |
+| disabled     | 是否禁用组件                                     | boolean                               | false      |
+| readOnly     | 是否只读组件                                     | boolean                               | false      |
+| onChange     | 在选项状态发生改变时触发，返回当前选中的项和状态 | (value: (string \| number)[]) => void | -          |
+| direction    | 布局方向,可选值 `horizontal`、`vertical`         | string                                | horizontal |
+| options      | 可以指定子项 `checkbox`                          | CheckboxOption[]                      | -          |
+| size         | 设置复选框的大小                                 | string                                | -          |

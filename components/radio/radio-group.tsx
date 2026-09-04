@@ -17,11 +17,14 @@ export interface RadioOption {
   [key: string]: unknown;
 }
 
-export interface RadioGroupProps<T extends RadioValue = string | number>
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange"> {
+export interface RadioGroupProps<T extends RadioValue = string | number> extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "onChange"
+> {
   value?: T;
   defaultValue?: T;
   disabled?: boolean;
+  readOnly?: boolean;
   direction?: DirectionType;
   size?: SizeType;
   theme?: ThemeType;
@@ -36,6 +39,7 @@ const RadioGroup = <T extends RadioValue = string | number>({
   value,
   defaultValue,
   disabled = false,
+  readOnly = false,
   direction = "horizontal",
   size,
   theme,
@@ -72,7 +76,7 @@ const RadioGroup = <T extends RadioValue = string | number>({
       setSegStyle(
         isVertical
           ? { height: `${activeEl.offsetHeight - 4}px`, top: `${activeEl.offsetTop + 2}px` }
-          : { width: `${activeEl.offsetWidth - 4}px`, left: `${activeEl.offsetLeft + 2}px` }
+          : { width: `${activeEl.offsetWidth - 4}px`, left: `${activeEl.offsetLeft + 2}px` },
       );
     }
   }, [currentValue, isVertical]);
@@ -106,6 +110,7 @@ const RadioGroup = <T extends RadioValue = string | number>({
   }, [updateSize]);
 
   const handleRadioChange = (event: ChangeEvent) => {
+    if (readOnly) return;
     const nextValue = event.value as T;
     if (value === undefined) {
       setInnerValue(nextValue);
@@ -129,7 +134,7 @@ const RadioGroup = <T extends RadioValue = string | number>({
       "k-radio-group-card": isCard && isButton,
       "k-radio-group-vertical": isVertical,
     },
-    className
+    className,
   );
 
   const Component = isButton ? RadioButton : Radio;
@@ -143,6 +148,7 @@ const RadioGroup = <T extends RadioValue = string | number>({
           label={option.label}
           value={option.value}
           disabled={disabled || option.disabled}
+          readOnly={readOnly}
           icon={option.icon}
           size={size}
           theme={theme}
@@ -164,13 +170,21 @@ const RadioGroup = <T extends RadioValue = string | number>({
       }
       return child;
     });
-  }, [options, children, disabled, size, theme, shape, Component]);
+  }, [options, children, disabled, readOnly, size, theme, shape, Component]);
 
   return (
     <RadioGroupContext.Provider
-      value={{ value: currentValue, disabled, theme, size, shape, onChange: handleRadioChange }}
+      value={{
+        value: currentValue,
+        disabled,
+        readOnly,
+        theme,
+        size,
+        shape,
+        onChange: handleRadioChange,
+      }}
     >
-      <div className={classes} ref={rootRef} {...rest}>
+      <div className={classes} ref={rootRef} aria-readonly={readOnly || undefined} {...rest}>
         {content}
         {changed && isCard && isButton && (
           <div

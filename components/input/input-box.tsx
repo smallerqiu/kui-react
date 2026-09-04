@@ -46,7 +46,7 @@ const InputBox: React.FC<InputBoxProps> = ({
       [`k-${inputType}-circle`]: shape === "circle" && !multiple,
       [`k-${inputType}-square`]: shape === "square" && !multiple,
     },
-    className
+    className,
   );
   return (
     <input

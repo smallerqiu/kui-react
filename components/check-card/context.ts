@@ -4,6 +4,7 @@ import type { CheckCardValue } from "./types";
 export interface CheckCardGroupContextValue {
   value?: CheckCardValue;
   disabled: boolean;
+  readOnly: boolean;
   theme?: string;
   size?: string;
   shape?: string;

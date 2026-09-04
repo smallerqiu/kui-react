@@ -14,6 +14,7 @@ export interface UploadFileListProps {
   type?: "list" | "picture";
   fileList?: UploadFile[];
   disabled?: boolean;
+  readOnly?: boolean;
   selector?: ReactNode;
   onRemove?: (index: number, file: UploadFile) => void;
 }
@@ -23,6 +24,7 @@ export default function FileList({
   type = "list",
   fileList = [],
   disabled,
+  readOnly,
   selector,
   onRemove,
 }: UploadFileListProps) {
@@ -39,10 +41,7 @@ export default function FileList({
         return (
           <div
             key={item.uid ?? index}
-            className={clsx(
-              `k-upload-file-${type}-item`,
-              `k-upload-file-status-${item.status}`
-            )}
+            className={clsx(`k-upload-file-${type}-item`, `k-upload-file-status-${item.status}`)}
           >
             <div className={`k-upload-${picture ? "picture" : "file"}-preview`}>
               {preview ? (
@@ -82,14 +81,16 @@ export default function FileList({
                 </div>
               )}
             </div>
-            <Button
-              type="text"
-              size="small"
-              icon={X}
-              disabled={disabled}
-              className={`k-upload-file-${picture ? "picture" : "item"}-remove`}
-              onClick={() => onRemove?.(index, item)}
-            />
+            {!readOnly && (
+              <Button
+                type="text"
+                size="small"
+                icon={X}
+                disabled={disabled}
+                className={`k-upload-file-${picture ? "picture" : "item"}-remove`}
+                onClick={() => onRemove?.(index, item)}
+              />
+            )}
           </div>
         );
       })}

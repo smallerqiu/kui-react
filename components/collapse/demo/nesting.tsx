@@ -3,9 +3,9 @@ import { text } from "./content";
 export default function App() {
   return (
     <div className="demo-collapse">
-      <Collapse openKeys={["1"]}>
+      <Collapse defaultOpenKeys={["1"]}>
         <CollapsePanel key="1" title="Panel title">
-          <Collapse openKeys={["1-1"]}>
+          <Collapse defaultOpenKeys={["1-1"]}>
             <CollapsePanel key="1-1" title="Panel title">
               <div>{text}</div>
             </CollapsePanel>

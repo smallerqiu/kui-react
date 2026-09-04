@@ -13,6 +13,7 @@ export interface RadioButtonProps extends Omit<
   value?: string | number;
   theme?: ThemeType;
   disabled?: boolean;
+  readOnly?: boolean;
   checked?: boolean;
   defaultChecked?: boolean;
   icon?: IconType[];
@@ -29,6 +30,7 @@ const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
       value,
       theme,
       disabled = false,
+      readOnly = false,
       checked,
       defaultChecked = false,
       icon,
@@ -38,7 +40,7 @@ const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
       children,
       ...rest
     },
-    ref
+    ref,
   ) => {
     const group = useContext(RadioGroupContext);
     const isGroup = !!group;
@@ -47,6 +49,7 @@ const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
     const groupChecked = isGroup ? group.value === value : false;
     const isChecked = isGroup ? groupChecked : (checked ?? localChecked);
     const currentDisabled = disabled || (isGroup && group.disabled);
+    const currentReadOnly = readOnly || Boolean(isGroup && group.readOnly);
     const currentTheme = isGroup && group.theme ? group.theme : theme;
     const currentSize = isGroup && group.size ? group.size : size;
     const currentShape = isGroup && group.shape ? group.shape : shape;
@@ -54,7 +57,7 @@ const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
     const labelText = label || children || String(value);
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (currentDisabled || isChecked) return;
+      if (currentDisabled || currentReadOnly || isChecked) return;
       const nextChecked = true;
       if (!isGroup && checked === undefined) setLocalChecked(nextChecked);
       const eventObj: ChangeEvent = {
@@ -77,12 +80,13 @@ const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
         shape={currentShape}
         type={isChecked ? "primary" : "default"}
         onClick={handleClick}
+        aria-readonly={currentReadOnly || undefined}
         {...rest}
       >
         {labelText}
       </Button>
     );
-  }
+  },
 );
 
 RadioButton.displayName = "RadioButton";

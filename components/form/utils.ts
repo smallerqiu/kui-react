@@ -19,7 +19,7 @@ export const getByPath = (object: Record<string, unknown>, path: string) => {
 export const setByPath = (
   object: Record<string, unknown>,
   path: string,
-  value: unknown
+  value: unknown,
 ): Record<string, unknown> => {
   const keys = parsePath(path);
   const result: Record<string, unknown> = { ...object };

@@ -5,6 +5,7 @@ import type { ChangeEvent } from "./types";
 export interface RadioGroupContextValue {
   value?: string | number;
   disabled?: boolean;
+  readOnly?: boolean;
   theme?: ThemeType;
   size?: SizeType;
   shape?: ShapeType;

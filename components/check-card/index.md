@@ -29,43 +29,45 @@
 
 ### CheckCard
 
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| checked | 受控选中状态 | boolean | - |
-| defaultChecked | 初始选中状态 | boolean | false |
-| value | 在 Group 中使用的选项值 | string \| number | - |
-| title | 标题 | ReactNode | - |
-| description | 描述 | ReactNode | - |
-| symbol | 未选中图标 | IconType[] | - |
-| checkedSymbol | 选中图标 | IconType[] | - |
-| showIndicator | 是否显示选中标记 | boolean | true |
-| disabled | 是否禁用 | boolean | false |
-| theme | 主题 | outline\|fill | outline |
-| size | 尺寸 | small\|medium\|large | medium |
-| shape | 形状 | round\|circle\|square | round |
-| onChange | 状态变化回调 | (event: CheckCardChangeEvent) => void | - |
+| 属性           | 说明                    | 类型                                  | 默认值  |
+| -------------- | ----------------------- | ------------------------------------- | ------- |
+| checked        | 受控选中状态            | boolean                               | -       |
+| defaultChecked | 初始选中状态            | boolean                               | false   |
+| value          | 在 Group 中使用的选项值 | string \| number                      | -       |
+| title          | 标题                    | ReactNode                             | -       |
+| description    | 描述                    | ReactNode                             | -       |
+| symbol         | 未选中图标              | IconType[]                            | -       |
+| checkedSymbol  | 选中图标                | IconType[]                            | -       |
+| showIndicator  | 是否显示选中标记        | boolean                               | true    |
+| disabled       | 是否禁用                | boolean                               | false   |
+| readOnly       | 是否只读                | boolean                               | false   |
+| theme          | 主题                    | outline\|fill                         | outline |
+| size           | 尺寸                    | small\|medium\|large                  | medium  |
+| shape          | 形状                    | round\|circle\|square                 | round   |
+| onChange       | 状态变化回调            | (event: CheckCardChangeEvent) => void | -       |
 
 ## CheckCardGroup API
 
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| value | 受控值 | string\|number | - |
-| defaultValue | 初始值 | string\|number | - |
-| options | 选项 | CheckCardOption[] | - |
-| disabled | 是否禁用 | boolean | false |
-| direction | 排列方向 | horizontal\|vertical | horizontal |
-| theme | 卡片主题 | outline\|fill | outline |
-| size | 卡片尺寸 | small\|medium\|large | medium |
-| shape | 卡片形状 | round\|circle\|square | round |
-| onChange | 选中值变化回调 | (value: string\|number) => void | - |
+| 属性         | 说明           | 类型                            | 默认值     |
+| ------------ | -------------- | ------------------------------- | ---------- |
+| value        | 受控值         | string\|number                  | -          |
+| defaultValue | 初始值         | string\|number                  | -          |
+| options      | 选项           | CheckCardOption[]               | -          |
+| disabled     | 是否禁用       | boolean                         | false      |
+| readOnly     | 是否只读       | boolean                         | false      |
+| direction    | 排列方向       | horizontal\|vertical            | horizontal |
+| theme        | 卡片主题       | outline\|fill                   | outline    |
+| size         | 卡片尺寸       | small\|medium\|large            | medium     |
+| shape        | 卡片形状       | round\|circle\|square           | round      |
+| onChange     | 选中值变化回调 | (value: string\|number) => void | -          |
 
 ## CheckCardOption
 
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| value | 选项值 | string\|number | - |
-| title | 标题 | ReactNode | - |
-| description | 描述 | ReactNode | - |
-| symbol | 未选中图标 | IconType[] | - |
-| checkedSymbol | 选中图标 | IconType[] | - |
-| disabled | 是否禁用该选项 | boolean | false |
+| 属性          | 说明           | 类型           | 默认值 |
+| ------------- | -------------- | -------------- | ------ |
+| value         | 选项值         | string\|number | -      |
+| title         | 标题           | ReactNode      | -      |
+| description   | 描述           | ReactNode      | -      |
+| symbol        | 未选中图标     | IconType[]     | -      |
+| checkedSymbol | 选中图标       | IconType[]     | -      |
+| disabled      | 是否禁用该选项 | boolean        | false  |

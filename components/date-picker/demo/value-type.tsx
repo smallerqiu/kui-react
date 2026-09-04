@@ -10,7 +10,7 @@ export default function App() {
     label: string,
     value: DatePickerInput,
     set: (v: DatePickerInput) => void,
-    props: Record<string, unknown>
+    props: Record<string, unknown>,
   ) => (
     <>
       <code>

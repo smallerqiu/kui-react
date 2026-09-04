@@ -10,7 +10,7 @@ export default function App() {
   useEffect(() => {
     const timer = setTimeout(
       () => setOptions(initial.map((item) => ({ ...item, label: `${item.label}1` }))),
-      1000
+      1000,
     );
     return () => clearTimeout(timer);
   }, []);

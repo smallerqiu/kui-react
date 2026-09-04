@@ -38,7 +38,6 @@ Similar to the Select selection control, when the selectable data structure is a
 
 ## TreeSelect API
 
-
 | Property          | Description                                                               | Type                                  | Default       |
 | ----------------- | ------------------------------------------------------------------------- | ------------------------------------- | ------------- |
 | value             | Controlled selected value                                                 | TreeSelectValue                       | -             |
@@ -54,6 +53,7 @@ Similar to the Select selection control, when the selectable data structure is a
 | arrowIcon         | Custom dropdown arrow icon                                                | IconType[]                            | -             |
 | placeholder       | Default text of selector                                                  | string                                | Please select |
 | disabled          | Whether current item is disabled                                          | boolean                               | false         |
+| readOnly          | Whether the component is read-only                                        | boolean                               | false         |
 | size              | Component size, provides two sizes: `small`, `large`, default is normal   | string                                | -             |
 | emptyText         | Prompt displayed when no data                                             | string                                | 'No data yet' |
 | multiple          | Whether to display in multiple selection mode                             | boolean                               | false         |

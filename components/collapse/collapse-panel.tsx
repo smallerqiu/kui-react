@@ -1,10 +1,12 @@
 import clsx from "clsx";
 import { ChevronUp } from "kui-icons";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import Transition from "../base/transition";
 import Icon from "../icon";
 
-export interface CollapsePanelProps extends React.HTMLAttributes<HTMLDivElement> {
-  title?: string;
+export interface CollapsePanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  title?: React.ReactNode;
+  disabled?: boolean;
   active?: boolean;
   extra?: React.ReactNode;
   panelKey?: string | number;
@@ -14,6 +16,7 @@ export interface CollapsePanelProps extends React.HTMLAttributes<HTMLDivElement>
 
 const CollapsePanel: React.FC<CollapsePanelProps> = ({
   title,
+  disabled = false,
   active = false,
   extra,
   panelKey,
@@ -22,37 +25,51 @@ const CollapsePanel: React.FC<CollapsePanelProps> = ({
   className = "",
   ...rest
 }) => {
-  const [expanded, setExpanded] = useState(active);
-  const [rendered, setRendered] = useState(active);
-  useEffect(() => {
-    // Use a small delay to trigger the CSS transition after mount
-    const timer = setTimeout(() => {
-      if (active) setRendered(true);
-      setExpanded(active);
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [active]);
-
   const handleClick = () => {
-    if (panelKey !== undefined) {
+    if (!disabled && panelKey !== undefined) {
       onExpand?.(panelKey);
     }
   };
 
-  const classes = clsx("k-collapse-item", { "k-collapse-item-active": expanded }, className);
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    handleClick();
+  };
+
+  const classes = clsx(
+    "k-collapse-item",
+    {
+      "k-collapse-item-active": active,
+      "k-collapse-item-disabled": disabled,
+    },
+    className,
+  );
 
   return (
     <div className={classes} {...rest}>
-      <div className="k-collapse-header" onClick={handleClick}>
+      <div
+        className="k-collapse-header"
+        role="button"
+        tabIndex={disabled ? -1 : 0}
+        aria-expanded={active}
+        aria-disabled={disabled || undefined}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+      >
         <Icon type={ChevronUp} className="k-collapse-arrow" />
         <span className="k-collapse-title">{title}</span>
-        {extra ? <span className="k-collapse-extra">{extra}</span> : null}
+        {extra ? (
+          <span className="k-collapse-extra" onClick={(event) => event.stopPropagation()}>
+            {extra}
+          </span>
+        ) : null}
       </div>
-      {active || rendered ? (
-        <div className="k-collapse-content" style={{ display: expanded ? undefined : "none" }}>
+      <Transition show={active} name="k-collapse-slide" timeout={350}>
+        <div className="k-collapse-content">
           <div className="k-collapse-content-box">{children}</div>
         </div>
-      ) : null}
+      </Transition>
     </div>
   );
 };

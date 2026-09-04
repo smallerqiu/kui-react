@@ -49,7 +49,7 @@ const Option: React.FC<OptionProps> = ({
       "k-select-item-active": active,
       "k-select-item-disabled": disabled,
     },
-    className
+    className,
   );
 
   return (

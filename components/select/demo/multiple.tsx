@@ -8,7 +8,13 @@ export default function App() {
   return (
     <Space vertical block>
       <code>value: {v1.join(", ")}</code>
-      <Select value={v1} onChange={(v) => Array.isArray(v) && setV1(v)} block options={data} multiple />
+      <Select
+        value={v1}
+        onChange={(v) => Array.isArray(v) && setV1(v)}
+        block
+        options={data}
+        multiple
+      />
       <br />
       <code>value: {v2.join(", ")}</code>
       <Select value={v2} onChange={(v) => Array.isArray(v) && setV2(v)} block multiple>

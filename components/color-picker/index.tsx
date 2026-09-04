@@ -25,6 +25,7 @@ export interface ColorPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "
   open?: boolean;
   defaultOpen?: boolean;
   disabled?: boolean;
+  readOnly?: boolean;
   disabledAlpha?: boolean;
   showText?: boolean;
   placement?: DropPlacementsType;
@@ -46,6 +47,7 @@ export default function ColorPicker({
   open: openProp,
   defaultOpen = false,
   disabled = false,
+  readOnly = false,
   disabledAlpha = false,
   showText = false,
   placement = "bottom-left",
@@ -97,6 +99,7 @@ export default function ColorPicker({
         ? next.rgb().string(0)
         : next.hsl().string(0);
   const update = (next: ColorInstance, targetMode = mode) => {
+    if (readOnly) return;
     const formatted = format(next, targetMode);
     if (controlled === undefined) setInnerColor(formatted);
     onChange?.(formatted);
@@ -117,19 +120,19 @@ export default function ColorPicker({
   }, [placement]);
   const setVisible = useCallback(
     (next: boolean) => {
-      if (disabled || panelOnly) return;
+      if (disabled || readOnly || panelOnly) return;
       if (openProp === undefined) setInnerOpen(next);
       onOpenChange?.(next);
       if (next) requestAnimationFrame(updatePosition);
     },
-    [disabled, onOpenChange, openProp, panelOnly, updatePosition]
+    [disabled, onOpenChange, openProp, panelOnly, readOnly, updatePosition],
   );
   // 清理未完成的隐藏定时器，防止在组件卸载后调用 setState
   useEffect(
     () => () => {
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     },
-    []
+    [],
   );
   const updatePositionRef = useRef(updatePosition);
   useEffect(() => {
@@ -192,12 +195,14 @@ export default function ColorPicker({
         {
           "k-color-picker-opened": currentOpen,
           "k-color-picker-disabled": disabled,
+          "k-color-picker-readonly": readOnly,
           "k-color-picker-sm": size === "small",
           "k-color-picker-lg": size === "large",
         },
-        className
+        className,
       )}
       {...hoverProps}
+      aria-readonly={readOnly || undefined}
     >
       <div className="k-color-picker-selection">
         <div className="k-color-picker-color">
@@ -250,6 +255,7 @@ export default function ColorPicker({
             <Hue
               hue={currentHue}
               onUpdateHue={(hue) => {
+                if (readOnly) return;
                 setCurrentHue(hue);
                 update(color.hue(hue).rgb());
               }}
@@ -258,6 +264,7 @@ export default function ColorPicker({
               <Alpha
                 value={color}
                 onUpdateAlpha={(alpha) => {
+                  if (readOnly) return;
                   setCurrentAlpha(alpha);
                   update(color.alpha(alpha).rgb());
                 }}
@@ -270,11 +277,13 @@ export default function ColorPicker({
           value={color}
           disabledAlpha={disabledAlpha}
           onUpdateMode={(next) => {
+            if (readOnly) return;
             if (modeProp === undefined) setInnerMode(next);
             onUpdateMode?.(next);
             update(color, next);
           }}
           onUpdateColorValue={(next) => {
+            if (readOnly) return;
             setCurrentAlpha(next.alpha());
             if (next.saturationv() > 0) setCurrentHue(next.hue());
             update(next);
@@ -284,6 +293,7 @@ export default function ColorPicker({
           presets={presets}
           color={color}
           onUpdateColor={(next) => {
+            if (readOnly) return;
             setCurrentAlpha(next.alpha());
             setCurrentHue(next.hue());
             update(next.rgb());

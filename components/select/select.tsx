@@ -50,6 +50,7 @@ export interface SelectProps extends Omit<
   allowCreate?: boolean;
   block?: boolean;
   disabled?: boolean;
+  readOnly?: boolean;
   multiple?: boolean;
   loading?: boolean;
   bordered?: boolean;
@@ -88,6 +89,7 @@ const Select: React.FC<SelectProps> = ({
   allowCreate = false,
   block = false,
   disabled = false,
+  readOnly = false,
   multiple = false,
   loading = false,
   bordered = true,
@@ -332,6 +334,7 @@ const Select: React.FC<SelectProps> = ({
   };
 
   function handleSelect(item: OptionSelectEvent) {
+    if (readOnly) return;
     const { value: val, label: lbl } = item;
     let selected = true;
     let nextValue = [...currentValue];
@@ -372,6 +375,7 @@ const Select: React.FC<SelectProps> = ({
   }
 
   const searchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (readOnly) return;
     const target = e.target;
     const v = target.value;
     setQueryKey(v);
@@ -411,7 +415,7 @@ const Select: React.FC<SelectProps> = ({
   };
 
   const removeTag = (index: number) => {
-    if (disabled) return;
+    if (disabled || readOnly) return;
 
     const nextValue = [...currentValue];
     nextValue.splice(index, 1);
@@ -424,6 +428,7 @@ const Select: React.FC<SelectProps> = ({
   };
 
   const onClear = (e: React.MouseEvent) => {
+    if (readOnly) return;
     e.stopPropagation();
     const nextValue: (string | number)[] = [];
     if (value === undefined) {
@@ -444,7 +449,7 @@ const Select: React.FC<SelectProps> = ({
   };
 
   function toggle(show: boolean | null = null) {
-    if (disabled) return;
+    if (disabled || readOnly) return;
 
     if (hasSearchEvent) {
       showQuery();
@@ -539,7 +544,7 @@ const Select: React.FC<SelectProps> = ({
   };
 
   const onKeydown = (e: React.KeyboardEvent<HTMLDivElement | HTMLInputElement>) => {
-    if (disabled) return;
+    if (disabled || readOnly) return;
     if (!visible) {
       if (["Enter", " ", "ArrowDown", "ArrowUp"].includes(e.key)) {
         toggle(true);
@@ -600,7 +605,8 @@ const Select: React.FC<SelectProps> = ({
     }
   };
 
-  const showClear = clearable && !disabled && !isEmpty(currentValue) && !isEmpty(labelText);
+  const showClear =
+    clearable && !disabled && !readOnly && !isEmpty(currentValue) && !isEmpty(labelText);
 
   const renderOverlay = () => {
     if (!rendered) return null;
@@ -667,6 +673,7 @@ const Select: React.FC<SelectProps> = ({
     ref: queryInputRef,
     className: "k-select-search",
     autoComplete: "off",
+    readOnly,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
       e.stopPropagation();
       searchInput(e);
@@ -717,7 +724,7 @@ const Select: React.FC<SelectProps> = ({
         shape={shape}
         theme="default"
         compact
-        closeable={!disabled}
+        closeable={!disabled && !readOnly}
         onClose={() => removeTag(index)}
       >
         {label}
@@ -736,7 +743,7 @@ const Select: React.FC<SelectProps> = ({
                   shape={shape}
                   theme="fill"
                   compact
-                  closeable={!disabled}
+                  closeable={!disabled && !readOnly}
                   onClose={() => removeTag(displayCount + index)}
                 >
                   {label}
@@ -788,6 +795,7 @@ const Select: React.FC<SelectProps> = ({
     "k-select",
     {
       "k-select-disabled": disabled,
+      "k-select-readonly": readOnly,
       "k-select-block": block,
       "k-select-opened": visible,
       "k-select-borderless": bordered === false || theme === "plain",
@@ -820,6 +828,7 @@ const Select: React.FC<SelectProps> = ({
       aria-expanded={visible}
       aria-haspopup="listbox"
       aria-disabled={disabled || undefined}
+      aria-readonly={readOnly || undefined}
       ref={refSelection}
       {...rest}
     >

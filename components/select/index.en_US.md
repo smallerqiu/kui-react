@@ -58,6 +58,7 @@ Dropdown selector.
 | width        | Component width                                                           | string, number                     | -             |
 | placeholder  | Default text of selector                                                  | string                             | Please select |
 | disabled     | Whether current item is disabled                                          | boolean                            | false         |
+| readOnly     | Whether the component is read-only                                        | boolean                            | false         |
 | size         | Component size, provides two sizes: `small`, `large`, default is normal   | string                             | -             |
 | emptyText    | Prompt displayed when no data                                             | string                             | 'No data yet' |
 | maxTagCount  | Maximum visible tags in multiple mode; excess tags are shown in a Tooltip | number                             | -             |

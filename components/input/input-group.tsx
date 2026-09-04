@@ -36,7 +36,7 @@ const InputGroup: React.FC<InputGroupProps> = ({
       "k-input-group-lg": currentSize === "large",
       "k-input-group-sm": currentSize === "small",
     },
-    className
+    className,
   );
 
   if (!compact && currentSize !== undefined) {

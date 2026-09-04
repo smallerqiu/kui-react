@@ -5,6 +5,7 @@ import type { ChangeEvent } from "./checkbox";
 export interface CheckboxGroupContextValue {
   value?: unknown[];
   disabled?: boolean;
+  readOnly?: boolean;
   theme?: ThemeType;
   size?: SizeType;
   onChange?: (event: ChangeEvent) => void;

@@ -24,6 +24,7 @@ export interface SliderProps extends Omit<
   max?: number;
   step?: number | null;
   disabled?: boolean;
+  readOnly?: boolean;
   vertical?: boolean;
   reverse?: boolean;
   range?: boolean;
@@ -42,6 +43,7 @@ export default function Slider({
   max = 100,
   step = 1,
   disabled = false,
+  readOnly = false,
   vertical = false,
   reverse = false,
   range = false,
@@ -165,7 +167,7 @@ export default function Slider({
     onChange?.(next);
   };
   const handleThumbMove = (event: globalThis.MouseEvent | TouchEvent) => {
-    if (disabled || draggingIndexRef.current === -1) return;
+    if (disabled || readOnly || draggingIndexRef.current === -1) return;
     if (event.cancelable) event.preventDefault();
     const nextValue = getValueFromEvent(event);
     let nextInternal: number | number[];
@@ -186,7 +188,7 @@ export default function Slider({
       commit(nextInternal);
   };
   const handleRailClick = (event: ReactMouseEvent) => {
-    if (disabled) return;
+    if (disabled || readOnly) return;
     const nextValue = getValueFromEvent(event);
     if (range) {
       const [first, second] = internalValueRef.current as number[];
@@ -197,7 +199,7 @@ export default function Slider({
     } else commit(nextValue);
   };
   const handleThumbDown = (index: number) => {
-    if (disabled) return;
+    if (disabled || readOnly) return;
     stopDragging();
     draggingIndexRef.current = index;
     setDraggingIndex(index);
@@ -210,7 +212,7 @@ export default function Slider({
     document.addEventListener("touchcancel", activeUpRef.current);
   };
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>, index: number) => {
-    if (disabled) return;
+    if (disabled || readOnly) return;
     const isPlus = ["ArrowRight", "ArrowUp"].includes(event.key);
     const isMinus = ["ArrowLeft", "ArrowDown"].includes(event.key);
     if (!isPlus && !isMinus) return;
@@ -289,10 +291,12 @@ export default function Slider({
   return (
     <div
       {...rest}
+      aria-readonly={readOnly || undefined}
       className={clsx(
         "k-slider",
         {
           "k-slider-disabled": disabled,
+          "k-slider-readonly": readOnly,
           "k-slider-vertical": vertical,
           "k-slider-reverse": reverse,
         },

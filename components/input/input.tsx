@@ -44,6 +44,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
       value,
       defaultValue = "",
       disabled = false,
+      readOnly = false,
       type = "text",
       icon,
       suffix,
@@ -63,7 +64,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
       controls,
       ...rest
     },
-    ref
+    ref,
   ) => {
     const parentSize = useContext(SizeContext);
     const currentSize = size || parentSize;
@@ -85,6 +86,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
     }));
 
     const handleClear = () => {
+      if (disabled || readOnly) return;
       if (value === undefined) setCurrentValue("");
       onClear?.();
       onChange?.("");
@@ -92,7 +94,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
     };
 
     const togglePassword = () => {
-      if (disabled) return;
+      if (disabled || readOnly) return;
       setShowPassword(!showPassword);
     };
 
@@ -120,15 +122,14 @@ const Input = React.forwardRef<InputRef, InputProps>(
           <Icon
             type={Search}
             className="k-input-search-icon"
-            onClick={() => onSearch(currentValue as string)}
+            onClick={() => !readOnly && onSearch(currentValue as string)}
           />
         );
       }
       return inlineSuffix ? <div className={`k-${inputType}-suffix`}>{inlineSuffix}</div> : null;
     };
 
-    const clearableShow =
-      clearable && !isEmpty(currentValue) && type !== "password" && !rest.readOnly;
+    const clearableShow = clearable && !isEmpty(currentValue) && type !== "password" && !readOnly;
 
     const multiple =
       (!!icon ||
@@ -162,6 +163,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
     const inputBoxProps = {
       ...rest,
       disabled,
+      readOnly,
       multiple,
       type,
       size,
@@ -190,6 +192,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
       {
         [`k-${inputType}-focus`]: focused,
         [`k-${inputType}-disabled`]: disabled,
+        [`k-${inputType}-readonly`]: readOnly,
         [`k-${inputType}-has-clear`]: clearableShow,
         [`k-${inputType}-sm`]: currentSize === "small",
         [`k-${inputType}-lg`]: currentSize === "large",
@@ -197,7 +200,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
         [`k-${inputType}-circle`]: shape === "circle",
         [`k-${inputType}-square`]: shape === "square",
       },
-      !useGroup && className
+      !useGroup && className,
     );
 
     const innerChildren: React.ReactNode[] = [];
@@ -207,15 +210,15 @@ const Input = React.forwardRef<InputRef, InputProps>(
           key="input-icon"
           type={icon}
           className={`k-${inputType}-icon`}
-          onClick={(e) => !disabled && onIconClick?.(e)}
-        />
+          onClick={(e) => !disabled && !readOnly && onIconClick?.(e)}
+        />,
       );
     }
     if (inlinePrefix) {
       innerChildren.push(
         <div key="input-prefix" className={`k-${inputType}-prefix`}>
           {inlinePrefix}
-        </div>
+        </div>,
       );
     }
     innerChildren.push(React.cloneElement(textInput, { key: "input-box" }));
@@ -229,7 +232,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
             [`k-${inputType}-clearable-hidden`]: !clearableShow,
           })}
           onClick={handleClear}
-        />
+        />,
       );
     }
     const suffixNode = getSuffix();
@@ -264,7 +267,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
         {innerChildren}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = "Input";
