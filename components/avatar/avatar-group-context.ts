@@ -1,9 +1,10 @@
 import { createContext } from "react";
-import type { ShapeType } from "../const/types";
+export type AvatarShape = "circle" | "square" | "round";
+export type AvatarSize = number | "large" | "small" | "default";
 
 export interface AvatarGroupContextValue {
-  shape?: ShapeType;
-  size?: number | "large" | "small" | "default";
+  shape?: AvatarShape;
+  size?: AvatarSize;
 }
 
 export const AvatarGroupContext = createContext<AvatarGroupContextValue | null>(null);

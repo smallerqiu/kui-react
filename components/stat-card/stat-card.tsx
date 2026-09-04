@@ -1,9 +1,10 @@
 import clsx from "clsx";
 import type { HTMLAttributes, ReactNode } from "react";
 import StatNumber from "./stat-number";
-import type { ShapeType, ThemeType } from "../const/types";
+import type { ShapeType, SizeType } from "../const/types";
 
 export interface StatNumberItem {
+  key?: string | number;
   value: number;
   duration?: number;
   precision?: number;
@@ -25,8 +26,9 @@ export interface StatCardProps extends Omit<HTMLAttributes<HTMLDivElement>, "tit
   statNumberType?: "rollup" | "countup";
   reverse?: boolean;
   bordered?: boolean;
-  theme?: ThemeType;
+  theme?: "fill" | "outline" | "plain";
   shape?: ShapeType;
+  size?: SizeType;
   prefix?: ReactNode;
   suffix?: ReactNode;
 }
@@ -41,6 +43,7 @@ export default function StatCard({
   bordered = false,
   theme = "fill",
   shape = "round",
+  size = "medium",
   prefix,
   suffix,
   className,
@@ -55,15 +58,16 @@ export default function StatCard({
           "k-stat-card-bordered": bordered,
           [`k-stat-card-${theme}`]: theme,
           [`k-stat-card-${shape}`]: shape,
+          [`k-stat-card-${size}`]: size,
         },
-        className
+        className,
       )}
     >
       {title != null && <div className="k-stat-card-title">{title}</div>}
       <div className="k-stat-card-items">
         {items.map((item, index) => (
           <div
-            key={index}
+            key={`${typeof (item.key ?? index)}:${String(item.key ?? index)}`}
             className={clsx("k-stat-card-item", { "k-stat-card-item-reverse": reverse })}
           >
             <div className="k-stat-card-item-value">
@@ -79,12 +83,12 @@ export default function StatCard({
                 suffix={item.suffix ?? suffix}
               />
             </div>
-            <div className="k-stat-card-item-desc">{item.desc}</div>
-            {item.trend !== undefined && (
+            {item.desc != null && <div className="k-stat-card-item-desc">{item.desc}</div>}
+            {item.trend != null && item.trend !== false && (
               <div
                 className={clsx(
                   "k-stat-card-item-trend",
-                  `k-stat-card-item-trend-${item.trendStatus || "default"}`
+                  `k-stat-card-item-trend-${item.trendStatus || "default"}`,
                 )}
               >
                 {item.trend}

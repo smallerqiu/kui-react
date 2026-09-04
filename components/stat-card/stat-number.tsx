@@ -17,7 +17,7 @@ export interface StatNumberProps extends Omit<HTMLAttributes<HTMLDivElement>, "p
 export default function StatNumber({
   value,
   separator,
-  duration = 1,
+  duration = 1.2,
   precision = 0,
   type = "countup",
   prefix,

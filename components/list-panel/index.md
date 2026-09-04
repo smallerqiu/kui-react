@@ -29,8 +29,8 @@
 | actions       | 操作区域     | ReactNode                                 | -       |
 | selection     | 批量操作栏   | ReactNode \| (count: number) => ReactNode | -       |
 | footer        | 底部区域     | ReactNode                                 | -       |
-| bordered      | 是否显示边框 | boolean                                   | false   |
-| theme         | 主题         | ThemeType                                 | outline |
+| bordered      | 是否显示边框 | boolean                                   | true    |
+| theme         | 主题         | `fill \| outline \| plain`                | outline |
 | shape         | 形状         | ShapeType                                 | round   |
 | size          | 尺寸         | SizeType                                  | medium  |
 | selectedCount | 已选数量     | number                                    | 0       |

@@ -23,6 +23,20 @@ export default function App() {
           U
         </Avatar>
       </Space>
+      <br />
+      <br />
+      <Space>
+        <Avatar shape="round" size={64}>
+          U
+        </Avatar>
+        <Avatar shape="round" size="large">
+          U
+        </Avatar>
+        <Avatar shape="round">U</Avatar>
+        <Avatar shape="round" size="small">
+          U
+        </Avatar>
+      </Space>
     </>
   );
 }

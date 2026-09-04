@@ -1,15 +1,14 @@
 import clsx from "clsx";
 import React from "react";
-import type { ShapeType } from "../const/types";
 import { getChildren } from "../utils/react-node";
 import Avatar from "./avatar";
-import { AvatarGroupContext } from "./avatar-group-context";
+import { AvatarGroupContext, type AvatarShape, type AvatarSize } from "./avatar-group-context";
 
 export interface AvatarGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   maxCount?: number;
   spacing?: number;
-  shape?: ShapeType;
-  size?: number | "large" | "small" | "default";
+  shape?: AvatarShape;
+  size?: AvatarSize;
   children?: React.ReactNode;
 }
 
@@ -33,7 +32,7 @@ const AvatarGroup: React.FC<AvatarGroupProps> = ({
     childrenToShow.push(
       <Avatar key="avatar-rest-count" shape={shape} size={size}>
         {`+${restCount}`}
-      </Avatar>
+      </Avatar>,
     );
   }
 

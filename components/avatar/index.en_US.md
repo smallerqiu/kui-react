@@ -6,7 +6,7 @@ Used to represent users or things, supports image, icon, or character display.
 
 [Basic](./demo/basic.tsx)
 
-- Avatars support three sizes and two shapes.
+- Avatars support preset and custom sizes, with three available shapes.
 
 [Types](./demo/types.tsx)
 
@@ -22,20 +22,20 @@ Used to represent users or things, supports image, icon, or character display.
 
 ## API
 
-| Property | Description                                     | Type                          | Default |
-| -------- | ----------------------------------------------- | ----------------------------- | ------- |
-| icon     | Set the icon type for the avatar                | string,number                 | 400     |
-| shape    | Specify the shape of the avatar: circle, square | string                        | circle  |
-| size     | Set the size of the avatar                      | large, small, default, number | default |
-| src      | Resource address for image avatar               | string                        | -       |
-| alt      | Alternative text for the image                  | string                        | -       |
-| onError  | Called when the image fails to load; return `false` to prevent falling back to the icon or text | (event) => boolean \| void | - |
+| Property | Description                                                          | Type                                  | Default |
+| -------- | -------------------------------------------------------------------- | ------------------------------------- | ------- |
+| icon     | Avatar icon; overrides the default User fallback when an image fails | IconType                              | -       |
+| shape    | Avatar shape                                                         | `circle \| square \| round`           | circle  |
+| size     | Avatar size                                                          | `large \| small \| default` \| number | default |
+| src      | Image source                                                         | string                                | -       |
+| alt      | Alternative text when the image cannot be displayed                  | string                                | -       |
+| onError  | Image error callback; return `false` to prevent rendering fallback   | (event) => boolean \| void            | -       |
 
 ## AvatarGroup API
 
-| Property | Description                                              | Type                          | Default |
-| -------- | -------------------------------------------------------- | ----------------------------- | ------- |
-| maxCount | Maximum number of avatars to display                     | number                        | -       |
-| size     | Sets child size and adjusts their overlap proportionally | large, small, default, number | default |
-| spacing  | Child avatar overlap in pixels; `0` disables overlap     | number                        | auto    |
-| shape    | Sets the shape of all child avatars                      | circle, square, round         | circle  |
+| Property | Description                                              | Type                                  | Default |
+| -------- | -------------------------------------------------------- | ------------------------------------- | ------- |
+| maxCount | Maximum number of avatars to display                     | number                                | -       |
+| size     | Sets child size and adjusts their overlap proportionally | `large \| small \| default` \| number | default |
+| spacing  | Child avatar overlap in pixels; `0` disables overlap     | number                                | auto    |
+| shape    | Sets the shape of all child avatars                      | `circle \| square \| round`           | circle  |

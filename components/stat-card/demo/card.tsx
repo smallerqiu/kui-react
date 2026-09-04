@@ -1,6 +1,17 @@
 import { Heart, Star } from "kui-icons";
 import { useState } from "react";
-import { Checkbox, Grid, GridItem, Icon, Space, StatCard, type StatNumberItem } from "react-kui";
+import {
+  Checkbox,
+  Grid,
+  GridItem,
+  Icon,
+  RadioGroup,
+  Space,
+  StatCard,
+  type SizeType,
+  type StatNumberItem,
+} from "react-kui";
+const sizes: SizeType[] = ["small", "medium", "large"];
 const items = [
   { value: 5872, desc: "Number of orders" },
   { value: 9873672, desc: "Total Order Amount", prefix: "￥" },
@@ -16,7 +27,8 @@ const items2: StatNumberItem[] = [
 export default function App() {
   const [showTitle, setShowTitle] = useState(true),
     [bordered, setBordered] = useState(false),
-    [reverse, setReverse] = useState(false);
+    [reverse, setReverse] = useState(false),
+    [size, setSize] = useState<SizeType>("medium");
   const check =
     (setter: (value: boolean) => void) =>
     ({ checked }: { checked: boolean }) =>
@@ -33,6 +45,7 @@ export default function App() {
         <Checkbox checked={reverse} onChange={check(setReverse)}>
           Reverse
         </Checkbox>
+        <RadioGroup value={size} type="button" theme="card" options={sizes} onChange={setSize} />
       </Space>
       <Grid cols={{ xs: 1, sm: 2, md: 3 }} xGap={16} yGap={16}>
         <GridItem>
@@ -41,6 +54,7 @@ export default function App() {
             reverse={reverse}
             items={items}
             bordered={bordered}
+            size={size}
           />
         </GridItem>
         <GridItem>
@@ -50,6 +64,7 @@ export default function App() {
             items={items1}
             bordered={bordered}
             reverse={reverse}
+            size={size}
           />
         </GridItem>
         <GridItem span={{ xs: 1, sm: 2, md: 1 }}>
@@ -59,6 +74,7 @@ export default function App() {
             title={showTitle ? "Media data" : undefined}
             items={items2}
             bordered={bordered}
+            size={size}
           />
         </GridItem>
       </Grid>

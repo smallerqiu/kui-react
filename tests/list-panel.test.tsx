@@ -14,6 +14,18 @@ describe("ListPanel Vue parity", () => {
     expect(container.querySelector(".k-list-panel-toolbar")).toBeNull();
   });
 
+  it("ignores false regions and supports an explicit borderless panel", () => {
+    const { container } = render(
+      <ListPanel filters={false} actions={false} selection={false} footer={false} bordered={false}>
+        Results
+      </ListPanel>,
+    );
+
+    expect(container.querySelector(".k-list-panel-toolbar")).toBeNull();
+    expect(container.querySelector(".k-list-panel-footer")).toBeNull();
+    expect(container.querySelector(".k-list-panel-borderless")).not.toBeNull();
+  });
+
   it("renders valid falsy React nodes", () => {
     const { container } = render(
       <ListPanel summary={0} footer={0}>

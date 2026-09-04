@@ -1,19 +1,17 @@
 import clsx from "clsx";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import type { ShapeType } from "../const/types";
+import { User } from "kui-icons";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import Icon, { type IconType } from "../icon";
 import { getChildren } from "../utils/react-node";
-import { AvatarGroupContext } from "./avatar-group-context";
+import { AvatarGroupContext, type AvatarShape, type AvatarSize } from "./avatar-group-context";
 
 export interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   icon?: IconType[];
-  shape?: ShapeType;
-  size?: number | "large" | "small" | "default";
+  shape?: AvatarShape;
+  size?: AvatarSize;
   src?: string;
-  /** 图片的替代文本，与 kui-vue `avatar/avatar.tsx:29` 一致 */
   alt?: string;
   children?: React.ReactNode;
-  /** 图片加载失败时触发；返回 `false` 可阻止降级到图标或文本 */
   onError?: (event: React.SyntheticEvent<HTMLImageElement>) => boolean | void;
 }
 
@@ -34,19 +32,17 @@ const Avatar: React.FC<AvatarProps> = ({
   const rootRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLSpanElement>(null);
   const [textStyles, setTextStyles] = useState<React.CSSProperties>({});
-  const [imageFailed, setImageFailed] = useState(false);
-
-  // src 变化时重新尝试加载
-  useEffect(() => setImageFailed(false), [src]);
+  const [failedSrc, setFailedSrc] = useState<string>();
+  const imageFailed = !!src && failedSrc === src;
 
   const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
-    if (onError?.(event) !== false) setImageFailed(true);
+    if (onError?.(event) !== false) setFailedSrc(src);
   };
 
   const computedSize = group?.size || size;
   const computedShape = group?.shape || shape;
 
-  const updateSize = () => {
+  const updateSize = useCallback(() => {
     if (innerRef.current && rootRef.current) {
       const max = rootRef.current.offsetWidth - 8;
       const innerWidth = innerRef.current.offsetWidth || innerRef.current.scrollWidth;
@@ -62,25 +58,31 @@ const Avatar: React.FC<AvatarProps> = ({
         });
       }
     }
-  };
+  }, []);
 
   const childList = getChildren(children);
 
   useEffect(() => {
-    let observer: ResizeObserver | null = new ResizeObserver(() => {
-      window.requestAnimationFrame(updateSize);
-    });
+    let observer: ResizeObserver | null = null;
+    let animationFrame = 0;
 
-    if (rootRef.current) observer.observe(rootRef.current);
-    if (innerRef.current) observer.observe(innerRef.current);
+    if (typeof ResizeObserver !== "undefined") {
+      observer = new ResizeObserver(() => {
+        cancelAnimationFrame(animationFrame);
+        animationFrame = window.requestAnimationFrame(updateSize);
+      });
+
+      if (rootRef.current) observer.observe(rootRef.current);
+      if (innerRef.current) observer.observe(innerRef.current);
+    }
 
     updateSize();
 
     return () => {
       observer?.disconnect();
-      observer = null;
+      cancelAnimationFrame(animationFrame);
     };
-  }, [children, src]);
+  }, [children, computedSize, imageFailed, updateSize]);
 
   const sizeVal = computedSize;
   const shapeVal = computedShape;
@@ -102,27 +104,28 @@ const Avatar: React.FC<AvatarProps> = ({
   });
 
   const isText = childList.length === 1 && typeof childList[0] === "string";
+  const showImage = !!src && !imageFailed;
+  const fallbackIcon = imageFailed && src ? icon || User : icon;
 
   const rootClasses = clsx(
     "k-avatar",
     {
       "k-avatar-lg": sizeVal === "large",
       "k-avatar-sm": sizeVal === "small",
-      "k-avatar-image": src,
-      "k-avatar-icon": icon || hasIcon,
+      "k-avatar-image": showImage,
+      "k-avatar-icon": fallbackIcon || hasIcon,
       "k-avatar-square": shapeVal === "square",
       "k-avatar-round": shapeVal === "round",
     },
-    className
+    className,
   );
 
   return (
     <div ref={rootRef} className={rootClasses} style={rootStyles} {...rest}>
-      {/* 与 kui-vue 一致：优先渲染图片，失败后降级到图标或文本 */}
-      {src && !imageFailed ? (
+      {showImage ? (
         <img src={src} alt={alt ?? ""} onError={handleImageError} />
-      ) : icon ? (
-        <Icon type={icon} />
+      ) : fallbackIcon ? (
+        <Icon type={fallbackIcon} />
       ) : isText ? (
         <span ref={innerRef} className="k-avatar-string" style={textStyles}>
           {childList[0]}

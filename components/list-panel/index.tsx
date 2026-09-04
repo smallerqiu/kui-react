@@ -1,12 +1,12 @@
 import clsx from "clsx";
 import type { HTMLAttributes, ReactNode } from "react";
 import Card from "../card";
-import type { ShapeType, SizeType, ThemeType } from "../const/types";
+import type { ShapeType, SizeType } from "../const/types";
 
 export interface ListPanelProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
   summary?: ReactNode;
   bordered?: boolean;
-  theme?: ThemeType;
+  theme?: "fill" | "outline" | "plain";
   shape?: ShapeType;
   size?: SizeType;
   selectedCount?: number;
@@ -18,7 +18,7 @@ export interface ListPanelProps extends Omit<HTMLAttributes<HTMLDivElement>, "ti
 }
 export default function ListPanel({
   summary,
-  bordered = false,
+  bordered = true,
   theme = "outline",
   shape = "round",
   size = "medium",
@@ -31,13 +31,16 @@ export default function ListPanel({
   className,
   ...rest
 }: ListPanelProps) {
-  const hasSummary = summary != null;
-  const hasSelection = selectedCount > 0 && selection != null;
-  const hasToolbar = filters != null || actions != null || hasSummary || hasSelection;
+  const hasNode = (node: ReactNode) => node !== null && node !== undefined && node !== false;
+  const hasSummary = hasNode(summary);
+  const hasSelection = Number.isFinite(selectedCount) && selectedCount > 0 && hasNode(selection);
+  const hasFilters = hasNode(filters);
+  const hasActions = hasNode(actions);
+  const hasToolbar = hasFilters || hasActions || hasSummary || hasSelection;
   return (
     <Card
       {...rest}
-      className={clsx("k-list-panel", className)}
+      className={clsx("k-list-panel", !bordered && "k-list-panel-borderless", className)}
       bordered={bordered}
       theme={theme}
       shape={shape}
@@ -46,6 +49,7 @@ export default function ListPanel({
       {hasToolbar && (
         <div
           className={clsx("k-list-panel-toolbar", hasSelection && "k-list-panel-toolbar-selection")}
+          role="toolbar"
         >
           {hasSelection ? (
             <div className="k-list-panel-selection">
@@ -53,11 +57,15 @@ export default function ListPanel({
             </div>
           ) : (
             <>
-              {filters != null && <div className="k-list-panel-filters">{filters}</div>}
-              {(hasSummary || actions != null) && (
+              {hasFilters && <div className="k-list-panel-filters">{filters}</div>}
+              {(hasSummary || hasActions) && (
                 <div className="k-list-panel-toolbar-extra">
-                  {hasSummary && <div className="k-list-panel-summary">{summary}</div>}
-                  {actions}
+                  {hasSummary && (
+                    <div className="k-list-panel-summary" aria-live="polite">
+                      {summary}
+                    </div>
+                  )}
+                  {hasActions && actions}
                 </div>
               )}
             </>
@@ -65,7 +73,7 @@ export default function ListPanel({
         </div>
       )}
       <div className="k-list-panel-content">{children}</div>
-      {footer != null && <div className="k-list-panel-footer">{footer}</div>}
+      {hasNode(footer) && <div className="k-list-panel-footer">{footer}</div>}
     </Card>
   );
 }

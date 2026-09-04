@@ -17,18 +17,21 @@ export default function RollUp({
   ...rest
 }: RollUpProps) {
   const current = value ?? 0;
-  const format = useCallback((number: number) =>
-    new Intl.NumberFormat("en-US", {
-      minimumFractionDigits: precision,
-      maximumFractionDigits: precision,
-    })
-      .format(number)
-      .split(""), [precision]);
+  const format = useCallback(
+    (number: number) =>
+      new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: precision,
+        maximumFractionDigits: precision,
+      })
+        .format(number)
+        .split(""),
+    [precision],
+  );
   const offset = (number: number) =>
     format(number).map((character) =>
       /\d/.test(character)
         ? String(Number(character) > 5 ? Number(character) - 5 : Number(character) + 5)
-        : character
+        : character,
     );
   const [characters, setCharacters] = useState(() => offset(current));
   const syncKey = `${current}:${precision}`;
