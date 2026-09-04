@@ -9,6 +9,7 @@ import { DocsContext } from "./context";
 import localEn from "./lang/en";
 import localZh from "./lang/zh";
 import AppRouter from "./router";
+import { localizeDocsPath, resolveDocsLanguage } from "./docs-language";
 
 const read = (object: unknown, path: string): unknown =>
   path.split(".").reduce<unknown>((value, key) => {
@@ -17,12 +18,12 @@ const read = (object: unknown, path: string): unknown =>
   }, object);
 
 export default function App() {
-  const lang = localStorage.getItem("lang") || "en";
+  const lang = resolveDocsLanguage(window.location.pathname, localStorage.getItem("lang"));
   const locale = useMemo(
     () => (lang === "en" ? { ...uiEn, ...localEn } : { ...uiZh, ...localZh }),
-    [lang]
+    [lang],
   );
-  if (lang === "zh") dayjs.locale("zh-cn");
+  dayjs.locale(lang === "zh" ? "zh-cn" : "en");
   const context = {
     lang,
     locale,
@@ -31,8 +32,13 @@ export default function App() {
       return typeof value === "string" ? value : (fallback ?? key);
     },
     changeLang: () => {
-      localStorage.setItem("lang", lang === "en" ? "zh" : "en");
-      window.location.reload();
+      const nextLang = lang === "en" ? "zh" : "en";
+      localStorage.setItem("lang", nextLang);
+      const nextPath = localizeDocsPath(window.location.pathname, nextLang);
+      const nextUrl = `${nextPath}${window.location.search}${window.location.hash}`;
+      if (nextUrl === `${window.location.pathname}${window.location.search}${window.location.hash}`)
+        window.location.reload();
+      else window.location.assign(nextUrl);
     },
   };
   return (

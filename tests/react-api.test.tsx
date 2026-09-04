@@ -3,6 +3,7 @@ import React from "react";
 import { describe, expect, it, vi } from "vitest";
 import {
   Button,
+  Calendar,
   Carousel,
   CarouselItem,
   Checkbox,
@@ -239,6 +240,55 @@ describe("React controlled and uncontrolled conventions", () => {
       </ConfigProvider>,
     );
     expect(screen.getByPlaceholderText(enUS.k.datePicker.selectYear)).not.toBeNull();
+  });
+
+  it("localizes Calendar and follows controlled month changes", () => {
+    const { rerender } = render(
+      <ConfigProvider locale={enUS}>
+        <Calendar value="2026-08-23" />
+      </ConfigProvider>,
+    );
+    expect(document.querySelector(".k-calendar-weekdays span")?.textContent).toMatch(/^Sun/i);
+    expect(screen.getByRole("button", { name: "Today" })).not.toBeNull();
+
+    rerender(
+      <ConfigProvider locale={enUS}>
+        <Calendar value="2026-09-15" />
+      </ConfigProvider>,
+    );
+    expect(
+      document
+        .querySelector('[data-date="2026-09-15"]')
+        ?.classList.contains("k-calendar-cell-outside"),
+    ).toBe(false);
+  });
+
+  it("selects today from another month and separates custom event clicks", () => {
+    const onChange = vi.fn();
+    const onEventClick = vi.fn();
+    const event = { key: 1, date: "2020-01-15", title: "Review" };
+    const { unmount } = render(
+      <Calendar
+        defaultValue="2020-01-15"
+        events={[event]}
+        onChange={onChange}
+        onEventClick={onEventClick}
+        event={(item) => <span>{item.title}</span>}
+      />,
+    );
+    fireEvent.click(screen.getByText("Review"));
+    expect(onEventClick).toHaveBeenCalledWith(event, expect.objectContaining({ date: event.date }));
+    expect(onChange).not.toHaveBeenCalled();
+    unmount();
+
+    render(<Calendar defaultValue="2020-01-15" onChange={onChange} />);
+    fireEvent.click(screen.getByRole("button", { name: zhCN.k.datePicker.today }));
+    const now = new Date();
+    const expected = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    expect(onChange).toHaveBeenLastCalledWith(
+      expected,
+      expect.objectContaining({ date: expected }),
+    );
   });
 
   it("requests Menu expansion without mutating controlled open keys", () => {
