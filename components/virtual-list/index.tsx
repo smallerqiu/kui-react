@@ -8,6 +8,7 @@ import React, {
   type ReactElement,
   type RefAttributes,
 } from "react";
+import { flushSync } from "react-dom";
 import { getVirtualRange, normalizeItemHeight } from "./range";
 
 export type VirtualListKey = string | number;
@@ -44,6 +45,8 @@ function VirtualListInner<T>(
   forwardedRef: ForwardedRef<VirtualListRef>,
 ) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const scrollFrameRef = useRef(0);
+  const pendingScrollTopRef = useRef(0);
   const [scrollTop, setScrollTop] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(0);
   const safeItemHeight = normalizeItemHeight(itemHeight);
@@ -62,6 +65,12 @@ function VirtualListInner<T>(
     observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
+  useEffect(
+    () => () => {
+      cancelAnimationFrame(scrollFrameRef.current);
+    },
+    [],
+  );
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -113,7 +122,13 @@ function VirtualListInner<T>(
       className={clsx("k-virtual-list", "k-scroll", className)}
       style={{ ...style, height: actualHeight }}
       onScroll={(event) => {
-        setScrollTop(event.currentTarget.scrollTop);
+        pendingScrollTopRef.current = event.currentTarget.scrollTop;
+        if (!scrollFrameRef.current) {
+          scrollFrameRef.current = requestAnimationFrame(() => {
+            scrollFrameRef.current = 0;
+            flushSync(() => setScrollTop(pendingScrollTopRef.current));
+          });
+        }
         onScroll?.(event);
       }}
     >

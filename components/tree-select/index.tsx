@@ -22,7 +22,6 @@ import Space from "../space";
 import Tag from "../tag";
 import Tooltip from "../tooltip";
 import Tree, { type TreeExpandEvent, type TreeNode } from "../tree";
-import { buildTree } from "../tree/utils";
 import { setPlacement } from "../utils/placement";
 
 export type TreeSelectValue = string | number | Array<string | number> | null | undefined;
@@ -183,20 +182,25 @@ export default function TreeSelect({
   const topRef = useRef(0);
   const leftRef = useRef(0);
 
-  const allNodes = useMemo(() => buildTree({ data, expandedKeys: expanded }), [data, expanded]);
+  const nodeLookup = useMemo(() => {
+    const lookup = new Map<string, string>();
+    const collect = (nodes: TreeNode[]) => {
+      nodes.forEach((node) => {
+        lookup.set(node.key, String(node.title ?? node.key));
+        if (node.children?.length) collect(node.children);
+      });
+    };
+    collect(data);
+    return lookup;
+  }, [data]);
   const hasMatchingNode = useMemo(() => {
     const keyword = query.trim().toLocaleLowerCase();
     if (!keyword) return data.length > 0;
-    return allNodes.some((node) =>
-      String(node.title ?? "")
-        .toLocaleLowerCase()
-        .includes(keyword),
-    );
-  }, [allNodes, data.length, query]);
+    return [...nodeLookup.values()].some((label) => label.toLocaleLowerCase().includes(keyword));
+  }, [data.length, nodeLookup, query]);
   const labels = useMemo(() => {
-    const lookup = new Map(allNodes.map((node) => [node.key, String(node.title ?? node.key)]));
-    return currentValue.map((item) => lookup.get(item) ?? item);
-  }, [allNodes, currentValue]);
+    return currentValue.map((item) => nodeLookup.get(item) ?? item);
+  }, [currentValue, nodeLookup]);
 
   const updatePosition = useCallback(() => {
     const element = selectionRef.current;
@@ -337,7 +341,7 @@ export default function TreeSelect({
       inputRef.current.style.width = `${Math.min(contentWidth, availableWidth)}px`;
     }
     if (visible) updatePosition();
-  }, [query, visible, allNodes, loading, updatePosition]);
+  }, [query, visible, nodeLookup, loading, updatePosition]);
   const searchNode = (filterable || onSearch) && (
     <div className="k-tree-select-search-wrap" onClick={(event) => event.stopPropagation()}>
       <input

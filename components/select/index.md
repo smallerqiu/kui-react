@@ -64,7 +64,7 @@
 | maxTagCount  | 多选时最多展示的标签数，超出部分通过 Tooltip 展示    | number                           | -           |
 | multiple     | 是否呈现多选模式                                     | boolean                          | false       |
 | loading      | 是否显示异步加载                                     | boolean                          | false       |
-| clearable    | 是否可以清空选项                                     | boolean                          | false       |
+| clearable    | 是否可以清空选项                                     | boolean                          | true        |
 | bordered     | 是否显示边框                                         | boolean                          | true        |
 | extendWidth  | 下拉框的宽度是否与input一致                          | boolean                          | true        |
 | showArrow    | 是否显示下拉按钮                                     | boolean                          | true        |
@@ -73,7 +73,7 @@
 | icon         | 自定义图标                                           | string                           | -           |
 | shape        | shape='circle' 时呈现圆角                            | string                           | -           |
 | virtual      | 是否开启虚拟滚动，用于高效渲染大量选项               | boolean                          | false       |
-| itemHeight   | 虚拟滚动时每个选项的高度，单位 `px`                  | number                           | 32          |
+| itemHeight   | 虚拟滚动时每个选项的高度，单位 `px`                  | number                           | 33          |
 | overscan     | 虚拟滚动时视口外额外渲染的选项数量                   | number                           | 5           |
 | onSelect     | 选中一项时触发                                       | (option: SelectOption) => void   | -           |
 | onChange     | 在选项状态发生改变时触发，返回选择的值               | (value: SelectValue) => void     | -           |

@@ -1,6 +1,15 @@
 import clsx from "clsx";
 import { ChevronDown, CircleX, Loading } from "kui-icons";
-import React, { useContext, useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
+import React, {
+  useContext,
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import { ConfigContext } from "../config/config-context";
@@ -14,7 +23,7 @@ import { isEmpty } from "../utils/number";
 import { setPlacement } from "../utils/placement";
 import { getChildren } from "../utils/react-node";
 import Option, { type OptionSelectEvent } from "./option";
-import VirtualList from "../virtual-list";
+import VirtualList, { type VirtualListRef } from "../virtual-list";
 
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 
@@ -162,43 +171,53 @@ const Select: React.FC<SelectProps> = ({
   const refSelection = useRef<HTMLDivElement>(null);
   const queryInputRef = useRef<HTMLInputElement>(null);
   const queryInputMirrorRef = useRef<HTMLSpanElement>(null);
-  const queryInputEventTimer = useRef<NodeJS.Timeout | null>(null);
-  const clearQueryTimer = useRef<NodeJS.Timeout | null>(null);
+  const queryInputEventTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clearQueryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const virtualListRef = useRef<VirtualListRef>(null);
   const positionRaf = useRef(0);
   const openRaf = useRef(0);
 
   const hasSearchEvent = !!onSearch;
   const searchable = filterable || hasSearchEvent || (multiple && allowCreate);
 
-  // Update placement position
-  const updatePosition = () => {
-    cancelAnimationFrame(positionRaf.current);
-    positionRaf.current = requestAnimationFrame(() => {
-      if (!refSelection.current || !refPopper.current) return;
-      setMinWidth(refSelection.current.offsetWidth);
-      setPlacement({
-        refSelection,
-        refPopper,
-        currentPlacement,
-        transOrigin,
-        top,
-        left,
-      });
-      setPosition({
-        left: left.current,
-        top: top.current,
-        origin: transOrigin.current,
-        placement: currentPlacement.current,
-      });
+  const syncPosition = useCallback(() => {
+    if (!refSelection.current || !refPopper.current) return;
+    setMinWidth(refSelection.current.offsetWidth);
+    setPlacement({
+      refSelection,
+      refPopper,
+      currentPlacement,
+      transOrigin,
+      top,
+      left,
     });
-  };
+    setPosition({
+      left: left.current,
+      top: top.current,
+      origin: transOrigin.current,
+      placement: currentPlacement.current,
+    });
+  }, []);
+
+  // Coalesce scroll/resize events, while allowing the first mount to position synchronously.
+  const updatePosition = useCallback(() => {
+    cancelAnimationFrame(positionRaf.current);
+    positionRaf.current = requestAnimationFrame(syncPosition);
+  }, [syncPosition]);
+  const bindPopperRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      refPopper.current = node;
+      if (node) syncPosition();
+    },
+    [syncPosition],
+  );
 
   useEffect(() => {
     currentPlacement.current = placement;
     if (visible) {
       updatePosition();
     }
-  }, [visible, placement]);
+  }, [visible, placement, updatePosition]);
 
   // Position ResizeObserver
   useEffect(() => {
@@ -207,10 +226,11 @@ const Select: React.FC<SelectProps> = ({
       updatePosition();
     });
     observer.observe(refSelection.current);
+    if (refPopper.current) observer.observe(refPopper.current);
     return () => {
       observer.disconnect();
     };
-  }, [visible]);
+  }, [visible, updatePosition]);
 
   useEffect(() => {
     document.addEventListener("scroll", updatePosition, true);
@@ -221,7 +241,7 @@ const Select: React.FC<SelectProps> = ({
       if (clearQueryTimer.current) clearTimeout(clearQueryTimer.current);
       document.removeEventListener("scroll", updatePosition, true);
     };
-  }, []);
+  }, [updatePosition]);
 
   // Handle outside click
   const outsideClick = (e: MouseEvent) => {
@@ -282,6 +302,10 @@ const Select: React.FC<SelectProps> = ({
   }, [options, loading, children, createdOptions]);
 
   const scrollOptionIntoView = (index: number) => {
+    if (virtual) {
+      virtualListRef.current?.scrollToIndex(index, "auto");
+      return;
+    }
     const containerEl = refPopper.current;
     if (!containerEl || !containerEl.children[0]) return;
     const optionEl = containerEl.querySelectorAll<HTMLElement>(".k-select-item")[index];
@@ -381,13 +405,6 @@ const Select: React.FC<SelectProps> = ({
     setQueryKey(v);
     setActiveIndex(-1);
 
-    setTimeout(() => {
-      if (queryInputMirrorRef.current && queryInputRef.current) {
-        queryInputRef.current.style.width = `${queryInputMirrorRef.current.offsetWidth}px`;
-      }
-      updatePosition();
-    }, 0);
-
     if (hasSearchEvent) {
       if (queryInputEventTimer.current) clearTimeout(queryInputEventTimer.current);
       queryInputEventTimer.current = setTimeout(() => {
@@ -486,6 +503,16 @@ const Select: React.FC<SelectProps> = ({
       : optionsData;
   }
 
+  useLayoutEffect(() => {
+    if (!visible) return;
+    if (queryInputMirrorRef.current && queryInputRef.current) {
+      const availableWidth = Math.max((refSelection.current?.clientWidth || 0) - 40, 7);
+      const contentWidth = Math.max(queryInputMirrorRef.current.offsetWidth + 2, 7);
+      queryInputRef.current.style.width = `${Math.min(contentWidth, availableWidth)}px`;
+    }
+    updatePosition();
+  }, [visible, queryKey, optionsData, loading, updatePosition]);
+
   const moveActive = (direction: 1 | -1) => {
     const filtered = filterOptions();
     if (!filtered.length) {
@@ -571,25 +598,21 @@ const Select: React.FC<SelectProps> = ({
     } else if (e.key === "Tab") closeDropdown();
   };
 
-  const renderOptions = () => {
-    const nodes = filterOptions();
-    return nodes.map((item, index) => {
-      const { label, value: val, disabled: d } = item;
-      const checked = isChecked(val);
-      return (
-        <Option
-          onSelect={handleSelect}
-          onMouseEnter={() => onMouseenter(index)}
-          key={`${val}-${label}`}
-          active={activeIndex === index}
-          value={val}
-          label={label}
-          disabled={d}
-          checked={checked}
-          multiple={multiple}
-        />
-      );
-    });
+  const renderOption = (item: SelectOption, index: number) => {
+    const { label, value: val, disabled: optionDisabled } = item;
+    return (
+      <Option
+        onSelect={handleSelect}
+        onMouseEnter={() => onMouseenter(index)}
+        key={`${val}-${label}`}
+        active={activeIndex === index}
+        value={val}
+        label={label}
+        disabled={optionDisabled}
+        checked={isChecked(val)}
+        multiple={multiple}
+      />
+    );
   };
 
   const queryKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -611,9 +634,9 @@ const Select: React.FC<SelectProps> = ({
   const renderOverlay = () => {
     if (!rendered) return null;
 
-    const optionNodes = renderOptions();
+    const filteredOptions = filterOptions();
     const popperProps = {
-      ref: refPopper,
+      ref: bindPopperRef,
       style: {
         minWidth: extendWidth ? `${minWidth}px` : undefined,
         left: `${position.left}px`,
@@ -623,6 +646,8 @@ const Select: React.FC<SelectProps> = ({
       className: clsx("k-select-dropdown", "k-scroll", {
         "k-select-dropdown-multiple": multiple,
         "k-select-dropdown-sm": size === "small",
+        "k-select-dropdown-lg": size === "large",
+        "k-select-dropdown-virtual": virtual,
       }),
       onClick: (event: React.MouseEvent) => event.stopPropagation(),
     };
@@ -638,19 +663,20 @@ const Select: React.FC<SelectProps> = ({
       <div {...popperProps}>
         {loading ? (
           loadingNode
-        ) : optionNodes.length ? (
+        ) : filteredOptions.length ? (
           virtual ? (
             <VirtualList
-              data={filterOptions()}
-              height={Math.min(200, optionNodes.length * itemHeight)}
+              ref={virtualListRef}
+              data={filteredOptions}
+              height={Math.min(200, filteredOptions.length * itemHeight)}
               itemHeight={itemHeight}
               overscan={overscan}
-              itemKey={(_, index) => index}
+              itemKey={(item) => item.value}
             >
-              {(_, index) => optionNodes[index]}
+              {renderOption}
             </VirtualList>
           ) : (
-            <ul>{optionNodes}</ul>
+            <ul>{filteredOptions.map(renderOption)}</ul>
           )
         ) : (
           <Empty onClick={emptyClick} description={emptyText || locale?.k?.select?.emptyText} />
@@ -660,7 +686,7 @@ const Select: React.FC<SelectProps> = ({
 
     return (
       <Teleport to="body">
-        <Transition show={visible} name="k-select" ref={refPopper}>
+        <Transition show={visible} name="k-select" nodeRef={refPopper} appear>
           {overlay}
         </Transition>
       </Teleport>
@@ -722,7 +748,7 @@ const Select: React.FC<SelectProps> = ({
         key={`${label}-${index}`}
         size={tagSize}
         shape={shape}
-        theme="default"
+        theme={theme}
         compact
         closeable={!disabled && !readOnly}
         onClose={() => removeTag(index)}
@@ -741,7 +767,7 @@ const Select: React.FC<SelectProps> = ({
                   key={`${label}-${index}`}
                   size="small"
                   shape={shape}
-                  theme="fill"
+                  theme={theme}
                   compact
                   closeable={!disabled && !readOnly}
                   onClose={() => removeTag(displayCount + index)}
@@ -752,7 +778,7 @@ const Select: React.FC<SelectProps> = ({
             </Space>
           }
         >
-          <Tag size={tagSize} shape={shape} theme="default" compact>
+          <Tag size={tagSize} shape={shape} theme={theme} compact>
             +{hiddenLabels.length}...
           </Tag>
         </Tooltip>,

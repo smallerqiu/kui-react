@@ -9,6 +9,7 @@ import {
   type ReactNode,
   type UIEvent,
 } from "react";
+import { flushSync } from "react-dom";
 import { Checkbox, type ChangeEvent } from "../checkbox";
 import Empty from "../empty";
 import Icon from "../icon";
@@ -65,6 +66,7 @@ export default function Table<T extends object = Record<string, unknown>>({
 }: TableProps<T>) {
   const headerRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
+  const scrollFrameRef = useRef(0);
   const controlledSelection = selectedKeys !== undefined;
   const [innerSelected, setInnerSelected] = useState(new Set(selectedKeys ?? defaultSelectedKeys));
   const [innerExpanded, setInnerExpanded] = useState(
@@ -221,6 +223,10 @@ export default function Table<T extends object = Record<string, unknown>>({
   }, [virtualEnabled, rows.length, scrollTop, viewportHeight, itemHeight, overscan]);
   const treeEnabled = allRows.some((row) => row.hasChildren);
   const matrix = useMemo(() => {
+    const hasMergedCells = leaves.some(
+      (column) => column.rowSpan !== undefined || column.colSpan !== undefined,
+    );
+    if (!hasMergedCells) return [];
     const result: MatrixCell[][] = rows.map(() =>
       leaves.map(() => ({ rowSpan: 1, colSpan: 1, show: true })),
     );
@@ -323,10 +329,22 @@ export default function Table<T extends object = Record<string, unknown>>({
   };
   const handleScroll = (event: UIEvent<HTMLDivElement>) => {
     const target = event.currentTarget;
-    setScrollTop(target.scrollTop);
-    if (split && headerRef.current) headerRef.current.scrollLeft = target.scrollLeft;
-    const max = Math.max(0, target.scrollWidth - target.clientWidth);
-    setPing({ left: target.scrollLeft > 0.5, right: target.scrollLeft < max - 0.5 });
+    if (scrollFrameRef.current) return;
+    scrollFrameRef.current = requestAnimationFrame(() => {
+      scrollFrameRef.current = 0;
+      const body = bodyRef.current ?? target;
+      if (split && headerRef.current) headerRef.current.scrollLeft = body.scrollLeft;
+      const max = Math.max(0, body.scrollWidth - body.clientWidth);
+      const update = () => {
+        if (virtualEnabled) setScrollTop(body.scrollTop);
+        const nextPing = { left: body.scrollLeft > 0.5, right: body.scrollLeft < max - 0.5 };
+        setPing((current) =>
+          current.left === nextPing.left && current.right === nextPing.right ? current : nextPing,
+        );
+      };
+      if (virtualEnabled) flushSync(update);
+      else update();
+    });
   };
   useEffect(() => {
     const body = bodyRef.current;
@@ -346,8 +364,12 @@ export default function Table<T extends object = Record<string, unknown>>({
     if (typeof ResizeObserver !== "undefined") {
       const observer = new ResizeObserver(measure);
       observer.observe(body);
-      return () => observer.disconnect();
+      return () => {
+        observer.disconnect();
+        cancelAnimationFrame(scrollFrameRef.current);
+      };
     }
+    return () => cancelAnimationFrame(scrollFrameRef.current);
   }, [bordered, split]);
 
   const colgroup = (headerTable = false) => (
@@ -470,8 +492,8 @@ export default function Table<T extends object = Record<string, unknown>>({
             </td>
           )}
           {leaves.map((column, colIndex) => {
-            const cell = matrix[rowIndex]?.[colIndex];
-            if (!cell?.show) return null;
+            const cell = matrix[rowIndex]?.[colIndex] ?? { rowSpan: 1, colSpan: 1, show: true };
+            if (!cell.show) return null;
             const value = getRecordValue(record, column.key);
             const content =
               column.render?.(value, record, rowIndex, column) ?? (value as ReactNode);

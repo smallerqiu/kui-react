@@ -64,7 +64,7 @@ Dropdown selector.
 | maxTagCount  | Maximum visible tags in multiple mode; excess tags are shown in a Tooltip | number                             | -             |
 | multiple     | Whether to display in multiple selection mode                             | boolean                            | false         |
 | loading      | Whether to show asynchronous loading                                      | boolean                            | false         |
-| clearable    | Whether options can be cleared                                            | boolean                            | false         |
+| clearable    | Whether options can be cleared                                            | boolean                            | true          |
 | bordered     | Whether to show border                                                    | boolean                            | true          |
 | extendWidth  | Whether dropdown width matches input width                                | boolean                            | true          |
 | showArrow    | Whether to show dropdown button                                           | boolean                            | true          |
@@ -73,7 +73,7 @@ Dropdown selector.
 | icon         | Custom icon                                                               | string                             | -             |
 | shape        | When shape='circle', displays rounded corners                             | string                             | -             |
 | virtual      | Whether to enable virtual scrolling for large option lists                | boolean                            | false         |
-| itemHeight   | Height of each option in pixels when virtual scrolling is enabled         | number                             | 32            |
+| itemHeight   | Height of each option in pixels when virtual scrolling is enabled         | number                             | 33            |
 | overscan     | Number of extra options rendered outside the viewport                     | number                             | 5             |
 | onSelect     | Triggered when an item is selected                                        | (option: SelectOption) => void     | -             |
 | onChange     | Triggered when option state changes, returns selected value               | (value: SelectValue) => void       | -             |
