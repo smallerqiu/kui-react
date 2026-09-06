@@ -1,6 +1,14 @@
 import clsx from "clsx";
 import { CircleX, Loading } from "kui-icons";
-import React, { useCallback, useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
@@ -112,6 +120,7 @@ const Mentions: React.FC<MentionsProps> = ({
   ...rest
 }) => {
   const [inner, setInner] = useState(defaultValue);
+  const listboxId = `k-mentions-listbox-${useId().replace(/:/g, "")}`;
   const [query, setQuery] = useState<Query | null>(null);
   const [rendered, setRendered] = useState(false);
   const [active, setActive] = useState(0);
@@ -125,11 +134,29 @@ const Mentions: React.FC<MentionsProps> = ({
   const originRef = useRef("left top");
   const topRef = useRef(0);
   const leftRef = useRef(0);
+  const composing = useRef(false);
   const current = value ?? inner;
   const normalized = useMemo(
     () => options.map((item) => (typeof item === "string" ? { value: item, label: item } : item)),
     [options],
   );
+  const effectiveTriggers = useMemo(() => triggers.filter(Boolean), [triggers]);
+  const firstEnabled = (items: MentionOption[]) => {
+    const index = items.findIndex((option) => !option.disabled);
+    return index < 0 ? 0 : index;
+  };
+  const setMatches = (items: MentionOption[]) => {
+    setShown(items);
+    setActive(firstEnabled(items));
+  };
+  const moveActive = (offset: number) => {
+    const enabled = shown
+      .map((option, index) => (!option.disabled ? index : -1))
+      .filter((index) => index >= 0);
+    if (!enabled.length) return;
+    const currentIndex = enabled.indexOf(active);
+    setActive(enabled[(Math.max(currentIndex, 0) + offset + enabled.length) % enabled.length]);
+  };
   const getMatches = useCallback(
     (state: Query) => {
       if (onSearch && !filterOption) return normalized;
@@ -144,7 +171,7 @@ const Mentions: React.FC<MentionsProps> = ({
   const [previousNormalized, setPreviousNormalized] = useState(normalized);
   if (previousNormalized !== normalized) {
     setPreviousNormalized(normalized);
-    if (query) setShown(getMatches(query));
+    if (query) setMatches(getMatches(query));
   }
   const updatePosition = () => {
     if (!query || !textareaRef.current || !dropdownRef.current) return;
@@ -175,7 +202,7 @@ const Mentions: React.FC<MentionsProps> = ({
     }
     const prefix = text.slice(0, caret);
     let found: Query | null = null;
-    triggers.forEach((trigger) => {
+    effectiveTriggers.forEach((trigger) => {
       const start = prefix.lastIndexOf(trigger);
       if (
         start >= 0 &&
@@ -187,34 +214,54 @@ const Mentions: React.FC<MentionsProps> = ({
     const nextQuery = found as Query | null;
     setQuery(nextQuery);
     if (!query && nextQuery) setPositioned(false);
-    setActive(0);
     if (nextQuery) {
       setRendered(true);
-      setShown(onSearch && search && nextQuery.text ? [] : getMatches(nextQuery));
+      setMatches(onSearch && search && nextQuery.text ? [] : getMatches(nextQuery));
       if (search && nextQuery.text) onSearch?.(nextQuery.text, nextQuery.trigger);
     } else {
-      setShown([]);
+      setMatches([]);
     }
   };
   const positionDropdown = useEffectEvent(updatePosition);
   useEffect(() => {
     if (!query) return;
-    const frame = requestAnimationFrame(positionDropdown);
-    const update = () => requestAnimationFrame(positionDropdown);
+    let frame = 0;
+    const update = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(positionDropdown);
+    };
+    const closeOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (!rootRef.current?.contains(target) && !dropdownRef.current?.contains(target)) {
+        setQuery(null);
+      }
+    };
+    const observer = new ResizeObserver(update);
+    if (rootRef.current) observer.observe(rootRef.current);
+    if (dropdownRef.current) observer.observe(dropdownRef.current);
+    update();
     window.addEventListener("resize", update);
     window.addEventListener("scroll", update, true);
+    document.addEventListener("mousedown", closeOutside);
     return () => {
       cancelAnimationFrame(frame);
+      observer.disconnect();
       window.removeEventListener("resize", update);
       window.removeEventListener("scroll", update, true);
+      document.removeEventListener("mousedown", closeOutside);
     };
   }, [query, shown, placement]);
+  useEffect(() => {
+    dropdownRef.current
+      ?.querySelector<HTMLElement>(`#${listboxId}-option-${active}`)
+      ?.scrollIntoView({ block: "nearest" });
+  }, [active, listboxId]);
   const setValue = (next: string) => {
     if (readOnly) return;
     if (value === undefined) setInner(next);
     onChange?.(next);
   };
-  const clear = (event: React.MouseEvent) => {
+  const clear = (event: React.SyntheticEvent) => {
     if (readOnly) return;
     event.stopPropagation();
     setValue("");
@@ -259,9 +306,21 @@ const Mentions: React.FC<MentionsProps> = ({
         theme={theme}
         disabled={disabled}
         readOnly={readOnly}
+        aria-haspopup="listbox"
+        aria-expanded={Boolean(query)}
+        aria-controls={query ? listboxId : undefined}
+        aria-activedescendant={query && shown[active] ? `${listboxId}-option-${active}` : undefined}
         onChange={(text) => {
           setValue(text);
+          if (composing.current) return;
           if (textareaRef.current) updateQuery(text, textareaRef.current.selectionStart, true);
+        }}
+        onCompositionStart={() => {
+          composing.current = true;
+        }}
+        onCompositionEnd={(event) => {
+          composing.current = false;
+          updateQuery(event.currentTarget.value, event.currentTarget.selectionStart, true);
         }}
         onClick={() =>
           textareaRef.current && updateQuery(current, textareaRef.current.selectionStart)
@@ -280,24 +339,37 @@ const Mentions: React.FC<MentionsProps> = ({
         onKeyDown={(event) => {
           if (!query) return;
           if ((event.key === "ArrowDown" || event.key === "ArrowUp") && shown.length) {
-            setActive(
-              (active + (event.key === "ArrowDown" ? 1 : -1) + shown.length) % shown.length,
-            );
+            moveActive(event.key === "ArrowDown" ? 1 : -1);
             event.preventDefault();
           } else if (event.key === "Enter" && shown.length) {
             choose(shown[active]);
             event.preventDefault();
-          } else if (event.key === "Escape") setQuery(null);
+          } else if (event.key === "Escape") {
+            event.preventDefault();
+            event.stopPropagation();
+            setQuery(null);
+          }
         }}
       />
       {clearable && current && !disabled && !readOnly && (
-        <Icon className="k-mentions-clearable" type={CircleX} onClick={clear} />
+        <Icon
+          className="k-mentions-clearable"
+          type={CircleX}
+          role="button"
+          tabIndex={0}
+          aria-label="Clear"
+          onClick={clear}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") clear(event);
+          }}
+        />
       )}
       {rendered && (
         <Teleport to="body">
           <Transition show={!!query} name="k-select" nodeRef={dropdownRef} appear>
             <div
               ref={dropdownRef}
+              id={listboxId}
               className={clsx("k-select-dropdown", "k-mentions-dropdown", {
                 "k-select-dropdown-sm": size === "small",
                 "k-select-dropdown-lg": size === "large",
@@ -321,6 +393,7 @@ const Mentions: React.FC<MentionsProps> = ({
                   {shown.map((option, index) => (
                     <li
                       key={option.value}
+                      id={`${listboxId}-option-${index}`}
                       role="option"
                       aria-selected={active === index}
                       className={clsx("k-select-item", {
@@ -328,6 +401,7 @@ const Mentions: React.FC<MentionsProps> = ({
                         "k-select-item-disabled": option.disabled,
                       })}
                       onMouseDown={(event) => event.preventDefault()}
+                      onMouseEnter={() => !option.disabled && setActive(index)}
                       onClick={() => choose(option)}
                     >
                       {option.label ?? option.value}
