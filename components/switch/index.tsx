@@ -13,6 +13,7 @@ export interface SwitchProps extends Omit<
   defaultChecked?: boolean;
   valueType?: ValueType;
   type?: string;
+  color?: string;
   disabled?: boolean;
   readOnly?: boolean;
   loading?: boolean;
@@ -30,6 +31,7 @@ const Switch: React.FC<SwitchProps> = ({
   defaultChecked = false,
   valueType = "boolean",
   type,
+  color,
   disabled = false,
   readOnly = false,
   loading = false,
@@ -41,6 +43,7 @@ const Switch: React.FC<SwitchProps> = ({
   unCheckedChildren,
   onChange,
   className = "",
+  style,
   onClick,
   ...rest
 }) => {
@@ -74,8 +77,8 @@ const Switch: React.FC<SwitchProps> = ({
 
   const loadNode = loading ? <Icon spin type={Loading} className="k-switch-loading" /> : null;
 
-  const currentCheckedChildren = checkedChildren || trueText;
-  const currentUnCheckedChildren = unCheckedChildren || falseText;
+  const currentCheckedChildren = checkedChildren ?? trueText;
+  const currentUnCheckedChildren = unCheckedChildren ?? falseText;
 
   const showInner = size !== "small" && (currentCheckedChildren || currentUnCheckedChildren);
 
@@ -88,8 +91,11 @@ const Switch: React.FC<SwitchProps> = ({
   return (
     <button
       className={classes}
+      style={{ ...(color ? { "--kui-switch-color": color } : {}), ...style } as React.CSSProperties}
       onClick={change}
       disabled={disabled || loading}
+      role="switch"
+      aria-checked={currentChecked}
       aria-readonly={readOnly || undefined}
       type="button"
       {...rest}
