@@ -5,13 +5,21 @@ export default function App() {
   return (
     <div className="demo-view-fill">
       <Tabs value={value} onChange={setValue} sample>
-        {[1, 2, 3].map((x) => (
-          <TabPanel key={x} title={`Tab ${x}`}>
-            <p>Content of Tab Pane {x}</p>
-            <p>Content of Tab Pane {x}</p>
-            <p>Content of Tab Pane {x}</p>
-          </TabPanel>
-        ))}
+        <TabPanel key="1" title="Tab 1">
+          <p>Content of Tab Pane 1</p>
+          <p>Content of Tab Pane 1</p>
+          <p>Content of Tab Pane 1</p>
+        </TabPanel>
+        <TabPanel key="2" title="Tab 2">
+          <p>Content of Tab Pane 2</p>
+          <p>Content of Tab Pane 2</p>
+          <p>Content of Tab Pane 2</p>
+        </TabPanel>
+        <TabPanel key="3" title="Tab 3">
+          <p>Content of Tab Pane 3</p>
+          <p>Content of Tab Pane 3</p>
+          <p>Content of Tab Pane 3</p>
+        </TabPanel>
       </Tabs>
     </div>
   );

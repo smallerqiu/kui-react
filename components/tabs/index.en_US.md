@@ -35,9 +35,13 @@ Provide peer areas to accommodate and display large chunks of content, keeping t
 
 - Another style of tabs.
 
+[Browser-style Tabs](./demo/browser.tsx?show=vertical)
+
+- Suitable for multi-document, editor, and workspace scenarios.
+
 [Add and Close Tabs](./demo/closable.tsx?show=vertical)
 
-- Only card-style tabs support adding and closing options. Use `closable={false}` to disable closing.
+- Card-style and browser-style tabs support closing. Use `closable={false}` to disable closing.
 
 [Minimalist Tabs](./demo/sample.tsx?show=vertical)
 
@@ -45,25 +49,26 @@ Provide peer areas to accommodate and display large chunks of content, keeping t
 
 ## Tabs API
 
-| Property   | Description                                                     | Type                  | Default |
-| ---------- | --------------------------------------------------------------- | --------------------- | ------- |
-| value      | Currently active tab panel's key                                | string, number        | -       |
-| defaultValue | Initially active key in uncontrolled mode                      | string, number        | First panel |
-| card       | Whether tab style is card style                                 | boolean                  | false   |
-| sample     | Whether tab style is simple style                               | boolean                  | false   |
-| animated   | Whether to use animation to switch Tabs                         | boolean                  | true    |
-| centered   | Whether to center the label                                     | boolean                  | false   |
-| extra      | Extra content displayed on the right side of the tab bar        | ReactNode                | -       |
-| onRemove   | Callback when tab is closed, returns the closed tab's key value | (key: string) => void | -       |
-| onChange   | Callback when switching panels                                  | (key: string) => void | -       |
-| onTabClick | Callback when tab is clicked                                    | (key: string) => void | -       |
+| Property     | Description                                                     | Type                                      | Default             |
+| ------------ | --------------------------------------------------------------- | ----------------------------------------- | ------------------- |
+| value        | Currently active tab panel's key                                | string \| number                          | -                   |
+| defaultValue | Initially active key in uncontrolled mode                       | string \| number                          | First enabled panel |
+| variant      | Tab presentation                                                | `line` \| `card` \| `sample` \| `browser` | `line`              |
+| card         | Whether to use card style; retained for compatibility           | boolean                                   | false               |
+| sample       | Whether to use sample style; retained for compatibility         | boolean                                   | false               |
+| animated     | Whether to use animation to switch Tabs                         | boolean                                   | true                |
+| centered     | Whether to center the label                                     | boolean                                   | false               |
+| extra        | Extra content displayed on the right side of the tab bar        | ReactNode                                 | -                   |
+| onRemove     | Callback when tab is closed, returns the closed tab's key value | (key: string) => void                     | -                   |
+| onChange     | Callback when switching panels                                  | (key: string) => void                     | -                   |
+| onTabClick   | Callback when tab is clicked                                    | (key: string) => void                     | -                   |
 
 ## Tabs.TabPanel API
 
-| Property | Description                    | Type   | Default |
-| -------- | ------------------------------ | ------ | ------- |
-| key      | Unique identifier of the panel | string | -       |
-| title    | Text displayed in tab header   | string | -       |
-| icon     | Icon displayed in tab header   | string | -       |
-| disabled | Whether tab is disabled        | boolean   | false   |
-| closable | Whether tab shows close button | boolean   | false   |
+| Property | Description                     | Type             | Default |
+| -------- | ------------------------------- | ---------------- | ------- |
+| key      | Unique identifier of the panel  | string \| number | -       |
+| title    | Content displayed in tab header | ReactNode        | -       |
+| icon     | Icon displayed in tab header    | IconType         | -       |
+| disabled | Whether tab is disabled         | boolean          | false   |
+| closable | Whether tab shows close button  | boolean          | false   |

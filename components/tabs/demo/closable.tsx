@@ -8,9 +8,9 @@ interface Pane {
   closable?: boolean;
 }
 const initial: Pane[] = [
-  { key: "1", title: "Tab 1", content: "Content 1" },
-  { key: "2", title: "Tab 2", content: "Content 2", closable: true },
-  { key: "3", title: "Tab 3", content: "Content 3", closable: true },
+  { key: "1", title: "Tab 1", content: "Content of Tab 1" },
+  { key: "2", title: "Tab 2", content: "Content of Tab 2", closable: true },
+  { key: "3", title: "Tab 3", content: "Content of Tab 3", closable: true },
 ];
 export default function App() {
   const [panes, setPanes] = useState(initial);
@@ -38,7 +38,7 @@ export default function App() {
       onChange={setActive}
       card
       onRemove={remove}
-      extra={<Button icon={Plus} size="small" onClick={add} />}
+      extra={<Button icon={Plus} onClick={add} />}
     >
       {panes.map((x) => (
         <TabPanel key={x.key} title={x.title} closable={x.closable}>
