@@ -34,7 +34,7 @@ const InputTag: React.FC<InputTagProps> = ({
   placeholder,
   disabled = false,
   readOnly = false,
-  clearable = false,
+  clearable = true,
   block = false,
   allowDuplicates = false,
   max,
@@ -48,6 +48,7 @@ const InputTag: React.FC<InputTagProps> = ({
   onRemove,
   onClear,
   className,
+  onClick,
   ...rest
 }) => {
   const [inner, setInner] = useState(defaultValue);
@@ -59,23 +60,28 @@ const InputTag: React.FC<InputTagProps> = ({
     if (value === undefined) setInner(next);
     onChange?.(next);
   };
-  const commit = (raw = draft) => {
+  const addValues = (items: string[]) => {
     if (disabled || readOnly) return;
-    const text = raw.trim();
-    if (!text || (max !== undefined && tags.length >= max)) {
-      setDraft("");
-      return;
+    const next = [...tags];
+    const added: string[] = [];
+    for (const item of items) {
+      const text = item.trim();
+      if (!text || (max !== undefined && next.length >= max)) continue;
+      if (
+        !allowDuplicates &&
+        next.some((tag) => tag.toLocaleLowerCase() === text.toLocaleLowerCase())
+      )
+        continue;
+      next.push(text);
+      added.push(text);
     }
-    if (
-      !allowDuplicates &&
-      tags.some((tag) => tag.toLocaleLowerCase() === text.toLocaleLowerCase())
-    ) {
-      setDraft("");
-      return;
-    }
-    update([...tags, text]);
+    if (!added.length) return;
+    update(next);
+    added.forEach((text) => onAdd?.(text));
+  };
+  const commit = (raw = draft) => {
+    addValues([raw]);
     setDraft("");
-    onAdd?.(text);
   };
   const remove = (index: number) => {
     if (disabled || readOnly || index < 0) return;
@@ -83,7 +89,7 @@ const InputTag: React.FC<InputTagProps> = ({
     update(tags.filter((_, itemIndex) => itemIndex !== index));
     onRemove?.(removed, index);
   };
-  const clear = (event: React.MouseEvent) => {
+  const clear = (event: React.SyntheticEvent) => {
     if (disabled || readOnly) return;
     event.stopPropagation();
     setDraft("");
@@ -94,11 +100,16 @@ const InputTag: React.FC<InputTagProps> = ({
     const nextValue = event.target.value;
     setDraft(nextValue);
     if ((event.nativeEvent as InputEvent).isComposing) return;
-    const separator = separators.find((item) => item && nextValue.endsWith(item));
-    if (!separator) return;
-    const text = nextValue.slice(0, -separator.length);
-    setDraft(text);
-    commit(text);
+    const activeSeparators = separators.filter(Boolean).sort((a, b) => b.length - a.length);
+    if (!activeSeparators.some((separator) => nextValue.includes(separator))) return;
+    const pattern = new RegExp(
+      activeSeparators.map((item) => item.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"),
+      "g",
+    );
+    const items = nextValue.split(pattern);
+    const trailing = activeSeparators.some((separator) => nextValue.endsWith(separator));
+    setDraft(trailing ? "" : (items.pop() ?? ""));
+    addValues(items);
   };
 
   const hasDisplayLimit = typeof maxTagCount === "number" && Number.isFinite(maxTagCount);
@@ -123,7 +134,11 @@ const InputTag: React.FC<InputTagProps> = ({
         },
         className,
       )}
-      onClick={() => !disabled && inputRef.current?.focus()}
+      onClick={(event) => {
+        onClick?.(event);
+        if (!event.defaultPrevented && !disabled) inputRef.current?.focus();
+      }}
+      aria-disabled={disabled || undefined}
       aria-readonly={readOnly || undefined}
     >
       {visibleTags.map((tag, index) => (
@@ -132,7 +147,7 @@ const InputTag: React.FC<InputTagProps> = ({
           className="k-input-tag-item"
           size={size}
           shape={shape}
-          theme="fill"
+          theme={theme}
           compact
           closeable={!disabled && !readOnly}
           onClose={() => remove(index)}
@@ -143,28 +158,30 @@ const InputTag: React.FC<InputTagProps> = ({
       {hiddenTags.length > 0 && (
         <Tooltip
           title={
-            <Space wrap size={4}>
-              {hiddenTags.map((tag, index) => (
-                <Tag
-                  key={`${tag}-${index}`}
-                  size="small"
-                  shape={shape}
-                  theme="fill"
-                  compact
-                  closeable={!disabled && !readOnly}
-                  onClose={() => remove(displayCount + index)}
-                >
-                  {tag}
-                </Tag>
-              ))}
-            </Space>
+            <div className="k-input-tag-tooltip-tags">
+              <Space wrap size={4}>
+                {hiddenTags.map((tag, index) => (
+                  <Tag
+                    key={`${tag}-${index}`}
+                    size={size}
+                    shape={shape}
+                    theme={theme}
+                    compact
+                    closeable={!disabled && !readOnly}
+                    onClose={() => remove(displayCount + index)}
+                  >
+                    {tag}
+                  </Tag>
+                ))}
+              </Space>
+            </div>
           }
         >
           <Tag
             className="k-input-tag-item k-input-tag-rest"
             size={size}
             shape={shape}
-            theme="fill"
+            theme={theme}
             compact
           >
             +{hiddenTags.length}...
@@ -194,7 +211,17 @@ const InputTag: React.FC<InputTagProps> = ({
         }}
       />
       {clearable && tags.length > 0 && !disabled && !readOnly && (
-        <Icon className="k-input-tag-clearable" type={CircleX} onClick={clear} />
+        <Icon
+          className="k-input-tag-clearable"
+          type={CircleX}
+          role="button"
+          tabIndex={0}
+          aria-label="Clear"
+          onClick={clear}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") clear(event);
+          }}
+        />
       )}
     </div>
   );

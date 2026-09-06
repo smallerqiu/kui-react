@@ -1,6 +1,14 @@
-import { InputTag } from "react-kui";
+import { Button, InputTag, Space } from "react-kui";
 import { useState } from "react";
 export default function App() {
-  const [value, setValue] = useState(["React"]);
-  return <InputTag value={value} onChange={setValue} placeholder="受控标签" />;
+  const [tags, setTags] = useState(["Design", "TypeScript"]);
+  return (
+    <Space vertical>
+      <code>{tags.join(" / ")}</code>
+      <InputTag value={tags} onChange={setTags} />
+      <Button size="small" onClick={() => setTags(["Design", "TypeScript"])}>
+        重置
+      </Button>
+    </Space>
+  );
 }

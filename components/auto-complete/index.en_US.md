@@ -30,23 +30,26 @@ Suggest options while keeping free-form input available.
 
 ## AutoComplete API
 
-| Property     | Description                                 | Type                           | Default |
-| ------------ | ------------------------------------------- | ------------------------------ | ------- |
-| value        | Controlled value                            | string                         | -       |
-| defaultValue | Initial value                               | string                         | -       |
-| options      | Suggestions                                 | (string\|AutoCompleteOption)[] | []      |
-| open         | Controlled open state                       | boolean                        | -       |
-| defaultOpen  | Initial open state                          | boolean                        | false   |
-| showOnEmpty  | Show suggestions for an empty focused input | boolean                        | false   |
-| clearable    | Show clear button on hover                  | boolean                        | false   |
-| loading      | Loading state                               | boolean                        | false   |
-| loadingText  | Loading text                                | string                         | Loading |
-| size         | Size                                        | small\|medium\|large           | medium  |
-| theme        | Theme                                       | fill\|outline\|plain           | fill    |
-| shape        | Shape                                       | circle\|square\|round\|default | default |
-| filterOption | Filter strategy                             | boolean\|function              | true    |
-| onChange     | Value change                                | function                       | -       |
-| onClear      | Clear callback                              | function                       | -       |
-| onSearch     | Search callback                             | function                       | -       |
-| onSelect     | Option selection                            | function                       | -       |
-| onOpenChange | Open state change                           | function                       | -       |
+| Property     | Description                                       | Type                                         | Default |
+| ------------ | ------------------------------------------------- | -------------------------------------------- | ------- |
+| value        | Controlled value                                  | string                                       | -       |
+| defaultValue | Initial value                                     | string                                       | ''      |
+| options      | Suggestions                                       | (string \| AutoCompleteOption)[]             | []      |
+| open         | Controlled open state                             | boolean                                      | -       |
+| defaultOpen  | Initial open state                                | boolean                                      | false   |
+| showOnEmpty  | Show suggestions for an empty focused input       | boolean                                      | false   |
+| clearable    | Show clear button on hover                        | boolean                                      | false   |
+| disabled     | Disabled                                          | boolean                                      | false   |
+| readOnly     | Read-only; prevents editing, clearing and opening | boolean                                      | false   |
+| placeholder  | Placeholder                                       | string                                       | -       |
+| loading      | Loading state                                     | boolean                                      | false   |
+| loadingText  | Loading text                                      | string                                       | Loading |
+| size         | Size                                              | 'small' \| 'medium' \| 'large'               | medium  |
+| theme        | Theme                                             | 'fill' \| 'outline' \| 'plain'               | fill    |
+| shape        | Shape                                             | 'circle' \| 'square' \| 'round' \| 'default' | default |
+| filterOption | Filter strategy                                   | boolean \| ((input, option) => boolean)      | true    |
+| onChange     | Value change                                      | (value: string) => void                      | -       |
+| onClear      | Clear callback                                    | () => void                                   | -       |
+| onSearch     | Search callback                                   | (value: string) => void                      | -       |
+| onSelect     | Option selection                                  | (value, option) => void                      | -       |
+| onOpenChange | Open state change                                 | (open: boolean) => void                      | -       |

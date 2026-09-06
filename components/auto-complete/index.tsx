@@ -1,6 +1,14 @@
 import clsx from "clsx";
 import { Loading } from "kui-icons";
-import React, { useContext, useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useEffectEvent,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import { ConfigContext } from "../config/config-context";
@@ -63,9 +71,13 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   readOnly,
   onFocus,
   onBlur,
+  onKeyDown,
+  onCompositionStart,
+  onCompositionEnd,
   ...rest
 }) => {
   const locale = useContext(ConfigContext)?.locale || zhCN;
+  const listboxId = `k-auto-complete-listbox-${useId().replace(/:/g, "")}`;
   const normalized = useMemo(
     () => options.map((item) => (typeof item === "string" ? { value: item, label: item } : item)),
     [options],
@@ -97,13 +109,15 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   const [position, setPosition] = useState({ left: 0, top: 0, origin: "left top", width: 0 });
   const rootRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const blurTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const composing = useRef(false);
   const placementRef = useRef("bottom-left");
   const originRef = useRef("left top");
   const topRef = useRef(0);
   const leftRef = useRef(0);
   const current = value ?? innerValue;
   const requestedOpen = open ?? innerOpen;
-  const visible = (loading || shownOptions.length > 0) && requestedOpen;
+  const visible = (loading || (!suppressRemoteOptions && shownOptions.length > 0)) && requestedOpen;
   const getMatches = (input: string) =>
     normalized.filter((option) =>
       typeof filterOption === "function"
@@ -112,11 +126,13 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
     );
   const setOpen = (next: boolean) => {
     if (next && readOnly) return;
+    if (next && suppressRemoteOptions && !loading) return;
     if (next) {
       setRendered(true);
       if (!requestedOpen) setPositioned(false);
     }
     if (open === undefined) setInnerOpen(next);
+    if (!next) setActive(-1);
     onOpenChange?.(next);
   };
   const commitMatches = (input: string) => {
@@ -130,6 +146,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
       if (!requestedOpen) setPositioned(false);
     }
     if (open === undefined) setInnerOpen(next);
+    if (!next) setActive(-1);
     setSyncedOpenChange((state) => ({ value: next, revision: (state?.revision ?? 0) + 1 }));
   };
   const updatePosition = () => {
@@ -172,16 +189,30 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   }, [syncedOpenChange]);
   useEffect(() => {
     if (!visible) return;
-    const frame = requestAnimationFrame(updatePosition);
-    const update = () => requestAnimationFrame(updatePosition);
+    let frame = 0;
+    const update = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(updatePosition);
+    };
+    const observer = new ResizeObserver(update);
+    if (rootRef.current) observer.observe(rootRef.current);
+    if (dropdownRef.current) observer.observe(dropdownRef.current);
+    update();
     document.addEventListener("scroll", update, true);
     window.addEventListener("resize", update);
     return () => {
       cancelAnimationFrame(frame);
+      observer.disconnect();
       document.removeEventListener("scroll", update, true);
       window.removeEventListener("resize", update);
     };
   }, [visible, shownOptions, loading]);
+  useEffect(() => () => clearTimeout(blurTimer.current), []);
+  useEffect(() => {
+    dropdownRef.current
+      ?.querySelector<HTMLElement>(`#${listboxId}-option-${active}`)
+      ?.scrollIntoView({ block: "nearest" });
+  }, [active, listboxId]);
 
   const update = (next: string) => {
     if (readOnly) return;
@@ -198,6 +229,10 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   const handleInput = (next: string) => {
     if (readOnly) return;
     update(next);
+    if (composing.current) return;
+    search(next);
+  };
+  const search = (next: string) => {
     onSearch?.(next);
     if (!next && !showOnEmpty) {
       setSuppressRemoteOptions(!!onSearch);
@@ -215,23 +250,33 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (readOnly) return;
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      if ((!current && !showOnEmpty) || suppressRemoteOptions) return;
+      if (!getMatches(current).length) return;
       if (!shownOptions.length) return;
       if (!visible) setOpen(true);
-      const direction = event.key === "ArrowDown" ? 1 : -1;
-      let next = active;
-      for (let i = 0; i < shownOptions.length; i += 1) {
-        next = (next + direction + shownOptions.length) % shownOptions.length;
-        if (!shownOptions[next]?.disabled) {
-          setActive(next);
-          break;
-        }
-      }
+      const enabled = shownOptions
+        .map((option, index) => (!option.disabled ? index : -1))
+        .filter((index) => index >= 0);
+      if (!enabled.length) return;
+      const currentIndex = enabled.indexOf(active);
+      setActive(
+        currentIndex < 0
+          ? enabled[event.key === "ArrowDown" ? 0 : enabled.length - 1]
+          : enabled[
+              (currentIndex + (event.key === "ArrowDown" ? 1 : -1) + enabled.length) %
+                enabled.length
+            ],
+      );
       event.preventDefault();
-    } else if (event.key === "Enter" && active >= 0) {
+    } else if (event.key === "Enter" && visible && active >= 0) {
       const option = shownOptions[active];
       if (option) choose(option);
       event.preventDefault();
-    } else if (event.key === "Escape") setOpen(false);
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      event.stopPropagation();
+      setOpen(false);
+    }
   };
 
   return (
@@ -248,8 +293,11 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         role="combobox"
         aria-autocomplete="list"
         aria-expanded={visible}
+        aria-controls={visible ? listboxId : undefined}
+        aria-activedescendant={visible && active >= 0 ? `${listboxId}-option-${active}` : undefined}
         onFocus={(event) => {
           onFocus?.(event);
+          if (event.defaultPrevented) return;
           if (disabled || readOnly) return;
           const matches = getMatches(current);
           if (matches.length) setShownOptions(matches);
@@ -257,17 +305,32 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         }}
         onBlur={(event) => {
           onBlur?.(event);
-          setTimeout(() => setOpen(false), 120);
+          if (event.defaultPrevented) return;
+          clearTimeout(blurTimer.current);
+          blurTimer.current = setTimeout(() => setOpen(false), 120);
+        }}
+        onCompositionStart={(event) => {
+          composing.current = true;
+          onCompositionStart?.(event);
+        }}
+        onCompositionEnd={(event) => {
+          composing.current = false;
+          onCompositionEnd?.(event);
+          if (!event.defaultPrevented) search(event.currentTarget.value);
         }}
         onClear={onClear}
         onChange={handleInput}
-        onKeyDown={handleKeyDown}
+        onKeyDown={(event) => {
+          onKeyDown?.(event);
+          if (!event.defaultPrevented) handleKeyDown(event);
+        }}
       />
       {rendered && (
         <Teleport to="body">
           <Transition show={visible} name="k-select" nodeRef={dropdownRef} appear>
             <div
               ref={dropdownRef}
+              id={listboxId}
               className={clsx("k-select-dropdown", "k-auto-complete-dropdown", {
                 "k-select-dropdown-sm": size === "small",
                 "k-select-dropdown-lg": size === "large",
@@ -281,7 +344,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
               }}
               role="listbox"
             >
-              {loading || suppressRemoteOptions ? (
+              {loading ? (
                 <div className="k-select-loading">
                   <Icon type={Loading} spin />
                   <span>{loadingText || locale.k.select.loading}</span>
@@ -291,6 +354,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
                   {shownOptions.map((option, index) => (
                     <li
                       key={option.value}
+                      id={`${listboxId}-option-${index}`}
                       role="option"
                       aria-selected={active === index}
                       aria-disabled={option.disabled || undefined}
@@ -299,6 +363,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
                         "k-select-item-disabled": option.disabled,
                       })}
                       onMouseDown={(event) => event.preventDefault()}
+                      onMouseEnter={() => !option.disabled && setActive(index)}
                       onClick={() => choose(option)}
                     >
                       {option.label ?? option.value}

@@ -8,23 +8,23 @@ Turns continuous input into an editable tag collection.
 
 - Press Enter to add and Backspace to remove tags.
 
-[Controlled](./demo/controlled.tsx)
+[Controlled tags](./demo/controlled.tsx)
 
 - Manage the tag collection with `value` and `onChange`.
+
+[Maximum count](./demo/limit.tsx)
+
+- Use `max` to limit the total number of tags and `maxTagCount` to limit visible tags.
 
 [Separators](./demo/separators.tsx)
 
 - Commit tags with comma or semicolon.
 
-[Limit](./demo/limit.tsx)
-
-- Use `max` to limit total tags and `maxTagCount` to limit visible tags.
-
 [Size](./demo/size.tsx?show=vertical)
 
 - Different sizes.
 
-[Appearance](./demo/appearance.tsx)
+[Appearance and disabled](./demo/appearance.tsx)
 
 - Shows theme, shape, and disabled states.
 
@@ -37,7 +37,7 @@ Turns continuous input into an editable tag collection.
 | placeholder     | Placeholder                                        | string                         | -       |
 | disabled        | Disabled state                                     | boolean                        | false   |
 | readOnly        | Read-only while remaining focusable                | boolean                        | false   |
-| clearable       | Whether to show the clear button                   | boolean                        | false   |
+| clearable       | Whether to show the clear button                   | boolean                        | true    |
 | block           | Fill the parent width                              | boolean                        | false   |
 | size            | Size                                               | small\|medium\|large           | medium  |
 | theme           | Theme                                              | fill\|outline\|plain           | fill    |
