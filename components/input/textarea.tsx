@@ -32,7 +32,7 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
     ref,
   ) => {
     const [innerValue, setInnerValue] = useState(defaultValue);
-    const currentValue = value ?? innerValue;
+    const currentValue = value !== undefined ? value : innerValue;
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       const v = e.target.value;
       if (value === undefined) {

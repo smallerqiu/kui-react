@@ -49,15 +49,17 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 | defaultValue        | Initial input value in uncontrolled mode                            | string, number          | ""      |
 | size                | Button size, optional values `small`, `large`, default not selected | string                  | -       |
 | icon                | Input box icon                                                      | string                  | -       |
-| suffix              | Extension suffix                                                    | string, ReactNode       | -       |
-| prefix              | Extension prefix                                                    | string, ReactNode       | -       |
+| suffix              | Inline suffix                                                       | string \| ReactNode     | -       |
+| prefix              | Inline prefix                                                       | string \| ReactNode     | -       |
+| addonBefore         | Addon before the input                                              | ReactNode               | -       |
+| addonAfter          | Addon after the input                                               | ReactNode               | -       |
 | theme               | The theme of Input                                                  | string                  | fill    |
 | shape               | Input shape                                                         | ShapeType               | -       |
 | inputType           | Custom style class prefix                                           | string                  | input   |
 | controls            | Control area used by components such as InputNumber                 | ReactNode               | -       |
 | disabled            | Whether the input is disabled                                       | boolean                 | false   |
 | multiple            | Whether native multiple input is enabled                            | boolean                 | false   |
-| clearable           | Whether to show the clear button                                    | boolean                 | false   |
+| clearable           | Show the clear button on hover when a value exists                  | boolean                 | true    |
 | visiblePasswordIcon | Whether to show the toggle button or control password visibility    | boolean                 | true    |
 | onSearch            | Search event callback                                               | (value: string) => void | -       |
 | onIconClick         | Callback for icon click event                                       | (e: Event) => void      | -       |
@@ -69,7 +71,7 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 | Property | Description                                                                         | Type    | Default |
 | -------- | ----------------------------------------------------------------------------------- | ------- | ------- |
 | block    | Whether to inherit the parent width                                                 | boolean | false   |
-| compact  | Whether to use compact mode                                                         | boolean | false   |
+| compact  | Whether to use compact mode                                                         | boolean | true    |
 | size     | Spacing of child components, optional values `small`, `large`, default not selected | string  | -       |
 
 ## TextArea API

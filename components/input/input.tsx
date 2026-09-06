@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { CircleX, Eye, EyeOff, Search } from "kui-icons";
-import React, { useContext, useEffect, useImperativeHandle, useRef, useState } from "react";
+import React, { useContext, useImperativeHandle, useRef, useState } from "react";
 import { SizeContext } from "../config/size-context";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
@@ -20,6 +20,8 @@ export interface InputProps extends Omit<
   icon?: IconType[];
   suffix?: React.ReactNode;
   prefix?: React.ReactNode;
+  addonBefore?: React.ReactNode;
+  addonAfter?: React.ReactNode;
   theme?: ThemeType;
   shape?: ShapeType;
   inputType?: string;
@@ -49,6 +51,8 @@ const Input = React.forwardRef<InputRef, InputProps>(
       icon,
       suffix,
       prefix,
+      addonBefore,
+      addonAfter,
       theme = "fill",
       shape,
       inputType = "input",
@@ -69,16 +73,11 @@ const Input = React.forwardRef<InputRef, InputProps>(
     const parentSize = useContext(SizeContext);
     const currentSize = size || parentSize;
 
-    const [currentValue, setCurrentValue] = useState(value !== undefined ? value : defaultValue);
+    const [innerValue, setInnerValue] = useState(defaultValue);
+    const currentValue = value !== undefined ? value : innerValue;
     const [focused, setFocused] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
-
-    useEffect(() => {
-      if (value !== undefined) {
-        setCurrentValue(value);
-      }
-    }, [value]);
 
     useImperativeHandle(ref, () => ({
       focus: () => inputRef.current?.focus(),
@@ -87,7 +86,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
 
     const handleClear = () => {
       if (disabled || readOnly) return;
-      if (value === undefined) setCurrentValue("");
+      if (value === undefined) setInnerValue("");
       onClear?.();
       onChange?.("");
       inputRef.current?.focus();
@@ -98,15 +97,9 @@ const Input = React.forwardRef<InputRef, InputProps>(
       setShowPassword(!showPassword);
     };
 
-    const isInlineAffix = (node: React.ReactNode) =>
-      typeof node === "string" || typeof node === "number";
     const hasPrefix = prefix !== null && prefix !== undefined && prefix !== "";
     const hasSuffix = suffix !== null && suffix !== undefined && suffix !== "";
-    const prefixIsGroup = hasPrefix && !isInlineAffix(prefix);
-    const suffixIsGroup = hasSuffix && !isInlineAffix(suffix);
-    const useGroup = prefixIsGroup || suffixIsGroup;
-    const inlinePrefix = hasPrefix && !prefixIsGroup ? prefix : null;
-    const inlineSuffix = hasSuffix && !suffixIsGroup ? suffix : null;
+    const useGroup = addonBefore !== undefined || addonAfter !== undefined;
 
     const getSuffix = () => {
       if (type === "password" && visiblePasswordIcon) {
@@ -114,7 +107,16 @@ const Input = React.forwardRef<InputRef, InputProps>(
           <Icon
             className="k-input-password-icon"
             type={!showPassword ? Eye : EyeOff}
+            role="button"
+            tabIndex={disabled || readOnly ? undefined : 0}
+            aria-label={showPassword ? "Hide password" : "Show password"}
             onClick={togglePassword}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                togglePassword();
+              }
+            }}
           />
         );
       } else if (onSearch) {
@@ -122,20 +124,32 @@ const Input = React.forwardRef<InputRef, InputProps>(
           <Icon
             type={Search}
             className="k-input-search-icon"
-            onClick={() => !readOnly && onSearch(currentValue as string)}
+            role="button"
+            tabIndex={disabled || readOnly ? undefined : 0}
+            aria-label="Search"
+            onClick={() => !disabled && !readOnly && onSearch(currentValue as string)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                if (!disabled && !readOnly) onSearch(currentValue as string);
+              }
+            }}
           />
         );
       }
-      return inlineSuffix ? <div className={`k-${inputType}-suffix`}>{inlineSuffix}</div> : null;
+      return hasSuffix ? <div className={`k-${inputType}-suffix`}>{suffix}</div> : null;
     };
 
-    const clearableShow = clearable && !isEmpty(currentValue) && type !== "password" && !readOnly;
+    const clearableShow =
+      clearable && !isEmpty(currentValue) && type !== "password" && !disabled && !readOnly;
 
     const multiple =
       (!!icon ||
         !!onSearch ||
         hasSuffix ||
         hasPrefix ||
+        addonBefore !== undefined ||
+        addonAfter !== undefined ||
         type === "password" ||
         clearable ||
         !!controls) &&
@@ -144,7 +158,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const v = e.target.value;
       if (value === undefined) {
-        setCurrentValue(v);
+        setInnerValue(v);
       }
       onChange?.(v);
       onInput?.(e as unknown as React.InputEvent<HTMLInputElement>);
@@ -210,14 +224,22 @@ const Input = React.forwardRef<InputRef, InputProps>(
           key="input-icon"
           type={icon}
           className={`k-${inputType}-icon`}
+          role={onIconClick ? "button" : undefined}
+          tabIndex={onIconClick && !disabled && !readOnly ? 0 : undefined}
           onClick={(e) => !disabled && !readOnly && onIconClick?.(e)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              event.currentTarget.click();
+            }
+          }}
         />,
       );
     }
-    if (inlinePrefix) {
+    if (hasPrefix) {
       innerChildren.push(
         <div key="input-prefix" className={`k-${inputType}-prefix`}>
-          {inlinePrefix}
+          {prefix}
         </div>,
       );
     }
@@ -231,7 +253,16 @@ const Input = React.forwardRef<InputRef, InputProps>(
           className={clsx(`k-${inputType}-clearable`, {
             [`k-${inputType}-clearable-hidden`]: !clearableShow,
           })}
+          role="button"
+          tabIndex={clearableShow ? 0 : undefined}
+          aria-label="Clear"
           onClick={handleClear}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              handleClear();
+            }
+          }}
         />,
       );
     }
@@ -244,12 +275,12 @@ const Input = React.forwardRef<InputRef, InputProps>(
     }
 
     if (useGroup) {
-      const preChildren = prefixIsGroup ? (
-        <div className="k-input-group-prefix">{prefix}</div>
-      ) : null;
-      const sufChildren = suffixIsGroup ? (
-        <div className="k-input-group-suffix">{suffix}</div>
-      ) : null;
+      const preChildren =
+        addonBefore !== undefined ? (
+          <div className="k-input-group-prefix">{addonBefore}</div>
+        ) : null;
+      const sufChildren =
+        addonAfter !== undefined ? <div className="k-input-group-suffix">{addonAfter}</div> : null;
 
       return (
         <InputGroup size={currentSize} theme={theme} className={className} style={style}>

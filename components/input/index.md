@@ -49,15 +49,17 @@
 | defaultValue        | 非受控模式下的初始输入值                   | string、number          | ""     |
 | size                | 按钮尺寸,可选值 `small`、`large`，默认不选 | string                  | -      |
 | icon                | 输入框图标                                 | string                  | -      |
-| suffix              | 扩展后缀                                   | string,ReactNode        | -      |
-| prefix              | 扩展前缀                                   | string,ReactNode        | -      |
+| suffix              | 输入框内部后缀                             | string \| ReactNode     | -      |
+| prefix              | 输入框内部前缀                             | string \| ReactNode     | -      |
+| addonBefore         | 输入框外部前置附件                         | ReactNode               | -      |
+| addonAfter          | 输入框外部后置附件                         | ReactNode               | -      |
 | theme               | 主题                                       | string                  | fill   |
 | shape               | 输入框形状                                 | ShapeType               | -      |
 | inputType           | 自定义样式类名前缀                         | string                  | input  |
 | controls            | 输入框控制区域，供 InputNumber 等组件使用  | ReactNode               | -      |
 | disabled            | 是否禁用                                   | boolean                 | false  |
 | multiple            | 是否允许原生多值输入                       | boolean                 | false  |
-| clearable           | 是否显示清除按钮                           | boolean                 | false  |
+| clearable           | 有值且悬停时显示清除按钮                   | boolean                 | true   |
 | visiblePasswordIcon | 是否显示切换按钮或者控制密码显隐           | boolean                 | true   |
 | onSearch            | 搜索事件的回调                             | (value: string) => void | -      |
 | onIconClick         | 图标点击事件的回调                         | (e: Event) => void      | -      |
@@ -69,7 +71,7 @@
 | 属性    | 说明                                           | 类型    | 默认值 |
 | ------- | ---------------------------------------------- | ------- | ------ |
 | block   | 是否继承父集宽度                               | boolean | false  |
-| compact | 是否使用紧促模式                               | boolean | false  |
+| compact | 是否使用紧凑模式                               | boolean | true   |
 | size    | 子组件的间距,可选值 `small`、`large`，默认不选 | string  | -      |
 
 ## TextArea API

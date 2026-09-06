@@ -56,8 +56,21 @@ const InputGroup: React.FC<InputGroupProps> = ({
           "k-input-group-item": i > 0 && i < childList.length - 1,
           "k-input-group-last-item": i === childList.length - 1,
         });
+        const childProps = child.props as {
+          className?: string;
+          children?: React.ReactNode;
+        };
+        const nestedChildren = getChildren(childProps.children);
+        const nextChildren =
+          nestedChildren.length === 1 &&
+          React.isValidElement<{ className?: string }>(nestedChildren[0])
+            ? React.cloneElement(nestedChildren[0], {
+                className: clsx(nestedChildren[0].props.className, itemClass),
+              })
+            : childProps.children;
         return React.cloneElement(child, {
           className: itemClass,
+          children: nextChildren,
           key: child.key || `item-${i}`,
         });
       }

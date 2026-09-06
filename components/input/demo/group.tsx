@@ -31,21 +31,21 @@ export default function App() {
   return (
     <Space vertical size="medium" block style={{ width: 600, maxWidth: "100%" }}>
       <InputGroup>
-        <Input style={{ width: "20%" }} value="027" />
-        <Input style={{ width: "30%" }} value="28398987" />
+        <Input style={{ width: "20%" }} defaultValue="027" />
+        <Input style={{ width: "30%" }} defaultValue="28398987" />
       </InputGroup>
       <InputGroup size="small">
-        <Input style={{ width: "calc(100% - 200px)" }} value="https://react.k-ui.cn" />
+        <Input style={{ width: "calc(100% - 200px)" }} defaultValue="https://k-ui.cn" />
         <Button type="primary">Submit</Button>
       </InputGroup>
       <InputGroup>
-        <Input style={{ width: "calc(100% - 200px)" }} value="https://react.k-ui.cn" />
+        <Input style={{ width: "calc(100% - 200px)" }} defaultValue="https://k-ui.cn" />
         <Button type="primary">Submit</Button>
       </InputGroup>
       <InputGroup>
         <Input
           style={{ width: "calc(100% - 200px)" }}
-          value="git@gitee.com:chuchur/kui-react.git"
+          defaultValue="git@gitee.com:chuchur/kui-react.git"
         />
         <Tooltip title="copy git url">
           <Button icon={Copy} />
@@ -56,36 +56,36 @@ export default function App() {
           <Option value="Wuhan">Wuhan001</Option>
           <Option value="Shenzheng">Shenzheng</Option>
         </Select>
-        <Input style={{ width: "50%" }} value="Nanshan District, Shenzheng" />
+        <Input style={{ width: "50%" }} defaultValue="Nanshan District, Shenzheng" />
       </InputGroup>
       <InputGroup>
         <Select clearable multiple value={["Wuhan001"]} style={{ width: "50%" }} maxTagCount={1}>
           <Option value="Wuhan001">Wuhan001</Option>
           <Option value="Shenzheng">Shenzheng</Option>
         </Select>
-        <Input style={{ width: "50%" }} value="Nanshan District, Shenzheng" />
+        <Input style={{ width: "50%" }} defaultValue="Nanshan District, Shenzheng" />
       </InputGroup>
       <InputGroup>
-        <Input style={{ width: "30%" }} value="0755" />
-        <Input clearable style={{ width: "50%" }} value="28398987" />
-        <Input style={{ width: "20%" }} value="+1" />
+        <Input style={{ width: "30%" }} defaultValue="0755" />
+        <Input clearable style={{ width: "50%" }} defaultValue="28398987" />
+        <Input style={{ width: "20%" }} defaultValue="+1" />
       </InputGroup>
       <InputGroup>
         <Select value="Option1">{options("Option")}</Select>
-        <Input style={{ width: "50%" }} value="input content" />
+        <Input style={{ width: "50%" }} defaultValue="input content" />
         <InputNumber value={12} />
       </InputGroup>
       <InputGroup>
-        <Input style={{ width: "50%" }} value="input content" icon={Copy} />
+        <Input style={{ width: "50%" }} defaultValue="input content" icon={Copy} />
         <DatePicker />
       </InputGroup>
       <InputGroup>
         <DatePicker mode="dateRange" />
-        <Input style={{ width: "30%" }} value="input content" />
+        <Input style={{ width: "30%" }} defaultValue="input content" />
         <Button type="primary">Query</Button>
       </InputGroup>
       <InputGroup>
-        <Input style={{ width: "30%" }} value="input content" />
+        <Input style={{ width: "30%" }} defaultValue="input content" />
         <DatePicker mode="dateRange" />
       </InputGroup>
       <InputGroup>

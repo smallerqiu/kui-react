@@ -57,7 +57,7 @@ export default function App() {
       <Input
         placeholder="Please input the captcha"
         maxLength={8}
-        suffix={
+        addonAfter={
           <Button disabled={time < 60} onClick={send}>
             {time === 60 ? "Get verification code" : `${time}(s)`}
           </Button>
@@ -66,7 +66,7 @@ export default function App() {
       <Input
         placeholder="Please input"
         icon={Gift}
-        suffix={
+        addonAfter={
           <Tooltip title="Please contact the administrator">
             <Button icon={CircleQuestionMark} />
           </Tooltip>
@@ -76,14 +76,14 @@ export default function App() {
       <Input placeholder="Please enter the domain" suffix=".com" prefix="https://" />
       <Input
         placeholder="Please input"
-        prefix={<Select options={protocols} clearable value="http" />}
-        suffix={<Select options={domains} clearable value=".com" />}
+        addonBefore={<Select options={protocols} clearable value="http" />}
+        addonAfter={<Select options={domains} clearable value=".com" />}
       />
       <Input placeholder="Please input" suffix=".00" />
       <Input
         placeholder="Please input"
-        prefix={<Select options={protocols} clearable value="http" />}
-        suffix={<TreeSelect treeData={treeData} clearable style={{ width: 100 }} />}
+        addonBefore={<Select options={protocols} clearable value="http" />}
+        addonAfter={<TreeSelect treeData={treeData} clearable style={{ width: 100 }} />}
       />
     </Space>
   );
