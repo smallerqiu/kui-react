@@ -44,28 +44,33 @@ const Page: React.FC<PageProps> = ({
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
 
-  const calcPageCount = (tot: number, ps: number) => Math.ceil(tot / ps) || 1;
+  const normalizePageSize = (value: number) => (Number.isFinite(value) && value > 0 ? value : 10);
+  const calcPageCount = (tot: number, ps: number) =>
+    Math.max(1, Math.ceil((Number.isFinite(tot) && tot > 0 ? tot : 0) / normalizePageSize(ps)));
+  const normalizePage = (value: number, count: number) =>
+    Math.min(count, Math.max(1, Number.isFinite(value) ? Math.floor(value) : 1));
 
-  const [currentPage, setCurrentPage] = useState(pageProp);
-  const [currentPageSize, setCurrentPageSize] = useState(pageSizeProp);
-  const [pageCount, setPageCount] = useState(calcPageCount(total, pageSizeProp));
+  const initialPageSize = normalizePageSize(pageSizeProp);
+  const initialPageCount = calcPageCount(total, initialPageSize);
+  const [currentPage, setCurrentPage] = useState(normalizePage(pageProp, initialPageCount));
+  const [currentPageSize, setCurrentPageSize] = useState(initialPageSize);
+  const [pageCount, setPageCount] = useState(initialPageCount);
   const syncKey = `${total}:${pageProp}:${pageSizeProp}`;
   const [previousSyncKey, setPreviousSyncKey] = useState(syncKey);
   if (previousSyncKey !== syncKey) {
-    const newCount = calcPageCount(total, pageSizeProp);
+    const nextPageSize = normalizePageSize(pageSizeProp);
+    const newCount = calcPageCount(total, nextPageSize);
     setPreviousSyncKey(syncKey);
-    setCurrentPageSize(pageSizeProp);
+    setCurrentPageSize(nextPageSize);
     setPageCount(newCount);
-    setCurrentPage(Math.min(pageProp, newCount));
+    setCurrentPage(normalizePage(pageProp, newCount));
   }
   const [prevHover, setPrevHover] = useState(false);
   const [nextHover, setNextHover] = useState(false);
 
   const toPage = (p: number) => {
     if (disabled) return;
-    let nextP = p;
-    if (nextP < 1) nextP = 1;
-    if (nextP > pageCount) nextP = pageCount;
+    const nextP = normalizePage(p, pageCount);
     if (nextP === currentPage) return;
     setCurrentPage(nextP);
     onChange?.(nextP, currentPageSize);
@@ -79,13 +84,19 @@ const Page: React.FC<PageProps> = ({
   };
 
   const changeSize = (value: string | number) => {
-    const newPageSize = Number(value);
+    const newPageSize = normalizePageSize(Number(value));
     setCurrentPageSize(newPageSize);
     const newCount = calcPageCount(total, newPageSize);
     setPageCount(newCount);
     const nextPage = currentPage > newCount ? newCount : currentPage;
     setCurrentPage(nextPage);
     onChange?.(nextPage, newPageSize);
+  };
+
+  const activateByKeyboard = (event: React.KeyboardEvent, action: () => void) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    action();
   };
 
   // Build middle page numbers
@@ -114,11 +125,16 @@ const Page: React.FC<PageProps> = ({
       for (let i = 2; i < pCount; i++) array.push(i);
     }
 
-    const items: React.ReactNode[] = array.map((p, i) => (
+    const items: React.ReactNode[] = array.map((p) => (
       <li
-        key={i}
+        key={p}
         className={clsx("k-pager-item", { "k-pager-item-active": page === p })}
+        role="button"
+        tabIndex={disabled ? -1 : 0}
+        aria-current={page === p ? "page" : undefined}
+        aria-label={`Page ${p}`}
         onClick={() => toPage(p)}
+        onKeyDown={(event) => activateByKeyboard(event, () => toPage(p))}
       >
         <span>{p}</span>
       </li>
@@ -129,9 +145,13 @@ const Page: React.FC<PageProps> = ({
         <li
           key="prev-more"
           className="k-pager-item k-pager-more"
+          role="button"
+          tabIndex={disabled ? -1 : 0}
+          aria-label="Previous 5 pages"
           onMouseEnter={() => setPrevHover(true)}
           onMouseLeave={() => setPrevHover(false)}
           onClick={() => toPage(currentPage - 5)}
+          onKeyDown={(event) => activateByKeyboard(event, () => toPage(currentPage - 5))}
         >
           <Icon type={prevHover ? ChevronsLeft : Ellipsis} />
         </li>,
@@ -142,9 +162,13 @@ const Page: React.FC<PageProps> = ({
         <li
           key="next-more"
           className="k-pager-item k-pager-more"
+          role="button"
+          tabIndex={disabled ? -1 : 0}
+          aria-label="Next 5 pages"
           onMouseEnter={() => setNextHover(true)}
           onMouseLeave={() => setNextHover(false)}
           onClick={() => toPage(currentPage + 5)}
+          onKeyDown={(event) => activateByKeyboard(event, () => toPage(currentPage + 5))}
         >
           <Icon type={nextHover ? ChevronsRight : Ellipsis} />
         </li>,
@@ -158,6 +182,7 @@ const Page: React.FC<PageProps> = ({
     "k-page",
     {
       "k-page-sm": size === "small",
+      "k-page-lg": size === "large",
       "k-page-fill": theme === "fill",
       "k-page-outline": theme === "outline",
       "k-page-disabled": disabled,
@@ -173,7 +198,7 @@ const Page: React.FC<PageProps> = ({
   }));
 
   return (
-    <div className={classes} {...rest}>
+    <nav className={classes} aria-label="Pagination" {...rest}>
       {showTotal && !simple ? (
         <div className="k-page-number">
           <span>
@@ -188,7 +213,12 @@ const Page: React.FC<PageProps> = ({
           className={clsx("k-pager-item k-pager-prev", {
             "k-pager-item-disabled": currentPage === 1,
           })}
+          role="button"
+          tabIndex={disabled || currentPage === 1 ? -1 : 0}
+          aria-disabled={disabled || currentPage === 1}
+          aria-label="Previous page"
           onClick={prePage}
+          onKeyDown={(event) => activateByKeyboard(event, prePage)}
         >
           <Icon type={ChevronUp} />
         </li>
@@ -197,7 +227,12 @@ const Page: React.FC<PageProps> = ({
         {!simple && pageCount > 0 && (
           <li
             className={clsx("k-pager-item", { "k-pager-item-active": currentPage === 1 })}
+            role="button"
+            tabIndex={disabled ? -1 : 0}
+            aria-current={currentPage === 1 ? "page" : undefined}
+            aria-label="Page 1"
             onClick={() => toPage(1)}
+            onKeyDown={(event) => activateByKeyboard(event, () => toPage(1))}
           >
             <span>1</span>
           </li>
@@ -210,7 +245,12 @@ const Page: React.FC<PageProps> = ({
         {!simple && pageCount > 1 && (
           <li
             className={clsx("k-pager-item", { "k-pager-item-active": currentPage === pageCount })}
+            role="button"
+            tabIndex={disabled ? -1 : 0}
+            aria-current={currentPage === pageCount ? "page" : undefined}
+            aria-label={`Page ${pageCount}`}
             onClick={() => toPage(pageCount)}
+            onKeyDown={(event) => activateByKeyboard(event, () => toPage(pageCount))}
           >
             <span>{pageCount}</span>
           </li>
@@ -245,7 +285,12 @@ const Page: React.FC<PageProps> = ({
           className={clsx("k-pager-item k-pager-next", {
             "k-pager-item-disabled": currentPage === pageCount,
           })}
+          role="button"
+          tabIndex={disabled || currentPage === pageCount ? -1 : 0}
+          aria-disabled={disabled || currentPage === pageCount}
+          aria-label="Next page"
           onClick={goNextPage}
+          onKeyDown={(event) => activateByKeyboard(event, goNextPage)}
         >
           <Icon type={ChevronUp} />
         </li>
@@ -265,6 +310,11 @@ const Page: React.FC<PageProps> = ({
             }}
             options={sizeOptions}
           />
+          <span className="k-page-sizer-measure" aria-hidden="true">
+            {sizeOptions.map((option, index) => (
+              <span key={index}>{option.label}</span>
+            ))}
+          </span>
         </div>
       )}
 
@@ -289,7 +339,7 @@ const Page: React.FC<PageProps> = ({
           <span>{locale?.k?.page?.page}</span>
         </div>
       )}
-    </div>
+    </nav>
   );
 };
 
