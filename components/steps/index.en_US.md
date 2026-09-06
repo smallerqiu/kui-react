@@ -6,37 +6,37 @@ Displays progress through a task or workflow.
 
 [Basic](./demo/basic.tsx?show=vertical)
 
-- Basic usage of Steps, showing horizontal step flow
+- Supports data items, clickable steps, and vertical layout.
 
 [Vertical](./demo/vertical.tsx?show=vertical)
 
-- Display steps in vertical direction
+- Presents detailed workflows vertically.
 
 [Statuses](./demo/status.tsx?show=vertical)
 
-- Display different step statuses (in progress, completed, error, etc.)
+- Shows error and per-step custom statuses.
 
-[Clickable](./demo/clickable.tsx?show=vertical)
+[Clickable steps](./demo/clickable.tsx?show=vertical)
 
-- Steps can be clicked to navigate to corresponding step
+- Handle change to switch the current step.
 
 [Custom icons](./demo/icon.tsx?show=vertical)
 
-- Customize icons for steps
+- Sets a custom icon for each step.
 
 [Controlled](./demo/controlled.tsx?show=vertical)
 
-- Manage step status in controlled mode
+- Controls the current step with external state and buttons.
 
 ## Steps API
 
-| Property  | Description      | Type                 | Default    |
-| --------- | ---------------- | -------------------- | ---------- |
-| current   | Current step     | number               | 0          |
-| direction | Layout direction | horizontal\|vertical | horizontal |
-| status    | Current status   | process\|error       | process    |
-| items     | Step data        | StepProps[]          | -          |
-| onChange  | Clicked step     | function             | -          |
+| Property  | Description    | Type                       | Default      |
+| --------- | -------------- | -------------------------- | ------------ |
+| current   | Current step   | number                     | 0            |
+| direction | Direction      | `horizontal` \| `vertical` | `horizontal` |
+| status    | Current status | `process` \| `error`       | `process`    |
+| items     | Step data      | StepProps[]                | -            |
+| onChange  | Step click     | (current: number) => void  | -            |
 
 ## Step API
 

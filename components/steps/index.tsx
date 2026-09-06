@@ -1,5 +1,7 @@
 import clsx from "clsx";
+import { Check, X } from "kui-icons";
 import React from "react";
+import Icon from "../icon";
 
 export type StepStatus = "wait" | "process" | "finish" | "error";
 export interface StepProps {
@@ -31,10 +33,10 @@ const Steps: React.FC<StepsProps> = ({
   const data =
     items ??
     React.Children.toArray(children).flatMap((child) =>
-      React.isValidElement<StepProps>(child) ? [child.props] : []
+      React.isValidElement<StepProps>(child) && child.type === Step ? [child.props] : [],
     );
   return (
-    <div {...rest} className={clsx("k-steps", `k-steps-${direction}`, className)}>
+    <div {...rest} className={clsx("k-steps", `k-steps-${direction}`, className)} role="list">
       {data.map((item, index) => {
         const state =
           item.status ?? (index < current ? "finish" : index === current ? status : "wait");
@@ -42,17 +44,40 @@ const Steps: React.FC<StepsProps> = ({
           <div
             className={clsx("k-step", `k-step-${state}`, {
               "k-step-clickable": !!onChange && !item.disabled,
+              "k-step-disabled": item.disabled,
             })}
             key={index}
-            onClick={() => !item.disabled && onChange?.(index)}
+            role="listitem"
           >
-            <div className="k-step-main">
+            <div
+              className="k-step-main"
+              role={onChange ? "button" : undefined}
+              tabIndex={onChange && !item.disabled ? 0 : undefined}
+              aria-current={index === current ? "step" : undefined}
+              aria-disabled={item.disabled || undefined}
+              onClick={() => !item.disabled && onChange?.(index)}
+              onKeyDown={(event) => {
+                if (!item.disabled && (event.key === "Enter" || event.key === " ")) {
+                  event.preventDefault();
+                  onChange?.(index);
+                }
+              }}
+            >
               <span className="k-step-dot">
-                {item.icon ?? (state === "finish" ? "✓" : index + 1)}
+                {item.icon ??
+                  (state === "finish" ? (
+                    <Icon type={Check} />
+                  ) : state === "error" ? (
+                    <Icon type={X} />
+                  ) : (
+                    index + 1
+                  ))}
               </span>
               <div className="k-step-content">
                 <div className="k-step-title">{item.title}</div>
-                {item.description && <div className="k-step-description">{item.description}</div>}
+                {item.description != null && (
+                  <div className="k-step-description">{item.description}</div>
+                )}
               </div>
             </div>
             <span className="k-step-line" />

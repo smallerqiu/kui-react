@@ -5,9 +5,9 @@ export default function App() {
       direction="vertical"
       current={1}
       items={[
-        { title: "创建项目", description: "填写项目信息" },
-        { title: "配置", description: "完成相关配置" },
-        { title: "发布" },
+        { title: "创建任务", description: "填写任务名称与负责人" },
+        { title: "执行中", description: "团队正在处理任务" },
+        { title: "完成", description: "归档处理结果" },
       ]}
     />
   );

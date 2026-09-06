@@ -6,37 +6,37 @@
 
 [基础用法](./demo/basic.tsx?show=vertical)
 
-- 步骤条的基本用法，展示水平方向的步骤流程
+- 支持数据配置、点击切换和纵向布局。
 
 [纵向步骤](./demo/vertical.tsx?show=vertical)
 
-- 垂直方向的步骤条展示
+- 用于纵向空间充足的流程说明。
 
 [步骤状态](./demo/status.tsx?show=vertical)
 
-- 步骤的不同状态展示（进行中、完成、错误等）
+- 展示错误状态和单个步骤的自定义状态。
 
 [可点击步骤](./demo/clickable.tsx?show=vertical)
 
-- 步骤可被点击跳转到对应步骤
+- 监听 change 实现步骤切换。
 
 [自定义图标](./demo/icon.tsx?show=vertical)
 
-- 为步骤自定义图标
+- 为每个步骤设置自定义图标。
 
 [受控模式](./demo/controlled.tsx?show=vertical)
 
-- 以受控方式管理步骤状态
+- 通过外部状态和按钮控制当前步骤。
 
 ## Steps API
 
-| 属性      | 说明     | 类型                   | 默认值     |
-| --------- | -------- | ---------------------- | ---------- |
-| current   | 当前步骤 | number                 | 0          |
-| direction | 排列方向 | horizontal\|vertical   | horizontal |
-| status    | 当前状态 | process\|error         | process    |
-| items     | 步骤数据 | StepProps[]            | -          |
-| onChange  | 点击步骤 | (current:number)=>void | -          |
+| 属性      | 说明     | 类型                       | 默认值       |
+| --------- | -------- | -------------------------- | ------------ |
+| current   | 当前步骤 | number                     | 0            |
+| direction | 排列方向 | `horizontal` \| `vertical` | `horizontal` |
+| status    | 当前状态 | `process` \| `error`       | `process`    |
+| items     | 步骤数据 | StepProps[]                | -            |
+| onChange  | 点击步骤 | (current: number) => void  | -            |
 
 ## Step API
 
