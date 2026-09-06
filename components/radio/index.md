@@ -13,7 +13,7 @@
 
 - 单独使用时，通过 `checked` 和 `onChange` 控制选中状态。
 
-[多选](./demo/group.tsx)
+[单选组](./demo/group.tsx)
 
 - 可以使用 options 属性来设置选项, 也可以使用子组件来设置选项。
 
@@ -35,24 +35,26 @@
 | -------------- | ------------------------ | ------------------------ | ------ |
 | checked        | 受控的选中状态           | boolean                  | -      |
 | defaultChecked | 非受控模式的初始选中状态 | boolean                  | false  |
-| label          | 文字提示                 | string 、 number         | -      |
-| value          | 组合使用时的值           | string 、 number         | -      |
+| label          | 文字提示                 | string                   | -      |
+| value          | 组合使用时的值           | string \| number         | -      |
 | disabled       | 是否禁用当前项           | boolean                  | false  |
 | readOnly       | 是否只读当前项           | boolean                  | false  |
-| icon           | RadioButton 的图标       | IconType                 | -      |
 | onChange       | 在选项状态发生改变时回调 | (e: ChangeEvent) => void | -      |
+
+`RadioButton` 额外支持 `icon`、`theme`、`size` 和 `shape`，在 `RadioGroup type="button"` 中使用。
 
 ## RadioGroup API
 
-| 属性         | 说明                                                                       | 类型                              | 默认值     |
-| ------------ | -------------------------------------------------------------------------- | --------------------------------- | ---------- |
-| value        | 受控的当前选中值                                                           | string、number                    | -          |
-| defaultValue | 非受控模式的初始选中值                                                     | string、number                    | -          |
-| readOnly     | 是否只读                                                                   | boolean                           | false      |
-| size         | 按钮尺寸,可选值 `small`、`large`，默认不选                                 | string                            | -          |
-| direction    | 布局方向,可选值 `horizontal`、`vertical`                                   | string                            | horizontal |
-| shape        | `button` 的 shape 属性 ，显示圆角                                          | string                            | -          |
-| theme        | `button` 的 theme 属性                                                     | string                            | -          |
-| onChange     | 在选项状态发生改变时触发，返回当前选中的项                                 | (value: string \| number) => void | -          |
-| options      | 可以指定子项 `radio`                                                       | RadioOption[]                     | -          |
-| type         | 如果使用 `options` 来渲染子集，并且子集为 `button`，需要指定 `type=button` | string                            | -          |
+| 属性         | 说明                                       | 类型                              | 默认值     |
+| ------------ | ------------------------------------------ | --------------------------------- | ---------- |
+| value        | 受控的当前选中值                           | string \| number                  | -          |
+| defaultValue | 非受控模式的初始选中值                     | string \| number                  | -          |
+| disabled     | 是否禁用整个单选组                         | boolean                           | false      |
+| readOnly     | 是否只读                                   | boolean                           | false      |
+| size         | 按钮尺寸                                   | SizeType                          | -          |
+| direction    | 布局方向                                   | 'horizontal' \| 'vertical'        | horizontal |
+| shape        | `button` 的形状                            | ShapeType                         | -          |
+| theme        | `button` 的主题                            | ThemeType                         | -          |
+| onChange     | 在选项状态发生改变时触发，返回当前选中的项 | (value: string \| number) => void | -          |
+| options      | 可以指定子项 `radio`                       | RadioOption[]                     | -          |
+| type         | 使用按钮样式的单选项                       | 'radio' \| 'button'               | radio      |

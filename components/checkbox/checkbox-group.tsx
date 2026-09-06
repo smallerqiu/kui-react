@@ -8,6 +8,7 @@ export interface CheckboxOption<T extends string | number = string | number> {
   label?: string;
   value: T;
   disabled?: boolean;
+  readOnly?: boolean;
   [key: string]: unknown;
 }
 
@@ -46,6 +47,7 @@ const CheckboxGroup = <T extends string | number = string | number>({
 
   const handleCheckboxChange = (event: ChangeEvent) => {
     if (readOnly) return;
+    if (event.value === undefined) return;
     const checked = event.checked;
     const val = event.value as T;
     const nextValue = [...currentValue];
@@ -81,7 +83,7 @@ const CheckboxGroup = <T extends string | number = string | number>({
             label={option.label}
             value={option.value}
             disabled={disabled || option.disabled}
-            readOnly={readOnly}
+            readOnly={readOnly || option.readOnly}
           />
         ))
       : children;
@@ -97,7 +99,13 @@ const CheckboxGroup = <T extends string | number = string | number>({
         onChange: handleCheckboxChange,
       }}
     >
-      <div className={classes} aria-readonly={readOnly || undefined} {...rest}>
+      <div
+        className={classes}
+        role="group"
+        aria-disabled={disabled || undefined}
+        aria-readonly={readOnly || undefined}
+        {...rest}
+      >
         {content}
       </div>
     </CheckboxGroupContext.Provider>

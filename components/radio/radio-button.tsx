@@ -37,6 +37,7 @@ const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
       size,
       shape,
       onChange,
+      onClick,
       children,
       ...rest
     },
@@ -54,16 +55,18 @@ const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
     const currentSize = isGroup && group.size ? group.size : size;
     const currentShape = isGroup && group.shape ? group.shape : shape;
 
-    const labelText = label || children || String(value);
+    const labelText = label ?? children ?? String(value ?? "");
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      onClick?.(e);
+      if (e.defaultPrevented) return;
       if (currentDisabled || currentReadOnly || isChecked) return;
       const nextChecked = true;
       if (!isGroup && checked === undefined) setLocalChecked(nextChecked);
       const eventObj: ChangeEvent = {
         checked: nextChecked,
         value: value,
-        label: typeof labelText === "string" ? labelText : "",
+        label: label ?? String(value ?? ""),
       };
       onChange?.(eventObj);
       group?.onChange?.(eventObj);
@@ -72,6 +75,7 @@ const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
 
     return (
       <Button
+        {...rest}
         ref={ref}
         disabled={currentDisabled}
         size={currentSize}
@@ -80,8 +84,10 @@ const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
         shape={currentShape}
         type={isChecked ? "primary" : "default"}
         onClick={handleClick}
+        role="radio"
+        aria-checked={isChecked}
         aria-readonly={currentReadOnly || undefined}
-        {...rest}
+        tabIndex={isChecked ? 0 : -1}
       >
         {labelText}
       </Button>

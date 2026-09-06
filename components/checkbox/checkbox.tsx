@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { Check } from "kui-icons";
-import React, { useContext, useState } from "react";
+import React, { useContext, useLayoutEffect, useRef, useState } from "react";
 import type { SizeType, ThemeType, ValueType } from "../const/types";
 import Icon from "../icon";
 import { getValueWithType } from "../utils/checked";
@@ -44,6 +44,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   ...rest
 }) => {
   const group = useContext(CheckboxGroupContext);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const isGroup = !!group;
   const groupChecked = isGroup && group.value ? group.value.indexOf(value) > -1 : false;
@@ -60,8 +61,8 @@ const Checkbox: React.FC<CheckboxProps> = ({
       setLocalChecked(newChecked);
     }
     const labelVal =
-      label ||
-      children ||
+      label ??
+      children ??
       (typeof value === "string" || typeof value === "number" ? value : undefined);
     const eventObj: ChangeEvent = {
       checked: newChecked,
@@ -77,14 +78,9 @@ const Checkbox: React.FC<CheckboxProps> = ({
     emitValue(e.target.checked);
   };
 
-  const triggerCheck = (e: React.KeyboardEvent<HTMLLabelElement>) => {
-    if (e.key === " ") {
-      e.preventDefault();
-      e.stopPropagation();
-      if (currentDisabled || currentReadOnly) return;
-      emitValue(!isChecked);
-    }
-  };
+  useLayoutEffect(() => {
+    if (inputRef.current) inputRef.current.indeterminate = indeterminate;
+  });
 
   const rootClasses = clsx(
     "k-checkbox",
@@ -93,31 +89,30 @@ const Checkbox: React.FC<CheckboxProps> = ({
       "k-checkbox-disabled": currentDisabled,
       "k-checkbox-readonly": currentReadOnly,
       "k-checkbox-checked": isChecked && !indeterminate,
-      "k-checkbox-indeterminate": indeterminate && !isChecked,
+      "k-checkbox-indeterminate": indeterminate,
       "k-checkbox-sm": currentSize === "small",
       "k-checkbox-lg": currentSize === "large",
     },
     className,
   );
 
-  const innerNode = isChecked ? <Icon type={Check} /> : null;
-  const labelNode = label || children;
+  const innerNode = isChecked && !indeterminate ? <Icon type={Check} /> : null;
+  const labelNode = label ?? children;
 
   return (
-    <label
-      className={rootClasses}
-      tabIndex={currentDisabled ? undefined : 0}
-      onKeyDown={triggerCheck}
-      aria-readonly={currentReadOnly || undefined}
-      {...rest}
-    >
+    <label className={rootClasses} aria-readonly={currentReadOnly || undefined} {...rest}>
       <span className="k-checkbox-symbol">
         <input
           type="checkbox"
-          tabIndex={-1}
+          ref={inputRef}
           className="k-checkbox-input"
           disabled={currentDisabled}
           readOnly={currentReadOnly}
+          aria-checked={indeterminate ? "mixed" : isChecked}
+          aria-readonly={currentReadOnly || undefined}
+          onClick={(event) => {
+            if (currentReadOnly) event.preventDefault();
+          }}
           checked={!!isChecked}
           onChange={handleInputChange}
         />

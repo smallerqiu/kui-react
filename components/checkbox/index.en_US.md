@@ -31,18 +31,18 @@ Checkbox for multiple selections.
 
 ## API
 
-| Property       | Description                                                | Type                    | Default |
-| -------------- | ---------------------------------------------------------- | ----------------------- | ------- |
-| checked        | Controlled checked state                                   | boolean                 | -       |
-| defaultChecked | Initial checked state in uncontrolled mode                 | boolean                 | false   |
-| label          | The text to display                                        | string 、 number        | -       |
-| value          | The value represented when used in combination             | String、number          | -       |
-| disabled       | Whether the current item is disabled                       | boolean                 | false   |
-| readOnly       | Whether the current item is read-only                      | boolean                 | false   |
-| indeterminate  | Combined auxiliary option controls the indeterminate state | boolean                 | false   |
-| theme          | The component renders the theme, defaulting to 'fill'.     | string                  | fill    |
-| valueType      | The type of output value for the unit option               | [string,number,boolean] | boolean |
-| onChange       | Callback when the option state changes                     | (e:ChangeEvent)=>void   | -       |
+| Property       | Description                                                | Type                              | Default |
+| -------------- | ---------------------------------------------------------- | --------------------------------- | ------- |
+| checked        | Controlled checked state                                   | boolean                           | -       |
+| defaultChecked | Initial checked state in uncontrolled mode                 | boolean                           | false   |
+| label          | Content to display                                         | ReactNode                         | -       |
+| value          | Value represented in a group                               | unknown                           | -       |
+| disabled       | Whether the current item is disabled                       | boolean                           | false   |
+| readOnly       | Whether the current item is read-only                      | boolean                           | false   |
+| indeterminate  | Combined auxiliary option controls the indeterminate state | boolean                           | false   |
+| theme          | Component theme                                            | ThemeType                         | fill    |
+| valueType      | Standalone output value type                               | 'string' \| 'number' \| 'boolean' | boolean |
+| onChange       | Callback when the option state changes                     | (e: ChangeEvent) => void          | -       |
 
 ## CheckboxGroup API
 
@@ -53,6 +53,9 @@ Checkbox for multiple selections.
 | disabled     | Whether the component is disabled                                              | boolean                               | false      |
 | readOnly     | Whether the component is read-only                                             | boolean                               | false      |
 | onChange     | Triggered when the option state changes, returns the currently selected values | (value: (string \| number)[]) => void | -          |
-| direction    | Layout direction, optional values `horizontal`, `vertical`                     | string                                | horizontal |
+| direction    | Layout direction                                                               | 'horizontal' \| 'vertical'            | horizontal |
 | options      | Can specify child `checkbox` items                                             | CheckboxOption[]                      | -          |
-| size         | set the size of Checkbox                                                       | string                                | -          |
+| theme        | Component theme                                                                | ThemeType                             | fill       |
+| size         | Checkbox size                                                                  | SizeType                              | -          |
+
+Each item in `options` also supports `disabled` and `readOnly`.

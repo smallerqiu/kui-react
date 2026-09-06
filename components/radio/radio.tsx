@@ -50,7 +50,7 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
       if (!isGroup && checked === undefined) {
         setLocalChecked(newChecked);
       }
-      const labelVal = label || children || String(value);
+      const labelVal = label ?? String(value ?? "");
       const eventObj: ChangeEvent = {
         checked: newChecked,
         value: value,
@@ -63,15 +63,6 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (currentDisabled || currentReadOnly || isChecked) return;
       emitValue(e.target.checked);
-    };
-
-    const triggerCheck = (e: React.KeyboardEvent<HTMLLabelElement>) => {
-      if (e.key === " ") {
-        e.preventDefault();
-        e.stopPropagation();
-        if (currentDisabled || currentReadOnly || isChecked) return;
-        emitValue(true);
-      }
     };
 
     const classes = clsx(
@@ -87,24 +78,21 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
       className,
     );
 
-    const labelNode = label || children;
+    const labelNode = label ?? children;
 
     return (
-      <label
-        ref={ref}
-        className={classes}
-        tabIndex={currentDisabled ? undefined : 0}
-        onKeyDown={triggerCheck}
-        aria-readonly={currentReadOnly || undefined}
-        {...rest}
-      >
+      <label ref={ref} className={classes} aria-readonly={currentReadOnly || undefined} {...rest}>
         <span className="k-radio-symbol">
           <input
             type="radio"
-            tabIndex={-1}
             className="k-radio-input"
+            name={group?.name}
             disabled={currentDisabled}
             readOnly={currentReadOnly}
+            aria-readonly={currentReadOnly || undefined}
+            onClick={(event) => {
+              if (currentReadOnly) event.preventDefault();
+            }}
             onChange={handleInputChange}
             checked={!!isChecked}
           />

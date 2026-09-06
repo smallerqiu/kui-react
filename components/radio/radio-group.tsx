@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import type { DirectionType, RadioType, ShapeType, SizeType, ThemeType } from "../const/types";
 import type { IconType } from "../icon";
 import Radio from "./radio";
@@ -11,7 +11,7 @@ type RadioValue = string | number | undefined;
 
 export interface RadioOption {
   label?: string;
-  value?: string | number;
+  value: string | number;
   disabled?: boolean;
   icon?: IconType[];
   [key: string]: unknown;
@@ -49,16 +49,17 @@ const RadioGroup = <T extends RadioValue = string | number>({
   onChange,
   children,
   className = "",
+  onKeyDown,
   ...rest
 }: RadioGroupProps<T>) => {
   const rootRef = useRef<HTMLDivElement>(null);
+  const name = `k-radio-group-${useId().replace(/:/g, "")}`;
   const itemRefs = useRef(new Map<RadioValue, HTMLElement | null>());
-  const animationFrame = useRef<number | null>(null);
 
   const [innerValue, setInnerValue] = useState<T>(() => defaultValue ?? value ?? ("" as T));
   const currentValue = value ?? innerValue;
   const [segStyle, setSegStyle] = useState<React.CSSProperties>({});
-  const [changed, setChanged] = useState(false);
+  const [segmentReady, setSegmentReady] = useState(false);
 
   const isVertical = direction === "vertical";
   const isButton = type === "button";
@@ -67,6 +68,8 @@ const RadioGroup = <T extends RadioValue = string | number>({
   const setItemRef = (el: HTMLElement | null, val: RadioValue) => {
     if (el) {
       itemRefs.current.set(val, el);
+    } else {
+      itemRefs.current.delete(val);
     }
   };
 
@@ -81,21 +84,14 @@ const RadioGroup = <T extends RadioValue = string | number>({
     }
   }, [currentValue, isVertical]);
 
-  const updateSeg = useCallback(() => {
-    if (!isCard || !isButton) return;
-    if (animationFrame.current !== null) cancelAnimationFrame(animationFrame.current);
-    animationFrame.current = requestAnimationFrame(() => {
-      setChanged(true);
-      animationFrame.current = requestAnimationFrame(() => {
-        updateSize();
-        animationFrame.current = null;
-      });
-    });
-  }, [isButton, isCard, updateSize]);
-
   useEffect(() => {
-    updateSeg();
-  }, [updateSeg]);
+    if (!isCard || !isButton) {
+      return;
+    }
+    updateSize();
+    const frame = requestAnimationFrame(() => setSegmentReady(true));
+    return () => cancelAnimationFrame(frame);
+  }, [isButton, isCard, updateSize]);
 
   useEffect(() => {
     if (!rootRef.current) return;
@@ -105,12 +101,11 @@ const RadioGroup = <T extends RadioValue = string | number>({
     observer.observe(rootRef.current);
     return () => {
       observer.disconnect();
-      if (animationFrame.current !== null) cancelAnimationFrame(animationFrame.current);
     };
   }, [updateSize]);
 
   const handleRadioChange = (event: ChangeEvent) => {
-    if (readOnly) return;
+    if (readOnly || event.value === undefined) return;
     const nextValue = event.value as T;
     if (value === undefined) {
       setInnerValue(nextValue);
@@ -118,17 +113,11 @@ const RadioGroup = <T extends RadioValue = string | number>({
     onChange?.(nextValue);
   };
 
-  const onTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
-    if (e.propertyName === "left" || e.propertyName === "top") {
-      setChanged(false);
-    }
-  };
-
   const classes = clsx(
     "k-radio-group",
     {
       "k-radio-button-group": isButton,
-      "k-radio-button-changed": changed,
+      "k-radio-button-changed": segmentReady && isCard && isButton,
       "k-radio-group-circle": shape === "circle",
       "k-radio-group-fill": theme === "fill" && isButton,
       "k-radio-group-card": isCard && isButton,
@@ -164,8 +153,13 @@ const RadioGroup = <T extends RadioValue = string | number>({
         }>(child)
       ) {
         const val = child.props.value;
+        const childRef = child.props.ref;
         return React.cloneElement(child, {
-          ref: (el: HTMLButtonElement | HTMLLabelElement | null) => setItemRef(el, val),
+          ref: (el: HTMLButtonElement | HTMLLabelElement | null) => {
+            setItemRef(el, val);
+            if (typeof childRef === "function") childRef(el);
+            else if (childRef) childRef.current = el;
+          },
         });
       }
       return child;
@@ -175,6 +169,7 @@ const RadioGroup = <T extends RadioValue = string | number>({
   return (
     <RadioGroupContext.Provider
       value={{
+        name,
         value: currentValue,
         disabled,
         readOnly,
@@ -184,13 +179,36 @@ const RadioGroup = <T extends RadioValue = string | number>({
         onChange: handleRadioChange,
       }}
     >
-      <div className={classes} ref={rootRef} aria-readonly={readOnly || undefined} {...rest}>
+      <div
+        {...rest}
+        className={classes}
+        ref={rootRef}
+        role="radiogroup"
+        aria-disabled={disabled || undefined}
+        aria-readonly={readOnly || undefined}
+        onKeyDown={(event) => {
+          onKeyDown?.(event);
+          if (event.defaultPrevented) return;
+          if (!isButton || !["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp"].includes(event.key))
+            return;
+          const buttons = [
+            ...(rootRef.current?.querySelectorAll<HTMLElement>('[role="radio"]:not([disabled])') ??
+              []),
+          ];
+          if (!buttons.length) return;
+          event.preventDefault();
+          const index = buttons.indexOf(event.target as HTMLElement);
+          const offset = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : -1;
+          const next = buttons[(Math.max(index, 0) + offset + buttons.length) % buttons.length];
+          next?.focus();
+          next?.click();
+        }}
+      >
         {content}
-        {changed && isCard && isButton && (
+        {isCard && isButton && (
           <div
-            className="k-radio-group-card-seg"
+            className={clsx("k-radio-group-card-seg", segmentReady && "is-ready")}
             style={segStyle}
-            onTransitionEnd={onTransitionEnd}
           />
         )}
       </div>
