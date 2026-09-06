@@ -1,8 +1,8 @@
-import type { ShapeType, SizeType, ThemeType } from "../const/types";
+import type { ShapeType, SizeType } from "../const/types";
 import type { IconType } from "../icon";
 
 export type CheckCardValue = string | number;
-export type CheckCardTheme = ThemeType;
+export type CheckCardTheme = "outline" | "fill";
 
 export interface CheckCardChangeEvent {
   checked: boolean;

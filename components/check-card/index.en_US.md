@@ -39,33 +39,34 @@ Present richer choices with a title, description, and optional symbol.
 | showIndicator  | Whether to show the indicator | boolean                               | true    |
 | disabled       | Whether disabled              | boolean                               | false   |
 | readOnly       | Whether read-only             | boolean                               | false   |
-| theme          | Theme                         | outline\|fill                         | outline |
-| size           | Size                          | small\|medium\|large                  | medium  |
-| shape          | Shape                         | round\|circle\|square                 | round   |
+| theme          | Theme                         | 'outline' \| 'fill'                   | outline |
+| size           | Size                          | 'small' \| 'medium' \| 'large'        | medium  |
+| shape          | Shape                         | ShapeType                             | round   |
 | onChange       | State change callback         | (event: CheckCardChangeEvent) => void | -       |
 
 ## CheckCardGroup API
 
-| Property     | Description             | Type                            | Default    |
-| ------------ | ----------------------- | ------------------------------- | ---------- |
-| value        | Controlled value        | string\|number                  | -          |
-| defaultValue | Initial value           | string\|number                  | -          |
-| options      | Options                 | CheckCardOption[]               | -          |
-| disabled     | Whether disabled        | boolean                         | false      |
-| readOnly     | Whether read-only       | boolean                         | false      |
-| direction    | Layout direction        | horizontal\|vertical            | horizontal |
-| theme        | Card theme              | outline\|fill                   | outline    |
-| size         | Card size               | small\|medium\|large            | medium     |
-| shape        | Card shape              | round\|circle\|square           | round      |
-| onChange     | Selected value callback | (value: string\|number) => void | -          |
+| Property     | Description             | Type                              | Default    |
+| ------------ | ----------------------- | --------------------------------- | ---------- |
+| value        | Controlled value        | string \| number                  | -          |
+| defaultValue | Initial value           | string \| number                  | -          |
+| options      | Options                 | CheckCardOption[]                 | -          |
+| disabled     | Whether disabled        | boolean                           | false      |
+| readOnly     | Whether read-only       | boolean                           | false      |
+| direction    | Layout direction        | 'horizontal' \| 'vertical'        | horizontal |
+| theme        | Card theme              | 'outline' \| 'fill'               | outline    |
+| size         | Card size               | 'small' \| 'medium' \| 'large'    | medium     |
+| shape        | Card shape              | ShapeType                         | round      |
+| onChange     | Selected value callback | (value: string \| number) => void | -          |
 
 ## CheckCardOption
 
-| Property      | Description                     | Type           | Default |
-| ------------- | ------------------------------- | -------------- | ------- |
-| value         | Option value                    | string\|number | -       |
-| title         | Title                           | ReactNode      | -       |
-| description   | Description                     | ReactNode      | -       |
-| symbol        | Unchecked symbol                | IconType[]     | -       |
-| checkedSymbol | Checked symbol                  | IconType[]     | -       |
-| disabled      | Whether this option is disabled | boolean        | false   |
+| Property      | Description                      | Type             | Default |
+| ------------- | -------------------------------- | ---------------- | ------- |
+| value         | Option value                     | string \| number | -       |
+| title         | Title                            | ReactNode        | -       |
+| description   | Description                      | ReactNode        | -       |
+| symbol        | Unchecked symbol                 | IconType[]       | -       |
+| checkedSymbol | Checked symbol                   | IconType[]       | -       |
+| disabled      | Whether this option is disabled  | boolean          | false   |
+| readOnly      | Whether this option is read-only | boolean          | false   |

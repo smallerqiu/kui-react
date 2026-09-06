@@ -68,6 +68,7 @@ const CheckCardGroup = React.forwardRef<HTMLDivElement, CheckCardGroupProps>(
           ref={ref}
           className={clsx("k-check-card-group", `k-check-card-group-${direction}`, className)}
           role="radiogroup"
+          aria-disabled={disabled || undefined}
           aria-readonly={readOnly || undefined}
         >
           {options?.map((option) => <CheckCard key={option.value} {...option} />) ?? children}

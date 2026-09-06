@@ -41,10 +41,10 @@ const CheckCard = React.forwardRef<HTMLDivElement, CheckCardProps>(
 
     useEffect(() => {
       if (grouped && value !== undefined && rootRef.current) {
-        group?.register(value, rootRef.current, isDisabled);
+        group?.register(value, rootRef.current, isDisabled || isReadOnly);
         return () => group.unregister(value);
       }
-    }, [group, grouped, isDisabled, value]);
+    }, [group, grouped, isDisabled, isReadOnly, value]);
 
     const setRefs = (element: HTMLDivElement | null) => {
       rootRef.current = element;
