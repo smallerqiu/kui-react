@@ -2,10 +2,12 @@ import { createContext, useContext } from "react";
 import type { DirectionType } from "../const/types";
 
 export interface MenuContextProps {
+  theme?: "light" | "dark";
   openKeys: string[];
   selectedKeys: string[];
   mode: DirectionType;
   inlineCollapsed: boolean;
+  collapsedTooltip: boolean;
   popupInlineCollapsed: boolean;
   dropdown: boolean;
   openKeysChange?: (key: string, opened: boolean, keyPath: string[]) => void;

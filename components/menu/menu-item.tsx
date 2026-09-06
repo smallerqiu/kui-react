@@ -2,7 +2,9 @@ import clsx from "clsx";
 import React, { useId, useState, type CSSProperties, type ReactNode } from "react";
 import type { IconType } from "../icon";
 import Icon from "../icon";
+import Tooltip from "../tooltip";
 import { useMenuContext, useSubMenuContext } from "./menu-context";
+import { handleMenuItemKeydown } from "./menu-keyboard";
 
 export interface MenuItemProps {
   itemKey?: string;
@@ -33,9 +35,8 @@ export const MenuItem: React.FC<MenuItemProps> = ({
 
   const preCls = menuContext?.dropdown ? "dropdown-menu" : "menu";
   const selected = Boolean(
-    menuContext?.selectedKeys.includes(currentKey) && !menuContext?.dropdown
+    menuContext?.selectedKeys.includes(currentKey) && !menuContext?.dropdown,
   );
-
   const paddingLeft =
     menuContext?.mode === "inline" &&
     !menuContext?.inlineCollapsed &&
@@ -50,7 +51,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
       [`k-${preCls}-item-selected`]: selected,
       [`k-${preCls}-item-disabled`]: disabled,
     },
-    className
+    className,
   );
 
   const titleNode = <span className={`k-${preCls}-title-content`}>{title ?? children}</span>;
@@ -62,7 +63,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
     iconNode = <Icon type={icon} className={`k-${preCls}-item-icon`} />;
   }
 
-  return (
+  const itemNode = (
     <li
       className={classNames}
       style={{
@@ -76,10 +77,35 @@ export const MenuItem: React.FC<MenuItemProps> = ({
           menuContext?.selectedKeysChange?.(currentKey, true, subMenuContext?.keyPath || []);
         }
       }}
+      onKeyDown={(event) =>
+        handleMenuItemKeydown(event, () => {
+          if (!disabled) {
+            menuContext?.selectedKeysChange?.(currentKey, true, subMenuContext?.keyPath || []);
+          }
+        })
+      }
+      role="menuitem"
+      tabIndex={disabled ? -1 : 0}
+      aria-disabled={disabled || undefined}
+      aria-current={selected ? "page" : undefined}
     >
       {iconNode}
       {titleNode}
     </li>
+  );
+  const showCollapsedTooltip =
+    menuContext?.mode === "inline" &&
+    menuContext.inlineCollapsed &&
+    menuContext.collapsedTooltip &&
+    !menuContext.dropdown &&
+    !subMenuContext?.keyPath.length;
+
+  return showCollapsedTooltip ? (
+    <Tooltip title={title ?? children} placement="right">
+      {itemNode}
+    </Tooltip>
+  ) : (
+    itemNode
   );
 };
 

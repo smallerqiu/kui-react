@@ -37,12 +37,7 @@ export default function App() {
   const [current, setCurrent] = useState(["1-1"]);
   return (
     <div style={{ width: 256 }}>
-      <Menu
-        value={current}
-        onSelect={({ key }) => setCurrent([key])}
-        mode="vertical"
-        items={items}
-      />
+      <Menu value={current} onChange={setCurrent} mode="vertical" items={items} />
     </div>
   );
 }

@@ -50,7 +50,7 @@ export default function App() {
       <br />
       <Menu
         value={current}
-        onSelect={({ key }) => setCurrent([key])}
+        onChange={setCurrent}
         openKeys={openKeys}
         onOpenChange={setOpenKeys}
         theme={dark ? "dark" : "light"}

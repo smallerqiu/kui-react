@@ -31,12 +31,5 @@ const items: MenuOptionsProps[] = [
 ];
 export default function App() {
   const [current, setCurrent] = useState(["1"]);
-  return (
-    <Menu
-      mode="horizontal"
-      value={current}
-      onSelect={({ key }) => setCurrent([key])}
-      items={items}
-    />
-  );
+  return <Menu mode="horizontal" value={current} onChange={setCurrent} items={items} />;
 }

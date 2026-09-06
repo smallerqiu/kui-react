@@ -1,6 +1,6 @@
 import { Heart, Mail, PanelLeftClose, PanelLeftOpen, Settings, Table } from "kui-icons";
 import { useState } from "react";
-import { Button, Menu, type MenuOptionsProps } from "react-kui";
+import { Button, Menu, Switch, type MenuOptionsProps } from "react-kui";
 const items: MenuOptionsProps[] = [
   { title: "Option 1", key: "1-1", icon: Mail },
   { title: "Option 2", key: "2-1", icon: Table },
@@ -37,7 +37,8 @@ const items: MenuOptionsProps[] = [
 export default function App() {
   const [collapsed, setCollapsed] = useState(false),
     [current, setCurrent] = useState(["1-1"]),
-    [openKeys, setOpenKeys] = useState(["3-1"]);
+    [openKeys, setOpenKeys] = useState(["3-1", "3-1-3"]),
+    [collapsedTooltip, setCollapsedTooltip] = useState(true);
   return (
     <div style={{ width: 256 }}>
       <Button
@@ -45,15 +46,23 @@ export default function App() {
         icon={collapsed ? PanelLeftOpen : PanelLeftClose}
         type="primary"
       />
+      <label style={{ display: "inline-flex", alignItems: "center", gap: 8, marginLeft: 12 }}>
+        Tooltip
+        <Switch
+          checked={collapsedTooltip}
+          onChange={(checked) => setCollapsedTooltip(Boolean(checked))}
+        />
+      </label>
       <br />
       <br />
       <Menu
         value={current}
-        onSelect={({ key }) => setCurrent([key])}
+        onChange={setCurrent}
         openKeys={openKeys}
         onOpenChange={setOpenKeys}
         theme="dark"
         inlineCollapsed={collapsed}
+        collapsedTooltip={collapsedTooltip}
         mode="inline"
         items={items}
       />

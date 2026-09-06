@@ -49,7 +49,7 @@ export default function App() {
     <div style={{ width: 256 }}>
       <Menu
         value={current}
-        onSelect={({ key }) => setCurrent([key])}
+        onChange={setCurrent}
         openKeys={openKeys}
         mode="inline"
         onOpenChange={(keys) => {

@@ -17,6 +17,7 @@ import Icon from "../icon";
 import { getTransitionProp } from "../utils/transition";
 import { setPlacement } from "../utils/placement";
 import { SubMenuContext, useMenuContext, useSubMenuContext } from "./menu-context";
+import { handleMenuItemKeydown } from "./menu-keyboard";
 
 export interface SubMenuProps {
   itemKey?: string;
@@ -57,7 +58,7 @@ export const SubMenu: React.FC<SubMenuProps> = ({
   // Prevents popup flash at (0,0) before first positioning calculation
   const [popupPositioned, setPopupPositioned] = useState(false);
   const [prevPopupInlineCollapsed, setPrevPopupInlineCollapsed] = useState(
-    Boolean(menuContext?.popupInlineCollapsed)
+    Boolean(menuContext?.popupInlineCollapsed),
   );
 
   // Reset positioning when transitioning to inline-collapsed popup mode
@@ -77,7 +78,7 @@ export const SubMenu: React.FC<SubMenuProps> = ({
     menuContext?.mode === "vertical" ||
     Boolean(menuContext?.popupInlineCollapsed);
   const [rendered, setRendered] = useState(
-    menuContext?.mode === "inline" && !menuContext?.popupInlineCollapsed
+    menuContext?.mode === "inline" && !menuContext?.popupInlineCollapsed,
   );
   const opened = Boolean(menuContext?.openKeys.includes(currentKey));
 
@@ -99,7 +100,7 @@ export const SubMenu: React.FC<SubMenuProps> = ({
       clearPopTimer: clearCurrentPopTimer,
       hidePopTimer: hideCurrentPopTimer,
     }),
-    [clearCurrentPopTimer, currentKey, hideCurrentPopTimer, subMenuContext?.keyPath]
+    [clearCurrentPopTimer, currentKey, hideCurrentPopTimer, subMenuContext?.keyPath],
   );
 
   const updatePosition = useCallback(() => {
@@ -163,7 +164,7 @@ export const SubMenu: React.FC<SubMenuProps> = ({
       if (positionTimer.current) clearTimeout(positionTimer.current);
       cancelAnimationFrame(openRaf.current);
     },
-    [clearCurrentPopTimer]
+    [clearCurrentPopTimer],
   );
 
   let left = position.left;
@@ -176,6 +177,7 @@ export const SubMenu: React.FC<SubMenuProps> = ({
 
   const popperProps = {
     ref: refPopper,
+    "theme-mode": menuContext?.theme,
     "k-placement": position.placement,
     style: {
       minWidth: menuContext?.mode === "horizontal" ? minWidth : undefined,
@@ -213,7 +215,13 @@ export const SubMenu: React.FC<SubMenuProps> = ({
         <Transition {...transitionProps} show={opened} appear={popup}>
           <div {...containerProps}>
             <div className={popup ? `k-${preCls}-sub` : undefined}>
-              <ul className={`k-menu k-menu-${popup ? "vertical" : menuContext?.mode}`}>
+              <ul
+                className={`k-menu k-menu-${popup ? "vertical" : menuContext?.mode}`}
+                role="menu"
+                aria-orientation={
+                  popup || menuContext?.mode !== "horizontal" ? "vertical" : "horizontal"
+                }
+              >
                 <SubMenuContext.Provider value={childSubMenuContext}>
                   {children}
                 </SubMenuContext.Provider>
@@ -225,7 +233,7 @@ export const SubMenu: React.FC<SubMenuProps> = ({
     );
 
   const selected = Boolean(
-    menuContext?.selectedKeys.includes(currentKey) && !menuContext?.dropdown
+    menuContext?.selectedKeys.includes(currentKey) && !menuContext?.dropdown,
   );
   const titleStyle: CSSProperties = {};
   if (
@@ -255,6 +263,19 @@ export const SubMenu: React.FC<SubMenuProps> = ({
           },
         };
 
+  const activateTitle = () => {
+    if (disabled) return;
+    if (menuContext?.mode === "inline" && !menuContext.inlineCollapsed) {
+      menuContext.openKeysChange?.(currentKey, !opened, subMenuContext?.keyPath || []);
+      return;
+    }
+    if (opened) {
+      menuContext?.openKeysChange?.(currentKey, false, subMenuContext?.keyPath || []);
+    } else {
+      showPopper();
+    }
+  };
+
   return (
     <li
       className={clsx(`k-${preCls}`, {
@@ -264,7 +285,24 @@ export const SubMenu: React.FC<SubMenuProps> = ({
         [`k-${preCls}-disabled`]: disabled,
       })}
     >
-      <div className={`k-${preCls}-title`} style={titleStyle} {...popupTitleProps}>
+      <div
+        className={`k-${preCls}-title`}
+        style={titleStyle}
+        {...popupTitleProps}
+        role="menuitem"
+        tabIndex={disabled ? -1 : 0}
+        aria-disabled={disabled || undefined}
+        aria-haspopup="menu"
+        aria-expanded={opened}
+        onKeyDown={(event) => {
+          if (event.key === "Escape" && opened) {
+            event.preventDefault();
+            menuContext?.openKeysChange?.(currentKey, false, subMenuContext?.keyPath || []);
+            return;
+          }
+          handleMenuItemKeydown(event, activateTitle);
+        }}
+      >
         {icon ? <Icon type={icon} className="k-menu-item-icon" /> : null}
         <span className={`k-${preCls}-title-content`}>{title}</span>
         {menuContext?.mode === "horizontal" && !subMenuContext?.keyPath.length ? null : (

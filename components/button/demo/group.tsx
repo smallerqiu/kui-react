@@ -18,15 +18,15 @@ export default function App() {
   };
   const overlay = (
     <Menu onSelect={handleMenuClick}>
-      <MenuItem key="1">
+      <MenuItem key="1" itemKey="1">
         <Icon type={UserPlus} />
         1st menu item
       </MenuItem>
-      <MenuItem key="2">
+      <MenuItem key="2" itemKey="2">
         <Icon type={UserPlus} />
         2nd menu item
       </MenuItem>
-      <MenuItem key="3">
+      <MenuItem key="3" itemKey="3">
         <Icon type={UserPlus} />
         3rd item
       </MenuItem>

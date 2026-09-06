@@ -13,7 +13,7 @@ const handleMenuClick = (e: MenuSelectEvent) => console.log("click", e);
 const overlay = (
   <Menu onSelect={handleMenuClick}>
     {[1, 2, 3].map((i) => (
-      <MenuItem key={i}>
+      <MenuItem key={i} itemKey={String(i)}>
         <Icon type={UserPlus} /> {i === 3 ? "3rd item" : `${i}${i === 1 ? "st" : "nd"} menu item`}
       </MenuItem>
     ))}
