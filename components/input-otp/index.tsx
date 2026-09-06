@@ -69,23 +69,24 @@ const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
         .filter((character) => (type === "number" ? /\d/.test(character) : true))
         .filter((character) => (validator ? validator(character) : true))
         .join("")
-        .slice(0, Math.max(0, length)),
+        .slice(0, Math.max(0, Math.trunc(length))),
     [length, type, validator],
   );
+  const otpLength = Math.max(0, Math.trunc(length));
   const [innerValue, setInnerValue] = useState(() => normalize(defaultValue));
   const currentValue = normalize(value ?? innerValue);
   const inputs = useRef<Array<HTMLInputElement | null>>([]);
   const focusedIndex = useRef(-1);
-  const chars = Array.from({ length: Math.max(0, length) }, (_, index) =>
-    currentValue.charAt(index),
-  );
+  const composing = useRef(new Set<number>());
+  const valueChars = Array.from(currentValue);
+  const chars = Array.from({ length: otpLength }, (_, index) => valueChars[index] ?? "");
 
   const focus = useCallback(
-    (index = Math.min(currentValue.length, length - 1)) => {
-      if (disabled || length <= 0) return;
-      inputs.current[Math.max(0, Math.min(index, length - 1))]?.focus();
+    (index = Math.min(valueChars.length, otpLength - 1)) => {
+      if (disabled || otpLength <= 0) return;
+      inputs.current[Math.max(0, Math.min(index, otpLength - 1))]?.focus();
     },
-    [currentValue.length, disabled, length],
+    [disabled, otpLength, valueChars.length],
   );
   const blur = useCallback(() => inputs.current[focusedIndex.current]?.blur(), []);
   useImperativeHandle(ref, () => ({ focus, blur }), [blur, focus]);
@@ -95,29 +96,33 @@ const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
     if (nextValue === currentValue) return;
     if (value === undefined) setInnerValue(nextValue);
     onChange?.(nextValue);
-    if (nextValue.length === length) onComplete?.(nextValue);
+    if (otpLength > 0 && Array.from(nextValue).length === otpLength) onComplete?.(nextValue);
   };
   const insert = (text: string, index: number) => {
     if (disabled || readOnly) return;
     const inserted = normalize(text);
     if (!inserted) return;
-    const start = Math.min(index, currentValue.length);
-    const source = currentValue.split("");
-    inserted.split("").forEach((character, offset) => {
-      if (start + offset < length) source[start + offset] = character;
+    const start = Math.min(index, valueChars.length);
+    const source = [...valueChars];
+    const insertedChars = Array.from(inserted);
+    insertedChars.forEach((character, offset) => {
+      if (start + offset < otpLength) source[start + offset] = character;
     });
-    updateValue(source.join("").slice(0, length));
-    requestAnimationFrame(() => focus(Math.min(start + inserted.length, length - 1)));
+    updateValue(source.slice(0, otpLength).join(""));
+    requestAnimationFrame(() => focus(Math.min(start + insertedChars.length, otpLength - 1)));
   };
   const keyDown = (event: KeyboardEvent<HTMLInputElement>, index: number) => {
     if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
       event.preventDefault();
       focus(index + (event.key === "ArrowLeft" ? -1 : 1));
+    } else if (event.key === "Home" || event.key === "End") {
+      event.preventDefault();
+      focus(event.key === "Home" ? 0 : otpLength - 1);
     } else if (event.key === "Backspace" || event.key === "Delete") {
       if (readOnly) return;
       event.preventDefault();
       const target = event.key === "Backspace" && !chars[index] ? Math.max(0, index - 1) : index;
-      const source = currentValue.split("");
+      const source = [...valueChars];
       source.splice(target, 1);
       updateValue(source.join(""));
       requestAnimationFrame(() => focus(target));
@@ -145,6 +150,7 @@ const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
       )}
       role="group"
       aria-disabled={disabled || undefined}
+      aria-readonly={readOnly || undefined}
     >
       {chars.map((character, index) => (
         <Fragment key={index}>
@@ -160,13 +166,19 @@ const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
             type={mask ? "password" : "text"}
             inputMode={type === "number" ? "numeric" : "text"}
             pattern={type === "number" ? "[0-9]*" : undefined}
-            maxLength={length}
+            maxLength={otpLength}
             disabled={disabled}
             readOnly={readOnly}
             autoComplete={index === 0 ? "one-time-code" : "off"}
-            aria-label={`${index + 1} / ${length}`}
+            aria-label={`${index + 1} / ${otpLength}`}
             autoFocus={autoFocus && index === 0}
-            onChange={(event) => insert(event.target.value, index)}
+            onChange={(event) => {
+              if (!composing.current.has(index)) insert(event.target.value, index);
+            }}
+            onCompositionStart={() => composing.current.add(index)}
+            onCompositionEnd={() => {
+              composing.current.delete(index);
+            }}
             onKeyDown={(event) => keyDown(event, index)}
             onPaste={(event) => paste(event, index)}
             onFocus={(event) => {

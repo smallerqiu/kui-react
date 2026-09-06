@@ -36,22 +36,22 @@
 
 ## API
 
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| value | 受控输入值 | string,number | - |
-| defaultValue | 非受控初始值 | string,number | - |
-| length | 输入框数量 | number | 6 |
-| type | 字符类型 | number,text | number |
-| mask | 是否隐藏内容 | boolean | false |
-| separator | 分隔内容 | ReactNode | - |
-| validator | 单字符校验函数 | (value:string)=>boolean | - |
-| disabled | 是否禁用 | boolean | false |
-| readOnly | 是否只读 | boolean | false |
-| autoFocus | 是否自动聚焦 | boolean | false |
-| size | 尺寸 | small,medium,large | - |
-| theme | 主题 | fill,outline,underlined | fill |
-| shape | 形状 | square,circle | - |
-| onChange | 值变化回调 | (value:string)=>void | - |
-| onComplete | 输入完成回调 | (value:string)=>void | - |
-| onFocus | 输入框获得焦点时触发 | (event: FocusEvent<HTMLInputElement>) => void | - |
-| onBlur | 输入框失去焦点时触发 | (event: FocusEvent<HTMLInputElement>) => void | - |
+| 属性         | 说明                       | 类型                                           | 默认值 |
+| ------------ | -------------------------- | ---------------------------------------------- | ------ |
+| value        | 受控输入值                 | string \| number                               | -      |
+| defaultValue | 非受控初始值               | string \| number                               | -      |
+| length       | 输入框数量，按非负整数处理 | number                                         | 6      |
+| type         | 字符类型                   | 'number' \| 'text'                             | number |
+| mask         | 是否隐藏内容               | boolean                                        | false  |
+| separator    | 分隔内容                   | ReactNode                                      | -      |
+| validator    | 单字符校验函数             | (value: string) => boolean                     | -      |
+| disabled     | 是否禁用                   | boolean                                        | false  |
+| readOnly     | 是否只读                   | boolean                                        | false  |
+| autoFocus    | 是否自动聚焦               | boolean                                        | false  |
+| size         | 尺寸                       | SizeType                                       | -      |
+| theme        | 主题                       | 'fill' \| 'outline' \| 'underlined' \| 'plain' | fill   |
+| shape        | 形状                       | ShapeType                                      | -      |
+| onChange     | 值变化回调                 | (value: string) => void                        | -      |
+| onComplete   | 输入完成回调               | (value: string) => void                        | -      |
+| onFocus      | 输入框获得焦点时触发       | (event: FocusEvent<HTMLInputElement>) => void  | -      |
+| onBlur       | 输入框失去焦点时触发       | (event: FocusEvent<HTMLInputElement>) => void  | -      |
