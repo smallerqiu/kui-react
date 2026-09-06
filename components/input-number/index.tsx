@@ -15,7 +15,7 @@ export interface InputNumberProps extends Omit<
   defaultValue?: number | string;
   min?: number;
   max?: number;
-  step?: number;
+  step?: number | string;
   precision?: number;
   formatter?: (value: string | number) => string;
   parser?: (value: string) => string | number;
@@ -55,13 +55,16 @@ const InputNumber: React.FC<InputNumberProps> = ({
   size,
   placeholder,
   onChange,
+  onBlur,
+  onKeyDown,
   ...rest
 }) => {
   const parentSize = useContext(SizeContext);
-  const [innerValue, setInnerValue] = useState(normalize(defaultValue, precision));
+  const safePrecision = precision === undefined ? undefined : Math.max(0, Math.trunc(precision));
+  const [innerValue, setInnerValue] = useState(normalize(defaultValue, safePrecision));
   const [userInput, setUserInput] = useState<string | null>(null);
   const controlled = value !== undefined;
-  const currentValue = controlled ? normalize(value, precision) : innerValue;
+  const currentValue = controlled ? normalize(value, safePrecision) : innerValue;
 
   const clamp = (val: string | number): string => {
     if (!isValidBig(val)) {
@@ -71,7 +74,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
       let b = new Big(val);
       if (max !== Infinity && b.gt(max)) b = new Big(max);
       if (min !== -Infinity && b.lt(min)) b = new Big(min);
-      return precision !== undefined ? b.toFixed(precision) : b.toFixed();
+      return safePrecision !== undefined ? b.toFixed(safePrecision) : b.toFixed();
     } catch {
       return currentValue;
     }
@@ -82,7 +85,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
   };
 
   const displayValue = (() => {
-    if (!controlled && userInput !== null) return userInput;
+    if (userInput !== null) return userInput;
     if (currentValue === "") return "";
     return formatter ? formatter(currentValue) : currentValue;
   })();
@@ -97,10 +100,10 @@ const InputNumber: React.FC<InputNumberProps> = ({
   };
 
   const handleInput = (val: string) => {
+    setUserInput(val);
     const parsed = parser ? parser(val) : val;
     if (val === "") {
       if (!controlled) {
-        setUserInput(val);
         setInnerValue("");
       }
       emitValue(undefined);
@@ -110,30 +113,34 @@ const InputNumber: React.FC<InputNumberProps> = ({
       const bigVal = new Big(parsed);
       const normalizedStr = bigVal.toFixed();
       if (!controlled) {
-        setUserInput(val);
         setInnerValue(normalizedStr);
       }
       emitValue(Number(normalizedStr));
-      if (!controlled && formatter) {
-        const formatted = formatter(normalizedStr);
-        // 与当前输入值 val 比较而非异步的 userInput 状态，避免过期闭包导致误判
-        if (formatted !== val) setUserInput(formatted);
-      }
     }
   };
 
-  const handleBlur = () => {
-    triggerUpdate(!controlled && userInput !== null ? userInput : currentValue);
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    triggerUpdate(userInput !== null ? userInput : currentValue);
+    onBlur?.(event);
   };
 
   const stepAction = (type: "up" | "down") => {
     if (disabled || readOnly) return;
     const current = isValidBig(currentValue) ? currentValue : 0;
-    const next = type === "up" ? new Big(current).plus(step) : new Big(current).minus(step);
+    let safeStep = new Big(1);
+    try {
+      const candidate = new Big(step);
+      if (candidate.gt(0)) safeStep = candidate;
+    } catch {
+      // Invalid steps fall back to 1.
+    }
+    const next = type === "up" ? new Big(current).plus(safeStep) : new Big(current).minus(safeStep);
     triggerUpdate(next.toFixed());
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    onKeyDown?.(e);
+    if (e.defaultPrevented) return;
     if (!keyboard) return;
     if (e.key === "ArrowUp") {
       e.preventDefault();
@@ -145,15 +152,30 @@ const InputNumber: React.FC<InputNumberProps> = ({
     }
   };
 
+  const canStepUp = max === Infinity || !isValidBig(currentValue) || new Big(currentValue).lt(max);
+  const canStepDown =
+    min === -Infinity || !isValidBig(currentValue) || new Big(currentValue).gt(min);
   const controlsNode =
     controls && !readOnly && !disabled ? (
       <div className="k-input-number-controls">
-        <span className="k-input-number-control" onClick={() => stepAction("up")}>
+        <button
+          type="button"
+          className="k-input-number-control"
+          disabled={!canStepUp}
+          aria-label="Increase value"
+          onClick={() => stepAction("up")}
+        >
           <Icon type={ChevronUp} />
-        </span>
-        <span className="k-input-number-control" onClick={() => stepAction("down")}>
+        </button>
+        <button
+          type="button"
+          className="k-input-number-control"
+          disabled={!canStepDown}
+          aria-label="Decrease value"
+          onClick={() => stepAction("down")}
+        >
           <Icon type={ChevronDown} />
-        </span>
+        </button>
       </div>
     ) : undefined;
 
@@ -172,6 +194,12 @@ const InputNumber: React.FC<InputNumberProps> = ({
       shape={shape}
       theme={theme}
       inputType="input-number"
+      role="spinbutton"
+      inputMode="decimal"
+      aria-valuemin={min === -Infinity ? undefined : min}
+      aria-valuemax={max === Infinity ? undefined : max}
+      aria-valuenow={isValidBig(currentValue) ? Number(currentValue) : undefined}
+      aria-valuetext={formatter && currentValue ? String(displayValue) : undefined}
       onChange={handleInput}
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
