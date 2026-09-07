@@ -27,6 +27,7 @@ export default function Anchor({
   onChange,
   onClick,
   className,
+  style,
   children,
   ...rest
 }: AnchorProps) {
@@ -40,6 +41,7 @@ export default function Anchor({
   const boundsRef = useRef(bounds);
   const onChangeRef = useRef(onChange);
   const onClickRef = useRef(onClick);
+  const activeLinkRef = useRef("");
   const [activeLink, setActiveLink] = useState("");
   const [inkStyle, setInkStyle] = useState<CSSProperties>({ opacity: 0 });
 
@@ -83,12 +85,12 @@ export default function Anchor({
       const containerRect = containerElement.getBoundingClientRect();
       return rect.top - containerRect.top - containerElement.clientTop + containerElement.scrollTop;
     },
-    []
+    [],
   );
 
   const updateInk = useCallback(() => {
     const node = wrapperRef.current?.querySelector<HTMLElement>(
-      ".k-anchor-link-active > .k-anchor-link-title"
+      ".k-anchor-link-active > .k-anchor-link-title",
     );
     const next: CSSProperties = node
       ? { top: (node.parentElement?.offsetTop || 0) + 4, height: node.clientHeight, opacity: 1 }
@@ -96,8 +98,15 @@ export default function Anchor({
     setInkStyle((current) =>
       current.top === next.top && current.height === next.height && current.opacity === next.opacity
         ? current
-        : next
+        : next,
     );
+  }, []);
+
+  const setCurrentActiveLink = useCallback((link: string) => {
+    if (activeLinkRef.current === link) return;
+    activeLinkRef.current = link;
+    setActiveLink(link);
+    onChangeRef.current?.(link);
   }, []);
 
   const handleScroll = useCallback(() => {
@@ -123,12 +132,8 @@ export default function Anchor({
         break;
       }
     }
-    setActiveLink((current) => {
-      if (current === next) return current;
-      onChangeRef.current?.(next);
-      return next;
-    });
-  }, [getContainer, getElementTop, getTarget]);
+    setCurrentActiveLink(next);
+  }, [getContainer, getElementTop, getTarget, setCurrentActiveLink]);
 
   const scheduleScroll = useCallback(() => {
     if (unmountedRef.current || frameRef.current !== null || typeof window === "undefined") return;
@@ -148,7 +153,7 @@ export default function Anchor({
       const scrollContainer = getContainer();
       if (!target || !scrollContainer) return;
       clickScrollingRef.current = true;
-      setActiveLink(link);
+      setCurrentActiveLink(link);
       onClickRef.current?.(link);
       scrollContainer.scrollTo({
         top: getElementTop(target, scrollContainer) - offsetTopRef.current,
@@ -157,7 +162,7 @@ export default function Anchor({
       if (scrollEndTimerRef.current) clearTimeout(scrollEndTimerRef.current);
       scrollEndTimerRef.current = setTimeout(finishClickScrolling, 1000);
     },
-    [finishClickScrolling, getContainer, getElementTop, getTarget]
+    [finishClickScrolling, getContainer, getElementTop, getTarget, setCurrentActiveLink],
   );
 
   const registerLink = useCallback(
@@ -165,14 +170,14 @@ export default function Anchor({
       linksRef.current.add(link);
       scheduleScroll();
     },
-    [scheduleScroll]
+    [scheduleScroll],
   );
   const unregisterLink = useCallback(
     (link: string) => {
       linksRef.current.delete(link);
       scheduleScroll();
     },
-    [scheduleScroll]
+    [scheduleScroll],
   );
 
   useEffect(() => {
@@ -220,7 +225,7 @@ export default function Anchor({
 
   const context = useMemo<AnchorContextValue>(
     () => ({ activeLink, registerLink, unregisterLink, scrollTo }),
-    [activeLink, registerLink, scrollTo, unregisterLink]
+    [activeLink, registerLink, scrollTo, unregisterLink],
   );
 
   return (
@@ -229,6 +234,7 @@ export default function Anchor({
         {...rest}
         ref={wrapperRef}
         className={clsx("k-anchor-wrapper", { "k-anchor-affix": affix }, className)}
+        style={{ ...style, ...(affix ? { top: offsetTop } : {}) }}
       >
         <div className="k-anchor">
           <span className="k-anchor-ink-ball" style={inkStyle} />
