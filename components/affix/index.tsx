@@ -97,7 +97,7 @@ export default function Affix({
       : {};
     setAffixStyle((current) => (isSameStyle(current, nextStyle) ? current : nextStyle));
     setPlaceholderStyle((current) =>
-      isSameStyle(current, nextPlaceholderStyle) ? current : nextPlaceholderStyle
+      isSameStyle(current, nextPlaceholderStyle) ? current : nextPlaceholderStyle,
     );
     if (fixedRef.current !== nextFixed) {
       fixedRef.current = nextFixed;
@@ -137,10 +137,10 @@ export default function Affix({
   }, [scheduleUpdate, target]);
 
   return (
-    <div {...rest} ref={wrapperRef} style={{ ...style, ...placeholderStyle }}>
+    <div {...rest} ref={wrapperRef} className={className} style={{ ...style, ...placeholderStyle }}>
       <div
         ref={innerRef}
-        className={clsx("k-affix", { "k-affix-fixed": fixed }, className)}
+        className={clsx("k-affix", { "k-affix-fixed": fixed })}
         style={affixStyle}
       >
         {children}
