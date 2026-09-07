@@ -19,22 +19,33 @@ export default function PageHeader({
   className,
   ...rest
 }: PageHeaderProps) {
+  const hasTitle = title !== null && title !== undefined && title !== false;
+  const hasDescription = description !== null && description !== undefined && description !== false;
+  const hasBreadcrumb = breadcrumb !== null && breadcrumb !== undefined && breadcrumb !== false;
+  const hasBack = back !== null && back !== undefined && back !== false;
+  const hasContent = children !== null && children !== undefined && children !== false;
+  const hasActions = actions !== null && actions !== undefined && actions !== false;
+
   return (
     <header {...rest} className={className ? `k-page-header ${className}` : "k-page-header"}>
       <div className="k-page-header-main">
-        {breadcrumb}
-        <div className="k-page-header-heading">
-          {back}
-          {(title || description) && (
-            <div className="k-page-header-copy">
-              {title ? <div className="k-page-header-title">{title}</div> : null}
-              {description ? <div className="k-page-header-description">{description}</div> : null}
-            </div>
-          )}
-        </div>
-        {children}
+        {hasBreadcrumb ? <div className="k-page-header-breadcrumb">{breadcrumb}</div> : null}
+        {hasBack || hasTitle || hasDescription ? (
+          <div className="k-page-header-heading">
+            {back}
+            {hasTitle || hasDescription ? (
+              <div className="k-page-header-copy">
+                {hasTitle ? <div className="k-page-header-title">{title}</div> : null}
+                {hasDescription ? (
+                  <div className="k-page-header-description">{description}</div>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+        {hasContent ? <div className="k-page-header-content">{children}</div> : null}
       </div>
-      {actions ? <div className="k-page-header-actions">{actions}</div> : null}
+      {hasActions ? <div className="k-page-header-actions">{actions}</div> : null}
     </header>
   );
 }

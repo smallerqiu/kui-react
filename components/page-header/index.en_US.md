@@ -14,15 +14,14 @@ Displays a page title, description, breadcrumb, and action area.
 
 [Custom Content](./demo/slots.tsx?show=vertical)
 
-- Use ReactNode values to customize the breadcrumb, back button, title, description, actions, and additional content.
+- Use ReactNode values to customize the breadcrumb, back button, title and actions, then combine with `ListPanel` to build a list page.
 
 ## API
 
-| Property | Description | Type | Default |
-| --- | --- | --- | --- |
-| title | Title | ReactNode | - |
-| description | Description | ReactNode | - |
-| breadcrumb | Breadcrumb area | ReactNode | - |
-| back | Back button area | ReactNode | - |
-| actions | Action area | ReactNode | - |
-| children | Additional content | ReactNode | - |
+| Property    | Description      | Type      | Default |
+| ----------- | ---------------- | --------- | ------- |
+| title       | Title            | ReactNode | -       |
+| description | Description      | ReactNode | -       |
+| breadcrumb  | Breadcrumb area  | ReactNode | -       |
+| back        | Back button area | ReactNode | -       |
+| actions     | Action area      | ReactNode | -       |
