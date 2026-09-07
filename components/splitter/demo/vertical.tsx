@@ -7,7 +7,7 @@ const Panel = ({ children }: { children: string }) => (
 export default function App() {
   return (
     <Splitter direction="horizontal" style={{ height: 240 }}>
-      <SplitterPanel size="20%" min={10} max={30}>
+      <SplitterPanel size="20%" min="10%" max="30%">
         <Panel>Folders</Panel>
       </SplitterPanel>
       <SplitterPanel>
@@ -15,7 +15,7 @@ export default function App() {
           <SplitterPanel>
             <Panel>Editor</Panel>
           </SplitterPanel>
-          <SplitterPanel size="25%">
+          <SplitterPanel size="50px">
             <Panel>Console</Panel>
           </SplitterPanel>
         </Splitter>
