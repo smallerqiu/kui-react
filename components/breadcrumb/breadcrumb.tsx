@@ -17,7 +17,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
   return (
     <BreadcrumbContext.Provider value={separator}>
-      <nav className={classes} {...rest}>
+      <nav className={classes} aria-label="Breadcrumb" {...rest}>
         <ol>{children}</ol>
       </nav>
     </BreadcrumbContext.Provider>

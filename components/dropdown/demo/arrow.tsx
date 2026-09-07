@@ -1,4 +1,4 @@
-import { Button, type DropPlacementsType, Menu, MenuItem, Dropdown } from "react-kui";
+import { Button, Dropdown, type DropPlacementsType, Menu, MenuItem, Space } from "react-kui";
 const placements: DropPlacementsType[] = [
   "bottom-left",
   "bottom",
@@ -16,12 +16,12 @@ const overlay = (
 );
 export default function App() {
   return (
-    <div id="dropdown-demo-placement">
+    <Space id="dropdown-demo-placement" wrap>
       {placements.map((placement) => (
         <Dropdown key={placement} placement={placement} arrow overlay={overlay}>
           <Button>{placement}</Button>
         </Dropdown>
       ))}
-    </div>
+    </Space>
   );
 }

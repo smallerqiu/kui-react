@@ -24,16 +24,17 @@
 
 ## Breadcrumb API
 
-| 属性      | 说明         | 类型        | 默认值 |
-| --------- | ------------ | ----------- | ------ |
-| separator | 自定义分隔符 | ReactNode   | /      |
-| children  | 面包屑节点   | ReactNode   | -      |
+| 属性      | 说明         | 类型      | 默认值 |
+| --------- | ------------ | --------- | ------ |
+| separator | 自定义分隔符 | ReactNode | /      |
+| children  | 面包屑节点   | ReactNode | -      |
 
 ## BreadcrumbItem API
 
-| 属性    | 说明                                                     | 类型      | 默认值 |
-| ------- | -------------------------------------------------------- | --------- | ------ |
-| href    | 自定义链接地址                                           | string    | -      |
-| replace | 路由跳转时，开启 `replace` 将不会向 `history` 添加新记录 | boolean   | false  |
-| icon    | 节点的图标                                               | ReactNode | -      |
-| children | 节点内容                                                | ReactNode | -      |
+| 属性     | 说明         | 类型                  | 默认值 |
+| -------- | ------------ | --------------------- | ------ |
+| href     | 链接地址     | string                | -      |
+| target   | 链接打开方式 | string                | -      |
+| rel      | 链接关系属性 | string                | -      |
+| icon     | 节点图标     | IconType \| ReactNode | -      |
+| children | 节点内容     | ReactNode             | -      |

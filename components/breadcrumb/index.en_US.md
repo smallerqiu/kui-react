@@ -22,11 +22,19 @@ Displays the current page's position in the system hierarchy and allows navigati
 
 - Set the separator via `separator`.
 
+## Breadcrumb API
+
+| Property  | Description      | Type      | Default |
+| --------- | ---------------- | --------- | ------- |
+| separator | Custom separator | ReactNode | `/`     |
+| children  | Breadcrumb items | ReactNode | -       |
+
 ## BreadcrumbItem API
 
-| Property  | Description                                                                   | Type   | Default |
-| --------- | ----------------------------------------------------------------------------- | ------ | ------- |
-| separator | Custom separator                                                              | string | /       |
-| href      | Custom link function                                                          | string | -       |
-| replace   | When routing jumps, enabling `replace` will not add a new record to `history` | boolean   | false   |
-| icon      | Button icon                                                                   | string | -       |
+| Property | Description             | Type                  | Default |
+| -------- | ----------------------- | --------------------- | ------- |
+| href     | Link URL                | string                | -       |
+| target   | Link browsing context   | string                | -       |
+| rel      | Link relationship       | string                | -       |
+| icon     | Item icon               | IconType \| ReactNode | -       |
+| children | Breadcrumb item content | ReactNode             | -       |

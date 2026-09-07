@@ -74,6 +74,18 @@ const Dropdown: React.FC<DropdownProps> = ({
   const setLocalSelection = useCallback((node: HTMLElement | null) => {
     localRefSelection.current = node;
   }, []);
+  const focusMenuItem = (last = false) => {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const items = Array.from(
+          refPopper.current?.querySelectorAll<HTMLElement>(
+            '[role="menuitem"]:not([aria-disabled="true"])',
+          ) || [],
+        );
+        items[last ? items.length - 1 : 0]?.focus({ preventScroll: true });
+      });
+    });
+  };
 
   const updatePosition = useCallback(
     (e?: MouseEvent, requestedPlacement = placement) => {
@@ -174,8 +186,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
       if (
         (!refPopper.current.contains(clickedEl) &&
-          targetElement &&
-          !targetElement.contains(clickedEl)) ||
+          (!targetElement || !targetElement.contains(clickedEl))) ||
         (trigger === "contextmenu" && !refPopper.current.contains(clickedEl))
       ) {
         if (externalOpen === undefined) setVisible(false);
@@ -222,6 +233,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     if (externalOpen === undefined) setVisible(opened);
     onOpenChange?.(opened);
     if (opened) {
+      setPositioned(false);
       if (trigger === "contextmenu" && e) {
         contextmenuPosition.current = { x: e.clientX, y: e.clientY };
       }
@@ -231,6 +243,20 @@ const Dropdown: React.FC<DropdownProps> = ({
       contextmenuPosition.current = null;
     }
   };
+
+  useEffect(() => {
+    if (!visible) return;
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (externalOpen === undefined) setVisible(false);
+      onOpenChange?.(false);
+      refSelection.current?.focus({ preventScroll: true });
+    };
+    document.addEventListener("keydown", handleEscape, true);
+    return () => document.removeEventListener("keydown", handleEscape, true);
+  }, [externalOpen, onOpenChange, refSelection, visible]);
 
   const mouseEnterEvent = () => {
     if (disabled) return;
@@ -253,7 +279,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   const clickEvent = () => {
     if (disabled) return;
     if (trigger === "click") {
-      openChange(true);
+      openChange(!visible);
     }
   };
 
@@ -298,6 +324,22 @@ const Dropdown: React.FC<DropdownProps> = ({
         firstChild.props.onContextMenu(e);
       }
     };
+    triggerProps.onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+      if (e.key === "Escape" && visible) {
+        e.preventDefault();
+        openChange(false);
+      } else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+        openChange(true);
+        focusMenuItem(e.key === "ArrowUp");
+      } else if (trigger === "click" && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault();
+        openChange(!visible);
+      }
+      firstChild?.props.onKeyDown?.(e);
+    };
+    triggerProps["aria-haspopup"] = "menu";
+    triggerProps["aria-expanded"] = visible;
   }
 
   const triggerNode = target ? (
@@ -331,7 +373,6 @@ const Dropdown: React.FC<DropdownProps> = ({
           }
           className={popperClasses}
           {...({ "k-placement": currentPlacement } as Record<string, string>)}
-          onClick={() => openChange(false)}
           onMouseEnter={clearPopTimer}
           onMouseLeave={mouseLeaveEvent}
           {...rest}
@@ -364,7 +405,10 @@ const Dropdown: React.FC<DropdownProps> = ({
         onMouseEnter: mouseEnterEvent,
         onMouseLeave: mouseLeaveEvent,
         clearPopTimer,
-        menuSelected: () => openChange(false),
+        menuSelected: () => {
+          openChange(false);
+          window.requestAnimationFrame(() => refSelection.current?.focus({ preventScroll: true }));
+        },
       }}
     >
       {triggerNode}

@@ -5,12 +5,16 @@ import { BreadcrumbContext } from "./breadcrumb-context";
 
 export interface BreadcrumbItemProps extends React.HTMLAttributes<HTMLLIElement> {
   href?: string;
+  target?: string;
+  rel?: string;
   icon?: IconType[] | React.ReactNode;
   children?: React.ReactNode;
 }
 
 const BreadcrumbItem: React.FC<BreadcrumbItemProps> = ({
   href,
+  target,
+  rel,
   icon,
   children,
   className = "",
@@ -42,13 +46,15 @@ const BreadcrumbItem: React.FC<BreadcrumbItemProps> = ({
   return (
     <li className={classes} onClick={onClick} {...rest}>
       {href ? (
-        <a className="k-breadcrumb-link" href={href}>
+        <a className="k-breadcrumb-link" href={href} target={target} rel={rel}>
           {content}
         </a>
       ) : (
         <span className="k-breadcrumb-link">{content}</span>
       )}
-      <span className="k-breadcrumb-separator">{separator}</span>
+      <span className="k-breadcrumb-separator" aria-hidden="true">
+        {separator}
+      </span>
     </li>
   );
 };
