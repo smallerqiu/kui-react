@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, type RefObject } from "react";
+import { createContext, useLayoutEffect, useState, type RefObject } from "react";
 
 export type Breakpoint = "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
 
@@ -22,15 +22,19 @@ export const GridContext = createContext<GridContextValue | null>(null);
 export function useBreakpoint(elementRef: RefObject<HTMLElement | null>): Breakpoint {
   const [active, setActive] = useState<Breakpoint>("md");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const element = elementRef.current;
     if (!element || typeof ResizeObserver === "undefined") return;
     let frame = 0;
+    const update = (width: number) => {
+      const match = breakpointMap.find(([point]) => width >= point);
+      setActive(match?.[1] ?? "xs");
+    };
+    update(element.getBoundingClientRect().width);
     const observer = new ResizeObserver(([entry]) => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
-        const match = breakpointMap.find(([width]) => entry.contentRect.width >= width);
-        setActive(match?.[1] ?? "xs");
+        update(entry.contentRect.width);
       });
     });
     observer.observe(element);

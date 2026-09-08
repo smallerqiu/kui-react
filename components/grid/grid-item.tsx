@@ -25,7 +25,7 @@ export default function GridItem({
   const currentSpan = context?.resolveResponsive(span, 1) ?? 1;
   const currentRowSpan = context?.resolveResponsive(rowSpan, 1) ?? 1;
   const currentOffset = context?.resolveResponsive(offset, 0) ?? 0;
-  const itemStyle: CSSProperties = { ...style };
+  const itemStyle: CSSProperties = {};
 
   if (currentSpan === 0) itemStyle.display = "none";
   else if (currentSpan !== 1) itemStyle.gridColumn = `span ${currentSpan} / span ${currentSpan}`;
@@ -40,6 +40,7 @@ export default function GridItem({
     itemStyle.gridColumnStart = "-1";
     itemStyle.justifySelf = "end";
   }
+  Object.assign(itemStyle, style);
 
   return (
     <div {...rest} className={clsx("k-grid-item", className)} style={itemStyle}>

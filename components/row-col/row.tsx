@@ -14,7 +14,7 @@ const Row: React.FC<RowProps> = ({
   gutter,
   type = "flex",
   justify,
-  align,
+  align = "top",
   children,
   className = "",
   style,
@@ -27,10 +27,10 @@ const Row: React.FC<RowProps> = ({
       [`k-row-flex-${justify}`]: justify,
       [`k-row-flex-${align}`]: align,
     },
-    className
+    className,
   );
 
-  const rowStyle: React.CSSProperties = { ...style };
+  const rowStyle: React.CSSProperties = {};
 
   if (Array.isArray(gutter)) {
     const [v = 0, h = 0] = gutter;
@@ -52,6 +52,7 @@ const Row: React.FC<RowProps> = ({
     rowStyle.marginLeft = `-${gutter / 2}px`;
     rowStyle.marginRight = `-${gutter / 2}px`;
   }
+  Object.assign(rowStyle, style);
 
   return (
     <RowContext.Provider value={gutter}>

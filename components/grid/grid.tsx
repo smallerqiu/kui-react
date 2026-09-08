@@ -50,14 +50,13 @@ export default function Grid({
       }
       return fallback;
     },
-    [breakpoint]
+    [breakpoint],
   );
 
   const activeCols = resolveResponsive(cols, 24);
   const activeRows = resolveResponsive(rows, "auto");
   const parseGap = (value: GridDimension) => (typeof value === "number" ? `${value}px` : value);
   const gridStyle: CSSProperties = {
-    ...style,
     gridTemplateColumns: itemMinWidth
       ? `repeat(auto-fill, minmax(${itemMinWidth}px, 1fr))`
       : typeof activeCols === "number"
@@ -71,13 +70,14 @@ export default function Grid({
     alignItems: align,
     justifyItems: justify,
     gridAutoFlow: flow,
+    ...style,
   };
   if (debug && typeof activeCols === "number") {
     gridStyle.backgroundImage = `repeating-linear-gradient(to right, rgba(255,0,0,.05) 0, rgba(255,0,0,.05) ${100 / activeCols}%, transparent ${100 / activeCols}%, transparent ${200 / activeCols}%)`;
   }
   const context = useMemo(
     () => ({ breakpoint, resolveResponsive }),
-    [breakpoint, resolveResponsive]
+    [breakpoint, resolveResponsive],
   );
 
   return (

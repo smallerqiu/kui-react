@@ -82,7 +82,7 @@ const Col: React.FC<ColProps> = ({
 
   const classes = clsx("k-col", gridClasses, className);
 
-  const colStyle: React.CSSProperties = { ...style };
+  const colStyle: React.CSSProperties = {};
 
   if (Array.isArray(gutter)) {
     const [v = 0, h = 0] = gutter;
@@ -108,6 +108,7 @@ const Col: React.FC<ColProps> = ({
   if (flex !== undefined) {
     colStyle.flex = parseFlex(flex);
   }
+  Object.assign(colStyle, style);
 
   return (
     <div className={classes} style={colStyle} {...rest}>
