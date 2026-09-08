@@ -24,7 +24,7 @@ export default function App() {
       <style>{styles}</style>
       <Layout className="ide-layout">
         <Layout>
-          <Sider className="ide-rail" style={{ width: 48 }}>
+          <Sider className="ide-rail" width={48}>
             <div className="rail-icon active">
               <Icon type={Files} />
             </div>
@@ -36,7 +36,7 @@ export default function App() {
             </div>
           </Sider>
 
-          <Sider className="ide-explorer" style={{ width: 200 }}>
+          <Sider className="ide-explorer" width={200}>
             <div className="panel-title">Explorer</div>
             <div className="file-tree">
               <div className="file-item active">index.tsx</div>
@@ -57,7 +57,7 @@ export default function App() {
             </Content>
           </Layout>
 
-          <Sider className="ide-inspector" style={{ width: 240 }}>
+          <Sider className="ide-inspector" width={240}>
             <div className="panel-title">Attribute Settings</div>
             <div className="inspector-content">
               <div className="setting-row">

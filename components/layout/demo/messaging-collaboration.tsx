@@ -36,7 +36,7 @@ export default function App() {
     <>
       <style>{styles}</style>
       <Layout className="chat-container">
-        <Sider className="chat-sider" style={{ width: 260 }}>
+        <Sider className="chat-sider" width={260}>
           <div className="sider-header">
             <Input placeholder="Search conversation..." />
           </div>

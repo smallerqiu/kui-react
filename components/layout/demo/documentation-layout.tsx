@@ -40,7 +40,7 @@ export default function App() {
         </Header>
 
         <Layout className="docs-body">
-          <Sider className="docs-sider-left" style={{ width: 280 }}>
+          <Sider className="docs-sider-left" width={280}>
             <div className="sider-menu-wrapper">
               <Menu mode="inline" openKeys={["g1"]} className="docs-menu">
                 <MenuGroup title="Guide">
@@ -69,7 +69,7 @@ export default function App() {
             </article>
           </Content>
 
-          <Sider className="docs-sider-right" style={{ width: 200 }}>
+          <Sider className="docs-sider-right" width={200}>
             <div className="anchor-wrapper">
               <p className="anchor-title">Contents</p>
               <Anchor>

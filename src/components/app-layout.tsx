@@ -52,7 +52,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             {groups.map((group) => (
               <MenuGroup key={group.key} title={t(group.title)}>
                 {group.children.map((item) => (
-                  <MenuItem key={item.name} icon={item.icon}>
+                  <MenuItem key={item.name} itemKey={item.name} icon={item.icon}>
                     <Link to={pathFor({ ...item, key: group.key })}>
                       <span>{item.sub}</span>
                       {lang !== "en" && <span className="sub">{item.title}</span>}

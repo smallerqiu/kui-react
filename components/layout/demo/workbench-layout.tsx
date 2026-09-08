@@ -36,7 +36,7 @@ export default function App() {
     <>
       <style>{styles}</style>
       <Layout className="workbench-layout">
-        <Sider className="app-rail" style={{ width: 80 }}>
+        <Sider className="app-rail" width={80}>
           <Avatar size={40} className="app-logo">
             P
           </Avatar>
@@ -78,7 +78,7 @@ export default function App() {
             </Content>
 
             {showDetail && (
-              <Sider className="detail-panel" collapsible style={{ width: 350 }}>
+              <Sider className="detail-panel" width={350} collapsible>
                 <div className="detail-header">
                   <h4>Task Details</h4>
                   <Button type="text" onClick={() => setShowDetail(false)}>

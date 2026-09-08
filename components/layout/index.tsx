@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { SiderHookContext } from "./layout-context";
 
 export interface LayoutProps extends React.HTMLAttributes<HTMLElement> {
@@ -44,14 +44,14 @@ const LayoutMain: React.FC<LayoutProps> = ({
 }) => {
   const [siderCount, setSiderCount] = useState(0);
 
-  const collectSider = (mounted: boolean) => {
+  const collectSider = useCallback((mounted: boolean) => {
     setSiderCount((prev) => (mounted ? prev + 1 : Math.max(0, prev - 1)));
-  };
+  }, []);
 
   const classes = clsx(
     `k-${suffixCls}`,
     { [`k-${suffixCls}-has-sider`]: hasSider ?? siderCount > 0 },
-    className
+    className,
   );
 
   return (
@@ -84,9 +84,13 @@ const Sider: React.FC<SiderProps> = ({
   }, [collectSider]);
 
   const classes = clsx(`k-${suffixCls}`, className);
-  const siderWidth = collapsible && collapsed ? collapsedWidth : width;
+  const siderWidth = style?.width ?? (collapsible && collapsed ? collapsedWidth : width);
+  const resolvedWidth = typeof siderWidth === "number" ? `${siderWidth}px` : siderWidth;
   const siderStyle = {
-    width: style?.width ?? siderWidth,
+    width: resolvedWidth,
+    flex: `0 0 ${resolvedWidth}`,
+    maxWidth: resolvedWidth,
+    minWidth: resolvedWidth,
     ...style,
   };
 

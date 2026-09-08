@@ -62,12 +62,7 @@ export default function App() {
     <>
       <style>{styles}</style>
       <Layout className="admin-wrapper">
-        <Sider
-          collapsed={collapsed}
-          collapsible
-          className="admin-sider"
-          style={{ width: collapsed ? 80 : 200 }}
-        >
+        <Sider collapsed={collapsed} collapsible className="admin-sider">
           <div className="admin-logo">
             <Icon type={LogoKui} />
             {!collapsed && <span>KUI Console</span>}
