@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Button, Radio, RadioGroup, Space, Drawer, type DrawerPlacementsType } from "react-kui";
+import {
+  Button,
+  Drawer,
+  RadioButton,
+  RadioGroup,
+  Space,
+  type DrawerPlacementsType,
+} from "react-kui";
 const placements: DrawerPlacementsType[] = ["left", "top", "right", "bottom"];
 export default function App() {
   const [open, setOpen] = useState(false),
@@ -14,7 +21,7 @@ export default function App() {
           onChange={(v) => setPlacement(v as DrawerPlacementsType)}
         >
           {placements.map((v) => (
-            <Radio key={v} label={v} value={v} />
+            <RadioButton key={v} label={v} value={v} />
           ))}
         </RadioGroup>
         <Button onClick={() => setOpen(true)}>Open</Button>

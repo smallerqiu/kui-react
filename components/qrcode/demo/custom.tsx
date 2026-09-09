@@ -1,12 +1,12 @@
 import { useState } from "react";
 import {
   ColorPicker,
-  Radio,
+  QRCode,
+  RadioButton,
   RadioGroup,
   Slider,
   Space,
   Switch,
-  QRCode,
   type QRCodeErrorLevel,
 } from "react-kui";
 export default function App() {
@@ -56,9 +56,9 @@ export default function App() {
           onChange={(v) => setLevel(v as QRCodeErrorLevel)}
         >
           {(["L", "M", "Q", "H"] as QRCodeErrorLevel[]).map((v) => (
-            <Radio key={v} value={v}>
+            <RadioButton key={v} value={v}>
               {v}
-            </Radio>
+            </RadioButton>
           ))}
         </RadioGroup>
       </Space>

@@ -150,7 +150,7 @@ export default function Table<T extends object = Record<string, unknown>>({
     let left = checkable ? 50 : 0;
     leaves.forEach((column) => {
       if (column.fixed === "left") {
-        const style: CSSProperties = { position: "sticky", left, transform: "translateZ(0)" };
+        const style: CSSProperties = { position: "sticky", left };
         header[column.key] = style;
         body[column.key] = style;
         left += column.width ?? 150;
@@ -159,11 +159,10 @@ export default function Table<T extends object = Record<string, unknown>>({
     let right = 0;
     [...leaves].reverse().forEach((column) => {
       if (column.fixed === "right") {
-        body[column.key] = { position: "sticky", right, transform: "translateZ(0)" };
+        body[column.key] = { position: "sticky", right };
         header[column.key] = {
           position: "sticky",
           right: split ? right + scrollbarWidth : right,
-          transform: "translateZ(0)",
         };
         right += column.width ?? 150;
       }
@@ -574,6 +573,7 @@ export default function Table<T extends object = Record<string, unknown>>({
           "k-table-sm": size === "small",
           "k-table-lg": size === "large",
           "k-table-bordered": bordered,
+          "k-table-has-footer": !!footer,
           [`k-table-${shape}`]: shape,
           "k-table-ping-left": ping.left,
           "k-table-ping-right": ping.right,

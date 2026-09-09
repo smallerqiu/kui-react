@@ -83,16 +83,24 @@ const Drawer: React.FC<DrawerProps> = ({
 
   const [visible, setVisible] = useState(false);
   const [rendered, setRendered] = useState(false);
+  const [targetEl, setTargetEl] = useState<HTMLElement | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
 
-  const resolveTarget = () => {
+  const resolveTarget = useCallback(() => {
     const candidate = typeof target === "function" ? target() : target;
-    if (candidate && "current" in candidate) return candidate.current ?? document.body;
-    return candidate ?? document.body;
-  };
-  const targetEl = resolveTarget();
+    if (candidate && "current" in candidate) return candidate.current;
+    return candidate ?? null;
+  }, [target]);
   const isBody = targetEl === document.body;
+
+  useLayoutEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      const nextTarget = resolveTarget();
+      setTargetEl((current) => (current === nextTarget ? current : nextTarget));
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [currentOpen, resolveTarget]);
 
   const toggle = useCallback((value: boolean) => {
     if (value) {
@@ -141,6 +149,7 @@ const Drawer: React.FC<DrawerProps> = ({
   }, [escKey, escToClose]);
 
   useEffect(() => {
+    if (!targetEl) return;
     toggleContainerScroll(targetEl, currentOpen);
     return () => toggleContainerScroll(targetEl, false);
   }, [currentOpen, targetEl]);
@@ -194,7 +203,7 @@ const Drawer: React.FC<DrawerProps> = ({
     "k-drawer-no-mask": !mask,
   });
 
-  if (!rendered) return null;
+  if (!rendered || !targetEl) return null;
 
   const drawerEl = (
     <div className={classes}>
