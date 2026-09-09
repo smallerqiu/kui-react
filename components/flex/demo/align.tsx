@@ -47,7 +47,7 @@ export default function App() {
           borderRadius: 5,
         }}
       >
-        {Array.from({ length: 4 }, (_, index) => (
+        {Array.from({ length: 3 }, (_, index) => (
           <Button key={index}>Button</Button>
         ))}
       </Flex>

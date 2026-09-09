@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import React from "react";
-import { SizeContext } from "../config/size-context";
 import type { SizeType } from "../const/types";
 
 export type FlexSizeType = SizeType | number | (string | number)[];
@@ -30,7 +29,7 @@ const Flex: React.FC<FlexProps> = ({
 }) => {
   const currentAlign = !vertical && !align ? "center" : align;
 
-  const flexStyle: React.CSSProperties = { ...style };
+  const flexStyle: React.CSSProperties = {};
 
   const classes = clsx(
     "k-flex",
@@ -40,24 +39,31 @@ const Flex: React.FC<FlexProps> = ({
       [`k-flex-align-${currentAlign}`]: currentAlign,
       [`k-flex-justify-${justify}`]: justify,
     },
-    className
+    className,
   );
 
+  const toCssLength = (value: number | string | undefined) => {
+    if (typeof value === "number") return `${value}px`;
+    if (typeof value === "string") return /^-?\d+(\.\d+)?$/.test(value) ? `${value}px` : value;
+    return "0px";
+  };
+
   if (Array.isArray(size)) {
-    flexStyle.gap = `${size[1]}px ${size[0]}px`;
+    const horizontal = size[0];
+    const vertical = size[1] ?? horizontal;
+    flexStyle.gap = `${toCssLength(vertical)} ${toCssLength(horizontal)}`;
   } else if (typeof size === "string" && /small|medium|large/.test(size)) {
     const sizes: Record<string, number> = { small: 8, medium: 16, large: 24, default: 16 };
     flexStyle.gap = `${sizes[size]}px`;
   } else if (size !== undefined && size !== null) {
-    flexStyle.gap = `${size}px`;
+    flexStyle.gap = toCssLength(size);
   }
+  Object.assign(flexStyle, style);
 
   return (
-    <SizeContext.Provider value={typeof size === "string" ? (size as SizeType) : undefined}>
-      <div className={classes} style={flexStyle} {...rest}>
-        {children}
-      </div>
-    </SizeContext.Provider>
+    <div className={classes} style={flexStyle} {...rest}>
+      {children}
+    </div>
   );
 };
 
