@@ -2,8 +2,7 @@ import { useState } from "react";
 import {
   Button,
   Drawer,
-  RadioButton,
-  RadioGroup,
+  Segmented,
   Space,
   type DrawerPlacementsType,
 } from "react-kui";
@@ -14,16 +13,11 @@ export default function App() {
   return (
     <div>
       <Space wrap>
-        <RadioGroup
+        <Segmented
           value={placement}
-          theme="card"
-          type="button"
+          options={placements.map((value) => ({ label: value, value }))}
           onChange={(v) => setPlacement(v as DrawerPlacementsType)}
-        >
-          {placements.map((v) => (
-            <RadioButton key={v} label={v} value={v} />
-          ))}
-        </RadioGroup>
+        />
         <Button onClick={() => setOpen(true)}>Open</Button>
       </Space>
       <Drawer

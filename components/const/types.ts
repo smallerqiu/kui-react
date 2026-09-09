@@ -24,7 +24,7 @@ export type BooleanType = boolean | undefined;
 
 export type ButtonType = "primary" | "danger" | "warning" | "default" | "text" | "link";
 export type ThemeType =
-  "outline" | "fill" | "plain" | "underlined" | "default" | "solid" | "dashed" | "card";
+  "outline" | "fill" | "plain" | "underlined" | "default" | "solid" | "dashed";
 
 export type RadioType = "radio" | "button";
 export type DirectionType = "horizontal" | "vertical" | "inline";

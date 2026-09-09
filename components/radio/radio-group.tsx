@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import React, { useId, useMemo, useRef, useState } from "react";
 import type { DirectionType, RadioType, ShapeType, SizeType, ThemeType } from "../const/types";
 import type { IconType } from "../icon";
 import Radio from "./radio";
@@ -54,55 +54,11 @@ const RadioGroup = <T extends RadioValue = string | number>({
 }: RadioGroupProps<T>) => {
   const rootRef = useRef<HTMLDivElement>(null);
   const name = `k-radio-group-${useId().replace(/:/g, "")}`;
-  const itemRefs = useRef(new Map<RadioValue, HTMLElement | null>());
-
   const [innerValue, setInnerValue] = useState<T>(() => defaultValue ?? value ?? ("" as T));
   const currentValue = value ?? innerValue;
-  const [segStyle, setSegStyle] = useState<React.CSSProperties>({});
-  const [segmentReady, setSegmentReady] = useState(false);
 
   const isVertical = direction === "vertical";
   const isButton = type === "button";
-  const isCard = theme === "card";
-
-  const setItemRef = (el: HTMLElement | null, val: RadioValue) => {
-    if (el) {
-      itemRefs.current.set(val, el);
-    } else {
-      itemRefs.current.delete(val);
-    }
-  };
-
-  const updateSize = useCallback(() => {
-    const activeEl = itemRefs.current.get(currentValue);
-    if (activeEl) {
-      setSegStyle(
-        isVertical
-          ? { height: `${activeEl.offsetHeight - 4}px`, top: `${activeEl.offsetTop + 2}px` }
-          : { width: `${activeEl.offsetWidth - 4}px`, left: `${activeEl.offsetLeft + 2}px` },
-      );
-    }
-  }, [currentValue, isVertical]);
-
-  useEffect(() => {
-    if (!isCard || !isButton) {
-      return;
-    }
-    updateSize();
-    const frame = requestAnimationFrame(() => setSegmentReady(true));
-    return () => cancelAnimationFrame(frame);
-  }, [isButton, isCard, updateSize]);
-
-  useEffect(() => {
-    if (!rootRef.current) return;
-    const observer = new ResizeObserver(() => {
-      updateSize();
-    });
-    observer.observe(rootRef.current);
-    return () => {
-      observer.disconnect();
-    };
-  }, [updateSize]);
 
   const handleRadioChange = (event: ChangeEvent) => {
     if (readOnly || event.value === undefined) return;
@@ -117,10 +73,8 @@ const RadioGroup = <T extends RadioValue = string | number>({
     "k-radio-group",
     {
       "k-radio-button-group": isButton,
-      "k-radio-button-changed": segmentReady && isCard && isButton,
       "k-radio-group-circle": shape === "circle",
       "k-radio-group-fill": theme === "fill" && isButton,
-      "k-radio-group-card": isCard && isButton,
       "k-radio-group-vertical": isVertical,
     },
     className,
@@ -132,7 +86,6 @@ const RadioGroup = <T extends RadioValue = string | number>({
     if (options && options.length > 0) {
       return options.map((option) => (
         <Component
-          ref={(el: HTMLButtonElement | HTMLLabelElement | null) => setItemRef(el, option.value)}
           key={option.label ?? option.value}
           label={option.label}
           value={option.value}
@@ -146,22 +99,7 @@ const RadioGroup = <T extends RadioValue = string | number>({
       ));
     }
     return React.Children.map(children, (child) => {
-      if (
-        React.isValidElement<{
-          value?: RadioValue;
-          ref?: React.Ref<HTMLButtonElement | HTMLLabelElement>;
-        }>(child)
-      ) {
-        const val = child.props.value;
-        const childRef = child.props.ref;
-        return React.cloneElement(child, {
-          ref: (el: HTMLButtonElement | HTMLLabelElement | null) => {
-            setItemRef(el, val);
-            if (typeof childRef === "function") childRef(el);
-            else if (childRef) childRef.current = el;
-          },
-        });
-      }
+      if (React.isValidElement(child)) return child;
       return child;
     });
   }, [options, children, disabled, readOnly, size, theme, shape, Component]);
@@ -205,12 +143,6 @@ const RadioGroup = <T extends RadioValue = string | number>({
         }}
       >
         {content}
-        {isCard && isButton && (
-          <div
-            className={clsx("k-radio-group-card-seg", segmentReady && "is-ready")}
-            style={segStyle}
-          />
-        )}
       </div>
     </RadioGroupContext.Provider>
   );

@@ -2,8 +2,7 @@ import { useState } from "react";
 import {
   Button,
   Flex,
-  RadioButton,
-  RadioGroup,
+  Segmented,
   type FlexAlignType,
   type FlexJustifyType,
 } from "react-kui";
@@ -22,21 +21,9 @@ export default function App() {
   return (
     <Flex vertical size="small" align="start">
       <span>Justify</span>
-      <RadioGroup value={justify} theme="card" type="button" onChange={setJustify}>
-        {justifyOptions.map((item) => (
-          <RadioButton key={item} value={item}>
-            {item}
-          </RadioButton>
-        ))}
-      </RadioGroup>
+      <Segmented value={justify} options={justifyOptions.map((value) => ({ label: value, value }))} onChange={(value) => setJustify(value as FlexJustifyType)} />
       <span>Align</span>
-      <RadioGroup value={align} theme="card" type="button" onChange={setAlign}>
-        {alignOptions.map((item) => (
-          <RadioButton key={item} value={item}>
-            {item}
-          </RadioButton>
-        ))}
-      </RadioGroup>
+      <Segmented value={align} options={alignOptions.map((value) => ({ label: value, value }))} onChange={(value) => setAlign(value as FlexAlignType)} />
       <Flex
         align={align}
         justify={justify}

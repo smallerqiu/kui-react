@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { type SizeType, RadioGroup, Space, DatePicker } from "react-kui";
+import { type SizeType, Segmented, Space, DatePicker } from "react-kui";
 const options = [
   { value: "large", label: "Large" },
   { value: "medium", label: "Medium" },
@@ -9,7 +9,7 @@ export default function App() {
   const [size, setSize] = useState<SizeType>("medium");
   return (
     <Space vertical>
-      <RadioGroup value={size} type="button" theme="card" options={options} onChange={setSize} />
+      <Segmented value={size} options={options} onChange={(value) => setSize(value as SizeType)} />
       <Space vertical>
         <DatePicker size={size} />
         <DatePicker mode="month" size={size} />

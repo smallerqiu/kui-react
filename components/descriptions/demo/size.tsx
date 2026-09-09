@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, RadioGroup, Descriptions } from "react-kui";
+import { Button, Segmented, Descriptions } from "react-kui";
 import { BasicItems, DetailedItems } from "./content";
 const types = [
   { label: "Large", value: "large" },
@@ -15,11 +15,9 @@ export default function App() {
     );
   return (
     <>
-      <RadioGroup
+      <Segmented
         options={types}
         value={size}
-        type="button"
-        theme="card"
         onChange={(v) => setSize(v as typeof size)}
       />
       <br />

@@ -68,7 +68,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   const positionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const initialPositionFrameRef = useRef<number | null>(null);
   const frameRef = useRef<number | null>(null);
-  const contextmenuPosition = useRef<{ x: number; y: number } | null>(null);
+  const contextmenuPosition = useRef<{ offsetX: number; offsetY: number } | null>(null);
 
   const refSelection = target || localRefSelection;
   const setLocalSelection = useCallback((node: HTMLElement | null) => {
@@ -92,12 +92,18 @@ const Dropdown: React.FC<DropdownProps> = ({
       if (!refPopper.current) return false;
       const targetElement = refSelection.current;
       if (!targetElement) return false;
+      const targetRect = targetElement.getBoundingClientRect();
 
       const position =
         e != null
           ? { x: e.clientX, y: e.clientY }
           : trigger === "contextmenu"
             ? contextmenuPosition.current
+              ? {
+                  x: targetRect.left + contextmenuPosition.current.offsetX,
+                  y: targetRect.top + contextmenuPosition.current.offsetY,
+                }
+              : null
             : null;
 
       placementRef.current = requestedPlacement;
@@ -235,7 +241,13 @@ const Dropdown: React.FC<DropdownProps> = ({
     if (opened) {
       setPositioned(false);
       if (trigger === "contextmenu" && e) {
-        contextmenuPosition.current = { x: e.clientX, y: e.clientY };
+        const rect = refSelection.current?.getBoundingClientRect();
+        if (rect) {
+          contextmenuPosition.current = {
+            offsetX: e.clientX - rect.left,
+            offsetY: e.clientY - rect.top,
+          };
+        }
       }
       if (positionTimer.current) clearTimeout(positionTimer.current);
       positionTimer.current = setTimeout(() => updatePosition(e, placement), 0);
@@ -288,6 +300,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     if (trigger === "contextmenu") {
       e.preventDefault();
       openChange(true, e.nativeEvent);
+      focusMenuItem();
     }
   };
 

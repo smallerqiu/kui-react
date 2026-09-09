@@ -1,16 +1,14 @@
 import { useState } from "react";
-import { Button, DatePicker, Input, RadioGroup, Option, Select, Form, FormItem } from "react-kui";
+import { Button, DatePicker, Input, Segmented, Option, Select, Form, FormItem } from "react-kui";
 import type { DirectionType } from "react-kui";
 export default function App() {
   const [layout, setLayout] = useState<DirectionType>("horizontal");
   return (
     <Form layout={layout} labelCol={{ span: 5 }} wrapperCol={{ span: 6 }}>
       <FormItem label="Layout">
-        <RadioGroup
+        <Segmented
           value={layout}
-          onChange={setLayout}
-          type="button"
-          theme="card"
+          onChange={(value) => setLayout(value as DirectionType)}
           options={["horizontal", "vertical", "inline"].map((value) => ({ value, label: value }))}
         />
       </FormItem>

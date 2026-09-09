@@ -5,7 +5,7 @@ import {
   Grid,
   GridItem,
   Icon,
-  RadioGroup,
+  Segmented,
   Space,
   StatCard,
   type SizeType,
@@ -45,7 +45,7 @@ export default function App() {
         <Checkbox checked={reverse} onChange={check(setReverse)}>
           Reverse
         </Checkbox>
-        <RadioGroup value={size} type="button" theme="card" options={sizes} onChange={setSize} />
+        <Segmented value={size} options={sizes} onChange={(value) => setSize(value as typeof size)} />
       </Space>
       <Grid cols={{ xs: 1, sm: 2, md: 3 }} xGap={16} yGap={16}>
         <GridItem>

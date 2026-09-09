@@ -26,7 +26,6 @@ export default function App() {
         value={city}
         onChange={setCity}
         direction={direction}
-        theme="card"
       />
     </Space>
   );

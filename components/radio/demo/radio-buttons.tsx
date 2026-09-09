@@ -1,7 +1,7 @@
 import { LogoApple } from "kui-icons";
 import { useState } from "react";
-import { Space, RadioGroup } from "react-kui";
 import type { DirectionType, RadioType, ShapeType, SizeType, ThemeType } from "react-kui";
+import { RadioGroup, Space } from "react-kui";
 const dates = [
     { label: "1 week", value: 0 },
     { label: "1 month", value: 1 },
@@ -30,7 +30,6 @@ const dates = [
   themes = [
     { label: "Default", value: "default" },
     { label: "Fill", value: "fill" },
-    { label: "Card", value: "card" },
     { label: "Outline", value: "outline" },
   ];
 export default function App() {

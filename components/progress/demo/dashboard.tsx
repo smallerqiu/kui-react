@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RadioGroup, Slider, Progress, type ProgressStroke } from "react-kui";
+import { Segmented, Slider, Progress, type ProgressStroke } from "react-kui";
 const caps = [
   { label: "Butt", value: "butt" },
   { label: "Round", value: "round" },
@@ -14,11 +14,9 @@ export default function App() {
       <Slider value={gap} min={50} max={160} onChange={(v) => setGap(v as number)} />
       <br />
       <br />
-      <RadioGroup
+      <Segmented
         options={caps}
         value={cap}
-        type="button"
-        theme="card"
         onChange={(v) => setCap(v as ProgressStroke)}
       />
       <br />

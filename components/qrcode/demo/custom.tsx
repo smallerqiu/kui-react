@@ -2,8 +2,7 @@ import { useState } from "react";
 import {
   ColorPicker,
   QRCode,
-  RadioButton,
-  RadioGroup,
+  Segmented,
   Slider,
   Space,
   Switch,
@@ -49,18 +48,11 @@ export default function App() {
       </Space>
       <Space>
         ErrorLevel:
-        <RadioGroup
+        <Segmented
           value={level}
-          theme="card"
-          type="button"
+          options={(["L", "M", "Q", "H"] as QRCodeErrorLevel[]).map((value) => ({ label: value, value }))}
           onChange={(v) => setLevel(v as QRCodeErrorLevel)}
-        >
-          {(["L", "M", "Q", "H"] as QRCodeErrorLevel[]).map((v) => (
-            <RadioButton key={v} value={v}>
-              {v}
-            </RadioButton>
-          ))}
-        </RadioGroup>
+        />
       </Space>
       <Space>
         Border: <Switch checked={bordered} onChange={(v) => setBordered(Boolean(v))} />

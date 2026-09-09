@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RadioGroup, Space, CheckboxGroup } from "react-kui";
+import { Segmented, Space, CheckboxGroup } from "react-kui";
 const types = [
   { label: "Vertical", value: "vertical" },
   { label: "Horizontal", value: "horizontal" },
@@ -13,11 +13,9 @@ export default function App() {
     [cities, setCities] = useState(["wuhan"]);
   return (
     <Space vertical>
-      <RadioGroup
+      <Segmented
         options={types}
         value={direction}
-        type="button"
-        theme="card"
         onChange={(value) => setDirection(value as typeof direction)}
       />
       <code>direction: {direction}</code>

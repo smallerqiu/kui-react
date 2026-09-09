@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Button, RadioGroup, Space, Drawer, type DrawerPlacementsType } from "react-kui";
+import { Button, Segmented, Space, Drawer, type DrawerPlacementsType } from "react-kui";
 const options = ["left", "top", "right", "bottom"].map((value) => ({ label: value, value }));
 export default function App() {
   const [open, setOpen] = useState(false),
@@ -8,11 +8,9 @@ export default function App() {
   return (
     <>
       <Space wrap>
-        <RadioGroup
+        <Segmented
           value={placement}
           options={options}
-          type="button"
-          theme="card"
           onChange={(v) => setPlacement(v as DrawerPlacementsType)}
         />
         <Button onClick={() => setOpen((v) => !v)}>Open</Button>

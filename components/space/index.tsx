@@ -7,6 +7,7 @@ import { getChildren } from "../utils/react-node";
 export interface SpaceProps extends React.HTMLAttributes<HTMLDivElement> {
   align?: "start" | "end" | "center" | "baseline";
   vertical?: boolean;
+  direction?: "horizontal" | "vertical";
   wrap?: boolean;
   block?: boolean;
   compact?: boolean;
@@ -18,6 +19,7 @@ export interface SpaceProps extends React.HTMLAttributes<HTMLDivElement> {
 const Space: React.FC<SpaceProps> = ({
   align,
   vertical = false,
+  direction,
   wrap = false,
   block = false,
   compact = false,
@@ -30,16 +32,17 @@ const Space: React.FC<SpaceProps> = ({
 }) => {
   const parentSize = useContext(SizeContext);
   const currentSize = size ?? parentSize;
+  const currentVertical = direction ? direction === "vertical" : vertical;
 
   const childList = getChildren(children);
 
-  const currentAlign = !vertical && !align ? "center" : align;
+  const currentAlign = !currentVertical && !align ? "center" : align;
 
   const spaceStyle: React.CSSProperties = { ...style };
   const classes = clsx(
     "k-space",
     {
-      "k-space-vertical": vertical,
+      "k-space-vertical": currentVertical,
       "k-space-compact": compact,
       "k-space-wrap": wrap,
       "k-space-block": block,
@@ -70,7 +73,7 @@ const Space: React.FC<SpaceProps> = ({
   }
 
   const vNodes: React.ReactNode[] = [];
-  const pre = vertical ? "vertical-" : "";
+  const pre = currentVertical ? "vertical-" : "";
 
   const cloneCompactChild = (item: React.ReactElement, itemClassName: string, key: React.Key) => {
     const itemProps = item.props as { children?: React.ReactNode; className?: string };
