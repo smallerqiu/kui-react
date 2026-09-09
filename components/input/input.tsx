@@ -256,6 +256,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
           role="button"
           tabIndex={clearableShow ? 0 : undefined}
           aria-label="Clear"
+          onPointerDown={(event) => event.preventDefault()}
           onClick={handleClear}
           onKeyDown={(event) => {
             if (event.key === "Enter" || event.key === " ") {

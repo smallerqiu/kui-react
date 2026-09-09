@@ -358,6 +358,7 @@ const Mentions: React.FC<MentionsProps> = ({
           role="button"
           tabIndex={0}
           aria-label="Clear"
+          onPointerDown={(event) => event.preventDefault()}
           onClick={clear}
           onKeyDown={(event) => {
             if (event.key === "Enter" || event.key === " ") clear(event);

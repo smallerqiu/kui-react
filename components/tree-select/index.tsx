@@ -508,7 +508,16 @@ export default function TreeSelect({
             <Icon
               className="k-tree-select-clearable"
               type={CircleX}
+              role="button"
+              tabIndex={0}
+              aria-label="Clear"
+              onPointerDown={(event) => event.preventDefault()}
               onClick={(event) => {
+                event.stopPropagation();
+                clear();
+              }}
+              onKeyDown={(event) => {
+                if (event.key !== "Enter" && event.key !== " ") return;
                 event.stopPropagation();
                 clear();
               }}

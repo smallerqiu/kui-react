@@ -7,7 +7,6 @@ import {
   useRef,
   useState,
   type KeyboardEvent,
-  type MouseEvent,
 } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
@@ -242,7 +241,7 @@ export default function Cascader({
     }
   };
 
-  const clear = (event: MouseEvent) => {
+  const clear = (event: React.SyntheticEvent) => {
     if (readOnly) return;
     event.stopPropagation();
     setActivePath([]);
@@ -392,7 +391,20 @@ export default function Cascader({
             style={{ transform: visible ? "rotate(180deg)" : "rotate(0deg)" }}
           />
         )}
-        {showClear && <Icon className="k-cascader-clearable" onClick={clear} type={CircleX} />}
+        {showClear && (
+          <Icon
+            className="k-cascader-clearable"
+            type={CircleX}
+            role="button"
+            tabIndex={0}
+            aria-label="Clear"
+            onPointerDown={(event) => event.preventDefault()}
+            onClick={clear}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") clear(event);
+            }}
+          />
+        )}
       </div>
       {(rendered || visible) && (
         <Teleport to="body">

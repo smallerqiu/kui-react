@@ -22,7 +22,6 @@ import {
   useRef,
   useState,
   type HTMLAttributes,
-  type MouseEvent,
   type ReactNode,
   type SetStateAction,
 } from "react";
@@ -347,7 +346,7 @@ export default function DatePicker({
       .filter((item): item is Dayjs => !!item);
     if (list.length) commit(list, true);
   };
-  const clear = (event: MouseEvent) => {
+  const clear = (event: React.SyntheticEvent) => {
     if (disabled || readOnly) return;
     event.stopPropagation();
     commit([]);
@@ -791,7 +790,18 @@ export default function DatePicker({
             strokeWidth={1.5}
           />
           {clearable && !disabled && !readOnly && values.length > 0 && (
-            <Icon type={CircleX} className="k-icon-clean" onClick={clear} />
+            <Icon
+              type={CircleX}
+              className="k-icon-clean"
+              role="button"
+              tabIndex={0}
+              aria-label="Clear"
+              onPointerDown={(event) => event.preventDefault()}
+              onClick={clear}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") clear(event);
+              }}
+            />
           )}
         </div>
       </div>

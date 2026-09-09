@@ -444,7 +444,7 @@ const Select: React.FC<SelectProps> = ({
     setTimeout(updatePosition, 0);
   };
 
-  const onClear = (e: React.MouseEvent) => {
+  const onClear = (e: React.SyntheticEvent) => {
     if (readOnly) return;
     e.stopPropagation();
     const nextValue: (string | number)[] = [];
@@ -840,7 +840,18 @@ const Select: React.FC<SelectProps> = ({
   );
 
   const clearNode = showClear ? (
-    <Icon className="k-select-clearable" type={CircleX} onClick={onClear} />
+    <Icon
+      className="k-select-clearable"
+      type={CircleX}
+      role="button"
+      tabIndex={0}
+      aria-label="Clear"
+      onPointerDown={(event) => event.preventDefault()}
+      onClick={onClear}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") onClear(event);
+      }}
+    />
   ) : null;
 
   return (
