@@ -5,7 +5,7 @@ import { copyToClipboard } from "react-kui/utils/share";
 import "./search.less";
 import { tags } from "./tags";
 
-const iconMap = icons as unknown as Record<string, IconType[]>;
+const iconMap: Record<string, IconType[]> = icons;
 const names = Object.keys(iconMap);
 const toPascalCase = (value: string) =>
   value

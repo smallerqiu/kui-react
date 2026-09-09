@@ -135,9 +135,16 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     };
 
     if (type === "link" && href && !disabled) {
-      const anchorProps = commonProps as unknown as React.AnchorHTMLAttributes<HTMLAnchorElement>;
+      const anchorProps = rest as React.AnchorHTMLAttributes<HTMLAnchorElement>;
       return (
-        <a href={href} target={target} ref={setElementRef} {...anchorProps}>
+        <a
+          {...anchorProps}
+          href={href}
+          target={target}
+          ref={setElementRef}
+          className={classes}
+          onClick={handleClick}
+        >
           {childNodes}
         </a>
       );

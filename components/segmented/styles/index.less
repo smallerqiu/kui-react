@@ -29,7 +29,7 @@
   align-items: center;
   justify-content: center;
   min-width: 0;
-  height: var(--kui-control-height);
+  height: calc(var(--kui-control-height) - 4px);
   padding: 0 12px;
   color: var(--kui-color-text);
   font: inherit;
@@ -58,8 +58,8 @@
     transition: width .3s cubic-bezier(.645,.045,.355,1), height .3s cubic-bezier(.645,.045,.355,1), left .3s cubic-bezier(.645,.045,.355,1), top .3s cubic-bezier(.645,.045,.355,1);
   }
 }
-.k-segmented-small .k-segmented-item { height: var(--kui-control-height-sm); padding: 0 8px; font-size: 12px; }
-.k-segmented-large .k-segmented-item { height: var(--kui-control-height-lg); padding: 0 16px; font-size: 16px; }
+.k-segmented-small .k-segmented-item { height: calc(var(--kui-control-height-sm) - 4px); padding: 0 8px; font-size: 12px; }
+.k-segmented-large .k-segmented-item { height: calc(var(--kui-control-height-lg) - 4px); padding: 0 16px; font-size: 16px; }
 .k-segmented-circle, .k-segmented-circle .k-segmented-item, .k-segmented-circle .k-segmented-indicator { border-radius: 999px; }
 .k-segmented-square, .k-segmented-square .k-segmented-item, .k-segmented-square .k-segmented-indicator { border-radius: 0; }
 .k-segmented-disabled { cursor: not-allowed; }

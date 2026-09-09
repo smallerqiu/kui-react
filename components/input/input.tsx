@@ -161,7 +161,6 @@ const Input = React.forwardRef<InputRef, InputProps>(
         setInnerValue(v);
       }
       onChange?.(v);
-      onInput?.(e as unknown as React.InputEvent<HTMLInputElement>);
     };
 
     const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -188,6 +187,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
       value: currentValue,
       showPassword,
       onChange: handleInputChange,
+      onInput,
       onFocus: handleInputFocus,
       onBlur: handleInputBlur,
       className: !multiple ? className : undefined,
