@@ -1,6 +1,6 @@
 import * as icons from "kui-icons";
 import { useMemo, useState } from "react";
-import { Affix, Flex, Grid, GridItem, Icon, Input, message, Tag, type IconType } from "react-kui";
+import { Affix, Grid, GridItem, Icon, Input, message, Space, Tag, type IconType } from "react-kui";
 import { copyToClipboard } from "react-kui/utils/share";
 import "./search.less";
 import { tags } from "./tags";
@@ -22,7 +22,7 @@ export default function App() {
     const tagged = new Set(
       tags
         .filter((icon) => icon.name.includes(term) || icon.tags.some((tag) => tag.includes(term)))
-        .map((icon) => toPascalCase(icon.name))
+        .map((icon) => toPascalCase(icon.name)),
     );
     return names.filter((name) => name.toLowerCase().includes(term) || tagged.has(name));
   }, [query]);
@@ -55,7 +55,7 @@ export default function App() {
     <div>
       <h3>Icons Filter</h3>
       <Affix offsetTop={65}>
-        <Flex size="large" style={{ backgroundColor: "var(--kui-color-bg)" }}>
+        <Space size="large" block style={{ backgroundColor: "var(--kui-color-bg)" }}>
           <Input
             value={query}
             onChange={(value) => setQuery(value)}
@@ -63,7 +63,7 @@ export default function App() {
             icon={icons.Search}
             suffix={<Tag>⌘K</Tag>}
           />
-        </Flex>
+        </Space>
       </Affix>
       <div className="show-icons">
         {section("App icons", apps)}

@@ -74,6 +74,7 @@ const Space: React.FC<SpaceProps> = ({
 
   const vNodes: React.ReactNode[] = [];
   const pre = currentVertical ? "vertical-" : "";
+  const grouped = childList.length > 1;
 
   const cloneCompactChild = (item: React.ReactElement, itemClassName: string, key: React.Key) => {
     const itemProps = item.props as { children?: React.ReactNode; className?: string };
@@ -108,9 +109,9 @@ const Space: React.FC<SpaceProps> = ({
 
   for (let i = 0; i < childList.length; i++) {
     const itemClasses = clsx({
-      [`k-space-${pre}first-item`]: i === 0,
+      [`k-space-${pre}first-item`]: grouped && i === 0,
       [`k-space-${pre}item`]: i > 0 && i < childList.length - 1,
-      [`k-space-${pre}last-item`]: i === childList.length - 1,
+      [`k-space-${pre}last-item`]: grouped && i === childList.length - 1,
     });
 
     const item = childList[i];
@@ -123,6 +124,12 @@ const Space: React.FC<SpaceProps> = ({
         <span key={key} className={itemClasses}>
           {item}
         </span>
+      )
+    ) : childList.length === 1 ? (
+      React.isValidElement(item) ? (
+        React.cloneElement(item, { key })
+      ) : (
+        <span key={key}>{item}</span>
       )
     ) : (
       <div key={key} className={itemClasses}>

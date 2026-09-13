@@ -1,4 +1,4 @@
-import { Space, Button } from "react-kui";
+import { Button, Space } from "react-kui";
 export default function App() {
   return (
     <Space wrap>

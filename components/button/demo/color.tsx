@@ -1,4 +1,4 @@
-import { Flex, Button } from "react-kui";
+import { Button, Space } from "react-kui";
 const colors = [
   "default",
   "red",
@@ -20,16 +20,16 @@ const colors = [
 ];
 export default function App() {
   return (
-    <Flex size="small" wrap>
+    <Space size="small" wrap>
       {(["solid", "outline", "dashed"] as const).map((theme) => (
-        <Flex size="small" wrap key={theme}>
+        <Space size="small" wrap key={theme}>
           {colors.map((color) => (
             <Button color={color} key={color} theme={theme}>
               {theme}
             </Button>
           ))}
-        </Flex>
+        </Space>
       ))}
-    </Flex>
+    </Space>
   );
 }

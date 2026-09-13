@@ -11,7 +11,7 @@ npm install --save kui-icons
 
 ```tsx
 import { Heart } from "kui-icons";
-import Icon from "react-kui/components/icon";
+import { Icon } from "react-kui";
 
 export default function Demo() {
   return <Icon type={Heart} />;

@@ -6,7 +6,7 @@
 
 标记了一个（或封装一组）操作命令，响应用户点击行为，触发相应的业务逻辑。
 
-## 组件注册
+## 按需引入
 
 ```js
 import { Button } from "kui-react";
@@ -66,4 +66,4 @@ import { Button } from "kui-react";
 | target   | 相当于 a 链接的 target 属性，href 存在时生效          | string                                     | -      |
 | block    | 使组件宽度适应其父级宽度                              | boolean                                       | false  |
 | color    | 自定义按钮颜色                                        | string                                     | -      |
-| onClick  | 点击按钮时触发                                        | MouseEventHandler<HTMLElement>             | -      |
+| onClick  | 点击按钮时触发                                        | MouseEventHandler\<HTMLElement\>             | -      |
