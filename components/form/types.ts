@@ -23,3 +23,5 @@ export interface FormRule {
   trigger?: FormValidateTrigger | FormValidateTrigger[];
   [key: string]: unknown;
 }
+
+export type FormRules = Record<string, FormRule | FormRule[]>;

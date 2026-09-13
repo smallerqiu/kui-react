@@ -29,6 +29,11 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
       onChange,
       children,
       className = "",
+      id,
+      "aria-labelledby": ariaLabelledby,
+      "aria-describedby": ariaDescribedby,
+      "aria-invalid": ariaInvalid,
+      "aria-required": ariaRequired,
       disabled = false,
       readOnly = false,
       ...rest
@@ -84,12 +89,17 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
       <label ref={ref} className={classes} aria-readonly={currentReadOnly || undefined} {...rest}>
         <span className="k-radio-symbol">
           <input
+            id={id}
             type="radio"
             className="k-radio-input"
             name={group?.name}
             disabled={currentDisabled}
             readOnly={currentReadOnly}
             aria-readonly={currentReadOnly || undefined}
+            aria-labelledby={ariaLabelledby}
+            aria-describedby={ariaDescribedby}
+            aria-invalid={ariaInvalid}
+            aria-required={ariaRequired}
             onClick={(event) => {
               if (currentReadOnly) event.preventDefault();
             }}

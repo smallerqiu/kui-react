@@ -41,6 +41,11 @@ const Checkbox: React.FC<CheckboxProps> = ({
   onChange,
   children,
   className = "",
+  id,
+  "aria-labelledby": ariaLabelledby,
+  "aria-describedby": ariaDescribedby,
+  "aria-invalid": ariaInvalid,
+  "aria-required": ariaRequired,
   ...rest
 }) => {
   const group = useContext(CheckboxGroupContext);
@@ -103,6 +108,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
     <label className={rootClasses} aria-readonly={currentReadOnly || undefined} {...rest}>
       <span className="k-checkbox-symbol">
         <input
+          id={id}
           type="checkbox"
           ref={inputRef}
           className="k-checkbox-input"
@@ -110,6 +116,10 @@ const Checkbox: React.FC<CheckboxProps> = ({
           readOnly={currentReadOnly}
           aria-checked={indeterminate ? "mixed" : isChecked}
           aria-readonly={currentReadOnly || undefined}
+          aria-labelledby={ariaLabelledby}
+          aria-describedby={ariaDescribedby}
+          aria-invalid={ariaInvalid}
+          aria-required={ariaRequired}
           onClick={(event) => {
             if (currentReadOnly) event.preventDefault();
           }}

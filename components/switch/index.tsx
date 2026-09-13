@@ -48,7 +48,7 @@ const Switch: React.FC<SwitchProps> = ({
   ...rest
 }) => {
   const [innerChecked, setInnerChecked] = useState(defaultChecked);
-  const currentChecked = checked ?? innerChecked;
+  const currentChecked = checked !== undefined ? Boolean(checked) : innerChecked;
 
   const change = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled || readOnly || loading) {

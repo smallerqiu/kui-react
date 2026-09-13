@@ -74,7 +74,7 @@ const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
   );
   const otpLength = Math.max(0, Math.trunc(length));
   const [innerValue, setInnerValue] = useState(() => normalize(defaultValue));
-  const currentValue = normalize(value ?? innerValue);
+  const currentValue = normalize(value !== undefined ? (value ?? "") : innerValue);
   const inputs = useRef<Array<HTMLInputElement | null>>([]);
   const focusedIndex = useRef(-1);
   const composing = useRef(new Set<number>());

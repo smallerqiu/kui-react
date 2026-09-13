@@ -43,7 +43,7 @@ const CheckboxGroup = <T extends string | number = string | number>({
   ...rest
 }: CheckboxGroupProps<T>) => {
   const [innerValue, setInnerValue] = useState<T[]>(defaultValue);
-  const currentValue = value ?? innerValue;
+  const currentValue = value !== undefined ? (value ?? []) : innerValue;
 
   const handleCheckboxChange = (event: ChangeEvent) => {
     if (readOnly) return;

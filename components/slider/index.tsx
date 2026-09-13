@@ -71,7 +71,8 @@ export default function Slider({
     return getClosestStep(Array.isArray(next) ? (next[0] ?? min) : next, config);
   };
 
-  const sourceValue = value ?? defaultValue ?? (range ? [min, min] : min);
+  const emptyValue = range ? [min, min] : min;
+  const sourceValue = value !== undefined ? (value ?? emptyValue) : (defaultValue ?? emptyValue);
   const [internalValue, setInternalValue] = useState<number | number[]>(() =>
     formatValue(sourceValue),
   );

@@ -74,7 +74,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
     const currentSize = size || parentSize;
 
     const [innerValue, setInnerValue] = useState(defaultValue);
-    const currentValue = value !== undefined ? value : innerValue;
+    const currentValue = value !== undefined ? (value ?? "") : innerValue;
     const [focused, setFocused] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);

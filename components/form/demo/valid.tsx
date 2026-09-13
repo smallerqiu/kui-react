@@ -3,6 +3,7 @@ import {
   Button,
   Checkbox,
   CheckboxGroup,
+  Col,
   DatePicker,
   Form,
   FormItem,
@@ -13,6 +14,7 @@ import {
   Radio,
   RadioGroup,
   Rate,
+  Row,
   Select,
   Slider,
   Switch,
@@ -160,7 +162,7 @@ export default function App() {
       <Form
         ref={ref}
         model={form}
-        onChange={() => setForm({ ...form })}
+        onChange={setForm}
         size={size}
         rules={rules}
         labelCol={{ span: 6 }}
@@ -193,26 +195,35 @@ export default function App() {
           <Input
             suffix={
               <Button size={size} disabled={time !== 60} onClick={sendCode}>
-                {time === 60 ? "Get verification code" : `${time}(s)`}
+                {time === 60 ? "Get Captcha" : `${time}(s)`}
               </Button>
             }
           />
         </FormItem>
-        <FormItem label="Country">
-          <FormItem prop="country" wrapperCol={{ span: 24 }}>
-            <Select clearable style={{ width: "100%" }}>
-              <Option value="0" label="China" />
-              <Option value="1" label="Russia" />
-            </Select>
-          </FormItem>
-          <FormItem prop="city" wrapperCol={{ span: 24 }}>
-            <Select clearable style={{ width: "100%" }}>
-              <Option value="0" label="Shanghai" />
-              <Option value="1" label="Wuhan" />
-              <Option value="2" label="Hangzhou" />
-            </Select>
-          </FormItem>
-        </FormItem>
+        <Row>
+          <Col span={12}>
+            <FormItem
+              label="Country"
+              prop="country"
+              labelCol={{ span: 12 }}
+              wrapperCol={{ span: 12 }}
+            >
+              <Select clearable style={{ width: "100%" }}>
+                <Option value="0" label="China" />
+                <Option value="1" label="Russia" />
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem prop="city" label="City" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
+              <Select clearable style={{ width: "100%" }}>
+                <Option value="0" label="Shanghai" />
+                <Option value="1" label="Wuhan" />
+                <Option value="2" label="Hangzhou" />
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
         <FormItem label="TreeSelect" prop="tree">
           <TreeSelect treeData={treeData} style={{ width: "100%" }} />
         </FormItem>

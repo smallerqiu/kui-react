@@ -54,7 +54,7 @@ const InputTag: React.FC<InputTagProps> = ({
   const [inner, setInner] = useState(defaultValue);
   const [draft, setDraft] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const tags = value ?? inner;
+  const tags = value !== undefined ? (value ?? []) : inner;
 
   const update = (next: string[]) => {
     if (value === undefined) setInner(next);

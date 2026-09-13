@@ -55,7 +55,7 @@ const RadioGroup = <T extends RadioValue = string | number>({
   const rootRef = useRef<HTMLDivElement>(null);
   const name = `k-radio-group-${useId().replace(/:/g, "")}`;
   const [innerValue, setInnerValue] = useState<T>(() => defaultValue ?? value ?? ("" as T));
-  const currentValue = value ?? innerValue;
+  const currentValue = value !== undefined ? value : innerValue;
 
   const isVertical = direction === "vertical";
   const isButton = type === "button";

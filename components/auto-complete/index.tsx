@@ -115,7 +115,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   const originRef = useRef("left top");
   const topRef = useRef(0);
   const leftRef = useRef(0);
-  const current = value ?? innerValue;
+  const current = value !== undefined ? (value ?? "") : innerValue;
   const requestedOpen = open ?? innerOpen;
   const visible = (loading || (!suppressRemoteOptions && shownOptions.length > 0)) && requestedOpen;
   const getMatches = (input: string) =>

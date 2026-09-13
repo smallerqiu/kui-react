@@ -110,7 +110,7 @@ describe("React controlled and uncontrolled conventions", () => {
     expect(model.account.name).toBe("");
     expect(onChange).toHaveBeenLastCalledWith({ account: { name: "Alice" } });
     fireEvent.reset(document.querySelector("form")!);
-    expect(onChange).toHaveBeenLastCalledWith({ account: { name: undefined } });
+    expect(onChange).toHaveBeenLastCalledWith({ account: { name: null } });
     expect(onReset).toHaveBeenCalledOnce();
   });
 

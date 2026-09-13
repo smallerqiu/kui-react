@@ -47,7 +47,7 @@ const Rate: React.FC<RateProps> = ({
   const [innerValue, setInnerValue] = useState(defaultValue);
   const [tempValue, setTempValue] = useState<number | null>(null);
   const [cleared, setCleared] = useState(false);
-  const currentValue = value ?? innerValue;
+  const currentValue = value !== undefined ? Number(value ?? 0) : innerValue;
 
   const update = (t: "C" | "M", index: number, percent: number) => {
     if (readOnly) return;

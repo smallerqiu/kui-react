@@ -27,7 +27,7 @@ const CheckCardGroup = React.forwardRef<HTMLDivElement, CheckCardGroupProps>(
     const registry = React.useRef(
       new Map<CheckCardValue, { element: HTMLDivElement; disabled: boolean }>(),
     ).current;
-    const currentValue = value ?? localValue;
+    const currentValue = value !== undefined ? value : localValue;
     const select = useCallback(
       (nextValue: CheckCardValue) => {
         if (disabled || readOnly || currentValue === nextValue) return;

@@ -1,6 +1,6 @@
 import { CircleQuestionMark, Gift, Search, User } from "kui-icons";
 import { useEffect, useRef, useState } from "react";
-import { Button, Icon, message, Select, Space, Tag, Tooltip, TreeSelect, Input } from "react-kui";
+import { Button, Icon, Input, message, Select, Space, Tag, Tooltip, TreeSelect } from "react-kui";
 const protocols = [
     { label: "http", value: "http" },
     { label: "https", value: "https" },
@@ -59,7 +59,7 @@ export default function App() {
         maxLength={8}
         addonAfter={
           <Button disabled={time < 60} onClick={send}>
-            {time === 60 ? "Get verification code" : `${time}(s)`}
+            {time === 60 ? "Get Captcha" : `${time}(s)`}
           </Button>
         }
       />

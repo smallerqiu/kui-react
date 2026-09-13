@@ -135,7 +135,7 @@ const Mentions: React.FC<MentionsProps> = ({
   const topRef = useRef(0);
   const leftRef = useRef(0);
   const composing = useRef(false);
-  const current = value ?? inner;
+  const current = value !== undefined ? (value ?? "") : inner;
   const normalized = useMemo(
     () => options.map((item) => (typeof item === "string" ? { value: item, label: item } : item)),
     [options],

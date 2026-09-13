@@ -79,6 +79,7 @@ function Demo() {
 | shape      | 子组件的形状                                                                   | [circle,square]                          | horizontal |
 | disabled   | 表单是否可用                                                                   | boolean                                  | true       |
 | readOnly   | 表单及其子控件是否只读                                                         | boolean                                  | false      |
+| colon      | 是否在标签后显示冒号                                                           | boolean                                  | true       |
 | onReset    | 表单重置后的回调                                                               | ()=> void                                | -          |
 | onSubmit   | 提交表单时触发事件                                                             | (e: SubmitEvent)=> void                  | -          |
 | onChange   | 表单模型值变化时触发                                                           | (model: Record<string, unknown>) => void | -          |
@@ -94,11 +95,12 @@ function Demo() {
 
 ## FormItem API
 
-| 属性  | 说明                                        | 类型       | 默认值 |
-| ----- | ------------------------------------------- | ---------- | ------ |
-| prop  | 对应表单域 model 里的字段，表单验证必须字段 | string     | -      |
-| label | 标签文本                                    | ReactNode  | -      |
-| rules | 表单验证规则                                | FormRule[] | -      |
+| 属性  | 说明                                           | 类型       | 默认值 |
+| ----- | ---------------------------------------------- | ---------- | ------ |
+| prop  | 对应表单域 model 里的字段，表单验证必须字段    | string     | -      |
+| label | 标签文本                                       | ReactNode  | -      |
+| rules | 表单验证规则                                   | FormRule[] | -      |
+| colon | 是否在标签后显示冒号；未设置时继承 Form 的配置 | boolean    | -      |
 
 ## rules API
 
