@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import { ChevronDown, ChevronRight, CircleAlert, CircleX, Loading } from "kui-icons";
 import {
   useCallback,
@@ -33,7 +34,7 @@ const pathFromValue = (
   return path;
 };
 
-export default function Cascader({
+function Cascader({
   value,
   defaultValue = [],
   open: openProp,
@@ -473,5 +474,7 @@ export default function Cascader({
     </>
   );
 }
+
+export default createFormFieldComponent(Cascader);
 
 export type { CascaderLoadData, CascaderOption, CascaderProps, CascaderValue } from "./types";

@@ -44,7 +44,7 @@ export default function App() {
       <Form
         ref={ref}
         model={form}
-        onChange={() => setForm({ ...form })}
+        onChange={(next) => setForm(next as typeof form)}
         rules={rules}
         labelCol={labelCol}
         wrapperCol={wrapperCol}
@@ -65,7 +65,7 @@ export default function App() {
           <Button
             type="primary"
             onClick={() =>
-              ref.current?.validate(({ valid }) =>
+              ref.current?.validate().then(({ valid }) =>
                 message[valid ? "success" : "error"](valid ? "success" : "failed"),
               )
             }

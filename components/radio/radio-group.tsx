@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import React, { useId, useMemo, useRef, useState } from "react";
 import type { DirectionType, RadioType, ShapeType, SizeType, ThemeType } from "../const/types";
 import type { IconType } from "../icon";
@@ -148,4 +149,4 @@ const RadioGroup = <T extends RadioValue = string | number>({
   );
 };
 
-export default RadioGroup;
+export default createFormFieldComponent(RadioGroup);

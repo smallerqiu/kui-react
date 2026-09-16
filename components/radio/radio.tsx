@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import React, { useContext, useState } from "react";
 import type { SizeType, ThemeType } from "../const/types";
 import { RadioGroupContext } from "./radio-group-context";
@@ -115,4 +116,8 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
 
 Radio.displayName = "Radio";
 
-export default Radio;
+export default createFormFieldComponent(Radio, {
+  valueProp: "checked",
+  getFieldValue: (value) => value === true || value === 1 || value === "1",
+  getChangeValue: (event) => (event as ChangeEvent).checked,
+});

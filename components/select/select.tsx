@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import { ChevronDown, CircleX, Loading } from "kui-icons";
 import React, {
   useContext,
@@ -880,4 +881,4 @@ const Select: React.FC<SelectProps> = ({
   );
 };
 
-export default Select;
+export default createFormFieldComponent(Select);

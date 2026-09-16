@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import { Check } from "kui-icons";
 import React, { useContext, useLayoutEffect, useRef, useState } from "react";
 import type { SizeType, ThemeType, ValueType } from "../const/types";
@@ -133,4 +134,8 @@ const Checkbox: React.FC<CheckboxProps> = ({
   );
 };
 
-export default Checkbox;
+export default createFormFieldComponent(Checkbox, {
+  valueProp: "checked",
+  getFieldValue: (value) => value === true || value === 1 || value === "1",
+  getChangeValue: (event) => (event as ChangeEvent).checked,
+});

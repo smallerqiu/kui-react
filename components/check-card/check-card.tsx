@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import { Check } from "kui-icons";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Icon from "../icon";
@@ -130,4 +131,8 @@ const CheckCard = React.forwardRef<HTMLDivElement, CheckCardProps>(
 );
 
 CheckCard.displayName = "CheckCard";
-export default CheckCard;
+export default createFormFieldComponent(CheckCard, {
+  valueProp: "checked",
+  getFieldValue: (value) => value === true || value === 1 || value === "1",
+  getChangeValue: (event) => (event as import("./types").CheckCardChangeEvent).checked,
+});

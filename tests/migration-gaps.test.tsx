@@ -1,9 +1,68 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { createRef, useState, type ElementRef } from "react";
 import { describe, expect, it, vi } from "vitest";
-import { Form, FormItem, Input, InputNumber, Upload } from "react-kui";
+import { Checkbox, Form, FormItem, Input, InputNumber, Switch, Upload } from "react-kui";
 
 describe("Form validation parity with kui-vue", () => {
-  it("keeps synchronous validation synchronous", () => {
+  it("binds marked controls through FormFieldContext", () => {
+    function Example() {
+      const [model, setModel] = useState({ name: "" });
+      return (
+        <Form model={model} onChange={(next) => setModel(next as typeof model)}>
+          <FormItem label="Name" prop="name">
+            <Input />
+          </FormItem>
+          <output>{model.name}</output>
+        </Form>
+      );
+    }
+    render(<Example />);
+    fireEvent.change(screen.getByRole("textbox"), { target: { value: "KUI" } });
+    expect(screen.getByText("KUI")).not.toBeNull();
+  });
+
+  it("adapts checked controls and isolates their event shape", () => {
+    function Example() {
+      const [model, setModel] = useState({ agreed: false, enabled: false });
+      return (
+        <Form model={model} onChange={(next) => setModel(next as typeof model)}>
+          <FormItem prop="agreed"><Checkbox label="Agree" /></FormItem>
+          <FormItem prop="enabled"><Switch trueText="On" falseText="Off" /></FormItem>
+          <output>{JSON.stringify(model)}</output>
+        </Form>
+      );
+    }
+    render(<Example />);
+    fireEvent.click(screen.getByText("Agree"));
+    fireEvent.click(screen.getByRole("switch"));
+    expect(screen.getByText('{"agreed":true,"enabled":true}')).not.toBeNull();
+  });
+
+  it("preserves control refs through the form-field wrapper", () => {
+    const ref = createRef<ElementRef<typeof Input>>();
+    render(<Input ref={ref} />);
+    expect(typeof ref.current?.focus).toBe("function");
+  });
+
+  it("revalidates when the controlled model changes externally", async () => {
+    function Example() {
+      const [model, setModel] = useState({ name: "valid" });
+      return (
+        <>
+          <button onClick={() => setModel({ name: "" })}>Clear externally</button>
+          <Form model={model} onChange={(next) => setModel(next as typeof model)}>
+            <FormItem prop="name" rules={{ required: true, message: "Required externally" }}>
+              <Input />
+            </FormItem>
+          </Form>
+        </>
+      );
+    }
+    render(<Example />);
+    fireEvent.click(screen.getByText("Clear externally"));
+    await waitFor(() => expect(screen.getByText("Required externally")).not.toBeNull());
+  });
+  it("returns the Vue-compatible async validation result", async () => {
     const onSubmit = vi.fn();
     render(
       <Form model={{ name: "" }} onSubmit={onSubmit}>
@@ -13,8 +72,8 @@ describe("Form validation parity with kui-vue", () => {
       </Form>,
     );
     fireEvent.submit(document.querySelector("form")!);
-    expect(onSubmit).toHaveBeenCalledWith({ valid: false });
-    expect(screen.getByText("Required")).not.toBeNull();
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledWith({ valid: false }));
+    await waitFor(() => expect(screen.getByText("Required")).not.toBeNull());
   });
 
   it("supports async validators", async () => {
@@ -57,6 +116,27 @@ describe("Form validation parity with kui-vue", () => {
     fireEvent.submit(document.querySelector("form")!);
     await waitFor(() => expect(onSubmit).toHaveBeenCalledWith({ valid: false }));
     expect(screen.getByText("Invalid")).not.toBeNull();
+  });
+
+  it("waits for asynchronous callback validators", async () => {
+    const onSubmit = vi.fn();
+    render(
+      <Form model={{ name: "x" }} onSubmit={onSubmit}>
+        <FormItem
+          prop="name"
+          rules={{
+            validator: (_rule, _value, callback) => {
+              setTimeout(() => callback(new Error("Delayed invalid")), 10);
+            },
+          }}
+        >
+          <Input />
+        </FormItem>
+      </Form>,
+    );
+    fireEvent.submit(document.querySelector("form")!);
+    expect(onSubmit).not.toHaveBeenCalled();
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledWith({ valid: false }));
   });
 
   it("honours rule trigger", async () => {

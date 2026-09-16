@@ -91,7 +91,7 @@ describe("React controlled and uncontrolled conventions", () => {
     expect(screen.getByDisplayValue("10")).not.toBeNull();
   });
 
-  it("updates Form models immutably and validates and resets fields", () => {
+  it("updates Form models immutably and validates and resets fields", async () => {
     const model = { account: { name: "" } };
     const onChange = vi.fn();
     const onSubmit = vi.fn();
@@ -104,8 +104,8 @@ describe("React controlled and uncontrolled conventions", () => {
       </Form>,
     );
     fireEvent.submit(document.querySelector("form")!);
-    expect(onSubmit).toHaveBeenCalledWith({ valid: false });
-    expect(screen.getByText("Required")).not.toBeNull();
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledWith({ valid: false }));
+    await waitFor(() => expect(screen.getByText("Required")).not.toBeNull());
     fireEvent.change(screen.getByRole("textbox"), { target: { value: "Alice" } });
     expect(model.account.name).toBe("");
     expect(onChange).toHaveBeenLastCalledWith({ account: { name: "Alice" } });

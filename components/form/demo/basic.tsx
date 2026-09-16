@@ -9,6 +9,8 @@ import {
   Input,
   InputNumber,
   Option,
+  Radio,
+  RadioButton,
   RadioGroup,
   Select,
   Slider,
@@ -36,7 +38,7 @@ export default function App() {
     [shape, setShape] = useState<ShapeType>("round"),
     [theme, setTheme] = useState<ThemeType>("fill");
   return (
-    <>
+    <div>
       <Space>
         <Checkbox
           checked={disabled}
@@ -53,26 +55,24 @@ export default function App() {
         theme={theme}
       >
         <FormItem label="Shape">
-          <RadioGroup
-            value={shape}
-            onChange={setShape}
-            options={["round", "circle", "square"].map((value) => ({ value, label: value }))}
-          />
+          <RadioGroup value={shape} onChange={setShape}>
+            <Radio value="round" label="Round" />
+            <Radio value="circle" label="Circle" />
+            <Radio value="square" label="Square" />
+          </RadioGroup>
         </FormItem>
         <FormItem label="Theme">
-          <RadioGroup
-            value={theme}
-            onChange={setTheme}
-            options={["fill", "outline"].map((value) => ({ value, label: value }))}
-          />
+          <RadioGroup value={theme} onChange={setTheme}>
+            <Radio value="fill" label="Fill" />
+            <Radio value="outline" label="Outline" />
+          </RadioGroup>
         </FormItem>
         <FormItem label="Size">
-          <RadioGroup
-            value={size}
-            onChange={setSize}
-            type="button"
-            options={["large", "medium", "small"].map((value) => ({ value, label: value }))}
-          />
+          <RadioGroup value={size} onChange={setSize} type="button">
+            <RadioButton value="large" label="Large" />
+            <RadioButton value="medium" label="Medium" />
+            <RadioButton value="small" label="Small" />
+          </RadioGroup>
         </FormItem>
         <FormItem label="Input">
           <Input placeholder="input..." />
@@ -97,20 +97,18 @@ export default function App() {
           <DatePicker />
         </FormItem>
         <FormItem label="Radio">
-          <RadioGroup
-            options={["Apple", "Banana", "Orange"].map((label, value) => ({
-              value: String(value),
-              label,
-            }))}
-          />
+          <RadioGroup>
+            <Radio value="0" label="Apple" />
+            <Radio value="1" label="Banana" />
+            <Radio value="2" label="Orange" />
+          </RadioGroup>
         </FormItem>
         <FormItem label="Checkbox">
-          <CheckboxGroup
-            options={["Apple", "Banana", "Orange"].map((label, value) => ({
-              value: String(value),
-              label,
-            }))}
-          />
+          <CheckboxGroup>
+            <Checkbox value="0" label="Apple" />
+            <Checkbox value="1" label="Banana" />
+            <Checkbox value="2" label="Orange" />
+          </CheckboxGroup>
         </FormItem>
         <FormItem label="Switch">
           <Switch trueText="Yes" falseText="No" />
@@ -123,6 +121,6 @@ export default function App() {
           <Button style={{ marginLeft: 10 }}>Cancel</Button>
         </FormItem>
       </Form>
-    </>
+    </div>
   );
 }

@@ -23,7 +23,6 @@ export default function App() {
       { value: "", key: "1" },
     ],
   });
-  const refresh = () => setForm({ ...form, info: { ...form.info }, webs: [...form.webs] });
   const required = (message: string) => ({ required: true, message });
   return (
     <Row>
@@ -31,7 +30,7 @@ export default function App() {
         <Form
           ref={ref}
           model={form}
-          onChange={refresh}
+          onChange={(next) => setForm(next as typeof form)}
           labelCol={{ span: 5 }}
           wrapperCol={{ span: 16 }}
         >
@@ -40,8 +39,8 @@ export default function App() {
           </FormItem>
           <FormItem label="Gender" prop="info.gender" rules={required("Please select your gender")}>
             <Select clearable style={{ width: "100%" }}>
-              <Option value="1" label="Male" />
-              <Option value="0" label="Female" />
+              <Option value="1" label="男" />
+              <Option value="0" label="女" />
             </Select>
           </FormItem>
           <FormItem label="Age" prop="info.age" rules={required("Please input your age")}>
@@ -68,7 +67,7 @@ export default function App() {
             <Button
               type="primary"
               onClick={() =>
-                ref.current?.validate(({ valid }) =>
+                ref.current?.validate().then(({ valid }) =>
                   message[valid ? "success" : "error"](valid ? "success" : "failed"),
                 )
               }

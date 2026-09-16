@@ -1,130 +1,70 @@
 import { Camera, Upload as UploadIcon } from "kui-icons";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   Button,
   Form,
   FormItem,
-  type FormExpose,
-  type FormSubmitEvent,
-  Input,
   message,
+  Space,
   Upload,
-  type UploadChangeEvent,
+  type FormRule,
+  type FormSubmitEvent,
+  type UploadFile,
 } from "react-kui";
 import { action, headers } from "./shared";
-const urlOf = ({ file }: UploadChangeEvent) => {
-  const responseUrl =
-    typeof file.response === "object" &&
-    file.response !== null &&
-    "url" in file.response &&
-    typeof file.response.url === "string"
-      ? file.response.url
-      : undefined;
-  return responseUrl ?? file.url ?? file.filename ?? "";
+
+interface UploadForm extends Record<string, unknown> {
+  avatar: UploadFile[] | null;
+  file: UploadFile[] | null;
+  files: UploadFile[] | null;
+}
+
+const rules: Record<string, FormRule[]> = {
+  avatar: [{ required: true, message: "Please select an avatar" }],
+  file: [{ required: true, message: "Please select a file" }],
+  files: [{ required: true, message: "Please select at least one file" }],
 };
+
 export default function App() {
-  const ref = useRef<FormExpose>(null);
-  const [form, setForm] = useState({ avatar: "", file: "", files: "" }),
-    [loading, setLoading] = useState(false),
-    files = useRef<string[]>([]);
-  const update = (key: keyof typeof form, value: string) => {
-    setForm((current) => ({ ...current, [key]: value }));
-    setTimeout(() => ref.current?.test(key), 0);
-  };
-  const rules = {
-    avatar: [{ required: true, message: "Please select an avatar" }],
-    file: [{ required: true, message: "Please select a file" }],
-    files: [{ required: true, message: "Please select a file" }],
-  };
-  const uploadFile = (event: UploadChangeEvent) => {
-    setLoading(event.file.status === "uploading");
-    if (event.file.status === "success") {
-      setLoading(false);
-      update("file", urlOf(event));
-    }
-  };
-  const uploadFiles = (event: UploadChangeEvent) => {
-    if (event.file.status === "success") {
-      files.current = [...files.current, urlOf(event)];
-      update("files", files.current.join(","));
-    }
-  };
-  const remove = (event: UploadChangeEvent) => {
-    const url = urlOf(event);
-    files.current = files.current.filter((item) => item !== url);
-    update("files", files.current.join(","));
-  };
-  const submit = (e: FormSubmitEvent) =>
-    message[e.valid ? "success" : "error"](e.valid ? "success" : "failed");
+  const [form, setForm] = useState<UploadForm>({ avatar: [], file: [], files: [] });
+  const submit = ({ valid }: FormSubmitEvent) =>
+    message[valid ? "success" : "error"](valid ? "success" : "failed");
   return (
     <Form
-      ref={ref}
       model={form}
+      onChange={(next) => setForm(next as UploadForm)}
       rules={rules}
-      onSubmit={submit}
       wrapperCol={{ span: 16 }}
       labelCol={{ span: 8 }}
+      onSubmit={submit}
     >
       <FormItem label="Avatar" prop="avatar">
-        <div>
-          <Upload
-            action={action}
-            name="file"
-            type="picture"
-            headers={headers}
-            onChange={(event) => {
-              if (event.file.status === "success") update("avatar", urlOf(event));
-            }}
-            onRemove={() => update("avatar", "")}
-            limit={1}
-            accept="image/*"
-            uploadIcon={Camera}
-            uploadText="Upload Avatar"
-          />
-          <Input type="hidden" value={form.avatar} />
-        </div>
-      </FormItem>
-      <FormItem label="Single file" prop="file">
-        <Input
-          value={form.file}
-          readOnly
-          placeholder="Please upload file"
-          clearable
-          suffix={
-            <Upload
-              action={action}
-              name="file"
-              headers={headers}
-              onChange={uploadFile}
-              showUploadList={false}
-              limit={1}
-              accept="image/*"
-            >
-              <Button icon={UploadIcon} loading={loading} />
-            </Upload>
-          }
+        <Upload
+          action={action}
+          name="file"
+          type="picture"
+          headers={headers}
+          limit={1}
+          accept="image/*"
+          uploadIcon={Camera}
+          uploadText="Upload Avatar"
         />
       </FormItem>
+      <FormItem label="Single file" prop="file">
+        <Upload action={action} name="file" headers={headers} limit={1} accept="image/*">
+          <Button icon={UploadIcon}>Upload File</Button>
+        </Upload>
+      </FormItem>
       <FormItem label="Multiple files" prop="files">
-        <div>
-          <Upload
-            action={action}
-            name="file"
-            headers={headers}
-            onChange={uploadFiles}
-            onRemove={remove}
-            accept="image/*"
-            multiple
-          >
-            <Button>Upload File</Button>
-          </Upload>
-          <Input type="hidden" value={form.files} />
-        </div>
+        <Upload action={action} name="file" headers={headers} multiple accept="image/*">
+          <Button icon={UploadIcon}>Upload Files</Button>
+        </Upload>
       </FormItem>
       <FormItem wrapperCol={{ offset: 8 }}>
-        <Button type="primary" htmlType="submit">
-          Submit Forms
-        </Button>
+        <Space>
+          <Button type="primary" htmlType="submit">Submit Form</Button>
+          <Button htmlType="reset">Reset</Button>
+        </Space>
       </FormItem>
     </Form>
   );

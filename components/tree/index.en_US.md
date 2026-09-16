@@ -38,6 +38,12 @@ Folders, organizational structures, biological classifications, countries and re
 
 - Enable virtual scrolling to render large trees efficiently.
 
+[Field Mapping and Instance Methods](./demo/advanced.tsx?show=vertical)
+
+- Use `fieldNames` for backend data, customize titles with `renderTitle`, and control the tree through its ref API.
+
+Tree supports focus management and Arrow, Home, End, Enter, and Space keyboard interaction.
+
 ## Tree API
 
 | Property      | Description                                                                                                       | Type                              | Default |
@@ -63,11 +69,24 @@ Folders, organizational structures, biological classifications, countries and re
 | multiple      | Whether to support multiple selection                                                                             | boolean                              | false   |
 | loading       | Asynchronous loading state                                                                                        | boolean                              | false   |
 | loadData      | Method to asynchronously load data                                                                                | (node: TreeNode) => Promise<unknown\> | -    |
+| onLoadError   | Called when asynchronous loading fails                                                                           | (error: unknown, node: TreeNode) => void | - |
+| fieldNames    | Custom node field names                                                                                           | TreeFieldNames                     | -       |
 | directory     | Does not display as a directory tree                                                                              | boolean                              | false   |
 | virtual       | Whether to enable virtual scrolling                                                                               | boolean                              | false   |
 | height        | Virtual scrolling viewport height                                                                                 | number                               | 300     |
 | itemHeight    | Virtual node height                                                                                               | number                               | 28      |
 | overscan      | Extra nodes rendered outside the viewport                                                                         | number                               | 5       |
+
+## Instance Methods
+
+| Method           | Description                    |
+| ---------------- | ------------------------------ |
+| getNode          | Get a node by key              |
+| getCheckedNodes  | Get checked nodes              |
+| getSelectedNodes | Get selected nodes             |
+| scrollTo         | Scroll to a node               |
+| expandAll        | Expand every non-leaf node     |
+| collapseAll      | Collapse all nodes             |
 
 ## Tree Events
 

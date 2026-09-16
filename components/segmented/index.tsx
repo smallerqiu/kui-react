@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import type { ShapeType, SizeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
@@ -130,9 +131,10 @@ const Segmented = ({
       {options.map((option) => (
         <button
           key={option.value}
-          ref={(node) =>
-            node ? itemRefs.current.set(option.value, node) : itemRefs.current.delete(option.value)
-          }
+          ref={(node) => {
+            if (node) itemRefs.current.set(option.value, node);
+            else itemRefs.current.delete(option.value);
+          }}
           type="button"
           className={clsx("k-segmented-item", {
             "k-segmented-item-active": option.value === currentValue,
@@ -157,4 +159,4 @@ const Segmented = ({
   );
 };
 
-export default Segmented;
+export default createFormFieldComponent(Segmented);

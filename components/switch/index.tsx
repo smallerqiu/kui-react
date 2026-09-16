@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import { Loading } from "kui-icons";
 import React, { useState } from "react";
 import type { ShapeType, SizeType, ValueType } from "../const/types";
@@ -106,4 +107,7 @@ const Switch: React.FC<SwitchProps> = ({
   );
 };
 
-export default Switch;
+export default createFormFieldComponent(Switch, {
+  valueProp: "checked",
+  getFieldValue: (value) => value === true || value === 1 || value === "1",
+});

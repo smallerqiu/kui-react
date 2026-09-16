@@ -68,7 +68,7 @@ const InputGroup: React.FC<InputGroupProps> = ({
                 className: clsx(nestedChildren[0].props.className, itemClass),
               })
             : childProps.children;
-        return React.cloneElement(child, {
+        return React.cloneElement(child as React.ReactElement<{ className?: string; children?: React.ReactNode }>, {
           className: itemClass,
           children: nextChildren,
           key: child.key || `item-${i}`,

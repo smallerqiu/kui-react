@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import React, { useState } from "react";
 import type { SizeType } from "../const/types";
 import type { IconType } from "../icon";
@@ -144,4 +145,4 @@ const Rate: React.FC<RateProps> = ({
   );
 };
 
-export default Rate;
+export default createFormFieldComponent(Rate, { inherit: ["size", "disabled"] });

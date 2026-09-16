@@ -38,6 +38,12 @@
 
 - 大数据量时设置 `virtual`，仅渲染可视区域内的节点。虚拟滚动要求节点高度固定。
 
+[字段映射与实例方法](./demo/advanced.tsx?show=vertical)
+
+- 使用 `fieldNames` 适配后端字段，通过 `renderTitle` 自定义节点，并调用实例方法控制树。
+
+Tree 支持焦点管理以及上下、左右、Home、End、Enter 和 Space 键操作。
+
 ## Tree API
 
 | 属性          | 说明                                                         | 类型                              | 默认值 |
@@ -63,11 +69,24 @@
 | multiple      | 是否支持多选                                                 | boolean                              | false  |
 | loading       | 异步加载状态                                                 | boolean                              | false  |
 | loadData      | 异步加载数据的方法                                           | (node: TreeNode) => Promise<unknown\> | -   |
+| onLoadError   | 异步加载失败时触发                                           | (error: unknown, node: TreeNode) => void | - |
+| fieldNames    | 自定义节点字段名称                                           | TreeFieldNames                     | -      |
 | directory     | 是不显示为目录树                                             | boolean                              | false  |
 | virtual       | 是否启用虚拟滚动                                             | boolean                           | false  |
 | height        | 虚拟滚动视口高度                                             | number \| string                  | 300    |
 | itemHeight    | 虚拟滚动节点高度                                             | number                            | 28     |
 | overscan      | 可视区域外预渲染的节点数量                                   | number                            | 5      |
+
+## 实例方法
+
+| 方法             | 说明               |
+| ---------------- | ------------------ |
+| getNode          | 根据 key 获取节点  |
+| getCheckedNodes  | 获取已勾选节点     |
+| getSelectedNodes | 获取已选中节点     |
+| scrollTo         | 滚动到指定节点     |
+| expandAll        | 展开全部非叶子节点 |
+| collapseAll      | 折叠全部节点       |
 
 ## TreeNode API
 

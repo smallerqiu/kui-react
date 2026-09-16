@@ -24,7 +24,7 @@ export default function App() {
     [form, setForm] = useState({ username: "", age: "" });
   const rules = { name: [{ required: true, message: "Please input the organization name" }] };
   const userRules = {
-    username: [{ required: true, message: "Please input the username" }],
+    username: [{ required: true, message: "Please input the organization name" }],
     age: [
       { required: true, message: "Please input the age." },
       { type: "number", message: "Please input the valid age." },
@@ -47,7 +47,7 @@ export default function App() {
       <Form
         name="with-modal"
         model={group}
-        onChange={() => setGroup({ ...group })}
+        onChange={(next) => setGroup(next as typeof group)}
         onSubmit={(e) => message[e.valid ? "success" : "error"](e.valid ? "success" : "failed")}
         rules={rules}
         labelCol={labelCol}
@@ -88,11 +88,11 @@ export default function App() {
           wrapperCol={wrapperCol}
           name="modal"
           model={form}
-          onChange={() => setForm({ ...form })}
+          onChange={(next) => setForm(next as typeof form)}
           rules={userRules}
           onSubmit={submitUser}
         >
-          <FormItem label="Username" prop="username">
+          <FormItem label="Usename" prop="username">
             <Input placeholder="Please input username" />
           </FormItem>
           <FormItem label="Age" prop="age">

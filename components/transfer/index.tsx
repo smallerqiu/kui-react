@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import { ChevronLeft, ChevronRight, Search } from "kui-icons";
 import { useMemo, useState } from "react";
 import { Button } from "../button";
@@ -43,7 +44,7 @@ export interface TransferProps extends Omit<React.HTMLAttributes<HTMLDivElement>
 const EMPTY_ITEMS: TransferItem[] = [];
 const EMPTY_KEYS: TransferKey[] = [];
 
-export default function Transfer({
+function Transfer({
   dataSource = EMPTY_ITEMS,
   targetKeys,
   defaultTargetKeys = EMPTY_KEYS,
@@ -314,3 +315,7 @@ export default function Transfer({
     </div>
   );
 }
+export default createFormFieldComponent(Transfer, {
+  valueProp: "targetKeys",
+  getChangeValue: (event) => (event as TransferChangeEvent).targetKeys,
+});

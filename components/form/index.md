@@ -66,32 +66,32 @@ function Demo() {
 
 ## Form API
 
-| 属性       | 说明                                                                           | 类型                                     | 默认值     |
-| ---------- | ------------------------------------------------------------------------------ | ---------------------------------------- | ---------- |
-| model      | 表单数据对象                                                                   | Object                                   | -          |
-| rules      | 表单验证规则，                                                                 | boolean                                  | false      |
-| name       | 表单名称，会作为表单字段 id 前缀使用                                           | string                                   | -          |
-| labelCol   | label 标签布局，同 `<Col>` 组件，设置 span offset 值，如 {span: 3, offset: 12} | {span:number,offset:number}              | -          |
-| wrapperCol | 控件 标签布局，同 `<Col>` 组件，设置 span offset 值，如 {span: 15, offset: 12} | {span:number,offset:number}              | -          |
-| theme      | 组件呈现主题                                                                   | string                                   | -          |
-| size       | 子组件的尺寸                                                                   | string                                   | -          |
-| layout     | 表单布局                                                                       | [horizontal ,vertical ,inline]           | horizontal |
-| shape      | 子组件的形状                                                                   | [circle,square]                          | horizontal |
-| disabled   | 表单是否可用                                                                   | boolean                                  | true       |
-| readOnly   | 表单及其子控件是否只读                                                         | boolean                                  | false      |
-| colon      | 是否在标签后显示冒号                                                           | boolean                                  | true       |
-| onReset    | 表单重置后的回调                                                               | ()=> void                                | -          |
-| onSubmit   | 提交表单时触发事件                                                             | (e: SubmitEvent)=> void                  | -          |
-| onChange   | 表单模型值变化时触发                                                           | (model: Record<string, unknown>) => void | -          |
+| 属性       | 说明                                                            | 类型                                     | 默认值     |
+| ---------- | --------------------------------------------------------------- | ---------------------------------------- | ---------- |
+| model      | 表单数据对象；未传时由 Form 内部维护                            | Object                                   | -          |
+| rules      | 表单验证规则                                                    | FormRules                                | -          |
+| name       | 表单名称，会作为表单字段 id 前缀使用                            | string                                   | -          |
+| labelCol   | label 标签布局，同 `<Col>` 的 span、offset；inline 布局下不生效 | {span:number,offset:number}              | -          |
+| wrapperCol | 控件标签布局，同 `<Col>` 的 span、offset；inline 布局下不生效   | {span:number,offset:number}              | -          |
+| theme      | 子控件主题                                                      | ThemeType                                | -          |
+| size       | 子控件尺寸                                                      | SizeType                                 | -          |
+| layout     | 表单布局                                                        | horizontal \| vertical \| inline       | horizontal |
+| shape      | 子控件形状                                                      | ShapeType                                | -          |
+| disabled   | 是否禁用表单                                                    | boolean                                  | false      |
+| readOnly   | 是否将支持只读的子控件设为只读                                  | boolean                                  | false      |
+| colon      | 是否显示标签冒号                                                | boolean                                  | true       |
+| onReset    | 表单重置后的回调                                                | () => void                               | -          |
+| onSubmit   | 提交并完成校验后触发                                            | (result: { valid: boolean }) => void     | -          |
+| onChange   | 字段变化时返回不可变更新后的 model                              | (model: Record<string, unknown>) => void | -          |
 
 ## Form Expose API
 
 | 属性     | 说明                                                   | 类型                                                                                   | 默认值 |
 | -------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------- | ------ |
-| test     | 对表单单个字段进行校验的方法                           | (key: string) => boolean \| Promise&lt;boolean&gt; \| undefined                        | -      |
+| test     | 对表单单个字段进行校验的方法                           | (key: string, trigger?: change \| blur) => Promise&lt;boolean&gt; \| undefined | -      |
 | reset    | 对整个表单进行重置，将所有字段值重置为空并移除校验结果 | ()=>void                                                                               | -      |
-| submit   | 提交表单，并验证                                       | ()=>void                                                                               | -      |
-| validate | 验证表单，存在异步校验规则时返回 Promise               | (callback?: (result: { valid: boolean }) => void) => boolean \| Promise&lt;boolean&gt; | -      |
+| submit   | 提交表单并验证                                         | () => Promise&lt;void&gt;                                                      | -      |
+| validate | 验证表单                                               | (callback?: (result: { valid: boolean }) => void) => Promise&lt;{ valid: boolean }&gt; | -      |
 
 ## FormItem API
 

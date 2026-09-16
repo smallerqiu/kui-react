@@ -31,7 +31,7 @@ You can manually resize the browser window to observe the effect.
 
 [Basic Usage](./demo/basic.tsx?show=vertical)
 
-- The `offset` logic of Grid is based on `grid-column-start`. In `dense` fill mode, `offset` might cause unexpected "gap-filling" behavior.
+- Use responsive `span` values to control column occupancy at different container widths.
 
 [Dashboard Card Layout (Auto-fill + Min-Width)](./demo/auto-fill-min-width.tsx?show=vertical)
 
@@ -55,24 +55,9 @@ You can manually resize the browser window to observe the effect.
 
 - Asymmetric layout.
 
-[Complex Data Detail Page (Alignment & Whitespace)](./demo/align-white-space.tsx?show=vertical)
-
-- Effect of a Descriptions list, but automatically adjusts display density on different screens.
-
 [Hero Section Overlay Layout (Layering)](./demo/hero-section.tsx?show=vertical)
 
 - The overlapping capability of `grid-column-start` and `grid-row-start`, with text floating over a specific part of an image.
-
-[Responsive Footer / Menu (Footer Strategy)](./demo/footer-strategy.tsx?show=vertical)
-
-- Extreme compression from "multi-column vertical arrangement" to "single-column folding".
-
-[Layout Hierarchy Design (Architecture)](./demo/architecture.tsx?show=vertical)
-
-- Layer 1: Layout series — the main page skeleton (Header + Sider + Content).
-- Layer 2: Grid series — the primary 2D layout for the content area (stat cards, Bento chart matrix).
-- Layer 3: Row/Col — simple 1D proportional division (e.g., two side-by-side tables at the bottom).
-- Layer 4: Flex — extremely fine-grained content alignment (card title + icon).
 
 ## Grid API
 
@@ -83,7 +68,7 @@ You can manually resize the browser window to observe the effect.
 | autoRows     | Implicit grid row height. Used in Bento layout or waterfall flow to set the base height.                                                | string                   | auto    |
 | xGap         | Grid spacing (horizontal direction). Numeric type will automatically add px unit.                                                       | number, string, Object   | 0       |
 | yGap         | Row spacing (vertical direction). Numeric type will automatically add px unit.                                                          | number, string, Object   | 0       |
-| itemMinWidth | Auto-fill mode. Set the minimum width of child items. Grid will automatically calculate the number of columns based on container width. | number                   | -       |
+| itemMinWidth | Auto-fill mode. Set the minimum width of child items. Grid will automatically calculate the number of columns based on container width. | number \| string         | -       |
 | align        | Vertical alignment of child items within grid cells                                                                                     | string (center, start..) | -       |
 | justify      | Horizontal alignment of child items within grid cells.                                                                                  | string (center, start..) | -       |
 | flow         | Grid auto-placement mode, maps to `grid-auto-flow`                                                                                      | string (row, column, dense..) | row  |
@@ -91,12 +76,13 @@ You can manually resize the browser window to observe the effect.
 
 ## GridItem API
 
-| Property | Description                                                                                                | Type                   | Default |
-| -------- | ---------------------------------------------------------------------------------------------------------- | ---------------------- | ------- |
-| span     | number of columns occupied. When set to 0, it will be completely hidden (display: none) at this breakpoint | number, string, Object | 1       |
-| rowSpan  | number of rows occupied. Combined with the container's autoRows, asymmetric layouts can be achieved        | number, string, Object | 1       |
-| offset   | number of columns to offset to the left. Used to create whitespace without using blank placeholders.       | number, Object         | 0       |
-| suffix   | Fixed at the end. When set to true, the item will be forced to the end of the current row.                 | boolean                   | false   |
+| Property    | Description                                                                                                | Type             | Default |
+| ----------- | ---------------------------------------------------------------------------------------------------------- | ---------------- | ------- |
+| span        | Number of columns occupied. A value of 0 hides the item at that breakpoint                                | number \| Object | 1       |
+| rowSpan     | Number of rows occupied                                                                                   | number \| Object | 1       |
+| columnStart | Explicit starting column; supports responsive values                                                      | number \| Object | -       |
+| rowStart    | Explicit starting row; supports responsive values                                                         | number \| Object | -       |
+| suffix      | Forces the item to the end of the current row                                                             | boolean          | false   |
 
 ## Breakpoints
 

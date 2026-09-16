@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import {
   forwardRef,
   useContext,
@@ -8,13 +9,16 @@ import {
   useState,
   type HTMLAttributes,
 } from "react";
-import { v4 as uuid } from "uuid";
 import { ConfigContext } from "../config/config-context";
 import type { UploadStatusType } from "../const/types";
 import type { IconType } from "../icon";
 import zhCN from "../locale/zh-CN";
 import FileList from "./file-list";
 import Selector from "./selector";
+
+let uploadUid = 0;
+const createUploadUid = () =>
+  globalThis.crypto?.randomUUID?.() ?? `k-upload-${Date.now().toString(36)}-${uploadUid++}`;
 
 export interface UploadFile {
   uid?: string;
@@ -324,7 +328,7 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
         update(item);
       }
     };
-    xhr.onerror = fail;
+    xhr.onerror = () => fail();
     xhr.onreadystatechange = () => {
       if (xhr.readyState !== 4) return;
       if (xhr.status >= 200 && xhr.status < 300) {
@@ -362,7 +366,7 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
   const select = (selected: FileList) => {
     if (readOnly) return;
     const selectedFiles = [...selected].filter((file) => file.name !== ".DS_Store");
-    const accepted = multiple ? selectedFiles : selectedFiles.slice(0, 1);
+    const accepted = multiple || directory ? selectedFiles : selectedFiles.slice(0, 1);
     const normalizedLimit = limit != null && limit >= 0 ? Math.floor(limit) : undefined;
     let exceeded = false;
     for (const file of accepted) {
@@ -376,7 +380,7 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
       const preview = isImage ? URL.createObjectURL(file) : null;
       if (preview) generatedPreviewUrlsRef.current.add(preview);
       const item: UploadFile = {
-        uid: uuid(),
+        uid: createUploadUid(),
         filename: file.name,
         size: formatSize(file.size),
         status: "waiting",
@@ -459,6 +463,10 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
       xhr.upload.onprogress = null;
       xhr.abort();
       item.xhr = undefined;
+      if (item.uid) {
+        requestHandlesRef.current.delete(item.uid);
+        finishTask(item);
+      }
     }
     if (item.uid) pendingRef.current.delete(item.uid);
     if (item.uid) {
@@ -475,7 +483,9 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
     }
     filesRef.current = filesRef.current.filter((_, position) => position !== index);
     setFiles(filesRef.current);
-    onRemove?.({ file: item, fileList: filesRef.current });
+    const event = { file: item, fileList: filesRef.current };
+    onChange?.(event);
+    onRemove?.(event);
   };
   const sort = (oldIndex: number, newIndex: number) => {
     if (oldIndex === newIndex || disabled || readOnly) return;
@@ -485,6 +495,7 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
     next.splice(newIndex, 0, item);
     filesRef.current = next;
     setFiles(next);
+    onChange?.({ file: item, fileList: next });
     onSort?.({ file: item, fileList: next, oldIndex, newIndex });
   };
   const selector = readOnly ? null : (
@@ -540,4 +551,8 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
     </div>
   );
 });
-export default Upload;
+export default createFormFieldComponent(Upload, {
+  valueProp: "fileList",
+  getChangeValue: (event) => (event as UploadChangeEvent).fileList,
+  inherit: ["disabled", "readOnly"],
+});

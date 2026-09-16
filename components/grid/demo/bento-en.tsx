@@ -5,7 +5,7 @@ interface Feature {
   id: number;
   title: string;
   desc: string;
-  span: { xs: number; md: number; xl: number };
+  span: { xs: number; md: number; lg: number };
   rowSpan: number;
   color: string;
   textColor?: string;
@@ -17,7 +17,7 @@ const features: Feature[] = [
     id: 1,
     title: "Self-developed M3 Max Chip",
     desc: "Unparalleled computing power to effortlessly handle professional workflows.",
-    span: { xs: 2, md: 3, xl: 4 },
+    span: { xs: 2, md: 3, lg: 4 },
     rowSpan: 3,
     color: "var(--kui-color-bg-4)",
     textColor: "#fff",
@@ -26,7 +26,7 @@ const features: Feature[] = [
     id: 2,
     title: "Extended Battery Life",
     desc: "Up to 22 hours of video playback.",
-    span: { xs: 1, md: 3, xl: 2 },
+    span: { xs: 1, md: 3, lg: 4 },
     rowSpan: 2,
     color: "#f5f5f7",
   },
@@ -34,7 +34,7 @@ const features: Feature[] = [
     id: 3,
     title: "5G Ultra High Speed",
     desc: "Enjoy lightning-fast speeds anytime, anywhere.",
-    span: { xs: 1, md: 3, xl: 2 },
+    span: { xs: 1, md: 3, lg: 2 },
     rowSpan: 1,
     color: "#e8e8ed",
   },
@@ -42,7 +42,7 @@ const features: Feature[] = [
     id: 4,
     title: "Retina Display",
     desc: "Vibrant colors, every detail revealed.",
-    span: { xs: 2, md: 3, xl: 4 },
+    span: { xs: 2, md: 3, lg: 4 },
     rowSpan: 2,
     color: "#fff",
     border: "1px solid var(--kui-color-border)",
@@ -51,7 +51,7 @@ const features: Feature[] = [
     id: 5,
     title: "Privacy Protection",
     desc: "Your data, under your control.",
-    span: { xs: 1, md: 3, xl: 2 },
+    span: { xs: 1, md: 3, lg: 2 },
     rowSpan: 2,
     color: "#f2f2f2",
   },
@@ -59,7 +59,7 @@ const features: Feature[] = [
     id: 6,
     title: "Multi-Device Collaboration",
     desc: "Seamless connection, double the efficiency.",
-    span: { xs: 1, md: 3, xl: 2 },
+    span: { xs: 1, md: 3, lg: 4 },
     rowSpan: 1,
     color: "#fafafa",
   },
@@ -92,11 +92,11 @@ export default function App() {
       </h1>
 
       <Grid
-        cols={{ xs: 2, md: 6, xl: 8 }}
+        cols={{ xs: 2, md: 6, lg: 10 }}
         xGap={20}
         yGap={20}
         autoRows="120px"
-        style={{ gridAutoFlow: "dense" }}
+        flow="row dense"
       >
         {features.map((item) => (
           <GridItem key={item.id} span={item.span} rowSpan={item.rowSpan}>
@@ -122,7 +122,7 @@ export default function App() {
           </GridItem>
         ))}
 
-        <GridItem suffix span={{ xs: 2, md: 3, xl: 2 }}>
+        <GridItem suffix span={{ xs: 2, md: 3, lg: 2 }}>
           <div
             style={{
               background: "var(--kui-color-primary)",

@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import { createFormFieldComponent } from "../form/field-context";
 import { Button } from "../button";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 import type { IconType } from "../icon";
@@ -97,4 +98,8 @@ const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
 
 RadioButton.displayName = "RadioButton";
 
-export default RadioButton;
+export default createFormFieldComponent(RadioButton, {
+  valueProp: "checked",
+  getFieldValue: (value) => value === true || value === 1 || value === "1",
+  getChangeValue: (event) => (event as ChangeEvent).checked,
+});

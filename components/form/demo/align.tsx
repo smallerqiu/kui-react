@@ -4,7 +4,8 @@ import type { DirectionType } from "react-kui";
 export default function App() {
   const [layout, setLayout] = useState<DirectionType>("horizontal");
   return (
-    <Form layout={layout} labelCol={{ span: 5 }} wrapperCol={{ span: 6 }}>
+    <div>
+      <Form layout={layout} labelCol={{ span: 5 }} wrapperCol={{ span: 6 }}>
       <FormItem label="Layout">
         <Segmented
           value={layout}
@@ -28,6 +29,7 @@ export default function App() {
       <FormItem wrapperCol={{ offset: 5 }}>
         <Button type="primary">Submit</Button>
       </FormItem>
-    </Form>
+      </Form>
+    </div>
   );
 }

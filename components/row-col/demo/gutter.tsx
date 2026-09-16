@@ -20,7 +20,7 @@ export default function App() {
         </Col>
       </Row>
       <code>Horizontal Gutter (px): {h}</code>
-      <div style={{ width: "55%", padding: "10,0" }}>
+      <div style={{ width: "55%", padding: "10px" }}>
         <Slider
           min={8}
           max={40}

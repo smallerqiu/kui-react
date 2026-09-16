@@ -12,7 +12,7 @@ import {
   Trash,
 } from "kui-icons";
 import { useRef, useState } from "react";
-import { Button, Checkbox, Space, Tree, type TreeNode } from "react-kui";
+import { Button, Checkbox, message, Space, Tree, type TreeNode } from "react-kui";
 const initial: TreeNode[] = [
   {
     title: "src",
@@ -176,7 +176,9 @@ export default function App() {
           node.icon = expanded ? FolderOpen : Folder;
           console.log(node);
         }}
-        onCheck={(node, checked) => console.log(node, checked)}
+        onCheck={(node, checked) =>
+          message.info(`${String(node.title)}: ${checked ? "checked" : "unchecked"}`)
+        }
       />
     </div>
   );

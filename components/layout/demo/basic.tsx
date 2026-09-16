@@ -2,8 +2,7 @@ import { Content, Flex, Footer, Header, Layout, Sider } from "react-kui";
 
 export default function App() {
   return (
-    <>
-      <Flex className="demo-layout" size="small" wrap>
+    <Flex className="demo-layout" size="small" wrap>
         <Layout>
           <Header>Header</Header>
           <Content>Content</Content>
@@ -33,7 +32,6 @@ export default function App() {
             <Footer>Footer</Footer>
           </Layout>
         </Layout>
-      </Flex>
-    </>
+    </Flex>
   );
 }

@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import {
   Fragment,
   forwardRef,
@@ -197,4 +198,4 @@ const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
   );
 });
 
-export default InputOTP;
+export default createFormFieldComponent(InputOTP);

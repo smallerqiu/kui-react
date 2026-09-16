@@ -15,40 +15,20 @@ Assists with page-level overall layout.
 ## Examples
 
 [Basic Layout](./demo/basic.tsx?show=vertical)
-- Basic Layout
 
-[Modern Enterprise Admin Console](./demo/enterprise-admin-console.tsx?show=vertical)
+- Common combinations of Header, Sider, Content, and Footer.
 
-- The most common "sidebar navigation + top toolbar" structure, suitable for SaaS products, CMS backends, or ERP systems.
-- Layout logic: The outer Layout includes the Sider, while the inner Layout contains the Header, Content, and Footer.
-- Matching components: Menu (vertical mode), Breadcrumb, Avatar.
+[Collapsible Sider](./demo/collapsible-sider.tsx?show=vertical)
 
-[Responsive Portal/Official Website Layout (Portal Exhibition)](./demo/portal-exhibition.tsx?show=vertical)
+- Control Sider with the `collapsible` and `collapsed` properties.
 
-- Suitable for portal websites, showcase websites, or personal blogs with a large amount of information but shallow hierarchy.
-- **Layout Logic**: A single vertical Layout, directly arranging Header, Content, and Footer.
-- **Matching Components**: Menu (horizontal mode), Carousel (slideshow), Card (content card).
+[Nested Layout](./demo/nested.tsx?show=vertical)
 
-[Documentation/Knowledge Base Layout](./demo/documentation-layout.tsx?show=vertical)
+- Nest Layout containers and combine left and right Siders.
 
-- Imitate the structure of official documentation like Vue or React, with a focus on a fixed sidebar for directory navigation.
-- **Layout Logic**: The Header spans the full width, and the Layout below includes a Sider (usually on the left or right as an index) and Content.
-- **Matching Components**: Input (search box), Anchor (anchor navigation), Divider (divider line).
+[Fixed-height Layout](./demo/fixed-height.tsx?show=vertical)
 
-[Task Workbench (The "Workbench" Details Layout)](./demo/workbench-layout.tsx?show=vertical)
-
-- Left navigation + Middle dashboard + Right detail panel (Right Sider).
-
-[Messaging & Collaboration](./demo/messaging-collaboration.tsx?show=vertical)
-
-- Scenario: Customer service systems, Slack-like apps, in-app direct messages.
-- Key points: The Content area hosts the message stream, while the Footer serves as a fixed-height input area.
-- This case demonstrates how the Footer can carry complex interactions (text box, emoji button, send key).
-
-[Visual Editor Layout (IDE / Low-code Layout)](./demo/low-code-layout.tsx?show=vertical)
-
-- Scenario: Similar to VS Code, Figma, or low-code platforms.
-- Key Points: Minimalist navigation, fixed-height multi-column layout, and a bottom status bar (Footer). This demo highlights how the Layout divides screen space into compact yet well-organized functional areas through multi-level nesting.
+- Give Layout a fixed height and let Content scroll independently.
 
 ## Layout API
 

@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import { ChevronDown, CircleX, LoaderCircle } from "kui-icons";
 import {
   useCallback,
@@ -92,7 +93,7 @@ const normalize = (value: TreeSelectValue, multiple: boolean) => {
     .map(String);
 };
 
-export default function TreeSelect({
+function TreeSelect({
   placeholder,
   size,
   placement = "bottom-left",
@@ -529,3 +530,4 @@ export default function TreeSelect({
     </>
   );
 }
+export default createFormFieldComponent(TreeSelect);

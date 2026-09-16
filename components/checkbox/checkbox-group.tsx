@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import React, { useState } from "react";
 import type { DirectionType, SizeType, ThemeType } from "../const/types";
 import Checkbox, { type ChangeEvent } from "./checkbox";
@@ -112,4 +113,4 @@ const CheckboxGroup = <T extends string | number = string | number>({
   );
 };
 
-export default CheckboxGroup;
+export default createFormFieldComponent(CheckboxGroup);

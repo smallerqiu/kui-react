@@ -6,12 +6,12 @@ const boxStyle = {
 };
 export default function App() {
   return (
-    <Grid cols={{ xs: 1, md: 2, lg: 4 }} xGap={16} yGap={16}>
-      <GridItem span={2}>
+    <Grid cols={{ xs: 2, md: 4 }} xGap={16} yGap={16}>
+      <GridItem span={{ xs: 2, md: 2 }}>
         <div style={boxStyle}>Occupies 2 columns</div>
       </GridItem>
-      <GridItem offset={1}>
-        <div style={boxStyle}>Offset by 1 column</div>
+      <GridItem>
+        <div style={boxStyle}>Regular item</div>
       </GridItem>
       <GridItem suffix>
         <div style={boxStyle}>Always at the end</div>

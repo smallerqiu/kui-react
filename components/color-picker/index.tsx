@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import Color, { type ColorInstance, type ColorObject } from "color";
 import {
   isValidElement,
@@ -41,7 +42,7 @@ export interface ColorPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "
   panelOnly?: boolean;
 }
 
-export default function ColorPicker({
+function ColorPicker({
   value,
   defaultValue,
   open: openProp,
@@ -340,3 +341,4 @@ export type ColorPickerPanelProps = Omit<
 export function ColorPickerPanel(props: ColorPickerPanelProps) {
   return <ColorPicker {...props} panelOnly />;
 }
+export default createFormFieldComponent(ColorPicker);

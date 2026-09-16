@@ -1,10 +1,8 @@
 import clsx from "clsx";
 import React from "react";
-import { RowContext } from "./row-context";
 
 export interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
   gutter?: number | [number, number];
-  type?: string;
   justify?: "start" | "end" | "center" | "space-around" | "space-between";
   align?: "top" | "middle" | "bottom";
   children?: React.ReactNode;
@@ -12,8 +10,7 @@ export interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Row: React.FC<RowProps> = ({
   gutter,
-  type = "flex",
-  justify,
+  justify = "start",
   align = "top",
   children,
   className = "",
@@ -23,43 +20,29 @@ const Row: React.FC<RowProps> = ({
   const classes = clsx(
     "k-row",
     {
-      "k-row-flex": type === "flex",
-      [`k-row-flex-${justify}`]: justify,
-      [`k-row-flex-${align}`]: align,
+      [`k-row-${justify}`]: justify,
+      [`k-row-${align}`]: align,
     },
     className,
   );
 
-  const rowStyle: React.CSSProperties = {};
+  const rowStyle: React.CSSProperties & Record<`--${string}`, string> = {};
 
   if (Array.isArray(gutter)) {
-    const [v = 0, h = 0] = gutter;
-    if (v === h && v > 0) {
-      rowStyle.margin = `-${v / 2}px`;
-    } else if (v > 0 && h > 0) {
-      rowStyle.margin = `-${h / 2}px -${v / 2}px`;
-    } else {
-      if (v > 0) {
-        rowStyle.marginLeft = `-${v / 2}px`;
-        rowStyle.marginRight = `-${v / 2}px`;
-      }
-      if (h > 0) {
-        rowStyle.marginTop = `-${h / 2}px`;
-        rowStyle.marginBottom = `-${h / 2}px`;
-      }
-    }
+    const [columnGap = 0, rowGap = 0] = gutter;
+    rowStyle.columnGap = `${Math.max(0, columnGap)}px`;
+    rowStyle.rowGap = `${Math.max(0, rowGap)}px`;
+    rowStyle["--k-row-column-gap"] = `${Math.max(0, columnGap)}px`;
   } else if (gutter && gutter > 0) {
-    rowStyle.marginLeft = `-${gutter / 2}px`;
-    rowStyle.marginRight = `-${gutter / 2}px`;
+    rowStyle.columnGap = `${gutter}px`;
+    rowStyle["--k-row-column-gap"] = `${gutter}px`;
   }
   Object.assign(rowStyle, style);
 
   return (
-    <RowContext.Provider value={gutter}>
-      <div className={classes} style={rowStyle} {...rest}>
-        {children}
-      </div>
-    </RowContext.Provider>
+    <div className={classes} style={rowStyle} {...rest}>
+      {children}
+    </div>
   );
 };
 

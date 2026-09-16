@@ -10,7 +10,7 @@ export interface GridProps extends HTMLAttributes<HTMLDivElement> {
   autoRows?: string;
   xGap?: ResponsiveValue<GridDimension>;
   yGap?: ResponsiveValue<GridDimension>;
-  itemMinWidth?: number;
+  itemMinWidth?: number | string;
   align?: CSSProperties["alignItems"];
   justify?: CSSProperties["justifyItems"];
   flow?: CSSProperties["gridAutoFlow"];
@@ -58,7 +58,7 @@ export default function Grid({
   const parseGap = (value: GridDimension) => (typeof value === "number" ? `${value}px` : value);
   const gridStyle: CSSProperties = {
     gridTemplateColumns: itemMinWidth
-      ? `repeat(auto-fill, minmax(${itemMinWidth}px, 1fr))`
+      ? `repeat(auto-fill, minmax(min(100%, ${typeof itemMinWidth === "number" ? `${itemMinWidth}px` : itemMinWidth}), 1fr))`
       : typeof activeCols === "number"
         ? `repeat(${activeCols}, minmax(0, 1fr))`
         : activeCols,
@@ -70,11 +70,11 @@ export default function Grid({
     alignItems: align,
     justifyItems: justify,
     gridAutoFlow: flow,
-    ...style,
   };
   if (debug && typeof activeCols === "number") {
     gridStyle.backgroundImage = `repeating-linear-gradient(to right, rgba(255,0,0,.05) 0, rgba(255,0,0,.05) ${100 / activeCols}%, transparent ${100 / activeCols}%, transparent ${200 / activeCols}%)`;
   }
+  Object.assign(gridStyle, style);
   const context = useMemo(
     () => ({ breakpoint, resolveResponsive }),
     [breakpoint, resolveResponsive],

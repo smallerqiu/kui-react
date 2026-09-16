@@ -1,6 +1,5 @@
 import clsx from "clsx";
-import React, { useContext } from "react";
-import { RowContext } from "./row-context";
+import React from "react";
 
 export interface ColProps extends React.HTMLAttributes<HTMLDivElement> {
   span?: number;
@@ -46,8 +45,6 @@ const Col: React.FC<ColProps> = ({
   style,
   ...rest
 }) => {
-  const gutter = useContext(RowContext);
-
   const parseFlex = (flexVal: number | string) => {
     if (typeof flexVal === "number") {
       return `${flexVal} ${flexVal} auto`;
@@ -83,27 +80,6 @@ const Col: React.FC<ColProps> = ({
   const classes = clsx("k-col", gridClasses, className);
 
   const colStyle: React.CSSProperties = {};
-
-  if (Array.isArray(gutter)) {
-    const [v = 0, h = 0] = gutter;
-    if (v === h && v > 0) {
-      colStyle.padding = `${v / 2}px`;
-    } else if (v > 0 && h > 0) {
-      colStyle.padding = `${h / 2}px ${v / 2}px`;
-    } else {
-      if (v > 0) {
-        colStyle.paddingLeft = `${v / 2}px`;
-        colStyle.paddingRight = `${v / 2}px`;
-      }
-      if (h > 0) {
-        colStyle.paddingTop = `${h / 2}px`;
-        colStyle.paddingBottom = `${h / 2}px`;
-      }
-    }
-  } else if (gutter && gutter > 0) {
-    colStyle.paddingLeft = `${gutter / 2}px`;
-    colStyle.paddingRight = `${gutter / 2}px`;
-  }
 
   if (flex !== undefined) {
     colStyle.flex = parseFlex(flex);

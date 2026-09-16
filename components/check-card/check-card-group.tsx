@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import React, { useCallback, useMemo, useState } from "react";
 import CheckCard from "./check-card";
 import { CheckCardGroupContext } from "./context";
@@ -79,4 +80,4 @@ const CheckCardGroup = React.forwardRef<HTMLDivElement, CheckCardGroupProps>(
 );
 
 CheckCardGroup.displayName = "CheckCardGroup";
-export default CheckCardGroup;
+export default createFormFieldComponent(CheckCardGroup);

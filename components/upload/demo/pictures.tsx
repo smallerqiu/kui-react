@@ -48,6 +48,7 @@ export default function App() {
         sortable
         headers={headers}
         onChange={({ file, fileList }) => {
+          setFiles(fileList);
           if (file.status !== "uploading") console.log(file, fileList);
         }}
         fileList={files}

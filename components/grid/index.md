@@ -31,7 +31,7 @@ Layout 及其子组件（Header, Sider, Content, Footer）属于页面骨架级�
 
 [基本用法](./demo/basic.tsx?show=vertical)
 
-- Grid 的 `offset` 逻辑是基于 `grid-column-start` 的偏移。在 `dense` 填充模式下，`offset` 可能会导致意想不到的“插空”行为。
+- 使用响应式 `span` 设置不同容器宽度下的占列数。
 
 [仪表盘卡片布局 (Auto-fill + Min-Width)](./demo/auto-fill-min-width.tsx?show=vertical)
 
@@ -55,24 +55,9 @@ Layout 及其子组件（Header, Sider, Content, Footer）属于页面骨架级�
 
 - 非对称布局
 
-[复杂数据详情页（对齐与留白）](./demo/align-white-space.tsx?show=vertical)
-
-- 描述列表（Descriptions）的效果，但在不同屏幕下自动调整展示密度。
-
 [Hero Section 叠加布局（Layering）](./demo/hero-section.tsx?show=vertical)
 
 - `grid-column-start` 和 `grid-row-start` 的重叠能力,文字浮动在图片某处
-
-[响应式底栏 / 菜单（Footer Strategy）](./demo/footer-strategy.tsx?show=vertical)
-
-- 从“多列垂直排列”到“单列折叠”的极致压缩。
-
-[布局层级设计 (Architecture)](./demo/architecture.tsx?show=vertical)
-
-- 第一层：Layout 系列 —— 页面大骨架（Header + Sider + Content）。
-- 第二层：Grid 系列 —— 内容区的主要 2D 布局（统计卡片、Bento 图表矩阵）。
-- 第三层：Row/Col —— 简单的 1D 比例划分（如底部的两个并排表格）。
-- 第四层：Flex —— 极细微的内容对齐（卡片标题 + 图标）。
 
 ## Grid API
 
@@ -83,7 +68,7 @@ Layout 及其子组件（Header, Sider, Content, Footer）属于页面骨架级�
 | autoRows     | 隐式网格行高。在 Bento 布局或瀑布流中用于设定基准高度。           | string                    | auto   |
 | xGap         | 水格间距（水平方向）。数字类型会自动补充 px 单位。                | number,string,Object      | 0      |
 | yGap         | 行间距（垂直方向）。数字类型会自动补充 px 单位。                  | number,string,Object      | 0      |
-| itemMinWidth | 自动填充模式。设置子项最小宽度，Grid 将根据容器宽度自动计算列数。 | number                    | -      |
+| itemMinWidth | 自动填充模式。设置子项最小宽度，Grid 将根据容器宽度自动计算列数。 | number \| string          | -      |
 | align        | 子项在网格单元格内的垂直对齐方式                                  | string ( center, start..) | -      |
 | justify      | 子项在网格单元格内的水平对齐方式。                                | string ( center, start..) | -      |
 | flow         | 网格自动排列方式，对应 `grid-auto-flow`                           | string ( row, column, dense..) | row |
@@ -91,12 +76,13 @@ Layout 及其子组件（Header, Sider, Content, Footer）属于页面骨架级�
 
 ## GridItem API
 
-| 属性    | 说明                                                       | 类型                 | 默认值 |
-| ------- | ---------------------------------------------------------- | -------------------- | ------ |
-| span    | 占据的列数。设为 0 时会在该断点下彻底隐藏（display: none） | number,string,Object | 1      |
-| rowSpan | 占据的行数。配合容器的 autoRows 可实现非对称布局           | number,string,Object | 1      |
-| offset  | 左侧偏移的列数。用于在不使用空白占位符的情况下产生留白。   | number, Object       | 0      |
-| suffix  | 尾部固定。设为 true 时，该项将强制移动到当前行的末尾。     | boolean                 | false  |
+| 属性        | 说明                                                       | 类型             | 默认值 |
+| ----------- | ---------------------------------------------------------- | ---------------- | ------ |
+| span        | 占据的列数。设为 0 时会在该断点下彻底隐藏（display: none） | number \| Object | 1      |
+| rowSpan     | 占据的行数。配合容器的 autoRows 可实现非对称布局           | number \| Object | 1      |
+| columnStart | 显式指定起始列，支持响应式值                               | number \| Object | -      |
+| rowStart    | 显式指定起始行，支持响应式值                               | number \| Object | -      |
+| suffix      | 尾部固定。设为 true 时，该项将强制移动到当前行的末尾。     | boolean          | false  |
 
 ## Breakpoints
 

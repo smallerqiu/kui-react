@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import { CircleX, Loading } from "kui-icons";
 import React, {
   useCallback,
@@ -419,4 +420,4 @@ const Mentions: React.FC<MentionsProps> = ({
     </div>
   );
 };
-export default Mentions;
+export default createFormFieldComponent(Mentions);

@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import { CircleX, Eye, EyeOff, Search } from "kui-icons";
 import React, { useContext, useImperativeHandle, useRef, useState } from "react";
 import { SizeContext } from "../config/size-context";
@@ -304,4 +305,4 @@ const Input = React.forwardRef<InputRef, InputProps>(
 
 Input.displayName = "Input";
 
-export default Input;
+export default createFormFieldComponent(Input);

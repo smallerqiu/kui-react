@@ -23,6 +23,7 @@ import {
   useState,
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
+  type TouchEvent as ReactTouchEvent,
 } from "react";
 import { Button } from "../button";
 import Icon from "../icon";
@@ -61,12 +62,17 @@ const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(
     const [panelVisible, setPanelVisible] = useState(!!initial.showPanel);
     const [panelRight, setPanelRight] = useState(0);
     const dragRef = useRef({ x: 0, y: 0 });
+    const imageRef = useRef<HTMLImageElement | HTMLVideoElement>(null);
+    const stopDragRef = useRef<() => void>(() => {});
     const visibleRef = useRef(true);
     const optionsRef = useRef(options);
     const panelRef = useRef<HTMLDivElement>(null);
     const data = options.data ?? [];
     const src = options.src ?? "";
     const index = data.indexOf(src);
+    const setImageRef = useCallback((node: HTMLImageElement | HTMLVideoElement | null) => {
+      imageRef.current = node;
+    }, []);
 
     optionsRef.current = options;
     visibleRef.current = visible;
@@ -76,6 +82,41 @@ const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(
       setPosition({ left: 0, top: 0 });
       setDragging(false);
     }, []);
+    const constrainPosition = useCallback(
+      (current: { left: number; top: number }, nextScale = scale, nextRotate = rotate) => {
+        const image = imageRef.current;
+        if (!image || typeof window === "undefined") return current;
+
+        const vertical = Math.abs(nextRotate / 90) % 2 === 0;
+        const width = vertical ? image.offsetWidth : image.offsetHeight;
+        const height = vertical ? image.offsetHeight : image.offsetWidth;
+        const availableWidth = window.innerWidth - panelRight;
+        const maxLeft = Math.max(0, (width * nextScale - availableWidth) / 2);
+        const maxTop = Math.max(0, (height * nextScale - window.innerHeight) / 2);
+
+        return {
+          left: Math.max(-maxLeft, Math.min(maxLeft, current.left)),
+          top: Math.max(-maxTop, Math.min(maxTop, current.top)),
+        };
+      },
+      [panelRight, rotate, scale],
+    );
+    const changeScale = useCallback(
+      (nextScale: number) => {
+        const value = Math.max(1, Math.min(10, nextScale));
+        setScale(value);
+        setPosition((current) => constrainPosition(current, value, rotate));
+      },
+      [constrainPosition, rotate],
+    );
+    const changeRotate = useCallback(
+      (offset: number) => {
+        const value = rotate + offset;
+        setRotate(value);
+        setPosition((current) => constrainPosition(current, scale, value));
+      },
+      [constrainPosition, rotate, scale],
+    );
     const close = useCallback(() => {
       if (!visibleRef.current) return;
       visibleRef.current = false;
@@ -124,7 +165,7 @@ const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(
       const wheel = (event: WheelEvent) => {
         if (!visibleRef.current) return;
         event.preventDefault();
-        setScale((value) => Math.max(1, Math.min(10, value + (event.deltaY < 0 ? 1 : -1))));
+        changeScale(scale + (event.deltaY < 0 ? 1 : -1));
       };
       document.addEventListener("keydown", keydown);
       document.addEventListener("wheel", wheel, { passive: false });
@@ -132,7 +173,7 @@ const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(
         document.removeEventListener("keydown", keydown);
         document.removeEventListener("wheel", wheel);
       };
-    }, [close]);
+    }, [changeScale, close, scale]);
     useLayoutEffect(() => {
       if (!panelVisible || !options.panel || !panelRef.current) {
         setPanelRight(0);
@@ -145,6 +186,7 @@ const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(
       observer?.observe(panel);
       return () => observer?.disconnect();
     }, [options.panel, panelVisible]);
+    useEffect(() => () => stopDragRef.current(), []);
     const switchImage = (offset: number) => {
       const next = Math.max(0, Math.min(data.length - 1, index + offset));
       if (next === index || next < 0) return;
@@ -152,25 +194,50 @@ const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(
       resetTransform();
       options.onSwitch?.(next);
     };
-    const startDrag = (event: ReactMouseEvent) => {
-      if (event.button !== 0) return;
+    const startDrag = (
+      event:
+        | ReactMouseEvent<HTMLImageElement | HTMLVideoElement>
+        | ReactTouchEvent<HTMLImageElement | HTMLVideoElement>,
+    ) => {
+      if ("button" in event && event.button !== 0) return;
       event.preventDefault();
+      stopDragRef.current();
       setDragging(true);
-      dragRef.current = { x: event.clientX, y: event.clientY };
-      const move = (moveEvent: MouseEvent) => {
+      const touch = "touches" in event;
+      const point = touch ? event.touches[0] : event;
+      dragRef.current = { x: point.clientX, y: point.clientY };
+      const move = (moveEvent: MouseEvent | TouchEvent) => {
+        moveEvent.preventDefault();
+        const nextPoint = "touches" in moveEvent ? moveEvent.touches[0] : moveEvent;
+        if (!nextPoint) return;
         setPosition((current) => ({
-          left: current.left + moveEvent.clientX - dragRef.current.x,
-          top: current.top + moveEvent.clientY - dragRef.current.y,
+          left: current.left + nextPoint.clientX - dragRef.current.x,
+          top: current.top + nextPoint.clientY - dragRef.current.y,
         }));
-        dragRef.current = { x: moveEvent.clientX, y: moveEvent.clientY };
+        dragRef.current = { x: nextPoint.clientX, y: nextPoint.clientY };
       };
       const up = () => {
         setDragging(false);
-        document.removeEventListener("mousemove", move);
-        document.removeEventListener("mouseup", up);
+        setPosition((current) => constrainPosition(current));
+        stopDragRef.current();
       };
-      document.addEventListener("mousemove", move);
-      document.addEventListener("mouseup", up);
+      const stop = () => {
+        document.removeEventListener("mousemove", move as EventListener);
+        document.removeEventListener("mouseup", up);
+        document.removeEventListener("touchmove", move as EventListener);
+        document.removeEventListener("touchend", up);
+        document.removeEventListener("touchcancel", up);
+        stopDragRef.current = () => {};
+      };
+      stopDragRef.current = stop;
+      if (touch) {
+        document.addEventListener("touchmove", move as EventListener, { passive: false });
+        document.addEventListener("touchend", up);
+        document.addEventListener("touchcancel", up);
+      } else {
+        document.addEventListener("mousemove", move as EventListener, { passive: false });
+        document.addEventListener("mouseup", up);
+      }
     };
     const download = async () => {
       if (!src || error) return;
@@ -213,13 +280,13 @@ const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(
                 </li>
                 <li
                   className="k-image-preview-action"
-                  onClick={() => setRotate((value) => value - 90)}
+                  onClick={() => changeRotate(-90)}
                 >
                   <Icon type={RotateCcwSquare} />
                 </li>
                 <li
                   className="k-image-preview-action"
-                  onClick={() => setRotate((value) => value + 90)}
+                  onClick={() => changeRotate(90)}
                 >
                   <Icon type={RotateCwSquare} />
                 </li>
@@ -227,7 +294,7 @@ const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(
                   className={clsx("k-image-preview-action", {
                     "k-image-preview-action-disabled": scale <= 1,
                   })}
-                  onClick={() => setScale((value) => Math.max(1, value - 1))}
+                  onClick={() => changeScale(scale - 1)}
                 >
                   <Icon type={Minus} />
                 </li>
@@ -238,14 +305,14 @@ const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(
                     max={10}
                     size="small"
                     tooltipVisible={false}
-                    onChange={(value) => setScale(value as number)}
+                    onChange={(value) => changeScale(value as number)}
                   />
                 </li>
                 <li
                   className={clsx("k-image-preview-action", {
                     "k-image-preview-action-disabled": scale >= 10,
                   })}
-                  onClick={() => setScale((value) => Math.min(10, value + 1))}
+                  onClick={() => changeScale(scale + 1)}
                 >
                   <Icon type={Plus} />
                 </li>
@@ -267,11 +334,14 @@ const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(
               >
                 {options.type === "media" ? (
                   <video
+                    ref={setImageRef}
+                    draggable={false}
                     controls
                     className="k-image-preview-img"
                     src={src}
                     style={{ transform: `scale3d(${scale},${scale},1) rotate(${rotate}deg)` }}
                     onMouseDown={startDrag}
+                    onTouchStart={startDrag}
                   />
                 ) : error ? (
                   <div className="k-image-preview-img-error">
@@ -280,10 +350,13 @@ const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(
                 ) : (
                   !loading && (
                     <img
+                      ref={setImageRef}
+                      draggable={false}
                       className="k-image-preview-img"
                       src={src}
                       style={{ transform: `scale3d(${scale},${scale},1) rotate(${rotate}deg)` }}
                       onMouseDown={startDrag}
+                      onTouchStart={startDrag}
                     />
                   )
                 )}

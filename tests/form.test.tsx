@@ -1,5 +1,5 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
-import { createRef } from "react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { createRef, useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { Checkbox, Form, FormItem, Input, type FormExpose, type FormRule } from "react-kui";
 
@@ -21,7 +21,7 @@ describe("Form", () => {
     expect(container.querySelectorAll(".k-form-item-no-colon")).toHaveLength(1);
   });
 
-  it("combines rules and skips them for optional empty values", () => {
+  it("combines rules and skips them for optional empty values", async () => {
     const ref = createRef<FormExpose>();
     const { rerender } = render(
       <Form
@@ -34,7 +34,7 @@ describe("Form", () => {
         </FormItem>
       </Form>,
     );
-    expect(ref.current?.validate()).toBe(false);
+    expect(await ref.current?.validate()).toEqual({ valid: false });
 
     rerender(
       <Form ref={ref} model={{ code: "" }} rules={{ code: [{ pattern: /^A/, min: 4 }] }}>
@@ -43,10 +43,10 @@ describe("Form", () => {
         </FormItem>
       </Form>,
     );
-    expect(ref.current?.validate()).toBe(true);
+    expect(await ref.current?.validate()).toEqual({ valid: true });
   });
 
-  it("resets regexp state between validations", () => {
+  it("resets regexp state between validations", async () => {
     const ref = createRef<FormExpose>();
     render(
       <Form ref={ref} model={{ code: "AAA" }} rules={{ code: [{ pattern: /^A/g }] }}>
@@ -55,8 +55,8 @@ describe("Form", () => {
         </FormItem>
       </Form>,
     );
-    expect(ref.current?.validate()).toBe(true);
-    expect(ref.current?.validate()).toBe(true);
+    expect(await ref.current?.validate()).toEqual({ valid: true });
+    expect(await ref.current?.validate()).toEqual({ valid: true });
   });
 
   it("keeps the latest asynchronous validation result", async () => {
@@ -89,7 +89,7 @@ describe("Form", () => {
     expect(screen.queryByText("Stale error")).toBeNull();
   });
 
-  it("updates registration when prop changes", () => {
+  it("updates registration when prop changes", async () => {
     const ref = createRef<FormExpose>();
     const rules = {
       first: [{ required: true }],
@@ -102,7 +102,7 @@ describe("Form", () => {
         </FormItem>
       </Form>,
     );
-    expect(ref.current?.validate()).toBe(false);
+    expect(await ref.current?.validate()).toEqual({ valid: false });
 
     rerender(
       <Form ref={ref} model={{ first: "", second: "ok" }} rules={rules}>
@@ -111,7 +111,7 @@ describe("Form", () => {
         </FormItem>
       </Form>,
     );
-    expect(ref.current?.validate()).toBe(true);
+    expect(await ref.current?.validate()).toEqual({ valid: true });
   });
 
   it("injects form props into only the first form control", () => {
@@ -142,7 +142,7 @@ describe("Form", () => {
     expect(container.querySelectorAll<HTMLInputElement>("input")[0].value).toBe("Grace");
   });
 
-  it("renders content and error as siblings", () => {
+  it("renders content and error as siblings", async () => {
     const ref = createRef<FormExpose>();
     const { container } = render(
       <Form
@@ -156,12 +156,38 @@ describe("Form", () => {
       </Form>,
     );
     fireEvent.submit(container.querySelector("form")!);
+    await waitFor(() => expect(container.querySelector(".k-form-item-error-tip")).not.toBeNull());
     const content = container.querySelector(".k-form-item-content")!;
     const error = container.querySelector(".k-form-item-error-tip")!;
     expect(content.parentElement).toBe(error.parentElement);
   });
 
-  it("links labels, controls and errors with accessible attributes", () => {
+  it("keeps the error message visible while the leave animation runs", async () => {
+    const ref = createRef<FormExpose>();
+    function Example() {
+      const [model, setModel] = useState({ name: "" });
+      return (
+        <Form ref={ref} model={model} onChange={(next) => setModel(next as typeof model)}>
+          <FormItem prop="name" rules={{ required: true, message: "Animated error" }}>
+            <Input />
+          </FormItem>
+        </Form>
+      );
+    }
+
+    render(<Example />);
+    const input = screen.getByRole("textbox");
+    await act(async () => {
+      await ref.current?.validate();
+    });
+    expect(screen.getByText("Animated error")).not.toBeNull();
+    fireEvent.change(input, { target: { value: "valid" } });
+    await waitFor(() => expect(input.getAttribute("aria-invalid")).toBeNull());
+    expect(screen.getByText("Animated error")).not.toBeNull();
+    await waitFor(() => expect(screen.queryByText("Animated error")).toBeNull());
+  });
+
+  it("links labels, controls and errors with accessible attributes", async () => {
     const ref = createRef<FormExpose>();
     const { container } = render(
       <Form
@@ -180,8 +206,8 @@ describe("Form", () => {
     expect(label.htmlFor).toBe(input.id);
     expect(input.getAttribute("aria-required")).toBe("true");
 
-    act(() => {
-      ref.current?.validate();
+    await act(async () => {
+      await ref.current?.validate();
     });
     const error = container.querySelector('[role="alert"]')!;
     expect(input.getAttribute("aria-invalid")).toBe("true");

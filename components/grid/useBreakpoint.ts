@@ -1,6 +1,7 @@
 import { createContext, useLayoutEffect, useState, type RefObject } from "react";
 
-export type Breakpoint = "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
+export type GridBreakpoint = "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
+export type Breakpoint = GridBreakpoint;
 
 const breakpointMap: Array<[number, Breakpoint]> = [
   [1600, "xxl"],
@@ -16,11 +17,12 @@ export interface GridContextValue {
   resolveResponsive: <T>(value: ResponsiveValue<T> | undefined, fallback: T) => T;
 }
 
-export type ResponsiveValue<T> = T | Partial<Record<Breakpoint, T>>;
+export type GridResponsive<T> = T | Partial<Record<GridBreakpoint, T>>;
+export type ResponsiveValue<T> = GridResponsive<T>;
 export const GridContext = createContext<GridContextValue | null>(null);
 
 export function useBreakpoint(elementRef: RefObject<HTMLElement | null>): Breakpoint {
-  const [active, setActive] = useState<Breakpoint>("md");
+  const [active, setActive] = useState<Breakpoint>("xs");
 
   useLayoutEffect(() => {
     const element = elementRef.current;

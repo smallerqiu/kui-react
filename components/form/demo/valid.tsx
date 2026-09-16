@@ -12,6 +12,7 @@ import {
   message,
   Option,
   Radio,
+  RadioButton,
   RadioGroup,
   Rate,
   Row,
@@ -20,9 +21,8 @@ import {
   Switch,
   TextArea,
   TreeSelect,
-  type FormExpose,
   type FormRule,
-  type SizeType,
+  type FormSubmitEvent,
 } from "react-kui";
 const treeData = [
   {
@@ -43,23 +43,21 @@ const initial = {
   captcha: "",
   slider: 3,
   rate: 0,
-  tree: "",
-  gender: "",
+  tree: undefined as string | undefined,
+  gender: undefined as number | undefined,
   one: false,
-  system: "",
-  birthday: "",
-  country: "",
-  city: "",
+  system: undefined as number | undefined,
+  birthday: undefined as Date | undefined,
+  country: undefined as string | undefined,
+  city: undefined as string | undefined,
   hobbies: [] as string[],
   hardcore: false,
   other: "",
   readme: false,
 };
 export default function App() {
-  const ref = useRef<FormExpose>(null);
-  const [form, setForm] = useState({ ...initial }),
-    [size, setSize] = useState<SizeType>("medium"),
-    [time, setTime] = useState(60);
+  const [form, setForm] = useState({ ...initial });
+  const [time, setTime] = useState(60);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
   useEffect(
     () => () => {
@@ -81,10 +79,11 @@ export default function App() {
       { required: true, message: "The number is required" },
     ],
     password: [
-      { min: 8, max: 20, message: "Password length must be 8-20." },
+      { min: 8, max: 20, message: "Please keep the password length between 8-20 digits." },
       { required: true, message: "The password is required" },
     ],
     confirm_password: [
+      { min: 8, max: 20, message: "Please keep the password length between 8-20 digits." },
       { validator: custom((v) => v === form.password, "Please confirm the password") },
       { required: true, message: "Please confirm the password" },
     ],
@@ -100,7 +99,11 @@ export default function App() {
     country: [{ required: true, message: "Please select your country" }],
     city: [{ required: true, message: "Please select your city" }],
     tree: [{ required: true, message: "Please select your food" }],
-    slider: [{ min: 5, max: 50, message: "Value must be 5-50" }],
+    slider: [
+      { required: true, message: "Please select a value" },
+      { min: 5, message: "Minimum value is 5" },
+      { max: 50, message: "Maximum value is 50" },
+    ],
     rate: [
       { required: true, message: "Please select your rate" },
       { min: 1, message: "The minimum value is 1" },
@@ -109,10 +112,13 @@ export default function App() {
     one: [{ required: true, message: "Please select this option" }],
     system: [{ required: true, message: "Please select your system" }],
     hardcore: [{ required: true, message: "Please enable this option" }],
-    readme: [{ validator: custom((v) => v === true, "Please read the terms") }],
+    readme: [
+      { validator: custom((v) => v === true, "Please accept the Terms of Service"), required: true },
+    ],
     hobbies: [
       { required: true, message: "Please select your hobbies" },
-      { min: 2, max: 3, message: "Select 2 to 3 hobbies" },
+      { max: 3, message: "Maximum value is 3" },
+      { min: 2, message: "Minimum value is 2" },
     ],
     other: [
       { required: true, message: "Please fill in other information" },
@@ -142,14 +148,14 @@ export default function App() {
       confirm_password: "abc@123@123",
       phone: "13888888888",
       captcha: "8888",
-      gender: "1",
+      gender: 1,
       slider: 5,
       rate: 5,
       number: 5,
       tree: "0",
-      system: "0",
+      system: 0,
       one: true,
-      birthday: "1995-05-05",
+      birthday: new Date(1995, 4, 5),
       country: "1",
       city: "1",
       hobbies: ["0", "1"],
@@ -157,137 +163,163 @@ export default function App() {
       other: "Test data",
       readme: true,
     });
+  const handleSubmit = ({ valid }: FormSubmitEvent) =>
+    message[valid ? "success" : "error"](valid ? "success" : "failed");
+  const handleReset = () => {
+    if (timer.current) clearInterval(timer.current);
+    setTime(60);
+  };
+  const halfCol = { xs: 24, md: 12 };
+  const halfLabelCol = { span: 8 };
+  const halfWrapperCol = { span: 16 };
+  const fieldProps = { labelCol: halfLabelCol, wrapperCol: halfWrapperCol };
   return (
-    <div style={{ maxWidth: 600 }}>
+    <div>
       <Form
-        ref={ref}
-        model={form}
-        onChange={setForm}
-        size={size}
-        rules={rules}
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 16 }}
-      >
-        <FormItem label="Size">
-          <RadioGroup
-            value={size}
-            onChange={setSize}
-            type="button"
-            options={["large", "medium", "small"].map((value) => ({ value, label: value }))}
-          />
-        </FormItem>
-        <FormItem label="E-mail" prop="email">
-          <Input clearable placeholder="Please enter your email" />
-        </FormItem>
-        <FormItem label="Number" prop="number">
-          <InputNumber placeholder="Please enter your number" />
-        </FormItem>
-        <FormItem label="Password" prop="password">
-          <Input type="password" />
-        </FormItem>
-        <FormItem label="Confirm Password" prop="confirm_password">
-          <Input type="password" />
-        </FormItem>
-        <FormItem label="Phone Number" prop="phone">
-          <Input />
-        </FormItem>
-        <FormItem label="Captcha" prop="captcha">
-          <Input
-            suffix={
-              <Button size={size} disabled={time !== 60} onClick={sendCode}>
-                {time === 60 ? "Get Captcha" : `${time}(s)`}
-              </Button>
-            }
-          />
-        </FormItem>
-        <Row>
-          <Col span={12}>
-            <FormItem
-              label="Country"
-              prop="country"
-              labelCol={{ span: 12 }}
-              wrapperCol={{ span: 12 }}
-            >
-              <Select clearable style={{ width: "100%" }}>
-                <Option value="0" label="China" />
-                <Option value="1" label="Russia" />
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span={12}>
-            <FormItem prop="city" label="City" labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
-              <Select clearable style={{ width: "100%" }}>
-                <Option value="0" label="Shanghai" />
-                <Option value="1" label="Wuhan" />
-                <Option value="2" label="Hangzhou" />
-              </Select>
-            </FormItem>
-          </Col>
-        </Row>
-        <FormItem label="TreeSelect" prop="tree">
-          <TreeSelect treeData={treeData} style={{ width: "100%" }} />
-        </FormItem>
-        <FormItem label="Slider" prop="slider">
-          <Slider />
-        </FormItem>
-        <FormItem label="Rate" prop="rate">
-          <Rate />
-        </FormItem>
-        <FormItem label="Gender" prop="gender">
-          <RadioGroup
-            options={[
-              { value: 0, label: "Girl" },
-              { value: 1, label: "Boy" },
-            ]}
-          />
-        </FormItem>
-        <FormItem label="One" prop="one">
-          <Radio label="Only One?" />
-        </FormItem>
-        <FormItem label="System" prop="system">
-          <RadioGroup
-            type="button"
-            options={["Mac OS", "Windows", "Linux"].map((label, value) => ({ value, label }))}
-          />
-        </FormItem>
-        <FormItem label="Birthday" prop="birthday">
-          <DatePicker clearable />
-        </FormItem>
-        <FormItem label="Hobby" prop="hobbies">
-          <CheckboxGroup
-            options={["Football", "Music", "Photograph", "Tennis"].map((label, i) => ({
-              value: String(i),
-              label,
-            }))}
-          />
-        </FormItem>
-        <FormItem label="Hardcore" prop="hardcore">
-          <Switch trueText="Yes" falseText="No" />
-        </FormItem>
-        <FormItem label="Other" prop="other">
-          <TextArea placeholder="Maximum 10 characters" />
-        </FormItem>
-        <FormItem prop="readme" wrapperCol={{ offset: 6 }}>
-          <Checkbox>I have read the terms of service</Checkbox>
-        </FormItem>
-        <FormItem wrapperCol={{ offset: 6 }}>
-          <Button
-            type="primary"
-            onClick={() =>
-              ref.current?.validate(({ valid }) =>
-                message[valid ? "success" : "error"](valid ? "success" : "failed"),
-              )
-            }
-          >
-            Submit
-          </Button>
-          <Button style={{ margin: "0 10px" }} onClick={() => ref.current?.reset()}>
-            Reset
-          </Button>
-          <Button theme="dashed" onClick={setValue}>
-            Set Value
-          </Button>
-        </FormItem>
+      model={form}
+      onChange={(next) => setForm(next as typeof form)}
+      rules={rules}
+      labelCol={{ span: 6 }}
+      wrapperCol={{ span: 16 }}
+      onReset={handleReset}
+      onSubmit={handleSubmit}
+    >
+      <Row>
+        <Col {...halfCol}>
+          <FormItem label="E-mail" prop="email" {...fieldProps}>
+            <Input clearable placeholder="Please enter your email" />
+          </FormItem>
+        </Col>
+        <Col {...halfCol}>
+          <FormItem label="Number" prop="number" {...fieldProps}>
+            <InputNumber placeholder="Please enter your number" />
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col {...halfCol}>
+          <FormItem label="Password" prop="password" {...fieldProps}>
+            <Input type="password" placeholder="Please enter password" />
+          </FormItem>
+        </Col>
+        <Col {...halfCol}>
+          <FormItem label="Confirm Password" prop="confirm_password" {...fieldProps}>
+            <Input type="password" placeholder="Please enter password" />
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col {...halfCol}>
+          <FormItem label="Phone Number" prop="phone" {...fieldProps}>
+            <Input placeholder="Please enter phone number" />
+          </FormItem>
+        </Col>
+        <Col {...halfCol}>
+          <FormItem label="Captcha" prop="captcha" {...fieldProps}>
+            <Input
+              placeholder="Please enter captcha"
+              addonAfter={
+                <Button disabled={time !== 60} htmlType="button" onClick={sendCode}>
+                  {time === 60 ? "Get Captcha" : `${time}(s)`}
+                </Button>
+              }
+            />
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col {...halfCol}>
+          <FormItem label="Country" prop="country" {...fieldProps}>
+            <Select clearable style={{ width: "100%" }}>
+              <Option value="0" label="China" />
+              <Option value="1" label="Russia" />
+            </Select>
+          </FormItem>
+        </Col>
+        <Col {...halfCol}>
+          <FormItem label="City" prop="city" {...fieldProps}>
+            <Select clearable style={{ width: "100%" }}>
+              <Option value="0" label="Shanghai" />
+              <Option value="1" label="Wuhan" />
+              <Option value="2" label="Hangzhou" />
+            </Select>
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col {...halfCol}>
+          <FormItem label="TreeSelect" prop="tree" {...fieldProps}>
+            <TreeSelect style={{ width: "100%" }} treeData={treeData} />
+          </FormItem>
+        </Col>
+        <Col {...halfCol}>
+          <FormItem label="Birthday" prop="birthday" {...fieldProps}>
+            <DatePicker clearable />
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col {...halfCol}>
+          <FormItem label="Slider" prop="slider" {...fieldProps}><Slider /></FormItem>
+        </Col>
+        <Col {...halfCol}>
+          <FormItem label="Rate" prop="rate" {...fieldProps}><Rate /></FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col {...halfCol}>
+          <FormItem label="Gender" prop="gender" {...fieldProps}>
+            <RadioGroup>
+              <Radio value={0} label="Girl" />
+              <Radio value={1} label="Boy" />
+            </RadioGroup>
+          </FormItem>
+        </Col>
+        <Col {...halfCol}>
+          <FormItem label="One" prop="one" {...fieldProps}><Radio label="Only One?" /></FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col {...halfCol}>
+          <FormItem label="System" prop="system" {...fieldProps}>
+            <RadioGroup type="button">
+              <RadioButton value={0} label="Mac OS" />
+              <RadioButton value={1} label="Windows" />
+              <RadioButton value={2} label="Linux" />
+            </RadioGroup>
+          </FormItem>
+        </Col>
+        <Col {...halfCol}>
+          <FormItem label="Hardcore" prop="hardcore" {...fieldProps}>
+            <Switch trueText="Yes" falseText="No" />
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col {...halfCol}>
+          <FormItem label="Hobby" prop="hobbies" {...fieldProps}>
+            <CheckboxGroup>
+              <Checkbox value="0" label="Football" />
+              <Checkbox value="1" label="Music" />
+              <Checkbox value="2" label="Photograph" />
+              <Checkbox value="3" label="Tennis" />
+            </CheckboxGroup>
+          </FormItem>
+        </Col>
+        <Col {...halfCol}>
+          <FormItem label="Other" prop="other" {...fieldProps}>
+            <TextArea placeholder="Maximum 10 characters" />
+          </FormItem>
+        </Col>
+      </Row>
+      <FormItem prop="readme" wrapperCol={{ offset: 6 }}>
+        <Checkbox>I have read the <a>Terms of Service</a></Checkbox>
+      </FormItem>
+      <FormItem wrapperCol={{ offset: 6 }}>
+        <Button type="primary" htmlType="submit">Submit</Button>
+        <Button style={{ margin: "0 10px" }} htmlType="reset">Reset</Button>
+        <Button theme="dashed" htmlType="button" onClick={setValue}>Set Value</Button>
+      </FormItem>
       </Form>
     </div>
   );

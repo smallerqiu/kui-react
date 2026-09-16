@@ -2,13 +2,16 @@ import clsx from "clsx";
 import {
   forwardRef,
   useCallback,
+  useContext,
   useImperativeHandle,
   useMemo,
   useRef,
+  useState,
   type FormEvent,
   type FormHTMLAttributes,
 } from "react";
 import type { DirectionType, ShapeType, SizeType, ThemeType } from "../const/types";
+import { ConfigContext } from "../config/config-context";
 import type { ColProps, FormRule, FormRules } from "./types";
 import { FormContext, type FormContextValue } from "./form-context";
 import { getByPath, setByPath } from "./utils";
@@ -16,19 +19,20 @@ import { getByPath, setByPath } from "./utils";
 export interface FormSubmitEvent {
   valid: boolean;
 }
+type FormChangeHandler = {
+  bivarianceHack(model: Record<string, unknown>): void;
+}["bivarianceHack"];
 export interface FormItemHandle {
   prop: string;
   rules?: FormRule | FormRule[];
-  /** 存在异步 `validator` 时返回 Promise，否则同步返回 */
-  validate: (rules?: FormRule | FormRule[]) => boolean | Promise<boolean>;
-  reset: () => void;
+  validate: (rules?: FormRule | FormRule[], trigger?: import("./types").FormValidateTrigger) => Promise<boolean>;
+  reset: (value?: unknown) => void;
 }
 export interface FormExpose {
-  /** 存在异步 `validator` 时返回 Promise，否则同步返回 */
-  validate: (callback?: (result: FormSubmitEvent) => void) => boolean | Promise<boolean>;
+  validate: (callback?: (result: FormSubmitEvent) => void) => Promise<FormSubmitEvent>;
   reset: () => void;
-  test: (key: string) => boolean | Promise<boolean> | undefined;
-  submit: () => void;
+  test: (key: string, trigger?: import("./types").FormValidateTrigger) => Promise<boolean> | undefined;
+  submit: () => Promise<void>;
 }
 export interface FormProps extends Omit<
   FormHTMLAttributes<HTMLFormElement>,
@@ -48,13 +52,13 @@ export interface FormProps extends Omit<
   colon?: boolean;
   onSubmit?: (event: FormSubmitEvent) => void;
   onReset?: () => void;
-  onChange?: (model: Record<string, unknown>) => void;
+  onChange?: FormChangeHandler;
 }
 
 const Form = forwardRef<FormExpose, FormProps>(function Form(
   {
     layout = "horizontal",
-    model = {},
+    model: modelProp,
     name,
     labelCol,
     wrapperCol,
@@ -74,25 +78,35 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
   },
   ref,
 ) {
+  const [innerModel, setInnerModel] = useState<Record<string, unknown>>({});
+  const model = modelProp ?? innerModel;
+  const globalConfig = useContext(ConfigContext);
+  const currentSize = size ?? globalConfig.size;
+  const currentShape = shape ?? globalConfig.shape;
+  const currentTheme = theme ?? globalConfig.theme;
   const itemsRef = useRef(new Map<string, FormItemHandle>());
+  const register = useCallback((item: FormItemHandle) => itemsRef.current.set(item.prop, item), []);
+  const unregister = useCallback((prop: string, item: FormItemHandle) => {
+    if (itemsRef.current.get(prop) === item) itemsRef.current.delete(prop);
+  }, []);
   const setValue = useCallback(
-    (path: string, value: unknown) => onChange?.(setByPath(model, path, value)),
-    [model, onChange],
+    (path: string, value: unknown) => {
+      const nextModel = setByPath(model, path, value);
+      if (modelProp === undefined) setInnerModel(nextModel);
+      onChange?.(nextModel);
+    },
+    [model, modelProp, onChange],
   );
   const validate = useCallback(
-    (callback?: (result: FormSubmitEvent) => void) => {
-      const results = [...itemsRef.current.values()].map((item) =>
-        item.validate(item.rules ?? rules?.[item.prop]),
+    async (callback?: (result: FormSubmitEvent) => void) => {
+      const values = await Promise.all(
+        [...itemsRef.current.values()].map((item) =>
+          item.validate(item.rules ?? rules?.[item.prop]),
+        ),
       );
-      const settle = (valid: boolean) => {
-        callback?.({ valid });
-        return valid;
-      };
-      // 只有存在异步校验时才升级为 Promise，保证纯同步规则下 onSubmit 同步触发
-      if (results.some((result) => result instanceof Promise)) {
-        return Promise.all(results).then((values) => settle(values.every(Boolean)));
-      }
-      return settle((results as boolean[]).every(Boolean));
+      const result = { valid: values.every(Boolean) };
+      callback?.(result);
+      return result;
     },
     [rules],
   );
@@ -100,27 +114,24 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
     let nextModel = model;
     for (const item of itemsRef.current.values()) {
       nextModel = setByPath(nextModel, item.prop, null);
-      item.reset();
+      item.reset(null);
     }
+    if (modelProp === undefined) setInnerModel(nextModel);
     onChange?.(nextModel);
     onReset?.();
-  }, [model, onChange, onReset]);
-  const submit = useCallback(() => {
-    const result = validate();
-    if (result instanceof Promise)
-      return result.then((valid) => {
-        onSubmit?.({ valid });
-      });
-    onSubmit?.({ valid: result });
+  }, [model, modelProp, onChange, onReset]);
+  const submit = useCallback(async () => {
+    const result = await validate();
+    onSubmit?.(result);
   }, [onSubmit, validate]);
   useImperativeHandle(
     ref,
     () => ({
       validate,
       reset,
-      test: (key) => {
+      test: (key, trigger) => {
         const item = itemsRef.current.get(key);
-        return item?.validate(item.rules ?? rules?.[key]);
+        return item?.validate(item.rules ?? rules?.[key], trigger);
       },
       submit,
     }),
@@ -132,9 +143,9 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
       rules,
       layout,
       name,
-      size,
-      shape,
-      theme,
+      size: currentSize,
+      shape: currentShape,
+      theme: currentTheme,
       disabled,
       readOnly,
       colon,
@@ -142,25 +153,25 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
       wrapperCol,
       getValue: (path) => getByPath(model, path).value,
       setValue,
-      register: (item) => itemsRef.current.set(item.prop, item),
-      unregister: (prop, item) => {
-        if (itemsRef.current.get(prop) === item) itemsRef.current.delete(prop);
-      },
+      register,
+      unregister,
     }),
     [
       model,
       rules,
       layout,
       name,
-      size,
-      shape,
-      theme,
+      currentSize,
+      currentShape,
+      currentTheme,
       disabled,
       readOnly,
       colon,
       labelCol,
       wrapperCol,
       setValue,
+      register,
+      unregister,
     ],
   );
 
@@ -176,7 +187,7 @@ const Form = forwardRef<FormExpose, FormProps>(function Form(
         className={clsx(
           "k-form",
           `k-form-${layout}`,
-          { "k-form-lg": size === "large", "k-form-sm": size === "small" },
+          { "k-form-lg": currentSize === "large", "k-form-sm": currentSize === "small" },
           className,
         )}
         onSubmit={handleSubmit}

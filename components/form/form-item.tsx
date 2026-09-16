@@ -8,16 +8,21 @@ import {
   useEffect,
   useMemo,
   useId,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
 import { ConfigContext } from "../config/config-context";
 import Transition from "../base/transition";
-import type { ShapeType, SizeType, ThemeType } from "../const/types";
 import zhCN from "../locale/zh-CN";
 import { Col, Row } from "../row-col";
 import type { FormItemHandle } from "./form";
 import { FormContext } from "./form-context";
+import {
+  FormFieldProvider,
+  isFormFieldComponent,
+  type FormFieldContextValue,
+} from "./field-context";
 import type { ColProps, FormRule, FormValidateTrigger } from "./types";
 
 export interface FormItemProps {
@@ -36,6 +41,7 @@ interface RuleResult {
 }
 
 const PASS: RuleResult = { ok: true };
+const NO_VALUE_OVERRIDE = Symbol("no-value-override");
 const validationVersions = new WeakMap<object, number>();
 
 const isPromiseLike = (value: unknown): value is PromiseLike<unknown> =>
@@ -56,47 +62,8 @@ const isEmptyValue = (value: unknown) =>
   value === "" ||
   (Array.isArray(value) && value.length === 0);
 
-const FORM_CONTROL_NAMES = new Set([
-  "AutoComplete",
-  "Cascader",
-  "CheckCard",
-  "CheckCardGroup",
-  "Checkbox",
-  "CheckboxGroup",
-  "ColorPicker",
-  "DatePicker",
-  "Input",
-  "InputNumber",
-  "InputOTP",
-  "InputTag",
-  "Mentions",
-  "Radio",
-  "RadioButton",
-  "RadioGroup",
-  "Rate",
-  "Segmented",
-  "Select",
-  "Slider",
-  "Switch",
-  "TextArea",
-  "TimePicker",
-  "TreeSelect",
-  "Transfer",
-  "Upload",
-]);
-
-const getComponentName = (type: unknown) => {
-  if ((typeof type !== "function" && typeof type !== "object") || type === null) return undefined;
-  const component = type as {
-    displayName?: string;
-    name?: string;
-    render?: { displayName?: string };
-  };
-  return component.displayName ?? component.render?.displayName ?? component.name;
-};
-
 const isFormControlElement = (child: ReactNode) =>
-  isValidElement(child) && FORM_CONTROL_NAMES.has(getComponentName(child.type) ?? "");
+  isValidElement(child) && isFormFieldComponent(child.type);
 
 export default function FormItem({
   label,
@@ -114,6 +81,8 @@ export default function FormItem({
   const [message, setMessage] = useState<string>();
   const generatedId = `form_${useId().replace(/:/g, "")}`;
   const validationKey = useMemo(() => ({}), []);
+  const fieldValue = prop ? form?.getValue(prop) : undefined;
+  const previousFieldValueRef = useRef(fieldValue);
 
   const runRule = useCallback(
     (rule: FormRule, value: unknown): RuleResult | Promise<RuleResult> => {
@@ -164,14 +133,30 @@ export default function FormItem({
       }
 
       if (passed && rule.validator) {
-        let callbackResult: RuleResult = PASS;
-        const returned = rule.validator(rule, value, (error) => {
-          callbackResult = error ? { ok: false, message: error.message || errorMessage } : PASS;
-        });
+        if (rule.validator.length >= 3) {
+          return new Promise<RuleResult>((resolve) => {
+            let settled = false;
+            const done = (error?: Error) => {
+              if (settled) return;
+              settled = true;
+              resolve(error ? { ok: false, message: error.message || errorMessage } : PASS);
+            };
+            try {
+              const returned = rule.validator?.(rule, value, done);
+              if (isPromiseLike(returned)) {
+                Promise.resolve(returned).then(() => done(), (error: unknown) => {
+                  done(error instanceof Error ? error : new Error(String(error)));
+                });
+              }
+            } catch (error) {
+              done(error instanceof Error ? error : new Error(String(error)));
+            }
+          });
+        }
+        const returned = rule.validator(rule, value, () => undefined);
         if (isPromiseLike(returned)) {
           return Promise.resolve(returned).then(
             (resolved) => {
-              if (!callbackResult.ok) return callbackResult;
               return resolved === false ? { ok: false, message: errorMessage } : PASS;
             },
             (error: unknown) => {
@@ -182,7 +167,7 @@ export default function FormItem({
             },
           );
         }
-        return callbackResult;
+        return PASS;
       }
 
       return passed ? PASS : { ok: false, message: errorMessage };
@@ -191,17 +176,23 @@ export default function FormItem({
   );
 
   const validate = useCallback(
-    (
+    async (
       ruleInput?: FormRule | FormRule[],
       trigger?: FormValidateTrigger,
-    ): boolean | Promise<boolean> => {
+      valueOverride: unknown = NO_VALUE_OVERRIDE,
+    ): Promise<boolean> => {
       const list = ruleInput ? (Array.isArray(ruleInput) ? ruleInput : [ruleInput]) : [];
       // 指定触发时机时只校验匹配的规则；手动调用与提交校验不区分时机，全部校验
       const target = trigger ? list.filter((rule) => matchesTrigger(rule, trigger)) : list;
       if (target.length === 0) return true;
       const currentVersion = (validationVersions.get(validationKey) ?? 0) + 1;
       validationVersions.set(validationKey, currentVersion);
-      const value = prop ? form?.getValue(prop) : undefined;
+      const value =
+        valueOverride !== NO_VALUE_OVERRIDE
+          ? valueOverride
+          : prop
+            ? form?.getValue(prop)
+            : undefined;
       const sorted = [...target].sort((item) => (item.required ? -1 : 0));
 
       const applyFailure = (result: RuleResult) => {
@@ -214,54 +205,64 @@ export default function FormItem({
       const applySuccess = () => {
         if (currentVersion === validationVersions.get(validationKey)) {
           setValid(true);
-          setMessage(undefined);
         }
         return true;
       };
-      const runRest = async (start: number): Promise<boolean> => {
-        for (let index = start; index < sorted.length; index++) {
-          const result = await runRule(sorted[index], value);
-          if (!result.ok) return applyFailure(result);
-        }
-        return applySuccess();
-      };
-
       for (let index = 0; index < sorted.length; index++) {
-        const result = runRule(sorted[index], value);
-        if (isPromiseLike(result)) {
-          return Promise.resolve(result).then((resolved) =>
-            resolved.ok ? runRest(index + 1) : applyFailure(resolved),
-          );
-        }
+        const result = await runRule(sorted[index], value);
         if (!result.ok) return applyFailure(result);
       }
       return applySuccess();
     },
     [form, prop, runRule, validationKey],
   );
+  const validateRef = useRef(validate);
+  const rulesRef = useRef(rules);
+  useEffect(() => {
+    validateRef.current = validate;
+    rulesRef.current = rules;
+  }, [rules, validate]);
 
   const handle = useMemo<FormItemHandle | null>(
     () =>
       prop
         ? {
             prop,
-            rules,
-            validate,
-            reset: () => {
+            get rules() {
+              return rulesRef.current;
+            },
+            validate: (...args) => validateRef.current(...args),
+            reset: (nextValue) => {
+              previousFieldValueRef.current = nextValue;
               setValid(true);
-              setMessage(undefined);
             },
           }
         : null,
-    [prop, rules, validate],
+    [prop],
+  );
+  const register = form?.register;
+  const unregister = form?.unregister;
+  useEffect(() => {
+    if (!handle || !register || !unregister) return;
+    register(handle);
+    return () => unregister(handle.prop, handle);
+  }, [handle, register, unregister]);
+
+  const effectiveRules = useMemo(
+    () => rules ?? (prop ? form?.rules?.[prop] : undefined) ?? [],
+    [form?.rules, prop, rules],
   );
   useEffect(() => {
-    if (!handle || !form) return;
-    form.register(handle);
-    return () => form.unregister(handle.prop, handle);
-  }, [form, handle]);
-
-  const effectiveRules = rules ?? (prop ? form?.rules?.[prop] : undefined) ?? [];
+    if (!prop || Object.is(previousFieldValueRef.current, fieldValue)) return;
+    previousFieldValueRef.current = fieldValue;
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (!cancelled) void validate(effectiveRules, "change", fieldValue);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [effectiveRules, fieldValue, prop, validate]);
   const required = (Array.isArray(effectiveRules) ? effectiveRules : [effectiveRules]).some(
     (rule) => rule.required,
   );
@@ -269,57 +270,71 @@ export default function FormItem({
   const errorId = `${id}_error`;
   const labelId = `${id}_label`;
   const describedBy = !valid && prop ? errorId : undefined;
+  const fieldContext: FormFieldContextValue = {
+    id,
+    labelId,
+    errorId,
+    prop,
+    value: fieldValue,
+    size: form?.size,
+    shape: form?.shape,
+    theme: form?.theme,
+    disabled: !!form?.disabled,
+    readOnly: !!form?.readOnly,
+    invalid: !valid,
+    required,
+    describedBy,
+    update: (nextValue) => {
+      if (!prop) return;
+      previousFieldValueRef.current = nextValue;
+      form?.setValue(prop, nextValue);
+      void validate(effectiveRules, "change", nextValue);
+    },
+    blur: () => void validate(effectiveRules, "blur"),
+  };
   const childArray = Children.toArray(children);
   const controlIndex = childArray.findIndex(isFormControlElement);
   const childNodes: ReactNode[] = [];
   for (let index = 0; index < childArray.length; index++) {
     const child = childArray[index];
-    type ControlProps = {
-      id?: string;
-      size?: SizeType;
-      disabled?: boolean;
-      readOnly?: boolean;
-      theme?: ThemeType;
-      shape?: ShapeType;
-      value?: unknown;
-      onChange?: (value: unknown) => void;
-      onBlur?: (...args: unknown[]) => void;
-      "aria-describedby"?: string;
-      "aria-invalid"?: boolean;
-      "aria-labelledby"?: string;
-      "aria-required"?: boolean;
-      checked?: boolean;
-      fileList?: unknown[];
-      targetKeys?: unknown[];
-    };
-    if (!isValidElement<ControlProps>(child)) {
+    if (!isValidElement<Record<string, unknown>>(child)) {
       childNodes.push(child);
       continue;
     }
     const nativeControl =
       typeof child.type === "string" && ["input", "select", "textarea"].includes(child.type);
     if (nativeControl) {
-      const originalBlur = child.props.onBlur;
+      type NativeControlProps = {
+        id?: string;
+        type?: string;
+        value?: unknown;
+        checked?: boolean;
+        onChange?: (...args: unknown[]) => void;
+        onBlur?: (...args: unknown[]) => void;
+      };
+      const nativeProps = child.props as NativeControlProps;
+      const originalBlur = nativeProps.onBlur;
       const nativeBoolean =
-        child.type === "input" && ["checkbox", "radio"].includes(String(child.props.type));
+        child.type === "input" && ["checkbox", "radio"].includes(String(nativeProps.type));
       const fieldValue = prop ? form?.getValue(prop) : undefined;
       childNodes.push(
         cloneElement(child, {
-          id: child.props.id ?? id,
+          id: nativeProps.id ?? id,
           "aria-describedby": describedBy,
           "aria-invalid": !valid || undefined,
           "aria-required": required || undefined,
-          value: prop && !nativeBoolean ? (fieldValue as never) : child.props.value,
-          checked: prop && nativeBoolean ? Boolean(fieldValue) : child.props.checked,
+          value: prop && !nativeBoolean ? (fieldValue as never) : nativeProps.value,
+          checked: prop && nativeBoolean ? Boolean(fieldValue) : nativeProps.checked,
           onChange: prop
             ? (...args: unknown[]) => {
                 const event = args[0] as
                   { target?: { value?: unknown; checked?: boolean } } | undefined;
-                form?.setValue(prop, nativeBoolean ? event?.target?.checked : event?.target?.value);
-                child.props.onChange?.(args[0]);
-                validate(effectiveRules, "change");
+                const nextValue = nativeBoolean ? event?.target?.checked : event?.target?.value;
+                form?.setValue(prop, nextValue);
+                nativeProps.onChange?.(args[0]);
+                validate(effectiveRules, "change", nextValue);
               }
-            : child.props.onChange,
+            : nativeProps.onChange,
           onBlur: prop
             ? (...args: unknown[]) => {
                 originalBlur?.(...args);
@@ -334,59 +349,11 @@ export default function FormItem({
       childNodes.push(child);
       continue;
     }
-    const injected: ControlProps = {
-      id: child.props.id ?? id,
-      "aria-describedby": describedBy,
-      "aria-invalid": !valid || undefined,
-      "aria-labelledby": label != null ? labelId : undefined,
-      "aria-required": required || undefined,
-      size: child.props.size ?? form?.size,
-      disabled: child.props.disabled ?? form?.disabled,
-      readOnly: child.props.readOnly ?? form?.readOnly,
-      theme: child.props.theme ?? form?.theme,
-      shape: child.props.shape ?? form?.shape,
-    };
-    if (prop) {
-      const componentName = getComponentName(child.type);
-      const fieldValue = form?.getValue(prop);
-      if (
-        ["Checkbox", "Radio", "RadioButton", "CheckCard", "Switch"].includes(componentName ?? "")
-      ) {
-        injected.checked = Boolean(fieldValue === true || fieldValue === 1 || fieldValue === "1");
-      } else if (componentName === "Transfer") {
-        injected.targetKeys = Array.isArray(fieldValue) ? fieldValue : [];
-      } else if (componentName === "Upload") {
-        injected.fileList = Array.isArray(fieldValue) ? fieldValue : [];
-      } else {
-        injected.value = fieldValue;
-      }
-      const original = child.props.onChange;
-      injected.onChange = (value: unknown) => {
-        const eventValue = value as {
-          checked?: boolean;
-          targetKeys?: unknown[];
-          fileList?: unknown[];
-        };
-        const nextValue = ["Checkbox", "Radio", "RadioButton", "CheckCard"].includes(
-          componentName ?? "",
-        )
-          ? eventValue?.checked
-          : componentName === "Transfer"
-            ? eventValue?.targetKeys
-            : componentName === "Upload"
-              ? eventValue?.fileList
-              : value;
-        form?.setValue(prop, nextValue);
-        original?.(value);
-        validate(effectiveRules, "change");
-      };
-      const originalBlur = child.props.onBlur;
-      injected.onBlur = (...args: unknown[]) => {
-        originalBlur?.(...args);
-        validate(effectiveRules, "blur");
-      };
-    }
-    childNodes.push(cloneElement(child, injected));
+    childNodes.push(
+      <FormFieldProvider key={child.key ?? index} value={fieldContext}>
+        {child}
+      </FormFieldProvider>,
+    );
   }
   const labelProps = form?.layout === "inline" ? {} : (labelCol ?? form?.labelCol ?? {});
   const contentProps =
@@ -400,12 +367,23 @@ export default function FormItem({
         "k-form-item-error": !valid,
         "k-form-item-no-colon": !(colon ?? form?.colon ?? true),
       })}
-      type="flex"
     >
       {label != null && (
         <Col className="k-form-item-label" {...labelProps}>
           <label id={labelId} htmlFor={id}>
-            {label}
+            <span className="k-form-item-label-main">
+              {required ? (
+                <span className="k-form-item-required-mark" aria-hidden="true">
+                  *
+                </span>
+              ) : null}
+              <span className="k-form-item-label-text">{label}</span>
+            </span>
+            {colon ?? form?.colon ?? true ? (
+              <span className="k-form-item-colon" aria-hidden="true">
+                :
+              </span>
+            ) : null}
           </label>
         </Col>
       )}

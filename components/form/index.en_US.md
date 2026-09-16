@@ -68,30 +68,30 @@ function Demo() {
 
 | Property   | Description                                                                                           | Type                                     | Default    |
 | ---------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------- | ---------- |
-| model      | Form data object                                                                                      | Object                                   | -          |
-| rules      | Form validation rules                                                                                 | boolean                                  | false      |
+| model      | Form data object; Form manages it internally when omitted                                             | Object                                   | -          |
+| rules      | Form validation rules                                                                                 | FormRules                                | -          |
 | name       | Form name, will be used as the id prefix for form fields                                              | string                                   | -          |
 | labelCol   | Label layout, same as the `<Col>` component, set span offset values, such as {span: 3, offset: 12}    | {span:number,offset:number}              | -          |
 | wrapperCol | Control layout, same as the `<Col>` component, set span offset values, such as {span: 15, offset: 12} | {span:number,offset:number}              | -          |
-| theme      | The component renders the theme                                                                       | string                                   | -          |
-| size       | Sub component size                                                                                    | string                                   | -          |
-| layout     | Form layout                                                                                           | [horizontal ,vertical ,inline]           | horizontal |
-| shape      | Sub component shape                                                                                   | [circle,square]                          | horizontal |
-| disabled   | Whether the form is enabled                                                                           | boolean                                  | true       |
+| theme      | Child control theme                                                                                   | ThemeType                                | -          |
+| size       | Child control size                                                                                    | SizeType                                 | -          |
+| layout     | Form layout                                                                                           | horizontal \| vertical \| inline        | horizontal |
+| shape      | Child control shape                                                                                   | ShapeType                                | -          |
+| disabled   | Whether to disable the form                                                                           | boolean                                  | false      |
 | readOnly   | Whether the form and its child controls are read-only                                                 | boolean                                  | false      |
 | colon      | Whether to display a colon after labels                                                               | boolean                                  | true       |
-| onReset    | Reset the entire form, reset all field values to empty and remove validation results                  | ()=> void                                | -          |
-| onSubmit   | Trigger event when submitting the form                                                                | (e: FormSubmitEvent) => void             | -          |
-| onChange   | Triggered when the form model changes                                                                 | (model: Record<string, unknown>) => void | -          |
+| onReset    | Called after resetting all field values and validation results                                        | () => void                               | -          |
+| onSubmit   | Called after submission validation completes                                                          | (result: { valid: boolean }) => void      | -          |
+| onChange   | Returns an immutably updated model when a field changes                                               | (model: Record<string, unknown>) => void | -          |
 
 ## Form Expose API
 
 | Property | Description                                                                      | Type                                                                                   | Default |
 | -------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ------- |
-| test     | Method for validating a single field in a form                                   | (key: string) => boolean \| Promise&lt;boolean&gt; \| undefined                        | -       |
+| test     | Method for validating a single field in a form                                   | (key: string, trigger?: change \| blur) => Promise&lt;boolean&gt; \| undefined           | -       |
 | reset    | Reset the entire form, clearing all field values and removing validation results | ()=>void                                                                               | -       |
-| submit   | Submit the form and validate                                                     | ()=>void                                                                               | -       |
-| validate | Validate the form. Returns a Promise when an async validator is used             | (callback?: (result: { valid: boolean }) => void) => boolean \| Promise&lt;boolean&gt; | -       |
+| submit   | Submit the form and validate                                                     | () => Promise&lt;void&gt;                                                               | -       |
+| validate | Validate the form                                                                | (callback?: (result: { valid: boolean }) => void) => Promise&lt;{ valid: boolean }&gt;  | -       |
 
 ## FormItem API
 

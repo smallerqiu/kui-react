@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import React, { useState } from "react";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 
@@ -70,4 +71,4 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
 
 TextArea.displayName = "TextArea";
 
-export default TextArea;
+export default createFormFieldComponent(TextArea);

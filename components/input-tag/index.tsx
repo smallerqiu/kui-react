@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import { CircleX } from "kui-icons";
 import React, { useRef, useState } from "react";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
@@ -228,4 +229,4 @@ const InputTag: React.FC<InputTagProps> = ({
   );
 };
 
-export default InputTag;
+export default createFormFieldComponent(InputTag);

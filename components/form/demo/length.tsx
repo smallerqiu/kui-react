@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   Button,
+  Checkbox,
   CheckboxGroup,
   Input,
   TextArea,
@@ -25,7 +26,7 @@ const initial = {
   other: "",
 };
 export default function App() {
-  const [form, setForm] = useState({ ...initial });
+  const [form, setForm] = useState<Record<string, unknown>>({ ...initial });
   const validatePass = (_: FormRule, value: unknown, cb: (e?: Error) => void) =>
     cb(value !== form.password ? new Error("The two passwords do not match!") : undefined);
   const rules = {
@@ -58,7 +59,8 @@ export default function App() {
     city: [{ required: true, message: "Please select the city" }],
     hobbies: [
       { required: true, message: "Please select at least one hobby" },
-      { min: 2, max: 3, message: "Select 2 to 3 hobbies" },
+      { max: 3, message: "Maximum of 3 hobbies" },
+      { min: 2, message: "Minimum of 2 hobbies" },
     ],
     other: [
       { required: true, message: "Please input others" },
@@ -69,7 +71,7 @@ export default function App() {
     message[e.valid ? "success" : "error"](e.valid ? "success" : "failed");
   const setValue = () =>
     setForm({
-      number: "123",
+      number: 123,
       text: "abcd",
       email: "master@k-ui.cn",
       password: "abc@123@123",
@@ -86,7 +88,7 @@ export default function App() {
         name="rules"
         rules={rules}
         model={form}
-        onChange={() => setForm({ ...form })}
+        onChange={setForm}
         onSubmit={submit}
         wrapperCol={{ span: 16 }}
         labelCol={{ span: 6 }}
@@ -123,12 +125,12 @@ export default function App() {
           </FormItem>
         </FormItem>
         <FormItem label="Hobby" prop="hobbies">
-          <CheckboxGroup
-            options={["Football", "Music", "Photograph", "Tennis"].map((label, i) => ({
-              value: String(i),
-              label,
-            }))}
-          />
+          <CheckboxGroup>
+            <Checkbox value="0" label="Football" />
+            <Checkbox value="1" label="Music" />
+            <Checkbox value="2" label="Photograph" />
+            <Checkbox value="3" label="Tennis" />
+          </CheckboxGroup>
         </FormItem>
         <FormItem label="Other" prop="other">
           <TextArea placeholder="Verify the information you entered" />

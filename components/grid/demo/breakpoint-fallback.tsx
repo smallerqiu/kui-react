@@ -8,7 +8,7 @@ export default function App() {
       <GridItem span={{ xs: 1, md: 2 }}>
         <Input placeholder="Person in charge" />
       </GridItem>
-      <GridItem span={{ md: 2 }} offset={{ md: 1 }}>
+      <GridItem span={{ md: 2 }} columnStart={{ md: 2 }}>
         <Input placeholder="Remark" />
       </GridItem>
     </Grid>

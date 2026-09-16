@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import { Loading } from "kui-icons";
 import React, {
   useContext,
@@ -378,4 +379,4 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
     </div>
   );
 };
-export default AutoComplete;
+export default createFormFieldComponent(AutoComplete);

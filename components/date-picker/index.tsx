@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import dayjs, { type Dayjs, type UnitType } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import localeData from "dayjs/plugin/localeData.js";
@@ -111,7 +112,7 @@ const parse = (value: DatePickerInput, format: string, valueType: DatePickerValu
   return result.isValid() ? result : null;
 };
 
-export default function DatePicker({
+function DatePicker({
   value,
   defaultValue,
   startDate,
@@ -814,3 +815,6 @@ export type DatePickerPanelProps = Omit<DatePickerProps, "panelOnly" | "open" | 
 export function DatePickerPanel(props: DatePickerPanelProps) {
   return <DatePicker {...props} panelOnly />;
 }
+export default createFormFieldComponent(DatePicker, {
+  getChangeValue: (value) => value,
+});

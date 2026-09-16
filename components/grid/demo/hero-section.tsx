@@ -2,18 +2,22 @@ import { Grid, GridItem } from "react-kui";
 export default function App() {
   return (
     <Grid cols={12} rows={8} style={{ height: 400, background: "var(--kui-color-bg-5)" }}>
-      <GridItem span={12} rowSpan={8} style={{ gridColumnStart: 1, gridRowStart: 1 }}>
-        <img
-          src="https://cdn.chuchur.com/upload/2017/kui-for-vue.jpg"
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+      <GridItem span={12} rowSpan={8} columnStart={1} rowStart={1}>
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            background:
+              "radial-gradient(circle at 75% 25%, var(--kui-color-primary), transparent 35%), linear-gradient(135deg, var(--kui-color-bg-3), var(--kui-color-bg-5))",
+          }}
         />
       </GridItem>
       <GridItem
         span={{ xs: 10, md: 6 }}
         rowSpan={4}
+        columnStart={{ xs: 2, md: 4 }}
+        rowStart={3}
         style={{
-          gridColumnStart: "calc(50% - 3)",
-          gridRowStart: 3,
           background: "var(--kui-color-bg-3)",
           zIndex: 1,
           padding: 20,

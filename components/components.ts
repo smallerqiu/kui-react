@@ -246,7 +246,16 @@ export { TimeLine, TimeLineItem } from "./time-line";
 export type { TimelineItemProps, TimelineMode, TimelineProps } from "./time-line";
 
 export { default as Tree } from "./tree";
-export type { TreeExpandEvent, TreeNode, TreeProps } from "./tree";
+export type {
+  TreeDropEvent,
+  TreeDropPosition,
+  TreeExpandEvent,
+  TreeExpose,
+  TreeFieldNames,
+  TreeNode,
+  TreeNodeData,
+  TreeProps,
+} from "./tree";
 
 export { default as TreeSelect } from "./tree-select";
 export type { TreeSelectProps } from "./tree-select";
@@ -264,9 +273,13 @@ export { default as Upload } from "./upload";
 export type {
   UploadChangeEvent,
   UploadContext,
+  UploadCustomRequest,
   UploadFile,
   UploadProps,
   UploadRef,
+  UploadRequestHandle,
+  UploadRequestOptions,
+  UploadSortEvent,
 } from "./upload";
 
 export { default as Watermark } from "./watermark";

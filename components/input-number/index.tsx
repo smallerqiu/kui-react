@@ -1,4 +1,5 @@
 import Big from "big.js";
+import { createFormFieldComponent } from "../form/field-context";
 import { ChevronDown, ChevronUp } from "kui-icons";
 import React, { useContext, useState } from "react";
 import { SizeContext } from "../config/size-context";
@@ -138,7 +139,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
     triggerUpdate(next.toFixed());
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     onKeyDown?.(e);
     if (e.defaultPrevented) return;
     if (!keyboard) return;
@@ -208,4 +209,4 @@ const InputNumber: React.FC<InputNumberProps> = ({
   );
 };
 
-export default InputNumber;
+export default createFormFieldComponent(InputNumber);

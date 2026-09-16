@@ -1,5 +1,6 @@
 import Big from "big.js";
 import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
 import {
   useContext,
   useEffect,
@@ -36,7 +37,7 @@ export interface SliderProps extends Omit<
   onChange?: (value: number | number[]) => void;
 }
 
-export default function Slider({
+function Slider({
   value,
   defaultValue,
   min = 0,
@@ -363,3 +364,4 @@ export default function Slider({
     </div>
   );
 }
+export default createFormFieldComponent(Slider, { inherit: ["size", "disabled"] });
