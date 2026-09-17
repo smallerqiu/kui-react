@@ -1,8 +1,44 @@
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { DatePicker } from "react-kui";
 
 describe("DatePicker", () => {
+  it.each([24, 32, 40])("centers time selections with %i-pixel items", async (itemHeight) => {
+    const originalScrollTo = HTMLElement.prototype.scrollTo;
+    const scrollTo = vi.fn();
+    HTMLElement.prototype.scrollTo = scrollTo;
+    try {
+      const { container } = render(<DatePicker panelOnly mode="time" value="10:22:33" />);
+      const columns = container.querySelectorAll<HTMLElement>(".k-picker-time-col");
+      const columnHeight = 240;
+      columns.forEach((column) => {
+        Object.defineProperty(column, "clientHeight", { value: columnHeight });
+        Array.from(column.children).forEach((item, index) => {
+          Object.defineProperties(item, {
+            offsetTop: { value: (columnHeight - itemHeight) / 2 + index * itemHeight },
+            offsetHeight: { value: itemHeight },
+          });
+        });
+      });
+
+      await waitFor(() => expect(scrollTo).toHaveBeenCalledTimes(3));
+      [10, 22, 33].forEach((index, column) => {
+        expect(scrollTo).toHaveBeenNthCalledWith(column + 1, {
+          top: index * itemHeight,
+          behavior: "auto",
+        });
+        expect(scrollTo.mock.contexts[column]).toBe(columns[column]);
+      });
+
+      fireEvent.click(columns[0].children[0]);
+      expect(scrollTo).toHaveBeenLastCalledWith({ top: 0, behavior: "smooth" });
+      fireEvent.click(columns[1].children[59]);
+      expect(scrollTo).toHaveBeenLastCalledWith({ top: 59 * itemHeight, behavior: "smooth" });
+    } finally {
+      HTMLElement.prototype.scrollTo = originalScrollTo;
+    }
+  });
+
   it("renders a seven-column calendar without legacy class names", () => {
     const { container } = render(<DatePicker panelOnly value="2026-08-21" />);
 
@@ -44,17 +80,17 @@ describe("DatePicker", () => {
     expect(root.getAttribute("aria-expanded")).toBe("false");
   });
 
-  it("keeps controlled values authoritative and syncs rerenders", () => {
+  it("updates local values and synchronizes external changes", () => {
     const onChange = vi.fn();
     const { container, rerender } = render(<DatePicker value="2026-08-01" onChange={onChange} />);
     const input = container.querySelector("input") as HTMLInputElement;
     fireEvent.change(input, { target: { value: "2026-08-21" } });
 
     expect(onChange).toHaveBeenCalledWith("2026-08-21", "2026-08-21");
-    expect(input.value).toBe("2026-08-01");
-
-    rerender(<DatePicker value="2026-08-21" onChange={onChange} />);
     expect(input.value).toBe("2026-08-21");
+
+    rerender(<DatePicker value="2026-08-25" onChange={onChange} />);
+    expect(input.value).toBe("2026-08-25");
   });
 
   it("respects disabled state in panel-only mode", () => {
@@ -69,7 +105,7 @@ describe("DatePicker", () => {
   it("converts values according to valueType", () => {
     const onChange = vi.fn();
     const { container } = render(
-      <DatePicker defaultValue="2026-08-01" valueType="timestamp" onChange={onChange} />,
+      <DatePicker value="2026-08-01" valueType="timestamp" onChange={onChange} />,
     );
     const input = container.querySelector("input") as HTMLInputElement;
     fireEvent.change(input, { target: { value: "2026-08-21" } });
@@ -82,7 +118,7 @@ describe("DatePicker", () => {
     const originalScrollTo = HTMLElement.prototype.scrollTo;
     const scrollTo = vi.fn();
     HTMLElement.prototype.scrollTo = scrollTo;
-    const { container } = render(<DatePicker defaultValue="2021-01-20 20:22:20" mode="dateTime" />);
+    const { container } = render(<DatePicker value="2021-01-20 20:22:20" mode="dateTime" />);
     fireEvent.keyDown(container.querySelector(".k-datepicker")!, { key: "Enter" });
     fireEvent.click(document.body.querySelector(".k-picker-footer-time")!);
 

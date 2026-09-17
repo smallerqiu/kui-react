@@ -1,5 +1,7 @@
 # Rate评分
 
+`value` 用于初始化组件，并同步后续的外部值变化。用户操作会更新内部值并触发 `onChange`，即使传入固定值或 `onChange` 仅用于监听也能交互。需要父子同步时使用 `value={state}` 配合 `onChange={setState}`。相同值的重新渲染不会重置内部编辑；数组值请使用新数组更新。
+
 评分组件。
 
 ## 何时使用
@@ -25,8 +27,7 @@
 
 | 属性              | 说明                               | 类型                    | 默认值 |
 | ----------------- | ---------------------------------- | ----------------------- | ------ |
-| value             | 当前受控值，需配合 `onChange` 使用 | number                  | -      |
-| defaultValue      | 非受控模式的初始值                 | number                  | 0      |
+| value             | 当前值，需配合 `onChange` 使用 | number                  | -      |
 | allowClear        | 是否允许再次点击后清除             | boolean                 | true   |
 | allowHalf         | 是否允许半选                       | boolean                 | false  |
 | showScore         | 是否显示分数                       | boolean                 | false  |

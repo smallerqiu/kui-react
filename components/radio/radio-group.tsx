@@ -1,7 +1,8 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
-import React, { useId, useMemo, useRef, useState } from "react";
+import React, { useId, useMemo, useRef } from "react";
 import type { DirectionType, RadioType, ShapeType, SizeType, ThemeType } from "../const/types";
 import type { IconType } from "../icon";
 import Radio from "./radio";
@@ -24,7 +25,6 @@ export interface RadioGroupProps<T extends RadioValue = string | number> extends
   "defaultValue" | "onChange"
 > {
   value?: T;
-  defaultValue?: T;
   disabled?: boolean;
   readOnly?: boolean;
   direction?: DirectionType;
@@ -39,7 +39,6 @@ export interface RadioGroupProps<T extends RadioValue = string | number> extends
 
 const RadioGroup = <T extends RadioValue = string | number>({
   value,
-  defaultValue,
   disabled = false,
   readOnly = false,
   direction = "horizontal",
@@ -60,8 +59,8 @@ const RadioGroup = <T extends RadioValue = string | number>({
   const shape = shapeProp ?? inheritedAppearance.shape;
   const rootRef = useRef<HTMLDivElement>(null);
   const name = `k-radio-group-${useId().replace(/:/g, "")}`;
-  const [innerValue, setInnerValue] = useState<T>(() => defaultValue ?? value ?? ("" as T));
-  const currentValue = value !== undefined ? value : innerValue;
+  const [innerValue, setInnerValue] = useValue(value, (next): T => next ?? ("" as T));
+  const currentValue = innerValue;
 
   const isVertical = direction === "vertical";
   const isButton = type === "button";
@@ -69,9 +68,7 @@ const RadioGroup = <T extends RadioValue = string | number>({
   const handleRadioChange = (event: ChangeEvent) => {
     if (readOnly || event.value === undefined) return;
     const nextValue = event.value as T;
-    if (value === undefined) {
-      setInnerValue(nextValue);
-    }
+    setInnerValue(nextValue);
     onChange?.(nextValue);
   };
 

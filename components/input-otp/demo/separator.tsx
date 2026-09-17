@@ -5,7 +5,7 @@ export default function App() {
     <Space vertical size="large">
       <InputOTP length={4} separator="-" />
       <InputOTP length={4} separator="/" />
-      <InputOTP defaultValue="123456" separator="•" />
+      <InputOTP value="123456" separator="•" />
     </Space>
   );
 }

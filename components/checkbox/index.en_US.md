@@ -1,5 +1,7 @@
 # Checkbox
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 Checkbox for multiple selections.
 
 ## When to Use
@@ -48,8 +50,7 @@ Checkbox for multiple selections.
 
 | Property     | Description                                                                    | Type                                  | Default    |
 | ------------ | ------------------------------------------------------------------------------ | ------------------------------------- | ---------- |
-| value        | Controlled selected values                                                     | (string \| number)[]                  | -          |
-| defaultValue | Initial selected values in uncontrolled mode                                   | (string \| number)[]                  | []         |
+| value        | selected values                                                     | (string \| number)[]                  | -          |
 | disabled     | Whether the component is disabled                                              | boolean                               | false      |
 | readOnly     | Whether the component is read-only                                             | boolean                               | false      |
 | onChange     | Triggered when the option state changes, returns the currently selected values | (value: (string \| number)[]) => void | -          |

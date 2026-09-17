@@ -21,7 +21,6 @@ export interface CascaderProps extends Omit<
   "onChange" | "defaultValue"
 > {
   value?: CascaderValue;
-  defaultValue?: CascaderValue;
   open?: boolean;
   defaultOpen?: boolean;
   options?: CascaderOption[];

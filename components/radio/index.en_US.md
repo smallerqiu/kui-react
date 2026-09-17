@@ -1,5 +1,7 @@
 # Radio
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 Radio button.
 
 ## When to Use
@@ -49,8 +51,7 @@ Use the standalone [Segmented](../segmented/index.en_US.md) component for slider
 
 | Property     | Description                                                          | Type                              | Default    |
 | ------------ | -------------------------------------------------------------------- | --------------------------------- | ---------- |
-| value        | Controlled selected value                                            | string \| number                  | -          |
-| defaultValue | Initial selected value in uncontrolled mode                          | string \| number                  | -          |
+| value        | selected value                                            | string \| number                  | -          |
 | disabled     | Disable the entire group                                             | boolean                           | false      |
 | readOnly     | Whether the group is read-only                                       | boolean                           | false      |
 | size         | Button size                                                          | SizeType                          | -          |

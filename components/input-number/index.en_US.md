@@ -1,5 +1,7 @@
 # InputNumber
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 Input values within a range via mouse or keyboard.
 
 ## When to Use
@@ -31,8 +33,7 @@ When standard numerical values need to be obtained.
 | min          | Minimum value                                                               | number                               | -Infinity |
 | max          | Maximum value                                                               | number                               | Infinity  |
 | step         | Step value for each change, can be a decimal                                | number \| string                     | 1         |
-| value        | Controlled InputNumber value                                                | number \| string                     | -         |
-| defaultValue | Initial value in uncontrolled mode                                          | number \| string                     | -         |
+| value        | InputNumber value                                                | number \| string                     | -         |
 | formatter    | Specifies the format of the value displayed in the input box                | (value: string \| number) => string  | -         |
 | parser       | Specifies how to convert back from formatter to number, used with formatter | (value: string) => string \| number  | -         |
 | size         | Input box size                                                              | SizeType                             | -         |

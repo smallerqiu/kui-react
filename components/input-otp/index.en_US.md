@@ -1,5 +1,7 @@
 # InputOTP
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 Input for verification codes, one-time passwords, and other fixed-length values.
 
 [Basic](./demo/basic.tsx?show=vertical)
@@ -38,8 +40,7 @@ Input for verification codes, one-time passwords, and other fixed-length values.
 
 | Property     | Description                                            | Type                                           | Default |
 | ------------ | ------------------------------------------------------ | ---------------------------------------------- | ------- |
-| value        | Controlled value                                       | string \| number                               | -       |
-| defaultValue | Initial uncontrolled value                             | string \| number                               | -       |
+| value        | value                                       | string \| number                               | -       |
 | length       | Number of inputs, normalized to a non-negative integer | number                                         | 6       |
 | type         | Character type                                         | 'number' \| 'text'                             | number  |
 | mask         | Whether to mask the value                              | boolean                                        | false   |

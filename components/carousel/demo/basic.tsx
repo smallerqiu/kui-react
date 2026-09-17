@@ -10,7 +10,7 @@ const itemStyle = {
 } as const;
 export default function App() {
   return (
-    <Carousel defaultValue={2} loop autoplay height={300}>
+    <Carousel value={2} loop autoplay height={300}>
       {[1, 2, 3].map((value) => (
         <CarouselItem key={value} style={itemStyle}>
           {value}

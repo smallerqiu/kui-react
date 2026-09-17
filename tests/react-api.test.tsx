@@ -39,7 +39,7 @@ import Transition from "../components/base/transition";
 import enUS from "../components/locale/en";
 import zhCN from "../components/locale/zh-CN";
 
-describe("React controlled and uncontrolled conventions", () => {
+describe("React value synchronization and controlled visibility", () => {
   it("uses defaultChecked only as the initial Checkbox state", () => {
     const onChange = vi.fn();
     render(
@@ -75,7 +75,7 @@ describe("React controlled and uncontrolled conventions", () => {
     expect(switchChange).toHaveBeenCalledWith(true);
   });
 
-  it("does not mutate controlled Input and InputNumber values", () => {
+  it("updates Input and InputNumber locally and reports changes", () => {
     const onInputChange = vi.fn();
     const onNumberChange = vi.fn();
     render(
@@ -85,10 +85,11 @@ describe("React controlled and uncontrolled conventions", () => {
       </>,
     );
     fireEvent.click(document.querySelector(".k-input-clearable")!);
-    expect(screen.getByDisplayValue("fixed")).not.toBeNull();
+    expect(screen.queryByDisplayValue("fixed")).toBeNull();
+    expect(onInputChange).toHaveBeenCalledWith("");
     fireEvent.change(screen.getByDisplayValue("10"), { target: { value: "25" } });
     expect(onNumberChange).toHaveBeenCalledWith(25);
-    expect(screen.getByDisplayValue("10")).not.toBeNull();
+    expect(screen.getByDisplayValue("25")).not.toBeNull();
   });
 
   it("updates Form models immutably and validates and resets fields", async () => {
@@ -202,7 +203,7 @@ describe("React controlled and uncontrolled conventions", () => {
     const { unmount } = render(
       <DatePicker
         defaultOpen
-        defaultValue="2025-06-10"
+        value="2025-06-10"
         disabledDate={(date) => date.getDate() === 11}
         onChange={onChange}
       />,
@@ -215,7 +216,7 @@ describe("React controlled and uncontrolled conventions", () => {
     expect(onChange).not.toHaveBeenCalled();
     unmount();
 
-    render(<DatePicker mode="time" defaultOpen defaultValue="10:20:30" />);
+    render(<DatePicker mode="time" defaultOpen value="10:20:30" />);
     expect(document.querySelectorAll(".k-picker-time-col")).toHaveLength(3);
   });
 
@@ -269,7 +270,7 @@ describe("React controlled and uncontrolled conventions", () => {
     const event = { key: 1, date: "2020-01-15", title: "Review" };
     const { unmount } = render(
       <Calendar
-        defaultValue="2020-01-15"
+        value="2020-01-15"
         events={[event]}
         onChange={onChange}
         onEventClick={onEventClick}
@@ -281,7 +282,7 @@ describe("React controlled and uncontrolled conventions", () => {
     expect(onChange).not.toHaveBeenCalled();
     unmount();
 
-    render(<Calendar defaultValue="2020-01-15" onChange={onChange} />);
+    render(<Calendar value="2020-01-15" onChange={onChange} />);
     fireEvent.click(screen.getByRole("button", { name: zhCN.k.datePicker.today }));
     const now = new Date();
     const expected = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
@@ -338,7 +339,7 @@ describe("React controlled and uncontrolled conventions", () => {
     expect(document.querySelector(".k-menu-inline-collapsed")).not.toBeNull();
   });
 
-  it("keeps controlled Tabs and Slider values stable while requesting changes", () => {
+  it("updates Tabs and Slider values while reporting changes", () => {
     const onTabChange = vi.fn();
     const onSliderChange = vi.fn();
     render(
@@ -356,10 +357,10 @@ describe("React controlled and uncontrolled conventions", () => {
     );
     fireEvent.click(screen.getByText("Two"));
     expect(onTabChange).toHaveBeenCalledWith("two");
-    expect(screen.getByText("First")).not.toBeNull();
-    fireEvent.keyDown(screen.getByRole("slider"), { key: "ArrowRight" });
-    expect(onSliderChange).toHaveBeenCalledWith(10);
-    expect(screen.getByRole("slider").getAttribute("aria-valuenow")).toBe("10");
+    expect(document.querySelector(".k-tabs-tab-active")?.textContent).toContain("Two");
+    fireEvent.keyDown(screen.getByRole("slider"), { key: "ArrowLeft" });
+    expect(onSliderChange).toHaveBeenCalledWith(9);
+    expect(screen.getByRole("slider").getAttribute("aria-valuenow")).toBe("9");
   });
 
   it("clamps scrollable Tabs navigation and keeps the active tab visible", async () => {
@@ -417,7 +418,7 @@ describe("React controlled and uncontrolled conventions", () => {
     vi.stubGlobal("ResizeObserver", originalResizeObserver);
   });
 
-  it("keeps controlled Carousel position stable while requesting navigation", () => {
+  it("updates Carousel position while reporting navigation", () => {
     const onChange = vi.fn();
     render(
       <Carousel value={0} onChange={onChange}>
@@ -428,7 +429,7 @@ describe("React controlled and uncontrolled conventions", () => {
     const dots = document.querySelectorAll(".k-carousel-dots > button");
     fireEvent.click(dots[1]);
     expect(onChange).toHaveBeenCalledWith(1);
-    expect(dots[0].classList.contains("k-carousel-dots-active")).toBe(true);
+    expect(dots[1].classList.contains("k-carousel-dots-active")).toBe(true);
   });
 
   it("moves Kanban cards with the keyboard without mutating data", () => {
@@ -689,12 +690,12 @@ describe("React controlled and uncontrolled conventions", () => {
     await waitFor(() => expect(screen.queryByText("Escape modal")).toBeNull());
   });
 
-  it("supports uncontrolled Select value and visibility", async () => {
+  it("supports local Select value and visibility", async () => {
     const onChange = vi.fn();
     render(
       <Select
         defaultOpen
-        defaultValue="one"
+        value="one"
         options={[
           { label: "One", value: "one" },
           { label: "Two", value: "two" },
@@ -730,14 +731,14 @@ describe("React controlled and uncontrolled conventions", () => {
     await waitFor(() => expect(onChange).toHaveBeenCalledWith("one"));
   });
 
-  it("filters Select options and clears uncontrolled multiple values", () => {
+  it("filters Select options and clears local multiple values", () => {
     const onChange = vi.fn();
     render(
       <Select
         defaultOpen
         filterable
         multiple
-        defaultValue={["one", "two"]}
+        value={["one", "two"]}
         options={[
           { label: "One", value: "one" },
           { label: "Two", value: "two" },
@@ -753,7 +754,7 @@ describe("React controlled and uncontrolled conventions", () => {
     expect(document.querySelectorAll(".k-select-labels .k-tag")).toHaveLength(0);
   });
 
-  it("renders and clears TreeSelect multiple tags without mutating controlled values", () => {
+  it("renders and clears TreeSelect multiple tags locally", () => {
     const onChange = vi.fn();
     const onClear = vi.fn();
     render(
@@ -772,7 +773,7 @@ describe("React controlled and uncontrolled conventions", () => {
     fireEvent.click(document.querySelector(".k-tree-select-clearable")!);
     expect(onChange).toHaveBeenCalledWith([]);
     expect(onClear).toHaveBeenCalledOnce();
-    expect(document.querySelectorAll(".k-tree-select-labels .k-tag")).toHaveLength(2);
+    expect(document.querySelectorAll(".k-tree-select-labels .k-tag")).toHaveLength(0);
   });
 
   it("requests changes without mutating controlled Poptip visibility", async () => {

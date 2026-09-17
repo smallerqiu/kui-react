@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
@@ -18,7 +19,6 @@ export interface SegmentedProps extends Omit<
   "defaultValue" | "onChange"
 > {
   value?: SegmentedValue;
-  defaultValue?: SegmentedValue;
   options?: SegmentedOption[];
   disabled?: boolean;
   readOnly?: boolean;
@@ -32,7 +32,6 @@ export interface SegmentedProps extends Omit<
 
 const Segmented = ({
   value,
-  defaultValue,
   options = [],
   disabled = false,
   readOnly = false,
@@ -51,8 +50,8 @@ const Segmented = ({
   const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
   const rootRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef(new Map<SegmentedValue, HTMLButtonElement>());
-  const [innerValue, setInnerValue] = useState(defaultValue);
-  const currentValue = value !== undefined ? value : innerValue;
+  const [innerValue, setInnerValue] = useValue(value, (next) => next);
+  const currentValue = innerValue;
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const [ready, setReady] = useState(false);
   const vertical = direction === "vertical";
@@ -81,7 +80,7 @@ const Segmented = ({
 
   const select = (option: SegmentedOption) => {
     if (disabled || readOnly || option.disabled || option.value === currentValue) return;
-    if (value === undefined) setInnerValue(option.value);
+    setInnerValue(option.value);
     onChange?.(option.value);
   };
   const move = (event: React.KeyboardEvent<HTMLDivElement>) => {

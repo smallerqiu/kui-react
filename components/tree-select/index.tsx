@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
@@ -38,7 +39,6 @@ export interface TreeSelectProps extends Omit<
   width?: number;
   maxTagCount?: number;
   value?: TreeSelectValue;
-  defaultValue?: TreeSelectValue;
   open?: boolean;
   defaultOpen?: boolean;
   clearable?: boolean;
@@ -101,7 +101,6 @@ function TreeSelect({
   width,
   maxTagCount,
   value,
-  defaultValue,
   open: openProp,
   defaultOpen = false,
   clearable = true,
@@ -153,10 +152,8 @@ function TreeSelect({
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
   const data = useMemo(() => treeData ?? options ?? [], [options, treeData]);
-  const controlledValue = value;
-  const [innerValue, setInnerValue] = useState(() => normalize(defaultValue, !!multiple));
-  const currentValue =
-    controlledValue !== undefined ? normalize(controlledValue, !!multiple) : innerValue;
+  const [innerValue, setInnerValue] = useValue(value, (next) => normalize(next, !!multiple));
+  const currentValue = innerValue;
   const [innerOpen, setInnerOpen] = useState(defaultOpen);
   const visible = openProp ?? innerOpen;
   const [rendered, setRendered] = useState(visible);
@@ -277,7 +274,7 @@ function TreeSelect({
   };
   const commit = (keys: string[]) => {
     if (readOnly) return;
-    if (controlledValue === undefined) setInnerValue(keys);
+    setInnerValue(keys);
     const result: TreeSelectValue = multiple || treeCheckable ? keys : (keys[0] ?? null);
     onChange?.(result);
   };

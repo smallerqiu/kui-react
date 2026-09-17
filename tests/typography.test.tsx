@@ -5,7 +5,7 @@ import { TypographyParagraph } from "react-kui";
 describe("Typography Vue parity", () => {
   it("keeps edited text in uncontrolled mode", () => {
     const onChange = vi.fn();
-    render(<TypographyParagraph defaultValue="Before" editable onChange={onChange} />);
+    render(<TypographyParagraph value="Before" editable onChange={onChange} />);
 
     fireEvent.click(screen.getByRole("button", { name: "Edit" }));
     const editor = screen.getByRole("textbox");

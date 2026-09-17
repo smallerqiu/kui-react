@@ -1,5 +1,7 @@
 # Typography
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 Provides consistent semantics and visual styles for headings, paragraphs, and inline text.
 
 ## Examples
@@ -34,8 +36,7 @@ Provides consistent semantics and visual styles for headings, paragraphs, and in
 
 | Property     | Description               | Type                                       | Default |
 | ------------ | ------------------------- | ------------------------------------------ | ------- |
-| value        | Controlled text           | string                                     | -       |
-| defaultValue | Initial uncontrolled text | string                                     | -       |
+| value        | text           | string                                     | -       |
 | tag          | Rendered HTML tag         | TypographyTag                              | span    |
 | type         | Semantic color            | TypographyType                             | -       |
 | strong       | Strong style              | boolean                                    | false   |

@@ -1,5 +1,7 @@
 # TreeSelect 树选择
 
+`value` 用于初始化组件，并同步后续的外部值变化。用户操作会更新内部值并触发 `onChange`，即使传入固定值或 `onChange` 仅用于监听也能交互。需要父子同步时使用 `value={state}` 配合 `onChange={setState}`。相同值的重新渲染不会重置内部编辑；数组值请使用新数组更新。
+
 树型选择控件。
 
 ## 何时使用
@@ -44,8 +46,7 @@
 
 | 属性                    | 说明                                                 | 类型                                  | 默认值      |
 | ----------------------- | ---------------------------------------------------- | ------------------------------------- | ----------- |
-| value                   | 受控的选中值                                         | TreeSelectValue                       | -           |
-| defaultValue            | 非受控模式的初始选中值                               | TreeSelectValue                       | -           |
+| value                   | 的选中值                                         | TreeSelectValue                       | -           |
 | open                    | 受控的下拉框显示状态                                 | boolean                               | -           |
 | defaultOpen             | 非受控模式的初始下拉框状态                           | boolean                               | false       |
 | width                   | 组件宽度                                             | string,number                         | -           |

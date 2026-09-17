@@ -26,8 +26,12 @@ describe("Form validation parity with kui-vue", () => {
       const [model, setModel] = useState({ agreed: false, enabled: false });
       return (
         <Form model={model} onChange={(next) => setModel(next as typeof model)}>
-          <FormItem prop="agreed"><Checkbox label="Agree" /></FormItem>
-          <FormItem prop="enabled"><Switch trueText="On" falseText="Off" /></FormItem>
+          <FormItem prop="agreed">
+            <Checkbox label="Agree" />
+          </FormItem>
+          <FormItem prop="enabled">
+            <Switch trueText="On" falseText="Off" />
+          </FormItem>
           <output>{JSON.stringify(model)}</output>
         </Form>
       );
@@ -230,14 +234,14 @@ describe("Upload error reporting parity with kui-vue", () => {
 describe("InputNumber keyboard parity with kui-vue", () => {
   it("ignores arrow keys when keyboard is disabled", () => {
     const onChange = vi.fn();
-    render(<InputNumber defaultValue={1} keyboard={false} onChange={onChange} />);
+    render(<InputNumber value={1} keyboard={false} onChange={onChange} />);
     fireEvent.keyDown(screen.getByRole("textbox"), { key: "ArrowUp" });
     expect(onChange).not.toHaveBeenCalled();
   });
 
   it("steps with arrow keys by default", () => {
     const onChange = vi.fn();
-    render(<InputNumber defaultValue={1} onChange={onChange} />);
+    render(<InputNumber value={1} onChange={onChange} />);
     fireEvent.keyDown(screen.getByRole("textbox"), { key: "ArrowUp" });
     expect(onChange).toHaveBeenCalledWith(2);
   });

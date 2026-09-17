@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import clsx from "clsx";
 import React, {
   Children,
@@ -38,7 +39,6 @@ export interface MenuProps extends Omit<
   theme?: "light" | "dark";
   mode?: DirectionType;
   value?: string[];
-  defaultValue?: string[];
   selectedKeys?: string[];
   accordion?: boolean;
   items?: MenuOptionsProps[];
@@ -56,7 +56,6 @@ export const Menu: React.FC<MenuProps> = ({
   theme,
   mode = "vertical",
   value,
-  defaultValue = [],
   selectedKeys,
   accordion = false,
   items,
@@ -73,7 +72,10 @@ export const Menu: React.FC<MenuProps> = ({
   ...rest
 }) => {
   const dropdownContext = useDropdownContext();
-  const [internalSelectedKeys, setInternalSelectedKeys] = useState<string[]>(defaultValue);
+  const [internalSelectedKeys, setInternalSelectedKeys] = useValue(
+    value,
+    (next): string[] => next ?? [],
+  );
   const [internalOpenKeys, setInternalOpenKeys] = useState<string[]>(defaultOpenKeys);
   const [popupOpenKeys, setPopupOpenKeys] = useState<string[]>([]);
   const [collapseState, setCollapseState] = useState({
@@ -128,7 +130,8 @@ export const Menu: React.FC<MenuProps> = ({
     }
   }
 
-  const currentSelectedKeys = value ?? selectedKeys ?? internalSelectedKeys;
+  const currentSelectedKeys =
+    value === undefined && selectedKeys !== undefined ? selectedKeys : internalSelectedKeys;
   const currentOpenKeys = openKeys ?? internalOpenKeys;
   const popupInlineCollapsed =
     inlineCollapsed &&
@@ -177,7 +180,7 @@ export const Menu: React.FC<MenuProps> = ({
       ? [...keyPath, key]
       : currentSelectedKeys.filter((itemKey) => itemKey !== key);
 
-    if (value === undefined && selectedKeys === undefined) setInternalSelectedKeys(nextSelected);
+    if (value !== undefined || selectedKeys === undefined) setInternalSelectedKeys(nextSelected);
     onChange?.(nextSelected);
     onSelect?.({ key, keyPath });
 

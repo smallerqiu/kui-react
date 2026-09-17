@@ -1,5 +1,7 @@
 # AutoComplete 自动完成
 
+`value` 用于初始化组件，并同步后续的外部值变化。用户操作会更新内部值并触发 `onChange`，即使传入固定值或 `onChange` 仅用于监听也能交互。需要父子同步时使用 `value={state}` 配合 `onChange={setState}`。相同值的重新渲染不会重置内部编辑；数组值请使用新数组更新。
+
 根据输入内容提供候选项，保留自由输入能力。
 
 ## 代码演示
@@ -32,8 +34,7 @@
 
 | 属性         | 说明                       | 类型                                         | 默认值  |
 | ------------ | -------------------------- | -------------------------------------------- | ------- |
-| value        | 受控输入值                 | string                                       | -       |
-| defaultValue | 初始输入值                 | string                                       | ''      |
+| value        | 输入值                 | string                                       | -       |
 | options      | 候选项                     | (string \| AutoCompleteOption)[]             | []      |
 | open         | 受控展开状态               | boolean                                      | -       |
 | defaultOpen  | 初始展开状态               | boolean                                      | false   |

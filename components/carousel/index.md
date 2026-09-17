@@ -1,5 +1,7 @@
 # Carousel 走马灯
 
+`value` 用于初始化组件，并同步后续的外部值变化。用户操作会更新内部值并触发 `onChange`，即使传入固定值或 `onChange` 仅用于监听也能交互。需要父子同步时使用 `value={state}` 配合 `onChange={setState}`。相同值的重新渲染不会重置内部编辑；数组值请使用新数组更新。
+
 旋转木马，一组轮播的区域。
 
 ## 何时使用
@@ -12,7 +14,7 @@
 
 [基本用法](./demo/basic.tsx)
 
-- 最简单的用法，可以通过 `defaultValue` 指定初始值
+- 最简单的用法，可以通过 `value` 指定初始值
 
 [垂直](./demo/vertical.tsx)
 
@@ -27,7 +29,6 @@
 | 属性         | 说明                           | 类型                    | 默认值  |
 | ------------ | ------------------------------ | ----------------------- | ------- |
 | value        | 当前幻灯片索引，从 0 开始      | number                  | -       |
-| defaultValue | 非受控模式下的初始幻灯片索引   | number                  | 0       |
 | loop         | 是否开启循环                   | boolean                 | true    |
 | vertical     | 是否垂直模式显示               | boolean                 | false   |
 | autoplay     | 是否自动切换                   | boolean                 | false   |

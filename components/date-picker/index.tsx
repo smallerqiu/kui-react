@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
@@ -40,6 +41,17 @@ dayjs.extend(customParseFormat);
 dayjs.extend(localeData);
 dayjs.extend(isBetween);
 
+function centerTimeItem(
+  column: HTMLUListElement | null | undefined,
+  index: number,
+  behavior: ScrollBehavior = "auto",
+) {
+  const item = column?.children.item(index);
+  if (!column || !(item instanceof HTMLElement)) return;
+  const top = item.offsetTop - (column.clientHeight - item.offsetHeight) / 2;
+  column.scrollTo({ top, behavior });
+}
+
 export type DatePickerValueType = "date" | "timestamp" | "unix" | "string";
 export type DatePickerModeType =
   "year" | "month" | "date" | "time" | "dateTime" | "dateRange" | "dateTimeRange";
@@ -55,7 +67,6 @@ export interface DatePickerProps extends Omit<
   "onChange" | "children" | "defaultValue"
 > {
   value?: DatePickerInput | DatePickerInput[];
-  defaultValue?: DatePickerInput | DatePickerInput[];
   startDate?: DatePickerInput;
   endDate?: DatePickerInput;
   valueType?: DatePickerValueType;
@@ -115,7 +126,6 @@ const parse = (value: DatePickerInput, format: string, valueType: DatePickerValu
 
 function DatePicker({
   value,
-  defaultValue,
   startDate,
   endDate,
   valueType = "string",
@@ -159,24 +169,15 @@ function DatePicker({
   const fmt = format || defaultFormat(mode);
   const isRange = mode.endsWith("Range");
   const hasTime = mode === "time" || mode.includes("Time");
-  const controlled = value;
   const initial = useMemo(() => {
-    const source =
-      controlled !== undefined
-        ? controlled
-        : defaultValue !== undefined
-          ? defaultValue
-          : isRange
-            ? [startDate, endDate]
-            : null;
+    const source = value !== undefined ? value : isRange ? [startDate, endDate] : null;
     return (Array.isArray(source) ? source : source == null ? [] : [source])
       .map((item) => parse(item, fmt, valueType))
       .filter((item): item is Dayjs => !!item);
-  }, [controlled, defaultValue, startDate, endDate, isRange, fmt, valueType]);
-  const [inner, setInner] = useState<Dayjs[]>(initial);
-  const externallyControlled =
-    controlled !== undefined || startDate !== undefined || endDate !== undefined;
-  const values = externallyControlled ? initial : inner;
+  }, [value, startDate, endDate, isRange, fmt, valueType]);
+  const [inner, setInner] = useValue(initial, (next) => next);
+  const rangeControlled = value === undefined && (startDate !== undefined || endDate !== undefined);
+  const values = rangeControlled ? initial : inner;
   const [visibleState, setVisibleState] = useState(defaultOpen || panelOnly);
   const visible = panelOnly || (open ?? visibleState);
   const [rendered, setRendered] = useState(panelOnly || (open ?? defaultOpen));
@@ -314,9 +315,9 @@ function DatePicker({
   const commit = (next: Dayjs[], closePanel = false) => {
     if (disabled || readOnly) return;
     if (isRange && next.length === 2 && next[1].isBefore(next[0])) next = [next[1], next[0]];
-    if (!externallyControlled) setInner(next);
-    setDraft(externallyControlled ? values : next);
-    setTexts(externallyControlled ? formattedValues : next.map((item) => item.format(fmt)));
+    if (!rangeControlled) setInner(next);
+    setDraft(rangeControlled ? values : next);
+    setTexts(rangeControlled ? formattedValues : next.map((item) => item.format(fmt)));
     const result = next.map(output);
     const strings = next.map((item) => item.format(fmt));
     onChange?.(isRange ? result : (result[0] ?? null), isRange ? strings : (strings[0] ?? ""));
@@ -557,10 +558,7 @@ function DatePicker({
                     else next[0] = candidate;
                     setPanelDate(candidate);
                     commit(next);
-                    timeColRefs.current[unit]?.scrollTo({
-                      top: number * 32 + 16,
-                      behavior: "smooth",
-                    });
+                    centerTimeItem(timeColRefs.current[unit], number, "smooth");
                   }}
                 >
                   {String(number).padStart(2, "0")}
@@ -578,7 +576,7 @@ function DatePicker({
     const active = draftRef.current[index] ?? panelDateRef.current;
     const frame = requestAnimationFrame(() => {
       (["hour", "minute", "second"] as const).forEach((unit) => {
-        timeColRefs.current[unit]?.scrollTo({ top: active[unit]() * 32 + 16 });
+        centerTimeItem(timeColRefs.current[unit], active[unit]());
       });
     });
     return () => cancelAnimationFrame(frame);

@@ -1,5 +1,7 @@
 # DatePicker
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 Control for inputting or selecting a date.
 
 ## When to Use
@@ -48,8 +50,7 @@ When the user needs to input a date, they can click the standard input box to po
 
 | Property          | Description                                                                                                                                            | Type                                                                                | Default     |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- | ----------- |
-| value             | Controlled date or time value                                                                                                                          | DatePickerInput, DatePickerInput[]                                                  | -           |
-| defaultValue      | Initial date or time value in uncontrolled mode                                                                                                        | DatePickerInput, DatePickerInput[]                                                  | -           |
+| value             | date or time value                                                                                                                          | DatePickerInput, DatePickerInput[]                                                  | -           |
 | open              | Controlled dropdown visibility                                                                                                                         | boolean                                                                             | -           |
 | defaultOpen       | Initial dropdown visibility in uncontrolled mode                                                                                                       | boolean                                                                             | false       |
 | startDate         | Start value for range selection                                                                                                                        | DatePickerInput                                                                     | -           |

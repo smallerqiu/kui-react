@@ -1,5 +1,7 @@
 # AutoComplete
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 Suggest options while keeping free-form input available.
 
 ## Examples
@@ -32,8 +34,7 @@ Suggest options while keeping free-form input available.
 
 | Property     | Description                                       | Type                                         | Default |
 | ------------ | ------------------------------------------------- | -------------------------------------------- | ------- |
-| value        | Controlled value                                  | string                                       | -       |
-| defaultValue | Initial value                                     | string                                       | ''      |
+| value        | value                                  | string                                       | -       |
 | options      | Suggestions                                       | (string \| AutoCompleteOption)[]             | []      |
 | open         | Controlled open state                             | boolean                                      | -       |
 | defaultOpen  | Initial open state                                | boolean                                      | false   |

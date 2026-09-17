@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
@@ -12,13 +13,12 @@ import InputGroup from "./input-group";
 
 export interface InputProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
-  "size" | "prefix" | "onChange"
+  "size" | "prefix" | "onChange" | "defaultValue"
 > {
   clearable?: boolean;
   visiblePasswordIcon?: boolean;
   size?: SizeType;
   value?: string | number | readonly string[];
-  defaultValue?: string | number | readonly string[];
   icon?: IconType[];
   suffix?: React.ReactNode;
   prefix?: React.ReactNode;
@@ -46,7 +46,6 @@ const Input = React.forwardRef<InputRef, InputProps>(
       visiblePasswordIcon = true,
       size: sizeProp,
       value,
-      defaultValue = "",
       disabled = false,
       readOnly = false,
       type = "text",
@@ -79,8 +78,8 @@ const Input = React.forwardRef<InputRef, InputProps>(
     const parentSize = useContext(SizeContext);
     const currentSize = sizeProp ?? parentSize ?? size;
 
-    const [innerValue, setInnerValue] = useState(defaultValue);
-    const currentValue = value !== undefined ? (value ?? "") : innerValue;
+    const [innerValue, setInnerValue] = useValue(value, (next) => next ?? "");
+    const currentValue = innerValue;
     const [focused, setFocused] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -92,7 +91,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
 
     const handleClear = () => {
       if (disabled || readOnly) return;
-      if (value === undefined) setInnerValue("");
+      setInnerValue("");
       onClear?.();
       onChange?.("");
       inputRef.current?.focus();
@@ -163,9 +162,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const v = e.target.value;
-      if (value === undefined) {
-        setInnerValue(v);
-      }
+      setInnerValue(v);
       onChange?.(v);
     };
 

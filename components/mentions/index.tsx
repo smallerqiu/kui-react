@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
@@ -29,7 +30,6 @@ export interface MentionsProps extends Omit<
   "size" | "value" | "defaultValue" | "onChange" | "onSelect" | "onSearch"
 > {
   value?: string;
-  defaultValue?: string;
   options?: Array<string | MentionOption>;
   triggers?: string[];
   rows?: number;
@@ -97,10 +97,11 @@ const caretPosition = (element: HTMLTextAreaElement) => {
   mirror.remove();
   return markerRect;
 };
+const EMPTY_OPTIONS: Array<string | MentionOption> = [];
+
 const Mentions: React.FC<MentionsProps> = ({
   value,
-  defaultValue = "",
-  options = [],
+  options = EMPTY_OPTIONS,
   triggers = ["@"],
   rows = 1,
   placement = "bottom-left",
@@ -125,7 +126,7 @@ const Mentions: React.FC<MentionsProps> = ({
   const size = sizeProp ?? inheritedAppearance.size;
   const shape = shapeProp ?? inheritedAppearance.shape;
   const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
-  const [inner, setInner] = useState(defaultValue);
+  const [inner, setInner] = useValue(value, (next) => next ?? "");
   const listboxId = `k-mentions-listbox-${useId().replace(/:/g, "")}`;
   const [query, setQuery] = useState<Query | null>(null);
   const [rendered, setRendered] = useState(false);
@@ -141,7 +142,7 @@ const Mentions: React.FC<MentionsProps> = ({
   const topRef = useRef(0);
   const leftRef = useRef(0);
   const composing = useRef(false);
-  const current = value !== undefined ? (value ?? "") : inner;
+  const current = inner;
   const normalized = useMemo(
     () => options.map((item) => (typeof item === "string" ? { value: item, label: item } : item)),
     [options],
@@ -264,7 +265,7 @@ const Mentions: React.FC<MentionsProps> = ({
   }, [active, listboxId]);
   const setValue = (next: string) => {
     if (readOnly) return;
-    if (value === undefined) setInner(next);
+    setInner(next);
     onChange?.(next);
   };
   const clear = (event: React.SyntheticEvent) => {

@@ -1,5 +1,7 @@
 # Calendar
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 Displays dates and schedule events by month.
 
 ## Examples
@@ -20,8 +22,7 @@ Displays dates and schedule events by month.
 
 | Property       | Description                                   | Type                       | Default |
 | -------------- | --------------------------------------------- | -------------------------- | ------- |
-| value          | Controlled date                               | string                     | -       |
-| defaultValue   | Initial date                                  | string                     | Today   |
+| value          | date                               | string                     | -       |
 | events         | Schedule events                               | CalendarEventData[]        | []      |
 | firstDayOfWeek | First day of week, where 0 is Sunday          | number                     | locale  |
 | maxEvents      | Maximum events per date                       | number                     | 3       |

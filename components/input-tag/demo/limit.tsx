@@ -7,7 +7,7 @@ export default function App() {
       <code>已输入 {tags.length} / 3</code>
       <InputTag value={tags} onChange={setTags} max={3} placeholder="最多输入 3 项" />
       <InputTag
-        defaultValue={["Design", "Develop", "Test", "Release"]}
+        value={["Design", "Develop", "Test", "Release"]}
         maxTagCount={2}
         clearable
         placeholder="最多展示 2 项"

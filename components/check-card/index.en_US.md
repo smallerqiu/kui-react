@@ -1,5 +1,7 @@
 # CheckCard
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 Present richer choices with a title, description, and optional symbol.
 
 ## When to Use
@@ -48,8 +50,7 @@ Present richer choices with a title, description, and optional symbol.
 
 | Property     | Description             | Type                              | Default    |
 | ------------ | ----------------------- | --------------------------------- | ---------- |
-| value        | Controlled value        | string \| number                  | -          |
-| defaultValue | Initial value           | string \| number                  | -          |
+| value        | value        | string \| number                  | -          |
 | options      | Options                 | CheckCardOption[]                 | -          |
 | disabled     | Whether disabled        | boolean                           | false      |
 | readOnly     | Whether read-only       | boolean                           | false      |

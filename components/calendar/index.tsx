@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import { ChevronLeft, ChevronRight } from "kui-icons";
 import React, { useContext, useMemo, useState } from "react";
 import { Button, ButtonGroup } from "../button";
@@ -21,10 +22,9 @@ export interface CalendarDateCell {
 }
 export interface CalendarProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "onChange" | "title"
+  "onChange" | "title" | "defaultValue"
 > {
   value?: string;
-  defaultValue?: string;
   events?: CalendarEventData[];
   firstDayOfWeek?: number;
   maxEvents?: number;
@@ -56,7 +56,6 @@ const toRenderKey = (value: unknown) => `${typeof value}:${String(value)}`;
 
 export default function Calendar({
   value,
-  defaultValue,
   events = [],
   firstDayOfWeek,
   maxEvents = 3,
@@ -77,8 +76,8 @@ export default function Calendar({
   const config = useContext(ConfigContext);
   const locale = config.locale || zhCN;
   const localeName = locale.name || "zh-cn";
-  const initial = parseDate(value ?? defaultValue) || new Date();
-  const [innerValue, setInnerValue] = useState(value ?? defaultValue);
+  const initial = parseDate(value) || new Date();
+  const [innerValue, setInnerValue] = useValue(value, (next) => next);
   const [view, setView] = useState({ year: initial.getFullYear(), month: initial.getMonth() });
   const [syncedValue, setSyncedValue] = useState(value);
   if (value !== syncedValue) {
@@ -86,7 +85,7 @@ export default function Calendar({
     const date = parseDate(value);
     if (date) setView({ year: date.getFullYear(), month: date.getMonth() });
   }
-  const selected = value ?? innerValue;
+  const selected = innerValue;
   const today = dateKey(new Date());
   const localeFirstDay = useMemo(() => {
     try {
@@ -152,7 +151,7 @@ export default function Calendar({
         onMonthChange?.({ year: next.year, month: next.month + 1 });
       }
     }
-    if (value === undefined) setInnerValue(cell.date);
+    setInnerValue(cell.date);
     onChange?.(cell.date, cell);
   };
   const changeMonth = (offset: number) => {
@@ -171,7 +170,7 @@ export default function Calendar({
       currentMonth: true,
       events: eventsByDate.get(today) || [],
     };
-    if (value === undefined) setInnerValue(today);
+    setInnerValue(today);
     onChange?.(today, cell);
     onMonthChange?.({ year: next.year, month: next.month + 1 });
   };

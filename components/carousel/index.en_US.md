@@ -1,5 +1,7 @@
 # Carousel
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 A set of rotating/carousel areas.
 
 ## When to Use
@@ -12,7 +14,7 @@ A set of rotating/carousel areas.
 
 [Basic Usage](./demo/basic.tsx)
 
-- The simplest usage. You can specify the initial value with `defaultValue`.
+- The simplest usage. You can specify the initial value with `value`.
 
 [Vertical](./demo/vertical.tsx)
 
@@ -26,8 +28,7 @@ A set of rotating/carousel areas.
 
 | Property     | Description                                           | Type                    | Default |
 | ------------ | ----------------------------------------------------- | ----------------------- | ------- |
-| value        | Controlled slide index, starting from 0               | number                  | -       |
-| defaultValue | Initial slide index in uncontrolled mode              | number                  | 0       |
+| value        | slide index, starting from 0               | number                  | -       |
 | loop         | Whether to enable loop                                | boolean                 | true    |
 | vertical     | Whether to display in vertical mode                   | boolean                 | false   |
 | autoplay     | Whether to auto-switch                                | boolean                 | false   |

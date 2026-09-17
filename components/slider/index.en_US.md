@@ -1,5 +1,7 @@
 # Slider
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 Slider input, displaying current value and optional range.
 
 ## When to Use
@@ -40,8 +42,7 @@ When users need to select within a numerical range/custom range, it can be conti
 
 | Property       | Description                                                                                       | Type                                | Default |
 | -------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------- | ------- |
-| value          | Controlled current value                                                                          | number, number[]                    | -       |
-| defaultValue   | Initial value in uncontrolled mode                                                                | number, number[]                    | 0       |
+| value          | current value                                                                          | number, number[]                    | -       |
 | min            | Minimum value                                                                                     | number                              | 0       |
 | max            | Maximum value                                                                                     | number                              | 100     |
 | range          | Whether to support sliding on both sides simultaneously                                           | boolean                             | false   |

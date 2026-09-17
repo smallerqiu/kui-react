@@ -1,5 +1,7 @@
 # InputTag 标签输入
 
+`value` 用于初始化组件，并同步后续的外部值变化。用户操作会更新内部值并触发 `onChange`，即使传入固定值或 `onChange` 仅用于监听也能交互。需要父子同步时使用 `value={state}` 配合 `onChange={setState}`。相同值的重新渲染不会重置内部编辑；数组值请使用新数组更新。
+
 将连续输入整理成可增删的标签集合。
 
 ## 代码演示
@@ -32,8 +34,7 @@
 
 | 属性            | 说明                                | 类型                           | 默认值  |
 | --------------- | ----------------------------------- | ------------------------------ | ------- |
-| value           | 受控标签                            | string[]                       | -       |
-| defaultValue    | 初始标签                            | string[]                       | []      |
+| value           | 标签                            | string[]                       | -       |
 | placeholder     | 占位文本                            | string                         | -       |
 | disabled        | 禁用                                | boolean                        | false   |
 | readOnly        | 只读，允许聚焦和复制但不可修改      | boolean                        | false   |

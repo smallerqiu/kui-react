@@ -1,5 +1,7 @@
 # Input
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 Input content via mouse or keyboard, the most basic wrapper for form fields.
 
 ## When to Use
@@ -45,8 +47,7 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 
 | Property            | Description                                                         | Type                    | Default |
 | ------------------- | ------------------------------------------------------------------- | ----------------------- | ------- |
-| value               | Controlled input value                                              | string, number          | -       |
-| defaultValue        | Initial input value in uncontrolled mode                            | string, number          | ""      |
+| value               | input value                                              | string, number          | -       |
 | size                | Button size, optional values `small`, `large`, default not selected | string                  | -       |
 | icon                | Input box icon                                                      | string                  | -       |
 | suffix              | Inline suffix                                                       | string \| ReactNode     | -       |
@@ -78,8 +79,7 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 
 | Property     | Description                                                  | Type                    | Default |
 | ------------ | ------------------------------------------------------------ | ----------------------- | ------- |
-| value        | Controlled input value                                       | string, number          | -       |
-| defaultValue | Initial value in uncontrolled mode                           | string, number          | ""      |
+| value        | input value                                       | string, number          | -       |
 | size         | Size, optional values `small`, `large`, default not selected | string                  | -       |
 | theme        | Theme                                                        | ThemeType               | fill    |
 | shape        | Shape                                                        | ShapeType               | -       |

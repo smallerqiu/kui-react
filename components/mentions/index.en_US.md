@@ -1,5 +1,7 @@
 # Mentions
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 Insert structured mentions into multiline text.
 
 ## Examples
@@ -44,8 +46,7 @@ Insert structured mentions into multiline text.
 
 | Property     | Description                          | Type                                | Default     |
 | ------------ | ------------------------------------ | ----------------------------------- | ----------- |
-| value        | Controlled text                      | string                              | -           |
-| defaultValue | Initial text                         | string                              | ''          |
+| value        | text                      | string                              | -           |
 | options      | Suggestions                          | (string\|MentionOption)[]           | []          |
 | triggers     | Trigger strings                      | string[]                            | ['@']       |
 | rows         | Textarea rows                        | number                              | 1           |

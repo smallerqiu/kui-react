@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
@@ -52,7 +53,6 @@ export interface SelectProps extends Omit<
   width?: number;
   maxTagCount?: number;
   value?: SelectValue;
-  defaultValue?: SelectValue;
   open?: boolean;
   defaultOpen?: boolean;
   clearable?: boolean;
@@ -92,7 +92,6 @@ const Select: React.FC<SelectProps> = ({
   width,
   maxTagCount,
   value,
-  defaultValue,
   open: openProp,
   defaultOpen = false,
   clearable = true,
@@ -140,21 +139,8 @@ const Select: React.FC<SelectProps> = ({
   };
   const [rendered, setRendered] = useState(visible);
   if (visible && !rendered) setRendered(true);
-  const [internalValue, setInternalValue] = useState<(string | number)[]>(
-    multiple ? (Array.isArray(defaultValue) ? defaultValue : []) : normalizeValue(defaultValue),
-  );
-  const controlled = value !== undefined;
-  const controlledValue = value;
-  const currentValue = useMemo(
-    () =>
-      controlled
-        ? multiple
-          ? Array.isArray(controlledValue)
-            ? controlledValue
-            : []
-          : normalizeValue(controlledValue)
-        : internalValue,
-    [controlled, controlledValue, internalValue, multiple],
+  const [currentValue, setInternalValue] = useValue(value, (next) =>
+    multiple ? (Array.isArray(next) ? next : []) : normalizeValue(next),
   );
 
   const [queryInputVisible, setQueryInputVisible] = useState(false);
@@ -395,9 +381,7 @@ const Select: React.FC<SelectProps> = ({
       setActiveIndex(-1);
     }
 
-    if (value === undefined) {
-      setInternalValue(nextValue);
-    }
+    setInternalValue(nextValue);
 
     const outputValue = multiple ? nextValue : nextValue[0];
     onChange?.(outputValue);
@@ -443,9 +427,7 @@ const Select: React.FC<SelectProps> = ({
     const nextValue = [...currentValue];
     nextValue.splice(index, 1);
 
-    if (value === undefined) {
-      setInternalValue(nextValue);
-    }
+    setInternalValue(nextValue);
     onChange?.(multiple ? nextValue : nextValue[0]);
     setTimeout(updatePosition, 0);
   };
@@ -454,9 +436,7 @@ const Select: React.FC<SelectProps> = ({
     if (readOnly) return;
     e.stopPropagation();
     const nextValue: (string | number)[] = [];
-    if (value === undefined) {
-      setInternalValue(nextValue);
-    }
+    setInternalValue(nextValue);
     onClearCallback?.();
     onChange?.(multiple ? nextValue : undefined);
     clearQuery();
@@ -625,9 +605,7 @@ const Select: React.FC<SelectProps> = ({
     if (e.key === "Backspace") {
       if (queryKey === "" && multiple && currentValue.length > 0) {
         const nextValue = currentValue.slice(0, -1);
-        if (value === undefined) {
-          setInternalValue(nextValue);
-        }
+        setInternalValue(nextValue);
         onChange?.(nextValue);
         setTimeout(updatePosition, 0);
       }

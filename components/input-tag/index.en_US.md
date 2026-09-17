@@ -1,5 +1,7 @@
 # InputTag
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 Turns continuous input into an editable tag collection.
 
 ## Examples
@@ -32,8 +34,7 @@ Turns continuous input into an editable tag collection.
 
 | Property        | Description                                        | Type                           | Default |
 | --------------- | -------------------------------------------------- | ------------------------------ | ------- |
-| value           | Controlled tags                                    | string[]                       | -       |
-| defaultValue    | Initial tags                                       | string[]                       | []      |
+| value           | tags                                    | string[]                       | -       |
 | placeholder     | Placeholder                                        | string                         | -       |
 | disabled        | Disabled state                                     | boolean                        | false   |
 | readOnly        | Read-only while remaining focusable                | boolean                        | false   |

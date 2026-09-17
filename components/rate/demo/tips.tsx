@@ -18,9 +18,9 @@ export default function App() {
       </Space>
       <br />
       <code>allowClear = true</code>
-      <Rate allowClear defaultValue={3} />
+      <Rate allowClear value={3} />
       <code>allowClear = false</code>
-      <Rate allowClear={false} defaultValue={3} />
+      <Rate allowClear={false} value={3} />
     </Space>
   );
 }

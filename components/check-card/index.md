@@ -1,5 +1,7 @@
 # 选择卡片 CheckCard
 
+`value` 用于初始化组件，并同步后续的外部值变化。用户操作会更新内部值并触发 `onChange`，即使传入固定值或 `onChange` 仅用于监听也能交互。需要父子同步时使用 `value={state}` 配合 `onChange={setState}`。相同值的重新渲染不会重置内部编辑；数组值请使用新数组更新。
+
 使用标题、描述和可选图标呈现更丰富的选择项。
 
 ## 何时使用
@@ -50,8 +52,7 @@
 
 | 属性         | 说明           | 类型                              | 默认值     |
 | ------------ | -------------- | --------------------------------- | ---------- |
-| value        | 受控值         | string \| number                  | -          |
-| defaultValue | 初始值         | string \| number                  | -          |
+| value        | 值         | string \| number                  | -          |
 | options      | 选项           | CheckCardOption[]                 | -          |
 | disabled     | 是否禁用       | boolean                           | false      |
 | readOnly     | 是否只读       | boolean                           | false      |

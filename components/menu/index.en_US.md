@@ -1,5 +1,7 @@
 # Menu
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 Navigation menu list for pages and functions.
 
 ## When to Use
@@ -43,7 +45,6 @@ The navigation menu is the soul of a website. Users rely on navigation to jump b
 | Property         | Description                                          | Type                                   | Default    |
 | ---------------- | ---------------------------------------------------- | -------------------------------------- | ---------- |
 | value            | Currently selected menu items                        | string[]                               | -          |
-| defaultValue     | Initially selected menu items in uncontrolled mode   | string[]                               | []         |
 | theme            | Local theme; inherits global theme when omitted      | `light` \| `dark`                      | -          |
 | items            | Menu data                                            | MenuOptionsProps[]                     | -          |
 | openKeys         | Currently expanded SubMenu menu item key array       | string[]                               | -          |

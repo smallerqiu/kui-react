@@ -1,5 +1,7 @@
 # 排版 Typography
 
+`value` 用于初始化组件，并同步后续的外部值变化。用户操作会更新内部值并触发 `onChange`，即使传入固定值或 `onChange` 仅用于监听也能交互。需要父子同步时使用 `value={state}` 配合 `onChange={setState}`。相同值的重新渲染不会重置内部编辑；数组值请使用新数组更新。
+
 统一标题、正文和行内文字的语义与视觉样式。
 
 ## 代码演示
@@ -34,8 +36,7 @@
 
 | 属性         | 说明             | 类型                                       | 默认值 |
 | ------------ | ---------------- | ------------------------------------------ | ------ |
-| value        | 受控文本         | string                                     | -      |
-| defaultValue | 非受控初始文本   | string                                     | -      |
+| value        | 文本         | string                                     | -      |
 | tag          | 渲染的 HTML 标签 | TypographyTag                              | span   |
 | type         | 语义颜色         | TypographyType                             | -      |
 | strong       | 加粗             | boolean                                    | false  |

@@ -1,5 +1,7 @@
 # Tabs 标签页
 
+`value` 用于初始化组件，并同步后续的外部值变化。用户操作会更新内部值并触发 `onChange`，即使传入固定值或 `onChange` 仅用于监听也能交互。需要父子同步时使用 `value={state}` 配合 `onChange={setState}`。相同值的重新渲染不会重置内部编辑；数组值请使用新数组更新。
+
 选项卡切换组件。
 
 ## 何时使用
@@ -52,7 +54,6 @@
 | 属性         | 说明                                  | 类型                                      | 默认值         |
 | ------------ | ------------------------------------- | ----------------------------------------- | -------------- |
 | value        | 当前激活 tab 面板的 key               | string \| number                          | -              |
-| defaultValue | 非受控模式初始激活的 key              | string \| number                          | 第一个可用面板 |
 | variant      | 页签形态                              | `line` \| `card` \| `sample` \| `browser` | `line`         |
 | card         | 是否为卡片式，兼容旧版本              | boolean                                   | false          |
 | sample       | 是否为极简式，兼容旧版本              | boolean                                   | false          |

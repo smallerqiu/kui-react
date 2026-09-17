@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import clsx from "clsx";
 import { ArrowLeft, ArrowRight } from "kui-icons";
 import {
@@ -22,9 +23,11 @@ export interface CarouselRef {
   goTo: (index: number) => void;
 }
 
-export interface CarouselProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface CarouselProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onChange" | "defaultValue"
+> {
   value?: number;
-  defaultValue?: number;
   loop?: boolean;
   autoplay?: boolean;
   delay?: number;
@@ -37,7 +40,6 @@ export interface CarouselProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
 const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
   {
     value,
-    defaultValue,
     loop = true,
     autoplay = false,
     delay = 3000,
@@ -55,16 +57,15 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
   ref,
 ) {
   const items = Children.toArray(children);
-  const controlled = value;
-  const [innerIndex, setInnerIndex] = useState(controlled ?? defaultValue ?? 0);
+  const [innerIndex, setInnerIndex] = useValue(value, (next) => next ?? 0);
   const looping = loop && items.length > 1;
-  const initialIndex = Math.max(0, Math.min(items.length - 1, controlled ?? defaultValue ?? 0));
+  const initialIndex = Math.max(0, Math.min(items.length - 1, value ?? 0));
   const [position, setPosition] = useState(looping ? initialIndex + 1 : initialIndex);
   const [animate, setAnimate] = useState(false);
   const [width, setWidth] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const current = Math.max(0, Math.min(items.length - 1, controlled ?? innerIndex));
+  const current = Math.max(0, Math.min(items.length - 1, innerIndex));
 
   useLayoutEffect(() => {
     const element = rootRef.current;
@@ -77,16 +78,17 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
     return () => observer?.disconnect();
   }, []);
 
-  useEffect(() => {
-    if (!items.length) return;
-    const next = Math.max(0, Math.min(items.length - 1, controlled ?? innerIndex));
-    if (controlled === undefined) {
-      if (next !== innerIndex) setInnerIndex(next);
-      if (innerIndex >= items.length) setPosition(looping ? next + 1 : next);
-      return;
-    }
+  const [syncedPosition, setSyncedPosition] = useState({ value, count: items.length, looping });
+  if (
+    syncedPosition.value !== value ||
+    syncedPosition.count !== items.length ||
+    syncedPosition.looping !== looping
+  ) {
+    setSyncedPosition({ value, count: items.length, looping });
+    const next = Math.max(0, Math.min(items.length - 1, innerIndex));
+    if (next !== innerIndex) setInnerIndex(next);
     setPosition(looping ? next + 1 : next);
-  }, [controlled, innerIndex, items.length, looping]);
+  }
 
   const goTo = useCallback(
     (index: number) => {
@@ -95,13 +97,11 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
         ? ((index % items.length) + items.length) % items.length
         : Math.max(0, Math.min(items.length - 1, index));
       if (next === current) return;
-      if (controlled === undefined) {
-        setInnerIndex(next);
-        setPosition(looping ? next + 1 : next);
-      }
+      setInnerIndex(next);
+      setPosition(looping ? next + 1 : next);
       onChange?.(next);
     },
-    [controlled, current, items.length, loop, looping, onChange],
+    [current, items.length, loop, looping, onChange, setInnerIndex],
   );
 
   const move = useCallback(
@@ -115,13 +115,11 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
         timerRef.current = null;
         return;
       }
-      if (controlled === undefined) {
-        setInnerIndex(next);
-        setPosition((previous) => (looping ? previous + step : next));
-      }
+      setInnerIndex(next);
+      setPosition((previous) => (looping ? previous + step : next));
       onChange?.(next);
     },
-    [controlled, current, items.length, loop, looping, onChange],
+    [current, items.length, loop, looping, onChange, setInnerIndex],
   );
 
   const stop = useCallback(() => {

@@ -1,5 +1,7 @@
 # TreeSelect
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 Tree selection control.
 
 ## When to Use
@@ -44,8 +46,7 @@ Similar to the Select selection control, when the selectable data structure is a
 
 | Property                | Description                                                               | Type                                  | Default       |
 | ----------------------- | ------------------------------------------------------------------------- | ------------------------------------- | ------------- |
-| value                   | Controlled selected value                                                 | TreeSelectValue                       | -             |
-| defaultValue            | Initial selected value in uncontrolled mode                               | TreeSelectValue                       | -             |
+| value                   | selected value                                                 | TreeSelectValue                       | -             |
 | open                    | Controlled dropdown visibility                                            | boolean                               | -             |
 | defaultOpen             | Initial dropdown visibility in uncontrolled mode                          | boolean                               | false         |
 | width                   | Component width                                                           | string, number                        | -             |

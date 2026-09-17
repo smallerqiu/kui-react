@@ -15,7 +15,7 @@ item must pass ESLint, TypeScript, the relevant tests, and the documentation bui
 
 ## React API conventions
 
-- [x] Value components use `value`, `defaultValue`, and `onChange`
+- [x] Value components use `value` for initialization and external synchronization, with local edits reported through `onChange`
 - [x] Visibility components use `open`, `defaultOpen`, and `onOpenChange`
 - [x] Boolean input components use `checked`, `defaultChecked`, and `onChange`
 - [x] ReactNode content consistently replaces Vue slots

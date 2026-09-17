@@ -11,7 +11,7 @@ describe("new input and navigation components", () => {
         allowCreate
         filterable
         defaultOpen
-        defaultValue={[]}
+        value={[]}
         options={[{ label: "React", value: "React" }]}
         onChange={onChange}
       />,
@@ -61,7 +61,7 @@ describe("new input and navigation components", () => {
 
   it("adds and removes InputTag values", () => {
     const onChange = vi.fn();
-    render(<InputTag defaultValue={["React"]} onChange={onChange} />);
+    render(<InputTag value={["React"]} onChange={onChange} />);
     const input = screen.getByRole("textbox");
     fireEvent.change(input, { target: { value: "Vue" } });
     fireEvent.keyDown(input, { key: "Enter" });

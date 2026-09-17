@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import clsx from "clsx";
 import { ChevronDown, X } from "kui-icons";
 import React, { useCallback, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
@@ -8,9 +9,11 @@ import { Menu, MenuItem } from "../menu";
 import { getChildren } from "../utils/react-node";
 import type { TabPanelProps } from "./tab-panel";
 
-export interface TabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface TabsProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange" | "defaultValue"
+> {
   value?: string | number;
-  defaultValue?: string | number;
   variant?: "line" | "card" | "sample" | "browser";
   card?: boolean;
   sample?: boolean;
@@ -25,7 +28,6 @@ export interface TabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "o
 
 const Tabs: React.FC<TabsProps> = ({
   value,
-  defaultValue,
   variant,
   card = false,
   sample = false,
@@ -56,14 +58,14 @@ const Tabs: React.FC<TabsProps> = ({
   const firstKey =
     firstPanel && React.isValidElement(firstPanel) ? String(firstPanel.key) : undefined;
 
-  const [innerActiveKey, setInnerActiveKey] = useState<string | undefined>(
-    defaultValue !== undefined ? String(defaultValue) : firstKey,
+  const [innerActiveKey, setInnerActiveKey] = useValue(value, (next) =>
+    next != null ? String(next) : firstKey,
   );
-  const requestedKey = value !== undefined ? String(value) : innerActiveKey;
+  const requestedKey = innerActiveKey;
   const hasRequestedKey = childList.some(
     (child) => React.isValidElement(child) && String(child.key) === requestedKey,
   );
-  const activeKey = hasRequestedKey || value !== undefined ? requestedKey : firstKey;
+  const activeKey = hasRequestedKey ? requestedKey : firstKey;
   const currentIndex = childList.findIndex(
     (child) => React.isValidElement(child) && String(child.key) === activeKey,
   );
@@ -164,7 +166,7 @@ const Tabs: React.FC<TabsProps> = ({
     if (disabled) return;
     onTabClick?.(key);
     if (activeKey !== key) {
-      if (value === undefined) setInnerActiveKey(key);
+      setInnerActiveKey(key);
       onChange?.(key);
     }
   };

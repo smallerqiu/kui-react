@@ -1,5 +1,7 @@
 # 日历 Calendar
 
+`value` 用于初始化组件，并同步后续的外部值变化。用户操作会更新内部值并触发 `onChange`，即使传入固定值或 `onChange` 仅用于监听也能交互。需要父子同步时使用 `value={state}` 配合 `onChange={setState}`。相同值的重新渲染不会重置内部编辑；数组值请使用新数组更新。
+
 用于按月展示日期和日程事件。
 
 ## 代码演示
@@ -20,8 +22,7 @@
 
 | 属性           | 说明                             | 类型                       | 默认值   |
 | -------------- | -------------------------------- | -------------------------- | -------- |
-| value          | 受控日期                         | string                     | -        |
-| defaultValue   | 初始日期                         | string                     | 当前日期 |
+| value          | 日期                         | string                     | -        |
 | events         | 日程事件                         | CalendarEventData[]        | []       |
 | firstDayOfWeek | 每周起始日，0 为周日             | number                     | 根据语言 |
 | maxEvents      | 每个日期最多显示的事件数         | number                     | 3        |

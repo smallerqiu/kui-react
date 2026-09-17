@@ -1,5 +1,7 @@
 # Segmented
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 Switch quickly between mutually exclusive options.
 
 ## Examples
@@ -25,7 +27,6 @@ Switch quickly between mutually exclusive options.
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
 | value | Selected value | string \| number | - |
-| defaultValue | Initial selected value | string \| number | - |
 | options | Option data | SegmentedOption[] | [] |
 | disabled | Disable all options | boolean | false |
 | readOnly | Read-only state | boolean | false |

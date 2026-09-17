@@ -1,5 +1,7 @@
 # 验证码输入框 InputOTP
 
+`value` 用于初始化组件，并同步后续的外部值变化。用户操作会更新内部值并触发 `onChange`，即使传入固定值或 `onChange` 仅用于监听也能交互。需要父子同步时使用 `value={state}` 配合 `onChange={setState}`。相同值的重新渲染不会重置内部编辑；数组值请使用新数组更新。
+
 用于输入短信验证码、一次性密码等定长内容。
 
 [基础用法](./demo/basic.tsx?show=vertical)
@@ -38,8 +40,7 @@
 
 | 属性         | 说明                       | 类型                                           | 默认值 |
 | ------------ | -------------------------- | ---------------------------------------------- | ------ |
-| value        | 受控输入值                 | string \| number                               | -      |
-| defaultValue | 非受控初始值               | string \| number                               | -      |
+| value        | 输入值                 | string \| number                               | -      |
 | length       | 输入框数量，按非负整数处理 | number                                         | 6      |
 | type         | 字符类型                   | 'number' \| 'text'                             | number |
 | mask         | 是否隐藏内容               | boolean                                        | false  |

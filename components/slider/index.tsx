@@ -21,7 +21,6 @@ export interface SliderProps extends Omit<
   "onChange" | "defaultValue"
 > {
   value?: number | number[];
-  defaultValue?: number | number[];
   min?: number;
   max?: number;
   step?: number | null;
@@ -40,7 +39,6 @@ export interface SliderProps extends Omit<
 
 function Slider({
   value,
-  defaultValue,
   min = 0,
   max = 100,
   step = 1,
@@ -75,7 +73,7 @@ function Slider({
   };
 
   const emptyValue = range ? [min, min] : min;
-  const sourceValue = value !== undefined ? (value ?? emptyValue) : (defaultValue ?? emptyValue);
+  const sourceValue = value ?? emptyValue;
   const [internalValue, setInternalValue] = useState<number | number[]>(() =>
     formatValue(sourceValue),
   );
@@ -98,7 +96,7 @@ function Slider({
       syncedSource.range !== range ||
       syncedSource.marks !== marks)
   ) {
-    const next = formatValue(sourceValue);
+    const next = formatValue(syncedSource.value !== value ? sourceValue : internalValue);
     setSyncedSource({ value, min, max, step, range, marks });
     setInternalValue(next);
   }

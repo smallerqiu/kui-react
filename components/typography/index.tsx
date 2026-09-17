@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 /* eslint-disable react-refresh/only-export-components */
 import clsx from "clsx";
 import { Check, Copy, Pencil } from "kui-icons";
@@ -23,10 +24,9 @@ export interface TypographyEllipsisOptions {
 }
 export interface TypographyProps extends Omit<
   React.HTMLAttributes<HTMLElement>,
-  "onChange" | "onCopy" | "title"
+  "onChange" | "onCopy" | "title" | "defaultValue"
 > {
   value?: string;
-  defaultValue?: string;
   tag?: TypographyTag;
   type?: TypographyType;
   strong?: boolean;
@@ -57,7 +57,6 @@ function createTypography(defaultTag: TypographyTag, name: string) {
     (
       {
         value,
-        defaultValue = "",
         tag = defaultTag,
         type,
         strong,
@@ -78,34 +77,24 @@ function createTypography(defaultTag: TypographyTag, name: string) {
       },
       ref,
     ) => {
-      const controlled = value !== undefined;
-      const initialText =
-        value ?? (children !== undefined ? getReactNodeText(children) : defaultValue);
-      const [innerValue, setInnerValue] = useState(initialText);
+      const initialText = value ?? (children !== undefined ? getReactNodeText(children) : "");
+      const [innerValue, setInnerValue] = useValue(
+        value ?? getReactNodeText(children),
+        (next) => next,
+      );
       const [draft, setDraft] = useState(initialText);
       const [editing, setEditing] = useState(false);
       const [copied, setCopied] = useState(false);
       const [expanded, setExpanded] = useState(false);
       const [edited, setEdited] = useState(false);
       const copiedTimer = useRef<number | undefined>(undefined);
-      const text = controlled
-        ? value
-        : edited
-          ? innerValue
-          : children !== undefined
-            ? getReactNodeText(children)
-            : innerValue;
-      useEffect(() => {
-        if (controlled) setDraft(value);
-      }, [controlled, value]);
+      const text = innerValue;
       useEffect(() => () => window.clearTimeout(copiedTimer.current), []);
       const finishEdit = () => {
         if (!editing) return;
         setEditing(false);
-        if (!controlled) {
-          setInnerValue(draft);
-          setEdited(true);
-        }
+        setInnerValue(draft);
+        setEdited(true);
         onChange?.(draft);
       };
       if (editing) {
@@ -177,7 +166,7 @@ function createTypography(defaultTag: TypographyTag, name: string) {
               className={clsx("k-typography-content", isEllipsis && "is-ellipsis")}
               style={isEllipsis ? { WebkitLineClamp: rows } : undefined}
             >
-              {controlled ? value : edited ? innerValue : (children ?? innerValue)}
+              {value !== undefined || edited ? innerValue : (children ?? innerValue)}
             </span>,
             isEllipsis ? tooltipTitle : undefined,
           )}

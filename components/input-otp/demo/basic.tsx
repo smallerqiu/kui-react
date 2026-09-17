@@ -13,7 +13,7 @@ export default function App() {
         onComplete={(code) => message.success(`complete: ${code}`)}
       />
       <InputOTP value={text} onChange={setText} type="text" length={4} mask />
-      <InputOTP defaultValue="123456" size="small" disabled />
+      <InputOTP value="123456" size="small" disabled />
     </Space>
   );
 }

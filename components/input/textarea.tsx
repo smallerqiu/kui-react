@@ -1,15 +1,15 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
-import React, { useState } from "react";
+import React from "react";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 
 export interface TextAreaProps extends Omit<
   React.TextareaHTMLAttributes<HTMLTextAreaElement>,
-  "onChange"
+  "onChange" | "defaultValue"
 > {
   value?: string | number | readonly string[];
-  defaultValue?: string | number | readonly string[];
   theme?: ThemeType;
   shape?: ShapeType;
   size?: SizeType;
@@ -20,7 +20,6 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
   (
     {
       value,
-      defaultValue = "",
       theme: themeProp,
       shape: shapeProp,
       size: sizeProp,
@@ -37,13 +36,11 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
     const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
     const shape = shapeProp ?? inheritedAppearance.shape;
     const size = sizeProp ?? inheritedAppearance.size;
-    const [innerValue, setInnerValue] = useState(defaultValue);
-    const currentValue = value !== undefined ? (value ?? "") : innerValue;
+    const [innerValue, setInnerValue] = useValue(value, (next) => next ?? "");
+    const currentValue = innerValue;
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       const v = e.target.value;
-      if (value === undefined) {
-        setInnerValue(v);
-      }
+      setInnerValue(v);
       onChange?.(v);
     };
     const classes = clsx(

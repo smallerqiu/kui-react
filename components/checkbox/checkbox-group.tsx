@@ -1,7 +1,8 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
-import React, { useState } from "react";
+import React from "react";
 import type { DirectionType, SizeType, ThemeType } from "../const/types";
 import Checkbox, { type ChangeEvent } from "./checkbox";
 import { CheckboxGroupContext } from "./checkbox-group-context";
@@ -19,7 +20,6 @@ export interface CheckboxGroupProps<T extends string | number = string | number>
   "onChange" | "defaultValue"
 > {
   value?: T[];
-  defaultValue?: T[];
   theme?: ThemeType;
   disabled?: boolean;
   readOnly?: boolean;
@@ -32,7 +32,6 @@ export interface CheckboxGroupProps<T extends string | number = string | number>
 
 const CheckboxGroup = <T extends string | number = string | number>({
   value,
-  defaultValue = [],
   theme: themeProp,
   disabled = false,
   readOnly = false,
@@ -47,8 +46,8 @@ const CheckboxGroup = <T extends string | number = string | number>({
   const inheritedAppearance = useConfigAppearance();
   const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
   const size = sizeProp ?? inheritedAppearance.size;
-  const [innerValue, setInnerValue] = useState<T[]>(defaultValue);
-  const currentValue = value !== undefined ? (value ?? []) : innerValue;
+  const [innerValue, setInnerValue] = useValue(value, (next): T[] => next ?? []);
+  const currentValue = innerValue;
 
   const handleCheckboxChange = (event: ChangeEvent) => {
     if (readOnly) return;
@@ -68,9 +67,7 @@ const CheckboxGroup = <T extends string | number = string | number>({
       }
     }
 
-    if (value === undefined) {
-      setInnerValue(nextValue);
-    }
+    setInnerValue(nextValue);
     onChange?.(nextValue);
   };
 

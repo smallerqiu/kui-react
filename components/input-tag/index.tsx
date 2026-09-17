@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
@@ -9,9 +10,11 @@ import Space from "../space";
 import Tag from "../tag";
 import Tooltip from "../tooltip";
 
-export interface InputTagProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface InputTagProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange" | "defaultValue"
+> {
   value?: string[];
-  defaultValue?: string[];
   placeholder?: string;
   disabled?: boolean;
   readOnly?: boolean;
@@ -32,7 +35,6 @@ export interface InputTagProps extends Omit<React.HTMLAttributes<HTMLDivElement>
 
 const InputTag: React.FC<InputTagProps> = ({
   value,
-  defaultValue = [],
   placeholder,
   disabled = false,
   readOnly = false,
@@ -57,13 +59,13 @@ const InputTag: React.FC<InputTagProps> = ({
   const size = sizeProp ?? inheritedAppearance.size ?? "medium";
   const shape = shapeProp ?? inheritedAppearance.shape;
   const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
-  const [inner, setInner] = useState(defaultValue);
+  const [inner, setInner] = useValue(value, (next) => next ?? []);
   const [draft, setDraft] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const tags = value !== undefined ? (value ?? []) : inner;
+  const tags = inner;
 
   const update = (next: string[]) => {
-    if (value === undefined) setInner(next);
+    setInner(next);
     onChange?.(next);
   };
   const addValues = (items: string[]) => {

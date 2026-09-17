@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
@@ -21,9 +22,11 @@ import Mode, { type ColorMode } from "./mode";
 import Paint from "./paint";
 import Presets from "./presets";
 
-export interface ColorPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface ColorPickerProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onChange" | "defaultValue"
+> {
   value?: string;
-  defaultValue?: string;
   open?: boolean;
   defaultOpen?: boolean;
   disabled?: boolean;
@@ -45,7 +48,6 @@ export interface ColorPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "
 
 function ColorPicker({
   value,
-  defaultValue,
   open: openProp,
   defaultOpen = false,
   disabled = false,
@@ -67,11 +69,10 @@ function ColorPicker({
 }: ColorPickerProps) {
   const inheritedAppearance = useConfigAppearance();
   const size = sizeProp ?? inheritedAppearance.size;
-  const controlled = value;
-  const [innerColor, setInnerColor] = useState(defaultValue ?? controlled ?? "#000000ff");
+  const [innerColor, setInnerColor] = useValue(value, (next) => next ?? "#000000ff");
   const [innerMode, setInnerMode] = useState<ColorMode>(modeProp ?? "hex");
   const mode = modeProp ?? innerMode;
-  const [initialColor] = useState(() => Color(defaultValue ?? controlled ?? "#000000ff"));
+  const [initialColor] = useState(() => Color(value ?? "#000000ff"));
   const [currentHue, setCurrentHue] = useState(initialColor.hue());
   const [currentAlpha, setCurrentAlpha] = useState(initialColor.alpha());
   const [innerOpen, setInnerOpen] = useState(defaultOpen);
@@ -85,7 +86,7 @@ function ColorPicker({
   const topRef = useRef(0);
   const leftRef = useRef(0);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const currentValue = controlled ?? innerColor;
+  const currentValue = innerColor;
   const [syncedValue, setSyncedValue] = useState(currentValue);
   if (syncedValue !== currentValue) {
     const next = Color(currentValue);
@@ -105,7 +106,7 @@ function ColorPicker({
   const update = (next: ColorInstance, targetMode = mode) => {
     if (readOnly) return;
     const formatted = format(next, targetMode);
-    if (controlled === undefined) setInnerColor(formatted);
+    setInnerColor(formatted);
     onChange?.(formatted);
   };
   const updatePosition = useCallback(() => {

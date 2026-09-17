@@ -10,9 +10,9 @@ export default function App() {
         <RadioButton value="medium" label="Medium" />
         <RadioButton value="small" label="small" />
       </RadioGroup>
-      <InputTag size={size} block defaultValue={["Design"]} />
-      <InputTag size={size} block defaultValue={["Design", "Develop"]} />
-      <InputTag size={size} block defaultValue={["Design", "Develop", "Release"]} />
+      <InputTag size={size} block value={["Design"]} />
+      <InputTag size={size} block value={["Design", "Develop"]} />
+      <InputTag size={size} block value={["Design", "Develop", "Release"]} />
     </Space>
   );
 }

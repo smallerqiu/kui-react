@@ -1,5 +1,7 @@
 # Select
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 Dropdown selector.
 
 ## When to Use
@@ -45,8 +47,7 @@ Dropdown selector.
 
 | Property     | Description                                                               | Type                               | Default       |
 | ------------ | ------------------------------------------------------------------------- | ---------------------------------- | ------------- |
-| value        | Controlled selected value                                                 | string, number, (string\|number)[] | -             |
-| defaultValue | Initial selected value in uncontrolled mode                               | string, number, (string\|number)[] | -             |
+| value        | selected value                                                 | string, number, (string\|number)[] | -             |
 | open         | Controlled dropdown visibility                                            | boolean                            | -             |
 | defaultOpen  | Initial dropdown visibility in uncontrolled mode                          | boolean                            | false         |
 | placement    | Dropdown placement                                                        | DropPlacementsType                 | bottom-left   |

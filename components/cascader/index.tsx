@@ -1,15 +1,9 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { ChevronDown, ChevronRight, CircleAlert, CircleX, Loading } from "kui-icons";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type KeyboardEvent,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import Empty from "../empty";
@@ -37,7 +31,6 @@ const pathFromValue = (
 
 function Cascader({
   value,
-  defaultValue = [],
   open: openProp,
   defaultOpen = false,
   options: optionsProp,
@@ -72,9 +65,8 @@ function Cascader({
   const shape = shapeProp ?? inheritedAppearance.shape;
   const size = sizeProp ?? inheritedAppearance.size;
   const options = optionsProp ?? EMPTY_OPTIONS;
-  const controlledValue = value;
-  const [innerValue, setInnerValue] = useState<CascaderValue>(defaultValue);
-  const currentValue = controlledValue ?? innerValue;
+  const [innerValue, setInnerValue] = useValue(value, (next): CascaderValue => next ?? []);
+  const currentValue = innerValue;
   const [loadedChildren, setLoadedChildren] = useState(
     () => new Map<CascaderOption, CascaderOption[]>(),
   );
@@ -201,7 +193,7 @@ function Cascader({
   }, [activePath, updatePosition, visible]);
 
   const commit = (next: CascaderValue) => {
-    if (controlledValue === undefined) setInnerValue(next);
+    setInnerValue(next);
     onChange?.(next);
   };
 

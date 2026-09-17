@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import React, { useState } from "react";
@@ -5,9 +6,11 @@ import type { SizeType } from "../const/types";
 import type { IconType } from "../icon";
 import Star from "./star";
 
-export interface RateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface RateProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange" | "defaultValue"
+> {
   value?: number;
-  defaultValue?: number;
   allowClear?: boolean;
   allowHalf?: boolean;
   color?: string;
@@ -26,7 +29,6 @@ export interface RateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "o
 
 const Rate: React.FC<RateProps> = ({
   value,
-  defaultValue = 0,
   allowClear = true,
   allowHalf = false,
   color,
@@ -45,10 +47,10 @@ const Rate: React.FC<RateProps> = ({
   style,
   ...rest
 }) => {
-  const [innerValue, setInnerValue] = useState(defaultValue);
+  const [innerValue, setInnerValue] = useValue(value, (next) => Number(next ?? 0));
   const [tempValue, setTempValue] = useState<number | null>(null);
   const [cleared, setCleared] = useState(false);
-  const currentValue = value !== undefined ? Number(value ?? 0) : innerValue;
+  const currentValue = innerValue;
 
   const update = (t: "C" | "M", index: number, percent: number) => {
     if (readOnly) return;
@@ -64,7 +66,7 @@ const Rate: React.FC<RateProps> = ({
       v = parseFloat(v.toFixed(2));
 
       const nextValue = v === currentValue && allowClear ? 0 : v;
-      if (value === undefined) setInnerValue(nextValue);
+      setInnerValue(nextValue);
 
       if (nextValue === 0) {
         setCleared(true);

@@ -1,5 +1,7 @@
 # Checkbox 多选框
 
+`value` 用于初始化组件，并同步后续的外部值变化。用户操作会更新内部值并触发 `onChange`，即使传入固定值或 `onChange` 仅用于监听也能交互。需要父子同步时使用 `value={state}` 配合 `onChange={setState}`。相同值的重新渲染不会重置内部编辑；数组值请使用新数组更新。
+
 多选框
 
 ## 何时使用
@@ -48,8 +50,7 @@
 
 | 属性         | 说明                                             | 类型                                  | 默认值     |
 | ------------ | ------------------------------------------------ | ------------------------------------- | ---------- |
-| value        | 受控的当前选中值                                 | (string \| number)[]                  | -          |
-| defaultValue | 非受控模式的初始选中值                           | (string \| number)[]                  | []         |
+| value        | 的当前选中值                                 | (string \| number)[]                  | -          |
 | disabled     | 是否禁用组件                                     | boolean                               | false      |
 | readOnly     | 是否只读组件                                     | boolean                               | false      |
 | onChange     | 在选项状态发生改变时触发，返回当前选中的项和状态 | (value: (string \| number)[]) => void | -          |

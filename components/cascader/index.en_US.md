@@ -1,5 +1,7 @@
 # Cascader
 
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
 A cascading selection box.
 
 ## When to Use
@@ -34,8 +36,7 @@ A cascading selection box.
 
 | Property       | Description                                                                                                         | Type                      | Default           |
 | :------------- | :------------------------------------------------------------------------------------------------------------------ | :------------------------ | :---------------- |
-| value          | Controlled array of path values (e.g., `['zhejiang', 'hangzhou', 'xihu']`).                                         | `(string \| number)[]`    | -                 |
-| defaultValue   | Initial path value in uncontrolled mode.                                                                            | `(string \| number)[]`    | `[]`              |
+| value          | array of path values (e.g., `['zhejiang', 'hangzhou', 'xihu']`).                                         | `(string \| number)[]`    | -                 |
 | open           | Controlled dropdown visibility.                                                                                     | `boolean`                 | -                 |
 | defaultOpen    | Initial dropdown visibility in uncontrolled mode.                                                                   | `boolean`                 | `false`           |
 | theme          | Component theme.                                                                                                    | `ThemeType`               | `fill`            |

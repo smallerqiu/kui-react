@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
@@ -30,7 +31,6 @@ export interface AutoCompleteProps extends Omit<
   "size" | "value" | "defaultValue" | "onChange" | "onSelect"
 > {
   value?: string;
-  defaultValue?: string;
   options?: Array<string | AutoCompleteOption>;
   open?: boolean;
   defaultOpen?: boolean;
@@ -49,10 +49,11 @@ export interface AutoCompleteProps extends Omit<
   onOpenChange?: (open: boolean) => void;
 }
 
+const EMPTY_OPTIONS: Array<string | AutoCompleteOption> = [];
+
 const AutoComplete: React.FC<AutoCompleteProps> = ({
   value,
-  defaultValue = "",
-  options = [],
+  options = EMPTY_OPTIONS,
   open,
   defaultOpen = false,
   showOnEmpty = false,
@@ -88,7 +89,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
     () => options.map((item) => (typeof item === "string" ? { value: item, label: item } : item)),
     [options],
   );
-  const initialCurrent = value ?? defaultValue;
+  const initialCurrent = value ?? "";
   const initiallyOpen = open ?? defaultOpen;
   const initialShownOptions =
     initiallyOpen && (initialCurrent || showOnEmpty) && !loading
@@ -99,7 +100,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
               option.value.toLocaleLowerCase().includes(initialCurrent.toLocaleLowerCase()),
         )
       : [];
-  const [innerValue, setInnerValue] = useState(defaultValue);
+  const [innerValue, setInnerValue] = useValue(value, (next) => next ?? "");
   const [innerOpen, setInnerOpen] = useState(defaultOpen);
   const [rendered, setRendered] = useState(
     initiallyOpen && (loading || initialShownOptions.length > 0),
@@ -121,7 +122,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   const originRef = useRef("left top");
   const topRef = useRef(0);
   const leftRef = useRef(0);
-  const current = value !== undefined ? (value ?? "") : innerValue;
+  const current = innerValue;
   const requestedOpen = open ?? innerOpen;
   const visible = (loading || (!suppressRemoteOptions && shownOptions.length > 0)) && requestedOpen;
   const getMatches = (input: string) =>
@@ -222,7 +223,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
 
   const update = (next: string) => {
     if (readOnly) return;
-    if (value === undefined) setInnerValue(next);
+    setInnerValue(next);
     onChange?.(next);
   };
   const choose = (option: AutoCompleteOption) => {

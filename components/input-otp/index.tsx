@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
@@ -7,7 +8,6 @@ import {
   useCallback,
   useImperativeHandle,
   useRef,
-  useState,
   type ClipboardEvent,
   type FocusEvent,
   type HTMLAttributes,
@@ -21,9 +21,11 @@ export interface InputOTPRef {
   focus: (index?: number) => void;
   blur: () => void;
 }
-export interface InputOTPProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface InputOTPProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onChange" | "defaultValue"
+> {
   value?: string | number;
-  defaultValue?: string | number;
   length?: number;
   type?: "number" | "text";
   size?: SizeType;
@@ -44,7 +46,6 @@ export interface InputOTPProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
 const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
   {
     value,
-    defaultValue = "",
     length = 6,
     type = "number",
     size: sizeProp,
@@ -79,8 +80,8 @@ const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
     [length, type, validator],
   );
   const otpLength = Math.max(0, Math.trunc(length));
-  const [innerValue, setInnerValue] = useState(() => normalize(defaultValue));
-  const currentValue = normalize(value !== undefined ? (value ?? "") : innerValue);
+  const [innerValue, setInnerValue] = useValue(value, (next) => normalize(next ?? ""));
+  const currentValue = normalize(innerValue);
   const inputs = useRef<Array<HTMLInputElement | null>>([]);
   const focusedIndex = useRef(-1);
   const composing = useRef(new Set<number>());
@@ -100,7 +101,7 @@ const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
   const updateValue = (source: string) => {
     const nextValue = normalize(source);
     if (nextValue === currentValue) return;
-    if (value === undefined) setInnerValue(nextValue);
+    setInnerValue(nextValue);
     onChange?.(nextValue);
     if (otpLength > 0 && Array.from(nextValue).length === otpLength) onComplete?.(nextValue);
   };

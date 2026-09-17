@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import Big from "big.js";
 import { createFormFieldComponent } from "../form/field-context";
@@ -14,7 +15,6 @@ export interface InputNumberProps extends Omit<
   "onChange" | "defaultValue" | "prefix"
 > {
   value?: number | string;
-  defaultValue?: number | string;
   min?: number;
   max?: number;
   step?: number | string;
@@ -38,7 +38,6 @@ export interface InputNumberProps extends Omit<
 
 const InputNumber: React.FC<InputNumberProps> = ({
   value,
-  defaultValue,
   min = -Infinity,
   max = Infinity,
   step = 1,
@@ -67,10 +66,14 @@ const InputNumber: React.FC<InputNumberProps> = ({
   const size = sizeProp ?? inheritedAppearance.size;
   const parentSize = useContext(SizeContext);
   const safePrecision = precision === undefined ? undefined : Math.max(0, Math.trunc(precision));
-  const [innerValue, setInnerValue] = useState(normalize(defaultValue, safePrecision));
+  const [innerValue, setInnerValue] = useValue(value, (next) => normalize(next, safePrecision));
   const [userInput, setUserInput] = useState<string | null>(null);
-  const controlled = value !== undefined;
-  const currentValue = controlled ? normalize(value, safePrecision) : innerValue;
+  const [inputSource, setInputSource] = useState(value);
+  if (!Object.is(inputSource, value)) {
+    setInputSource(value);
+    setUserInput(null);
+  }
+  const currentValue = normalize(innerValue, safePrecision);
 
   const clamp = (val: string | number): string => {
     if (!isValidBig(val)) {
@@ -99,7 +102,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
   const triggerUpdate = (val: string | number) => {
     const parsed = parser ? parser(String(val)) : val;
     const clampedStr = clamp(String(parsed));
-    if (!controlled) setInnerValue(clampedStr);
+    setInnerValue(clampedStr);
     setUserInput(null);
     const output = clampedStr === "" ? undefined : Number(clampedStr);
     emitValue(output);
@@ -109,18 +112,14 @@ const InputNumber: React.FC<InputNumberProps> = ({
     setUserInput(val);
     const parsed = parser ? parser(val) : val;
     if (val === "") {
-      if (!controlled) {
-        setInnerValue("");
-      }
+      setInnerValue("");
       emitValue(undefined);
       return;
     }
     if (isValidBig(parsed)) {
       const bigVal = new Big(parsed);
       const normalizedStr = bigVal.toFixed();
-      if (!controlled) {
-        setInnerValue(normalizedStr);
-      }
+      setInnerValue(normalizedStr);
       emitValue(Number(normalizedStr));
     }
   };

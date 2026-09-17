@@ -1,7 +1,8 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import CheckCard from "./check-card";
 import { CheckCardGroupContext } from "./context";
 import type { CheckCardGroupProps, CheckCardValue } from "./types";
@@ -10,7 +11,6 @@ const CheckCardGroup = React.forwardRef<HTMLDivElement, CheckCardGroupProps>(
   (
     {
       value,
-      defaultValue,
       options,
       disabled = false,
       readOnly = false,
@@ -29,18 +29,18 @@ const CheckCardGroup = React.forwardRef<HTMLDivElement, CheckCardGroupProps>(
     const theme = themeProp ?? inheritedAppearance.theme ?? "outline";
     const size = sizeProp ?? inheritedAppearance.size ?? "medium";
     const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
-    const [localValue, setLocalValue] = useState(defaultValue);
+    const [localValue, setLocalValue] = useValue(value, (next) => next);
     const registry = React.useRef(
       new Map<CheckCardValue, { element: HTMLDivElement; disabled: boolean }>(),
     ).current;
-    const currentValue = value !== undefined ? value : localValue;
+    const currentValue = localValue;
     const select = useCallback(
       (nextValue: CheckCardValue) => {
         if (disabled || readOnly || currentValue === nextValue) return;
-        if (value === undefined) setLocalValue(nextValue);
+        setLocalValue(nextValue);
         onChange?.(nextValue);
       },
-      [currentValue, disabled, onChange, readOnly, value],
+      [currentValue, disabled, onChange, readOnly, setLocalValue],
     );
     const context = useMemo(
       () => ({
