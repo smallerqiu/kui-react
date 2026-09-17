@@ -1,7 +1,6 @@
 import { useValue } from "../utils/use-value";
 import clsx from "clsx";
 import React, {
-  Children,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -15,6 +14,7 @@ import type { IconType } from "../icon";
 import { MenuContext, type MenuContextProps } from "./menu-context";
 import RecursiveMenu from "./recursive-menu";
 import SubMenu from "./sub-menu";
+import { getChildren } from "../utils/react-node";
 
 const overflowMenuKey = "__kui_menu_overflow__";
 
@@ -83,6 +83,7 @@ export const Menu: React.FC<MenuProps> = ({
     popupReady: inlineCollapsed,
   });
   const [inlineOpenVisible, setInlineOpenVisible] = useState(!inlineCollapsed);
+  const [inlineTransition, setInlineTransition] = useState(false);
   const collapseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const collapseFrame = useRef(0);
   const menuRef = useRef<HTMLUListElement>(null);
@@ -121,9 +122,10 @@ export const Menu: React.FC<MenuProps> = ({
   // inlineCollapsed: save/restore openKeys (adjusting state during render)
   if (prevInlineCollapsed !== inlineCollapsed) {
     setPrevInlineCollapsed(inlineCollapsed);
+    setInlineTransition(true);
     if (inlineCollapsed) {
       const current = openKeys ?? internalOpenKeys;
-      if (current.length > 0) setTempOpenKeys([...current]);
+      if (!inlineTransition) setTempOpenKeys([...current]);
       if (openKeys === undefined) setInternalOpenKeys([]);
     } else if (tempOpenKeys.length > 0) {
       if (openKeys === undefined) setInternalOpenKeys([...tempOpenKeys]);
@@ -160,10 +162,17 @@ export const Menu: React.FC<MenuProps> = ({
           setCollapseState((current) =>
             current.inlineCollapsed ? { ...current, popupReady: true } : current,
           );
+          setInlineTransition(false);
           collapseTimer.current = null;
         }, 220);
-      } else if (openKeys !== undefined && tempOpenKeys.length > 0) {
-        onOpenChange?.([...tempOpenKeys]);
+      } else {
+        collapseTimer.current = setTimeout(() => {
+          setInlineTransition(false);
+          collapseTimer.current = null;
+        }, 350);
+        if (openKeys !== undefined && tempOpenKeys.length > 0) {
+          onOpenChange?.([...tempOpenKeys]);
+        }
       }
     }
 
@@ -227,6 +236,8 @@ export const Menu: React.FC<MenuProps> = ({
     inlineCollapsed,
     collapsedTooltip,
     popupInlineCollapsed,
+    inlineTransition,
+    inlineOpenKeys: tempOpenKeys,
     dropdown,
     openKeysChange,
     selectedKeysChange,
@@ -243,7 +254,7 @@ export const Menu: React.FC<MenuProps> = ({
     () =>
       items && items.length > 0
         ? items.map((item) => <RecursiveMenu item={item} key={item.key} />)
-        : Children.toArray(children),
+        : getChildren(children),
     [children, items],
   );
   const totalItems = allChildren.length;

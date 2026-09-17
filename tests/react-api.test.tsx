@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import React from "react";
 import { describe, expect, it, vi } from "vitest";
 import {
@@ -115,19 +116,33 @@ describe("React value synchronization and controlled visibility", () => {
     expect(onReset).toHaveBeenCalledOnce();
   });
 
-  it("places text and React node affixes inside the input", () => {
+  it("keeps prefixes and suffixes inline and uses addons for InputGroup", () => {
     const { unmount } = render(<Input prefix="¥" suffix="CNY" />);
     expect(document.querySelector(".k-input-prefix")?.textContent).toBe("¥");
     expect(document.querySelector(".k-input-suffix")?.textContent).toBe("CNY");
     expect(document.querySelector(".k-input-group")).toBeNull();
     unmount();
 
-    render(
+    const inline = render(
       <Input prefix={<button>Prefix action</button>} suffix={<button>Suffix action</button>} />,
     );
     expect(document.querySelector(".k-input-prefix button")?.textContent).toBe("Prefix action");
     expect(document.querySelector(".k-input-suffix button")?.textContent).toBe("Suffix action");
     expect(document.querySelector(".k-input-group")).toBeNull();
+    inline.unmount();
+
+    render(
+      <Input
+        addonBefore={<button>Prefix action</button>}
+        addonAfter={<button>Suffix action</button>}
+      />,
+    );
+    expect(document.querySelector(".k-input-group-prefix button")?.textContent).toBe(
+      "Prefix action",
+    );
+    expect(document.querySelector(".k-input-group-suffix button")?.textContent).toBe(
+      "Suffix action",
+    );
   });
 
   it("keeps affixes inside when addons create an InputGroup", () => {
@@ -448,8 +463,18 @@ describe("React value synchronization and controlled visibility", () => {
         "translate3d(-400px,0,0)",
       ),
     );
-    expect(screen.getByRole("button", { name: "More tabs" })).not.toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "More tabs" }));
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Tab 2" }));
+    await waitFor(() =>
+      expect(document.querySelector<HTMLElement>(".k-tabs-nav")?.style.transform).toBe(
+        "translate3d(-200px,0,0)",
+      ),
+    );
+    expect(screen.getByRole("tab", { name: "Tab 2" }).getAttribute("aria-selected")).toBe("true");
 
+    // A new external value selects the final tab again before resizing.
+    rerender(<Tabs value="tab-4">{panels}</Tabs>);
+    rerender(<Tabs value="tab-5">{panels}</Tabs>);
     Object.defineProperty(wrap, "clientWidth", { configurable: true, value: 100 });
     triggerResize();
     await waitFor(() =>
@@ -457,6 +482,14 @@ describe("React value synchronization and controlled visibility", () => {
         "translate3d(-500px,0,0)",
       ),
     );
+    Object.defineProperty(wrap, "clientWidth", { configurable: true, value: 800 });
+    triggerResize();
+    await waitFor(() =>
+      expect(document.querySelector<HTMLElement>(".k-tabs-nav")?.style.transform).toBe(
+        "translate3d(0px,0,0)",
+      ),
+    );
+    expect(screen.queryByRole("button", { name: "More tabs" })).toBeNull();
     vi.stubGlobal("ResizeObserver", originalResizeObserver);
   });
 
@@ -557,7 +590,12 @@ describe("React value synchronization and controlled visibility", () => {
         onSort={onSort}
       />,
     );
-    fireEvent.click(document.querySelector(".k-table-body tbody input[type='checkbox']")!);
+    const user = userEvent.setup();
+    const checkbox = document.querySelector<HTMLInputElement>(
+      ".k-table-body tbody input[type=checkbox]",
+    )!;
+    checkbox.focus();
+    await user.keyboard("[Space]");
     expect(onSelectedKeysChange).toHaveBeenCalledWith(["one"]);
     expect((document.querySelector(".k-table-body input") as HTMLInputElement).checked).toBe(false);
     fireEvent.click(document.querySelector(".k-table-sorter-up")!);

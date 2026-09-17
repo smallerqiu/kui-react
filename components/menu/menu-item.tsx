@@ -12,6 +12,7 @@ export interface MenuItemProps {
   icon?: IconType[] | ReactNode;
   title?: ReactNode;
   disabled?: boolean;
+  onClick?: React.MouseEventHandler<HTMLLIElement>;
   children?: ReactNode;
   className?: string;
   style?: CSSProperties;
@@ -23,6 +24,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
   icon,
   title,
   disabled = false,
+  onClick,
   children,
   className = "",
   style,
@@ -72,15 +74,19 @@ export const MenuItem: React.FC<MenuItemProps> = ({
       }}
       onMouseEnter={() => !disabled && setActive(true)}
       onMouseLeave={() => !disabled && setActive(false)}
-      onClick={() => {
-        if (!disabled) {
-          menuContext?.selectedKeysChange?.(currentKey, true, subMenuContext?.keyPath || []);
+      onClick={(event) => {
+        if (disabled) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
         }
+        menuContext?.selectedKeysChange?.(currentKey, true, subMenuContext?.keyPath || []);
+        onClick?.(event);
       }}
       onKeyDown={(event) =>
         handleMenuItemKeydown(event, () => {
           if (!disabled) {
-            menuContext?.selectedKeysChange?.(currentKey, true, subMenuContext?.keyPath || []);
+            event.currentTarget.click();
           }
         })
       }
@@ -100,8 +106,8 @@ export const MenuItem: React.FC<MenuItemProps> = ({
     !menuContext.dropdown &&
     !subMenuContext?.keyPath.length;
 
-  return showCollapsedTooltip ? (
-    <Tooltip title={title ?? children} placement="right">
+  return menuContext?.mode === "inline" && !menuContext.dropdown && !subMenuContext ? (
+    <Tooltip title={title ?? children} placement="right" disabled={!showCollapsedTooltip}>
       {itemNode}
     </Tooltip>
   ) : (

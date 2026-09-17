@@ -46,7 +46,9 @@ export interface DrawerProps {
 const getBody = () => document.body;
 
 const ensurePositioningContext = (element: HTMLElement) => {
-  if (element === document.body || getComputedStyle(element).position !== "static") return;
+  if (element === document.body) return;
+  const computedPosition = getComputedStyle(element).position;
+  if (computedPosition && computedPosition !== "static") return;
   const position = element.style.position;
   element.style.position = "relative";
   return () => {
@@ -144,9 +146,10 @@ const Drawer: React.FC<DrawerProps> = ({
   );
 
   useEffect(() => {
+    if (currentOpen && !targetEl) return;
     const timer = setTimeout(() => toggle(currentOpen), 0);
     return () => clearTimeout(timer);
-  }, [currentOpen, toggle]);
+  }, [currentOpen, targetEl, toggle]);
 
   useEffect(() => {
     if (escKey) document.addEventListener("keydown", escToClose);
@@ -162,8 +165,7 @@ const Drawer: React.FC<DrawerProps> = ({
   }, [currentOpen, targetEl]);
 
   useLayoutEffect(() => {
-    if (!rendered || !targetEl) return;
-    return ensurePositioningContext(targetEl);
+    if (rendered && targetEl) return ensurePositioningContext(targetEl);
   }, [rendered, targetEl]);
 
   const cancel = () => {

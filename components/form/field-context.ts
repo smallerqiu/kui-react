@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
+import { FormContext } from "./form-context";
 
 export interface FormFieldContextValue {
   id: string;
@@ -27,7 +28,8 @@ export interface FormFieldContextValue {
   blur: () => void;
 }
 
-export const FormFieldContext = createContext<FormFieldContextValue | null>(null);
+// undefined: no FormItem; null: the enclosing control has already consumed the defaults.
+export const FormFieldContext = createContext<FormFieldContextValue | null | undefined>(undefined);
 
 export interface FormFieldAdapter {
   valueProp?: "value" | "checked" | "fileList" | "targetKeys";
@@ -40,11 +42,10 @@ const formFieldComponents = new WeakSet<object>();
 
 export const resolveFormControlAttrs = (
   props: Record<string, unknown>,
-  field: FormFieldContextValue | null,
+  field: FormFieldContextValue | null | undefined,
 ) => ({
   id: props.id ?? (field?.prop ? field.id : undefined),
-  "aria-labelledby":
-    props["aria-labelledby"] ?? (field?.prop ? field.labelId : undefined),
+  "aria-labelledby": props["aria-labelledby"] ?? (field?.prop ? field.labelId : undefined),
   "aria-describedby": props["aria-describedby"] ?? field?.describedBy,
   "aria-invalid": props["aria-invalid"] ?? (field?.invalid || undefined),
   "aria-required": props["aria-required"] ?? (field?.required || undefined),
@@ -63,7 +64,9 @@ export function createFormFieldComponent<T extends ElementType>(
   const Control = Component as ComponentType<Record<string, unknown>>;
   const FormFieldComponent = (props: Props) => {
     const field = useContext(FormFieldContext);
-    if (!field?.prop) return createElement(Control, props as Record<string, unknown>);
+    const form = useContext(FormContext);
+    if (field === null || (!field && !form))
+      return createElement(Control, props as Record<string, unknown>);
 
     const source = props as Record<string, unknown>;
     const valueProp = adapter.valueProp ?? "value";
@@ -73,23 +76,24 @@ export function createFormFieldComponent<T extends ElementType>(
     const controlProps = {
       ...source,
       ...resolveFormControlAttrs(source, field),
-      [valueProp]: adapter.getFieldValue ? adapter.getFieldValue(field.value) : field.value,
-      onChange: (...args: unknown[]) => {
+    } as Record<string, unknown>;
+    // Presentation and interaction state are inherited even without a model binding.
+    if (field?.prop) {
+      controlProps[valueProp] = adapter.getFieldValue
+        ? adapter.getFieldValue(field.value)
+        : field.value;
+      controlProps.onChange = (...args: unknown[]) => {
         originalChange?.(...args);
         field.update(adapter.getChangeValue ? adapter.getChangeValue(...args) : args[0]);
-      },
-      onBlur: (...args: unknown[]) => {
+      };
+      controlProps.onBlur = (...args: unknown[]) => {
         originalBlur?.(...args);
         field.blur();
-      },
-    } as Record<string, unknown>;
-    if (inherit.includes("size") && source.size === undefined) controlProps.size = field.size;
-    if (inherit.includes("shape") && source.shape === undefined) controlProps.shape = field.shape;
-    if (inherit.includes("theme") && source.theme === undefined) controlProps.theme = field.theme;
-    if (inherit.includes("disabled") && source.disabled === undefined)
-      controlProps.disabled = field.disabled;
-    if (inherit.includes("readOnly") && source.readOnly === undefined)
-      controlProps.readOnly = field.readOnly;
+      };
+    }
+    for (const name of inherit) {
+      if (source[name] === undefined) controlProps[name] = field?.[name] ?? form?.[name];
+    }
 
     return createElement(
       FormFieldContext.Provider,

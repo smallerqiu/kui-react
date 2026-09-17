@@ -59,6 +59,25 @@ describe("new input and navigation components", () => {
     expect(onSelect).toHaveBeenCalledWith("React", expect.objectContaining({ value: "React" }));
   });
 
+  it("keeps empty suggestions closed by default and selects after typing", () => {
+    const onSelect = vi.fn();
+    render(<AutoComplete options={["React", "Vue"]} onSelect={onSelect} />);
+    const input = screen.getByRole("combobox");
+    fireEvent.focus(input);
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(input.getAttribute("aria-expanded")).toBe("false");
+    expect(onSelect).not.toHaveBeenCalled();
+    fireEvent.change(input, { target: { value: "Re" } });
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(onSelect).toHaveBeenCalledExactlyOnceWith(
+      "React",
+      expect.objectContaining({ value: "React" }),
+    );
+    expect((input as HTMLInputElement).value).toBe("React");
+  });
+
   it("adds and removes InputTag values", () => {
     const onChange = vi.fn();
     render(<InputTag value={["React"]} onChange={onChange} />);

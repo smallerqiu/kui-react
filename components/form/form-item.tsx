@@ -144,9 +144,12 @@ export default function FormItem({
             try {
               const returned = rule.validator?.(rule, value, done);
               if (isPromiseLike(returned)) {
-                Promise.resolve(returned).then(() => done(), (error: unknown) => {
-                  done(error instanceof Error ? error : new Error(String(error)));
-                });
+                Promise.resolve(returned).then(
+                  () => done(),
+                  (error: unknown) => {
+                    done(error instanceof Error ? error : new Error(String(error)));
+                  },
+                );
               }
             } catch (error) {
               done(error instanceof Error ? error : new Error(String(error)));
@@ -323,6 +326,8 @@ export default function FormItem({
           "aria-describedby": describedBy,
           "aria-invalid": !valid || undefined,
           "aria-required": required || undefined,
+          disabled: child.props.disabled ?? form?.disabled,
+          readOnly: child.props.readOnly ?? form?.readOnly,
           value: prop && !nativeBoolean ? (fieldValue as never) : nativeProps.value,
           checked: prop && nativeBoolean ? Boolean(fieldValue) : nativeProps.checked,
           onChange: prop
@@ -379,7 +384,7 @@ export default function FormItem({
               ) : null}
               <span className="k-form-item-label-text">{label}</span>
             </span>
-            {colon ?? form?.colon ?? true ? (
+            {(colon ?? form?.colon ?? true) ? (
               <span className="k-form-item-colon" aria-hidden="true">
                 :
               </span>

@@ -18,8 +18,7 @@ export interface TabPanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>
 
 const TabPanel: React.FC<TabPanelProps> = (props) => {
   const { tabKey, activeKey, tabsId, children, className = "", ...rest } = props;
-  const domProps = { ...rest };
-  delete domProps.title;
+  const domProps = { ...rest, title: undefined };
   delete domProps.icon;
   delete domProps.disabled;
   delete domProps.closable;

@@ -1,6 +1,6 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { createRef, useState, type ElementRef } from "react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { Checkbox, Form, FormItem, Input, InputNumber, Switch, Upload } from "react-kui";
 
 describe("Form validation parity with kui-vue", () => {
@@ -169,6 +169,7 @@ describe("Form validation parity with kui-vue", () => {
 });
 
 describe("Upload error reporting parity with kui-vue", () => {
+  afterEach(() => vi.unstubAllGlobals());
   class FakeXHR {
     static instances: FakeXHR[] = [];
     upload = { onloadstart: null as null | (() => void), onprogress: null };
@@ -198,15 +199,14 @@ describe("Upload error reporting parity with kui-vue", () => {
     });
     fireEvent.change(input);
 
-    await waitFor(() => expect(FakeXHR.instances[0]).toBeDefined());
+    await waitFor(() => expect(FakeXHR.instances).toHaveLength(1));
     const xhr = FakeXHR.instances[0];
     xhr.status = 500;
     xhr.readyState = 4;
-    xhr.onreadystatechange?.();
+    act(() => xhr.onreadystatechange?.());
     await waitFor(() =>
       expect(document.querySelector(".k-upload-file-status-text")?.textContent).toContain("500"),
     );
-    vi.unstubAllGlobals();
   });
 
   it("sets errorText when a network error occurs", async () => {
@@ -222,13 +222,13 @@ describe("Upload error reporting parity with kui-vue", () => {
     });
     fireEvent.change(input);
 
-    await waitFor(() => expect(FakeXHR.instances[0]).toBeDefined());
-    FakeXHR.instances[0].onerror?.();
-    await waitFor(() => expect(onChange).toHaveBeenCalled());
+    await waitFor(() => expect(FakeXHR.instances).toHaveLength(1));
+    const changesBeforeError = onChange.mock.calls.length;
+    act(() => FakeXHR.instances[0].onerror?.());
+    expect(onChange).toHaveBeenCalledTimes(changesBeforeError + 1);
     const last = onChange.mock.calls.at(-1)?.[0];
     expect(last?.file?.status).toBe("error");
     expect(last?.file?.errorText).toBeTruthy();
-    vi.unstubAllGlobals();
   });
 });
 

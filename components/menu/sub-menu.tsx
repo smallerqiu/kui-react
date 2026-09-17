@@ -80,7 +80,12 @@ export const SubMenu: React.FC<SubMenuProps> = ({
   const [rendered, setRendered] = useState(
     menuContext?.mode === "inline" && !menuContext?.popupInlineCollapsed,
   );
-  const opened = Boolean(menuContext?.openKeys.includes(currentKey));
+  const restoreNested = !popup && menuContext?.inlineTransition && !!subMenuContext;
+  const opened = Boolean(
+    (restoreNested ? menuContext?.inlineOpenKeys : menuContext?.openKeys)?.includes(currentKey),
+  );
+  // Controlled opening must also instantiate a popup that has never been hovered.
+  if (opened && popup && !rendered) setRendered(true);
 
   const clearCurrentPopTimer = useCallback(() => {
     if (popTimer.current) clearTimeout(popTimer.current);
@@ -201,10 +206,12 @@ export const SubMenu: React.FC<SubMenuProps> = ({
 
   const transitionProps = popup
     ? { name: `k-${preCls}-popup` }
-    : {
-        ...getTransitionProp("k-collapse-slide"),
-        timeout: { appear: 300, enter: 300, exit: 200 },
-      };
+    : restoreNested
+      ? { name: "k-menu-restore", timeout: 0 }
+      : {
+          ...getTransitionProp("k-collapse-slide"),
+          timeout: { appear: 300, enter: 300, exit: 200 },
+        };
   const containerProps = popup
     ? { className: `k-${preCls}-popup`, ...popperProps }
     : { className: `k-${preCls}-sub` };

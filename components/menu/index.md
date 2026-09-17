@@ -70,12 +70,13 @@
 
 ### MenuItem
 
-| 属性     | 说明            | 类型                  | 默认值 |
-| -------- | --------------- | --------------------- | ------ |
-| icon     | item 的图标     | IconType \| ReactNode | -      |
-| disabled | 是否禁用        | boolean               | false  |
-| itemKey  | item 的唯一标志 | string                | -      |
-| title    | 菜单项内容      | ReactNode             | -      |
+| 属性     | 说明             | 类型                                   | 默认值 |
+| -------- | ---------------- | -------------------------------------- | ------ |
+| icon     | item 的图标      | IconType \| ReactNode                  | -      |
+| disabled | 是否禁用         | boolean                                | false  |
+| onClick  | 点击菜单项时触发 | React.MouseEventHandler<HTMLLIElement> | -      |
+| itemKey  | item 的唯一标志  | string                                 | -      |
+| title    | 菜单项内容       | ReactNode                              | -      |
 
 ### SubMenu
 

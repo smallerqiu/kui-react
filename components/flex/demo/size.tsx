@@ -7,7 +7,12 @@ export default function App() {
   const [customSize, setCustomSize] = useState(8);
   return (
     <Flex vertical size="medium">
-      <RadioGroup value={flexSize} onChange={(value) => setFlexSize(value)}>
+      <RadioGroup
+        value={flexSize}
+        onChange={(value) => {
+          if (value === "small" || value === "medium" || value === "large") setFlexSize(value);
+        }}
+      >
         {(["small", "medium", "large"] as SizeType[]).map((item) => (
           <Radio key={item} value={item} label={item[0].toUpperCase() + item.slice(1)} />
         ))}
@@ -19,13 +24,11 @@ export default function App() {
           max={50}
           step={1}
           onChange={(value) => {
-            const next = value as number;
-            setCustomSize(next);
-            setFlexSize(next);
+            if (typeof value === "number") setCustomSize(value);
           }}
         />
       )}
-      <Flex size={flexSize}>
+      <Flex size={custom ? customSize : flexSize}>
         <Button type="primary">Primary</Button>
         <Button>Default</Button>
         <Button type="text">Text</Button>

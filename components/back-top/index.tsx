@@ -56,9 +56,9 @@ export default function BackTop({
         : scrollTarget;
     const update = () => {
       const scrollTop =
-        eventTarget === window
-          ? window.scrollY || document.documentElement.scrollTop || document.body.scrollTop
-          : (eventTarget as HTMLElement).scrollTop;
+        "scrollTop" in eventTarget
+          ? eventTarget.scrollTop
+          : window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
       const next = scrollTop >= height;
       if (visibleRef.current !== next) {
         visibleRef.current = next;
