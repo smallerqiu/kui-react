@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import "dayjs/locale/de";
 import "dayjs/locale/zh-cn";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import {
   Button,
   Card,
@@ -31,6 +31,17 @@ const columns = [
   { title: "Age", key: "age" },
 ];
 
+const styles = {
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(var(--language-demo-columns, 2), minmax(0, 1fr))",
+    gap: 16,
+  },
+  control: { width: "100%" },
+  wide: { minWidth: 0, gridColumn: "1 / -1" },
+  overflow: { overflowX: "auto" },
+} satisfies Record<string, CSSProperties>;
+
 export default function LanguageDemo() {
   const [lang, setLang] = useState<Language>("en");
   const [visible, setVisible] = useState(false);
@@ -57,7 +68,7 @@ export default function LanguageDemo() {
         </Space>
 
         <ConfigProvider locale={locales[lang]}>
-          <div className="locale-grid">
+          <div style={styles.grid}>
             <Card title="Date and time" bordered>
               <Space vertical block>
                 <DatePicker />
@@ -68,25 +79,25 @@ export default function LanguageDemo() {
 
             <Card title="Selection" bordered>
               <Space vertical block>
-                <div className="locale-control">
-                  <Select options={[]} />
+                <div style={styles.control}>
+                  <Select style={styles.control} options={[]} />
                 </div>
-                <div className="locale-control">
-                  <TreeSelect treeData={[]} />
+                <div style={styles.control}>
+                  <TreeSelect style={styles.control} treeData={[]} />
                 </div>
               </Space>
             </Card>
 
-            <Card className="locale-wide" title="Data feedback" bordered>
+            <Card style={styles.wide} title="Data feedback" bordered>
               <Space vertical block>
-                <div className="locale-overflow">
+                <div style={styles.overflow}>
                   <Page total={85} showTotal showSizer showElevator />
                 </div>
                 <Table columns={columns} data={[]} />
               </Space>
             </Card>
 
-            <Card className="locale-wide" title="Overlay" bordered>
+            <Card style={styles.wide} title="Overlay" bordered>
               <Button onClick={() => setVisible(true)}>Open Modal</Button>
               <Modal
                 open={visible}
@@ -102,26 +113,8 @@ export default function LanguageDemo() {
         </ConfigProvider>
       </Space>
       <style>{`
-        .language-demo .locale-grid {
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 16px;
-        }
-        .language-demo .locale-control,
-        .language-demo .locale-control > * {
-          width: 100%;
-        }
-        .language-demo .locale-wide {
-          min-width: 0;
-          grid-column: 1 / -1;
-        }
-        .language-demo .locale-overflow {
-          overflow-x: auto;
-        }
         @media (max-width: 720px) {
-          .language-demo .locale-grid {
-            grid-template-columns: minmax(0, 1fr);
-          }
+          .language-demo { --language-demo-columns: 1; }
         }
       `}</style>
     </>

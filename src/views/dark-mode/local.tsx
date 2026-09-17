@@ -1,5 +1,5 @@
 import { Heart, LogoWechat, Mail, Palette, Search, Settings, User } from "kui-icons";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import {
   Alert,
   Avatar,
@@ -94,19 +94,59 @@ const shapeOptions = [
   { label: "Round", value: "round" },
   { label: "Square", value: "square" },
 ];
+const styles = {
+  page: {
+    padding: "var(--local-demo-padding, 14px)",
+    color: "var(--kui-color-text)",
+    background: "var(--kui-color-bg)",
+    border: "1px solid var(--kui-color-border)",
+    borderRadius: "var(--kui-border-radius-card)",
+    transition: "color .2s, background-color .2s",
+  },
+  toolbar: {
+    display: "flex",
+    alignItems: "var(--local-demo-toolbar-align, center)",
+    justifyContent: "space-between",
+    gap: 16,
+    marginBottom: 12,
+    padding: 2,
+  },
+  description: { color: "var(--kui-color-text-description)", fontSize: 12 },
+  grid: { alignItems: "start" },
+  cell: {
+    minWidth: 0,
+    padding: 14,
+    border: "1px solid var(--kui-color-border)",
+    borderRadius: "var(--kui-border-radius-card)",
+  },
+  modal: { minWidth: 0 },
+  fullWidth: { width: "100%" },
+  picker: { justifySelf: "stretch" },
+} satisfies Record<string, CSSProperties>;
+
 export default function LocalDark() {
   const [dark, setDark] = useState(true);
   const [shapeMode, setShapeMode] = useState<"round" | "square">("round");
   return (
     <div
       className="local-theme-page"
+      style={styles.page}
       {...{ "theme-mode": dark ? "dark" : "light", "shape-mode": shapeMode }}
     >
-      <style>{styles}</style>
-      <div className="local-theme-toolbar">
+      <style>{`
+        .local-theme-page .k-tooltip-panel { min-height: 42px; }
+        @media (max-width: 767px) {
+          .local-theme-page {
+            --local-demo-padding: 10px;
+            --local-demo-toolbar-align: flex-start;
+          }
+          .local-theme-page .local-theme-toolbar { flex-direction: column; }
+        }
+      `}</style>
+      <div className="local-theme-toolbar" style={styles.toolbar}>
         <Space vertical>
           <strong>Component overview</strong>
-          <span>Light and dark component states</span>
+          <span style={styles.description}>Light and dark component states</span>
         </Space>
         <Space>
           <Button type="primary" theme="outline" onClick={() => setDark(!dark)}>
@@ -119,10 +159,10 @@ export default function LocalDark() {
           ></Segmented>
         </Space>
       </div>
-      <Grid className="showcase-grid" cols={{ xs: 1, md: 12 }} xGap={12} yGap={12} flow="row dense">
+      <Grid style={styles.grid} cols={{ xs: 1, md: 12 }} xGap={12} yGap={12} flow="row dense">
         <GridItem className="showcase-column" span={{ xs: 1, md: 7 }}>
           <Grid cols={1} yGap={12}>
-            <GridItem className="showcase-cell controls-cell">
+            <GridItem style={styles.cell}>
               <Grid cols={6} xGap={10} yGap={12} align="center">
                 <GridItem span={2}>
                   <Button type="primary" block>
@@ -138,15 +178,15 @@ export default function LocalDark() {
                   </Button>
                 </GridItem>
                 <GridItem span={2}>
-                  <Select value="1" block>
+                  <Select style={styles.fullWidth} value="1" block>
                     <Option label="Option A" value="1" />
                     <Option label="Option B" value="2" />
                   </Select>
                 </GridItem>
                 <GridItem span={{ sm: 1, md: 3 }}>
                   <Space>
-                    <DatePicker value="2026-08-16" />
-                    <DatePicker value="2026-08-16" mode="dateTime" />
+                    <DatePicker style={styles.fullWidth} value="2026-08-16" />
+                    <DatePicker style={styles.fullWidth} value="2026-08-16" mode="dateTime" />
                   </Space>
                 </GridItem>
                 <GridItem span={6}>
@@ -174,14 +214,14 @@ export default function LocalDark() {
                   </Space>
                 </GridItem>
                 <GridItem span={3}>
-                  <Input placeholder="Please input" />
+                  <Input style={styles.fullWidth} placeholder="Please input" />
                 </GridItem>
                 <GridItem span={3}>
                   <InputOTP value="2608" separator="·" length={4} size="small" />
                 </GridItem>
               </Grid>
             </GridItem>
-            <GridItem className="showcase-cell feedback-cell">
+            <GridItem style={styles.cell}>
               <Grid cols={6} xGap={12} yGap={12} align="center">
                 <GridItem span={3}>
                   <Space>
@@ -201,14 +241,17 @@ export default function LocalDark() {
                 </GridItem>
                 <GridItem span={3}>
                   <Space vertical block>
-                    <Alert type="info">Information message</Alert>
-                    <Alert type="warning" bordered closable>
+                    <Alert style={styles.fullWidth} type="info">
+                      Information message
+                    </Alert>
+                    <Alert style={styles.fullWidth} type="warning" bordered closable>
                       Warning message
                     </Alert>
                   </Space>
                 </GridItem>
                 <GridItem span={3}>
                   <Alert
+                    style={styles.fullWidth}
                     type="success"
                     showIcon
                     message="Success Tip"
@@ -217,7 +260,7 @@ export default function LocalDark() {
                 </GridItem>
               </Grid>
             </GridItem>
-            <GridItem className="showcase-cell progress-cell">
+            <GridItem style={styles.cell}>
               <Grid cols={7} xGap={14} yGap={12} align="center">
                 <GridItem span={7}>
                   <Progress percent={50} status="active" />
@@ -253,12 +296,13 @@ export default function LocalDark() {
                 </GridItem>
               </Grid>
             </GridItem>
-            <GridItem className="showcase-cell data-cell">
+            <GridItem style={styles.cell}>
               <Grid cols={7} xGap={14} yGap={14} align="start">
                 <GridItem span={7}>
                   <Space block>
                     {stats.map((item) => (
                       <StatCard
+                        style={styles.fullWidth}
                         key={item.title}
                         title={item.title}
                         items={[item.data]}
@@ -318,8 +362,8 @@ export default function LocalDark() {
                 </GridItem>
               </Grid>
             </GridItem>
-            <GridItem className="showcase-cell navigation-cell">
-              <Menu mode="horizontal" items={menuItems} />
+            <GridItem style={styles.cell}>
+              <Menu style={styles.fullWidth} mode="horizontal" items={menuItems} />
               <Divider />
               <Grid cols={7} xGap={16} align="start">
                 <GridItem span={4}>
@@ -338,12 +382,12 @@ export default function LocalDark() {
         </GridItem>
         <GridItem className="showcase-column" span={{ xs: 1, md: 5 }}>
           <Grid cols={1} yGap={12}>
-            <GridItem className="modal-cell">
+            <GridItem style={styles.modal}>
               <ModalPanel title="Basic Modal" width="100%">
                 I am a Modal. I can do many things.
               </ModalPanel>
             </GridItem>
-            <GridItem className="showcase-cell sliders-cell">
+            <GridItem style={styles.cell}>
               <Space vertical block>
                 <Slider value={20} step={10} />
                 <Slider value={[25, 78]} range />
@@ -351,17 +395,17 @@ export default function LocalDark() {
                 <Input placeholder="Search components" icon={Search} />
               </Space>
             </GridItem>
-            <GridItem className="showcase-cell picker-cell">
+            <GridItem style={styles.cell}>
               <Grid cols={5} xGap={12} yGap={16} align="center" justify="center">
                 <GridItem span={5}>
-                  <DatePickerPanel value="2026-08-16" />
+                  <DatePickerPanel style={styles.picker} value="2026-08-16" />
                 </GridItem>
                 <GridItem span={5}>
-                  <ColorPickerPanel value="#5798ff" />
+                  <ColorPickerPanel style={styles.picker} value="#5798ff" />
                 </GridItem>
               </Grid>
             </GridItem>
-            <GridItem className="showcase-cell popup-cell">
+            <GridItem style={styles.cell}>
               <Grid cols={2} xGap={14} yGap={18} align="start" flow="row dense">
                 <GridItem>
                   <TooltipPanel title="How to behave?" />
@@ -386,5 +430,3 @@ export default function LocalDark() {
     </div>
   );
 }
-
-const styles = `.local-theme-page{padding:14px;color:var(--kui-color-text);background:var(--kui-color-bg);border:1px solid var(--kui-color-border);border-radius:var(--kui-border-radius-card);transition:color .2s,background-color .2s}.local-theme-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px;padding:2px}.local-theme-toolbar span{color:var(--kui-color-text-description);font-size:12px}.showcase-grid{align-items:start}.showcase-cell{min-width:0;padding:14px;border:1px solid var(--kui-color-border);border-radius:var(--kui-border-radius-card)}.modal-cell{min-width:0}.controls-cell .k-datepicker,.controls-cell .k-input,.data-cell .k-stat-card,.feedback-cell .k-alert,.navigation-cell .k-menu-horizontal{width:100%}.picker-cell .k-datepicker-panel,.picker-cell .k-color-picker-panel{justify-self:stretch}.popup-cell .k-tooltip-panel{min-height:42px}@media(max-width:767px){.local-theme-page{padding:10px}.local-theme-toolbar{align-items:flex-start;flex-direction:column}}`;

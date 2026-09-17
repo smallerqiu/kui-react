@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { Segmented, type SegmentedOption } from "react-kui";
 
 const options = [
@@ -7,30 +7,43 @@ const options = [
   { label: "Compare", value: "compare", shortcut: "⌘3", color: "#f59e0b" },
 ];
 
+const styles = {
+  label: { display: "inline-flex", gap: 7, alignItems: "center" },
+  dot: { width: 6, height: 6, borderRadius: "50%" },
+  shortcut: {
+    padding: "1px 4px",
+    color: "var(--kui-color-text-description)",
+    font: "inherit",
+    fontSize: 11,
+    lineHeight: "16px",
+    background: "var(--kui-color-bg-2)",
+    borderRadius: 3,
+  },
+} satisfies Record<string, CSSProperties>;
+
 const renderLabel = (option: SegmentedOption, selected: boolean) => (
-  <span className={`segmented-mode-label${selected ? " selected" : ""}`}>
-    <i style={{ background: String(option.color) }} />
+  <span style={styles.label}>
+    <i style={{ ...styles.dot, background: String(option.color) }} />
     {option.label}
-    <kbd>{String(option.shortcut)}</kbd>
+    <kbd
+      style={{
+        ...styles.shortcut,
+        color: selected ? "var(--kui-color-primary)" : styles.shortcut.color,
+      }}
+    >
+      {String(option.shortcut)}
+    </kbd>
   </span>
 );
 
 export default function SegmentedLabelDemo() {
   const [value, setValue] = useState("preview");
   return (
-    <>
-      <style>{`
-        .segmented-mode-label { display: inline-flex; gap: 7px; align-items: center; }
-        .segmented-mode-label i { width: 6px; height: 6px; border-radius: 50%; }
-        .segmented-mode-label kbd { padding: 1px 4px; color: var(--kui-color-text-description); font: inherit; font-size: 11px; line-height: 16px; background: var(--kui-color-bg-2); border-radius: 3px; }
-        .segmented-mode-label.selected kbd { color: var(--kui-color-primary); }
-      `}</style>
-      <Segmented
-        value={value}
-        options={options}
-        renderLabel={renderLabel}
-        onChange={(next) => setValue(String(next))}
-      />
-    </>
+    <Segmented
+      value={value}
+      options={options}
+      renderLabel={renderLabel}
+      onChange={(next) => setValue(String(next))}
+    />
   );
 }

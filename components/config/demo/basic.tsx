@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, type CSSProperties } from "react";
 import en from "react-kui/locale/en";
 import zhCN from "react-kui/locale/zh-CN";
 import {
@@ -23,6 +23,30 @@ const options = [
   { label: "React", value: "react" },
 ];
 
+const styles = {
+  toolbar: { marginBottom: 16 },
+  scope: {
+    position: "relative",
+    padding: 16,
+    border: "1px dashed var(--kui-color-border)",
+    borderRadius: "var(--kui-border-radius)",
+  },
+  heading: { marginBottom: 12 },
+  form: {
+    display: "grid",
+    gridTemplateColumns: "repeat(var(--config-demo-columns, 3), minmax(0, 1fr))",
+    gap: 12,
+  },
+  control: { width: "100%" },
+  card: { maxWidth: 560 },
+  description: { marginBottom: 12, color: "var(--kui-color-text-description)" },
+  nested: {
+    padding: 16,
+    background: "var(--kui-color-bg-component)",
+    borderRadius: "var(--kui-border-radius)",
+  },
+} satisfies Record<string, CSSProperties>;
+
 export default function App() {
   const popupHost = useRef<HTMLDivElement>(null);
   const [language, setLanguage] = useState<"zh" | "en">("zh");
@@ -39,7 +63,7 @@ export default function App() {
   return (
     <>
       <div className="config-demo">
-        <Space wrap>
+        <Space wrap style={styles.toolbar}>
           <Button onClick={() => setLanguage((value) => (value === "zh" ? "en" : "zh"))}>
             locale: {language === "zh" ? "zh-CN" : "en"}
           </Button>
@@ -54,7 +78,7 @@ export default function App() {
           </Button>
         </Space>
 
-        <div ref={popupHost} className="config-scope">
+        <div ref={popupHost} style={styles.scope}>
           <ConfigProvider
             locale={language === "zh" ? zhCN : en}
             size={size}
@@ -64,16 +88,16 @@ export default function App() {
           >
             <Space vertical>
               <section>
-                <h4>Global appearance and locale</h4>
-                <Form model={model} layout="vertical" onChange={setModel}>
+                <h4 style={styles.heading}>Global appearance and locale</h4>
+                <Form style={styles.form} model={model} layout="vertical" onChange={setModel}>
                   <FormItem label="Keyword" prop="keyword">
-                    <Input placeholder="Inherited Input" />
+                    <Input style={styles.control} placeholder="Inherited Input" />
                   </FormItem>
                   <FormItem label="Framework">
-                    <Select options={[]} />
+                    <Select style={styles.control} options={[]} />
                   </FormItem>
                   <FormItem label="Date">
-                    <DatePicker />
+                    <DatePicker style={styles.control} />
                   </FormItem>
                 </Form>
                 <Space wrap>
@@ -83,9 +107,12 @@ export default function App() {
                 </Space>
               </section>
 
-              <Card title="Popup container">
-                <p>The Select overlay is mounted in this dashed area instead of document.body.</p>
+              <Card style={styles.card} title="Popup container">
+                <p style={styles.description}>
+                  The Select overlay is mounted in this dashed area instead of document.body.
+                </p>
                 <Select
+                  style={styles.control}
                   value={model.popup as string | undefined}
                   options={options}
                   placeholder="Open popup"
@@ -94,18 +121,18 @@ export default function App() {
               </Card>
 
               <ConfigProvider size="large" theme="fill" shape="round">
-                <section className="nested-scope">
-                  <h4>嵌套 ConfigProvider</h4>
+                <section style={styles.nested}>
+                  <h4 style={styles.heading}>嵌套 ConfigProvider</h4>
                   <Space wrap>
                     <Button>Nested Button</Button>
-                    <Input placeholder="Large fill round" />
+                    <Input style={styles.control} placeholder="Large fill round" />
                     <Tag>Nested Tag</Tag>
                   </Space>
                 </section>
               </ConfigProvider>
 
               <section>
-                <h4>组件属性优先</h4>
+                <h4 style={styles.heading}>组件属性优先</h4>
                 <Button size="large" theme="fill" shape="circle">
                   Local
                 </Button>
@@ -115,18 +142,10 @@ export default function App() {
         </div>
       </div>
       <style>{`
-        .config-demo > .k-space { margin-bottom: 16px; }
-        .config-scope { position: relative; padding: 16px; border: 1px dashed var(--kui-color-border); border-radius: var(--kui-border-radius); }
-        .config-scope section h4 { margin-bottom: 12px; }
-        .config-scope .k-form { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-        .config-scope .k-form-item { margin-bottom: 8px; }
-        .config-scope .k-input,
-        .config-scope .k-select,
-        .config-scope .k-date-picker { width: 100%; }
-        .config-scope .k-card { max-width: 560px; }
-        .config-scope .k-card p { margin-bottom: 12px; color: var(--kui-color-text-description); }
-        .config-scope .nested-scope { padding: 16px; background: var(--kui-color-bg-component); border-radius: var(--kui-border-radius); }
-        @media (max-width: 720px) { .config-scope .k-form { grid-template-columns: 1fr; } }
+        .config-demo .k-form-item { margin-bottom: 8px; }
+        @media (max-width: 720px) {
+          .config-demo { --config-demo-columns: 1; }
+        }
       `}</style>
     </>
   );
