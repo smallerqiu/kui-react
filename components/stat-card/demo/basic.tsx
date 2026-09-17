@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Space, StatNumber } from "react-kui";
-const initValue = Math.random() * 10000000;
+const initValue = Math.random() * 100000;
 export default function App() {
   const [value, setValue] = useState(initValue);
   return (

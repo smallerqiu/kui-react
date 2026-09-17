@@ -12,15 +12,15 @@
 
 - 用于 Dashboard 场景 , 结合 `Grid` 可以很好的适配多种设备.
 
+[趋势信息](./demo/trend.tsx?show=vertical)
+
+- 通过 `trend` 展示趋势或补充信息，使用 `trendStatus` 设置状态颜色；部分数据没有趋势时，卡片在 Grid 中仍保持等高。
+
 [基本用法](./demo/basic.tsx)
 
 - 只展示数字
 
 [组合展示](./demo/with-card.tsx)
-
-- 在卡片容器中组合展示多个统计指标。
-
-[趋势状态](./demo/trend.tsx?show=vertical)
 
 - 结合`Card` 组件展示更多自定义数据
 

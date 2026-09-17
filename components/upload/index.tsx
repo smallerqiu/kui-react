@@ -5,6 +5,7 @@ import {
   useContext,
   useEffect,
   useImperativeHandle,
+  useLayoutEffect,
   useRef,
   useState,
   type HTMLAttributes,
@@ -177,10 +178,28 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
   const queueRef = useRef<Array<{ item: UploadFile; file: File }>>([]);
   const queuedRef = useRef(new Set<string>());
   const activeRef = useRef(0);
+  const activeUidsRef = useRef(new Set<string>());
   const generatedPreviewUrlsRef = useRef(new Set<string>());
   const unmountedRef = useRef(false);
+  const onChangeRef = useRef(onChange);
+  useLayoutEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
   useEffect(() => {
     if (!fileList) return;
+    const retained = new Set(fileList.map((item) => item.uid));
+    const removed = filesRef.current.filter((item) => !retained.has(item.uid));
+    filesRef.current = [...fileList];
+    queueRef.current = queueRef.current.filter(({ item }) => retained.has(item.uid));
+    removed.forEach((item) => {
+      if (!item.uid) return;
+      pendingRef.current.delete(item.uid);
+      queuedRef.current.delete(item.uid);
+      const handle = requestHandlesRef.current.get(item.uid);
+      requestHandlesRef.current.delete(item.uid);
+      handle?.abort();
+      if (activeUidsRef.current.delete(item.uid)) activeRef.current -= 1;
+    });
     const activePreviews = new Set(fileList.map((item) => item.preview).filter(Boolean));
     generatedPreviewUrlsRef.current.forEach((url) => {
       if (!activePreviews.has(url)) {
@@ -190,8 +209,12 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
     });
     setFiles([...fileList]);
   }, [fileList]);
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    unmountedRef.current = false;
+    const handles = requestHandlesRef.current;
+    const queued = queuedRef.current;
+    const previewUrls = generatedPreviewUrlsRef.current;
+    return () => {
       unmountedRef.current = true;
       filesRef.current.forEach((item) => {
         const xhr = item.xhr;
@@ -203,21 +226,22 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
         xhr.abort();
         item.xhr = undefined;
       });
-      requestHandlesRef.current.forEach((handle) => handle.abort());
-      requestHandlesRef.current.clear();
-      queuedRef.current.clear();
-      generatedPreviewUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
-      generatedPreviewUrlsRef.current.clear();
-    },
-    [],
-  );
-  const update = (item: UploadFile, callback = onChange) => {
+      handles.forEach((handle) => handle.abort());
+      handles.clear();
+      queued.clear();
+      previewUrls.forEach((url) => URL.revokeObjectURL(url));
+      previewUrls.clear();
+    };
+  }, []);
+  const update = (item: UploadFile, callback = onChangeRef.current) => {
+    if (unmountedRef.current || !filesRef.current.includes(item)) return;
     const next = [...filesRef.current];
     filesRef.current = next;
     setFiles(next);
     callback?.({ file: item, fileList: next });
   };
   const finishTask = (item: UploadFile) => {
+    if (!item.uid || !activeUidsRef.current.delete(item.uid)) return;
     if (item.uid) requestHandlesRef.current.delete(item.uid);
     activeRef.current = Math.max(0, activeRef.current - 1);
     runQueue();
@@ -288,7 +312,8 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
           onError: (error) => settle("error", error),
         });
         if (handle && typeof handle.abort === "function" && item.uid && !settled) {
-          requestHandlesRef.current.set(item.uid, handle);
+          if (unmountedRef.current || !filesRef.current.includes(item)) handle.abort();
+          else requestHandlesRef.current.set(item.uid, handle);
         }
       } catch (error) {
         settle("error", error);
@@ -352,6 +377,7 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
     while (activeRef.current < maximum && queueRef.current.length) {
       const task = queueRef.current.shift()!;
       if (!task.item.uid || !queuedRef.current.delete(task.item.uid)) continue;
+      activeUidsRef.current.add(task.item.uid);
       activeRef.current += 1;
       void send(task.item, task.file);
     }
@@ -551,8 +577,11 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
     </div>
   );
 });
+const EMPTY_FILE_LIST: UploadFile[] = [];
+
 export default createFormFieldComponent(Upload, {
   valueProp: "fileList",
+  getFieldValue: (value) => (Array.isArray(value) ? value : EMPTY_FILE_LIST),
   getChangeValue: (event) => (event as UploadChangeEvent).fileList,
   inherit: ["disabled", "readOnly"],
 });

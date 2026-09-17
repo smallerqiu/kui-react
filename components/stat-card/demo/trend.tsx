@@ -35,7 +35,7 @@ const cards: Array<{ title: string; data: StatNumberItem }> = [
   },
   {
     title: "在线用户",
-    data: { value: 3268, separator: ",", desc: "当前数据", trend: "更新于刚刚" },
+    data: { value: 3268, separator: ",", desc: "当前数据" },
   },
 ];
 

@@ -1,6 +1,7 @@
+import { startPictureSort } from "./picture-sort";
 import { CircleCheck, CircleX, FileText, Info, RotateCcw, X } from "kui-icons";
 import clsx from "clsx";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { Button } from "../button";
 import Icon from "../icon";
 import { KImage } from "../image";
@@ -39,7 +40,8 @@ export default function FileList({
   onAbort,
   onRetry,
 }: UploadFileListProps) {
-  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
+  const cancelSort = useRef<(() => void) | undefined>(undefined);
+  useEffect(() => () => cancelSort.current?.(), [fileList, sortable, disabled, readOnly]);
   const picture = type === "picture";
   if (!showUploadList && !picture) return null;
   return (
@@ -54,17 +56,19 @@ export default function FileList({
           <div
             key={item.uid ?? index}
             className={clsx(`k-upload-file-${type}-item`, `k-upload-file-status-${item.status}`)}
-            draggable={picture && sortable && !disabled && !readOnly}
-            onDragStart={() => setDraggingIndex(index)}
-            onDragOver={(event) => {
-              if (draggingIndex !== null) event.preventDefault();
+            data-sortable={(picture && sortable && !disabled && !readOnly) || undefined}
+            onDragStart={(event) => {
+              if (picture && sortable) event.preventDefault();
             }}
-            onDrop={(event) => {
-              event.preventDefault();
-              if (draggingIndex !== null) onSort?.(draggingIndex, index);
-              setDraggingIndex(null);
+            onPointerDown={(event) => {
+              if (!picture || !sortable || disabled || readOnly) return;
+              cancelSort.current?.();
+              cancelSort.current = startPictureSort(
+                event.nativeEvent,
+                event.currentTarget,
+                (from, to) => onSort?.(from, to),
+              );
             }}
-            onDragEnd={() => setDraggingIndex(null)}
           >
             <div className={`k-upload-${picture ? "picture" : "file"}-preview`}>
               {source ? (

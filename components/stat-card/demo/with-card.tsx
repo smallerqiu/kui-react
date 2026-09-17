@@ -1,14 +1,16 @@
 import { ArrowDown, ArrowUp } from "kui-icons";
 import { useState } from "react";
 import { Button, Card, Icon, Space, StatNumber } from "react-kui";
+const initialValue = Math.random() * 100000;
+
 export default function App() {
-  const [value, setValue] = useState(12345.67);
+  const [value, setValue] = useState(initialValue);
   return (
     <Space vertical className="demo-view-fill">
-      <Card theme="plain">
+      <Card>
         <StatNumber value={value} prefix="$" suffix="%" style={{ fontSize: "2em" }} />
       </Card>
-      <Card theme="plain" title="Today's Trends">
+      <Card title="Today's Trends">
         <StatNumber
           value={value}
           suffix="%"
@@ -16,7 +18,7 @@ export default function App() {
           prefix={<Icon type={ArrowUp} />}
         />
       </Card>
-      <Card theme="plain" title="Yesterday's Trend">
+      <Card title="Yesterday's Trend">
         <StatNumber
           value={value}
           suffix="%"
