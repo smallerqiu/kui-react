@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import React, { useId, useMemo, useRef, useState } from "react";
@@ -42,9 +43,9 @@ const RadioGroup = <T extends RadioValue = string | number>({
   disabled = false,
   readOnly = false,
   direction = "horizontal",
-  size,
-  theme,
-  shape,
+  size: sizeProp,
+  theme: themeProp,
+  shape: shapeProp,
   options,
   type,
   onChange,
@@ -53,6 +54,10 @@ const RadioGroup = <T extends RadioValue = string | number>({
   onKeyDown,
   ...rest
 }: RadioGroupProps<T>) => {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
+  const theme = themeProp ?? inheritedAppearance.theme;
+  const shape = shapeProp ?? inheritedAppearance.shape;
   const rootRef = useRef<HTMLDivElement>(null);
   const name = `k-radio-group-${useId().replace(/:/g, "")}`;
   const [innerValue, setInnerValue] = useState<T>(() => defaultValue ?? value ?? ("" as T));

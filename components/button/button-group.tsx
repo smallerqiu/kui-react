@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import React, { useContext } from "react";
 import { SizeContext } from "../config/size-context";
@@ -11,14 +12,17 @@ export interface ButtonGroupProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const ButtonGroup: React.FC<ButtonGroupProps> = ({
-  size,
-  shape,
+  size: sizeProp,
+  shape: shapeProp,
   children,
   className = "",
   ...rest
 }) => {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
+  const shape = shapeProp ?? inheritedAppearance.shape;
   const parentSize = useContext(SizeContext);
-  const currentSize = size || parentSize;
+  const currentSize = sizeProp ?? parentSize ?? size;
 
   const classes = clsx(
     "k-btn-group",

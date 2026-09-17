@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
 import type { SizeType, SpinModeType } from "../const/types";
@@ -13,12 +14,14 @@ export interface SpinProps extends React.HTMLAttributes<HTMLDivElement> {
 const Spin: React.FC<SpinProps> = ({
   spinning: spinningProp = true,
   delay = 0,
-  size,
+  size: sizeProp,
   mode = "rotate",
   children,
   className = "",
   ...rest
 }) => {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
   const [spinning, setSpinning] = useState(spinningProp);
   const [previousState, setPreviousState] = useState({ spinningProp, delay });
   if (previousState.spinningProp !== spinningProp || previousState.delay !== delay) {

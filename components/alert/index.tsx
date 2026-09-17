@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { CircleAlert, CircleCheck, CircleX, Info, X } from "kui-icons";
 import React, { useState } from "react";
@@ -26,13 +27,16 @@ const Alert: React.FC<AlertProps> = ({
   message,
   description,
   bordered = false,
-  theme = "fill",
-  shape = "round",
+  theme: themeProp,
+  shape: shapeProp,
   onClose,
   children,
   className = "",
   ...rest
 }) => {
+  const inheritedAppearance = useConfigAppearance();
+  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
   const [closed, setClosed] = useState(false);
 
   const close = (e: React.MouseEvent<HTMLElement>) => {

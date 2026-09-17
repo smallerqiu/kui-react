@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { Image as ImageIcon, Loading } from "kui-icons";
 import {
@@ -59,8 +60,8 @@ const KImage = forwardRef<ImageRef, ImageProps>(function KImage(
     panel,
     onClose,
     onSwitch,
-    theme = "plain",
-    shape = "round",
+    theme: themeProp,
+    shape: shapeProp,
     className,
     style,
     children,
@@ -69,6 +70,9 @@ const KImage = forwardRef<ImageRef, ImageProps>(function KImage(
   },
   ref,
 ) {
+  const inheritedAppearance = useConfigAppearance();
+  const theme = themeProp ?? inheritedAppearance.theme ?? "plain";
+  const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
   const group = useContext(ImageGroupContext);
   const previewRef = useRef<ImagePreviewInstance | null>(null);
   const [loading, setLoading] = useState(false);

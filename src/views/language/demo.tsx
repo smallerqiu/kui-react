@@ -1,198 +1,129 @@
 import dayjs from "dayjs";
 import "dayjs/locale/de";
 import "dayjs/locale/zh-cn";
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
+  Card,
   ConfigProvider,
   DatePicker,
-  Drawer,
-  Form,
-  FormItem,
-  Input,
-  InputNumber,
-  KImage,
-  message,
-  modal,
   Modal,
   Page,
-  Popconfirm,
   RadioGroup,
   Select,
   Space,
   Table,
   TreeSelect,
-  Upload,
-  type UploadFile,
 } from "react-kui";
 import de from "react-kui/locale/de";
 import en from "react-kui/locale/en";
 import zh from "react-kui/locale/zh-CN";
-const locales = { en, zh, de },
-  columns = [
-    { title: "Name", key: "name" },
-    { title: "Age", key: "age" },
-  ],
-  fileList: UploadFile[] = [
-    {
-      url: "https://cdn.chuchur.com/upload/demo/test_300.jpg",
-      status: "uploading",
-      filename: "test.jpg",
-      size: "222kb",
-      percent: 50,
-    },
-    {
-      url: "https://cdn.chuchur.com/upload/demo/test_300.jpg",
-      status: "error",
-      filename: "test.jpg",
-      size: "222kb",
-    },
-  ];
+
+const locales = { en, zh, de };
+type Language = keyof typeof locales;
+const dayjsLocales: Record<Language, string> = {
+  en: "en",
+  zh: "zh-cn",
+  de: "de",
+};
+const columns = [
+  { title: "Name", key: "name" },
+  { title: "Age", key: "age" },
+];
+
 export default function LanguageDemo() {
-  const [lang, setLang] = useState<keyof typeof locales>("en"),
-    [loading, setLoading] = useState(false),
-    [visible, setVisible] = useState(false),
-    [drawer, setDrawer] = useState(false),
-    [form, setForm] = useState({ name: "", email: "", age: "" });
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const change = (value: keyof typeof locales) => {
-    setLang(value);
-    dayjs.locale(value === "zh" ? "zh-cn" : value);
-  };
-  const search = () => {
-    setLoading(true);
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => setLoading(false), 1000);
-  };
+  const [lang, setLang] = useState<Language>("en");
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    dayjs.locale(dayjsLocales[lang]);
+  }, [lang]);
+
   return (
-    <Space vertical block>
-      <Space>
-        <code>Language:</code>
-        <RadioGroup
-          value={lang}
-          onChange={change}
-          type="button"
-          options={[
-            { value: "en", label: "English" },
-            { value: "zh", label: "中文" },
-            { value: "de", label: "Deutsch" },
-          ]}
-        />
-      </Space>
-      <ConfigProvider locale={locales[lang]}>
-        <Space vertical block>
-          <Space wrap>
-            <DatePicker mode="year" />
-            <DatePicker mode="month" />
-            <DatePicker />
-            <DatePicker mode="time" />
-            <DatePicker mode="dateTime" />
-            <DatePicker mode="dateRange" />
-          </Space>
-          <Space>
-            <Select style={{ width: 120 }} />
-            <Select
-              value={[]}
-              multiple
-              style={{ width: 120 }}
-              onSearch={search}
-              loading={loading}
-            />
-          </Space>
-          <Page total={50} showTotal showSizer showElevator />
-          <Space>
-            <Button onClick={() => setVisible(true)}>Modal</Button>
-            <Button
-              onClick={() =>
-                modal.info({
-                  title: "Hello",
-                  content: "modal info.",
-                  onOk: () => message.info("info"),
-                })
-              }
-            >
-              Info
-            </Button>
-            <Button
-              onClick={() =>
-                modal.confirm({
-                  title: "Are you sure?",
-                  content: "This operation cannot be undone.",
-                  onOk: () => message.success("confirmed"),
-                  onCancel: () => message.info("cancelled"),
-                })
-              }
-            >
-              Confirm
-            </Button>
-            <Popconfirm title="Are you sure?">
-              <Button>Pop Confirm</Button>
-            </Popconfirm>
-            <Button onClick={() => setDrawer(true)}>Open Drawer</Button>
-          </Space>
-          <Table columns={columns} />
-          <Space>
-            TreeSelect: <TreeSelect treeData={[]} style={{ width: 180 }} />
-          </Space>
-          <Space>
-            Image:{" "}
-            <KImage width={120} height={120} src="https://cdn.chuchur.com/upload/cat/cat1.jpg" />
-          </Space>
-          <Upload
-            action="https://www.chuchur.com/api/upload/image"
-            name="file"
-            directory
-            fileList={fileList}
-          >
-            <Button>Click to upload</Button>
-          </Upload>
-          <Space block style={{ maxWidth: 500 }}>
-            <Form
-              model={form}
-              onChange={() => setForm({ ...form })}
-              rules={{
-                name: [{ required: true }],
-                email: [{ required: true }, { type: "mail" }],
-                age: [{ required: true }, { type: "number", min: 10, max: 50 }],
-              }}
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 16 }}
-            >
-              <FormItem label="Name" prop="name">
-                <Input />
-              </FormItem>
-              <FormItem label="Email" prop="email">
-                <Input />
-              </FormItem>
-              <FormItem label="Age" prop="age">
-                <InputNumber />
-              </FormItem>
-              <FormItem wrapperCol={{ offset: 6 }}>
-                <Button type="primary" htmlType="submit">
-                  Submit
-                </Button>
-                <Button style={{ margin: "0 10px" }} htmlType="reset">
-                  Reset
-                </Button>
-              </FormItem>
-            </Form>
-          </Space>
-          <Modal
-            open={visible}
-            title="Basic Modal"
-            onClose={() => setVisible(false)}
-            onCancel={() => setVisible(false)}
-            onOk={() => setVisible(false)}
-          />
-          <Drawer
-            open={drawer}
-            title="Basic Drawer"
-            onClose={() => setDrawer(false)}
-            onCancel={() => setDrawer(false)}
-            onOk={() => setDrawer(false)}
+    <>
+      <Space className="language-demo" vertical block size="large">
+        <Space align="center" wrap>
+          <strong>Language</strong>
+          <RadioGroup
+            value={lang}
+            onChange={setLang}
+            type="button"
+            options={[
+              { value: "en", label: "English" },
+              { value: "zh", label: "中文" },
+              { value: "de", label: "Deutsch" },
+            ]}
           />
         </Space>
-      </ConfigProvider>
-    </Space>
+
+        <ConfigProvider locale={locales[lang]}>
+          <div className="locale-grid">
+            <Card title="Date and time" bordered>
+              <Space vertical block>
+                <DatePicker />
+                <DatePicker mode="dateRange" />
+                <DatePicker mode="time" />
+              </Space>
+            </Card>
+
+            <Card title="Selection" bordered>
+              <Space vertical block>
+                <div className="locale-control">
+                  <Select options={[]} />
+                </div>
+                <div className="locale-control">
+                  <TreeSelect treeData={[]} />
+                </div>
+              </Space>
+            </Card>
+
+            <Card className="locale-wide" title="Data feedback" bordered>
+              <Space vertical block>
+                <div className="locale-overflow">
+                  <Page total={85} showTotal showSizer showElevator />
+                </div>
+                <Table columns={columns} data={[]} />
+              </Space>
+            </Card>
+
+            <Card className="locale-wide" title="Overlay" bordered>
+              <Button onClick={() => setVisible(true)}>Open Modal</Button>
+              <Modal
+                open={visible}
+                title="Locale preview"
+                onClose={() => setVisible(false)}
+                onCancel={() => setVisible(false)}
+                onOk={() => setVisible(false)}
+              >
+                The buttons and other built-in text follow the current locale.
+              </Modal>
+            </Card>
+          </div>
+        </ConfigProvider>
+      </Space>
+      <style>{`
+        .language-demo .locale-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 16px;
+        }
+        .language-demo .locale-control,
+        .language-demo .locale-control > * {
+          width: 100%;
+        }
+        .language-demo .locale-wide {
+          min-width: 0;
+          grid-column: 1 / -1;
+        }
+        .language-demo .locale-overflow {
+          overflow-x: auto;
+        }
+        @media (max-width: 720px) {
+          .language-demo .locale-grid {
+            grid-template-columns: minmax(0, 1fr);
+          }
+        }
+      `}</style>
+    </>
   );
 }

@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import React, { useCallback, useMemo, useState } from "react";
@@ -14,9 +15,9 @@ const CheckCardGroup = React.forwardRef<HTMLDivElement, CheckCardGroupProps>(
       disabled = false,
       readOnly = false,
       direction = "horizontal",
-      theme = "outline",
-      size = "medium",
-      shape = "round",
+      theme: themeProp,
+      size: sizeProp,
+      shape: shapeProp,
       onChange,
       className,
       children,
@@ -24,6 +25,10 @@ const CheckCardGroup = React.forwardRef<HTMLDivElement, CheckCardGroupProps>(
     },
     ref,
   ) => {
+    const inheritedAppearance = useConfigAppearance();
+    const theme = themeProp ?? inheritedAppearance.theme ?? "outline";
+    const size = sizeProp ?? inheritedAppearance.size ?? "medium";
+    const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
     const [localValue, setLocalValue] = useState(defaultValue);
     const registry = React.useRef(
       new Map<CheckCardValue, { element: HTMLDivElement; disabled: boolean }>(),

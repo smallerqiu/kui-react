@@ -210,11 +210,14 @@ const ImagePreview = forwardRef<ImagePreviewApi, ImagePreviewProps>(
         moveEvent.preventDefault();
         const nextPoint = "touches" in moveEvent ? moveEvent.touches[0] : moveEvent;
         if (!nextPoint) return;
-        setPosition((current) => ({
-          left: current.left + nextPoint.clientX - dragRef.current.x,
-          top: current.top + nextPoint.clientY - dragRef.current.y,
-        }));
+        // Capture the delta before updating the ref: React may defer or replay the updater.
+        const deltaX = nextPoint.clientX - dragRef.current.x;
+        const deltaY = nextPoint.clientY - dragRef.current.y;
         dragRef.current = { x: nextPoint.clientX, y: nextPoint.clientY };
+        setPosition((current) => ({
+          left: current.left + deltaX,
+          top: current.top + deltaY,
+        }));
       };
       const up = () => {
         setDragging(false);

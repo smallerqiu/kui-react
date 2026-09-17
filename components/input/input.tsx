@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { CircleX, Eye, EyeOff, Search } from "kui-icons";
@@ -43,7 +44,7 @@ const Input = React.forwardRef<InputRef, InputProps>(
     {
       clearable = true,
       visiblePasswordIcon = true,
-      size,
+      size: sizeProp,
       value,
       defaultValue = "",
       disabled = false,
@@ -54,8 +55,8 @@ const Input = React.forwardRef<InputRef, InputProps>(
       prefix,
       addonBefore,
       addonAfter,
-      theme = "fill",
-      shape,
+      theme: themeProp,
+      shape: shapeProp,
       inputType = "input",
       onSearch,
       onIconClick,
@@ -71,8 +72,12 @@ const Input = React.forwardRef<InputRef, InputProps>(
     },
     ref,
   ) => {
+    const inheritedAppearance = useConfigAppearance();
+    const size = sizeProp ?? inheritedAppearance.size;
+    const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+    const shape = shapeProp ?? inheritedAppearance.shape;
     const parentSize = useContext(SizeContext);
-    const currentSize = size || parentSize;
+    const currentSize = sizeProp ?? parentSize ?? size;
 
     const [innerValue, setInnerValue] = useState(defaultValue);
     const currentValue = value !== undefined ? (value ?? "") : innerValue;

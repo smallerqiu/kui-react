@@ -1,7 +1,7 @@
 {
   "name": "react-kui",
   "version": "3.0.0",
-  "packageManager": "pnpm@11.21.0",
+  "packageManager": "pnpm@12.4.2",
   "description": "A high quality UI components Library with React",
   "main": "./lib/index.cjs",
   "module": "./es/index.js",

@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { Loading } from "kui-icons";
 import React, { useContext } from "react";
@@ -31,13 +32,13 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
       htmlType = "button",
       icon,
       block = false,
-      size,
+      size: sizeProp,
       color,
       loading = false,
       type = "default",
       disabled = false,
-      theme,
-      shape,
+      theme: themeProp,
+      shape: shapeProp,
       href,
       target,
       children,
@@ -47,11 +48,15 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     },
     ref
   ) => {
+    const inheritedAppearance = useConfigAppearance();
+    const size = sizeProp ?? inheritedAppearance.size;
+    const theme = themeProp ?? inheritedAppearance.theme;
+    const shape = shapeProp ?? inheritedAppearance.shape;
     const buttonGroup = useContext(ButtonGroupContext);
     const parentSize = useContext(SizeContext);
 
-    const computedSize = size || buttonGroup?.size || parentSize || "default";
-    const computedShape = shape || buttonGroup?.shape;
+    const computedSize = sizeProp ?? buttonGroup?.size ?? parentSize ?? size ?? "default";
+    const computedShape = shapeProp ?? buttonGroup?.shape ?? shape;
 
     const handleClick = (e: React.MouseEvent<HTMLElement>) => {
       if (loading || disabled) {

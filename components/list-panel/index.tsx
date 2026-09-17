@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import type { HTMLAttributes, ReactNode } from "react";
 import Card from "../card";
@@ -19,9 +20,9 @@ export interface ListPanelProps extends Omit<HTMLAttributes<HTMLDivElement>, "ti
 export default function ListPanel({
   summary,
   bordered = true,
-  theme = "outline",
-  shape = "round",
-  size = "medium",
+  theme: themeProp,
+  shape: shapeProp,
+  size: sizeProp,
   selectedCount = 0,
   filters,
   actions,
@@ -31,6 +32,10 @@ export default function ListPanel({
   className,
   ...rest
 }: ListPanelProps) {
+  const inheritedAppearance = useConfigAppearance();
+  const theme = themeProp ?? inheritedAppearance.theme ?? "outline";
+  const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
+  const size = sizeProp ?? inheritedAppearance.size ?? "medium";
   const hasNode = (node: ReactNode) => node !== null && node !== undefined && node !== false;
   const hasSummary = hasNode(summary);
   const hasSelection = Number.isFinite(selectedCount) && selectedCount > 0 && hasNode(selection);

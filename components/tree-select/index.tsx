@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { ChevronDown, CircleX, LoaderCircle } from "kui-icons";
@@ -95,7 +96,7 @@ const normalize = (value: TreeSelectValue, multiple: boolean) => {
 
 function TreeSelect({
   placeholder,
-  size,
+  size: sizeProp,
   placement = "bottom-left",
   width,
   maxTagCount,
@@ -113,10 +114,10 @@ function TreeSelect({
   bordered = true,
   showArrow = true,
   options,
-  theme = "fill",
+  theme: themeProp,
   emptyText,
   icon,
-  shape,
+  shape: shapeProp,
   arrowIcon = ChevronDown,
   treeData,
   treeCheckable,
@@ -145,6 +146,10 @@ function TreeSelect({
   style,
   ...rest
 }: TreeSelectProps) {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
+  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const shape = shapeProp ?? inheritedAppearance.shape;
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
   const data = useMemo(() => treeData ?? options ?? [], [options, treeData]);

@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { Loading } from "kui-icons";
@@ -58,9 +59,9 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   clearable = false,
   loading = false,
   loadingText,
-  size,
-  shape,
-  theme = "fill",
+  size: sizeProp,
+  shape: shapeProp,
+  theme: themeProp,
   filterOption = true,
   onChange,
   onClear,
@@ -77,6 +78,10 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   onCompositionEnd,
   ...rest
 }) => {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
+  const shape = shapeProp ?? inheritedAppearance.shape;
+  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
   const locale = useContext(ConfigContext)?.locale || zhCN;
   const listboxId = `k-auto-complete-listbox-${useId().replace(/:/g, "")}`;
   const normalized = useMemo(

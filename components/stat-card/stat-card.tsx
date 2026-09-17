@@ -1,3 +1,4 @@
+import { useConfigAppearance, normalizeSurfaceShape } from "../config/use-config-appearance";
 import clsx from "clsx";
 import type { HTMLAttributes, ReactNode } from "react";
 import StatNumber from "./stat-number";
@@ -41,14 +42,18 @@ export default function StatCard({
   statNumberType = "countup",
   reverse = false,
   bordered = false,
-  theme = "fill",
-  shape = "round",
-  size = "medium",
+  theme: themeProp,
+  shape: shapeProp,
+  size: sizeProp,
   prefix,
   suffix,
   className,
   ...rest
 }: StatCardProps) {
+  const inheritedAppearance = useConfigAppearance();
+  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const shape = normalizeSurfaceShape(shapeProp ?? inheritedAppearance.shape ?? "round");
+  const size = sizeProp ?? inheritedAppearance.size ?? "medium";
   return (
     <div
       {...rest}

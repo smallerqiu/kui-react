@@ -1,3 +1,4 @@
+import { useConfigAppearance, normalizeSurfaceShape } from "../config/use-config-appearance";
 import clsx from "clsx";
 import React, { useState } from "react";
 import { getChildren } from "../utils/react-node";
@@ -21,14 +22,17 @@ const Collapse: React.FC<CollapseProps> = ({
   defaultOpenKeys = [],
   accordion = false,
   sample = false,
-  theme = "outline",
-  shape = "round",
+  theme: themeProp,
+  shape: shapeProp,
   onChange,
   onOpenKeysChange,
   children,
   className = "",
   ...rest
 }) => {
+  const inheritedAppearance = useConfigAppearance();
+  const theme = themeProp ?? inheritedAppearance.theme ?? "outline";
+  const shape = normalizeSurfaceShape(shapeProp ?? inheritedAppearance.shape ?? "round");
   const [innerActiveKeys, setInnerActiveKeys] = useState<(string | number)[]>(defaultOpenKeys);
   const activeKeys = openKeys ?? innerActiveKeys;
 

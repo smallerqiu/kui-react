@@ -1,3 +1,4 @@
+import { useConfigAppearance, normalizeSurfaceShape } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { CircleCheck, CircleX, Info, TriangleAlert } from "kui-icons";
 import { isValidElement, type HTMLAttributes, type ReactNode } from "react";
@@ -29,12 +30,15 @@ export default function FeedbackPanel({
   symbol,
   compact = false,
   actions,
-  theme = "outline",
-  shape = "round",
+  theme: themeProp,
+  shape: shapeProp,
   children,
   className,
   ...rest
 }: FeedbackPanelProps) {
+  const inheritedAppearance = useConfigAppearance();
+  const theme = themeProp ?? inheritedAppearance.theme ?? "outline";
+  const shape = normalizeSurfaceShape(shapeProp ?? inheritedAppearance.shape ?? "round");
   const symbolNode =
     symbol == null || Array.isArray(symbol) ? (
       <Icon type={(symbol as IconType[] | undefined) ?? symbols[kind]} />

@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { Loading } from "kui-icons";
@@ -36,8 +37,8 @@ const Switch: React.FC<SwitchProps> = ({
   disabled = false,
   readOnly = false,
   loading = false,
-  size,
-  shape = "round",
+  size: sizeProp,
+  shape: shapeProp,
   trueText,
   falseText,
   checkedChildren,
@@ -48,6 +49,9 @@ const Switch: React.FC<SwitchProps> = ({
   onClick,
   ...rest
 }) => {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
+  const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
   const [innerChecked, setInnerChecked] = useState(defaultChecked);
   const currentChecked = checked !== undefined ? Boolean(checked) : innerChecked;
 

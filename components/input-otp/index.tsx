@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import {
@@ -46,15 +47,15 @@ const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
     defaultValue = "",
     length = 6,
     type = "number",
-    size,
+    size: sizeProp,
     disabled = false,
     readOnly = false,
     mask = false,
     autoFocus = false,
     separator,
     validator,
-    theme = "fill",
-    shape,
+    theme: themeProp,
+    shape: shapeProp,
     onChange,
     onComplete,
     onFocus,
@@ -64,6 +65,10 @@ const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
   },
   ref,
 ) {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
+  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const shape = shapeProp ?? inheritedAppearance.shape;
   const normalize = useCallback(
     (source: unknown) =>
       Array.from(String(source ?? ""))

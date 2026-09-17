@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import dayjs, { type Dayjs, type UnitType } from "dayjs";
@@ -130,10 +131,10 @@ function DatePicker({
   format,
   disabledDate = () => false,
   disabledTime = () => false,
-  size,
+  size: sizeProp,
   dateIcon = CalendarDays,
-  theme = "fill",
-  shape,
+  theme: themeProp,
+  shape: shapeProp,
   bordered = true,
   placement = "bottom-left",
   header,
@@ -148,6 +149,10 @@ function DatePicker({
   style,
   ...rest
 }: DatePickerProps) {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
+  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const shape = shapeProp ?? inheritedAppearance.shape;
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
   const localeName = locale?.name || "zh-cn";

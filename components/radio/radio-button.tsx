@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import React, { useContext, useState } from "react";
 import { createFormFieldComponent } from "../form/field-context";
 import { Button } from "../button";
@@ -29,14 +30,14 @@ const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
     {
       label,
       value,
-      theme,
+      theme: themeProp,
       disabled = false,
       readOnly = false,
       checked,
       defaultChecked = false,
       icon,
-      size,
-      shape,
+      size: sizeProp,
+      shape: shapeProp,
       onChange,
       onClick,
       children,
@@ -44,6 +45,10 @@ const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
     },
     ref,
   ) => {
+    const inheritedAppearance = useConfigAppearance();
+    const theme = themeProp ?? inheritedAppearance.theme;
+    const size = sizeProp ?? inheritedAppearance.size;
+    const shape = shapeProp ?? inheritedAppearance.shape;
     const group = useContext(RadioGroupContext);
     const isGroup = !!group;
     const [localChecked, setLocalChecked] = useState(defaultChecked);
@@ -52,9 +57,9 @@ const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
     const isChecked = isGroup ? groupChecked : (checked ?? localChecked);
     const currentDisabled = disabled || (isGroup && group.disabled);
     const currentReadOnly = readOnly || Boolean(isGroup && group.readOnly);
-    const currentTheme = isGroup && group.theme ? group.theme : theme;
-    const currentSize = isGroup && group.size ? group.size : size;
-    const currentShape = isGroup && group.shape ? group.shape : shape;
+    const currentTheme = themeProp ?? group?.theme ?? theme;
+    const currentSize = sizeProp ?? group?.size ?? size;
+    const currentShape = shapeProp ?? group?.shape ?? shape;
 
     const labelText = label ?? children ?? String(value ?? "");
 

@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import React from "react";
 import type { ShapeType, SizeType } from "../const/types";
@@ -20,12 +21,15 @@ const SkeletonButton: React.FC<SkeletonButtonProps> = ({
   delay = 500,
   block = false,
   width,
-  size,
-  shape,
+  size: sizeProp,
+  shape: shapeProp,
   children,
   className = "",
   ...rest
 }) => {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
+  const shape = shapeProp ?? inheritedAppearance.shape;
   const show = useSkeletonLoading(loading, delay);
 
   const wrapperClasses = clsx(

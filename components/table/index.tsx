@@ -1,3 +1,4 @@
+import { useConfigAppearance, normalizeSurfaceShape } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { ChevronDown, ChevronRight, Triangle } from "kui-icons";
 import {
@@ -41,10 +42,10 @@ export default function Table<T extends object = Record<string, unknown>>({
   expandRowByClick = false,
   indentSize = 20,
   scroll = {},
-  size,
+  size: sizeProp,
   striped,
   bordered = false,
-  shape = "round",
+  shape: shapeProp,
   checkable,
   loading,
   emptyText,
@@ -64,6 +65,9 @@ export default function Table<T extends object = Record<string, unknown>>({
   className,
   ...rest
 }: TableProps<T>) {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
+  const shape = normalizeSurfaceShape(shapeProp ?? inheritedAppearance.shape ?? "round");
   const headerRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const scrollFrameRef = useRef(0);

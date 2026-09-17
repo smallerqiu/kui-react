@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -37,14 +38,17 @@ const Segmented = ({
   readOnly = false,
   block = false,
   direction = "horizontal",
-  size = "medium",
-  shape = "round",
+  size: sizeProp,
+  shape: shapeProp,
   onChange,
   renderLabel,
   className,
   onKeyDown,
   ...rest
 }: SegmentedProps) => {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size ?? "medium";
+  const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
   const rootRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef(new Map<SegmentedValue, HTMLButtonElement>());
   const [innerValue, setInnerValue] = useState(defaultValue);

@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import React, { useState } from "react";
@@ -32,17 +33,20 @@ export interface CheckboxGroupProps<T extends string | number = string | number>
 const CheckboxGroup = <T extends string | number = string | number>({
   value,
   defaultValue = [],
-  theme = "fill",
+  theme: themeProp,
   disabled = false,
   readOnly = false,
   options,
   direction = "horizontal",
-  size,
+  size: sizeProp,
   onChange,
   children,
   className = "",
   ...rest
 }: CheckboxGroupProps<T>) => {
+  const inheritedAppearance = useConfigAppearance();
+  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const size = sizeProp ?? inheritedAppearance.size;
   const [innerValue, setInnerValue] = useState<T[]>(defaultValue);
   const currentValue = value !== undefined ? (value ?? []) : innerValue;
 

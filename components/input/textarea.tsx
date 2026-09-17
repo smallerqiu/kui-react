@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import React, { useState } from "react";
@@ -20,9 +21,9 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
     {
       value,
       defaultValue = "",
-      theme = "fill",
-      shape,
-      size,
+      theme: themeProp,
+      shape: shapeProp,
+      size: sizeProp,
       placeholder,
       rows = 2,
       disabled = false,
@@ -32,6 +33,10 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
     },
     ref,
   ) => {
+    const inheritedAppearance = useConfigAppearance();
+    const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+    const shape = shapeProp ?? inheritedAppearance.shape;
+    const size = sizeProp ?? inheritedAppearance.size;
     const [innerValue, setInnerValue] = useState(defaultValue);
     const currentValue = value !== undefined ? (value ?? "") : innerValue;
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

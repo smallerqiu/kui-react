@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import Color from "color";
 import { toCanvas, type QRCodeRenderersOptions } from "qrcode";
@@ -76,8 +77,8 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
     colorDark = "var(--kui-color-reverse)",
     colorLight = "var(--kui-color-bg)",
     bordered = true,
-    shape = "round",
-    theme = "outline",
+    shape: shapeProp,
+    theme: themeProp,
     status = "active",
     logo = "",
     logoSize,
@@ -95,6 +96,9 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
   },
   ref,
 ) {
+  const inheritedAppearance = useConfigAppearance();
+  const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
+  const theme = themeProp ?? inheritedAppearance.theme ?? "outline";
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const drawIdRef = useRef(0);
   const mountedRef = useRef(false);

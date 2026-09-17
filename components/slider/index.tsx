@@ -1,5 +1,6 @@
 import Big from "big.js";
 import clsx from "clsx";
+import { useConfigAppearance } from "../config/use-config-appearance";
 import { createFormFieldComponent } from "../form/field-context";
 import {
   useContext,
@@ -57,7 +58,8 @@ function Slider({
   className,
   ...rest
 }: SliderProps) {
-  const contextSize = useContext(SizeContext);
+  const inheritedAppearance = useConfigAppearance();
+  const contextSize = useContext(SizeContext) ?? inheritedAppearance.size;
   const size = sizeProp ?? (contextSize === "small" ? "small" : undefined);
   const config = { min, max, step, marks };
   const sortValue = (next: number | number[]) =>

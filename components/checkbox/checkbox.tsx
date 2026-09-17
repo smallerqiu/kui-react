@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { Check } from "kui-icons";
@@ -34,11 +35,11 @@ const Checkbox: React.FC<CheckboxProps> = ({
   valueType = "boolean",
   value,
   label,
-  theme = "fill",
+  theme: themeProp,
   disabled = false,
   readOnly = false,
   indeterminate = false,
-  size,
+  size: sizeProp,
   onChange,
   children,
   className = "",
@@ -49,6 +50,9 @@ const Checkbox: React.FC<CheckboxProps> = ({
   "aria-required": ariaRequired,
   ...rest
 }) => {
+  const inheritedAppearance = useConfigAppearance();
+  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const size = sizeProp ?? inheritedAppearance.size;
   const group = useContext(CheckboxGroupContext);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -59,8 +63,8 @@ const Checkbox: React.FC<CheckboxProps> = ({
   const isChecked = isGroup ? groupChecked : (checked ?? localChecked);
   const currentDisabled = disabled || (isGroup && group.disabled);
   const currentReadOnly = readOnly || Boolean(isGroup && group.readOnly);
-  const currentTheme = isGroup && group.theme ? group.theme : theme;
-  const currentSize = isGroup && group.size ? group.size : size;
+  const currentTheme = themeProp ?? group?.theme ?? theme;
+  const currentSize = sizeProp ?? group?.size ?? size;
 
   const emitValue = (newChecked: boolean) => {
     if (!isGroup && checked === undefined) {

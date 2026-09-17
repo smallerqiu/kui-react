@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { X } from "kui-icons";
 import React, { useState } from "react";
@@ -23,16 +24,20 @@ const Tag: React.FC<TagProps> = ({
   closeable = false,
   compact = false,
   color,
-  shape,
+  shape: shapeProp,
   icon,
-  size = "small",
-  theme = "fill",
+  size: sizeProp,
+  theme: themeProp,
   onClose,
   children,
   className = "",
   style,
   ...rest
 }) => {
+  const inheritedAppearance = useConfigAppearance();
+  const shape = shapeProp ?? inheritedAppearance.shape;
+  const size = sizeProp ?? inheritedAppearance.size ?? "small";
+  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
   const [visible, setVisible] = useState(true);
 
   const closeHandler = (e: React.MouseEvent) => {

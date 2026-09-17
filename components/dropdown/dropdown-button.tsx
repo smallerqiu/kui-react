@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import { Ellipsis } from "kui-icons";
 import React, { useRef } from "react";
 import Button from "../button/button";
@@ -21,11 +22,11 @@ export interface DropdownButtonProps extends Omit<React.HTMLAttributes<HTMLDivEl
 }
 
 const DropdownButton: React.FC<DropdownButtonProps> = ({
-  size,
-  shape,
+  size: sizeProp,
+  shape: shapeProp,
   disabled = false,
   icon,
-  theme,
+  theme: themeProp,
   arrow = false,
   placement = "bottom-right",
   onClick,
@@ -34,6 +35,10 @@ const DropdownButton: React.FC<DropdownButtonProps> = ({
   className = "",
   ...rest
 }) => {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
+  const shape = shapeProp ?? inheritedAppearance.shape;
+  const theme = themeProp ?? inheritedAppearance.theme;
   const refTrigger = useRef<HTMLButtonElement>(null);
 
   const triggerNode = (

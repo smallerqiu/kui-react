@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { ChevronDown, CircleX, Loading } from "kui-icons";
@@ -86,7 +87,7 @@ export interface SelectProps extends Omit<
 
 const Select: React.FC<SelectProps> = ({
   placeholder,
-  size,
+  size: sizeProp,
   placement = "bottom-left",
   width,
   maxTagCount,
@@ -106,11 +107,11 @@ const Select: React.FC<SelectProps> = ({
   extendWidth = true,
   showArrow = true,
   options,
-  theme = "fill",
+  theme: themeProp,
   emptyText,
   loadingText,
   icon,
-  shape,
+  shape: shapeProp,
   virtual = false,
   itemHeight = 33,
   overscan = 5,
@@ -125,6 +126,10 @@ const Select: React.FC<SelectProps> = ({
   style,
   ...rest
 }) => {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
+  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const shape = shapeProp ?? inheritedAppearance.shape;
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
 

@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { ChevronsLeft, ChevronsRight, ChevronUp, Ellipsis } from "kui-icons";
 import React, { useContext, useState } from "react";
@@ -30,10 +31,10 @@ const Page: React.FC<PageProps> = ({
   showSizer = false,
   showTotal = true,
   showElevator = false,
-  theme = "fill",
-  shape = "round",
+  theme: themeProp,
+  shape: shapeProp,
   sizeData = [10, 15, 20, 30, 40],
-  size,
+  size: sizeProp,
   total = 0,
   pageSize: pageSizeProp = 10,
   page: pageProp = 1,
@@ -41,6 +42,10 @@ const Page: React.FC<PageProps> = ({
   className = "",
   ...rest
 }) => {
+  const inheritedAppearance = useConfigAppearance();
+  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
+  const size = sizeProp ?? inheritedAppearance.size;
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
 

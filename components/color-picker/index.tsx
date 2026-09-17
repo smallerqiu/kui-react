@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import Color, { type ColorInstance, type ColorObject } from "color";
@@ -53,7 +54,7 @@ function ColorPicker({
   showText = false,
   placement = "bottom-left",
   trigger = "click",
-  size,
+  size: sizeProp,
   mode: modeProp,
   presets,
   onChange,
@@ -64,6 +65,8 @@ function ColorPicker({
   panelOnly = false,
   ...rest
 }: ColorPickerProps) {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
   const controlled = value;
   const [innerColor, setInnerColor] = useState(defaultValue ?? controlled ?? "#000000ff");
   const [innerMode, setInnerMode] = useState<ColorMode>(modeProp ?? "hex");

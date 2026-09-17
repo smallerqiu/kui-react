@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import Big from "big.js";
 import { createFormFieldComponent } from "../form/field-context";
 import { ChevronDown, ChevronUp } from "kui-icons";
@@ -50,16 +51,20 @@ const InputNumber: React.FC<InputNumberProps> = ({
   keyboard = true,
   suffix,
   prefix,
-  theme = "fill",
-  shape,
+  theme: themeProp,
+  shape: shapeProp,
   icon,
-  size,
+  size: sizeProp,
   placeholder,
   onChange,
   onBlur,
   onKeyDown,
   ...rest
 }) => {
+  const inheritedAppearance = useConfigAppearance();
+  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const shape = shapeProp ?? inheritedAppearance.shape;
+  const size = sizeProp ?? inheritedAppearance.size;
   const parentSize = useContext(SizeContext);
   const safePrecision = precision === undefined ? undefined : Math.max(0, Math.trunc(precision));
   const [innerValue, setInnerValue] = useState(normalize(defaultValue, safePrecision));
@@ -190,7 +195,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
       placeholder={placeholder}
       suffix={suffix}
       prefix={prefix}
-      size={size || parentSize}
+      size={sizeProp ?? parentSize ?? size}
       icon={icon}
       shape={shape}
       theme={theme}

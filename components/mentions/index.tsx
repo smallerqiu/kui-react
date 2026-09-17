@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { CircleX, Loading } from "kui-icons";
@@ -103,9 +104,9 @@ const Mentions: React.FC<MentionsProps> = ({
   triggers = ["@"],
   rows = 1,
   placement = "bottom-left",
-  size,
-  shape,
-  theme = "fill",
+  size: sizeProp,
+  shape: shapeProp,
+  theme: themeProp,
   emptyText,
   loading = false,
   loadingText,
@@ -120,6 +121,10 @@ const Mentions: React.FC<MentionsProps> = ({
   readOnly,
   ...rest
 }) => {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
+  const shape = shapeProp ?? inheritedAppearance.shape;
+  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
   const [inner, setInner] = useState(defaultValue);
   const listboxId = `k-mentions-listbox-${useId().replace(/:/g, "")}`;
   const [query, setQuery] = useState<Query | null>(null);

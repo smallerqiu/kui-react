@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { Check, CircleCheck, CircleX, X } from "kui-icons";
 import React from "react";
@@ -32,7 +33,7 @@ const Progress: React.FC<ProgressProps> = ({
   strokeHeight,
   gapDegree = 75,
   strokeLinecap = "round",
-  size,
+  size: sizeProp,
   status = "normal",
   type = "line",
   showInfo = true,
@@ -41,6 +42,8 @@ const Progress: React.FC<ProgressProps> = ({
   style,
   ...rest
 }) => {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
   const currentPercent = percent;
 
   const renderTip = (currentStatus: ProgressStatus, currentType: ProgressType) => {

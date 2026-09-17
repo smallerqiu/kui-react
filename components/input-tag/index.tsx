@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { CircleX } from "kui-icons";
@@ -41,9 +42,9 @@ const InputTag: React.FC<InputTagProps> = ({
   max,
   maxTagCount,
   separators = [","],
-  size = "medium",
-  shape,
-  theme = "fill",
+  size: sizeProp,
+  shape: shapeProp,
+  theme: themeProp,
   onChange,
   onAdd,
   onRemove,
@@ -52,6 +53,10 @@ const InputTag: React.FC<InputTagProps> = ({
   onClick,
   ...rest
 }) => {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size ?? "medium";
+  const shape = shapeProp ?? inheritedAppearance.shape;
+  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
   const [inner, setInner] = useState(defaultValue);
   const [draft, setDraft] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);

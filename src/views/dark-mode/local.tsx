@@ -27,9 +27,9 @@ import {
   PopconfirmPanel,
   PoptipPanel,
   Progress,
-  Radio,
   RadioGroup,
   Rate,
+  Segmented,
   Select,
   Slider,
   Space,
@@ -90,7 +90,10 @@ const menuItems: MenuOptionsProps[] = [
     ],
   },
 ];
-
+const shapeOptions = [
+  { label: "Round", value: "round" },
+  { label: "Square", value: "square" },
+];
 export default function LocalDark() {
   const [dark, setDark] = useState(true);
   const [shapeMode, setShapeMode] = useState<"round" | "square">("round");
@@ -101,22 +104,19 @@ export default function LocalDark() {
     >
       <style>{styles}</style>
       <div className="local-theme-toolbar">
-        <div>
+        <Space vertical>
           <strong>Component overview</strong>
           <span>Light and dark component states</span>
-        </div>
+        </Space>
         <Space>
           <Button type="primary" theme="outline" onClick={() => setDark(!dark)}>
             {dark ? "Light mode" : "Dark mode"}
           </Button>
-          <RadioGroup
+          <Segmented
             value={shapeMode}
-            type="button"
+            options={shapeOptions}
             onChange={(value) => setShapeMode(value as "round" | "square")}
-          >
-            <Radio value="round" label="Round" />
-            <Radio value="square" label="Square" />
-          </RadioGroup>
+          ></Segmented>
         </Space>
       </div>
       <Grid className="showcase-grid" cols={{ xs: 1, md: 12 }} xGap={12} yGap={12} flow="row dense">
@@ -387,4 +387,4 @@ export default function LocalDark() {
   );
 }
 
-const styles = `.local-theme-page{padding:14px;color:var(--kui-color-text);background:var(--kui-color-bg);border:1px solid var(--kui-color-border);border-radius:var(--kui-border-radius-card);transition:color .2s,background-color .2s}.local-theme-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px;padding:2px}.local-theme-toolbar>div{display:grid;gap:2px}.local-theme-toolbar span{color:var(--kui-color-text-description);font-size:12px}.showcase-grid{align-items:start}.showcase-cell{min-width:0;padding:14px;border:1px solid var(--kui-color-border);border-radius:var(--kui-border-radius-card)}.modal-cell{min-width:0}.controls-cell .k-datepicker,.controls-cell .k-input,.data-cell .k-stat-card,.feedback-cell .k-alert,.navigation-cell .k-menu-horizontal{width:100%}.picker-cell .k-datepicker-panel,.picker-cell .k-color-picker-panel{justify-self:stretch}.popup-cell .k-tooltip-panel{min-height:42px}@media(max-width:767px){.local-theme-page{padding:10px}.local-theme-toolbar{align-items:flex-start;flex-direction:column}}`;
+const styles = `.local-theme-page{padding:14px;color:var(--kui-color-text);background:var(--kui-color-bg);border:1px solid var(--kui-color-border);border-radius:var(--kui-border-radius-card);transition:color .2s,background-color .2s}.local-theme-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px;padding:2px}.local-theme-toolbar span{color:var(--kui-color-text-description);font-size:12px}.showcase-grid{align-items:start}.showcase-cell{min-width:0;padding:14px;border:1px solid var(--kui-color-border);border-radius:var(--kui-border-radius-card)}.modal-cell{min-width:0}.controls-cell .k-datepicker,.controls-cell .k-input,.data-cell .k-stat-card,.feedback-cell .k-alert,.navigation-cell .k-menu-horizontal{width:100%}.picker-cell .k-datepicker-panel,.picker-cell .k-color-picker-panel{justify-self:stretch}.popup-cell .k-tooltip-panel{min-height:42px}@media(max-width:767px){.local-theme-page{padding:10px}.local-theme-toolbar{align-items:flex-start;flex-direction:column}}`;

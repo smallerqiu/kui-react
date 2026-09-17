@@ -1,3 +1,4 @@
+import { useConfigAppearance, normalizeSurfaceShape } from "../config/use-config-appearance";
 import clsx from "clsx";
 import React, { useRef } from "react";
 import type { DirectionType, ShapeType, SizeType } from "../const/types";
@@ -97,12 +98,15 @@ const Descriptions: React.FC<DescriptionsProps> = ({
   layout = "horizontal",
   title,
   extra,
-  size,
-  shape = "round",
+  size: sizeProp,
+  shape: shapeProp,
   children,
   className = "",
   ...rest
 }) => {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
+  const shape = normalizeSurfaceShape(shapeProp ?? inheritedAppearance.shape ?? "round");
   const rootRef = useRef<HTMLDivElement>(null);
   const breakpoint = useBreakpoint(rootRef);
   const childList = getChildren(children);

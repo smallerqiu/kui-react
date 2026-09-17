@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import React from "react";
 import type { SizeType } from "../const/types";
@@ -17,11 +18,13 @@ const SkeletonText: React.FC<SkeletonTextProps> = ({
   loading = false,
   delay = 500,
   width,
-  size,
+  size: sizeProp,
   children,
   className = "",
   ...rest
 }) => {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
   const show = useSkeletonLoading(loading, delay);
 
   const wrapperClasses = clsx(

@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { Check } from "kui-icons";
@@ -19,9 +20,9 @@ const CheckCard = React.forwardRef<HTMLDivElement, CheckCardProps>(
       showIndicator = true,
       disabled = false,
       readOnly = false,
-      theme = "outline",
-      size = "medium",
-      shape = "round",
+      theme: themeProp,
+      size: sizeProp,
+      shape: shapeProp,
       onChange,
       className,
       children,
@@ -29,6 +30,10 @@ const CheckCard = React.forwardRef<HTMLDivElement, CheckCardProps>(
     },
     forwardedRef,
   ) => {
+    const inheritedAppearance = useConfigAppearance();
+    const theme = themeProp ?? inheritedAppearance.theme ?? "outline";
+    const size = sizeProp ?? inheritedAppearance.size ?? "medium";
+    const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
     const group = useContext(CheckCardGroupContext);
     const rootRef = useRef<HTMLDivElement | null>(null);
     const [localChecked, setLocalChecked] = useState(defaultChecked);
@@ -36,9 +41,9 @@ const CheckCard = React.forwardRef<HTMLDivElement, CheckCardProps>(
     const isChecked = grouped ? group.value === value : (checked ?? localChecked);
     const isDisabled = disabled || !!group?.disabled;
     const isReadOnly = readOnly || !!group?.readOnly;
-    const currentTheme = group?.theme ?? theme;
-    const currentSize = group?.size ?? size;
-    const currentShape = group?.shape ?? shape;
+    const currentTheme = themeProp ?? group?.theme ?? theme;
+    const currentSize = sizeProp ?? group?.size ?? size;
+    const currentShape = shapeProp ?? group?.shape ?? shape;
 
     useEffect(() => {
       if (grouped && value !== undefined && rootRef.current) {

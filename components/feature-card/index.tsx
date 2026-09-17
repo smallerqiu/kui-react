@@ -1,3 +1,4 @@
+import { useConfigAppearance, normalizeSurfaceShape } from "../config/use-config-appearance";
 import clsx from "clsx";
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import type { ShapeType, ThemeType } from "../const/types";
@@ -25,9 +26,9 @@ export default function FeatureCard({
   title,
   desc,
   bordered = false,
-  theme = "fill",
-  shape = "round",
-  size = "medium",
+  theme: themeProp,
+  shape: shapeProp,
+  size: sizeProp,
   direction = "horizontal",
   clickable = false,
   disabled = false,
@@ -39,6 +40,10 @@ export default function FeatureCard({
   className,
   ...rest
 }: FeatureCardProps) {
+  const inheritedAppearance = useConfigAppearance();
+  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const shape = normalizeSurfaceShape(shapeProp ?? inheritedAppearance.shape ?? "round");
+  const size = sizeProp ?? inheritedAppearance.size ?? "medium";
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.target !== event.currentTarget) return;
     if (!clickable || disabled || (event.key !== "Enter" && event.key !== " ")) return;

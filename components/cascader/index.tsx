@@ -1,3 +1,4 @@
+import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { ChevronDown, ChevronRight, CircleAlert, CircleX, Loading } from "kui-icons";
@@ -40,9 +41,9 @@ function Cascader({
   open: openProp,
   defaultOpen = false,
   options: optionsProp,
-  theme = "fill",
+  theme: themeProp,
   bordered = true,
-  shape,
+  shape: shapeProp,
   showArrow = true,
   placeholder = "请选择",
   icon,
@@ -52,7 +53,7 @@ function Cascader({
   disabled,
   readOnly,
   clearable = true,
-  size,
+  size: sizeProp,
   expandTrigger = "click",
   showAllLevels = true,
   separator = " / ",
@@ -66,6 +67,10 @@ function Cascader({
   onKeyDown,
   ...rest
 }: CascaderProps) {
+  const inheritedAppearance = useConfigAppearance();
+  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const shape = shapeProp ?? inheritedAppearance.shape;
+  const size = sizeProp ?? inheritedAppearance.size;
   const options = optionsProp ?? EMPTY_OPTIONS;
   const controlledValue = value;
   const [innerValue, setInnerValue] = useState<CascaderValue>(defaultValue);
