@@ -1,6 +1,6 @@
 import { useConfigAppearance, normalizeSurfaceShape } from "../config/use-config-appearance";
 import clsx from "clsx";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { getChildren } from "../utils/react-node";
 import type { CollapsePanelProps } from "./collapse-panel";
 import type { ShapeType, ThemeType } from "../const/types";
@@ -35,12 +35,20 @@ const Collapse: React.FC<CollapseProps> = ({
   const shape = normalizeSurfaceShape(shapeProp ?? inheritedAppearance.shape ?? "round");
   const [innerActiveKeys, setInnerActiveKeys] = useState<(string | number)[]>(defaultOpenKeys);
   const activeKeys = openKeys ?? innerActiveKeys;
+  const keyRegistry = useRef(
+    new Map([...defaultOpenKeys, ...(openKeys ?? [])].map((key) => [String(key), key] as const)),
+  );
+
+  activeKeys.forEach((key) => keyRegistry.current.set(String(key), key));
+
+  const keysEqual = (left: string | number, right: string | number) =>
+    left === right || String(left) === String(right);
 
   const handleExpand = (key: string | number) => {
     if (!key && key !== 0) return;
 
     let nextKeys = [...activeKeys];
-    const index = nextKeys.indexOf(key);
+    const index = nextKeys.findIndex((item) => keysEqual(item, key));
 
     if (index >= 0) {
       nextKeys = accordion ? [] : nextKeys.filter((k) => k !== key);
@@ -68,8 +76,10 @@ const Collapse: React.FC<CollapseProps> = ({
       {childList.map((child, index) => {
         if (!React.isValidElement<CollapsePanelProps>(child)) return child;
 
-        const key = child.key ?? index;
-        const isActive = activeKeys.includes(key as string | number);
+        const rawKey = child.props.panelKey ?? child.key ?? index;
+        const key = child.props.panelKey ?? keyRegistry.current.get(String(rawKey)) ?? rawKey;
+        keyRegistry.current.set(String(rawKey), key);
+        const isActive = activeKeys.some((item) => keysEqual(item, key));
 
         return React.cloneElement(child, {
           panelKey: key,

@@ -148,4 +148,50 @@ describe("DatePicker", () => {
     expect(onStartDateChange).toHaveBeenCalledWith("2026-08-02");
     expect(onEndDateChange).toHaveBeenCalledWith("2026-08-05");
   });
+
+  it("preserves an independently controlled end value", () => {
+    const { container } = render(<DatePicker mode="dateRange" endDate="2026-08-05" />);
+    const inputs = container.querySelectorAll("input");
+    expect(inputs[0].value).toBe("");
+    expect(inputs[1].value).toBe("2026-08-05");
+    expect(container.querySelector(".k-icon-clean")).not.toBeNull();
+  });
+
+  it("rejects disabled manual values", () => {
+    const onChange = vi.fn();
+    const { container } = render(
+      <DatePicker
+        value="2026-08-01"
+        disabledDate={(date) => date.getFullYear() === 2027}
+        onChange={onChange}
+      />,
+    );
+    fireEvent.change(container.querySelector("input")!, { target: { value: "2027-01-01" } });
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("rejects disabled values from extension content", () => {
+    const onChange = vi.fn();
+    const disabledDate = (date: Date) => date.getFullYear() === 2027;
+    const { container } = render(
+      <DatePicker
+        panelOnly
+        value="2026-08-01"
+        disabledDate={disabledDate}
+        header={({ emit }) => <button onClick={() => emit("2027-01-01")}>Blocked</button>}
+        onChange={onChange}
+      />,
+    );
+    fireEvent.click(container.querySelector("button")!);
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("supports selecting calendar cells with the keyboard", () => {
+    const onChange = vi.fn();
+    const { container } = render(<DatePicker panelOnly value="2026-08-21" onChange={onChange} />);
+    fireEvent.keyDown(container.querySelector(".k-picker-day:not(.k-picker-day-disabled)")!, {
+      key: "Enter",
+    });
+    expect(onChange).toHaveBeenCalled();
+  });
 });

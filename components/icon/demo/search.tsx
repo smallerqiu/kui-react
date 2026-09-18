@@ -65,7 +65,7 @@ export default function App() {
           />
         </Space>
       </Affix>
-      <div className="show-icons">
+      <div className="icon-list-container k-scroll">
         {section("App icons", apps)}
         {section("Logos", logos)}
         {!matches.length && (

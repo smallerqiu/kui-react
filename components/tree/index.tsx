@@ -79,7 +79,13 @@ export interface TreeProps extends Omit<
   loadData?: (node: TreeNode) => Promise<unknown>;
 }
 export type { BuildTreeOptions, TreeNode, TreeNodeData } from "./utils";
-export type { TreeDropEvent, TreeDropPosition, TreeExpandEvent, TreeExpose, TreeFieldNames } from "./types";
+export type {
+  TreeDropEvent,
+  TreeDropPosition,
+  TreeExpandEvent,
+  TreeExpose,
+  TreeFieldNames,
+} from "./types";
 
 const findRaw = (nodes: TreeNode[], key: string): TreeNode | undefined => {
   for (const node of nodes) {
@@ -118,48 +124,51 @@ function TreeTransitionNode({
   );
 }
 
-const Tree = forwardRef<TreeExpose, TreeProps>(function Tree({
-  data = [],
-  selectedKeys,
-  defaultSelectedKeys = [],
-  expandedKeys,
-  defaultExpandedKeys = [],
-  checkedKeys,
-  defaultCheckedKeys = [],
-  directory,
-  checkable,
-  draggable,
-  showLine,
-  showIcon = true,
-  showExtra,
-  multiple,
-  checkStrictly,
-  selectAsCheck,
-  queryKey,
-  virtual = false,
-  height = 300,
-  itemHeight = 28,
-  overscan = 5,
-  loading,
-  fieldNames,
-  renderTitle,
-  renderExtra,
-  onExpand,
-  onExpandedKeysChange,
-  onCheck,
-  onCheckedKeysChange,
-  onSelect,
-  onSelectedKeysChange,
-  onDragStart,
-  onDragEnter,
-  onDragLeave,
-  onDrop,
-  onLoadError,
-  onDragEnd,
-  loadData,
-  className,
-  ...rest
-}: TreeProps, ref) {
+const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
+  {
+    data = [],
+    selectedKeys,
+    defaultSelectedKeys = [],
+    expandedKeys,
+    defaultExpandedKeys = [],
+    checkedKeys,
+    defaultCheckedKeys = [],
+    directory,
+    checkable,
+    draggable,
+    showLine,
+    showIcon = true,
+    showExtra,
+    multiple,
+    checkStrictly,
+    selectAsCheck,
+    queryKey,
+    virtual = false,
+    height = 300,
+    itemHeight = 28,
+    overscan = 5,
+    loading,
+    fieldNames,
+    renderTitle,
+    renderExtra,
+    onExpand,
+    onExpandedKeysChange,
+    onCheck,
+    onCheckedKeysChange,
+    onSelect,
+    onSelectedKeysChange,
+    onDragStart,
+    onDragEnter,
+    onDragLeave,
+    onDrop,
+    onLoadError,
+    onDragEnd,
+    loadData,
+    className,
+    ...rest
+  }: TreeProps,
+  ref,
+) {
   const [innerSelected, setInnerSelected] = useState(defaultSelectedKeys);
   const [innerExpanded, setInnerExpanded] = useState(defaultExpandedKeys);
   const [innerChecked, setInnerChecked] = useState(defaultCheckedKeys);
@@ -169,6 +178,7 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree({
   const [focusedKey, setFocusedKey] = useState<string>();
   const [version, setVersion] = useState(0);
   const dragRef = useRef<TreeNode | null>(null);
+  const dropPositionRef = useRef<TreeDropPosition>("inside");
   const rootRef = useRef<HTMLDivElement>(null);
   const virtualListRef = useRef<VirtualListRef>(null);
   const selected = selectedKeys ?? innerSelected;
@@ -195,7 +205,7 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree({
         };
       });
     return normalize(data);
-  }, [data, fieldNames]);
+  }, [data, fieldNames, version]);
   const flat = useMemo(() => {
     void version;
     return buildTree({
@@ -210,10 +220,13 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree({
   }, [normalizedData, selected, expanded, checked, loadData, checkable, checkStrictly, version]);
   const byKey = useMemo(() => new Map(flat.map((node) => [node.key, node])), [flat]);
 
-  const commitExpanded = useCallback((keys: string[]) => {
-    if (!expandedKeys) setInnerExpanded(keys);
-    onExpandedKeysChange?.(keys);
-  }, [expandedKeys, onExpandedKeysChange]);
+  const commitExpanded = useCallback(
+    (keys: string[]) => {
+      if (!expandedKeys) setInnerExpanded(keys);
+      onExpandedKeysChange?.(keys);
+    },
+    [expandedKeys, onExpandedKeysChange],
+  );
   const expand = async (node: TreeNode) => {
     if (node.isLeaf || loadingKeys.has(node.key)) return;
     const nextExpanded = !expanded.includes(node.key);
@@ -293,6 +306,7 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree({
     const names = {
       key: fieldNames?.key ?? "key",
       children: fieldNames?.children ?? "children",
+      isLeaf: fieldNames?.isLeaf ?? "isLeaf",
     };
     type Location = { node: TreeNodeData; list: TreeNodeData[]; index: number };
     const locate = (nodes: TreeNodeData[], key: string): Location | undefined => {
@@ -310,7 +324,8 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree({
     const target = locate(data, targetKey);
     if (!drag || !target) return false;
     const dragChildren = drag.node[names.children];
-    if (Array.isArray(dragChildren) && locate(dragChildren as TreeNodeData[], targetKey)) return false;
+    if (Array.isArray(dragChildren) && locate(dragChildren as TreeNodeData[], targetKey))
+      return false;
     const [moved] = drag.list.splice(drag.index, 1);
     if (!moved) return false;
     if (position === "inside") {
@@ -319,6 +334,7 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree({
         children = [];
         target.node[names.children] = children;
       }
+      target.node[names.isLeaf] = false;
       (children as TreeNodeData[]).push(moved);
     } else {
       const refreshed = locate(data, targetKey);
@@ -329,6 +345,25 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree({
       commitExpanded([...expanded, targetKey]);
     setVersion((value) => value + 1);
     return true;
+  };
+  const canDropOn = (node: TreeNode) => {
+    const dragNode = dragRef.current;
+    if (!dragNode || node.disabled || node.key === dragNode.key) return false;
+    let current: TreeNode | undefined = node;
+    while (current?.parentKey) {
+      if (current.parentKey === dragNode.key) return false;
+      current = byKey.get(current.parentKey);
+    }
+    return true;
+  };
+  const updateDropTarget = (event: DragEvent<HTMLElement>, node: TreeNode) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const offset = event.clientY - rect.top;
+    const position: TreeDropPosition =
+      offset < rect.height / 3 ? "before" : offset > (rect.height * 2) / 3 ? "after" : "inside";
+    dropPositionRef.current = position;
+    setDropPosition(position);
+    setDropKey(node.key);
   };
   const query = queryKey?.trim().toLocaleLowerCase() ?? "";
   const visible = query
@@ -359,18 +394,21 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree({
         return true;
       });
 
-  const focusNode = useCallback((key: string) => {
-    setFocusedKey(key);
-    const index = visible.findIndex((node) => node.key === key);
-    if (virtual && index >= 0) virtualListRef.current?.scrollToIndex(index);
-    requestAnimationFrame(() => {
-      const element = Array.from(
-        rootRef.current?.querySelectorAll<HTMLElement>("[data-tree-key]") ?? [],
-      ).find((item) => item.dataset.treeKey === key);
-      element?.focus({ preventScroll: virtual });
-      if (!virtual) element?.scrollIntoView?.({ block: "nearest" });
-    });
-  }, [visible, virtual]);
+  const focusNode = useCallback(
+    (key: string) => {
+      setFocusedKey(key);
+      const index = visible.findIndex((node) => node.key === key);
+      if (virtual && index >= 0) virtualListRef.current?.scrollToIndex(index);
+      requestAnimationFrame(() => {
+        const element = Array.from(
+          rootRef.current?.querySelectorAll<HTMLElement>("[data-tree-key]") ?? [],
+        ).find((item) => item.dataset.treeKey === key);
+        element?.focus({ preventScroll: virtual });
+        if (!virtual) element?.scrollIntoView?.({ block: "nearest" });
+      });
+    },
+    [visible, virtual],
+  );
   useImperativeHandle(
     ref,
     () => ({
@@ -430,7 +468,9 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree({
       data-tree-key={node.key}
       aria-level={(node.level ?? 0) + 1}
       aria-selected={selected.includes(node.key) || undefined}
-      aria-checked={checkable ? (node.indeterminate ? "mixed" : checked.includes(node.key)) : undefined}
+      aria-checked={
+        checkable ? (node.indeterminate ? "mixed" : checked.includes(node.key)) : undefined
+      }
       aria-expanded={node.isLeaf ? undefined : expanded.includes(node.key)}
       aria-disabled={node.disabled || undefined}
       onFocus={() => setFocusedKey(node.key)}
@@ -473,6 +513,8 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree({
           checked={checked.includes(node.key)}
           indeterminate={!!node.indeterminate}
           disabled={node.disabled}
+          onClick={(event) => event.stopPropagation()}
+          onKeyDown={(event) => event.stopPropagation()}
           onChange={(event) => toggleCheck(event, node)}
         />
       )}
@@ -486,57 +528,51 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree({
           if (!draggable || node.disabled) return;
           dragRef.current = node;
           event.dataTransfer.effectAllowed = "move";
+          event.dataTransfer.setData("text/plain", node.key);
+          if (!node.isLeaf && expanded.includes(node.key)) void expand(node);
           onDragStart?.(node, event);
         }}
         onDragOver={(event) => {
-          if (draggable) {
-            event.preventDefault();
-            const rect = event.currentTarget.getBoundingClientRect();
-            const offset = event.clientY - rect.top;
-            setDropPosition(
-              offset < rect.height / 3
-                ? "before"
-                : offset > (rect.height * 2) / 3
-                  ? "after"
-                  : "inside",
-            );
-            setDropKey(node.key);
-            event.dataTransfer.dropEffect = "move";
+          if (!draggable || !canDropOn(node)) {
+            setDropKey(undefined);
+            return;
           }
+          event.preventDefault();
+          updateDropTarget(event, node);
+          event.dataTransfer.dropEffect = "move";
         }}
         onDragEnter={(event) => {
-          if (draggable && dragRef.current?.key !== node.key && !node.disabled) {
-            event.preventDefault();
-            const rect = event.currentTarget.getBoundingClientRect();
-            const offset = event.clientY - rect.top;
-            setDropPosition(
-              offset < rect.height / 3
-                ? "before"
-                : offset > (rect.height * 2) / 3
-                  ? "after"
-                  : "inside",
-            );
-            setDropKey(node.key);
-            onDragEnter?.(node, event);
+          if (!draggable || !canDropOn(node)) {
+            setDropKey(undefined);
+            return;
           }
+          event.preventDefault();
+          updateDropTarget(event, node);
+          onDragEnter?.(node, event);
         }}
         onDragLeave={(event) => {
-          if (event.relatedTarget instanceof Node && event.currentTarget.contains(event.relatedTarget)) return;
+          if (
+            event.relatedTarget instanceof Node &&
+            event.currentTarget.contains(event.relatedTarget)
+          )
+            return;
           if (dropKey === node.key) setDropKey(undefined);
           onDragLeave?.(node, event);
         }}
         onDrop={(event) => {
           const dragNode = dragRef.current;
-          if (!draggable || !dragNode || dragNode.key === node.key || node.disabled) return;
+          if (!draggable || !dragNode || !canDropOn(node)) return;
           event.preventDefault();
-          const position = dropPosition;
+          const position = dropPositionRef.current;
           const moved = moveRawNode(dragNode.key, node.key, position);
           setDropKey(undefined);
           if (moved) onDrop?.({ dragNode, dropNode: node, dropPosition: position }, event);
+          dropPositionRef.current = "inside";
           dragRef.current = null;
         }}
         onDragEnd={(event) => {
           setDropKey(undefined);
+          dropPositionRef.current = "inside";
           dragRef.current = null;
           onDragEnd?.(node, event);
         }}

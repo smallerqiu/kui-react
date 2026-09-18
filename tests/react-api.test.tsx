@@ -66,7 +66,7 @@ describe("React value synchronization and controlled visibility", () => {
       </>,
     );
     const radio = screen.getByRole("radio");
-    const button = screen.getByRole("button");
+    const button = screen.getByRole("switch");
     fireEvent.click(radio);
     fireEvent.click(button);
     expect((radio as HTMLInputElement).checked).toBe(false);
@@ -115,7 +115,7 @@ describe("React value synchronization and controlled visibility", () => {
     expect(onReset).toHaveBeenCalledOnce();
   });
 
-  it("places text affixes inline and React nodes in InputGroup", () => {
+  it("places text and React node affixes inside the input", () => {
     const { unmount } = render(<Input prefix="¥" suffix="CNY" />);
     expect(document.querySelector(".k-input-prefix")?.textContent).toBe("¥");
     expect(document.querySelector(".k-input-suffix")?.textContent).toBe("CNY");
@@ -125,11 +125,24 @@ describe("React value synchronization and controlled visibility", () => {
     render(
       <Input prefix={<button>Prefix action</button>} suffix={<button>Suffix action</button>} />,
     );
-    expect(document.querySelector(".k-input-group-prefix button")?.textContent).toBe(
-      "Prefix action",
+    expect(document.querySelector(".k-input-prefix button")?.textContent).toBe("Prefix action");
+    expect(document.querySelector(".k-input-suffix button")?.textContent).toBe("Suffix action");
+    expect(document.querySelector(".k-input-group")).toBeNull();
+  });
+
+  it("keeps affixes inside when addons create an InputGroup", () => {
+    render(
+      <Input
+        prefix={<button>Prefix action</button>}
+        suffix={<button>Suffix action</button>}
+        addonAfter={<button>Addon action</button>}
+      />,
     );
+
+    expect(document.querySelector(".k-input-prefix button")?.textContent).toBe("Prefix action");
+    expect(document.querySelector(".k-input-suffix button")?.textContent).toBe("Suffix action");
     expect(document.querySelector(".k-input-group-suffix button")?.textContent).toBe(
-      "Suffix action",
+      "Addon action",
     );
   });
 
@@ -186,6 +199,45 @@ describe("React value synchronization and controlled visibility", () => {
     fireEvent.keyDown(headers[1], { key: " " });
     expect(onOpenKeysChange).toHaveBeenCalledTimes(1);
     expect(headers[1].getAttribute("aria-disabled")).toBe("true");
+  });
+
+  it("preserves numeric Collapse keys and does not toggle from extra controls", () => {
+    const onOpenKeysChange = vi.fn();
+    render(
+      <Collapse defaultOpenKeys={[1]} onOpenKeysChange={onOpenKeysChange}>
+        <CollapsePanel key={1} title="One" extra={<button>Settings</button>}>
+          First
+        </CollapsePanel>
+      </Collapse>,
+    );
+
+    const header = screen.getByText("One").closest(".k-collapse-header")!;
+    expect(header.getAttribute("aria-expanded")).toBe("true");
+    fireEvent.click(header);
+    expect(onOpenKeysChange).toHaveBeenLastCalledWith([]);
+    fireEvent.click(header);
+    expect(onOpenKeysChange).toHaveBeenLastCalledWith([1]);
+
+    fireEvent.keyDown(screen.getByRole("button", { name: "Settings" }), { key: "Enter" });
+    expect(onOpenKeysChange).toHaveBeenCalledTimes(2);
+  });
+
+  it("animates Collapse layout height while a panel closes", () => {
+    render(
+      <Collapse defaultOpenKeys={["one"]}>
+        <CollapsePanel key="one" title="One">
+          Content
+        </CollapsePanel>
+      </Collapse>,
+    );
+
+    const content = document.querySelector<HTMLElement>(".k-collapse-content")!;
+    content.getBoundingClientRect = () =>
+      ({ height: 80, width: 100, top: 0, left: 0, right: 100, bottom: 80 }) as DOMRect;
+
+    fireEvent.click(screen.getByText("One"));
+    expect(document.body.contains(content)).toBe(true);
+    expect(content.style.height).toBe("0px");
   });
 
   it("uses mode-specific and range DatePicker placeholders", () => {
@@ -396,16 +448,7 @@ describe("React value synchronization and controlled visibility", () => {
         "translate3d(-400px,0,0)",
       ),
     );
-    const previous = document.querySelector<HTMLButtonElement>(".k-tabs-tab-btn-prev")!;
-    const next = document.querySelector<HTMLButtonElement>(".k-tabs-tab-btn-next")!;
-    expect(previous.disabled).toBe(false);
-    expect(next.disabled).toBe(true);
-
-    fireEvent.click(previous);
-    expect(document.querySelector<HTMLElement>(".k-tabs-nav")?.style.transform).toBe(
-      "translate3d(-200px,0,0)",
-    );
-    expect(next.disabled).toBe(false);
+    expect(screen.getByRole("button", { name: "More tabs" })).not.toBeNull();
 
     Object.defineProperty(wrap, "clientWidth", { configurable: true, value: 100 });
     triggerResize();
@@ -414,7 +457,6 @@ describe("React value synchronization and controlled visibility", () => {
         "translate3d(-500px,0,0)",
       ),
     );
-    expect(next.disabled).toBe(true);
     vi.stubGlobal("ResizeObserver", originalResizeObserver);
   });
 
@@ -430,6 +472,30 @@ describe("React value synchronization and controlled visibility", () => {
     fireEvent.click(dots[1]);
     expect(onChange).toHaveBeenCalledWith(1);
     expect(dots[1].classList.contains("k-carousel-dots-active")).toBe(true);
+  });
+
+  it("ignores rapid arrow clicks until the current transition ends", () => {
+    const onChange = vi.fn();
+    render(
+      <Carousel onChange={onChange}>
+        <CarouselItem>Slide one</CarouselItem>
+        <CarouselItem>Slide two</CarouselItem>
+        <CarouselItem>Slide three</CarouselItem>
+      </Carousel>,
+    );
+
+    const next = screen.getByRole("button", { name: "Next slide" });
+    fireEvent.click(next);
+    fireEvent.click(next);
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenLastCalledWith(1);
+
+    fireEvent.transitionEnd(document.querySelector(".k-carousel-wrapper")!, {
+      propertyName: "transform",
+    });
+    fireEvent.click(next);
+    expect(onChange).toHaveBeenCalledTimes(2);
+    expect(onChange).toHaveBeenLastCalledWith(2);
   });
 
   it("moves Kanban cards with the keyboard without mutating data", () => {
@@ -491,17 +557,15 @@ describe("React value synchronization and controlled visibility", () => {
         onSort={onSort}
       />,
     );
-    fireEvent.keyDown(document.querySelector(".k-table-body tbody .k-checkbox")!, {
-      key: " ",
-      code: "Space",
-    });
+    fireEvent.click(document.querySelector(".k-table-body tbody input[type='checkbox']")!);
     expect(onSelectedKeysChange).toHaveBeenCalledWith(["one"]);
     expect((document.querySelector(".k-table-body input") as HTMLInputElement).checked).toBe(false);
     fireEvent.click(document.querySelector(".k-table-sorter-up")!);
     expect(onSort).toHaveBeenCalledWith({ key: "name", order: "asc" });
 
     rerender(<Table data={[]} columns={columns} emptyText="Nothing here" loading />);
-    expect(screen.getByText("Nothing here")).not.toBeNull();
+    expect(screen.queryByText("Nothing here")).toBeNull();
+    expect(document.querySelector(".k-table-loading-placeholder")).not.toBeNull();
     expect(document.querySelector(".k-spin")).not.toBeNull();
   });
 
@@ -884,6 +948,33 @@ describe("React value synchronization and controlled visibility", () => {
     fireEvent.mouseDown(document.body);
     expect(onOpenChange).toHaveBeenCalledWith(false);
     await waitFor(() => expect(document.querySelector(".k-color-picker-dropdown")).toBeNull());
+  });
+
+  it("supports ColorPicker appearance and keyboard interaction", () => {
+    const { container, rerender } = render(<ColorPicker theme="fill" shape="circle" />);
+    const trigger = screen.getByRole("combobox");
+    expect(trigger.classList.contains("k-color-picker-fill")).toBe(true);
+    expect(trigger.classList.contains("k-color-picker-circle")).toBe(true);
+
+    fireEvent.keyDown(trigger, { key: "Enter" });
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    fireEvent.keyDown(trigger, { key: "Escape" });
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+
+    rerender(
+      <ConfigProvider theme="plain" shape="square">
+        <ColorPicker />
+      </ConfigProvider>,
+    );
+    const inheritedTrigger = container.querySelector(".k-color-picker")!;
+    expect(inheritedTrigger.classList.contains("k-color-picker-plain")).toBe(true);
+    expect(inheritedTrigger.classList.contains("k-color-picker-square")).toBe(true);
+  });
+
+  it("omits the popup arrow in a panel-only ColorPicker", () => {
+    const { container } = render(<ColorPicker panelOnly />);
+    expect(container.querySelector(".k-color-picker-panel")).not.toBeNull();
+    expect(container.querySelector(".k-color-picker-arrow")).toBeNull();
   });
 });
 

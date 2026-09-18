@@ -406,7 +406,7 @@ function Cascader({
       </div>
       {(rendered || visible) && (
         <Teleport to="body">
-          <Transition show={visible} name="k-cascader" timeout={250} nodeRef={overlayRef}>
+          <Transition show={visible} name="k-cascader" timeout={250} nodeRef={overlayRef} appear>
             <div
               ref={overlayRef}
               className={clsx("k-cascader-dropdown", {

@@ -243,6 +243,9 @@ describe("single value API", () => {
     const dots = () => container.querySelectorAll(".k-carousel-dots > button");
     act(() => ref.current!.next());
     expect(dots()[1].classList.contains("k-carousel-dots-active")).toBe(true);
+    fireEvent.transitionEnd(container.querySelector(".k-carousel-wrapper")!, {
+      propertyName: "transform",
+    });
     act(() => ref.current!.next());
     expect(dots()[0].classList.contains("k-carousel-dots-active")).toBe(true);
     rerender(

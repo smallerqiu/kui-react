@@ -216,9 +216,10 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   }, [visible, shownOptions, loading]);
   useEffect(() => () => clearTimeout(blurTimer.current), []);
   useEffect(() => {
-    dropdownRef.current
-      ?.querySelector<HTMLElement>(`#${listboxId}-option-${active}`)
-      ?.scrollIntoView({ block: "nearest" });
+    const option = dropdownRef.current?.querySelector<HTMLElement>(
+      `#${listboxId}-option-${active}`,
+    );
+    option?.scrollIntoView?.({ block: "nearest" });
   }, [active, listboxId]);
 
   const update = (next: string) => {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Segmented, Space } from "react-kui";
 
 export default function SegmentedOptionsDemo() {
@@ -8,9 +8,26 @@ export default function SegmentedOptionsDemo() {
     { label: "React", value: "react" },
     { label: "Disabled", value: "disabled", disabled: true },
   ];
-  return <Space direction="vertical">
-    <Segmented value={value} onChange={(next) => setValue(String(next))} options={options} size="small" />
-    <Segmented value={value} onChange={(next) => setValue(String(next))} options={options} block />
-    <Segmented value={value} onChange={(next) => setValue(String(next))} options={options} direction="vertical" />
-  </Space>;
+  return (
+    <Space direction="vertical">
+      <Segmented
+        value={value}
+        onChange={(next) => setValue(String(next))}
+        options={options}
+        size="small"
+      />
+      <Segmented
+        value={value}
+        onChange={(next) => setValue(String(next))}
+        options={options}
+        block
+      />
+      <Segmented
+        value={value}
+        onChange={(next) => setValue(String(next))}
+        options={options}
+        direction="vertical"
+      />
+    </Space>
+  );
 }

@@ -15,9 +15,9 @@ import {
   Space,
   TextArea,
   type FormExpose,
-  type FormRule,
+  type FormRules,
 } from "react-kui";
-const rules: FormRule = {
+const rules: FormRules = {
   input: [{ required: true }],
   number: [{ required: true }],
   radios: [{ required: true }],

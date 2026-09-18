@@ -1,5 +1,6 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import Transition from "../base/transition";
+import { getTransitionProps } from "../base/transition-props";
 import Content, { type ContentProps } from "./content";
 
 interface NoticeItem extends ContentProps {
@@ -104,20 +105,27 @@ const Container = forwardRef<NoticeContainerApi, { type: "message" | "notice" }>
     },
     [],
   );
+  const noticeTransition = getTransitionProps(`k-${type}-slide`);
+  if (type === "notice") {
+    noticeTransition.onBeforeEnter = undefined;
+    noticeTransition.onEnter = undefined;
+  }
   return (
     <div className={`k-${type}`}>
       {items.map(({ key, closing, ...item }) => (
         <Transition
+          {...(type === "notice" ? noticeTransition : {})}
           key={key}
           show={!closing}
           name={`k-${type}-slide`}
           appear
           timeout={300}
-          onAfterLeave={() => finishClose(key)}
+          onAfterLeave={(element) => {
+            if (type === "notice") noticeTransition.onAfterLeave?.(element);
+            finishClose(key);
+          }}
         >
-          <div>
-            <Content {...item} />
-          </div>
+          <Content {...item} />
         </Transition>
       ))}
     </div>

@@ -65,6 +65,8 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
   const [width, setWidth] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const transitioningRef = useRef(false);
   const current = Math.max(0, Math.min(items.length - 1, innerIndex));
 
   useLayoutEffect(() => {
@@ -93,6 +95,9 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
   const goTo = useCallback(
     (index: number) => {
       if (!items.length) return;
+      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+      transitionTimerRef.current = null;
+      transitioningRef.current = false;
       const next = loop
         ? ((index % items.length) + items.length) % items.length
         : Math.max(0, Math.min(items.length - 1, index));
@@ -106,7 +111,7 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
 
   const move = useCallback(
     (step: -1 | 1) => {
-      if (!items.length) return;
+      if (!items.length || transitioningRef.current) return;
       const next = loop
         ? (current + step + items.length) % items.length
         : Math.max(0, Math.min(items.length - 1, current + step));
@@ -115,9 +120,15 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
         timerRef.current = null;
         return;
       }
+      transitioningRef.current = true;
       setInnerIndex(next);
       setPosition((previous) => (looping ? previous + step : next));
       onChange?.(next);
+      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+      transitionTimerRef.current = setTimeout(() => {
+        transitioningRef.current = false;
+        transitionTimerRef.current = null;
+      }, 501);
     },
     [current, items.length, loop, looping, onChange, setInnerIndex],
   );
@@ -135,6 +146,13 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
     play();
     return stop;
   }, [play, stop]);
+
+  useEffect(
+    () => () => {
+      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+    },
+    [],
+  );
 
   useImperativeHandle(
     ref,
@@ -163,7 +181,11 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
     transitionDuration: animate ? undefined : "0s",
   };
 
-  const handleTransitionEnd = () => {
+  const handleTransitionEnd = (event: React.TransitionEvent<HTMLDivElement>) => {
+    if (event.target !== event.currentTarget || event.propertyName !== "transform") return;
+    if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+    transitionTimerRef.current = null;
+    transitioningRef.current = false;
     if (!looping || (position !== 0 && position !== items.length + 1)) return;
     setAnimate(false);
     setPosition(position === 0 ? items.length : 1);

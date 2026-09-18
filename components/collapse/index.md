@@ -44,9 +44,10 @@
 
 ## Panel
 
-| 属性     | 说明             | 类型             | 默认值 |
-| -------- | ---------------- | ---------------- | ------ |
-| title    | 面板标题         | ReactNode        | -      |
-| key      | Panel 的唯一标识 | string \| number | -      |
-| disabled | 是否禁用         | boolean          | false  |
-| extra    | 标题右侧扩展内容 | ReactNode        | -      |
+| 属性     | 说明                                  | 类型             | 默认值 |
+| -------- | ------------------------------------- | ---------------- | ------ |
+| title    | 面板标题                              | ReactNode        | -      |
+| key      | Panel 的唯一标识                      | string \| number | -      |
+| panelKey | 显式的面板标识，数字 key 场景推荐使用 | string \| number | -      |
+| disabled | 是否禁用                              | boolean          | false  |
+| extra    | 标题右侧扩展内容                      | ReactNode        | -      |

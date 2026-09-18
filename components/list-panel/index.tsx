@@ -37,8 +37,10 @@ export default function ListPanel({
   const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
   const size = sizeProp ?? inheritedAppearance.size ?? "medium";
   const hasNode = (node: ReactNode) => node !== null && node !== undefined && node !== false;
+  const selectionContent = typeof selection === "function" ? selection(selectedCount) : selection;
   const hasSummary = hasNode(summary);
-  const hasSelection = Number.isFinite(selectedCount) && selectedCount > 0 && hasNode(selection);
+  const hasSelection =
+    Number.isFinite(selectedCount) && selectedCount > 0 && hasNode(selectionContent);
   const hasFilters = hasNode(filters);
   const hasActions = hasNode(actions);
   const hasToolbar = hasFilters || hasActions || hasSummary || hasSelection;
@@ -57,9 +59,7 @@ export default function ListPanel({
           role="toolbar"
         >
           {hasSelection ? (
-            <div className="k-list-panel-selection">
-              {typeof selection === "function" ? selection(selectedCount) : selection}
-            </div>
+            <div className="k-list-panel-selection">{selectionContent}</div>
           ) : (
             <>
               {hasFilters && <div className="k-list-panel-filters">{filters}</div>}

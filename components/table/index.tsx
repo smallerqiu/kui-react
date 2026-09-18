@@ -182,6 +182,7 @@ export default function Table<T extends object = Record<string, unknown>>({
         column.fixed === "right" && leaves[index - 1]?.fixed !== "right",
       "k-table-cell-sorter": column.sorter,
     });
+  const leafIndexOf = (column: Column<T>) => leaves.findIndex((item) => item.key === column.key);
 
   const sortRecords = (records: T[]) => {
     const result = [...records];
@@ -381,7 +382,7 @@ export default function Table<T extends object = Record<string, unknown>>({
       {leaves.map((column) => (
         <col
           key={column.key}
-          style={{ width: column.width ?? "auto", minWidth: column.width ?? 150 }}
+          style={{ width: column.width ?? 150, minWidth: column.width ?? 150 }}
         />
       ))}
       {headerTable && split && <col style={{ width: scrollbarWidth }} />}
@@ -412,7 +413,7 @@ export default function Table<T extends object = Record<string, unknown>>({
               key={column.key}
               colSpan={column.headerColSpan}
               rowSpan={column.headerRowSpan}
-              className={fixedClass(column, leaves.indexOf(column))}
+              className={fixedClass(column, leafIndexOf(column))}
               style={fixed.header[column.key]}
               onClick={() => changeSort(column)}
             >
@@ -603,7 +604,8 @@ export default function Table<T extends object = Record<string, unknown>>({
         onScroll={handleScroll}
       >
         {renderTable(!split, true)}
-        {empty && <Empty description={emptyText} />}
+        {empty && loading && <div className="k-table-loading-placeholder" aria-hidden="true" />}
+        {empty && !loading && <Empty description={emptyText} />}
       </div>
       {footer && <div className="k-table-footer">{footer}</div>}
       {loading && <Spin />}

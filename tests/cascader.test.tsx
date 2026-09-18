@@ -33,6 +33,15 @@ describe("Cascader", () => {
     expect(screen.getByText("Nothing here")).not.toBeNull();
   });
 
+  it("animates the dropdown when it opens for the first time", () => {
+    render(<Cascader options={options} />);
+
+    fireEvent.click(screen.getByRole("combobox"));
+    expect(document.querySelector(".k-cascader-dropdown")?.className).toContain(
+      "k-cascader-enter-active",
+    );
+  });
+
   it("keeps ArrowDown in the current column", () => {
     const onChange = vi.fn();
     render(<Cascader options={options} onChange={onChange} />);

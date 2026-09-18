@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { CircleAlert, CircleCheck, CircleX, Info, Loading, X } from "kui-icons";
-import type { ReactNode } from "react";
+import { forwardRef, type ReactNode } from "react";
 import { Button } from "../button";
 import type { NoticeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
@@ -26,19 +26,14 @@ const icons = {
   loading: Loading,
 };
 
-export default function Content({
-  noticeType = "message",
-  type,
-  content,
-  title,
-  closable,
-  icon,
-  color,
-  onClose,
-}: ContentProps) {
+const Content = forwardRef<HTMLDivElement, ContentProps>(function Content(
+  { noticeType = "message", type, content, title, closable, icon, color, onClose },
+  ref,
+) {
   const alertIcon = icon ?? (type ? icons[type] : undefined);
   return (
     <div
+      ref={ref}
       className={clsx(`k-${noticeType}-box`, {
         [`k-${noticeType}-${type}`]: type,
         "k-notice-has-icon": alertIcon,
@@ -82,7 +77,9 @@ export default function Content({
       </div>
     </div>
   );
-}
+});
+
+export default Content;
 
 export type MessagePanelProps = Omit<ContentProps, "noticeType">;
 export function MessagePanel(props: MessagePanelProps) {

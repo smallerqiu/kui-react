@@ -1,17 +1,8 @@
 import { useState } from "react";
-import {
-  Button,
-  Checkbox,
-  Flex,
-  Radio,
-  RadioGroup,
-  Slider,
-  type FlexSizeType,
-  type SizeType,
-} from "react-kui";
+import { Button, Checkbox, Flex, Radio, RadioGroup, Slider, type SizeType } from "react-kui";
 
 export default function App() {
-  const [flexSize, setFlexSize] = useState<FlexSizeType>("small");
+  const [flexSize, setFlexSize] = useState<SizeType | number>("small");
   const [custom, setCustom] = useState(false);
   const [customSize, setCustomSize] = useState(8);
   return (

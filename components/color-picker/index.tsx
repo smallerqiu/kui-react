@@ -1,7 +1,4 @@
-import { useValue } from "../utils/use-value";
-import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
-import { createFormFieldComponent } from "../form/field-context";
 import Color, { type ColorInstance, type ColorObject } from "color";
 import {
   isValidElement,
@@ -14,8 +11,11 @@ import {
 } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
-import type { DropPlacementsType, SizeType } from "../const/types";
+import { useConfigAppearance } from "../config/use-config-appearance";
+import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
+import { createFormFieldComponent } from "../form/field-context";
 import { setPlacement } from "../utils/placement";
+import { useValue } from "../utils/use-value";
 import Alpha from "./alpha";
 import Hue from "./hue";
 import Mode, { type ColorMode } from "./mode";
@@ -36,6 +36,8 @@ export interface ColorPickerProps extends Omit<
   placement?: DropPlacementsType;
   trigger?: "hover" | "click";
   size?: SizeType;
+  theme?: ThemeType;
+  shape?: ShapeType;
   mode?: ColorMode;
   presets?: string[];
   onChange?: (color: string) => void;
@@ -57,6 +59,8 @@ function ColorPicker({
   placement = "bottom-left",
   trigger = "click",
   size: sizeProp,
+  theme: themeProp,
+  shape: shapeProp,
   mode: modeProp,
   presets,
   onChange,
@@ -69,6 +73,8 @@ function ColorPicker({
 }: ColorPickerProps) {
   const inheritedAppearance = useConfigAppearance();
   const size = sizeProp ?? inheritedAppearance.size;
+  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const shape = shapeProp ?? inheritedAppearance.shape;
   const [innerColor, setInnerColor] = useValue(value, (next) => next ?? "#000000ff");
   const [innerMode, setInnerMode] = useState<ColorMode>(modeProp ?? "hex");
   const mode = modeProp ?? innerMode;
@@ -174,11 +180,29 @@ function ColorPicker({
     trigger === "hover"
       ? { onMouseEnter: mouseEnter, onMouseLeave: mouseLeave }
       : { onClick: () => setVisible(!currentOpen) };
+  const onTriggerKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+    rest.onKeyDown?.(event as React.KeyboardEvent<HTMLDivElement>);
+    if (event.defaultPrevented || disabled || readOnly) return;
+    if (event.key === "Enter" || event.key === " " || event.key === "ArrowDown") {
+      event.preventDefault();
+      setVisible(true);
+    } else if (event.key === "Escape" && currentOpen) {
+      event.preventDefault();
+      setVisible(false);
+    }
+  };
   const customTrigger = children && isValidElement(children) ? children : null;
   const triggerNode = customTrigger ? (
     <span
       ref={triggerRef}
       className="k-color-picker-custom-trigger"
+      role="combobox"
+      tabIndex={disabled ? undefined : 0}
+      aria-haspopup="dialog"
+      aria-expanded={currentOpen}
+      aria-disabled={disabled || undefined}
+      aria-readonly={readOnly || undefined}
+      onKeyDown={onTriggerKeyDown}
       onClick={(event: React.MouseEvent) => {
         if (trigger === "click" && !event.defaultPrevented) setVisible(!currentOpen);
       }}
@@ -203,11 +227,19 @@ function ColorPicker({
           "k-color-picker-readonly": readOnly,
           "k-color-picker-sm": size === "small",
           "k-color-picker-lg": size === "large",
+          [`k-color-picker-${theme}`]: theme !== "outline",
+          [`k-color-picker-${shape}`]: shape,
         },
         className,
       )}
       {...hoverProps}
+      role="combobox"
+      tabIndex={disabled ? undefined : (rest.tabIndex ?? 0)}
+      aria-haspopup="dialog"
+      aria-expanded={currentOpen}
+      aria-disabled={disabled || undefined}
       aria-readonly={readOnly || undefined}
+      onKeyDown={onTriggerKeyDown}
     >
       <div className="k-color-picker-selection">
         <div className="k-color-picker-color">
@@ -305,19 +337,21 @@ function ColorPicker({
           }}
         />
       </div>
-      <div className="k-color-picker-arrow">
-        <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
-          <path
-            id="ot"
-            d="m24,0.97087l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
-          />
-          <path
-            id="in"
-            stroke="currentcolor"
-            d="m24,0l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
-          />
-        </svg>
-      </div>
+      {!panelOnly && (
+        <div className="k-color-picker-arrow">
+          <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
+            <path
+              id="ot"
+              d="m24,0.97087l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+            />
+            <path
+              id="in"
+              stroke="currentcolor"
+              d="m24,0l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+            />
+          </svg>
+        </div>
+      )}
     </div>
   );
   const dropdown = panelOnly ? (

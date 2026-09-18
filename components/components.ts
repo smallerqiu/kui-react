@@ -92,6 +92,7 @@ export type {
   FormItemProps,
   FormProps,
   FormRule,
+  FormRules,
   FormSubmitEvent,
   FormValidateTrigger,
 } from "./form";

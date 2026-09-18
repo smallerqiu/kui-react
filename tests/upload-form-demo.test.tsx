@@ -54,7 +54,11 @@ describe("upload form demo", () => {
       await waitFor(() => expect(container.querySelectorAll(".k-form-item-error")).toHaveLength(0));
       expect(container.textContent).not.toContain("Please wait for all files to finish uploading");
       // Existing required tips remain mounted until their exit animation finishes.
-      await waitFor(() => expect(container.textContent).not.toContain("Please select an avatar"));
+      await waitFor(() => {
+        expect(container.textContent).not.toContain("Please select an avatar");
+        expect(container.textContent).not.toContain("Please select a file");
+        expect(container.textContent).not.toContain("Please select at least one file");
+      });
       if (status !== "uploading") {
         for (const xhr of [...MockXHR.instances].reverse()) {
           await act(async () => {

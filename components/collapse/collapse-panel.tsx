@@ -25,6 +25,22 @@ const CollapsePanel: React.FC<CollapsePanelProps> = ({
   className = "",
   ...rest
 }) => {
+  const setCurrentHeight = (element: HTMLElement) => {
+    element.style.height = `${element.getBoundingClientRect().height}px`;
+    element.style.opacity = "1";
+    void element.offsetHeight;
+  };
+
+  const resetTransitionStyles = (element: HTMLElement) => {
+    element.style.height = "";
+    element.style.paddingTop = "";
+    element.style.paddingBottom = "";
+    element.style.marginTop = "";
+    element.style.marginBottom = "";
+    element.style.opacity = "";
+    element.style.overflow = "";
+  };
+
   const handleClick = () => {
     if (!disabled && panelKey !== undefined) {
       onExpand?.(panelKey);
@@ -60,12 +76,47 @@ const CollapsePanel: React.FC<CollapsePanelProps> = ({
         <Icon type={ChevronUp} className="k-collapse-arrow" />
         <span className="k-collapse-title">{title}</span>
         {extra ? (
-          <span className="k-collapse-extra" onClick={(event) => event.stopPropagation()}>
+          <span
+            className="k-collapse-extra"
+            onClick={(event) => event.stopPropagation()}
+            onKeyDown={(event) => event.stopPropagation()}
+          >
             {extra}
           </span>
         ) : null}
       </div>
-      <Transition show={active} name="k-collapse-slide" timeout={350}>
+      <Transition
+        show={active}
+        name="k-collapse-slide"
+        timeout={350}
+        onBeforeEnter={(element) => {
+          const reversing = element.style.height !== "";
+          element.style.overflow = "hidden";
+          element.style.height = reversing ? `${element.getBoundingClientRect().height}px` : "0px";
+          element.style.opacity = reversing ? getComputedStyle(element).opacity : "0.1";
+          void element.offsetHeight;
+        }}
+        onEnter={(element) => {
+          if (element.scrollHeight) {
+            element.style.height = `${element.scrollHeight}px`;
+            element.style.opacity = "1";
+          } else {
+            element.style.height = "";
+            element.style.opacity = "";
+          }
+        }}
+        onAfterEnter={resetTransitionStyles}
+        onBeforeLeave={setCurrentHeight}
+        onLeave={(element) => {
+          element.style.height = "0px";
+          element.style.paddingTop = "0px";
+          element.style.paddingBottom = "0px";
+          element.style.marginTop = "0px";
+          element.style.marginBottom = "0px";
+          element.style.opacity = "0";
+        }}
+        onAfterLeave={resetTransitionStyles}
+      >
         <div className="k-collapse-content">
           <div className="k-collapse-content-box">{children}</div>
         </div>

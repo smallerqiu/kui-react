@@ -25,7 +25,7 @@
 
 [扩展, 前缀和后缀](./demo/suffix.tsx?show=vertical)
 
-- suffix，prefix 扩展
+- `prefix`、`suffix` 显示在输入框内部，可直接传入 JSX 节点；`addonBefore`、`addonAfter` 用于输入框外部附件。
 
 [输入框组合](./demo/group.tsx?show=vertical)
 
@@ -47,7 +47,7 @@
 
 | 属性                | 说明                                       | 类型                    | 默认值 |
 | ------------------- | ------------------------------------------ | ----------------------- | ------ |
-| value               | 输入值                                 | string 、 number        | -      |
+| value               | 输入值                                     | string 、 number        | -      |
 | size                | 按钮尺寸,可选值 `small`、`large`，默认不选 | string                  | -      |
 | icon                | 输入框图标                                 | string                  | -      |
 | suffix              | 输入框内部后缀                             | string \| ReactNode     | -      |
@@ -77,12 +77,12 @@
 
 ## TextArea API
 
-| 属性         | 说明                                    | 类型                    | 默认值 |
-| ------------ | --------------------------------------- | ----------------------- | ------ |
-| value        | 输入值                              | string、number          | -      |
-| size         | 尺寸，可选值 `small`、`large`，默认不选 | string                  | -      |
-| theme        | 主题                                    | ThemeType               | fill   |
-| shape        | 形状                                    | ShapeType               | -      |
-| rows         | 默认行数                                | number                  | 2      |
-| disabled     | 是否禁用                                | boolean                 | false  |
-| onChange     | 内容变化时的回调                        | (value: string) => void | -      |
+| 属性     | 说明                                    | 类型                    | 默认值 |
+| -------- | --------------------------------------- | ----------------------- | ------ |
+| value    | 输入值                                  | string、number          | -      |
+| size     | 尺寸，可选值 `small`、`large`，默认不选 | string                  | -      |
+| theme    | 主题                                    | ThemeType               | fill   |
+| shape    | 形状                                    | ShapeType               | -      |
+| rows     | 默认行数                                | number                  | 2      |
+| disabled | 是否禁用                                | boolean                 | false  |
+| onChange | 内容变化时的回调                        | (value: string) => void | -      |

@@ -25,7 +25,7 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 
 [Extension, Prefix and Suffix](./demo/suffix.tsx?show=vertical)
 
-- suffix, prefix extension.
+- `prefix` and `suffix` render inside the input and accept JSX nodes. `addonBefore` and `addonAfter` render outside the input.
 
 [Input Group](./demo/group.tsx?show=vertical)
 
@@ -47,7 +47,7 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 
 | Property            | Description                                                         | Type                    | Default |
 | ------------------- | ------------------------------------------------------------------- | ----------------------- | ------- |
-| value               | input value                                              | string, number          | -       |
+| value               | input value                                                         | string, number          | -       |
 | size                | Button size, optional values `small`, `large`, default not selected | string                  | -       |
 | icon                | Input box icon                                                      | string                  | -       |
 | suffix              | Inline suffix                                                       | string \| ReactNode     | -       |
@@ -77,12 +77,12 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 
 ## TextArea API
 
-| Property     | Description                                                  | Type                    | Default |
-| ------------ | ------------------------------------------------------------ | ----------------------- | ------- |
-| value        | input value                                       | string, number          | -       |
-| size         | Size, optional values `small`, `large`, default not selected | string                  | -       |
-| theme        | Theme                                                        | ThemeType               | fill    |
-| shape        | Shape                                                        | ShapeType               | -       |
-| rows         | Default row count                                            | number                  | 2       |
-| disabled     | Whether disabled                                             | boolean                 | false   |
-| onChange     | Callback when the content changes                            | (value: string) => void | -       |
+| Property | Description                                                  | Type                    | Default |
+| -------- | ------------------------------------------------------------ | ----------------------- | ------- |
+| value    | input value                                                  | string, number          | -       |
+| size     | Size, optional values `small`, `large`, default not selected | string                  | -       |
+| theme    | Theme                                                        | ThemeType               | fill    |
+| shape    | Shape                                                        | ShapeType               | -       |
+| rows     | Default row count                                            | number                  | 2       |
+| disabled | Whether disabled                                             | boolean                 | false   |
+| onChange | Callback when the content changes                            | (value: string) => void | -       |

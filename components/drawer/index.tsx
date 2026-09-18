@@ -86,6 +86,13 @@ const Drawer: React.FC<DrawerProps> = ({
   const [targetEl, setTargetEl] = useState<HTMLElement | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
+  const setWrapRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      wrapRef.current = node;
+      if (node && visible) node.focus();
+    },
+    [visible],
+  );
 
   const resolveTarget = useCallback(() => {
     const candidate = typeof target === "function" ? target() : target;
@@ -155,7 +162,8 @@ const Drawer: React.FC<DrawerProps> = ({
   }, [currentOpen, targetEl]);
 
   useLayoutEffect(() => {
-    if (rendered) return ensurePositioningContext(targetEl);
+    if (!rendered || !targetEl) return;
+    return ensurePositioningContext(targetEl);
   }, [rendered, targetEl]);
 
   const cancel = () => {
@@ -215,7 +223,7 @@ const Drawer: React.FC<DrawerProps> = ({
           />
         </Transition>
       )}
-      <div ref={wrapRef} className="k-drawer-wrap" tabIndex={-1}>
+      <div ref={setWrapRef} className="k-drawer-wrap" tabIndex={-1}>
         <Transition show={visible} name={`k-drawer-${placement}`} timeout={200} appear>
           <div className="k-drawer-box" style={drawerStyle}>
             <div className="k-drawer-content">

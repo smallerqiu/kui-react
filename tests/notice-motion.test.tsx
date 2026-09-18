@@ -27,12 +27,20 @@ describe.each(["message", "notice"] as const)("%s exit motion", (type) => {
     act(() => vi.advanceTimersByTime(300));
     expect(document.querySelector(`.k-${type}-slide-enter-active`)).toBeNull();
 
+    const item = document.querySelector<HTMLElement>(`.k-${type}-box`)!;
+    Object.defineProperty(item, "scrollHeight", { configurable: true, value: 80 });
+
     act(close);
 
     const leavingItem = document.querySelector(`.k-${type}-slide-leave-active`);
     expect(leavingItem).not.toBeNull();
     expect(leavingItem?.textContent).toContain("Closing content");
     expect(onClose).not.toHaveBeenCalled();
+    if (type === "notice") {
+      expect(leavingItem).toBe(item);
+      expect(item.style.height).toBe("0px");
+      expect(item.style.marginBottom).toBe("0px");
+    }
 
     act(() => vi.advanceTimersByTime(300));
 

@@ -44,9 +44,10 @@ Content area that can be collapsed/expanded.
 
 ## Panel
 
-| Property | Description                    | Type             | Default |
-| -------- | ------------------------------ | ---------------- | ------- |
-| title    | Panel title                    | ReactNode        | -       |
-| key      | Unique panel identifier        | string \| number | -       |
-| disabled | Whether the panel is disabled  | boolean          | false   |
-| extra    | Extra content beside the title | ReactNode        | -       |
+| Property | Description                                       | Type             | Default |
+| -------- | ------------------------------------------------- | ---------------- | ------- |
+| title    | Panel title                                       | ReactNode        | -       |
+| key      | Unique panel identifier                           | string \| number | -       |
+| panelKey | Explicit identifier; recommended for numeric keys | string \| number | -       |
+| disabled | Whether the panel is disabled                     | boolean          | false   |
+| extra    | Extra content beside the title                    | ReactNode        | -       |

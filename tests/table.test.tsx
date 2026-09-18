@@ -61,4 +61,36 @@ describe("Table Vue parity", () => {
     expect(firstRow?.textContent).not.toContain("Alice");
     expect(firstRow?.textContent).toContain("28");
   });
+
+  it("keeps default fixed column widths aligned with sticky offsets", () => {
+    const columns: Column<Row>[] = [
+      { key: "name", title: "Name", fixed: "left" },
+      { key: "age", title: "Age", fixed: "left" },
+      { key: "action", title: "Operate", fixed: "right", render: () => "Edit" },
+      { key: "action2", title: "More", fixed: "right", render: () => "More" },
+    ];
+    const { container } = render(<Table data={data} columns={columns} scroll={{ y: 200 }} />);
+    const cols = container.querySelectorAll<HTMLTableColElement>(".k-table-body col");
+    const headers = container.querySelectorAll<HTMLTableCellElement>(".k-table-thead th");
+
+    expect(cols[0].style.width).toBe("150px");
+    expect(cols[1].style.width).toBe("150px");
+    expect(headers[0].style.left).toBe("0px");
+    expect(headers[1].style.left).toBe("150px");
+    expect(container.querySelectorAll(".k-table-thead .k-table-cell-fix-right-first")).toHaveLength(
+      1,
+    );
+  });
+
+  it("does not show the empty state while loading", () => {
+    const columns: Column<Row>[] = [{ key: "name", title: "Name" }];
+    const { container, rerender } = render(<Table data={[]} columns={columns} loading />);
+
+    expect(container.querySelector(".k-empty")).toBeNull();
+    expect(container.querySelector(".k-table-loading-placeholder")).not.toBeNull();
+
+    rerender(<Table data={[]} columns={columns} loading={false} />);
+    expect(container.querySelector(".k-empty")).not.toBeNull();
+    expect(container.querySelector(".k-table-loading-placeholder")).toBeNull();
+  });
 });

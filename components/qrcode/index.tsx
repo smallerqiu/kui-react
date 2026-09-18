@@ -47,17 +47,18 @@ export interface QRCodeProps extends Omit<HTMLAttributes<HTMLDivElement>, "child
 const positive = (value: number, fallback: number) =>
   Number.isFinite(value) && value > 0 ? value : fallback;
 
-const resolveColor = (input: string, parent: HTMLElement | null): string => {
+const resolveColor = (input: string, parent: HTMLElement | null, fallback: string): string => {
   if (!input.trim().startsWith("var(")) return input;
   const element = document.createElement("span");
   element.style.color = input;
   (parent ?? document.body).appendChild(element);
   const computed = getComputedStyle(element).color;
   element.remove();
+  if (!computed || computed.includes("var(")) return fallback;
   try {
     return Color(computed).hex();
   } catch {
-    return "#000000";
+    return fallback;
   }
 };
 
@@ -101,7 +102,7 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
   const theme = themeProp ?? inheritedAppearance.theme ?? "outline";
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const drawIdRef = useRef(0);
-  const mountedRef = useRef(false);
+  const drawnRef = useRef(false);
   const drawPromiseRef = useRef<Promise<void>>(Promise.resolve());
   const safeSize = positive(size, 160);
   const safeMargin = Number.isFinite(margin) ? Math.max(0, Math.floor(margin)) : 0;
@@ -114,8 +115,8 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
     const drawId = ++drawIdRef.current;
     const ratio = positive(window.devicePixelRatio, 1);
     const pixelSize = Math.max(1, Math.round(safeSize * ratio));
-    const dark = resolveColor(colorDark, canvas.parentElement);
-    const light = resolveColor(colorLight, canvas.parentElement);
+    const dark = resolveColor(colorDark, canvas.parentElement, "#000000");
+    const light = resolveColor(colorLight, canvas.parentElement, "#ffffff");
     const memory = document.createElement("canvas");
     const options: QRCodeRenderersOptions = {
       width: pixelSize,
@@ -161,6 +162,7 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
       canvas.width = pixelSize;
       canvas.height = pixelSize;
       canvas.getContext("2d")?.drawImage(memory, 0, 0, pixelSize, pixelSize);
+      drawnRef.current = true;
     } catch (error) {
       if (drawId === drawIdRef.current) console.error("Failed to render QR code", error);
     }
@@ -184,8 +186,7 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
   }, [draw]);
 
   useEffect(() => {
-    if (!mountedRef.current || status === "active") scheduleDraw();
-    mountedRef.current = true;
+    if (!drawnRef.current || status === "active") scheduleDraw();
   }, [scheduleDraw, status]);
 
   useEffect(() => {

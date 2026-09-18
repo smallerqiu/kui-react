@@ -169,19 +169,26 @@ function DatePicker({
   const fmt = format || defaultFormat(mode);
   const isRange = mode.endsWith("Range");
   const hasTime = mode === "time" || mode.includes("Time");
-  const initial = useMemo(() => {
+  const parsedSource = useMemo(() => {
     const source = value !== undefined ? value : isRange ? [startDate, endDate] : null;
-    return (Array.isArray(source) ? source : source == null ? [] : [source])
-      .map((item) => parse(item, fmt, valueType))
-      .filter((item): item is Dayjs => !!item);
+    return (Array.isArray(source) ? source : source == null ? [] : [source]).map((item) =>
+      parse(item, fmt, valueType),
+    );
   }, [value, startDate, endDate, isRange, fmt, valueType]);
+  const initial = useMemo(
+    () =>
+      isRange && parsedSource.some((item) => !item)
+        ? []
+        : parsedSource.filter((item): item is Dayjs => !!item),
+    [isRange, parsedSource],
+  );
   const [inner, setInner] = useValue(initial, (next) => next);
   const rangeControlled = value === undefined && (startDate !== undefined || endDate !== undefined);
   const values = rangeControlled ? initial : inner;
   const [visibleState, setVisibleState] = useState(defaultOpen || panelOnly);
   const visible = panelOnly || (open ?? visibleState);
   const [rendered, setRendered] = useState(panelOnly || (open ?? defaultOpen));
-  const syncSignature = `${fmt}:${values.map((item) => item.valueOf()).join(",")}`;
+  const syncSignature = `${fmt}:${parsedSource.map((item) => item?.valueOf() ?? "null").join(",")}`;
   const [panelState, setPanelState] = useState({
     signature: syncSignature,
     value: initial[0] ?? dayjs(),
@@ -209,7 +216,7 @@ function DatePicker({
   );
   const [hoverDate, setHoverDate] = useState<Dayjs | null>(null);
   const [timeEditSide, setTimeEditSide] = useState<"start" | "end">("start");
-  const formattedValues = values.map((item) => item.format(fmt));
+  const formattedValues = (isRange ? parsedSource : values).map((item) => item?.format(fmt) ?? "");
   const [textState, setTextState] = useState({
     signature: syncSignature,
     value: formattedValues,
@@ -312,8 +319,11 @@ function DatePicker({
         : valueType === "unix"
           ? item.unix()
           : item.format(fmt);
+  const isValueDisabled = (item: Dayjs) =>
+    disabledDate(item.toDate()) || (hasTime && disabledTime(item.toDate()));
   const commit = (next: Dayjs[], closePanel = false) => {
     if (disabled || readOnly) return;
+    if (next.some(isValueDisabled)) return;
     if (isRange && next.length === 2 && next[1].isBefore(next[0])) next = [next[1], next[0]];
     if (!rangeControlled) setInner(next);
     setDraft(rangeControlled ? values : next);
@@ -374,13 +384,18 @@ function DatePicker({
   };
   const acceptInput = (index: number) => {
     const parsed = parse(texts[index], fmt, valueType);
-    if (!parsed) {
-      setTexts(values.map((item) => item.format(fmt)));
+    if (!parsed || isValueDisabled(parsed)) {
+      setTexts(formattedValues);
       return;
     }
-    const next = values.slice();
-    next[index] = parsed;
-    if (!isRange || next.length === 2) commit(next);
+    if (!isRange) {
+      commit([parsed]);
+      return;
+    }
+    const next = texts.map((text, position) =>
+      position === index ? parsed : parse(text, fmt, valueType),
+    );
+    if (next[0] && next[1]) commit(next as Dayjs[]);
   };
 
   const localeInfo = useMemo(() => dayjs().locale(localeName).localeData(), [localeName]);
@@ -511,6 +526,7 @@ function DatePicker({
                 "k-picker-day-disabled": off,
               })}
               role="gridcell"
+              tabIndex={off ? -1 : 0}
               aria-selected={selected || undefined}
               aria-disabled={off || undefined}
               onClick={() =>
@@ -518,6 +534,17 @@ function DatePicker({
                   date.hour(panelDate.hour()).minute(panelDate.minute()).second(panelDate.second()),
                 )
               }
+              onKeyDown={(event) => {
+                if (!off && (event.key === "Enter" || event.key === " ")) {
+                  event.preventDefault();
+                  choose(
+                    date
+                      .hour(panelDate.hour())
+                      .minute(panelDate.minute())
+                      .second(panelDate.second()),
+                  );
+                }
+              }}
               onMouseEnter={() => isRange && setHoverDate(date)}
             >
               {date.date()}
@@ -737,7 +764,7 @@ function DatePicker({
       >
         <div
           className={clsx("k-datepicker-selection", {
-            "k-datepicker-has-clear": clearable && values.length,
+            "k-datepicker-has-clear": clearable && texts.some(Boolean),
           })}
           onClick={() => !disabled && !readOnly && setOpen(!visible)}
         >
@@ -793,7 +820,7 @@ function DatePicker({
             className="k-icon-calendar"
             strokeWidth={1.5}
           />
-          {clearable && !disabled && !readOnly && values.length > 0 && (
+          {clearable && !disabled && !readOnly && texts.some(Boolean) && (
             <Icon
               type={CircleX}
               className="k-icon-clean"

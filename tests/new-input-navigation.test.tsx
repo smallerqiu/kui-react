@@ -51,7 +51,7 @@ describe("new input and navigation components", () => {
 
   it("supports AutoComplete keyboard selection", () => {
     const onSelect = vi.fn();
-    render(<AutoComplete options={["React", "Vue"]} onSelect={onSelect} />);
+    render(<AutoComplete showOnEmpty options={["React", "Vue"]} onSelect={onSelect} />);
     const input = screen.getByRole("combobox");
     fireEvent.focus(input);
     fireEvent.keyDown(input, { key: "ArrowDown" });

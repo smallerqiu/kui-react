@@ -6,7 +6,7 @@ Only renders data near the viewport to optimize large-list rendering performance
 
 [Basic Usage](./demo/basic.tsx?show=vertical)
 
-- Renders many fixed-height items with a small overscan buffer.
+- Renders 10,000 fixed-height records with a small overscan buffer.
 
 ## Usage in Components
 

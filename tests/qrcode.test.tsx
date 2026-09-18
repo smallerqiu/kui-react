@@ -1,4 +1,4 @@
-import { createRef } from "react";
+import { createRef, StrictMode } from "react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import type { QRCodeRenderersOptions } from "qrcode";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -57,6 +57,15 @@ describe("QRCode", () => {
     expect(container.querySelector<HTMLElement>(".k-qrcode")?.style.width).toBe("160px");
   });
 
+  it("uses readable fallbacks when theme color variables are unresolved", async () => {
+    render(<QRCode value="https://k-ui.cn" />);
+
+    await waitFor(() => expect(toCanvas).toHaveBeenCalledOnce());
+    expect(toCanvas.mock.calls[0][2]).toEqual(
+      expect.objectContaining({ color: { dark: "#000000", light: "#ffffff" } }),
+    );
+  });
+
   it("waits for logo composition before downloading", async () => {
     const ref = createRef<QRCodeRef>();
     const toDataURL = vi
@@ -91,5 +100,18 @@ describe("QRCode", () => {
     fireEvent.keyDown(expired, { key: "Enter" });
     expect(onRefresh).toHaveBeenCalledOnce();
     expect(expired.getAttribute("role")).toBe("button");
+  });
+
+  it("keeps the QR canvas rendered behind status masks in Strict Mode", async () => {
+    const { container } = render(
+      <StrictMode>
+        <QRCode value="value" status="scanned" />
+      </StrictMode>,
+    );
+
+    await waitFor(() =>
+      expect(container.querySelector("canvas")?.getContext("2d")?.drawImage).toHaveBeenCalled(),
+    );
+    expect(container.querySelector(".k-qrcode-scanned-wrapper")).not.toBeNull();
   });
 });

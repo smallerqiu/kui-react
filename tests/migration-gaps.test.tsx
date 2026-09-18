@@ -198,8 +198,8 @@ describe("Upload error reporting parity with kui-vue", () => {
     });
     fireEvent.change(input);
 
+    await waitFor(() => expect(FakeXHR.instances[0]).toBeDefined());
     const xhr = FakeXHR.instances[0];
-    expect(xhr).toBeDefined();
     xhr.status = 500;
     xhr.readyState = 4;
     xhr.onreadystatechange?.();
@@ -222,6 +222,7 @@ describe("Upload error reporting parity with kui-vue", () => {
     });
     fireEvent.change(input);
 
+    await waitFor(() => expect(FakeXHR.instances[0]).toBeDefined());
     FakeXHR.instances[0].onerror?.();
     await waitFor(() => expect(onChange).toHaveBeenCalled());
     const last = onChange.mock.calls.at(-1)?.[0];
@@ -235,14 +236,14 @@ describe("InputNumber keyboard parity with kui-vue", () => {
   it("ignores arrow keys when keyboard is disabled", () => {
     const onChange = vi.fn();
     render(<InputNumber value={1} keyboard={false} onChange={onChange} />);
-    fireEvent.keyDown(screen.getByRole("textbox"), { key: "ArrowUp" });
+    fireEvent.keyDown(screen.getByRole("spinbutton"), { key: "ArrowUp" });
     expect(onChange).not.toHaveBeenCalled();
   });
 
   it("steps with arrow keys by default", () => {
     const onChange = vi.fn();
     render(<InputNumber value={1} onChange={onChange} />);
-    fireEvent.keyDown(screen.getByRole("textbox"), { key: "ArrowUp" });
+    fireEvent.keyDown(screen.getByRole("spinbutton"), { key: "ArrowUp" });
     expect(onChange).toHaveBeenCalledWith(2);
   });
 });
