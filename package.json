@@ -13,8 +13,11 @@
     "lib",
     "style",
     "types",
-    "README.md",
-    "README.zh-CN.md"
+    "readme.md",
+    "README.zh-CN.md",
+    "ai",
+    "AI.md",
+    "AI.en-US.md"
   ],
   "exports": {
     ".": {
@@ -30,7 +33,11 @@
       "import": "./es/locale/*.js",
       "require": "./lib/locale/*.cjs"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./metadata": "./ai/kui-components.json",
+    "./metadata/schema": "./ai/kui-components.schema.json",
+    "./skill": "./ai/skills/react-kui/SKILL.md",
+    "./skill/*": "./ai/skills/react-kui/*"
   },
   "sideEffects": [
     "**/*.css",
@@ -39,27 +46,33 @@
   "scripts": {
     "dev": "vite --config vite.config.docs.ts",
     "start": "pnpm dev",
-    "typecheck": "tsc -b",
-    "build:es": "vite build --config vite.config.ts",
-    "build:cjs": "vite build --config vite.config.lib.ts",
-    "build:css": "vite build --config vite.config.css.ts",
-    "build:docs": "vite build --config vite.config.docs.ts",
-    "build:lib": "pnpm build:es && pnpm build:cjs && pnpm build:css",
+    "typecheck": "node --max-old-space-size=2048 node_modules/typescript/bin/tsc -b",
+    "build:es": "node --max-old-space-size=2048 node_modules/vite/bin/vite.js build --config vite.config.ts",
+    "build:cjs": "node --max-old-space-size=2048 node_modules/vite/bin/vite.js build --config vite.config.lib.ts",
+    "build:css": "node --max-old-space-size=2048 node_modules/vite/bin/vite.js build --config vite.config.css.ts",
+    "build:docs": "pnpm generate:ai && node --max-old-space-size=2048 node_modules/vite/bin/vite.js build --config vite.config.docs.ts",
+    "build:lib": "pnpm generate:ai && pnpm build:es && pnpm build:cjs && pnpm build:css",
     "build": "pnpm typecheck && pnpm build:lib",
-    "lint": "eslint . --cache --cache-location node_modules/.cache/eslint/.eslintcache",
+    "lint": "node --max-old-space-size=2048 node_modules/eslint/bin/eslint.js . --max-warnings=0 --cache --cache-location node_modules/.cache/eslint/.eslintcache",
     "lint:fix": "pnpm lint -- --fix",
     "eslint": "pnpm lint",
-    "check:api-docs": "node --experimental-strip-types scripts/check-api-docs.ts",
+    "check:api-docs": "node --max-old-space-size=2048 --experimental-strip-types scripts/check-api-docs.ts",
     "package:check": "node scripts/check-package.mjs",
-    "test": "vitest run",
-    "verify": "pnpm lint && pnpm check:api-docs && pnpm typecheck && pnpm test && pnpm build:lib && pnpm build:docs && pnpm package:check &&pnpm check:api-docs"
+    "test": "node --max-old-space-size=2048 node_modules/vitest/vitest.mjs run --maxWorkers=1",
+    "verify": "pnpm check && pnpm build:lib && pnpm build:docs && pnpm package:check",
+    "generate:ai": "node --max-old-space-size=2048 --experimental-strip-types scripts/generate-ai-assets.ts",
+    "check:ai-assets": "node --max-old-space-size=2048 --experimental-strip-types scripts/generate-ai-assets.ts --check",
+    "check:ai": "pnpm typecheck:ai && node --max-old-space-size=2048 node_modules/vitest/vitest.mjs run tests/ai-assets.test.ts tests/ai-templates.test.tsx --maxWorkers=1",
+    "typecheck:ai": "node --max-old-space-size=2048 node_modules/typescript/bin/tsc -p tsconfig.ai-templates.json --noEmit",
+    "check": "pnpm lint && pnpm check:api-docs && pnpm typecheck && pnpm typecheck:ai && pnpm check:ai-assets && pnpm test",
+    "package:smoke": "node scripts/smoke-package.mjs"
   },
   "repository": {
     "type": "git",
-    "url": "https://gitee.com/chuchur/kui-react.git"
+    "url": "https://github.com/smallerqiu/kui-react.git"
   },
   "bugs": {
-    "url": "https://gitee.com/chuchur/kui-react/issues",
+    "url": "https://github.com/smallerqiu/kui-react/issues",
     "email": "chuchur@qq.com"
   },
   "keywords": [
@@ -75,8 +88,8 @@
     "ui-kit"
   ],
   "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "browserslist": [
     "> 0.5%",
@@ -85,6 +98,7 @@
     "not dead"
   ],
   "dependencies": {
+    "@babel/parser": "7.29.8",
     "big.js": "^7.0.1",
     "clsx": "^2.1.1",
     "color": "^5.0.3",
@@ -137,5 +151,13 @@
     "vite": "^8.3.0",
     "vite-plugin-dts": "^5.1.0",
     "vitest": "^4.1.11"
+  },
+  "bin": {
+    "react-kui-ai": "./ai/cli.mjs",
+    "react-kui-mcp": "./ai/mcp.mjs"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

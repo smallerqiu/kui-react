@@ -14,6 +14,15 @@ Vite seems to cache builds—you can manually clear it:
 rm -rf node_modules/.vite
 ```
 
+### Unreleased
+
+- Add React-specific AI metadata, MCP tools, Skill, initialization CLI, and business templates.
+- Fix Select placeholders for empty string values, the English component list, and theme documentation.
+- Remove render-time ref mutations from Collapse while preserving numeric keys and handling equivalent numeric/string keys consistently.
+- Improve lint compliance and dependencies in Layout, ColorPicker, and Tree.
+- Require React and react-dom 19.2 or later in the 19.x series for `useEffectEvent`.
+- Limit build/test memory and concurrency; add package smoke checks, CI, and a manual release workflow.
+
 ### 3.0.0
 
 `2026-07-20`

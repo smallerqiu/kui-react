@@ -12,7 +12,7 @@ cd my-app
 pnpm install
 ```
 
-The current library targets React 19. For an existing project, update `react` and `react-dom` together to the latest 19.x releases:
+The current library targets React 19.2+. For an existing project, update `react` and `react-dom` together to the latest 19.x releases:
 
 ```bash
 pnpm add react@^19 react-dom@^19

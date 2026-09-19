@@ -5,23 +5,34 @@ import path from "node:path";
 import process from "node:process";
 
 const root = process.cwd();
-const npmCache = path.join(root, "node_modules/.cache/npm-pack");
 const requiredFiles = [
   "es/index.js",
   "lib/index.cjs",
   "style/index.css",
   "types/index.d.ts",
-  "README.md",
+  "readme.md",
   "README.zh-CN.md",
   "package.json",
+  "AI.md",
+  "AI.en-US.md",
+  "ai/cli.mjs",
+  "ai/mcp.mjs",
+  "ai/validate.mjs",
+  "ai/kui-components.json",
+  "ai/kui-components.schema.json",
+  "ai/skills/react-kui/SKILL.md",
+  "ai/templates/index.json",
+  "ai/templates/form.tsx",
+  "ai/templates/table.tsx",
+  "ai/templates/modal-editor.tsx",
 ];
 
-const packOutput = execFileSync("npm", ["pack", "--dry-run", "--json"], {
+const packOutput = execFileSync("pnpm", ["pack", "--dry-run", "--json"], {
   cwd: root,
-  env: { ...process.env, npm_config_cache: npmCache },
   encoding: "utf8",
 });
-const pack = JSON.parse(packOutput)[0];
+const parsed = JSON.parse(packOutput);
+const pack = Array.isArray(parsed) ? parsed[0] : parsed;
 const packedFiles = new Set(pack.files.map((file) => file.path));
 const missing = requiredFiles.filter((file) => !packedFiles.has(file));
 if (missing.length) throw new Error(`npm package is missing: ${missing.join(", ")}`);
@@ -39,5 +50,5 @@ if (!fs.statSync(path.join(root, "style/index.css")).size) {
 }
 
 console.log(
-  `Package check passed (${pack.files.length} files, ${esmExports.length} matching ESM/CJS exports).`
+  `Package check passed (${pack.files.length} files, ${esmExports.length} matching ESM/CJS exports).`,
 );

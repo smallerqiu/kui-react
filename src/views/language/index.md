@@ -4,7 +4,7 @@ KUI React 通过 React Context 提供多语言能力，默认使用简体中文�
 
 ```tsx
 import { ConfigProvider } from "react-kui";
-import en from "react-kui/components/locale/en";
+import en from "react-kui/locale/en";
 
 export default function App() {
   return <ConfigProvider locale={en}>{/* 应用内容 */}</ConfigProvider>;
@@ -17,6 +17,9 @@ export default function App() {
 | --- | --- | --- | --- |
 | locale | 组件库语言配置 | Locale \| null | null |
 | getPopupContainer | 弹层渲染的容器，默认渲染到 `body` | () => HTMLElement \| null \| undefined | - |
+| size | 支持该配置的组件的默认尺寸，组件自身属性优先 | SizeType | - |
+| shape | 支持该配置的组件的默认形状，组件自身属性优先 | ShapeType | - |
+| theme | 支持该配置的组件的默认外观，组件自身属性优先 | ThemeType | - |
 
 ## 示例
 

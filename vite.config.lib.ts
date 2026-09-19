@@ -22,6 +22,7 @@ export default defineConfig({
     },
     minify: "terser",
     terserOptions: {
+      maxWorkers: 1,
       compress: { drop_console: true, drop_debugger: true },
     },
     rollupOptions: {

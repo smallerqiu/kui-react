@@ -14,6 +14,15 @@ vite 好像有缓存, 可手动清除
 rm -rf node_modules/.vite
 ```
 
+### 未发布
+
+- 新增面向 React 的 AI 辅助开发：组件元数据、MCP、Skill、初始化命令和业务模板。
+- 修复 Select 空字符串值导致占位文字消失的问题，以及英文组件列表和主题文档。
+- 修复 Collapse 渲染阶段的 ref 修改，保留数字 key 行为，并统一数字/字符串 key 的关闭逻辑。
+- 完善 Layout、ColorPicker、Tree 的 lint 与依赖处理。
+- 最低 React/react-dom 版本明确为 19.2；使用了该版本新增的 `useEffectEvent`。
+- 构建及测试限制并发和内存，增加安装包验证、CI 与手动发布流程。
+
 ### 3.0.0
 
 `2026-7-20`

@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish to npm (false only verifies and packs)
+        type: boolean
+        default: false
+      dist_tag:
+        description: npm distribution tag
+        type: choice
+        options: [next, latest]
+        default: next
+
+permissions:
+  contents: read
+
+concurrency:
+  group: npm-release
+  cancel-in-progress: false
+
+env:
+  NODE_OPTIONS: --max-old-space-size=2048
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Check version and release tag
+        env:
+          PUBLISH: ${{ inputs.publish }}
+          DIST_TAG: ${{ inputs.dist_tag }}
+        run: node scripts/check-release.mjs
+      - run: pnpm verify
+      - name: Pack the release artifact
+        run: pnpm pack --out artifacts/react-kui.tgz
+      - name: Validate the exact artifact
+        run: pnpm package:smoke artifacts/react-kui.tgz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: npm-package
+          path: artifacts/react-kui.tgz
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    if: ${{ inputs.publish }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - uses: actions/download-artifact@v4
+        with:
+          name: npm-package
+          path: artifacts
+      - name: Publish verified tarball with npm trusted publishing
+        env:
+          DIST_TAG: ${{ inputs.dist_tag }}
+        run: npm publish artifacts/react-kui.tgz --access public --provenance --tag "$DIST_TAG"

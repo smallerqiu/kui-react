@@ -90,6 +90,7 @@ const navData = [
         name: "language",
         icon: Languages,
       },
+      { title: "AI 辅助开发", sub: "AI Development", name: "ai", icon: FileText },
       { title: "更新日志", sub: "Change Log", name: "change-log", icon: FileText },
       { title: "定制主题", sub: "Themes", name: "theme", icon: Palette },
       { title: "暗色模式", sub: "Dark Mode", name: "dark-mode", icon: PaintBucket },

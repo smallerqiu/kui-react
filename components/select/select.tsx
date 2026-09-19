@@ -40,6 +40,7 @@ type SelectPrimitive = string | number;
 
 const normalizeValue = (value: SelectValue): SelectPrimitive[] => {
   if (Array.isArray(value)) return value;
+  if (isEmpty(value)) return [];
   return typeof value === "string" || typeof value === "number" ? [value] : [];
 };
 

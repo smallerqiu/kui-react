@@ -40,7 +40,7 @@ export default function Paint({ hue = 0, value, onUpdateRGB }: PaintProps) {
       x: (hsv.s / 100) * rect.width - 7,
       y: (1 - hsv.v / 100) * rect.height - 7,
     });
-  }, [value]);
+  }, [hsv.s, hsv.v]);
   useEffect(() => () => dragCleanupRef.current(), []);
   const start = (event: ReactMouseEvent) => {
     draggingRef.current = true;

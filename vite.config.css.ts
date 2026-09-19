@@ -7,6 +7,7 @@ export default defineConfig({
   publicDir: false,
   plugins: [banner()],
   css: {
+    preprocessorMaxWorkers: 0,
     postcss: {
       plugins: [autoprefixer()],
     },

@@ -1,6 +1,6 @@
 import { useConfigAppearance, normalizeSurfaceShape } from "../config/use-config-appearance";
 import clsx from "clsx";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { getChildren } from "../utils/react-node";
 import type { CollapsePanelProps } from "./collapse-panel";
 import type { ShapeType, ThemeType } from "../const/types";
@@ -35,11 +35,16 @@ const Collapse: React.FC<CollapseProps> = ({
   const shape = normalizeSurfaceShape(shapeProp ?? inheritedAppearance.shape ?? "round");
   const [innerActiveKeys, setInnerActiveKeys] = useState<(string | number)[]>(defaultOpenKeys);
   const activeKeys = openKeys ?? innerActiveKeys;
-  const keyRegistry = useRef(
-    new Map([...defaultOpenKeys, ...(openKeys ?? [])].map((key) => [String(key), key] as const)),
+  const [keyRegistry, setKeyRegistry] = useState(
+    () =>
+      new Map([...defaultOpenKeys, ...(openKeys ?? [])].map((key) => [String(key), key] as const)),
   );
-
-  activeKeys.forEach((key) => keyRegistry.current.set(String(key), key));
+  // Preserve numeric keys after closing without mutating refs during render.
+  const resolvedKeys = new Map(keyRegistry);
+  activeKeys.forEach((key) => resolvedKeys.set(String(key), key));
+  if (activeKeys.some((key) => keyRegistry.get(String(key)) !== key)) {
+    setKeyRegistry(resolvedKeys);
+  }
 
   const keysEqual = (left: string | number, right: string | number) =>
     left === right || String(left) === String(right);
@@ -51,7 +56,7 @@ const Collapse: React.FC<CollapseProps> = ({
     const index = nextKeys.findIndex((item) => keysEqual(item, key));
 
     if (index >= 0) {
-      nextKeys = accordion ? [] : nextKeys.filter((k) => k !== key);
+      nextKeys = accordion ? [] : nextKeys.filter((k) => !keysEqual(k, key));
     } else {
       nextKeys = accordion ? [key] : [...nextKeys, key];
     }
@@ -77,8 +82,7 @@ const Collapse: React.FC<CollapseProps> = ({
         if (!React.isValidElement<CollapsePanelProps>(child)) return child;
 
         const rawKey = child.props.panelKey ?? child.key ?? index;
-        const key = child.props.panelKey ?? keyRegistry.current.get(String(rawKey)) ?? rawKey;
-        keyRegistry.current.set(String(rawKey), key);
+        const key = child.props.panelKey ?? resolvedKeys.get(String(rawKey)) ?? rawKey;
         const isActive = activeKeys.some((item) => keysEqual(item, key));
 
         return React.cloneElement(child, {

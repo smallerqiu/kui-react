@@ -4,32 +4,37 @@ on:
   push:
     branches: [main, master]
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  NODE_OPTIONS: --max-old-space-size=2048
+
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-        with:
-          version: 11.21.0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Verify source, tests, builds, docs, and package
-        run: pnpm verify
+      - run: pnpm install --frozen-lockfile
+      - name: Lint, API docs, types, metadata and tests
+        run: pnpm check
+      - name: Build library
+        run: pnpm build:lib
+      - name: Check package contents
+        run: pnpm package:check
+      - name: Install tarball and test React 19.2 compatibility
+        run: pnpm package:smoke
+      - name: Build documentation
+        run: pnpm build:docs

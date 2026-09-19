@@ -26,10 +26,12 @@ export default defineConfig(({ mode }) => {
       },
       extensions: [".js", ".ts", ".jsx", ".tsx", ".json", "md"],
     },
+    css: { preprocessorMaxWorkers: 0 },
     build: {
       outDir: "docs",
       sourcemap: false,
       minify: "terser",
+      terserOptions: { maxWorkers: 1 },
       rollupOptions: {
         output: {
           entryFileNames: "js/[name]-[hash].js",

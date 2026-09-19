@@ -166,6 +166,9 @@ importers:
 
   .:
     dependencies:
+      '@babel/parser':
+        specifier: 7.29.8
+        version: 7.29.8
       big.js:
         specifier: ^7.0.1
         version: 7.0.1
@@ -185,10 +188,10 @@ importers:
         specifier: ^1.5.4
         version: 1.5.4
       react:
-        specifier: ^19.0.0
+        specifier: ^19.2.0
         version: 19.3.0
       react-dom:
-        specifier: ^19.0.0
+        specifier: ^19.2.0
         version: 19.3.0(react@19.3.0)
       react-transition-group:
         specifier: ^4.4.5

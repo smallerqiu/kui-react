@@ -37,6 +37,7 @@ export const isExternalPackage = (id: string) =>
 
 // https://vite.dev/config/
 export default defineConfig({
+  publicDir: false,
   plugins: [
     react(),
     babel({ presets: [reactCompilerPreset()] }),

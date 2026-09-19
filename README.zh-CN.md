@@ -8,7 +8,7 @@
 
 <div align="center">
 
-基于 React 19 和 TypeScript 的桌面端 UI 组件库
+基于 React 19.2+ 和 TypeScript 的桌面端 UI 组件库
 
 [![npm version](https://img.shields.io/npm/v/react-kui.svg?style=flat-square)](https://www.npmjs.com/package/react-kui)
 [![npm downloads](https://img.shields.io/npm/dm/react-kui.svg?style=flat-square)](https://www.npmjs.com/package/react-kui)
@@ -22,7 +22,7 @@
 
 ## 特性
 
-- 基于 React 19，使用现代 React API 构建
+- 基于 React 19.2+，使用现代 React API 构建
 - 使用 TypeScript 开发，提供完整的组件类型声明
 - 50+ 桌面端组件，覆盖通用、布局、导航、表单、数据展示和反馈场景
 - 支持主题定制、暗色模式和多种组件尺寸
@@ -54,7 +54,7 @@ yarn add react-kui kui-icons
 bun add react-kui kui-icons
 ```
 
-`react` 和 `react-dom` 是 peer dependencies，项目需要使用 React 19。
+`react` 和 `react-dom` 是 peer dependencies，项目需要使用 React 19.2+。
 
 ## 快速开始
 
@@ -136,3 +136,7 @@ pnpm build        # 构建组件库及样式
 [MIT](./LICENSE)
 
 Copyright © 2017-present Qiu
+
+## AI 辅助开发
+
+组件元数据、MCP、Skill 和可运行业务模板见 [AI 接入说明](./AI.md)。

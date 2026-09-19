@@ -17,22 +17,12 @@ export interface SiderProps extends React.HTMLAttributes<HTMLElement> {
   children?: React.ReactNode;
 }
 
-function createBasicComponent(suffixCls: string, displayName: string) {
-  const Component: React.FC<LayoutProps> = ({
-    suffixCls: customSuffixCls = suffixCls,
-    children,
-    className = "",
-    ...rest
-  }) => {
-    const classes = clsx(`k-${customSuffixCls}`, className);
-    return (
-      <section className={classes} {...rest}>
-        {children}
-      </section>
-    );
-  };
-  Component.displayName = displayName;
-  return Component;
+function BasicSection({ suffixCls, children, className = "", ...rest }: LayoutProps) {
+  return (
+    <section className={clsx(`k-${suffixCls}`, className)} {...rest}>
+      {children}
+    </section>
+  );
 }
 
 const LayoutMain: React.FC<LayoutProps> = ({
@@ -101,9 +91,15 @@ const Sider: React.FC<SiderProps> = ({
   );
 };
 
-const Content = createBasicComponent("layout-content", "LayoutContent");
-const Header = createBasicComponent("layout-header", "LayoutHeader");
-const Footer = createBasicComponent("layout-footer", "LayoutFooter");
+function Content({ suffixCls = "layout-content", ...props }: LayoutProps) {
+  return <BasicSection suffixCls={suffixCls} {...props} />;
+}
+function Header({ suffixCls = "layout-header", ...props }: LayoutProps) {
+  return <BasicSection suffixCls={suffixCls} {...props} />;
+}
+function Footer({ suffixCls = "layout-footer", ...props }: LayoutProps) {
+  return <BasicSection suffixCls={suffixCls} {...props} />;
+}
 
 type InternalLayoutType = typeof LayoutMain;
 type LayoutType = InternalLayoutType & {

@@ -4,7 +4,7 @@ KUI React provides locale configuration through React Context and uses Simplifie
 
 ```tsx
 import { ConfigProvider } from "react-kui";
-import en from "react-kui/components/locale/en";
+import en from "react-kui/locale/en";
 
 export default function App() {
   return <ConfigProvider locale={en}>{/* application */}</ConfigProvider>;
@@ -17,6 +17,9 @@ export default function App() {
 | --- | --- | --- | --- |
 | locale | Component library locale configuration | Locale \| null | null |
 | getPopupContainer | Container the popups render into, defaults to `body` | () => HTMLElement \| null \| undefined | - |
+| size | Default size for supported components; component props take precedence | SizeType | - |
+| shape | Default shape for supported components; component props take precedence | ShapeType | - |
+| theme | Default appearance for supported components; component props take precedence | ThemeType | - |
 
 ## Example
 

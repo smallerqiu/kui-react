@@ -12,7 +12,7 @@ cd my-app
 pnpm install
 ```
 
-当前组件库面向 React 19，已有项目请将 `react` 和 `react-dom` 一起更新到最新的 19.x 版本：
+当前组件库面向 React 19.2+，已有项目请将 `react` 和 `react-dom` 一起更新到最新的 19.x 版本：
 
 ```bash
 pnpm add react@^19 react-dom@^19

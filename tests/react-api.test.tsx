@@ -237,6 +237,45 @@ describe("React value synchronization and controlled visibility", () => {
     expect(onOpenKeysChange).toHaveBeenCalledTimes(2);
   });
 
+  it("closes equivalent numeric and string Collapse keys", () => {
+    const onOpenKeysChange = vi.fn();
+    render(
+      <Collapse defaultOpenKeys={[1]} onOpenKeysChange={onOpenKeysChange}>
+        <CollapsePanel panelKey="1" title="One">
+          First
+        </CollapsePanel>
+      </Collapse>,
+    );
+    fireEvent.click(screen.getByText("One").closest(".k-collapse-header")!);
+    expect(onOpenKeysChange).toHaveBeenLastCalledWith([]);
+  });
+
+  it("remembers numeric Collapse keys supplied after mount", () => {
+    const onOpenKeysChange = vi.fn();
+    const panels = (
+      <CollapsePanel key={2} title="Two">
+        Second
+      </CollapsePanel>
+    );
+    const { rerender } = render(
+      <Collapse openKeys={[]} onOpenKeysChange={onOpenKeysChange}>
+        {panels}
+      </Collapse>,
+    );
+    rerender(
+      <Collapse openKeys={[2]} onOpenKeysChange={onOpenKeysChange}>
+        {panels}
+      </Collapse>,
+    );
+    rerender(
+      <Collapse openKeys={[]} onOpenKeysChange={onOpenKeysChange}>
+        {panels}
+      </Collapse>,
+    );
+    fireEvent.click(screen.getByText("Two").closest(".k-collapse-header")!);
+    expect(onOpenKeysChange).toHaveBeenLastCalledWith([2]);
+  });
+
   it("animates Collapse layout height while a panel closes", () => {
     render(
       <Collapse defaultOpenKeys={["one"]}>

@@ -8,7 +8,7 @@
 
 <div align="center">
 
-A desktop UI component library built with React 19 and TypeScript
+A desktop UI component library built with React 19.2+ and TypeScript
 
 [![npm version](https://img.shields.io/npm/v/react-kui.svg?style=flat-square)](https://www.npmjs.com/package/react-kui)
 [![npm downloads](https://img.shields.io/npm/dm/react-kui.svg?style=flat-square)](https://www.npmjs.com/package/react-kui)
@@ -22,7 +22,7 @@ English · [简体中文](README.zh-CN.md)
 
 ## Features
 
-- Built for React 19 with modern React APIs
+- Built for React 19.2+ with modern React APIs
 - Written in TypeScript with complete component type declarations
 - 50+ desktop components covering general, layout, navigation, form, data display, and feedback scenarios
 - Theme customization, dark mode, and multiple component sizes
@@ -54,7 +54,7 @@ yarn add react-kui kui-icons
 bun add react-kui kui-icons
 ```
 
-`react` and `react-dom` are peer dependencies. Your application should use React 19.
+`react` and `react-dom` are peer dependencies. Your application should use React 19.2+.
 
 ## Quick Start
 
@@ -136,3 +136,7 @@ Issues and pull requests are welcome. Before submitting code, please ensure that
 [MIT](./LICENSE)
 
 Copyright © 2017-present Qiu
+
+## AI integration
+
+Component metadata, MCP, Skill and runnable business templates: [AI guide](./AI.en-US.md).

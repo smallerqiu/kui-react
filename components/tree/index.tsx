@@ -185,6 +185,8 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
   const expanded = expandedKeys ?? innerExpanded;
   const checked = checkedKeys ?? innerChecked;
   const normalizedData = useMemo(() => {
+    // loadData may mutate nodes in place; version invalidates the normalized snapshot.
+    void version;
     const names = {
       key: fieldNames?.key ?? "key",
       title: fieldNames?.title ?? "title",

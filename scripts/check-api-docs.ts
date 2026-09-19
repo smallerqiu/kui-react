@@ -14,7 +14,7 @@ const ignoredByInterface: Record<string, Set<string> | "all"> = {
   MenuItemProps: new Set(["itemKey", "menuKey"]),
   SubMenuProps: new Set(["itemKey", "menuKey"]),
   OptionProps: new Set(["checked", "active", "onMouseEnter"]),
-  TabPanelProps: new Set(["tabKey", "activeKey"]),
+  TabPanelProps: new Set(["tabKey", "activeKey", "tabsId"]),
 };
 const docsByInterface: Record<string, string[]> = {
   ConfigProviderProps: ["src/views/language/index.md", "src/views/language/index.en_US.md"],

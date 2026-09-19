@@ -47,6 +47,17 @@ Radio button.
 
 Use the standalone [Segmented](../segmented/index.en_US.md) component for slider-style selection. `RadioGroup` no longer supports `theme="card"`.
 
+## RadioButton API
+
+In addition to Radio props, RadioButton supports:
+
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| icon | Icon definition imported from `kui-icons` | IconType[] | - |
+| theme | Button appearance | ThemeType | - |
+| size | Button size | SizeType | - |
+| shape | Button shape | ShapeType | - |
+
 ## RadioGroup API
 
 | Property     | Description                                                          | Type                              | Default    |

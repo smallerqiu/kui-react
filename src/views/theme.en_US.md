@@ -1,27 +1,27 @@
-# Custom Theme
+# Theme Customization
 
 KUI uses CSS Variables as the public theme interface, allowing you to modify colors, border radius, density, font size, and component surfaces at runtime without recompiling the component library.
 
-## Style Entry
+## Style Imports
 
 The default entry includes theme variables, base styles, and all component styles:
 
 ```ts
-import "kui-vue/style/index.css";
+import "react-kui/style/index.css";
 ```
 
-When you need to control global base styles yourself, you can combine them as needed:
+To control which global base styles are included, import the styles separately:
 
 ```ts
-import "kui-vue/style/theme.css";
-import "kui-vue/style/components.css";
-// Optional: global base styles such as links, placeholder, and selection
-import "kui-vue/style/base.css";
+import "react-kui/style/theme.css";
+import "react-kui/style/components.css";
+// Optional: global base styles for links, placeholders, and text selection
+import "react-kui/style/base.css";
 ```
 
 ## Brand Theme
 
-The hover, active, outline, and transparent levels of the primary color are automatically derived from `--kui-color-primary`:
+The primary color’s hover, active, outline, and semi-transparent variants are automatically derived from `--kui-color-primary`:
 
 ```css
 :root {
@@ -47,7 +47,7 @@ The hover, active, outline, and transparent levels of the primary color are auto
 
 ## Component-level Customization
 
-Component tokens fall back to semantic tokens, allowing both unified skin changes and modifications to specific component types:
+Component tokens fall back to semantic tokens, so you can customize the overall theme or individual component types:
 
 ```css
 :root {
@@ -64,9 +64,9 @@ Component tokens fall back to semantic tokens, allowing both unified skin change
 
 ## Appearance and Shape
 
-Common controls use three shapes: `round`, `circle`, and `square`. When `shape` is not passed, it is equivalent to `round`; the old `default` value remains compatible. The basic appearances for `theme` are `default`, `fill`, `outline`, and `plain`, where `plain` is equivalent to `bordered=false` for input-like components.
+Common controls use three shapes: `round`, `circle`, and `square`. When `shape` is omitted, it defaults to `round`; the legacy `default` value is still supported. The base appearance variants for `theme` are `default`, `fill`, `outline`, and `plain`, where `plain` is equivalent to `bordered=false` for input-like components.
 
-If you need to switch the entire interface (including popup containers) to square, you can set `shape-mode="square"` on the root node. This uniformly overrides the border-radius tokens for controls, cards, and popups; the component's own `shape` is still used for local overrides. Elements with circular semantics, such as slider handles and status dots, will not be changed to square.
+If you need to switch the entire interface (including popup containers) to square, you can set `shape-mode="square"` on the root node. This uniformly overrides the border-radius tokens for controls, cards, and popups; the component's own `shape` is still used for local overrides. Elements that are inherently circular, such as slider handles and status dots, remain circular.
 
 ```html
 <html shape-mode="square">
@@ -81,9 +81,9 @@ If you need to switch the entire interface (including popup containers) to squar
 }
 ```
 
-`fill` uses a semi-transparent overlay, which preserves layering inside containers like Table and Card; the native input inside controls remains transparent to avoid double overlaying of colors.
+`fill` uses a semi-transparent background to preserve visual layering inside containers such as Table and Card. The native input inside each control stays transparent to prevent the background color from being applied twice.
 
-## Light and Dark Theme
+## Light and Dark Themes
 
 Set `theme-mode` on the root node or a local container:
 
@@ -91,22 +91,18 @@ Set `theme-mode` on the root node or a local container:
 <div theme-mode="dark">...</div>
 ```
 
-Popups with trigger elements, such as Select, DatePicker, and Poptip, will automatically follow the nearest `theme-mode` even if they are teleported to `body`. For independent overlays without trigger elements, such as Modal, or when you need to inherit local custom tokens, you can specify the popup container via `ConfigProvider`:
+Popups with trigger elements, such as Select, DatePicker, and Poptip, will automatically follow the nearest `theme-mode` even when rendered into `body` through a React portal. For independent overlays without trigger elements, such as Modal, or when you need to inherit local custom tokens, you can specify the popup container via `ConfigProvider`:
 
-```html
-<template>
-  <div ref="themeRoot" theme-mode="dark">
-    <ConfigProvider :getPopupContainer="() => themeRoot">
-      <Select :options="options" />
+```tsx
+const themeRoot = useRef<HTMLDivElement>(null);
+
+return (
+  <div ref={themeRoot} theme-mode="dark">
+    <ConfigProvider getPopupContainer={() => themeRoot.current}>
+      <Select options={options} />
     </ConfigProvider>
   </div>
-</template>
-
-<script setup lang="ts">
-import { ref } from "vue";
-
-const themeRoot = ref<HTMLElement>();
-</script>
+);
 ```
 
 ## Main Token Categories

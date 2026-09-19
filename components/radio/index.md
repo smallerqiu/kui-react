@@ -47,6 +47,17 @@
 
 滑块式分段选择请使用独立的 [Segmented](../segmented/index.md) 组件；`RadioGroup` 不再支持 `theme="card"`。
 
+## RadioButton API
+
+在 Radio 属性的基础上，RadioButton 还支持：
+
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| icon | 从 `kui-icons` 导入的图标定义 | IconType[] | - |
+| theme | 按钮外观 | ThemeType | - |
+| size | 按钮尺寸 | SizeType | - |
+| shape | 按钮形状 | ShapeType | - |
+
 ## RadioGroup API
 
 | 属性         | 说明                                       | 类型                              | 默认值     |
