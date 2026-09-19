@@ -167,7 +167,7 @@ const InputTag: React.FC<InputTagProps> = ({
         <Tooltip
           title={
             <div className="k-input-tag-tooltip-tags">
-              <Space wrap size={4}>
+              <Space wrap size={4} theme-mode="dark">
                 {hiddenTags.map((tag, index) => (
                   <Tag
                     key={`${tag}-${index}`}

@@ -22,9 +22,9 @@ export default function Home() {
   const withLang = (path: string) => `${path}${lang === "en" ? "-en" : ""}`;
 
   return (
-    <Layout className="index">
-      <AppHeader />
-      <Ripple>
+    <Ripple>
+      <Layout className="index">
+        <AppHeader />
         <main className="index-main">
           <section className="index-hero">
             <div className="hero-copy">
@@ -180,8 +180,8 @@ export default function Home() {
             </div>
           </section>
         </main>
-      </Ripple>
-      <AppFooter />
-    </Layout>
+        <AppFooter />
+      </Layout>
+    </Ripple>
   );
 }
