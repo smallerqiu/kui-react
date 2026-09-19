@@ -1,0 +1,207 @@
+.k-demo {
+  border: 1px solid var(--kui-color-border);
+  margin: 10px 0;
+  position: relative;
+  border-radius: 13px;
+  transition: all 0.3s;
+  .k-content,
+  .k-desc {
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .k-code {
+    outline: none;
+    box-sizing: border-box;
+    padding: 12px 20px 20px;
+    white-space: pre;
+    tab-size: 2;
+    font-family:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    caret-color: var(--kui-color-text);
+  }
+  .k-desc {
+    margin: 30px 0 0;
+    border-top: 1px solid var(--kui-color-border);
+    position: relative;
+
+    h4 {
+      position: absolute;
+      top: -55px;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1;
+      padding: 5px 10px 5px 0;
+    }
+
+    .k-desc-content {
+      padding-right: 50px;
+      position: relative;
+
+      p {
+        margin: 0;
+        padding: 0;
+      }
+    }
+  }
+
+  .k-code-actions {
+    border-top: 1px dashed var(--kui-color-border);
+    text-align: center;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    border-radius: 0 0 12px 12px;
+    background-color: var(--kui-color-bg-container);
+    overflow: hidden;
+    .k-btn {
+      flex: 1;
+      border-radius: 0;
+    }
+  }
+
+  .k-code-box {
+    transition: all 0.3s ease;
+    position: relative;
+    outline: none;
+    // background-color: var(--kui-color-bg-container);
+    .k-code-pre {
+      height: 100%;
+      min-height: 100%;
+      font-size: 0;
+      overflow: hidden;
+      transition: height 0.3s ease-in-out;
+      line-height: 2;
+    }
+
+    code,
+    kbd,
+    samp {
+      font-size: 14px;
+      line-height: 2;
+    }
+
+    .hljs {
+      margin: 0;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    pre {
+      border-top: 1px dashed var(--kui-color-border);
+      margin: 0;
+    }
+  }
+
+  .k-code-expan {
+    font-size: 24px;
+    color: #7d7d7d;
+    cursor: pointer;
+  }
+  .k-code-tools {
+    z-index: 1;
+    box-shadow: -4px 4px 9px 2px #00000024;
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 5px 20px 5px 10px;
+    background: #eeeeee1e;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+    border-radius: 0 0 0 12px;
+  }
+}
+.k-demo-expanded {
+  .k-code-actions {
+    position: sticky;
+    bottom: 0;
+  }
+}
+.k-demo-horizontal {
+  display: flex;
+  .k-demo-view {
+    width: 40%;
+    flex-shrink: 0;
+  }
+  .k-code-tools {
+    border-radius: 0 12px 0 12px;
+  }
+  pre {
+    border-radius: 0 0 12px 12px;
+  }
+  .k-content {
+    overflow: auto;
+    min-height: 425px;
+    height: 425px;
+  }
+  .k-code-box {
+    height: 425px;
+    width: 60%;
+    flex-shrink: 0;
+    display: flex;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    overflow: hidden;
+    .k-code {
+      display: block;
+      flex: 1;
+      overflow: auto;
+      border-radius: 0 12px 12px 0;
+      pre {
+        border-radius: 0 12px 12px 0;
+        flex: 1;
+        box-sizing: border-box;
+        background-color: transparent;
+        border: none;
+      }
+    }
+  }
+}
+
+.k-demo-container {
+  margin-bottom: 60px;
+}
+
+.k-desc-content p code {
+  padding: 0.15em 0.5em;
+  background-color: var(--kui-color-bg-container);
+  border-radius: 4px;
+  color: var(--kui-color-primary);
+}
+
+.k-demo-view [class^="k-demo-view-"] {
+  all: initial;
+  display: block;
+  font-family: inherit;
+}
+
+.k-demo-vertical {
+  &:not(.k-demo-expanded) .k-code-box {
+    overflow: hidden;
+  }
+  .k-code-box {
+    position: relative;
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-image: linear-gradient(to bottom, transparent, var(--kui-color-bg));
+      pointer-events: none;
+      z-index: 1;
+    }
+    .k-code {
+      max-height: 650px;
+      overflow: auto;
+    }
+  }
+}
+.k-demo-expanded .k-code-box::before {
+  display: none;
+}

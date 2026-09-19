@@ -1,0 +1,27 @@
+import { ChevronDown } from "kui-icons";
+import { Button, Icon, Menu, MenuDivider, MenuItem, Dropdown } from "react-kui";
+const overlay = (
+  <Menu>
+    <MenuItem>
+      <a target="_blank" rel="noreferrer" href="https://www.chuchur.com/">
+        1st menu item
+      </a>
+    </MenuItem>
+    <MenuItem>
+      <a target="_blank" rel="noreferrer" href="https://react.k-ui.cn/">
+        2nd menu item
+      </a>
+    </MenuItem>
+    <MenuDivider />
+    <MenuItem disabled>3rd menu item (disabled)</MenuItem>
+  </Menu>
+);
+export default function App() {
+  return (
+    <Dropdown overlay={overlay}>
+      <Button>
+        Divider <Icon type={ChevronDown} />
+      </Button>
+    </Dropdown>
+  );
+}

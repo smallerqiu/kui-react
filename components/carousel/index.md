@@ -1,8 +1,46 @@
-### API
-| 属性     | 说明                           | 类型    | 默认值 |
-|----------|--------------------------------|---------|--------|
-| value    | 幻灯片的索引，从 0 开始        | number  | 0      |
-| loop     | 是否开启循环                   | boolean | true   |
-| vertical | 是否垂直模式显示               | boolean | false  |
-| autoplay | 是否自动切换                   | boolean | false  |
-| delay    | 自动切换的时间间隔，单位为毫秒 | number  | 3000   |
+# Carousel 走马灯
+
+`value` 用于初始化组件，并同步后续的外部值变化。用户操作会更新内部值并触发 `onChange`，即使传入固定值或 `onChange` 仅用于监听也能交互。需要父子同步时使用 `value={state}` 配合 `onChange={setState}`。相同值的重新渲染不会重置内部编辑；数组值请使用新数组更新。
+
+旋转木马，一组轮播的区域。
+
+## 何时使用
+
+- 当有一组平级的内容。
+- 当内容空间不足时，可以用走马灯的形式进行收纳，进行轮播展现。
+- 常用于一组图片或卡片轮播。
+
+## 代码演示
+
+[基本用法](./demo/basic.tsx)
+
+- 最简单的用法，可以通过 `value` 指定初始值
+
+[垂直](./demo/vertical.tsx)
+
+- 通过设置 `vertical` 呈现垂直模式,此时不显示左右箭头
+
+[自动播放](./demo/autoplay.tsx)
+
+- 通过设置 `autoplay` ，可实现定时自动播放，通过 `delay` 设置间隔播放时间，默认 `3000` ，单位毫秒
+
+## API
+
+| 属性         | 说明                           | 类型                    | 默认值  |
+| ------------ | ------------------------------ | ----------------------- | ------- |
+| value        | 当前幻灯片索引，从 0 开始      | number                  | -       |
+| loop         | 是否开启循环                   | boolean                 | true    |
+| vertical     | 是否垂直模式显示               | boolean                 | false   |
+| autoplay     | 是否自动切换                   | boolean                 | false   |
+| delay        | 自动切换的时间间隔，单位为毫秒 | number                  | 3000    |
+| height       | 幻灯片的高度                   | number                  | 256(px) |
+| dots         | 是否在图库底部显示圆点         | boolean                 | true    |
+| onChange     | 当前幻灯片变化时触发           | (index: number) => void | -       |
+
+## CarouselRef
+
+| 方法名 | 说明             | 参数            |
+| ------ | ---------------- | --------------- |
+| next   | 切换到下一项     | -               |
+| prev   | 切换到上一项     | -               |
+| goTo   | 切换到指定索引项 | (index: number) |

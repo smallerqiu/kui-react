@@ -1,0 +1,119 @@
+@import "../../styles/less-css-var.less";
+
+.k-typography {
+  margin: 0;
+  color: var(--kui-color-text);
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.k-typography-title {
+  margin-block: 0.5em;
+  color: var(--kui-color-text-title);
+  font-weight: 600;
+  line-height: 1.35;
+}
+h1.k-typography {
+  font-size: 2em;
+}
+h2.k-typography {
+  font-size: 1.5em;
+}
+h3.k-typography {
+  font-size: 1.25em;
+}
+h4.k-typography {
+  font-size: 1.1em;
+}
+h5.k-typography {
+  font-size: 1em;
+}
+h6.k-typography {
+  font-size: 0.9em;
+}
+.k-typography-secondary {
+  color: var(--kui-color-text-description);
+}
+.k-typography-success {
+  color: var(--kui-color-success);
+}
+.k-typography-warning {
+  color: var(--kui-color-warning);
+}
+.k-typography-danger {
+  color: var(--kui-color-danger);
+}
+.k-typography.is-strong {
+  font-weight: 600;
+}
+.k-typography.is-italic {
+  font-style: italic;
+}
+.k-typography.is-underline {
+  text-decoration: underline;
+}
+.k-typography.is-delete {
+  text-decoration: line-through;
+}
+.k-typography.is-mark .k-typography-content {
+  padding: 0 0.2em;
+  background: var(--kui-color-item-selected);
+}
+.k-typography.is-code .k-typography-content {
+  padding: 0.15em 0.35em;
+  border: 1px solid var(--kui-color-border);
+  border-radius: var(--kui-shape-square);
+  background: var(--kui-color-bg-layout);
+  font-family: monospace;
+}
+.k-typography.is-disabled {
+  color: var(--kui-color-text-disabled);
+  cursor: not-allowed;
+}
+.k-typography-content.is-ellipsis {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+}
+.k-typography-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline-start: 0.4em;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--kui-color-primary);
+  cursor: pointer;
+  font: inherit;
+  line-height: 1;
+  vertical-align: middle;
+
+  &:hover {
+    color: var(--kui-color-primary-hover);
+  }
+
+  &:focus-visible {
+    border-radius: var(--kui-shape-square);
+    outline: var(--kui-focus-ring-width) solid var(--kui-color-outline);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    color: var(--kui-color-text-disabled);
+    cursor: not-allowed;
+  }
+}
+.k-typography-expand {
+  color: var(--kui-color-primary);
+  font-size: inherit;
+}
+.k-typography-editor {
+  width: 100%;
+  min-height: var(--kui-control-height);
+  padding: 0 var(--kui-spacing-2);
+  border: 1px solid var(--kui-color-primary);
+  border-radius: var(--kui-control-radius);
+  outline: 0;
+  background: var(--kui-color-bg-component);
+  color: var(--kui-color-text);
+}

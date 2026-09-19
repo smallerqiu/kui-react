@@ -1,26 +1,59 @@
-### API
-组件提供了一些静态方法，使用方式如下
- 
-  
-- `Notice.info(options)`
-- `Notice.success(options)`
-- `Notice.warning(options)`
-- `Notice.error(options)`
+# Notice 通知提醒框
 
-  
+全局展示通知提醒信息。
+
+## 何时使用
+
+在系统四个角显示通知提醒信息。经常用于以下情况：
+
+- 较为复杂的通知内容。
+- 带有交互的通知，给出用户下一步的行动点。
+- 系统主动推送。
+
+## 代码演示
+
+[基本用法](./demo/basic.tsx)
+
+- `Notice` 的基本用法
+
+[合并通知](./demo/grouping.tsx)
+
+- 相同 `grouping` 的通知复用已有条目，只更新内容并重新计时。
+
+[带图标的提醒](./demo/types.tsx)
+
+- 通过调用不同的方法，可展示不同的类型
+
+[自定义图标](./demo/icon.tsx)
+
+- 自定义图标
+
+[自定义时长](./demo/close.tsx)
+
+- 使用 `duration` 控制自动关闭时长，默认值为 `3s`。
+
+## API
+
+组件提供了一些静态方法，使用方式如下
+
+- `notice.info(options)`
+- `notice.success(options)`
+- `notice.warning(options)`
+- `notice.error(options)`
 
 另外提供了全局配置和全局销毁的方法：
- 
-  
-- `Notice.open(options)`
-- `Notice.destroy()`
 
-  
+- `notice.open(options)`
+- `notice.destroy()`
+
 参数 `options` 为对象，具体说明如下：
 
-| 属性       | 说明                   | 类型       | 默认值 |
-|----------|----------------------|----------|-----|
-| title    | 通知提醒的标题              | string   | -   |
-| content  | 提示内容                 | string   | -   |
-| duration | 自动关闭的延时，单位秒，不关闭可以写 0 | number   | 3   |
-| close    | 关闭时的回调               | function | -   |
+| 属性     | 说明                                         | 类型              | 默认值 |
+| -------- | -------------------------------------------- | ----------------- | ------ |
+| title    | 通知提醒的标题                               | string            | -      |
+| content  | 提示内容                                     | string ,ReactNode | -      |
+| duration | 自动关闭的延时，单位秒，不关闭可以写 0       | number            | 3.5    |
+| icon     | 自定义图标                                   | string            | -      |
+| color    | 自定义图标颜色                               | string            | -      |
+| onClose  | 关闭时的回调                                 | () => void        | -      |
+| grouping | 分组标识；相同标识的通知复用原条目并重新计时 | string            | -      |

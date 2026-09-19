@@ -1,0 +1,21 @@
+import { Card, Ripple } from "react-kui";
+
+export default function App() {
+  return (
+    <Ripple
+      trigger="hover"
+      amplitude={0.8}
+      rings={4}
+      wavelength={48}
+      refraction={72}
+      dispersion={0.35}
+    >
+      <Card style={{ padding: 32, height: 220 }}>
+        <h3 style={{ margin: "0 0 8px" }}>Hover Ripple</h3>
+        <p style={{ margin: 0, color: "var(--kui-color-text-secondary)" }}>
+          移动指针会连续产生较轻的水波轨迹。
+        </p>
+      </Card>
+    </Ripple>
+  );
+}

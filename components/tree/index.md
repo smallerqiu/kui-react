@@ -1,32 +1,115 @@
+# Tree 树形控件
+
+## 何时使用
+
+文件夹、组织架构、生物分类、国家地区等等,世间万物的大多数结构都是树形结构。使用`树控件` 可以完整展现其中的层级关系并具有展开收起选择等交互功能。
+
+## 代码演示
+
+[基本用法](./demo/basic.tsx)
+
+- 最简单的用法，展示可选中，默认展开功能。
+
+[可勾选](./demo/checkable.tsx)
+
+- 设置属性 `checkable` 可以对节点进行勾选。
+
+[扩展节点](./demo/custom-render.tsx)
+
+- 节点的扩展节点
+
+[禁用节点](./demo/disabled.tsx)
+
+- 设置属性 `disabled` 可以禁用节点。
+
+[异步加载](./demo/sync.tsx)
+
+- 点击展开节点，动态加载数据 , `isLeaf=true` 表示当前节点是叶子节点,不会有子集
+
+[自定义图标](./demo/icon.tsx)
+
+- 可以针对不同的节点定制图标。
+
+[群控](./demo/directory.tsx?show=vertical)
+
+- 展示目录、连接线、拖动、复选框、图标、扩展
+
+[虚拟滚动](./demo/virtual.tsx)
+
+- 大数据量时设置 `virtual`，仅渲染可视区域内的节点。虚拟滚动要求节点高度固定。
+
+[字段映射与实例方法](./demo/advanced.tsx?show=vertical)
+
+- 使用 `fieldNames` 适配后端字段，通过 `renderTitle` 自定义节点，并调用实例方法控制树。
+
+Tree 支持焦点管理以及上下、左右、Home、End、Enter 和 Space 键操作。
+
 ## Tree API
 
-| 属性      | 说明                                       | 类型    | 默认值 |
-|-----------|--------------------------------------------|---------|--------|
-| data      | 可嵌套的节点属性的数组，生成 `tree` 的数据 | array   | []     |
-| checkable | 是否显示多选框                             | boolean | false  |
-| draggable | 是否可以拖拽                               | boolean | false  |
-| showLine  | 是否展示连接线                             | boolean | false  |
-| showIcon  | 是否展示图标                               | boolean | true   |
-| showExtra | 是否默认展示扩展元素                       | boolean | false  |
+| 属性          | 说明                                                         | 类型                              | 默认值 |
+| ------------- | ------------------------------------------------------------ | --------------------------------- | ------ |
+| data          | 可嵌套的节点属性的数组，生成 `tree` 的数据                   | TreeNode[]                        | []     |
+| checkable     | 是否显示多选框                                               | boolean                              | false  |
+| draggable     | 是否可以拖拽                                                 | boolean                              | false  |
+| showLine      | 是否展示连接线                                               | boolean                              | false  |
+| showIcon      | 是否展示图标                                                 | boolean                              | true   |
+| extra         | 扩展元素                                                     | ReactNode(node)                        | -      |
+| showExtra     | 是否默认展示扩展元素                                         | boolean                              | false  |
+| checkStrictly | checkable 状态下节点选择完全受控（父子节点选中状态不再关联） | boolean                              | false  |
+| checkedKeys   | 选中复选框的树节点                                           | string[]                          | []     |
+| defaultCheckedKeys | 非受控模式的初始勾选节点                                | string[]                          | []     |
+| expandedKeys  | 指定展开的节点                                               | string[]                          | []     |
+| defaultExpandedKeys | 非受控模式的初始展开节点                                | string[]                          | []     |
+| selectedKeys  | 选中的节点                                                   | string[]                          | []     |
+| defaultSelectedKeys | 非受控模式的初始选中节点                                | string[]                          | []     |
+| selectAsCheck | 点击节点时同步切换勾选状态                                   | boolean                           | false  |
+| queryKey      | 用于过滤或高亮的查询关键字                                   | string                            | -      |
+| renderTitle   | 自定义节点标题                                               | (node: TreeNode) => ReactNode     | -      |
+| renderExtra   | 自定义节点扩展区域                                           | (node: TreeNode) => ReactNode     | -      |
+| multiple      | 是否支持多选                                                 | boolean                              | false  |
+| loading       | 异步加载状态                                                 | boolean                              | false  |
+| loadData      | 异步加载数据的方法                                           | (node: TreeNode) => Promise<unknown\> | -   |
+| onLoadError   | 异步加载失败时触发                                           | (error: unknown, node: TreeNode) => void | - |
+| fieldNames    | 自定义节点字段名称                                           | TreeFieldNames                     | -      |
+| directory     | 是不显示为目录树                                             | boolean                              | false  |
+| virtual       | 是否启用虚拟滚动                                             | boolean                           | false  |
+| height        | 虚拟滚动视口高度                                             | number \| string                  | 300    |
+| itemHeight    | 虚拟滚动节点高度                                             | number                            | 28     |
+| overscan      | 可视区域外预渲染的节点数量                                   | number                            | 5      |
+
+## 实例方法
+
+| 方法             | 说明               |
+| ---------------- | ------------------ |
+| getNode          | 根据 key 获取节点  |
+| getCheckedNodes  | 获取已勾选节点     |
+| getSelectedNodes | 获取已选中节点     |
+| scrollTo         | 滚动到指定节点     |
+| expandAll        | 展开全部非叶子节点 |
+| collapseAll      | 折叠全部节点       |
 
 ## TreeNode API
 
-| 属性     | 说明         | 类型    | 默认值 |
-|----------|--------------|---------|--------|
-| title    | 节点标题     | string  | -      |
-| icon     | 自定义图标   | string  | -      |
-| disabled | 是否禁用节点 | boolean | false  |
-| children | 子节点       | array   | -      |
+| 属性     | 说明                                                                     | 类型       | 默认值 |
+| -------- | ------------------------------------------------------------------------ | ---------- | ------ |
+| title    | 节点标题                                                                 | string     | -      |
+| icon     | 自定义图标                                                               | string     | -      |
+| disabled | 是否禁用节点                                                             | boolean       | false  |
+| children | 子节点                                                                   | TreeNode[] | -      |
+| isLeaf   | 设置为叶子节点 (设置了 loadData 时有效)。为 false 时会强制将其作为父节点 | boolean       | false  |
 
 ## Tree 事件
-| 属性        | 说明                   | 回调参数                                     |
-|-------------|------------------------|----------------------------------------------|
-| onLoadData  | 异步加载数据的方法     | function(node,callback)                      |
-| onSelect    | 点击树节点时触发       | function({selectedKeys,selected,node,vnode}) |
-| onCheck     | 点击复选框时触发       | function({checkedKeys,checked,node,vnode})   |
-| onExpand    | 展开和收起子节点时触发 | function({expandedKeys,expanded,node,vnode}) |
-| onDragStart | 开始拖拽时调用         | function({event,node})                       |
-| onDragEnd   | dragend 触发时调用     | function({event,node})                       |
-| onDragEnter | dragenter 触发时调用   | function({event, node, expandedKeys})        |
-| onDragLeave | dragleave 触发时调用   | function({event,node})                       |
-| onDrop      | drop 触发时调用        | function({event,node,dragNode})              |
+
+| 属性        | 说明                   | 回调参数                                                                     |
+| ----------- | ---------------------- | ---------------------------------------------------------------------------- |
+| onSelect    | 点击树节点时触发       | (node: TreeNode) => void                                                     |
+| onCheck     | 点击复选框时触发       | (node: TreeNode, checked: boolean, checkedKeys: string[]) => void            |
+| onExpand    | 展开和收起子节点时触发 | (result: TreeExpandEvent) => void                                            |
+| onExpandedKeysChange | 展开节点集合变化时触发 | (keys: string[]) => void                                 |
+| onCheckedKeysChange | 勾选节点集合变化时触发 | (keys: string[]) => void                                  |
+| onSelectedKeysChange | 选中节点集合变化时触发 | (keys: string[]) => void                                 |
+| onDragStart | 开始拖拽时调用         | (node: TreeNode, event: DragEvent) => void                                   |
+| onDragEnd   | dragend 触发时调用     | (node: TreeNode, event: DragEvent) => void                                   |
+| onDragEnter | dragenter 触发时调用   | (node: TreeNode, event: DragEvent) => void                                   |
+| onDragLeave | dragleave 触发时调用   | (node: TreeNode, event: DragEvent) => void                                   |
+| onDrop      | drop 触发时调用        | (node: { dragNode: TreeNode; dropNode: TreeNode }, event: DragEvent) => void |

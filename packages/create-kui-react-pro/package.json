@@ -1,0 +1,27 @@
+{
+  "name": "create-kui-react-pro",
+  "version": "0.0.1",
+  "description": "Create a production-ready KUI React Pro admin application",
+  "type": "module",
+  "bin": {
+    "create-kui-react-pro": "./bin/create-kui-react-pro.mjs"
+  },
+  "files": [
+    "bin"
+  ],
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "keywords": [
+    "kui",
+    "react-kui",
+    "react",
+    "admin",
+    "dashboard",
+    "scaffold"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}

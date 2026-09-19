@@ -1,0 +1,113 @@
+import Big from "big.js";
+type BigSource = ConstructorParameters<typeof Big>[0];
+
+const isBigSource = (value: unknown): value is BigSource =>
+  typeof value === "string" ||
+  typeof value === "number" ||
+  typeof value === "bigint" ||
+  value instanceof Big;
+
+export const isEmpty = (value: unknown): boolean => {
+  return (
+    value == null || // null 或 undefined
+    (typeof value === "string" && value.trim() === "") || // 空字符串
+    (Array.isArray(value) && value.length === 0) || // 空数组
+    (typeof value === "object" && !Array.isArray(value) && Object.keys(value).length === 0) // 空对象
+  );
+};
+
+export const isRealNum = (val: unknown): boolean => {
+  if (!isBigSource(val) || val === "") return false;
+  try {
+    new Big(val);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+export const normalize = (val: unknown, precision?: number) => {
+  if (!isRealNum(val)) return "";
+  const b = new Big(val as BigSource);
+  return precision !== undefined ? b.toFixed(precision) : b.toFixed();
+};
+
+export const isValidBig = (val: unknown) => {
+  if (val === null || val === undefined || val === "") return false;
+
+  const str = String(val).trim();
+  if (str === "-" || str === "." || str === "-.") return false;
+
+  try {
+    new Big(str);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const toBigSafe = (val: unknown) => {
+  try {
+    if (val === null || val === undefined || val === "") {
+      throw new Error();
+    }
+    if (!isBigSource(val)) throw new Error();
+    return new Big(val);
+  } catch {
+    // console.error(`Slider Error: [${name}] is an invalid number:`, val);
+    return new Big(0); // 降级处理
+  }
+};
+
+import type { SliderProps } from "../slider";
+
+export const getClosestStep = (
+  val: number,
+  { min = 0, max = 100, step = 1, marks }: SliderProps,
+) => {
+  const bMin = toBigSafe(min);
+  const bMax = toBigSafe(max);
+  const bVal = toBigSafe(val);
+
+  const markValues = marks
+    ? Object.keys(marks)
+        .map(Number)
+        .filter((value) => Number.isFinite(value) && value >= min && value <= max)
+    : [];
+
+  // 如果 step 为 null，强制吸附到最近的 mark 点
+  if (step === null || step === undefined) {
+    if (markValues.length > 0) {
+      // 在 marks 数组中寻找绝对值差最小的点
+      const closestMark = markValues.reduce((prev, curr) => {
+        return Math.abs(curr - val) < Math.abs(prev - val) ? curr : prev;
+      });
+      return closestMark;
+    }
+    // 如果既没有 step 也没有 marks，则不做吸附，直接返回经边界约束的值
+    const clampedVal = bVal.gt(bMax) ? bMax : bVal.lt(bMin) ? bMin : bVal;
+    return Number(clampedVal.toFixed());
+  }
+
+  // 存在步长 step
+  const parsedStep = toBigSafe(step);
+  const bStep = parsedStep.gt(0) ? parsedStep : new Big(1);
+  const diff = bVal.minus(bMin);
+  const stepCount = Math.round(Number(diff.div(bStep)));
+  let closest = bMin.plus(bStep.times(stepCount));
+
+  // 同时对比 step 点和 marks 点，谁近取谁
+  if (markValues.length > 0) {
+    markValues.forEach((m) => {
+      if (Math.abs(m - val) < Math.abs(Number(closest.minus(val)))) {
+        closest = new Big(m);
+      }
+    });
+  }
+
+  // 边界约束
+  if (closest.gt(bMax)) return Number(bMax.toFixed());
+  if (closest.lt(bMin)) return Number(bMin.toFixed());
+
+  return Number(closest.toFixed());
+};

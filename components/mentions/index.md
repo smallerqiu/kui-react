@@ -1,0 +1,65 @@
+# Mentions 提及
+
+`value` 用于初始化组件，并同步后续的外部值变化。用户操作会更新内部值并触发 `onChange`，即使传入固定值或 `onChange` 仅用于监听也能交互。需要父子同步时使用 `value={state}` 配合 `onChange={setState}`。相同值的重新渲染不会重置内部编辑；数组值请使用新数组更新。
+
+在多行文本中通过触发字符插入结构化提及。
+
+## 代码演示
+
+[基础用法](./demo/basic.tsx)
+
+- 输入 @ 后可通过键盘选择提及项。
+
+[多个触发字符](./demo/triggers.tsx)
+
+- 同时支持成员提及和话题关联。
+
+[自定义过滤](./demo/filter.tsx)
+
+- 自定义候选项的匹配规则。
+
+[远程搜索](./demo/remote.tsx?show=vertical)
+
+- 输入触发字符后，再输入至少一个字符时触发 `onSearch`，可异步更新候选项。
+
+[尺寸](./demo/size.tsx?show=vertical)
+
+- 展示小、中、大三种尺寸。
+
+[尺寸、主题与形状](./demo/appearance.tsx)
+
+- 展示不同输入框外观。
+
+[空状态](./demo/empty.tsx)
+
+- 没有匹配结果时展示 Empty。
+
+[行数](./demo/rows.tsx)
+
+- 使用 `rows` 控制输入区域行数，设为 1 时呈现单行输入框外观。
+
+[下拉位置](./demo/placement.tsx)
+
+- 下拉菜单跟随光标，并在空间不足时自动翻转。
+
+## Mentions API
+
+| 属性         | 说明                             | 类型                                | 默认值      |
+| ------------ | -------------------------------- | ----------------------------------- | ----------- |
+| value        | 文本                         | string                              | -           |
+| options      | 候选项                           | (string\|MentionOption)[]           | []          |
+| triggers     | 触发字符                         | string[]                            | ['@']       |
+| rows         | 文本域行数                       | number                              | 1           |
+| placement    | 下拉菜单优先位置                 | DropPlacementsType                  | bottom-left |
+| size         | 尺寸                             | small\|medium\|large                | medium      |
+| theme        | 主题                             | fill\|outline\|plain                | fill        |
+| shape        | 形状                             | circle\|square\|round\|default      | default     |
+| emptyText    | 空状态说明                       | string                              | 暂无数据    |
+| loading      | 是否显示加载状态                 | boolean                             | false       |
+| loadingText  | 加载状态文案                     | string                              | -           |
+| clearable    | 是否显示清除按钮                 | boolean                             | true        |
+| filterOption | 自定义过滤                       | function                            | -           |
+| onChange     | 文本变化                         | (value:string)=>void                | -           |
+| onSelect     | 选择提及                         | (option,trigger)=>void              | -           |
+| onSearch     | 远程搜索，参数为搜索词与触发字符 | (query:string,trigger:string)=>void | -           |
+| onClear      | 点击清除按钮                     | ()=>void                            | -           |

@@ -1,0 +1,53 @@
+# InputTag
+
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
+Turns continuous input into an editable tag collection.
+
+## Examples
+
+[Basic](./demo/basic.tsx)
+
+- Press Enter to add and Backspace to remove tags.
+
+[Controlled tags](./demo/controlled.tsx)
+
+- Manage the tag collection with `value` and `onChange`.
+
+[Maximum count](./demo/limit.tsx)
+
+- Use `max` to limit the total number of tags and `maxTagCount` to limit visible tags.
+
+[Separators](./demo/separators.tsx)
+
+- Commit tags with comma or semicolon.
+
+[Size](./demo/size.tsx?show=vertical)
+
+- Different sizes.
+
+[Appearance and disabled](./demo/appearance.tsx)
+
+- Shows theme, shape, and disabled states.
+
+## InputTag API
+
+| Property        | Description                                        | Type                           | Default |
+| --------------- | -------------------------------------------------- | ------------------------------ | ------- |
+| value           | tags                                    | string[]                       | -       |
+| placeholder     | Placeholder                                        | string                         | -       |
+| disabled        | Disabled state                                     | boolean                        | false   |
+| readOnly        | Read-only while remaining focusable                | boolean                        | false   |
+| clearable       | Whether to show the clear button                   | boolean                        | true    |
+| block           | Fill the parent width                              | boolean                        | false   |
+| size            | Size                                               | small\|medium\|large           | medium  |
+| theme           | Theme                                              | fill\|outline\|plain           | fill    |
+| shape           | Shape                                              | circle\|square\|round\|default | default |
+| allowDuplicates | Allow duplicate tags                               | boolean                        | false   |
+| max             | Maximum tag count                                  | number                         | -       |
+| maxTagCount     | Maximum visible tags; the remainder is shown as +N | number                         | -       |
+| separators      | Commit keys                                        | string[]                       | [',']   |
+| onChange        | Tags change                                        | function                       | -       |
+| onAdd           | Tag added                                          | function                       | -       |
+| onRemove        | Tag removed                                        | function                       | -       |
+| onClear         | Tags cleared                                       | function                       | -       |

@@ -1,0 +1,41 @@
+# TimeLine 时间轴
+
+垂直展示的时间流信息。
+
+## 何时使用
+
+在操作需要较长时间才能完成时，为用户显示该操作的当前进度和状态。
+
+- 当有一系列信息需按时间排列时，可正序和倒序。
+- 需要有一条时间轴进行视觉上的串联时。。
+
+## 代码演示
+
+[基本用法](./demo/basic.tsx)
+
+- `TimeLine` 内部必须包含 `TimeLineItem`
+
+[图标](./demo/icon.tsx)
+
+- 给 `TimeLineItem` 设置 `icon` 和 `color` 可以改变图标展示
+
+[呈现方向](./demo/mode.tsx)
+
+- 指定 `mode` 可以改变呈现方向
+
+## TimeLine API
+
+| 属性 | 说明                   | 类型                                           | 默认值   |
+| ---- | ---------------------- | ---------------------------------------------- | -------- |
+| mode | 时间轴和内容的相对位置 | `'left' \| 'right' \| 'center' \| 'alternate'` | `'left'` |
+
+## TimeLineItem API
+
+| 属性     | 说明             | 类型         | 默认值 |
+| -------- | ---------------- | ------------ | ------ |
+| dot      | 自定义时间轴节点 | `ReactNode`  | -      |
+| icon     | 时间轴节点图标   | `IconType[]` | -      |
+| color    | 时间轴节点颜色   | `string`     | -      |
+| time     | 时间内容         | `ReactNode`  | -      |
+| extra    | 辅助内容         | `ReactNode`  | -      |
+| children | 节点内容         | `ReactNode`  | -      |

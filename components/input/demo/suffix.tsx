@@ -1,0 +1,90 @@
+import { CircleQuestionMark, Gift, Search, User } from "kui-icons";
+import { useEffect, useRef, useState } from "react";
+import { Button, Icon, Input, message, Select, Space, Tag, Tooltip, TreeSelect } from "react-kui";
+const protocols = [
+    { label: "http", value: "http" },
+    { label: "https", value: "https" },
+  ],
+  domains = [
+    { label: ".com", value: ".com" },
+    { label: ".cn", value: ".cn" },
+    { label: ".org", value: ".org" },
+  ],
+  treeData = [
+    {
+      title: "fruit",
+      key: "1",
+      children: [
+        { title: "apple", key: "11" },
+        { title: "orange", key: "12" },
+      ],
+    },
+  ];
+export default function App() {
+  const [time, setTime] = useState(60);
+  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
+  useEffect(
+    () => () => {
+      if (timer.current) clearInterval(timer.current);
+    },
+    [],
+  );
+  const send = () => {
+    if (timer.current) clearInterval(timer.current);
+    setTime(59);
+    message.success("Verification code sent successfully");
+    timer.current = setInterval(
+      () =>
+        setTime((v) => {
+          if (v <= 1) {
+            if (timer.current) clearInterval(timer.current);
+            return 60;
+          }
+          return v - 1;
+        }),
+      1000,
+    );
+  };
+  return (
+    <Space vertical block>
+      <Input placeholder="Please input username" icon={User} />
+      <Input
+        placeholder="Please input the captcha"
+        maxLength={8}
+        prefix={<Icon type={Search} />}
+        suffix={<Tag theme="outline">⌘K</Tag>}
+      />
+      <Input
+        placeholder="Please input the captcha"
+        maxLength={8}
+        addonAfter={
+          <Button disabled={time < 60} onClick={send}>
+            {time === 60 ? "Get Captcha" : `${time}(s)`}
+          </Button>
+        }
+      />
+      <Input
+        placeholder="Please input"
+        icon={Gift}
+        addonAfter={
+          <Tooltip title="Please contact the administrator">
+            <Button icon={CircleQuestionMark} />
+          </Tooltip>
+        }
+      />
+      <Input placeholder="Please enter the amount" suffix="RMB" prefix="¥" />
+      <Input placeholder="Please enter the domain" suffix=".com" prefix="https://" />
+      <Input
+        placeholder="Please input"
+        addonBefore={<Select options={protocols} clearable value="http" />}
+        addonAfter={<Select options={domains} clearable value=".com" />}
+      />
+      <Input placeholder="Please input" suffix=".00" />
+      <Input
+        placeholder="Please input"
+        addonBefore={<Select options={protocols} clearable value="http" />}
+        addonAfter={<TreeSelect treeData={treeData} clearable style={{ width: 100 }} />}
+      />
+    </Space>
+  );
+}

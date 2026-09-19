@@ -1,94 +1,175 @@
 {
   "name": "react-kui",
-  "version": "2.0.1",
+  "version": "3.0.0",
+  "packageManager": "pnpm@12.4.2",
   "description": "A high quality UI components Library with React",
-  "main": "dist/k-ui.js",
-  "style": "dist/k-ui.css",
+  "main": "./lib/index.cjs",
+  "module": "./es/index.js",
+  "types": "./types/index.d.ts",
+  "style": "./style/index.css",
+  "type": "module",
+  "files": [
+    "es",
+    "lib",
+    "style",
+    "types",
+    "readme.md",
+    "README.zh-CN.md",
+    "ai",
+    "AI.md",
+    "AI.en-US.md"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./types/index.d.ts",
+        "default": "./es/index.js"
+      },
+      "require": {
+        "types": "./types/index.d.cts",
+        "default": "./lib/index.cjs"
+      }
+    },
+    "./style": "./style/index.css",
+    "./style.css": "./style/index.css",
+    "./style/*": "./style/*",
+    "./locale/*": {
+      "import": {
+        "types": "./types/locale/*.d.ts",
+        "default": "./es/locale/*.js"
+      },
+      "require": {
+        "types": "./types/locale/*.d.cts",
+        "default": "./lib/locale/*.cjs"
+      }
+    },
+    "./package.json": "./package.json",
+    "./metadata": "./ai/kui-components.json",
+    "./metadata/schema": "./ai/kui-components.schema.json",
+    "./skill": "./ai/skills/react-kui/SKILL.md",
+    "./skill/*": "./ai/skills/react-kui/*"
+  },
+  "sideEffects": [
+    "**/*.css",
+    "**/*.less"
+  ],
   "scripts": {
-    "test": "node build/dev.js",
-    "start": "cross-env NODE_ENV=development webpack-dev-server  --config build/webpack.dev.conf.js",
-    "build:docs": "cross-env NODE_ENV=production node build/build.js docs",
-    "build": "cross-env NODE_ENV=production node build/build.js "
+    "dev": "vite --config vite.config.docs.ts",
+    "start": "pnpm dev",
+    "typecheck": "node --max-old-space-size=2048 node_modules/typescript/bin/tsc -b",
+    "build:es": "node scripts/prepare-types.mjs --clean && node --max-old-space-size=2048 node_modules/vite/bin/vite.js build --config vite.config.ts && node scripts/prepare-types.mjs",
+    "build:cjs": "node --max-old-space-size=2048 node_modules/vite/bin/vite.js build --config vite.config.lib.ts",
+    "build:css": "node --max-old-space-size=2048 node_modules/vite/bin/vite.js build --config vite.config.css.ts",
+    "build:docs": "pnpm generate:ai && node --max-old-space-size=2048 node_modules/vite/bin/vite.js build --config vite.config.docs.ts",
+    "build:lib": "pnpm generate:ai && pnpm build:es && pnpm build:cjs && pnpm build:css",
+    "build": "pnpm typecheck && pnpm build:lib",
+    "lint": "node --max-old-space-size=2048 node_modules/eslint/bin/eslint.js . --max-warnings=0 --cache --cache-location node_modules/.cache/eslint/.eslintcache",
+    "lint:fix": "pnpm lint -- --fix",
+    "eslint": "pnpm lint",
+    "check:api-docs": "node --max-old-space-size=2048 --experimental-strip-types scripts/check-api-docs.ts",
+    "package:check": "node scripts/check-package.mjs",
+    "test": "node --max-old-space-size=2048 node_modules/vitest/vitest.mjs run --maxWorkers=1",
+    "verify": "pnpm check && pnpm build:lib && pnpm build:docs && pnpm package:check",
+    "generate:ai": "node --max-old-space-size=2048 --experimental-strip-types scripts/generate-ai-assets.ts",
+    "check:ai-assets": "node --max-old-space-size=2048 --experimental-strip-types scripts/generate-ai-assets.ts --check",
+    "check:ai": "pnpm check:ai-evals && pnpm typecheck:ai && node --max-old-space-size=2048 node_modules/vitest/vitest.mjs run tests/ai-assets.test.ts tests/ai-templates.test.tsx tests/ai-evals.test.mjs --maxWorkers=1",
+    "typecheck:ai": "node --max-old-space-size=2048 node_modules/typescript/bin/tsc -p tsconfig.ai-templates.json --noEmit",
+    "check": "pnpm lint && pnpm check:api-docs && pnpm typecheck && pnpm typecheck:ai && pnpm check:ai-assets && pnpm check:ai-evals && pnpm test",
+    "package:smoke": "node scripts/smoke-package.mjs",
+    "check:ai-evals": "node ai/evals/run.mjs --reference",
+    "eval:ai": "node ai/evals/run.mjs"
   },
   "repository": {
     "type": "git",
-    "url": "https://gitee.com/chuchur/kui-react.git"
+    "url": "https://github.com/smallerqiu/kui-react.git"
   },
-  "files": [
-    "dist",
-    "components"
-  ],
   "bugs": {
-    "url": "https://gitee.com/chuchur/kui-react/issues",
+    "url": "https://github.com/smallerqiu/kui-react/issues",
     "email": "chuchur@qq.com"
   },
-  "author": "chuchur / chuchur@qq.com",
-  "license": "ISC",
   "keywords": [
-    "ui",
+    "react",
+    "reactjs",
     "kui",
     "kui-react",
-    "react-kui",
-    "kui-vue",
-    "kyui",
-    "react",
-    "react kui",
-    "react ui",
-    "component",
-    "components",
-    "framework",
-    "react components",
-    "pc",
-    "pc ui"
+    "design",
+    "react-components",
+    "ui",
+    "ui-library",
+    "react19-components",
+    "ui-kit"
   ],
-  "homepage": "https://react.k-ui.cn",
-  "devDependencies": {
-    "@babel/core": "^7.14.6",
-    "@babel/plugin-transform-runtime": "^7.14.5",
-    "@babel/polyfill": "^7.12.1",
-    "@babel/preset-env": "^7.14.7",
-    "@babel/preset-react": "^7.14.5",
-    "babel-loader": "^8.1.0",
-    "babel-plugin-lodash": "^3.3.4",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "chalk": "^4.1.1",
-    "cheerio": "^1.0.0-rc.3",
-    "classnames": "^2.3.1",
-    "clean-webpack-plugin": "^3.0.0",
-    "copy-to-clipboard": "^3.3.1",
-    "cross-env": "^7.0.3",
-    "css-loader": "^5.2.6",
-    "file-loader": "^6.2.0",
-    "highlight.js": "^11.1.0",
-    "html-webpack-plugin": "^4.5.2",
-    "kui-loader": "^1.0.6",
-    "less": "^4.1.1",
-    "less-loader": "^7.3.0",
-    "lodash": "^4.17.21",
-    "markdown-it": "^12.1.0",
-    "markdown-it-anchor": "^8.1.0",
-    "mini-css-extract-plugin": "^1.6.2",
-    "optimize-css-assets-webpack-plugin": "^6.0.1",
-    "postcss-loader": "^5.3.0",
-    "prop-types": "^15.6.2",
-    "react": "^17.0.2",
-    "react-copy-to-clipboard": "^5.0.3",
-    "react-dom": "^17.0.2",
-    "react-loadable": "^5.5.0",
-    "react-router": "^5.2.0",
-    "react-router-dom": "^5.2.0",
-    "react-transition-group": "^4.4.2",
-    "style-loader": "^2.0.0",
-    "terser-webpack-plugin": "^4.2.3",
-    "uglifyjs-webpack-plugin": "^2.2.0",
-    "webpack": "^4.46.0",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.2",
-    "webpack-merge": "^5.8.0",
-    "webpackbar": "^5.0.0-3"
+  "peerDependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
+  "browserslist": [
+    "> 0.5%",
+    "last 2 versions",
+    "Firefox ESR",
+    "not dead"
+  ],
   "dependencies": {
-    "kui-icons": "^2.0.0",
-    "moment": "^2.29.1"
+    "@babel/parser": "7.29.8",
+    "big.js": "^7.0.1",
+    "clsx": "^2.1.1",
+    "color": "^5.0.3",
+    "dayjs": "^1.11.23",
+    "kui-icons": "^5.0.0",
+    "qrcode": "^1.5.4",
+    "react-transition-group": "^4.4.5",
+    "uuid": "^14.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@eslint/js": "^10.0.1",
+    "@rolldown/plugin-babel": "^0.2.4",
+    "@stackblitz/sdk": "^1.11.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@types/babel__core": "^7.20.5",
+    "@types/big.js": "^7.0.0",
+    "@types/hash-sum": "^1.0.2",
+    "@types/markdown-it": "^14.2.0",
+    "@types/node": "^25.9.6",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/react-transition-group": "^4.4.12",
+    "@vitejs/plugin-react": "^6.1.1",
+    "autoprefixer": "^10.6.0",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "codejar": "^4.3.0",
+    "eslint": "^10.10.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.12.0",
+    "hash-sum": "^2.0.0",
+    "highlight.js": "^11.12.0",
+    "html-react-parser": "^6.1.7",
+    "jsdom": "^30.0.1",
+    "less": "^4.9.1",
+    "lz-string": "^1.5.0",
+    "markdown-it": "^15.0.2",
+    "markdown-it-anchor": "^9.2.1",
+    "nuqs": "^2.10.1",
+    "prettier": "^3.9.6",
+    "prop-types": "^15.8.1",
+    "react-router": "^7.18.3",
+    "sucrase": "^3.35.1",
+    "terser": "^5.51.2",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.70.0",
+    "vite": "^8.3.0",
+    "vite-plugin-dts": "^5.1.0",
+    "vitest": "^4.1.11"
+  },
+  "bin": {
+    "react-kui-ai": "./ai/cli.mjs",
+    "react-kui-mcp": "./ai/mcp.mjs"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

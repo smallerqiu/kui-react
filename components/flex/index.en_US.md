@@ -1,0 +1,39 @@
+# Flex
+
+## When to Use
+
+- Suitable for setting spacing between elements.
+- Suitable for setting various horizontal and vertical alignment methods.
+
+### Difference from Space Component
+
+- Space provides spacing for inline elements, and it itself adds a wrapper element for each child element for inline alignment. Suitable for equidistant arrangement of multiple child elements in rows and columns.
+- Flex provides spacing for block-level elements, and it itself does not add wrapper elements. Suitable for child element layout in vertical or horizontal directions, providing more flexibility and control capabilities.
+
+## Examples
+
+[Basic Layout](./demo/basic.tsx?show=vertical)
+
+- The simplest usage.
+
+[Alignment](./demo/align.tsx?show=vertical)
+
+- Set the alignment mode.
+
+[Spacing Size](./demo/size.tsx?show=vertical)
+
+- Use `size` to set the spacing between elements. Presets include `small`, `medium`, and `large`, or you can define a custom spacing.
+
+[Set Wrapping](./demo/wrap.tsx?show=vertical)
+
+- When spacing is horizontal, use `wrap` to control whether items wrap automatically. The default is `false`.
+
+## Flex API
+
+| Property | Description                                        | Type                                                                                          | Default                                     |
+| -------- | -------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| align    | Cross-axis alignment                               | `start` \| `flex-start` \| `end` \| `flex-end` \| `center` \| `baseline`                      | `center` horizontally; `stretch` vertically |
+| justify  | Main-axis alignment                                | `flex-start` \| `center` \| `flex-end` \| `space-between` \| `space-around` \| `space-evenly` | `flex-start`                                |
+| vertical | Whether to display vertically                      | boolean                                                                                       | false                                       |
+| size     | Gap size; array format is `[horizontal, vertical]` | `small` \| `medium` \| `large` \| number \| Array<string \| number>                           | -                                           |
+| wrap     | Whether to wrap                                    | boolean                                                                                       | false                                       |

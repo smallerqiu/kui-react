@@ -1,0 +1,96 @@
+# Grid
+
+## Dimensionality and Control: Grid vs. Row / Col
+
+This is the most commonly confused set of concepts.
+
+- Row/Col (Traditional One-Dimensional Grid): Usually implemented based on flex or float. It divides the space into 12 or 24 parts.
+  - Limitations: It is essentially one-dimensional. Although it can wrap, it is difficult to precisely control the vertical alignment of child items (such as making a certain Col span two rows). It requires negative margins and padding to handle gutters (spacing).
+
+- Grid (Two-Dimensional Grid): Grid is two-dimensional. It can precisely control both rows and columns simultaneously.
+  - Advantages: No need for negative margins, directly control spacing through gaps. Supports rowSpan and dense mode, easily achieving "Bento Box" layouts.
+
+### Logic Orientation: Grid vs. Flex
+
+- Flex (Content-Oriented): Use Flex when you have a group of items with variable widths, and you want them to automatically shrink or expand based on their content size and align within a single row. It emphasizes flexibility.
+
+- Grid (Layout-Oriented): Use Grid when you first have a fixed grid framework (like 8 cells for a dashboard) and then want to "fill" content into it. It emphasizes structure.
+
+### Global Architecture vs. Local Arrangement: Layout Series
+
+The Layout and its subcomponents (Header, Sider, Content, Footer) belong to the page skeleton-level components.
+
+- Layout: Solves the semantic structure of the page's large background. It is responsible for managing the expansion/collapse of the sidebar, the fixed positioning of the top navigation, and the overall scrollbar management.
+
+- Grid: Usually nested inside the Content (content area) of the Layout.
+  - Difference: Layout defines "how many rooms the house has"; Grid defines "how to arrange the furniture in each room".
+
+## Examples
+
+You can manually resize the browser window to observe the effect.
+
+[Basic Usage](./demo/basic.tsx?show=vertical)
+
+- Use responsive `span` values to control column occupancy at different container widths.
+
+[Dashboard Card Layout (Auto-fill + Min-Width)](./demo/auto-fill-min-width.tsx?show=vertical)
+
+- No need to manually set breakpoints. Rely on `itemMinWidth` to let the container automatically increase or decrease the number of columns based on its width.
+
+> When `itemMinWidth` is set, the `cols` parameter becomes ineffective. This is a content-driven layout method, perfect for image galleries or card lists, ensuring cards maintain a suitable width without becoming too crowded during container resizing.
+
+[Complex Form Responsiveness (Breakpoint Fallback)](./demo/breakpoint-fallback.tsx?show=vertical)
+
+- The logic for finding breakpoints up or down. For example, if `md` is defined but `lg` is not, can the system correctly apply the `md` value?
+
+[Holy Grail Layout / Admin Panel (Fixed Rows & Areas)](./demo/fixed-rows-areas.tsx?show=vertical)
+
+- The vertical control power of `rows` and `rowSpan`.
+
+[Responsive Hiding & Forced Sorting (Suffix & Display None)](./demo/suffix-display-none.tsx?show=vertical)
+
+- `span: 0` completely removes the DOM placeholder, and `suffix` spans across all dynamic items.
+
+[Image Gallery / Masonry (Bento Grid Style)](./demo/bento-en.tsx?show=vertical)
+
+- Asymmetric layout.
+
+[Hero Section Overlay Layout (Layering)](./demo/hero-section.tsx?show=vertical)
+
+- The overlapping capability of `grid-column-start` and `grid-row-start`, with text floating over a specific part of an image.
+
+## Grid API
+
+| Property     | Description                                                                                                                             | Type                     | Default |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ | ------- |
+| cols         | Set the number of grid columns. Supports numbers (equal division) or strings (e.g., 1fr 2fr)                                            | number, string, Object   | 24      |
+| rows         | Set the number of grid rows or height. Default is auto                                                                                  | number, string, Object   | auto    |
+| autoRows     | Implicit grid row height. Used in Bento layout or waterfall flow to set the base height.                                                | string                   | auto    |
+| xGap         | Grid spacing (horizontal direction). Numeric type will automatically add px unit.                                                       | number, string, Object   | 0       |
+| yGap         | Row spacing (vertical direction). Numeric type will automatically add px unit.                                                          | number, string, Object   | 0       |
+| itemMinWidth | Auto-fill mode. Set the minimum width of child items. Grid will automatically calculate the number of columns based on container width. | number \| string         | -       |
+| align        | Vertical alignment of child items within grid cells                                                                                     | string (center, start..) | -       |
+| justify      | Horizontal alignment of child items within grid cells.                                                                                  | string (center, start..) | -       |
+| flow         | Grid auto-placement mode, maps to `grid-auto-flow`                                                                                      | string (row, column, dense..) | row  |
+| debug        | Debug mode. When enabled, red transparent background columns are displayed to facilitate developer layout alignment.                    | boolean                     | false   |
+
+## GridItem API
+
+| Property    | Description                                                                                                | Type             | Default |
+| ----------- | ---------------------------------------------------------------------------------------------------------- | ---------------- | ------- |
+| span        | Number of columns occupied. A value of 0 hides the item at that breakpoint                                | number \| Object | 1       |
+| rowSpan     | Number of rows occupied                                                                                   | number \| Object | 1       |
+| columnStart | Explicit starting column; supports responsive values                                                      | number \| Object | -       |
+| rowStart    | Explicit starting row; supports responsive values                                                         | number \| Object | -       |
+| suffix      | Forces the item to the end of the current row                                                             | boolean          | false   |
+
+## Breakpoints
+
+| Identifier | Full Name         | Threshold (width w) | Typical Scenario                           |
+| ---------- | ----------------- | ------------------- | ------------------------------------------ |
+| xs         | Extra Small       | 0≤w<576px           | Phone portrait (Phones)                    |
+| sm         | Small             | 576≤w<768px         | Phone landscape / Small tablet             |
+| md         | Medium            | 768≤w<992px         | Medium tablet (e.g., iPad)                 |
+| lg         | Large             | 992≤w<1200px        | Laptop / Small screen display              |
+| xl         | Extra Large       | 1200≤w<1600px       | Standard desktop display                   |
+| xxl        | Extra Extra Large | w≥1600px            | High-resolution large screen / Wide screen |

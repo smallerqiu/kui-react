@@ -1,40 +1,94 @@
+# Menu 导航菜单
+
+`value` 用于初始化组件，并同步后续的外部值变化。用户操作会更新内部值并触发 `onChange`，即使传入固定值或 `onChange` 仅用于监听也能交互。需要父子同步时使用 `value={state}` 配合 `onChange={setState}`。相同值的重新渲染不会重置内部编辑；数组值请使用新数组更新。
+
+为页面和功能提供导航的菜单列表。
+
+## 何时使用
+
+导航菜单是一个网站的灵魂，用户依赖导航在各个页面中进行跳转。一般分为顶部导航和侧边导航，顶部导航提供全局性的类目和功能，侧边导航提供多级结构来收纳和排列网站架构。
+
+## 代码演示
+
+[顶部导航](./demo/basic.tsx?show=vertical)
+
+- 水平的顶部导航菜单。
+
+[内嵌菜单](./demo/inline.tsx?show=vertical)
+
+- 垂直菜单，子菜单内嵌在菜单区域。
+
+[只展开当前父级菜单](./demo/accordion.tsx?show=vertical)
+
+- 点击菜单，收起其他展开的所有菜单，保持菜单聚焦简洁。
+
+[垂直菜单](./demo/vertical.tsx?show=vertical)
+
+- 子菜单是弹出的形式。
+
+[主题](./demo/theme.tsx?show=vertical)
+
+- 支持 `light|dark` 局部主题，未设置时继承全局主题。
+
+[切换菜单类型](./demo/mode.tsx?show=vertical)
+
+- 展示动态切换模式。
+
+[缩起内嵌菜单](./demo/collapsed.tsx?show=vertical)
+
+- 内嵌菜单可以被缩起/展开。
+
 ## API
 
-### Menu 
+### Menu
 
-| 属性            | 说明                                     | 类型                                              | 默认值   |
-|-----------------|------------------------------------------|---------------------------------------------------|----------|
-| theme           | 主题颜色                                 | string: light dark                                | light    |
-| openKeys        | 当前展开的 SubMenu 菜单项 key 数组       | string[]                                          | -        |
-| selectedKeys    | 当前选中的菜单项                         | string[]                                          | -        |
-| mode            | 菜单类型，支持垂直、水平、和内嵌模式三种 | string: vertical vertical-right horizontal inline | vertical |
-| onClick         | 点击 MenuItem 调用此函数                 | function({key, keyPath, item })                        | -        |
-| onAffixed       | 点击 MenuItem 收藏调用此函数             | function({key, keyPath, item },affixed)                | -        |
-| onOpenChange    | SubMenu 展开/关闭的回调                  | function(openKeys: string[])                           | -        |
-| accordion       | 是否只允许菜单展开一项                   | boolean                                           | false    |
-| inlineCollapsed | inline 时菜单是否收起状态                | boolean                                           | false    |
-| verticalAffixed | 菜单是否支持收藏 (vertical模式有效)      | boolean                                           | false    |
+| 属性             | 说明                                  | 类型                                   | 默认值     |
+| ---------------- | ------------------------------------- | -------------------------------------- | ---------- |
+| value            | 当前选中的菜单项                      | string[]                               | -          |
+| theme            | 局部主题，未设置时继承全局主题        | `light` \| `dark`                      | -          |
+| items            | 菜单数据                              | MenuOptionsProps[]                     | -          |
+| openKeys         | 当前展开的 SubMenu 菜单项 key 数组    | string[]                               | -          |
+| defaultOpenKeys  | 非受控模式初始展开的 SubMenu key 数组 | string[]                               | []         |
+| selectedKeys     | 当前选中的菜单项                      | string[]                               | -          |
+| mode             | 菜单类型                              | `vertical` \| `horizontal` \| `inline` | `vertical` |
+| onSelect         | 点击 MenuItem 调用此函数              | (data: MenuSelectEvent) => void        | -          |
+| onOpenChange     | SubMenu 展开/关闭的回调               | (openKeys: string[]) => void           | -          |
+| onChange         | 选中 key 集合变化时触发               | (selectedKeys: string[]) => void       | -          |
+| accordion        | 是否只允许菜单展开一项                | boolean                                | false      |
+| inlineCollapsed  | inline 时菜单是否收起状态             | boolean                                | false      |
+| collapsedTooltip | 收起时是否显示无子菜单项的文字提示    | boolean                                | true       |
 
-### Menu.Item
+### Menu(items)
 
-| 属性     | 说明                     | 类型    | 默认值 |
-|----------|--------------------------|---------|--------|
-| icon     | item的图标               | string  | -      |
-| disabled | 是否禁用                 | boolean | false  |
-| affixed  | 是否收藏                 | boolean | false  |
-| key      | item 的唯一标志          | string  | -      |
-| title    | 设置收缩时展示的悬浮标题 | string  | -      |
- 
-### Menu.SubMenu
+| 属性     | 说明            | 类型               | 默认值 |
+| -------- | --------------- | ------------------ | ------ |
+| icon     | item 的图标     | IconType           | -      |
+| disabled | 是否禁用        | boolean            | false  |
+| key      | item 的唯一标志 | string             | -      |
+| title    | 菜单项内容      | ReactNode          | -      |
+| children | 菜单子集        | MenuOptionsProps[] | -      |
 
-| 属性     | 说明            | 类型         | 默认值 |
-|----------|-----------------|--------------|--------|
-| disabled | 是否禁用        | boolean      | false  |
-| key      | item 的唯一标志 | string       | -      |
-| title    | 子菜单项值      | string,ReactNode | -      |
+### MenuItem
 
-### Menu.MenuGroup
+| 属性     | 说明             | 类型                                   | 默认值 |
+| -------- | ---------------- | -------------------------------------- | ------ |
+| icon     | item 的图标      | IconType \| ReactNode                  | -      |
+| disabled | 是否禁用         | boolean                                | false  |
+| onClick  | 点击菜单项时触发 | React.MouseEventHandler<HTMLLIElement> | -      |
+| itemKey  | item 的唯一标志  | string                                 | -      |
+| title    | 菜单项内容       | ReactNode                              | -      |
 
-| 属性  | 说明     | 类型         | 默认值 |
-|-------|----------|--------------|--------|
-| title | 分组标题 | string,ReactNode | -      |
+### SubMenu
+
+| 属性     | 说明            | 类型      | 默认值 |
+| -------- | --------------- | --------- | ------ |
+| icon     | item 的图标     | IconType  | -      |
+| disabled | 是否禁用        | boolean   | false  |
+| itemKey  | item 的唯一标志 | string    | -      |
+| title    | 子菜单项内容    | ReactNode | -      |
+
+### MenuGroup
+
+| 属性  | 说明     | 类型      | 默认值 |
+| ----- | -------- | --------- | ------ |
+| title | 分组标题 | ReactNode | -      |

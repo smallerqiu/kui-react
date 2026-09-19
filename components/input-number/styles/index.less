@@ -1,0 +1,281 @@
+@import "../../styles/less-css-var.less";
+
+.k-input-number {
+  position: relative;
+  display: inline-flex;
+  width: 100%;
+  color: var(--kui-control-text);
+  align-items: center;
+  border: 1px solid var(--kui-control-border);
+  border-radius: var(--kui-control-radius);
+  background-color: var(--kui-control-bg);
+  transition: border var(--kui-motion-duration) var(--kui-motion-easing);
+  box-sizing: border-box;
+  gap: var(--kui-padding-inline);
+  padding-left: var(--kui-padding-inline);
+  overflow: hidden;
+  font-size: var(--kui-font-size);
+  outline: var(--kui-focus-ring-width) solid transparent;
+  &:not(.k-input-number-fill, .k-input-number-disabled):hover {
+    border-color: var(--kui-color-primary);
+  }
+  &:not(.k-input-number-disabled):hover {
+    .k-input-number-controls {
+      opacity: 1;
+      width: 20px;
+    }
+  }
+  &:focus-within {
+    .k-input-number-controls {
+      opacity: 1;
+      width: 20px;
+    }
+  }
+
+  .k-input-number-clearable-hidden {
+    visibility: hidden;
+  }
+}
+.k-input-number-circle {
+  border-radius: var(--kui-shape-circle);
+}
+.k-input-number-square {
+  border-radius: var(--kui-shape-square);
+}
+.k-input-number-controls {
+  transition:
+    color 0.15s ease-in-out,
+    opacity 0.15s ease-in-out;
+  -webkit-user-select: none;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  color: var(--kui-color-icon);
+  border-left: 1px solid var(--kui-control-border);
+  font-size: 11px;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+}
+
+.k-input-number-control {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  flex: 1;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--kui-color-primary);
+    background-color: var(--kui-color-bg-component-hover);
+  }
+
+  &:active {
+    color: var(--kui-color-primary);
+    background-color: var(--kui-color-bg-component-active);
+  }
+
+  &:disabled {
+    color: var(--kui-color-text-disabled);
+    background: transparent;
+    cursor: not-allowed;
+  }
+
+  &:last-child {
+    border-top: 1px solid var(--kui-control-border);
+  }
+}
+
+.k-input-number-text {
+  padding-left: 0;
+  border: none;
+  height: 30px;
+  padding: 4px 0;
+  font-size: var(--kui-font-size);
+  color: var(--kui-control-text);
+  background-color: transparent;
+  background-image: none;
+  box-sizing: border-box;
+  flex: 1;
+  min-width: 10px;
+  line-height: var(--kui-line-height);
+  outline: none;
+}
+.k-input-number-focus {
+  outline-offset: 1px;
+  outline: var(--kui-focus-ring-width) solid var(--kui-color-outline);
+}
+.k-input-number-focus:not(.k-input-number-fill, .k-input-number-disabled) {
+  border-color: var(--kui-color-primary);
+  box-shadow: var(--kui-component-shadow);
+}
+
+.k-input-number-icon {
+  font-size: var(--kui-font-size);
+  color: var(--kui-color-icon);
+}
+
+.k-input-number[data-single] {
+  height: var(--kui-control-height);
+  width: auto;
+  padding-right: var(--kui-padding-inline);
+
+  &:not(.k-input-number-fill, .k-input-number-disabled):hover {
+    border-color: var(--kui-color-primary);
+  }
+}
+
+.k-input-number-sm[data-single] {
+  height: var(--kui-control-height-sm);
+  font-size: var(--kui-font-size-sm);
+  padding-right: var(--kui-padding-inline-sm);
+}
+
+.k-input-number-lg[data-single] {
+  height: var(--kui-control-height-lg);
+  font-size: var(--kui-font-size-lg);
+  padding-right: var(--kui-padding-inline-lg);
+}
+
+.k-input-number-suffix,
+.k-input-number-prefix {
+  font-size: var(--kui-font-size);
+  white-space: nowrap;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  transition:
+    color var(--kui-motion-duration) var(--kui-motion-easing),
+    opacity var(--kui-motion-duration) var(--kui-motion-easing);
+  display: flex;
+
+  &:hover {
+    color: var(--kui-control-text);
+  }
+
+  .k-icon {
+    font-size: var(--kui-font-size);
+    transition: color var(--kui-motion-duration) var(--kui-motion-easing);
+    color: var(--kui-color-icon);
+  }
+}
+
+.k-input-number-clearable {
+  cursor: pointer;
+  font-size: 15px;
+  color: var(--kui-color-icon);
+
+  &:hover {
+    color: var(--kui-color-icon-hover);
+  }
+  &:active {
+    color: var(--kui-color-icon-active);
+  }
+}
+
+.k-input-number-sm {
+  gap: var(--kui-padding-inline-sm);
+  padding-left: var(--kui-padding-inline-sm);
+  font-size: var(--kui-font-size-sm);
+  .k-input-number-controls {
+    height: calc(var(--kui-control-height-sm) - 2px);
+  }
+
+  .k-input-number-text {
+    line-height: 1;
+    font-size: var(--kui-font-size-sm);
+    height: calc(var(--kui-control-height-sm) - 2px);
+  }
+
+  .k-input-number-clearable {
+    font-size: 11px;
+  }
+
+  .k-input-number-icon {
+    font-size: 11px;
+  }
+
+  .k-input-number-suffix {
+    .k-icon {
+      font-size: var(--kui-font-size-sm);
+    }
+  }
+}
+
+.k-input-number-lg {
+  gap: var(--kui-padding-inline-lg);
+  padding-left: var(--kui-padding-inline-lg);
+  font-size: var(--kui-font-size-lg);
+  .k-input-number-controls {
+    height: calc(var(--kui-control-height-lg) - 2px);
+  }
+
+  .k-input-number-text {
+    padding: 2px 0;
+    height: calc(var(--kui-control-height-lg) - 2px);
+    line-height: calc(var(--kui-control-height-lg) - 2px);
+    font-size: var(--kui-font-size-lg);
+  }
+
+  .k-input-number-clearable {
+    font-size: var(--kui-font-size-lg);
+  }
+
+  .k-input-number-icon {
+    font-size: var(--kui-font-size-lg);
+  }
+
+  .k-input-number-suffix {
+    .k-icon {
+      font-size: var(--kui-font-size-lg);
+    }
+  }
+}
+
+.k-input-number-fill {
+  border-color: transparent;
+  background-color: var(--kui-theme-fill-bg);
+
+  &:focus,
+  &.k-input-number-focus {
+    box-shadow: none;
+  }
+}
+
+.k-input-number-disabled {
+  cursor: not-allowed;
+  color: var(--kui-color-text-disabled);
+  background: var(--kui-control-bg-disabled);
+
+  & * {
+    cursor: not-allowed;
+  }
+
+  .k-input-number-control:hover {
+    background: 0 0;
+    color: var(--kui-color-icon);
+  }
+}
+
+.k-input-number-plain {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+
+  &:hover,
+  &:focus,
+  &.k-input-focus {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+  }
+}

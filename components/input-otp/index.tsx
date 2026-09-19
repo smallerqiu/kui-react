@@ -1,0 +1,207 @@
+import { useValue } from "../utils/use-value";
+import { useConfigAppearance } from "../config/use-config-appearance";
+import clsx from "clsx";
+import { createFormFieldComponent } from "../form/field-context";
+import {
+  Fragment,
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useRef,
+  type ClipboardEvent,
+  type FocusEvent,
+  type HTMLAttributes,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
+import type { ShapeType, SizeType, ThemeType } from "../const/types";
+
+export type InputOTPValidator = (value: string) => boolean;
+export interface InputOTPRef {
+  focus: (index?: number) => void;
+  blur: () => void;
+}
+export interface InputOTPProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onChange" | "defaultValue"
+> {
+  value?: string | number;
+  length?: number;
+  type?: "number" | "text";
+  size?: SizeType;
+  disabled?: boolean;
+  readOnly?: boolean;
+  mask?: boolean;
+  autoFocus?: boolean;
+  separator?: ReactNode;
+  validator?: InputOTPValidator;
+  theme?: ThemeType;
+  shape?: ShapeType;
+  onChange?: (value: string) => void;
+  onComplete?: (value: string) => void;
+  onFocus?: (event: FocusEvent<HTMLInputElement>) => void;
+  onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
+}
+
+const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
+  {
+    value,
+    length = 6,
+    type = "number",
+    size: sizeProp,
+    disabled = false,
+    readOnly = false,
+    mask = false,
+    autoFocus = false,
+    separator,
+    validator,
+    theme: themeProp,
+    shape: shapeProp,
+    onChange,
+    onComplete,
+    onFocus,
+    onBlur,
+    className,
+    ...rest
+  },
+  ref,
+) {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
+  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const shape = shapeProp ?? inheritedAppearance.shape;
+  const normalize = useCallback(
+    (source: unknown) =>
+      Array.from(String(source ?? ""))
+        .filter((character) => (type === "number" ? /\d/.test(character) : true))
+        .filter((character) => (validator ? validator(character) : true))
+        .join("")
+        .slice(0, Math.max(0, Math.trunc(length))),
+    [length, type, validator],
+  );
+  const otpLength = Math.max(0, Math.trunc(length));
+  const [innerValue, setInnerValue] = useValue(value, (next) => normalize(next ?? ""));
+  const currentValue = normalize(innerValue);
+  const inputs = useRef<Array<HTMLInputElement | null>>([]);
+  const focusedIndex = useRef(-1);
+  const composing = useRef(new Set<number>());
+  const valueChars = Array.from(currentValue);
+  const chars = Array.from({ length: otpLength }, (_, index) => valueChars[index] ?? "");
+
+  const focus = useCallback(
+    (index = Math.min(valueChars.length, otpLength - 1)) => {
+      if (disabled || otpLength <= 0) return;
+      inputs.current[Math.max(0, Math.min(index, otpLength - 1))]?.focus();
+    },
+    [disabled, otpLength, valueChars.length],
+  );
+  const blur = useCallback(() => inputs.current[focusedIndex.current]?.blur(), []);
+  useImperativeHandle(ref, () => ({ focus, blur }), [blur, focus]);
+
+  const updateValue = (source: string) => {
+    const nextValue = normalize(source);
+    if (nextValue === currentValue) return;
+    setInnerValue(nextValue);
+    onChange?.(nextValue);
+    if (otpLength > 0 && Array.from(nextValue).length === otpLength) onComplete?.(nextValue);
+  };
+  const insert = (text: string, index: number) => {
+    if (disabled || readOnly) return;
+    const inserted = normalize(text);
+    if (!inserted) return;
+    const start = Math.min(index, valueChars.length);
+    const source = [...valueChars];
+    const insertedChars = Array.from(inserted);
+    insertedChars.forEach((character, offset) => {
+      if (start + offset < otpLength) source[start + offset] = character;
+    });
+    updateValue(source.slice(0, otpLength).join(""));
+    requestAnimationFrame(() => focus(Math.min(start + insertedChars.length, otpLength - 1)));
+  };
+  const keyDown = (event: KeyboardEvent<HTMLInputElement>, index: number) => {
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+      event.preventDefault();
+      focus(index + (event.key === "ArrowLeft" ? -1 : 1));
+    } else if (event.key === "Home" || event.key === "End") {
+      event.preventDefault();
+      focus(event.key === "Home" ? 0 : otpLength - 1);
+    } else if (event.key === "Backspace" || event.key === "Delete") {
+      if (readOnly) return;
+      event.preventDefault();
+      const target = event.key === "Backspace" && !chars[index] ? Math.max(0, index - 1) : index;
+      const source = [...valueChars];
+      source.splice(target, 1);
+      updateValue(source.join(""));
+      requestAnimationFrame(() => focus(target));
+    }
+  };
+  const paste = (event: ClipboardEvent<HTMLInputElement>, index: number) => {
+    event.preventDefault();
+    insert(event.clipboardData.getData("text"), index);
+  };
+
+  return (
+    <div
+      {...rest}
+      className={clsx(
+        "k-input-otp",
+        {
+          "k-input-otp-sm": size === "small",
+          "k-input-otp-lg": size === "large",
+          "k-input-otp-disabled": disabled,
+          "k-input-otp-readonly": readOnly,
+          [`k-input-otp-${theme}`]: theme,
+          [`k-input-otp-${shape}`]: shape,
+        },
+        className,
+      )}
+      role="group"
+      aria-disabled={disabled || undefined}
+      aria-readonly={readOnly || undefined}
+    >
+      {chars.map((character, index) => (
+        <Fragment key={index}>
+          {index > 0 && separator !== undefined && (
+            <span className="k-input-otp-separator">{separator}</span>
+          )}
+          <input
+            ref={(element) => {
+              inputs.current[index] = element;
+            }}
+            className="k-input-otp-item"
+            value={character}
+            type={mask ? "password" : "text"}
+            inputMode={type === "number" ? "numeric" : "text"}
+            pattern={type === "number" ? "[0-9]*" : undefined}
+            maxLength={otpLength}
+            disabled={disabled}
+            readOnly={readOnly}
+            autoComplete={index === 0 ? "one-time-code" : "off"}
+            aria-label={`${index + 1} / ${otpLength}`}
+            autoFocus={autoFocus && index === 0}
+            onChange={(event) => {
+              if (!composing.current.has(index)) insert(event.target.value, index);
+            }}
+            onCompositionStart={() => composing.current.add(index)}
+            onCompositionEnd={() => {
+              composing.current.delete(index);
+            }}
+            onKeyDown={(event) => keyDown(event, index)}
+            onPaste={(event) => paste(event, index)}
+            onFocus={(event) => {
+              focusedIndex.current = index;
+              event.currentTarget.select();
+              onFocus?.(event);
+            }}
+            onBlur={(event) => {
+              focusedIndex.current = -1;
+              onBlur?.(event);
+            }}
+          />
+        </Fragment>
+      ))}
+    </div>
+  );
+});
+
+export default createFormFieldComponent(InputOTP);

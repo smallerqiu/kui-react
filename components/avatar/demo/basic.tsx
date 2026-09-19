@@ -1,0 +1,42 @@
+import { Space, Avatar } from "react-kui";
+
+export default function App() {
+  return (
+    <>
+      <Space>
+        <Avatar size={64}>U</Avatar>
+        <Avatar size="large">U</Avatar>
+        <Avatar>U</Avatar>
+        <Avatar size="small">U</Avatar>
+      </Space>
+      <br />
+      <br />
+      <Space>
+        <Avatar shape="square" size={64}>
+          U
+        </Avatar>
+        <Avatar shape="square" size="large">
+          U
+        </Avatar>
+        <Avatar shape="square">U</Avatar>
+        <Avatar shape="square" size="small">
+          U
+        </Avatar>
+      </Space>
+      <br />
+      <br />
+      <Space>
+        <Avatar shape="round" size={64}>
+          U
+        </Avatar>
+        <Avatar shape="round" size="large">
+          U
+        </Avatar>
+        <Avatar shape="round">U</Avatar>
+        <Avatar shape="round" size="small">
+          U
+        </Avatar>
+      </Space>
+    </>
+  );
+}

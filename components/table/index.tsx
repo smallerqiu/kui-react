@@ -1,0 +1,614 @@
+import { useConfigAppearance, normalizeSurfaceShape } from "../config/use-config-appearance";
+import clsx from "clsx";
+import { ChevronDown, ChevronRight, Triangle } from "kui-icons";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+  type UIEvent,
+} from "react";
+import { flushSync } from "react-dom";
+import { Checkbox, type ChangeEvent } from "../checkbox";
+import Empty from "../empty";
+import Icon from "../icon";
+import Spin from "../spin";
+import { getVirtualRange } from "../virtual-list/range";
+import type { Column, SortState, TableKey, TableProps } from "./types";
+import { countColumnLeaves, flattenColumns, flattenTreeData, getRecordValue } from "./utils";
+
+export type { Column, SortState, TableKey, TableProps, TableTreeRow } from "./types";
+export { TableColumnSetting } from "./column-setting";
+export type { TableColumnSettingProps } from "./column-setting";
+interface MatrixCell {
+  rowSpan: number;
+  colSpan: number;
+  show: boolean;
+}
+
+export default function Table<T extends object = Record<string, unknown>>({
+  data = [],
+  columns = [],
+  selectedKeys,
+  defaultSelectedKeys = [],
+  disabledKeys = [],
+  rowKey = "key",
+  childrenColumnName = "children",
+  expandedKeys,
+  defaultExpandedKeys = [],
+  defaultExpandAllRows = false,
+  expandRowByClick = false,
+  indentSize = 20,
+  scroll = {},
+  size: sizeProp,
+  striped,
+  bordered = false,
+  shape: shapeProp,
+  checkable,
+  loading,
+  emptyText,
+  header,
+  footer,
+  virtual = false,
+  itemHeight = 44,
+  overscan = 5,
+  hiddenColumnKeys = [],
+  onSort,
+  onRowClick,
+  onSelect,
+  onSelectAll,
+  onSelectedKeysChange,
+  onExpand,
+  onExpandedKeysChange,
+  className,
+  ...rest
+}: TableProps<T>) {
+  const inheritedAppearance = useConfigAppearance();
+  const size = sizeProp ?? inheritedAppearance.size;
+  const shape = normalizeSurfaceShape(shapeProp ?? inheritedAppearance.shape ?? "round");
+  const headerRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const scrollFrameRef = useRef(0);
+  const controlledSelection = selectedKeys !== undefined;
+  const [innerSelected, setInnerSelected] = useState(new Set(selectedKeys ?? defaultSelectedKeys));
+  const [innerExpanded, setInnerExpanded] = useState(
+    () =>
+      new Set<TableKey>(
+        defaultExpandAllRows
+          ? flattenTreeData({
+              data,
+              childrenColumnName,
+              getKey: (record) => {
+                if (typeof rowKey === "function") return rowKey(record);
+                const key = getRecordValue(record, rowKey);
+                return typeof key === "string" || typeof key === "number" ? key : "";
+              },
+            })
+              .filter((row) => row.hasChildren)
+              .map((row) =>
+                typeof rowKey === "function"
+                  ? rowKey(row.record)
+                  : ((getRecordValue(row.record, rowKey) as TableKey) ?? ""),
+              )
+          : defaultExpandedKeys,
+      ),
+  );
+  const [sort, setSort] = useState<SortState>({ key: "", order: null });
+  const [ping, setPing] = useState({ left: false, right: false });
+  const [scrollbarWidth, setScrollbarWidth] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(0);
+  const selected = controlledSelection ? new Set(selectedKeys) : innerSelected;
+  const currentExpanded = expandedKeys === undefined ? innerExpanded : new Set(expandedKeys);
+  const visibleColumns = useMemo(() => {
+    const filter = (items: Column<T>[]): Column<T>[] =>
+      items.flatMap((column) => {
+        if (hiddenColumnKeys.includes(column.key)) return [];
+        if (!column.children?.length) return [column];
+        const children = filter(column.children);
+        return children.length ? [{ ...column, children }] : [];
+      });
+    return filter(columns);
+  }, [columns, hiddenColumnKeys]);
+  const leaves = useMemo(() => flattenColumns(visibleColumns), [visibleColumns]);
+  const split = scroll.y != null;
+  const virtualEnabled = virtual && split;
+  const keyOf = (record: T) => {
+    if (typeof rowKey === "function") return rowKey(record);
+    const key = getRecordValue(record, rowKey);
+    return typeof key === "string" || typeof key === "number" ? key : "";
+  };
+  const isDisabled = (key: string | number) => disabledKeys.includes(key);
+
+  const headerInfo = useMemo(() => {
+    let maxDepth = 1;
+    const depth = (items: Column<T>[], level = 1) =>
+      items.forEach((item) =>
+        item.children?.length
+          ? depth(item.children, level + 1)
+          : (maxDepth = Math.max(maxDepth, level)),
+      );
+    depth(visibleColumns);
+    const headerRows: Array<Array<Column<T> & { headerColSpan: number; headerRowSpan: number }>> =
+      [];
+    const visit = (items: Column<T>[], level: number) => {
+      headerRows[level] ??= [];
+      items.forEach((item) => {
+        headerRows[level].push({
+          ...item,
+          headerColSpan: countColumnLeaves(item),
+          headerRowSpan: item.children?.length ? 1 : maxDepth - level,
+        });
+        if (item.children?.length) visit(item.children, level + 1);
+      });
+    };
+    visit(visibleColumns, 0);
+    return { rows: headerRows, maxDepth };
+  }, [visibleColumns]);
+
+  const fixed = useMemo(() => {
+    const header: Record<string, CSSProperties> = {};
+    const body: Record<string, CSSProperties> = {};
+    let left = checkable ? 50 : 0;
+    leaves.forEach((column) => {
+      if (column.fixed === "left") {
+        const style: CSSProperties = { position: "sticky", left };
+        header[column.key] = style;
+        body[column.key] = style;
+        left += column.width ?? 150;
+      }
+    });
+    let right = 0;
+    [...leaves].reverse().forEach((column) => {
+      if (column.fixed === "right") {
+        body[column.key] = { position: "sticky", right };
+        header[column.key] = {
+          position: "sticky",
+          right: split ? right + scrollbarWidth : right,
+        };
+        right += column.width ?? 150;
+      }
+    });
+    return { header, body };
+  }, [checkable, leaves, scrollbarWidth, split]);
+  const fixedClass = (column: Column<T>, index: number) =>
+    clsx({
+      "k-table-cell-fix-left": column.fixed === "left",
+      "k-table-cell-fix-left-last": column.fixed === "left" && leaves[index + 1]?.fixed !== "left",
+      "k-table-cell-fix-right": column.fixed === "right",
+      "k-table-cell-fix-right-first":
+        column.fixed === "right" && leaves[index - 1]?.fixed !== "right",
+      "k-table-cell-sorter": column.sorter,
+    });
+  const leafIndexOf = (column: Column<T>) => leaves.findIndex((item) => item.key === column.key);
+
+  const sortRecords = (records: T[]) => {
+    const result = [...records];
+    if (
+      sort.key &&
+      sort.order &&
+      leaves.find((column) => column.key === sort.key)?.sorter === true
+    ) {
+      result.sort((a, b) => {
+        const first = getRecordValue(a, sort.key),
+          second = getRecordValue(b, sort.key);
+        if (first === second) return 0;
+        const comparison =
+          (typeof first === "number" && typeof second === "number") ||
+          (typeof first === "string" && typeof second === "string")
+            ? first > second
+              ? 1
+              : -1
+            : 0;
+        return sort.order === "asc" ? comparison : -comparison;
+      });
+    }
+    return result;
+  };
+  const allRows = flattenTreeData({ data, childrenColumnName, getKey: keyOf });
+  const rows = flattenTreeData({
+    data,
+    childrenColumnName,
+    expandedKeys: currentExpanded,
+    getKey: keyOf,
+    sortRecords,
+  });
+  const virtualRange = useMemo(() => {
+    if (!virtualEnabled) return { start: 0, end: rows.length, offset: 0, total: 0 };
+    return getVirtualRange({
+      count: rows.length,
+      scrollTop,
+      viewportHeight,
+      itemHeight,
+      overscan,
+    });
+  }, [virtualEnabled, rows.length, scrollTop, viewportHeight, itemHeight, overscan]);
+  const treeEnabled = allRows.some((row) => row.hasChildren);
+  const matrix = useMemo(() => {
+    const hasMergedCells = leaves.some(
+      (column) => column.rowSpan !== undefined || column.colSpan !== undefined,
+    );
+    if (!hasMergedCells) return [];
+    const result: MatrixCell[][] = rows.map(() =>
+      leaves.map(() => ({ rowSpan: 1, colSpan: 1, show: true })),
+    );
+    rows.forEach(({ record }, row) =>
+      leaves.forEach((column, col) => {
+        if (!result[row][col].show) return;
+        const rowSpan =
+          typeof column.rowSpan === "function"
+            ? column.rowSpan(record, row)
+            : (column.rowSpan ?? 1);
+        const colSpan =
+          typeof column.colSpan === "function"
+            ? column.colSpan(record, row)
+            : (column.colSpan ?? 1);
+        const normalizedRowSpan = Number.isFinite(rowSpan) ? Math.max(0, Math.floor(rowSpan)) : 1;
+        const normalizedColSpan = Number.isFinite(colSpan) ? Math.max(0, Math.floor(colSpan)) : 1;
+        if (normalizedRowSpan === 0 || normalizedColSpan === 0) {
+          result[row][col].show = false;
+          return;
+        }
+        result[row][col] = {
+          rowSpan: normalizedRowSpan,
+          colSpan: normalizedColSpan,
+          show: true,
+        };
+        for (let r = 0; r < normalizedRowSpan; r++)
+          for (let c = 0; c < normalizedColSpan; c++)
+            if (r || c) {
+              const cell = result[row + r]?.[col + c];
+              if (cell) cell.show = false;
+            }
+      }),
+    );
+    return result;
+  }, [leaves, rows]);
+
+  const enabled = allRows.map((row) => row.record).filter((record) => !isDisabled(keyOf(record)));
+  const checkedCount = enabled.filter((record) => selected.has(keyOf(record))).length;
+  const allChecked = enabled.length > 0 && checkedCount === enabled.length;
+  const indeterminate = checkedCount > 0 && checkedCount < enabled.length;
+  const commitSelection = (next: Set<string | number>) => {
+    const keys = [...next];
+    if (!controlledSelection) setInnerSelected(next);
+    onSelectedKeysChange?.(keys);
+    return keys;
+  };
+  const toggleAll = ({ checked }: ChangeEvent) => {
+    const next = new Set(selected);
+    allRows.forEach(({ record }) => {
+      const key = keyOf(record);
+      if (!isDisabled(key)) {
+        if (checked) {
+          next.add(key);
+        } else {
+          next.delete(key);
+        }
+      }
+    });
+    const keys = commitSelection(next);
+    onSelectAll?.(checked, keys);
+  };
+  const toggleOne = (event: ChangeEvent, record: T) => {
+    const key = keyOf(record);
+    if (isDisabled(key)) return;
+    const next = new Set(selected);
+    if (event.checked) {
+      next.add(key);
+    } else {
+      next.delete(key);
+    }
+    const keys = commitSelection(next);
+    onSelect?.(record, event.checked, keys);
+  };
+  const toggleExpand = (record: T) => {
+    const key = keyOf(record);
+    const next = new Set(currentExpanded);
+    const nextExpanded = !next.has(key);
+    if (nextExpanded) next.add(key);
+    else next.delete(key);
+    if (expandedKeys === undefined) setInnerExpanded(next);
+    onExpandedKeysChange?.([...next]);
+    onExpand?.(nextExpanded, record);
+  };
+  const changeSort = (column: Column<T>) => {
+    if (!column.sorter) return;
+    const next: SortState = {
+      key: column.key,
+      order:
+        sort.key !== column.key
+          ? "asc"
+          : sort.order === "asc"
+            ? "desc"
+            : sort.order === "desc"
+              ? null
+              : "asc",
+    };
+    setSort(next);
+    if (typeof column.sorter === "function") column.sorter(next);
+    onSort?.(next);
+  };
+  const handleScroll = (event: UIEvent<HTMLDivElement>) => {
+    const target = event.currentTarget;
+    if (scrollFrameRef.current) return;
+    scrollFrameRef.current = requestAnimationFrame(() => {
+      scrollFrameRef.current = 0;
+      const body = bodyRef.current ?? target;
+      if (split && headerRef.current) headerRef.current.scrollLeft = body.scrollLeft;
+      const max = Math.max(0, body.scrollWidth - body.clientWidth);
+      const update = () => {
+        if (virtualEnabled) setScrollTop(body.scrollTop);
+        const nextPing = { left: body.scrollLeft > 0.5, right: body.scrollLeft < max - 0.5 };
+        setPing((current) =>
+          current.left === nextPing.left && current.right === nextPing.right ? current : nextPing,
+        );
+      };
+      if (virtualEnabled) flushSync(update);
+      else update();
+    });
+  };
+  useEffect(() => {
+    const body = bodyRef.current;
+    if (!body) return;
+    const measure = () => {
+      setScrollbarWidth(
+        split ? Math.max(0, body.offsetWidth - body.clientWidth - (bordered ? 1 : 0)) : 0,
+      );
+      setViewportHeight(body.clientHeight);
+      const max = Math.max(0, body.scrollWidth - body.clientWidth);
+      const nextPing = { left: body.scrollLeft > 0.5, right: body.scrollLeft < max - 0.5 };
+      setPing((current) =>
+        current.left === nextPing.left && current.right === nextPing.right ? current : nextPing,
+      );
+    };
+    measure();
+    if (typeof ResizeObserver !== "undefined") {
+      const observer = new ResizeObserver(measure);
+      observer.observe(body);
+      return () => {
+        observer.disconnect();
+        cancelAnimationFrame(scrollFrameRef.current);
+      };
+    }
+    return () => cancelAnimationFrame(scrollFrameRef.current);
+  }, [bordered, split]);
+
+  const colgroup = (headerTable = false) => (
+    <colgroup>
+      {checkable && <col style={{ width: 50 }} />}
+      {leaves.map((column) => (
+        <col
+          key={column.key}
+          style={{ width: column.width ?? 150, minWidth: column.width ?? 150 }}
+        />
+      ))}
+      {headerTable && split && <col style={{ width: scrollbarWidth }} />}
+    </colgroup>
+  );
+  const thead = (
+    <thead>
+      {headerInfo.rows.map((row, rowIndex) => (
+        <tr key={rowIndex}>
+          {checkable && rowIndex === 0 && (
+            <th
+              rowSpan={headerInfo.maxDepth}
+              className={clsx("k-table-cell-fix-left", {
+                "k-table-cell-fix-left-last": ping.left,
+              })}
+              style={{ left: 0, zIndex: 3 }}
+            >
+              <Checkbox
+                checked={allChecked}
+                indeterminate={indeterminate}
+                onChange={toggleAll}
+                disabled={!enabled.length}
+              />
+            </th>
+          )}
+          {row.map((column, index) => (
+            <th
+              key={column.key}
+              colSpan={column.headerColSpan}
+              rowSpan={column.headerRowSpan}
+              className={fixedClass(column, leafIndexOf(column))}
+              style={fixed.header[column.key]}
+              onClick={() => changeSort(column)}
+            >
+              <div className="k-table-header-col">
+                {column.renderHeader?.(column, index) ?? column.title}
+                {column.sorter && (
+                  <span className="k-table-sorter">
+                    <Icon
+                      type={Triangle}
+                      reverseFill
+                      className={clsx("k-table-sorter-up", {
+                        "k-table-sorter-active": sort.key === column.key && sort.order === "asc",
+                      })}
+                    />
+                    <Icon
+                      type={Triangle}
+                      reverseFill
+                      className={clsx("k-table-sorter-down", {
+                        "k-table-sorter-active": sort.key === column.key && sort.order === "desc",
+                      })}
+                    />
+                  </span>
+                )}
+              </div>
+            </th>
+          ))}
+          {split && rowIndex === 0 && (
+            <th
+              rowSpan={headerInfo.maxDepth}
+              className="k-table-scrollbar-patch"
+              style={{ width: scrollbarWidth }}
+            />
+          )}
+        </tr>
+      ))}
+    </thead>
+  );
+  const renderedRows = useMemo(() => {
+    const start = virtualRange.start;
+    const end = virtualRange.end;
+    return rows.slice(start, end).map((row, idx) => ({
+      ...row,
+      rowIndex: start + idx,
+    }));
+  }, [rows, virtualRange]);
+
+  const tbody = (
+    <tbody>
+      {virtualEnabled && virtualRange.offset > 0 && (
+        <tr className="k-table-virtual-spacer k-table-virtual-spacer-top" aria-hidden="true">
+          <td
+            colSpan={leaves.length + (checkable ? 1 : 0)}
+            style={{ height: virtualRange.offset }}
+          />
+        </tr>
+      )}
+      {renderedRows.map(({ record, depth, hasChildren, rowIndex }) => (
+        <tr
+          key={keyOf(record)}
+          className={virtualEnabled && rowIndex % 2 === 1 ? "k-table-row-even" : undefined}
+          style={virtualEnabled ? { height: itemHeight } : undefined}
+          onClick={(event) => {
+            if ((event.target as HTMLElement).closest(".k-checkbox, .k-table-tree-toggle")) return;
+            if (expandRowByClick && hasChildren) toggleExpand(record);
+            onRowClick?.(record, rowIndex);
+          }}
+        >
+          {checkable && (
+            <td
+              className={clsx("k-table-cell-fix-left", {
+                "k-table-cell-fix-left-last": ping.left,
+              })}
+              style={{ width: 50, left: 0 }}
+            >
+              <Checkbox
+                checked={selected.has(keyOf(record))}
+                disabled={isDisabled(keyOf(record))}
+                onChange={(event) => toggleOne(event, record)}
+              />
+            </td>
+          )}
+          {leaves.map((column, colIndex) => {
+            const cell = matrix[rowIndex]?.[colIndex] ?? { rowSpan: 1, colSpan: 1, show: true };
+            if (!cell.show) return null;
+            const value = getRecordValue(record, column.key);
+            const content =
+              column.render?.(value, record, rowIndex, column) ?? (value as ReactNode);
+            return (
+              <td
+                key={column.key}
+                rowSpan={cell.rowSpan > 1 ? cell.rowSpan : undefined}
+                colSpan={cell.colSpan > 1 ? cell.colSpan : undefined}
+                className={fixedClass(column, colIndex)}
+                style={fixed.body[column.key]}
+              >
+                {treeEnabled && colIndex === 0 ? (
+                  <div className="k-table-tree-cell" style={{ paddingLeft: depth * indentSize }}>
+                    {hasChildren ? (
+                      <button
+                        type="button"
+                        className="k-table-tree-toggle"
+                        aria-label={
+                          currentExpanded.has(keyOf(record)) ? "Collapse row" : "Expand row"
+                        }
+                        aria-expanded={currentExpanded.has(keyOf(record))}
+                        onClick={() => toggleExpand(record)}
+                      >
+                        <Icon
+                          type={currentExpanded.has(keyOf(record)) ? ChevronDown : ChevronRight}
+                        />
+                      </button>
+                    ) : (
+                      <span className="k-table-tree-indent" />
+                    )}
+                    <span className="k-table-tree-content">{content}</span>
+                  </div>
+                ) : (
+                  content
+                )}
+              </td>
+            );
+          })}
+        </tr>
+      ))}
+      {virtualEnabled &&
+        virtualRange.offset + (virtualRange.end - virtualRange.start) * itemHeight <
+          virtualRange.total && (
+          <tr className="k-table-virtual-spacer k-table-virtual-spacer-bottom" aria-hidden="true">
+            <td
+              colSpan={leaves.length + (checkable ? 1 : 0)}
+              style={{
+                height:
+                  virtualRange.total -
+                  virtualRange.offset -
+                  (virtualRange.end - virtualRange.start) * itemHeight,
+              }}
+            />
+          </tr>
+        )}
+    </tbody>
+  );
+  const tableStyle: CSSProperties = {
+    width: "100%",
+    minWidth: typeof scroll.x === "number" ? scroll.x : scroll.x || "100%",
+    tableLayout: "fixed",
+  };
+  const renderTable = (showHeader: boolean, showBody: boolean, headerTable = false) => (
+    <table style={tableStyle}>
+      {colgroup(headerTable)}
+      {showHeader && thead}
+      {showBody && tbody}
+    </table>
+  );
+  const empty = !rows.length || !visibleColumns.length;
+  return (
+    <div
+      {...rest}
+      className={clsx(
+        "k-table",
+        {
+          "k-table-striped": striped,
+          "k-table-sm": size === "small",
+          "k-table-lg": size === "large",
+          "k-table-bordered": bordered,
+          "k-table-has-footer": !!footer,
+          [`k-table-${shape}`]: shape,
+          "k-table-ping-left": ping.left,
+          "k-table-ping-right": ping.right,
+          "k-table-virtual": virtualEnabled,
+        },
+        className,
+      )}
+    >
+      {header && <div className="k-table-header">{header}</div>}
+      {split && (
+        <div className="k-table-thead" ref={headerRef} style={{ overflow: "hidden" }}>
+          {renderTable(true, false, true)}
+        </div>
+      )}
+      <div
+        className="k-table-body k-scroll"
+        ref={bodyRef}
+        style={{
+          overflowY: scroll.y ? "scroll" : "auto",
+          overflowX: data.length ? "auto" : "hidden",
+          maxHeight: scroll.y,
+        }}
+        onScroll={handleScroll}
+      >
+        {renderTable(!split, true)}
+        {empty && loading && <div className="k-table-loading-placeholder" aria-hidden="true" />}
+        {empty && !loading && <Empty description={emptyText} />}
+      </div>
+      {footer && <div className="k-table-footer">{footer}</div>}
+      {loading && <Spin />}
+    </div>
+  );
+}

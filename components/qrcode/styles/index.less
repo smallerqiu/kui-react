@@ -1,0 +1,64 @@
+.k-qrcode {
+  position: relative;
+  display: inline-block;
+  box-sizing: content-box;
+  border-radius: var(--kui-shape-round);
+  padding: 12px;
+  border: 1px solid var(--kui-color-border);
+}
+.k-qrcode-fill {
+  border-color: transparent;
+  background: var(--kui-theme-fill-bg);
+}
+.k-qrcode-plain,
+.k-qrcode-borderless {
+  border: 0;
+  padding: 0;
+}
+.k-qrcode-loading-wrapper,
+.k-qrcode-scanned-wrapper,
+.k-qrcode-expired-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  line-height: 1;
+  font-size: 14px;
+}
+.k-qrcode-expired-wrapper {
+  cursor: pointer;
+}
+.k-qrcode-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--kui-color-spin-mask);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: inherit;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+.k-qrcode-expired {
+  font-size: 14px;
+  color: var(--kui-color-text);
+  margin: 0;
+}
+
+.k-qrcode-round,
+.k-qrcode-default {
+  border-radius: var(--kui-shape-round);
+}
+.k-qrcode-circle {
+  border-radius: var(--kui-shape-circle);
+}
+.k-qrcode-square {
+  border-radius: var(--kui-shape-square);
+}

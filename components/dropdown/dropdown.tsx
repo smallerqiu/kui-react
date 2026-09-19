@@ -1,0 +1,433 @@
+import clsx from "clsx";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import Teleport from "../base/teleport";
+import Transition from "../base/transition";
+import type { DropPlacementsType, TriggerType } from "../const/types";
+import { setPlacement } from "../utils/placement";
+import { getChildren } from "../utils/react-node";
+import { DropdownContext } from "./dropdown-context";
+
+export interface DropdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "show"> {
+  trigger?: TriggerType;
+  disabled?: boolean;
+  arrow?: boolean;
+  open?: boolean;
+  defaultOpen?: boolean;
+  /** @deprecated Use `open` instead. */
+  show?: boolean;
+  placement?: DropPlacementsType;
+  target?: React.RefObject<HTMLElement | null>;
+  onOpenChange?: (opened: boolean) => void;
+  overlay?: React.ReactNode;
+  children?: React.ReactNode;
+}
+
+const Dropdown: React.FC<DropdownProps> = ({
+  trigger = "hover",
+  disabled = false,
+  arrow = false,
+  open,
+  defaultOpen = false,
+  show,
+  placement = "bottom-left",
+  target,
+  onOpenChange,
+  overlay,
+  children,
+  className = "",
+  style,
+  ...rest
+}) => {
+  const externalOpen = open ?? show;
+  const initialOpen = externalOpen ?? defaultOpen;
+  const [visible, setVisible] = useState(initialOpen);
+  const [rendered, setRendered] = useState(initialOpen);
+  const [positioned, setPositioned] = useState(false);
+  const [previousOpen, setPreviousOpen] = useState(externalOpen);
+  if (previousOpen !== externalOpen) {
+    setPreviousOpen(externalOpen);
+    if (externalOpen !== undefined) {
+      setVisible(externalOpen);
+      if (externalOpen) setRendered(true);
+    }
+  }
+
+  const localRefSelection = useRef<HTMLElement>(null);
+  const refPopper = useRef<HTMLDivElement>(null);
+
+  const [currentPlacement, setCurrentPlacement] = useState(placement);
+  const [transOrigin, setTransOrigin] = useState("bottom");
+  const [left, setLeft] = useState(0);
+  const [top, setTop] = useState(0);
+  const placementRef = useRef<string>(placement);
+  const transOriginRef = useRef("bottom");
+  const leftRef = useRef(0);
+  const topRef = useRef(0);
+
+  const showTimer = useRef<NodeJS.Timeout | null>(null);
+  const positionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const initialPositionFrameRef = useRef<number | null>(null);
+  const frameRef = useRef<number | null>(null);
+  const contextmenuPosition = useRef<{ offsetX: number; offsetY: number } | null>(null);
+
+  const refSelection = target || localRefSelection;
+  const setLocalSelection = useCallback((node: HTMLElement | null) => {
+    localRefSelection.current = node;
+  }, []);
+  const focusMenuItem = (last = false) => {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const items = Array.from(
+          refPopper.current?.querySelectorAll<HTMLElement>(
+            '[role="menuitem"]:not([aria-disabled="true"])',
+          ) || [],
+        );
+        items[last ? items.length - 1 : 0]?.focus({ preventScroll: true });
+      });
+    });
+  };
+
+  const updatePosition = useCallback(
+    (e?: MouseEvent, requestedPlacement = placement) => {
+      if (!refPopper.current) return false;
+      const targetElement = refSelection.current;
+      if (!targetElement) return false;
+      const targetRect = targetElement.getBoundingClientRect();
+
+      const position =
+        e != null
+          ? { x: e.clientX, y: e.clientY }
+          : trigger === "contextmenu"
+            ? contextmenuPosition.current
+              ? {
+                  x: targetRect.left + contextmenuPosition.current.offsetX,
+                  y: targetRect.top + contextmenuPosition.current.offsetY,
+                }
+              : null
+            : null;
+
+      placementRef.current = requestedPlacement;
+
+      setPlacement({
+        refSelection,
+        position,
+        refPopper,
+        currentPlacement: placementRef,
+        transOrigin: transOriginRef,
+        top: topRef,
+        left: leftRef,
+      });
+
+      setCurrentPlacement((current) =>
+        current === placementRef.current ? current : (placementRef.current as DropPlacementsType),
+      );
+      setTransOrigin((current) =>
+        current === transOriginRef.current ? current : transOriginRef.current,
+      );
+      setTop((current) => (current === topRef.current ? current : topRef.current));
+      setLeft((current) => (current === leftRef.current ? current : leftRef.current));
+      return true;
+    },
+    [placement, refSelection, trigger],
+  );
+
+  useLayoutEffect(() => {
+    if (!rendered || !visible || positioned) return;
+    if (updatePosition(undefined, placement)) {
+      initialPositionFrameRef.current = window.requestAnimationFrame(() => {
+        initialPositionFrameRef.current = null;
+        setPositioned(true);
+      });
+    }
+    return () => {
+      if (initialPositionFrameRef.current !== null) {
+        cancelAnimationFrame(initialPositionFrameRef.current);
+        initialPositionFrameRef.current = null;
+      }
+    };
+  }, [placement, positioned, rendered, updatePosition, visible]);
+
+  const schedulePositionUpdate = useCallback(() => {
+    if (frameRef.current !== null || typeof window === "undefined") return;
+    frameRef.current = window.requestAnimationFrame(() => {
+      frameRef.current = null;
+      updatePosition();
+    });
+  }, [updatePosition]);
+
+  useEffect(() => {
+    if (visible) {
+      positionTimer.current = setTimeout(() => updatePosition(undefined, placement), 0);
+    }
+    return () => {
+      if (positionTimer.current) clearTimeout(positionTimer.current);
+      positionTimer.current = null;
+    };
+  }, [placement, updatePosition, visible]);
+
+  useEffect(() => {
+    if (!visible) return;
+    const targetElement = refSelection.current;
+    if (!targetElement) return;
+    const observer =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(schedulePositionUpdate);
+    observer?.observe(targetElement);
+    if (refPopper.current) observer?.observe(refPopper.current);
+    window.addEventListener("resize", schedulePositionUpdate);
+    window.addEventListener("scroll", schedulePositionUpdate, true);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", schedulePositionUpdate);
+      window.removeEventListener("scroll", schedulePositionUpdate, true);
+      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
+      frameRef.current = null;
+    };
+  }, [refSelection, schedulePositionUpdate, visible]);
+
+  const outsideClick = useCallback(
+    (e: MouseEvent) => {
+      const targetElement = refSelection.current;
+      if (!refPopper.current) return;
+      const clickedEl = e.target as HTMLElement;
+
+      if (
+        (!refPopper.current.contains(clickedEl) &&
+          (!targetElement || !targetElement.contains(clickedEl))) ||
+        (trigger === "contextmenu" && !refPopper.current.contains(clickedEl))
+      ) {
+        if (externalOpen === undefined) setVisible(false);
+        onOpenChange?.(false);
+      }
+    },
+    [externalOpen, onOpenChange, refSelection, trigger],
+  );
+
+  useEffect(() => {
+    if (visible) {
+      document.addEventListener("click", outsideClick);
+    } else {
+      document.removeEventListener("click", outsideClick);
+    }
+    return () => {
+      document.removeEventListener("click", outsideClick);
+    };
+  }, [outsideClick, visible]);
+
+  const clearPopTimer = () => {
+    if (showTimer.current) {
+      clearTimeout(showTimer.current);
+      showTimer.current = null;
+    }
+  };
+
+  useEffect(
+    () => () => {
+      clearPopTimer();
+      if (positionTimer.current) clearTimeout(positionTimer.current);
+      if (initialPositionFrameRef.current !== null) {
+        cancelAnimationFrame(initialPositionFrameRef.current);
+      }
+      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
+    },
+    [],
+  );
+
+  const openChange = (opened: boolean, e?: MouseEvent) => {
+    if (!rendered && opened) {
+      setRendered(true);
+    }
+    if (externalOpen === undefined) setVisible(opened);
+    onOpenChange?.(opened);
+    if (opened) {
+      setPositioned(false);
+      if (trigger === "contextmenu" && e) {
+        const rect = refSelection.current?.getBoundingClientRect();
+        if (rect) {
+          contextmenuPosition.current = {
+            offsetX: e.clientX - rect.left,
+            offsetY: e.clientY - rect.top,
+          };
+        }
+      }
+      if (positionTimer.current) clearTimeout(positionTimer.current);
+      positionTimer.current = setTimeout(() => updatePosition(e, placement), 0);
+    } else if (trigger === "contextmenu") {
+      contextmenuPosition.current = null;
+    }
+  };
+
+  useEffect(() => {
+    if (!visible) return;
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (externalOpen === undefined) setVisible(false);
+      onOpenChange?.(false);
+      refSelection.current?.focus({ preventScroll: true });
+    };
+    document.addEventListener("keydown", handleEscape, true);
+    return () => document.removeEventListener("keydown", handleEscape, true);
+  }, [externalOpen, onOpenChange, refSelection, visible]);
+
+  const mouseEnterEvent = () => {
+    if (disabled) return;
+    if (trigger === "hover") {
+      clearPopTimer();
+      openChange(true);
+    }
+  };
+
+  const mouseLeaveEvent = () => {
+    if (disabled) return;
+    if (trigger === "hover") {
+      clearPopTimer();
+      showTimer.current = setTimeout(() => {
+        openChange(false);
+      }, 300);
+    }
+  };
+
+  const clickEvent = () => {
+    if (disabled) return;
+    if (trigger === "click") {
+      openChange(!visible);
+    }
+  };
+
+  const contextmenuEvent = (e: React.MouseEvent) => {
+    if (disabled) return;
+    if (trigger === "contextmenu") {
+      e.preventDefault();
+      openChange(true, e.nativeEvent);
+      focusMenuItem();
+    }
+  };
+
+  const childList = getChildren(children);
+  type TriggerElementProps = React.HTMLAttributes<HTMLElement> & {
+    ref?: React.Ref<HTMLElement>;
+  };
+  const candidate = childList.length === 1 ? childList[0] : <span>{childList}</span>;
+  const firstChild = React.isValidElement<TriggerElementProps>(candidate) ? candidate : null;
+
+  const triggerProps: React.HTMLAttributes<HTMLElement> = {};
+  if (!target) {
+    triggerProps.onClick = (e: React.MouseEvent<HTMLElement>) => {
+      clickEvent();
+      if (firstChild?.props.onClick) {
+        firstChild.props.onClick(e);
+      }
+    };
+    triggerProps.onMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
+      mouseEnterEvent();
+      if (firstChild?.props.onMouseEnter) {
+        firstChild.props.onMouseEnter(e);
+      }
+    };
+    triggerProps.onMouseLeave = (e: React.MouseEvent<HTMLElement>) => {
+      mouseLeaveEvent();
+      if (firstChild?.props.onMouseLeave) {
+        firstChild.props.onMouseLeave(e);
+      }
+    };
+    triggerProps.onContextMenu = (e: React.MouseEvent<HTMLElement>) => {
+      contextmenuEvent(e);
+      if (firstChild?.props.onContextMenu) {
+        firstChild.props.onContextMenu(e);
+      }
+    };
+    triggerProps.onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+      if (e.key === "Escape" && visible) {
+        e.preventDefault();
+        openChange(false);
+      } else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+        openChange(true);
+        focusMenuItem(e.key === "ArrowUp");
+      } else if (trigger === "click" && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault();
+        openChange(!visible);
+      }
+      firstChild?.props.onKeyDown?.(e);
+    };
+    triggerProps["aria-haspopup"] = "menu";
+    triggerProps["aria-expanded"] = visible;
+  }
+
+  const triggerNode = target ? (
+    candidate
+  ) : firstChild ? (
+    React.cloneElement(firstChild, {
+      ref: setLocalSelection,
+      ...triggerProps,
+    })
+  ) : (
+    <span ref={setLocalSelection} {...triggerProps}>
+      {candidate}
+    </span>
+  );
+
+  const popperClasses = clsx("k-dropdown", { "k-dropdown-has-arrow": arrow }, className);
+
+  const overlayNode =
+    rendered && overlay ? (
+      <Transition show={visible} name="k-dropdown" nodeRef={refPopper} appear>
+        <div
+          ref={refPopper}
+          style={
+            {
+              left: `${left}px`,
+              top: `${top}px`,
+              transformOrigin: transOrigin,
+              ...style,
+              visibility: positioned ? style?.visibility : "hidden",
+            } as React.CSSProperties
+          }
+          className={popperClasses}
+          {...({ "k-placement": currentPlacement } as Record<string, string>)}
+          onMouseEnter={clearPopTimer}
+          onMouseLeave={mouseLeaveEvent}
+          {...rest}
+        >
+          <div className="k-dropdown-content">
+            <div className="k-dropdown-body">{overlay}</div>
+            {arrow && (
+              <div className="k-dropdown-arrow">
+                <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
+                  <path
+                    d="M24,0.97087 L24,1.97087 C20,1.97087 18.5,2.97087 16.5,4.97087 C14.5,6.97087 14,7.97087 12,7.97087 C10,7.97087 9.5,6.97087 7.5,4.97087 C5.5,2.97087 4,1.97087 0,1.97087 L0,0.97087 L24,0.97087 Z"
+                    id="ot"
+                  />
+                  <path
+                    d="M24,0 L24,1 C20.032328,1 18.1576594,1.985435 16.1576594,3.985435 C14.1576594,5.985435 13.3847825,7 12,7 C10.6152175,7 9.81306952,5.985435 7.81306952,3.985435 C5.81306952,1.985435 4.0114261,1 0,1 L0,0 L24,0 Z"
+                    id="in"
+                    stroke="currentcolor"
+                  />
+                </svg>
+              </div>
+            )}
+          </div>
+        </div>
+      </Transition>
+    ) : null;
+
+  return (
+    <DropdownContext.Provider
+      value={{
+        onMouseEnter: mouseEnterEvent,
+        onMouseLeave: mouseLeaveEvent,
+        clearPopTimer,
+        menuSelected: () => {
+          openChange(false);
+          window.requestAnimationFrame(() => refSelection.current?.focus({ preventScroll: true }));
+        },
+      }}
+    >
+      {triggerNode}
+      <Teleport to="body">{overlayNode}</Teleport>
+    </DropdownContext.Provider>
+  );
+};
+
+export default Dropdown;

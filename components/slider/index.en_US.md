@@ -1,0 +1,59 @@
+# Slider
+
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
+Slider input, displaying current value and optional range.
+
+## When to Use
+
+When users need to select within a numerical range/custom range, it can be continuous or discrete values.
+
+## Examples
+
+[Basic Usage](./demo/basic.tsx)
+
+- Basic usage.
+
+[Size/Custom](./demo/size.tsx)
+
+- `size` can control the size of the handle.
+
+[Controlled](./demo/with-number.tsx)
+
+- Controlled and synchronized with Input.
+
+[Custom Tooltip](./demo/formatter.tsx)
+
+- Use `tipFormatter` to set the display format of the Tooltip. When `tooltipVisible` is true, the Tooltip will always be shown; when false, it will never be shown, even during dragging or hovering.
+
+[With Labels](./demo/marks.tsx?show=vertical)
+
+- Use the `marks` attribute to mark slider ticks, and use `value` to specify the slider position.
+
+[Vertical](./demo/vertical.tsx?show=vertical)
+
+- Vertical Slider.
+
+[Reverse](./demo/reverse.tsx?show=vertical)
+
+- Set `reverse` to invert the slider.
+
+## Slider API
+
+| Property       | Description                                                                                       | Type                                | Default |
+| -------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------- | ------- |
+| value          | current value                                                                          | number, number[]                    | -       |
+| min            | Minimum value                                                                                     | number                              | 0       |
+| max            | Maximum value                                                                                     | number                              | 100     |
+| range          | Whether to support sliding on both sides simultaneously                                           | boolean                             | false   |
+| disabled       | Whether the slider is disabled                                                                    | boolean                             | false   |
+| readOnly       | Whether the slider is read-only                                                                   | boolean                             | false   |
+| step           | Step size, must be greater than 0 and divisible by (max - min)                                    | number                              | 1       |
+| tipFormatter   | Set Tooltip display format, defaults to current value                                             | (value: number) => string           | number  |
+| vertical       | Whether to set direction to vertical                                                              | boolean                             | false   |
+| marks          | Scale marks, key type must be number and value in closed interval [min, max]                      | Object                              | -       |
+| included       | Effective when marks is not empty object, true means inclusive relationship, false means parallel | boolean                             | true    |
+| tooltipVisible | When true, Tooltip will always display; otherwise never display, even when dragging and hovering  | boolean                             | false   |
+| reverse        | Sort in reverse order                                                                             | boolean                             | false   |
+| size           | The size of Slider                                                                                | string                              | -       |
+| onChange       | Triggered when Slider value changes, passes the changed value as parameter                        | (value: number \| number[]) => void | -       |

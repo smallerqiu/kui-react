@@ -1,0 +1,31 @@
+name: Bug report / 问题反馈
+description: Report a reproducible React KUI issue.
+body:
+  - type: input
+    id: versions
+    attributes:
+      label: Versions / 版本
+      description: react-kui、react、react-dom 的版本。
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment / 环境
+      description: 浏览器、操作系统、构建工具，以及是否使用 SSR。
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction / 最小复现
+      description: 提供可访问的复现链接或最小代码，以及复现步骤；请勿包含账号、密钥或私有数据。
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior / 预期与实际结果
+      description: 涉及布局或动画时可附截图或录屏。
+    validations:
+      required: true

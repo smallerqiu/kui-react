@@ -1,0 +1,116 @@
+# Form
+
+A form with data collection, validation, and submission functions, including checkboxes, radio buttons, input fields, dropdown selectors, and other elements.
+
+## When to Use
+
+- Used to create an entity or collect information.
+- When input data types need to be validated.
+
+## Examples
+
+In `Modal` or `Drawer`, if you need to reset the form when opening, use the `ref` after the panel content has rendered:
+
+```tsx
+import { useRef, useState } from "react";
+import { Button, Form, Modal, type FormExpose } from "react-kui";
+
+function Demo() {
+  const [open, setOpen] = useState(false);
+  const formRef = useRef<FormExpose>(null);
+
+  const openModal = () => {
+    setOpen(true);
+    // Reset after the panel content has rendered
+    requestAnimationFrame(() => formRef.current?.reset());
+  };
+
+  return (
+    <>
+      <Button onClick={openModal}>Open</Button>
+      <Modal open={open} onOpenChange={setOpen}>
+        <Form ref={formRef} model={{}} />
+      </Modal>
+    </>
+  );
+}
+```
+
+[Typical Form](./demo/basic.tsx?show=vertical)
+
+- Includes various form items, such as input fields, selectors, switches, radio buttons, checkboxes, etc.
+
+[Alignment](./demo/align.tsx?show=vertical)
+
+- Choose the best label alignment based on specific goals and constraints.
+
+[Form Validation](./demo/valid.tsx?show=vertical)
+
+- Help users discover and correct errors as early as possible, while preventing mistakes.
+
+[Auxiliary Validation](./demo/length.tsx?show=vertical)
+
+- Validate certain data types.
+
+[Multi-form Linkage](./demo/withmodal.tsx?show=vertical)
+
+- Outside the Form, submit the form via `submit` from the outside. Conversely, it's recommended to use `<Button htmlType="submit" />` to call the native submission logic.
+
+[Custom Validation Rules](./demo/customvalid.tsx?show=vertical)
+
+- Use custom validation rules to complete form validation.
+
+[Dynamic Validation Rules](./demo/dynamicvalid.tsx?show=vertical)
+
+- Execute different validation rules based on different conditions.
+
+## Form API
+
+| Property   | Description                                                                                           | Type                                     | Default    |
+| ---------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------- | ---------- |
+| model      | Form data object; Form manages it internally when omitted                                             | Object                                   | -          |
+| rules      | Form validation rules                                                                                 | FormRules                                | -          |
+| name       | Form name, will be used as the id prefix for form fields                                              | string                                   | -          |
+| labelCol   | Label layout, same as the `<Col>` component, set span offset values, such as {span: 3, offset: 12}    | {span:number,offset:number}              | -          |
+| wrapperCol | Control layout, same as the `<Col>` component, set span offset values, such as {span: 15, offset: 12} | {span:number,offset:number}              | -          |
+| theme      | Child control theme                                                                                   | ThemeType                                | -          |
+| size       | Child control size                                                                                    | SizeType                                 | -          |
+| layout     | Form layout                                                                                           | horizontal \| vertical \| inline        | horizontal |
+| shape      | Child control shape                                                                                   | ShapeType                                | -          |
+| disabled   | Whether to disable the form                                                                           | boolean                                  | false      |
+| readOnly   | Whether the form and its child controls are read-only                                                 | boolean                                  | false      |
+| colon      | Whether to display a colon after labels                                                               | boolean                                  | true       |
+| onReset    | Called after resetting all field values and validation results                                        | () => void                               | -          |
+| onSubmit   | Called after submission validation completes                                                          | (result: { valid: boolean }) => void      | -          |
+| onChange   | Returns an immutably updated model when a field changes                                               | (model: Record<string, unknown>) => void | -          |
+
+## Form Expose API
+
+| Property | Description                                                                      | Type                                                                                   | Default |
+| -------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ------- |
+| test     | Method for validating a single field in a form                                   | (key: string, trigger?: change \| blur) => Promise&lt;boolean&gt; \| undefined           | -       |
+| reset    | Reset the entire form, clearing all field values and removing validation results | ()=>void                                                                               | -       |
+| submit   | Submit the form and validate                                                     | () => Promise&lt;void&gt;                                                               | -       |
+| validate | Validate the form                                                                | (callback?: (result: { valid: boolean }) => void) => Promise&lt;{ valid: boolean }&gt;  | -       |
+
+## FormItem API
+
+| Property | Description                                                                      | Type       | Default |
+| -------- | -------------------------------------------------------------------------------- | ---------- | ------- |
+| prop     | Corresponds to the field in the form domain model. Required for form validation  | string     | -       |
+| label    | Label text                                                                       | ReactNode  | -       |
+| rules    | Form validation rules                                                            | FormRule[] | -       |
+| colon    | Whether to display a colon after the label; inherits the Form setting when unset | boolean    | -       |
+
+## rules API
+
+| Property  | Description                                                                                                                                                                                    | Type                                                                                                            | Default |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------- |
+| required  | Whether it is a required field                                                                                                                                                                 | boolean                                                                                                         | false   |
+| message   | Prompt message when validation fails                                                                                                                                                           | string                                                                                                          | -       |
+| validator | Custom validation method. Supports the callback form and async functions                                                                                                                       | (rule: FormRule, value: unknown, callback: (error?: Error \| string) => void) => void \| Promise&lt;unknown&gt; | -       |
+| type      | Data type validation. Provides three validation methods: `mobile` (phone), `mail` (email), `number` (numeric type judgment)                                                                    | string                                                                                                          | -       |
+| pattern   | Custom regular expression validation. For example, password strength containing numbers, letters, and special symbols can be written as `/(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{6,20}/` | string                                                                                                          | -       |
+| trigger   | When this rule runs. Defaults to `change` when unset                                                                                                                                           | change, blur or an array of them                                                                                | -       |
+| min       | Minimum field length validation                                                                                                                                                                | number                                                                                                          | -       |
+| max       | Maximum field length validation                                                                                                                                                                | number                                                                                                          | -       |

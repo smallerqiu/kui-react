@@ -1,0 +1,82 @@
+# DatePicker
+
+`value` initializes the component and synchronizes later external changes. User interaction updates the local value and emits `onChange`, even when `value` is a fixed literal or `onChange` only observes changes. Use `value={state}` with `onChange={setState}` to synchronize parent state. A rerender with the same value does not reset local edits; arrays should be updated immutably.
+
+Control for inputting or selecting a date.
+
+## When to Use
+
+When the user needs to input a date, they can click the standard input box to pop up a date panel for selection.
+
+## Examples
+
+[Basic Usage](./demo/basic.tsx)
+
+- Select or manually enter a date. Use `value` and `onChange` to control the date value.
+
+[Output Type](./demo/value-type.tsx)
+
+- Specify the output type via `valueType`.
+
+[Date Range](./demo/range.tsx)
+
+- Supports date and time range selection. It's recommended to use `startDate` and `endDate` for values.
+
+[Disabled Dates and Times](./demo/disabled-date.tsx)
+
+- Use `disabledDate` and `disabledTime` to disable selecting specific dates and times, respectively.
+
+[Disabled and Non-editable](./demo/disabled.tsx)
+
+- The disabled, non-editable, and non-clearable states of the picker.
+
+[Preset Ranges](./demo/presets.tsx)
+
+- You can preset common date ranges to improve user experience.
+
+[Weird Theme](./demo/theme.tsx)
+
+- Strange things.
+
+[Size](./demo/size.tsx)
+
+- Use `small` and `large` to set the size of the picker.
+
+[Multi-language](./demo/lang.tsx)
+
+- DatePicker supports multiple languages,Default English, depending on `dayjs`.
+
+## API
+
+| Property          | Description                                                                                                                                            | Type                                                                                | Default     |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- | ----------- |
+| value             | date or time value                                                                                                                          | DatePickerInput, DatePickerInput[]                                                  | -           |
+| open              | Controlled dropdown visibility                                                                                                                         | boolean                                                                             | -           |
+| defaultOpen       | Initial dropdown visibility in uncontrolled mode                                                                                                       | boolean                                                                             | false       |
+| startDate         | Start value for range selection                                                                                                                        | DatePickerInput                                                                     | -           |
+| endDate           | End value for range selection                                                                                                                          | DatePickerInput                                                                     | -           |
+| mode              | Date picker mode                                                                                                                                       | DatePickerModeType                                                                  | date        |
+| disabled          | Whether the component is disabled                                                                                                                      | boolean                                                                             | false       |
+| readOnly          | Whether the component is read-only                                                                                                                     | boolean                                                                             | false       |
+| size              | Button size, optional values `small`, `large`                                                                                                          | string                                                                              | -           |
+| clearable         | Whether to show the clear icon                                                                                                                         | boolean                                                                             | true        |
+| editable          | Whether it is editable                                                                                                                                 | boolean                                                                             | true        |
+| placeholder       | Placeholder text                                                                                                                                       | string, string[]                                                                    | -           |
+| disabledDate      | Disabled dates                                                                                                                                         | (date: Date) => boolean                                                             | -           |
+| disabledTime      | Disabled times                                                                                                                                         | (date: Date) => boolean                                                             | -           |
+| format            | Set the date format. When an array, supports multiple format matches, displayed according to the first one. Configuration reference http://day.js.org/ | string                                                                              | YYYY-MM-DD  |
+| theme             | When theme='fill', presents a fill theme                                                                                                               | string                                                                              | fill        |
+| dateIcon          | Custom icon                                                                                                                                            | string                                                                              | -           |
+| shape             | Component shape                                                                                                                                        | ShapeType                                                                           | -           |
+| bordered          | Whether to display the border                                                                                                                          | boolean                                                                             | true        |
+| placement         | Direction displayed when pulled down                                                                                                                   | string                                                                              | bottom-left |
+| valueType         | Output value type                                                                                                                                      | `date \| timestamp \| unix \| string`                                               | string      |
+| presets           | Preset dates                                                                                                                                           | DatePickerPreset[]                                                                  | -           |
+| header            | Custom panel header content or render function                                                                                                         | ReactNode, (api) => ReactNode                                                       | -           |
+| footer            | Custom panel footer content or render function                                                                                                         | ReactNode, (api) => ReactNode                                                       | -           |
+| onChange          | Callback after the value changes                                                                                                                       | (date: DatePickerOutput \| DatePickerOutput[], dateStr: string \| string[]) => void | -           |
+| onStartDateChange | Triggered when the range start date changes                                                                                                            | (value: DatePickerOutput) => void                                                   | -           |
+| onEndDateChange   | Triggered when the range end date changes                                                                                                              | (value: DatePickerOutput) => void                                                   | -           |
+| onOpenChange      | Triggered when the dropdown box expands or collapses                                                                                                   | (opened: boolean) => void                                                           | -           |
+| onClear           | Triggered when the clear button is clicked                                                                                                             | () => void                                                                          | -           |
+| panelOnly         | Render only the picker panel, without a trigger or portal                                                                                              | boolean                                                                             | false       |

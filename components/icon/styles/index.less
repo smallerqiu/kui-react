@@ -1,29 +1,21 @@
-@keyframes loadloop {
-  0% {
-    transform: rotate(0)
-  }
-  50% {
-    transform: rotate(180deg)
-  }
-  to {
-    transform: rotate(1turn)
-  }
-}
+@import "../../styles/motion.less";
 
 .k-load-loop {
-  animation: loadloop 1s linear infinite;
+  animation: k-motion-rotate 1s linear infinite;
 }
 
 .k-icon {
-  display: inline-block;
+  display: inline-flex;
   font-style: normal;
   line-height: 0;
   text-align: center;
   text-transform: none;
-  vertical-align: -0.125em;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  svg {
+    margin: auto;
+  }
   * {
     line-height: 1;
     display: inline-block;

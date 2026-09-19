@@ -1,0 +1,64 @@
+import { Heart, Mail, Settings } from "kui-icons";
+import { useState } from "react";
+import { Menu, type MenuOptionsProps } from "react-kui";
+const items: MenuOptionsProps[] = [
+  {
+    title: "Navigation One",
+    key: "sub1",
+    icon: Mail,
+    children: [
+      { title: "Option 1", key: "1-1" },
+      { title: "Option 2", key: "1-2" },
+      { title: "Option 3", key: "1-3" },
+      { title: "Option 4", key: "1-4" },
+    ],
+  },
+  {
+    title: "Navigation Two",
+    key: "sub2",
+    icon: Heart,
+    children: [
+      { title: "Option 5", key: "2-1" },
+      { title: "Option 6", key: "2-2" },
+      {
+        title: "Submenu",
+        key: "sub2-1",
+        children: [
+          { title: "Option 7", key: "2-1-1" },
+          { title: "Option 8", key: "2-1-2" },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Navigation Three",
+    key: "sub3",
+    icon: Settings,
+    children: [
+      { title: "Option 9", key: "3-1" },
+      { title: "Option 10", key: "3-2" },
+      { title: "Option 11", key: "3-3" },
+      { title: "Option 12", key: "3-4" },
+    ],
+  },
+];
+export default function App() {
+  const [current, setCurrent] = useState(["1-1"]),
+    [openKeys, setOpenKeys] = useState(["sub1"]);
+  return (
+    <div style={{ width: 256 }}>
+      <Menu
+        value={current}
+        onChange={setCurrent}
+        openKeys={openKeys}
+        onOpenChange={(keys) => {
+          setOpenKeys(keys);
+          console.log(keys);
+        }}
+        accordion
+        mode="inline"
+        items={items}
+      />
+    </div>
+  );
+}

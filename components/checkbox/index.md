@@ -1,18 +1,62 @@
-### API
-| 属性          | 说明                     | 类型              | 默认值 |
-|---------------|--------------------------|-------------------|--------|
-| checked       | 是否选中状态             | boolean           | false  |
-| label         | 显示的文字               | string 、 number  | -      |
-| disabled      | 是否禁用当前项           | boolean           | false  |
-| indeterminate | 组合辅助选项控制半选状态 | boolean           | false  |
-| onChange      | 在选项状态发生改变时回调 | function(e:Event) | event  |
-| value         | 组合使用时表示的值       | string、number    | -      |
-### Checkbox.Group API
-| 属性     | 说明                                       | 类型                                              | 默认值  |
-|----------|--------------------------------------------|---------------------------------------------------|---------|
-| value    | 用于设置当前选中的值                       | array                                             | false   |
-| disabled | 是否禁用组件                               | boolean                                           | false   |
-| onChange | 在选项状态发生改变时触发，返回当前选中的值 | function                                          | [value] |
-| options  | 可以指定子项 `checkbox`                    | array <{label:string/number,value:string/number}> | -       |
+# Checkbox 多选框
 
-#### Option   
+`value` 用于初始化组件，并同步后续的外部值变化。用户操作会更新内部值并触发 `onChange`，即使传入固定值或 `onChange` 仅用于监听也能交互。需要父子同步时使用 `value={state}` 配合 `onChange={setState}`。相同值的重新渲染不会重置内部编辑；数组值请使用新数组更新。
+
+多选框
+
+## 何时使用
+
+- 在一组可选项中进行多项选择时；
+- 单独使用可以表示两种状态之间的切换，和 switch 类似。区别在于切换 switch 会直接触发状态改变，而 checkbox 一般用于状态标记，需要和提交操作配合。
+
+## 代码演示
+
+[单选](./demo/basic.tsx)
+
+- 单独使用时，通过 `checked` 和 `onChange` 控制选中状态。
+
+[多选](./demo/group.tsx)
+
+- 可以使用 options 属性来设置选项, 也可以使用子组件来设置选项。
+
+[组合布局](./demo/group-layout.tsx)
+
+- 组合布局
+
+[可不用 / 可控](./demo/disabled.tsx)
+
+- 通过 `disabled` 设置不可用
+
+[全选](./demo/check-all.tsx)
+
+- 全选组合
+
+## API
+
+| 属性           | 说明                     | 类型                              | 默认值  |
+| -------------- | ------------------------ | --------------------------------- | ------- |
+| checked        | 受控的选中状态           | boolean                           | -       |
+| defaultChecked | 非受控模式的初始选中状态 | boolean                           | false   |
+| label          | 显示的内容               | ReactNode                         | -       |
+| value          | 结合使用时表示的值       | unknown                           | -       |
+| disabled       | 是否禁用当前项           | boolean                           | false   |
+| readOnly       | 是否只读当前项           | boolean                           | false   |
+| indeterminate  | 组合辅助选项控制半选状态 | boolean                           | false   |
+| theme          | 组件呈现主题             | ThemeType                         | fill    |
+| valueType      | 独立使用时的输出值类型   | 'string' \| 'number' \| 'boolean' | boolean |
+| onChange       | 在选项状态发生改变时回调 | (e: ChangeEvent) => void          | -       |
+
+## CheckboxGroup API
+
+| 属性         | 说明                                             | 类型                                  | 默认值     |
+| ------------ | ------------------------------------------------ | ------------------------------------- | ---------- |
+| value        | 的当前选中值                                 | (string \| number)[]                  | -          |
+| disabled     | 是否禁用组件                                     | boolean                               | false      |
+| readOnly     | 是否只读组件                                     | boolean                               | false      |
+| onChange     | 在选项状态发生改变时触发，返回当前选中的项和状态 | (value: (string \| number)[]) => void | -          |
+| direction    | 布局方向                                         | 'horizontal' \| 'vertical'            | horizontal |
+| options      | 可以指定子项 `checkbox`                          | CheckboxOption[]                      | -          |
+| theme        | 组件呈现主题                                     | ThemeType                             | fill       |
+| size         | 设置复选框的大小                                 | SizeType                              | -          |
+
+`options` 中每一项还支持 `disabled` 和 `readOnly`。

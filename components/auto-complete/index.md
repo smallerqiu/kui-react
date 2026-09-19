@@ -1,0 +1,56 @@
+# AutoComplete 自动完成
+
+`value` 用于初始化组件，并同步后续的外部值变化。用户操作会更新内部值并触发 `onChange`，即使传入固定值或 `onChange` 仅用于监听也能交互。需要父子同步时使用 `value={state}` 配合 `onChange={setState}`。相同值的重新渲染不会重置内部编辑；数组值请使用新数组更新。
+
+根据输入内容提供候选项，保留自由输入能力。
+
+## 代码演示
+
+[基础用法](./demo/basic.tsx)
+
+- 支持自由输入、过滤和键盘选择。
+
+[受控值](./demo/controlled.tsx)
+
+- 使用 `value` 和 `onChange` 从外部控制输入内容。
+
+[自定义过滤](./demo/filter.tsx)
+
+- 使用 `filterOption` 定义候选项匹配规则。
+
+[尺寸、主题与形状](./demo/appearance.tsx)
+
+- 展示不同 `size`、`theme` 和 `shape` 组合。
+
+[空输入时展示](./demo/show-on-empty.tsx)
+
+- 默认空输入聚焦时不展开，设置 `showOnEmpty` 后可展示全部建议。
+
+[远程搜索](./demo/remote.tsx)
+
+- 监听 `onSearch` 获取远程建议，并通过 `loading` 展示加载状态。
+
+## AutoComplete API
+
+| 属性         | 说明                       | 类型                                         | 默认值  |
+| ------------ | -------------------------- | -------------------------------------------- | ------- |
+| value        | 输入值                 | string                                       | -       |
+| options      | 候选项                     | (string \| AutoCompleteOption)[]             | []      |
+| open         | 受控展开状态               | boolean                                      | -       |
+| defaultOpen  | 初始展开状态               | boolean                                      | false   |
+| showOnEmpty  | 空输入聚焦时展示建议       | boolean                                      | false   |
+| clearable    | 有值且悬停时显示清除按钮   | boolean                                      | false   |
+| disabled     | 禁用                       | boolean                                      | false   |
+| readOnly     | 只读，不可输入、清空或展开 | boolean                                      | false   |
+| placeholder  | 占位文本                   | string                                       | -       |
+| loading      | 是否正在加载               | boolean                                      | false   |
+| loadingText  | 加载提示文字               | string                                       | 加载中  |
+| size         | 尺寸                       | 'small' \| 'medium' \| 'large'               | medium  |
+| theme        | 主题                       | 'fill' \| 'outline' \| 'plain'               | fill    |
+| shape        | 形状                       | 'circle' \| 'square' \| 'round' \| 'default' | default |
+| filterOption | 是否过滤或自定义过滤       | boolean \| ((input, option) => boolean)      | true    |
+| onChange     | 输入变化                   | (value: string) => void                      | -       |
+| onClear      | 点击清除按钮               | () => void                                   | -       |
+| onSearch     | 搜索时触发                 | (value: string) => void                      | -       |
+| onSelect     | 选择候选项                 | (value, option) => void                      | -       |
+| onOpenChange | 展开状态变化               | (open: boolean) => void                      | -       |

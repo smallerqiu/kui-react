@@ -1,0 +1,18 @@
+import { Minus, Plus } from "kui-icons";
+import { useState } from "react";
+import { Button, ButtonGroup, Progress } from "react-kui";
+export default function App() {
+  const [percent, setPercent] = useState(30),
+    change = (step: number) => setPercent((value) => Math.max(0, Math.min(100, value + step)));
+  return (
+    <>
+      <ButtonGroup>
+        <Button onClick={() => change(-5)} icon={Minus} />
+        <Button onClick={() => change(5)} icon={Plus} />
+      </ButtonGroup>
+      <Progress percent={percent} style={{ width: 300, marginBottom: 30 }} />
+      <Progress percent={percent} type="circle" />
+      <Progress percent={percent} type="dashboard" />
+    </>
+  );
+}

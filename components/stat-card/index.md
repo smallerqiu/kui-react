@@ -1,0 +1,73 @@
+# StatCard 统计卡片
+
+统计指标,可设置标题 , 数值 , 描述
+
+## 何时使用
+
+可在 BI / Dashboard 场景 使用 , 偏业务后台，直观
+
+## 代码演示
+
+[卡片展示](./demo/card.tsx?show=vertical)
+
+- 用于 Dashboard 场景 , 结合 `Grid` 可以很好的适配多种设备.
+
+[趋势信息](./demo/trend.tsx?show=vertical)
+
+- 通过 `trend` 展示趋势或补充信息，使用 `trendStatus` 设置状态颜色；部分数据没有趋势时，卡片在 Grid 中仍保持等高。
+
+[基本用法](./demo/basic.tsx)
+
+- 只展示数字
+
+[组合展示](./demo/with-card.tsx)
+
+- 结合`Card` 组件展示更多自定义数据
+
+## API
+
+| 属性           | 说明                      | 类型                       | 默认值    |
+| -------------- | ------------------------- | -------------------------- | --------- |
+| title          | 卡片标题                  | ReactNode                  | -         |
+| items          | 展示的数据                | StatNumberItem[]           | []        |
+| precision      | 数值精度                  | number                     | 0         |
+| statNumberType | 数值变化类型              | `rollup, countup`          | 'countup' |
+| separator      | 分隔符                    | string                     | -         |
+| reverse        | 数值/数值描述是否反相排列 | boolean                    | false     |
+| bordered       | 是否显示边框              | boolean                    | false     |
+| theme          | 主题                      | `fill \| outline \| plain` | fill      |
+| shape          | 形状                      | ShapeType                  | round     |
+| size           | 尺寸                      | SizeType                   | medium    |
+| prefix         | 所有数值的默认前置内容    | ReactNode                  | -         |
+| suffix         | 所有数值的默认后置内容    | ReactNode                  | -         |
+
+### items Options
+
+| 属性            | 说明                           | 类型                                      | 默认值  |
+| --------------- | ------------------------------ | ----------------------------------------- | ------- |
+| key             | 数据唯一标识，用于保持动画状态 | string \| number                          | -       |
+| value           | 数值                           | number                                    | -       |
+| desc            | 数值描述                       | ReactNode                                 | -       |
+| trend           | 趋势或补充信息                 | ReactNode                                 | -       |
+| trendStatus     | 趋势状态                       | `default \| success \| danger \| warning` | default |
+| prefix          | 数值的前置内容                 | ReactNode                                 | -       |
+| suffix          | 数值的后置内容                 | ReactNode                                 | -       |
+| precision       | 数值精度                       | number                                    | 0       |
+| separator       | 分隔符                         | string                                    | -       |
+| duration        | 数值动态展示时间(秒)           | number                                    | 1.2     |
+| autoAnimate     | 当目标可见时触发动画           | boolean                                   | true    |
+| autoAnimateOnce | 自动动画触发器仅运行一次动画   | boolean                                   | true    |
+
+## StatNumber API
+
+| 属性            | 说明                         | 类型              | 默认值    |
+| --------------- | ---------------------------- | ----------------- | --------- |
+| value           | 数值                         | number            | 0         |
+| duration        | 数值动态展示时间(秒)         | number            | 1.2       |
+| prefix          | 数值的前置内容               | string            | -         |
+| suffix          | 数值的后置内容               | string            | -         |
+| precision       | 数值精度                     | number            | 0         |
+| type            | 数值变化类型                 | `rollup, countup` | 'countup' |
+| separator       | 分隔符                       | string            | -         |
+| autoAnimate     | 当目标可见时触发动画         | boolean           | true      |
+| autoAnimateOnce | 自动动画触发器仅运行一次动画 | boolean           | true      |
