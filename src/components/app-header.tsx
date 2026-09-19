@@ -1,5 +1,5 @@
 import Color from "color";
-import { ArrowUpRight, Languages, LogoGithub, LogoKui, Moon, Search, Sun } from "kui-icons";
+import { ArrowUpRight, Languages, LogoGithub, Moon, Search, Sun } from "kui-icons";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   Button,
@@ -53,10 +53,10 @@ export default function AppHeader() {
   const { lang, changeLang, t } = useDocs();
   const [query, setQuery] = useState<string | number>("");
   const [themeColor, setThemeColor] = useState(
-    () => localStorage.getItem("themeColor") || DEFAULT_THEME_COLOR
+    () => localStorage.getItem("themeColor") || DEFAULT_THEME_COLOR,
   );
   const [themeMode, setThemeMode] = useState(
-    () => document.documentElement.getAttribute("theme-mode") || "light"
+    () => document.documentElement.getAttribute("theme-mode") || "light",
   );
 
   const withLang = (path: string) => `${path}${lang === "en" ? "-en" : ""}`;
@@ -90,7 +90,7 @@ export default function AppHeader() {
         ],
       },
     ],
-    [t]
+    [t],
   );
   const activeTopMenu =
     location.pathname === "/"
@@ -127,7 +127,7 @@ export default function AppHeader() {
     <Header className="header">
       <div className="header-inner">
         <div className="logo" onClick={() => navigate("/")}>
-          <Icon type={LogoKui} />
+          <img src="/favicon.svg" className="face" />
           <span className="wrap-name">
             <span className="name">Kui React</span>
             <span className="ver">v {version}</span>
@@ -179,7 +179,7 @@ export default function AppHeader() {
               icon={themeMode === "dark" ? Sun : Moon}
               onClick={(event) =>
                 theme.setThemeMode(event.nativeEvent, (isDark) =>
-                  setThemeMode(isDark ? "dark" : "light")
+                  setThemeMode(isDark ? "dark" : "light"),
                 )
               }
             />

@@ -1,11 +1,10 @@
-import { KImage, Switch, Space } from "react-kui";
-export default function SpecialComponents() {
+import { KImage as Image, Space, Switch } from "react-kui";
+
+export default function ComponentNamesDemo() {
   return (
-    <Space vertical>
-      <code>Switch</code>
-      <Switch />
-      <code>Image</code>
-      <KImage src="https://cdn.chuchur.com/img/chick.jpeg" width={50} />
+    <Space>
+      <Switch defaultChecked aria-label="Example switch" />
+      <Image src="https://cdn.chuchur.com/img/chick.jpeg" width={50} />
     </Space>
   );
 }

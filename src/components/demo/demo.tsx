@@ -22,7 +22,7 @@ import * as Share from "react-kui/utils/share";
 import { useNavigate } from "react-router";
 import * as JSXRuntime from "react/jsx-runtime";
 import { transform } from "sucrase";
-import Transition from "../../../components/base/transition";
+import { useDocs } from "../../context";
 import { CodePen, CodeSandbox, Stackblitz } from "./icons";
 import { openCodePen, openCodeSandbox, openStackBlitz } from "./utils";
 
@@ -91,12 +91,13 @@ export default function Demo({
   children,
 }: DemoProps) {
   const navigate = useNavigate();
+  const { t } = useDocs();
   const [expanded, setExpanded] = useState(direction !== "vertical");
   const [preview, setPreview] = useState<ReactNode>(children);
   const [previewKey, setPreviewKey] = useState(0);
   const [buildState, setBuildState] = useState<BuildState>({
     state: "success",
-    text: "Editable",
+    text: "text.build_tip",
   });
   const [error, setError] = useState("");
   const [codeLanguage, setCodeLanguage] = useState<CodeLanguage>(defaultLanguage);
@@ -169,7 +170,7 @@ export default function Demo({
   const scheduleCompile = useCallback(
     (language: CodeLanguage, nextSource: string) => {
       draftSources.current[language] = nextSource;
-      setBuildState({ state: "default", text: "Building..." });
+      setBuildState({ state: "default", text: "text.building" });
       clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => compile(nextSource), 500);
     },
@@ -187,7 +188,7 @@ export default function Demo({
 
   useEffect(() => {
     const editor = codeRef.current;
-    if (!expanded || !editor) return;
+    if (!editor) return;
     codeJarRef.current?.destroy();
     const language = codeLanguage;
     const jar = CodeJar(
@@ -206,12 +207,13 @@ export default function Demo({
       jar.destroy();
       if (codeJarRef.current === jar) codeJarRef.current = null;
     };
-  }, [codeLanguage, expanded, scheduleCompile]);
+  }, [codeLanguage, scheduleCompile]);
 
   const restore = () => {
+    clearTimeout(timerRef.current);
     const originalSource = originalSources.current[codeLanguage];
     draftSources.current[codeLanguage] = originalSource;
-    codeJarRef.current?.updateCode(originalSource);
+    codeJarRef.current?.updateCode(originalSource, false);
     compile(originalSource);
   };
 
@@ -257,7 +259,7 @@ export default function Demo({
           {descriptionHtml && <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />}
         </div>
       </div>
-      <div className={clsx("k-demo", { "k-demo-horizontal": direction === "horizontal" })}>
+      <div className={clsx("k-demo", `k-demo-${direction}`, { "k-demo-expanded": expanded })}>
         <div className={`k-demo-view k-demo-view-${direction}`}>
           <div className="k-content k-scroll">
             <DemoErrorBoundary key={previewKey} onError={handleRenderError}>
@@ -266,83 +268,88 @@ export default function Demo({
             {error && <pre className="k-demo-error">{error}</pre>}
           </div>
         </div>
-        <Transition show={expanded} name="k-collapse-slide" timeout={300}>
-          <div className="k-code-box">
-            <div className="k-code-tools" contentEditable={false}>
-              <Badge status={buildState.state} text={buildState.text} />
-              {toolbar !== "status" && (
-                <>
-                  <Tooltip title="Open in Playground">
-                    <Button type="text" size="small" icon={Play} onClick={openPlayground} />
-                  </Tooltip>
-                  <Tooltip title="Open in StackBlitz">
-                    <Button
-                      type="text"
-                      size="small"
-                      icon={Stackblitz}
-                      onClick={() =>
-                        void openStackBlitz(currentSource()).catch(reportPlaygroundError)
-                      }
-                    />
-                  </Tooltip>
-                  <Tooltip title="Open in CodeSandbox">
-                    <Button
-                      type="text"
-                      size="small"
-                      icon={CodeSandbox}
-                      onClick={() => {
-                        try {
-                          openCodeSandbox(currentSource());
-                        } catch (reason) {
-                          reportPlaygroundError(reason);
-                        }
-                      }}
-                    />
-                  </Tooltip>
-                  <Tooltip title="Open in CodePen">
-                    <Button
-                      type="text"
-                      size="small"
-                      icon={CodePen}
-                      onClick={() => {
-                        try {
-                          openCodePen(currentSource());
-                        } catch (reason) {
-                          reportPlaygroundError(reason);
-                        }
-                      }}
-                    />
-                  </Tooltip>
-                  <RadioGroup<CodeLanguage>
-                    options={codeLangOptions}
-                    value={codeLanguage}
-                    onChange={(value) => {
-                      if (value === "ts" || value === "js") switchCodeLanguage(value);
-                    }}
-                    type="button"
+        <div className="k-code-box" style={{ height: expanded ? undefined : 80 }}>
+          <div className="k-code-tools" contentEditable={false}>
+            <Badge
+              status={buildState.state}
+              text={buildState.text.startsWith("text.") ? t(buildState.text) : buildState.text}
+            />
+            {toolbar !== "status" && (
+              <>
+                <Tooltip title="Open in Playground">
+                  <Button type="text" size="small" icon={Play} onClick={openPlayground} />
+                </Tooltip>
+                <Tooltip title="Open in StackBlitz">
+                  <Button
+                    type="text"
                     size="small"
+                    icon={Stackblitz}
+                    onClick={() =>
+                      void openStackBlitz(currentSource()).catch(reportPlaygroundError)
+                    }
                   />
-                  <Tooltip title="Copy code">
-                    <Button type="text" size="small" icon={Copy} onClick={() => void copy()} />
-                  </Tooltip>
-                  <Tooltip title="Restore code">
-                    <Button type="text" size="small" icon={Undo2} onClick={restore} />
-                  </Tooltip>
-                </>
-              )}
-            </div>
-            <div ref={codeRef} className="k-code k-scroll hljs" key={codeLanguage} />
+                </Tooltip>
+                <Tooltip title="Open in CodeSandbox">
+                  <Button
+                    type="text"
+                    size="small"
+                    icon={CodeSandbox}
+                    onClick={() => {
+                      try {
+                        openCodeSandbox(currentSource());
+                      } catch (reason) {
+                        reportPlaygroundError(reason);
+                      }
+                    }}
+                  />
+                </Tooltip>
+                <Tooltip title="Open in CodePen">
+                  <Button
+                    type="text"
+                    size="small"
+                    icon={CodePen}
+                    onClick={() => {
+                      try {
+                        openCodePen(currentSource());
+                      } catch (reason) {
+                        reportPlaygroundError(reason);
+                      }
+                    }}
+                  />
+                </Tooltip>
+                <RadioGroup<CodeLanguage>
+                  options={codeLangOptions}
+                  value={codeLanguage}
+                  onChange={(value) => {
+                    if (value === "ts" || value === "js") switchCodeLanguage(value);
+                  }}
+                  type="button"
+                  size="small"
+                />
+                <Tooltip title={t("text.copy_code")}>
+                  <Button type="text" size="small" icon={Copy} onClick={() => void copy()} />
+                </Tooltip>
+                <Tooltip title={t("text.restore_code")}>
+                  <Button type="text" size="small" icon={Undo2} onClick={restore} />
+                </Tooltip>
+              </>
+            )}
           </div>
-        </Transition>
+          <div ref={codeRef} className="k-code k-scroll hljs" key={codeLanguage} />
+        </div>
         {direction !== "horizontal" && (
           <div className="k-code-actions">
-            <Button
-              block
-              size="large"
-              type="text"
-              icon={expanded ? ListChevronsDownUp : ListChevronsUpDown}
-              onClick={() => setExpanded((value) => !value)}
-            />
+            <Tooltip title={t(expanded ? "text.collapse_code" : "text.expand_code")}>
+              <Button
+                block
+                size="large"
+                type="text"
+                aria-label={t(expanded ? "text.collapse_code" : "text.expand_code")}
+                aria-expanded={expanded}
+                icon={expanded ? ListChevronsDownUp : ListChevronsUpDown}
+                onClick={() => setExpanded((value) => !value)}
+              />
+            </Tooltip>
           </div>
         )}
       </div>

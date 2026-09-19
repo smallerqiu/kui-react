@@ -5,7 +5,6 @@ const itemStyle: CSSProperties = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  padding: 8,
 };
 
 export default function App() {
