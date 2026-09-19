@@ -81,10 +81,9 @@ export default function AppHeader() {
           { key: "/guide/language", title: externalTitle(t("menu.language")) },
           { key: "/guide/change-log", title: externalTitle(t("menu.change_log")) },
           { key: "/guide/dark-mode", title: externalTitle(t("menu.dark_mode")) },
-          { key: "https://react-v2.k-ui.cn/", title: externalTitle(t("menu.docs_v2")) },
           {
-            key: "https://react.k-ui.cn/",
-            title: externalTitle(t("menu.docs_react")),
+            key: "https://k-ui.cn/",
+            title: externalTitle(t("menu.docs_vue")),
           },
           { key: "https://chuchur.com/", title: externalTitle("Blog") },
         ],
