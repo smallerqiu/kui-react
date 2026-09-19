@@ -10,6 +10,7 @@ const requiredFiles = [
   "lib/index.cjs",
   "style/index.css",
   "types/index.d.ts",
+  "types/index.d.cts",
   "readme.md",
   "README.zh-CN.md",
   "package.json",

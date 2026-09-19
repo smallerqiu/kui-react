@@ -19,7 +19,7 @@ export const getLocaleEntries = () => {
   return entries;
 };
 const packageJson = JSON.parse(
-  fs.readFileSync(path.resolve(import.meta.dirname, "package.json"), "utf8")
+  fs.readFileSync(path.resolve(import.meta.dirname, "package.json"), "utf8"),
 ) as { dependencies?: Record<string, string>; peerDependencies?: Record<string, string> };
 export const externalPackages = [
   ...Object.keys(packageJson.dependencies ?? {}),
@@ -32,7 +32,7 @@ export const externalPackages = [
 export const isExternalPackage = (id: string) =>
   externalPackages.some(
     (dependency) =>
-      dependency !== "kui-icons" && (id === dependency || id.startsWith(`${dependency}/`))
+      dependency !== "kui-icons" && (id === dependency || id.startsWith(`${dependency}/`)),
   );
 
 // https://vite.dev/config/
@@ -50,7 +50,13 @@ export default defineConfig({
       tsconfigPath: "./tsconfig.app.json",
       outDirs: "./types/",
       entryRoot: path.resolve(import.meta.dirname, "components"),
-      exclude: ["node_modules/**", "src/**", "plugins", "components/**/__tests__/**"],
+      exclude: [
+        "node_modules/**",
+        "src/**",
+        "plugins",
+        "components/**/__tests__/**",
+        "components/**/demo/**",
+      ],
       include: ["components/**/*.ts", "components/**/*.tsx"],
     }),
     banner(),

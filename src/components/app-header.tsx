@@ -187,7 +187,7 @@ export default function AppHeader() {
           <a
             target="_blank"
             className="k-btn k-btn-fill k-btn-icon-only"
-            href="https://github.com/smallerqiu/react-kui"
+            href="https://github.com/smallerqiu/kui-react"
             rel="noreferrer"
           >
             <Icon type={LogoGithub} />

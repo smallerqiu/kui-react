@@ -78,6 +78,7 @@ const navData = [
         name: "quick-started",
         icon: CirclePlay,
       },
+      { title: "从 kui-vue 迁移", sub: "From kui-vue", name: "migrate-from-vue", icon: FileText },
       {
         title: "在 Next.js 中使用",
         sub: "Usage With Next.js",

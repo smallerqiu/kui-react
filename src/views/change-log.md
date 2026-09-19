@@ -2,7 +2,7 @@
 
 ![react-kui](https://img.shields.io/npm/v/react-kui.svg?style=flat-square)
 
-3.x 版本支持 `React 19` ,遇到问题,请在 [Github](https://github.com/smallerqiu/react-kui/issues) 提issue
+3.x 版本支持 `React 19` ,遇到问题,请在 [Github](https://github.com/smallerqiu/kui-react/issues) 提issue
 
 ```bash
 npm install react-kui@latest --registry=http://registry.npmjs.org
@@ -14,20 +14,27 @@ vite 好像有缓存, 可手动清除
 rm -rf node_modules/.vite
 ```
 
-### 未发布
-
-- 新增面向 React 的 AI 辅助开发：组件元数据、MCP、Skill、初始化命令和业务模板。
-- 修复 Select 空字符串值导致占位文字消失的问题，以及英文组件列表和主题文档。
-- 修复 Collapse 渲染阶段的 ref 修改，保留数字 key 行为，并统一数字/字符串 key 的关闭逻辑。
-- 完善 Layout、ColorPicker、Tree 的 lint 与依赖处理。
-- 最低 React/react-dom 版本明确为 19.2；使用了该版本新增的 `useEffectEvent`。
-- 构建及测试限制并发和内存，增加安装包验证、CI 与手动发布流程。
-
 ### 3.0.0
 
-`2026-7-20`
+`2026-09-19`
 
-- 基于`React 19`整体重构, 对标 `kui-vue`
+#### 升级说明
+
+- 基于 React 19 重构，组件功能与 API 尽量与 `kui-vue` 保持一致；需要 `react`、`react-dom` 19.2 或更高的 19.x 版本。
+- 输入值接口统一使用 `value`，移除对应的 `defaultValue`；通过 `onChange` 同步业务数据。选中状态、弹窗显隐和上传列表仍使用各自的 `checked`、`open`、`fileList` 等接口，请按组件 API 迁移。
+
+#### 组件增强与修复
+
+- `ConfigProvider` 修复 `size`、`shape`、`theme` 对子组件未生效的问题，支持嵌套配置及组件自身属性覆盖。
+- `Form` 完善字段值同步、校验、重置，以及子控件尺寸、主题、形状、禁用和只读状态的继承。
+- `Upload` 优化图片墙拖拽排序：拖动时保留卡片边框和圆角，其他图片实时让位；修复上传文件后表单仍提示未上传、重置后文件状态不同步等问题。
+- `Image` 优化预览图片的拖动交互。
+- `DatePicker` 修复时间面板打开后选中项未居中显示的问题。
+- `Menu` 优化多级折叠与展开动画、状态同步及键盘交互，统一子菜单向左、向右展开时的间距。
+- `Switch` 修复按压、松开及切换时滑块位置跳动；禁用、只读状态下不再出现按压变形。
+- `Select` 修复值为空字符串时占位文字不显示的问题。
+- `Collapse` 完善数字 key 支持，统一数字与对应字符串 key 的关闭行为。
+- 完善组件类型声明，修复 TypeScript NodeNext 模式下通过 ESM / CommonJS 导入组件时的类型解析问题。
 
 ### 2.0.0
 

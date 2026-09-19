@@ -21,3 +21,24 @@ Search/example lists accept offset and limit (default 10, max 20). Full resource
 Versioned npm resources: react-kui/metadata, react-kui/metadata/schema, react-kui/skill. Site builds publish llms.txt, llms-full.txt, kui-components.json and schema/kui-components.schema.json. Prefer installed-version metadata over the latest website.
 
 Run `pnpm generate:ai`, `pnpm check:ai-assets` and `pnpm check:ai`. AI tasks cap Node heap and use a single test worker. Templates can be saved as App.tsx in an application with library CSS loaded; replace local mocks with production APIs. Metadata is derived from public React exports, TypeScript props and documentation examples. Explicit behavior contracts supplement inferred types; absent defaults do not imply a particular runtime behavior.
+
+## AI evaluations
+
+`pnpm check:ai-evals` runs 26 reference scenarios through component/API checks and strict TypeScript validation (vue-tsc for Vue). It is included in repository verification. Existing AI template tests cover form, table and modal interactions; static success alone does not imply correct behavior.
+
+Model evaluation is opt-in and supports your own model adapter:
+
+```bash
+pnpm eval:ai --generator /absolute/path/to/model-adapter --model your-model-version
+```
+
+The trusted adapter receives JSON on stdin (prompt, Skill instructions and relevant component APIs, without reference answers) and returns complete source on stdout. It handles model credentials itself. CI never calls a paid model. Generated source is parsed and typechecked, not executed.
+
+You can also export prompts and score saved responses:
+
+```bash
+pnpm eval:ai --export-prompts .ai-eval-results/prompts.json
+pnpm eval:ai --responses /path/to/responses.json --model your-model-version
+```
+
+Responses map case names to source strings. Use `--case primary-action` to select one case and `--out report.json` to preserve separate runs. Reports include model/version, suite/context hashes, per-case errors, skipped checks, source and static pass rate. They do not claim semantic or runtime correctness. See `ai/evals/README.md` in the repository for the adapter protocol and limitations.

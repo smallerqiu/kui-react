@@ -42,3 +42,7 @@ dist-ssr
 .idea
 /artifacts/
 *.tgz
+
+# AI evaluation scratch files and generated reports
+/.ai-eval-*/
+/.ai-eval-results/

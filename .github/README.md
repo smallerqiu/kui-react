@@ -16,6 +16,10 @@ pnpm check
 
 `pnpm package:smoke` 会打包当前产物，在临时目录安装 tarball，并使用 React 19.2.0 验证 ESM/CJS、Select 空值渲染、样式导出、类型声明、AI CLI 和 MCP。需要联网安装依赖，运行前先 `pnpm build:lib`。设置 `SMOKE_REACT_VERSION` 可验证其他 React 19.x 版本。
 
+## 发布分支
+
+3.x 的发布源码在 `v3.x`，该分支的 push 会运行 CI。首次使用手动 Release workflow 前，需将含有该 workflow 的提交合入默认分支，或由维护者将默认分支改为 `v3.x`；GitHub 的 `workflow_dispatch` 要求 workflow 存在于默认分支。
+
 ## 首次配置 npm 发布
 
 1. 在 GitHub 仓库创建 `npm` environment，配置 required reviewers 和允许的版本 tag。

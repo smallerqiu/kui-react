@@ -68,6 +68,18 @@ const props: SelectProps = { filterable: true, value: "", options: [{ label: "On
 export const example = <><Select {...props} /><Button htmlType="submit">Save</Button></>;
 `,
   );
+  fs.writeFileSync(
+    path.join(temp, "consumer.cts"),
+    `
+import React = require("react");
+import { Select, Button, type SelectProps } from "react-kui";
+import zhCN from "react-kui/locale/zh-CN";
+const props: SelectProps = { value: "", options: [{ label: "One", value: 1 }] };
+export const example = React.createElement(Select, props);
+export const button = React.createElement(Button, { htmlType: "submit" });
+export const locale = zhCN;
+`,
+  );
   run(process.execPath, ["check.mjs"]);
   run(process.execPath, [
     "--max-old-space-size=2048",
@@ -85,6 +97,7 @@ export const example = <><Select {...props} /><Button htmlType="submit">Save</Bu
     "--target",
     "ES2022",
     "consumer.tsx",
+    "consumer.cts",
   ]);
 } finally {
   fs.rmSync(temp, { recursive: true, force: true });

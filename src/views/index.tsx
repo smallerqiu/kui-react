@@ -48,7 +48,7 @@ export default function Home() {
                   size="large"
                   className="btn-github"
                   type="link"
-                  href="https://github.com/smallerqiu/react-kui"
+                  href="https://github.com/smallerqiu/kui-react"
                   target="_blank"
                 >
                   <Icon type={LogoGithub} />
@@ -60,7 +60,7 @@ export default function Home() {
                 <i />
                 <span>TypeScript</span>
                 <i />
-                <span>60+ Components</span>
+                <span>70+ Components</span>
               </div>
             </div>
 
@@ -169,7 +169,7 @@ export default function Home() {
                 <Link
                   key={name}
                   to={withLang(
-                    `/components/${name === "DatePicker" ? "date-picker" : name.toLowerCase()}`
+                    `/components/${name === "DatePicker" ? "date-picker" : name.toLowerCase()}`,
                   )}
                 >
                   <Icon type={Layers} />

@@ -1,0 +1,207 @@
+[
+  {
+    "name": "primary-action",
+    "prompt": "Create a primary submit button",
+    "components": ["Button"],
+    "source": "import { Button } from \"react-kui\";\nexport default function Example() { return (<Button type=\"primary\" htmlType=\"submit\">Submit</Button>); }\n",
+    "expectProps": [
+      {
+        "component": "Button",
+        "prop": "htmlType",
+        "value": "submit"
+      }
+    ]
+  },
+  {
+    "name": "login-form",
+    "prompt": "Create a login form",
+    "components": ["Form", "FormItem", "Input", "Button"],
+    "source": "import { Form, FormItem, Input, Button } from \"react-kui\";\nexport default function Example() { return (<Form><FormItem label=\"Email\"><Input /></FormItem><Button>Login</Button></Form>); }\n"
+  },
+  {
+    "name": "modal-editor",
+    "prompt": "Create a modal editor",
+    "components": ["Modal", "Form", "Input"],
+    "source": "import { Modal, Form, Input } from \"react-kui\";\nexport default function Example() { return (<Modal open title=\"Edit\"><Form><Input /></Form></Modal>); }\n"
+  },
+  {
+    "name": "data-table",
+    "prompt": "Create a striped data table",
+    "components": ["Table"],
+    "source": "import { Table } from \"react-kui\";\nexport default function Example() { return (<Table striped data={[]} columns={[]} />); }\n",
+    "expectProps": [
+      {
+        "component": "Table",
+        "prop": "striped",
+        "value": true
+      }
+    ]
+  },
+  {
+    "name": "multiple-select",
+    "prompt": "Create a multiple select",
+    "components": ["Select"],
+    "source": "import { Select } from \"react-kui\";\nexport default function Example() { return (<Select multiple options={[]} />); }\n",
+    "expectProps": [
+      {
+        "component": "Select",
+        "prop": "multiple",
+        "value": true
+      }
+    ]
+  },
+  {
+    "name": "tree-browser",
+    "prompt": "Create a checkable tree",
+    "components": ["Tree"],
+    "source": "import { Tree } from \"react-kui\";\nexport default function Example() { return (<Tree checkable data={[]} />); }\n",
+    "expectProps": [
+      {
+        "component": "Tree",
+        "prop": "checkable",
+        "value": true
+      }
+    ]
+  },
+  {
+    "name": "file-upload",
+    "prompt": "Create a file uploader",
+    "components": ["Upload", "Button"],
+    "source": "import { Upload, Button } from \"react-kui\";\nexport default function Example() { return (<Upload><Button>Upload</Button></Upload>); }\n"
+  },
+  {
+    "name": "pagination",
+    "prompt": "Create simple pagination",
+    "components": ["Page"],
+    "source": "import { Page } from \"react-kui\";\nexport default function Example() { return (<Page simple total={100} />); }\n",
+    "expectProps": [
+      {
+        "component": "Page",
+        "prop": "simple",
+        "value": true
+      }
+    ]
+  },
+  {
+    "name": "drawer",
+    "prompt": "Create a settings drawer",
+    "components": ["Drawer"],
+    "source": "import { Drawer } from \"react-kui\";\nexport default function Example() { return (<Drawer open title=\"Settings\">Settings</Drawer>); }\n"
+  },
+  {
+    "name": "tabs",
+    "prompt": "Create two tabs",
+    "components": ["Tabs", "TabPanel"],
+    "source": "import { Tabs, TabPanel } from \"react-kui\";\nexport default function Example() { return (<Tabs><TabPanel key=\"a\" title=\"A\">A</TabPanel><TabPanel key=\"b\" title=\"B\">B</TabPanel></Tabs>); }\n"
+  },
+  {
+    "name": "steps",
+    "prompt": "Create a three-step flow",
+    "components": ["Steps"],
+    "source": "import { Steps } from \"react-kui\";\nexport default function Example() { return (<Steps items={[{ title: \"One\" }, { title: \"Two\" }, { title: \"Three\" }]} />); }\n"
+  },
+  {
+    "name": "autocomplete",
+    "prompt": "Create autocomplete",
+    "components": ["AutoComplete"],
+    "source": "import { AutoComplete } from \"react-kui\";\nexport default function Example() { return (<AutoComplete options={[]} />); }\n"
+  },
+  {
+    "name": "tags",
+    "prompt": "Create tag input",
+    "components": ["InputTag"],
+    "source": "import { InputTag } from \"react-kui\";\nexport default function Example() { return (<InputTag value={[]} />); }\n"
+  },
+  {
+    "name": "mentions",
+    "prompt": "Create mentions input",
+    "components": ["Mentions"],
+    "source": "import { Mentions } from \"react-kui\";\nexport default function Example() { return (<Mentions options={[]} />); }\n"
+  },
+  {
+    "name": "tour",
+    "prompt": "Create a guided tour",
+    "components": ["Tour"],
+    "source": "import { Tour } from \"react-kui\";\nexport default function Example() { return (<Tour steps={[]} />); }\n"
+  },
+  {
+    "name": "date-picker",
+    "prompt": "Create a date picker",
+    "components": ["DatePicker"],
+    "source": "import { DatePicker } from \"react-kui\";\nexport default function Example() { return (<DatePicker />); }\n"
+  },
+  {
+    "name": "transfer",
+    "prompt": "Create a transfer list",
+    "components": ["Transfer"],
+    "source": "import { Transfer } from \"react-kui\";\nexport default function Example() { return (<Transfer dataSource={[]} />); }\n"
+  },
+  {
+    "name": "responsive-grid",
+    "prompt": "Create a responsive grid",
+    "components": ["Grid", "GridItem"],
+    "source": "import { Grid, GridItem } from \"react-kui\";\nexport default function Example() { return (<Grid cols={3}><GridItem>One</GridItem></Grid>); }\n"
+  },
+  {
+    "name": "card",
+    "prompt": "Create a bordered card",
+    "components": ["Card"],
+    "source": "import { Card } from \"react-kui\";\nexport default function Example() { return (<Card bordered title=\"Profile\">Content</Card>); }\n",
+    "expectProps": [
+      {
+        "component": "Card",
+        "prop": "bordered",
+        "value": true
+      }
+    ]
+  },
+  {
+    "name": "virtual-select",
+    "prompt": "Create a large virtual select",
+    "components": ["Select"],
+    "source": "import { Select } from \"react-kui\";\nexport default function Example() { return (<Select virtual options={[]} itemHeight={33} />); }\n",
+    "expectProps": [
+      {
+        "component": "Select",
+        "prop": "virtual",
+        "value": true
+      }
+    ]
+  },
+  {
+    "name": "event-calendar",
+    "prompt": "Create a Chinese-localized monthly calendar with an empty event list.",
+    "components": ["Calendar", "ConfigProvider"],
+    "source": "import { Calendar, ConfigProvider } from \"react-kui\";\nimport zhCN from \"react-kui/locale/zh-CN\";\nexport default function Example() { return (<ConfigProvider locale={zhCN}><Calendar events={[]} /></ConfigProvider>); }\n"
+  },
+  {
+    "name": "task-kanban",
+    "prompt": "Create a task kanban with empty columns and task data.",
+    "components": ["Kanban"],
+    "source": "import { Kanban } from \"react-kui\";\nexport default function Example() { return (<Kanban columns={[]} data={[]} />); }\n"
+  },
+  {
+    "name": "page-heading",
+    "prompt": "Create a page heading with a primary action",
+    "components": ["PageHeader", "Button"],
+    "source": "import { PageHeader, Button } from \"react-kui\";\nexport default function Example() { return <PageHeader title=\"Projects\" actions={<Button type=\"primary\">Create</Button>} />; }\n"
+  },
+  {
+    "name": "business-form",
+    "prompt": "Required/email validation, disabled state, submit, reset, loading and error handling. Use only local mocked requests.",
+    "components": ["Form", "FormItem", "Input", "Button", "Space"],
+    "sourceFile": "../templates/form.tsx"
+  },
+  {
+    "name": "business-table",
+    "prompt": "Local asynchronous mock API, search, paging, loading, errors and stale response protection. Use only local mocked requests.",
+    "components": ["Table", "Page", "Input", "Button", "Space"],
+    "sourceFile": "../templates/table.tsx"
+  },
+  {
+    "name": "business-modal-editor",
+    "prompt": "Isolated editing draft, validation, asynchronous save, cancel and loading state. Use only local mocked requests.",
+    "components": ["Modal", "Form", "FormItem", "Input", "Button", "Space"],
+    "sourceFile": "../templates/modal-editor.tsx"
+  }
+]

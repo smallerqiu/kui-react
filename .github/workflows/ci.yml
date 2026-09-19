@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, v3.x]
   pull_request:
   workflow_dispatch:
 
@@ -21,9 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: pnpm
@@ -38,3 +38,13 @@ jobs:
         run: pnpm package:smoke
       - name: Build documentation
         run: pnpm build:docs
+
+      - name: Upload AI evaluation report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ai-eval-results
+          path: .ai-eval-results/
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7

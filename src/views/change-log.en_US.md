@@ -2,7 +2,7 @@
 
 ![react-kui](https://img.shields.io/npm/v/react-kui.svg?style=flat-square)
 
-Version 3.x supports `React 19`. If you encounter any issues, please submit an issue on https://github.com/smallerqiu/react-kui/issues.
+Version 3.x supports `React 19`. If you encounter any issues, please submit an issue on https://github.com/smallerqiu/kui-react/issues.
 
 ```bash
 npm install react-kui@latest --registry=http://registry.npmjs.org
@@ -14,20 +14,27 @@ Vite seems to cache builds—you can manually clear it:
 rm -rf node_modules/.vite
 ```
 
-### Unreleased
-
-- Add React-specific AI metadata, MCP tools, Skill, initialization CLI, and business templates.
-- Fix Select placeholders for empty string values, the English component list, and theme documentation.
-- Remove render-time ref mutations from Collapse while preserving numeric keys and handling equivalent numeric/string keys consistently.
-- Improve lint compliance and dependencies in Layout, ColorPicker, and Tree.
-- Require React and react-dom 19.2 or later in the 19.x series for `useEffectEvent`.
-- Limit build/test memory and concurrency; add package smoke checks, CI, and a manual release workflow.
-
 ### 3.0.0
 
-`2026-07-20`
+`2026-09-19`
 
-- Complete refactor based on `React 19`, aligned with `kui-vue`
+#### Upgrade notes
+
+- Rebuilt for React 19, with component features and APIs aligned with kui-vue where applicable. Requires React and react-dom 19.2 or later in the 19.x series.
+- Standardized input-value APIs on `value` and removed the corresponding `defaultValue` props. Synchronize application data through `onChange`. Selection, overlay visibility, and upload lists retain their specific `checked`, `open`, and `fileList` APIs; follow each component's migration requirements.
+
+#### Component improvements and fixes
+
+- `ConfigProvider`: Fixed `size`, `shape`, and `theme` not reaching child components. Supports nested configuration and explicit component overrides.
+- `Form`: Improved field synchronization, validation, reset behavior, and inheritance of control size, theme, shape, disabled, and readonly states.
+- `Upload`: Improved picture-wall sorting with card borders and rounded corners preserved during dragging, while other images move aside immediately. Fixed forms still reporting missing files after uploads and file-state synchronization after reset.
+- `Image`: Improved dragging in image previews.
+- `DatePicker`: Fixed the selected time option not being centered when opening the time panel.
+- `Menu`: Improved nested collapse/expand animations, state synchronization, and keyboard interactions. Made left/right submenu popup spacing consistent.
+- `Switch`: Fixed thumb position jumps during pressing, release, and toggling. Disabled and readonly switches no longer show pressed deformation.
+- `Select`: Fixed missing placeholder text when the value is an empty string.
+- `Collapse`: Improved numeric key support and made closing behavior consistent for equivalent numeric and string keys.
+- Improved component declarations and fixed TypeScript NodeNext type resolution for ESM and CommonJS component imports.
 
 ### 2.0.0
 

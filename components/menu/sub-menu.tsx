@@ -172,14 +172,6 @@ export const SubMenu: React.FC<SubMenuProps> = ({
     [clearCurrentPopTimer],
   );
 
-  let left = position.left;
-  if (
-    (menuContext?.mode === "horizontal" && subMenuContext?.keyPath.length) ||
-    menuContext?.mode === "vertical"
-  ) {
-    left += 3;
-  }
-
   const popperProps = {
     ref: refPopper,
     "theme-mode": menuContext?.theme,
@@ -187,7 +179,7 @@ export const SubMenu: React.FC<SubMenuProps> = ({
     style: {
       minWidth: menuContext?.mode === "horizontal" ? minWidth : undefined,
       top: `${position.top}px`,
-      left: `${left}px`,
+      left: `${position.left}px`,
       transformOrigin: position.origin,
       visibility: popup && !popupPositioned ? "hidden" : undefined,
     } as CSSProperties,

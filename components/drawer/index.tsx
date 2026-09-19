@@ -218,7 +218,7 @@ const Drawer: React.FC<DrawerProps> = ({
   const drawerEl = (
     <div className={classes}>
       {mask && (
-        <Transition name="k-drawer-fade" show={visible} timeout={400}>
+        <Transition name="k-drawer-fade" show={visible} timeout={400} appear>
           <div
             className={clsx("k-drawer-mask", { "k-drawer-mask-to-body": isBody })}
             onClick={maskClosable ? close : undefined}

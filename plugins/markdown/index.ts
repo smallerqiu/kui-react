@@ -1,10 +1,26 @@
 import fs from "fs";
 import hljs from "highlight.js";
+import xml from "highlight.js/lib/languages/xml";
 import MarkdownIt, { type MarkdownIt as MarkdownItType } from "markdown-it";
 import anchor from "markdown-it-anchor";
 import path from "path";
 import ts from "typescript";
 import { type Plugin } from "vite";
+
+// Vue SFCs use HTML markup with JavaScript/TypeScript and CSS sublanguages.
+hljs.registerLanguage("vue", (highlighter) => {
+  const language = xml(highlighter);
+  return {
+    ...language,
+    name: "Vue",
+    aliases: [],
+    contains: language.contains.map((mode) =>
+      typeof mode === "object" && mode.starts?.subLanguage === "javascript"
+        ? { ...mode, starts: { ...mode.starts, subLanguage: "typescript" } }
+        : mode,
+    ),
+  };
+});
 
 interface LiveDemo {
   component: string;

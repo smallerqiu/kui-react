@@ -103,7 +103,7 @@ const Tour: React.FC<TourProps> = ({
   return (
     <Teleport to="body">
       <div className="k-tour-root">
-        <Transition show={visible} name="k-modal-fade">
+        <Transition show={visible} name="k-modal-fade" appear>
           <div className="k-tour-overlay">
             {mask && <div className={clsx("k-tour-mask", { "k-tour-mask-spotlight": !!rect })} />}
             {mask && rect && (

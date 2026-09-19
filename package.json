@@ -21,17 +21,27 @@
   ],
   "exports": {
     ".": {
-      "types": "./types/index.d.ts",
-      "import": "./es/index.js",
-      "require": "./lib/index.cjs"
+      "import": {
+        "types": "./types/index.d.ts",
+        "default": "./es/index.js"
+      },
+      "require": {
+        "types": "./types/index.d.cts",
+        "default": "./lib/index.cjs"
+      }
     },
     "./style": "./style/index.css",
     "./style.css": "./style/index.css",
     "./style/*": "./style/*",
     "./locale/*": {
-      "types": "./types/locale/*.d.ts",
-      "import": "./es/locale/*.js",
-      "require": "./lib/locale/*.cjs"
+      "import": {
+        "types": "./types/locale/*.d.ts",
+        "default": "./es/locale/*.js"
+      },
+      "require": {
+        "types": "./types/locale/*.d.cts",
+        "default": "./lib/locale/*.cjs"
+      }
     },
     "./package.json": "./package.json",
     "./metadata": "./ai/kui-components.json",
@@ -47,7 +57,7 @@
     "dev": "vite --config vite.config.docs.ts",
     "start": "pnpm dev",
     "typecheck": "node --max-old-space-size=2048 node_modules/typescript/bin/tsc -b",
-    "build:es": "node --max-old-space-size=2048 node_modules/vite/bin/vite.js build --config vite.config.ts",
+    "build:es": "node scripts/prepare-types.mjs --clean && node --max-old-space-size=2048 node_modules/vite/bin/vite.js build --config vite.config.ts && node scripts/prepare-types.mjs",
     "build:cjs": "node --max-old-space-size=2048 node_modules/vite/bin/vite.js build --config vite.config.lib.ts",
     "build:css": "node --max-old-space-size=2048 node_modules/vite/bin/vite.js build --config vite.config.css.ts",
     "build:docs": "pnpm generate:ai && node --max-old-space-size=2048 node_modules/vite/bin/vite.js build --config vite.config.docs.ts",
@@ -62,10 +72,12 @@
     "verify": "pnpm check && pnpm build:lib && pnpm build:docs && pnpm package:check",
     "generate:ai": "node --max-old-space-size=2048 --experimental-strip-types scripts/generate-ai-assets.ts",
     "check:ai-assets": "node --max-old-space-size=2048 --experimental-strip-types scripts/generate-ai-assets.ts --check",
-    "check:ai": "pnpm typecheck:ai && node --max-old-space-size=2048 node_modules/vitest/vitest.mjs run tests/ai-assets.test.ts tests/ai-templates.test.tsx --maxWorkers=1",
+    "check:ai": "pnpm check:ai-evals && pnpm typecheck:ai && node --max-old-space-size=2048 node_modules/vitest/vitest.mjs run tests/ai-assets.test.ts tests/ai-templates.test.tsx tests/ai-evals.test.mjs --maxWorkers=1",
     "typecheck:ai": "node --max-old-space-size=2048 node_modules/typescript/bin/tsc -p tsconfig.ai-templates.json --noEmit",
-    "check": "pnpm lint && pnpm check:api-docs && pnpm typecheck && pnpm typecheck:ai && pnpm check:ai-assets && pnpm test",
-    "package:smoke": "node scripts/smoke-package.mjs"
+    "check": "pnpm lint && pnpm check:api-docs && pnpm typecheck && pnpm typecheck:ai && pnpm check:ai-assets && pnpm check:ai-evals && pnpm test",
+    "package:smoke": "node scripts/smoke-package.mjs",
+    "check:ai-evals": "node ai/evals/run.mjs --reference",
+    "eval:ai": "node ai/evals/run.mjs"
   },
   "repository": {
     "type": "git",

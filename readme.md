@@ -129,7 +129,7 @@ Issues and pull requests are welcome. Before submitting code, please ensure that
 
 - [GitHub repository](https://github.com/smallerqiu/kui-react)
 - [Gitee repository](https://gitee.com/chuchur/kui-react)
-- [Issue tracker](https://gitee.com/chuchur/kui-react/issues)
+- [Issue tracker](https://github.com/smallerqiu/kui-react/issues)
 
 ## License
 

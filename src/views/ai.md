@@ -74,3 +74,24 @@ pnpm check:ai
 元数据从 React 的公开导出、TypeScript Props 和真实文档示例生成。默认表达式只在可确定提取时提供，不代表所有运行时默认行为。行为约定重点覆盖表单、输入、弹层、表格、分页、菜单等核心组件。
 
 AI 生成与校验命令限制 Node 堆，测试按单工作进程运行，避免在低内存机器上并发启动重任务。无需运行完整构建即可更新 AI 资源。
+
+## AI 场景评测
+
+`pnpm check:ai-evals` 检查 26 个固定场景的组件使用、API 和完整源码类型（Vue 使用 vue-tsc），已接入仓库验证。现有 AI 模板测试另行验证表单、分页表格和弹窗交互；静态通过不等于业务行为正确。
+
+模型评测按需运行，可接入自己的模型工具：
+
+```bash
+pnpm eval:ai --generator /absolute/path/to/model-adapter --model your-model-version
+```
+
+可信 adapter 从 stdin 接收 JSON（需求、Skill 和相关组件 API，不含参考答案），在 stdout 返回完整源码；由 adapter 管理凭证并调用模型。CI 不调用付费模型。生成代码只解析和类型检查，不会被直接执行。
+
+也可以先导出需求，再评测保存的模型回答：
+
+```bash
+pnpm eval:ai --export-prompts .ai-eval-results/prompts.json
+pnpm eval:ai --responses /path/to/responses.json --model your-model-version
+```
+
+responses.json 是以用例名为键、源码字符串为值的对象。`--case primary-action` 选择单例，`--out report.json` 保存不同版本报告。报告记录模型、场景/上下文哈希、逐例错误、跳过项、源码和静态通过率，不将其表述为语义或运行时通过率。完整接入协议见仓库 `ai/evals/README.md`。
