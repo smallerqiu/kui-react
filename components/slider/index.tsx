@@ -3,8 +3,10 @@ import clsx from "clsx";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import { createFormFieldComponent } from "../form/field-context";
 import {
+  useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
@@ -87,6 +89,10 @@ function Slider({
   const activeMoveRef = useRef<((event: globalThis.MouseEvent | TouchEvent) => void) | null>(null);
   const activeUpRef = useRef<(() => void) | null>(null);
 
+  if ((disabled || readOnly) && draggingIndex !== -1) {
+    setDraggingIndex(-1);
+  }
+
   if (
     draggingIndex === -1 &&
     (syncedSource.value !== value ||
@@ -104,9 +110,8 @@ function Slider({
   useEffect(() => {
     internalValueRef.current = internalValue;
   }, [internalValue]);
-  const stopDragging = () => {
+  const detachDragListeners = useCallback(() => {
     draggingIndexRef.current = -1;
-    setDraggingIndex(-1);
     if (activeMoveRef.current) {
       document.removeEventListener("mousemove", activeMoveRef.current);
       document.removeEventListener("touchmove", activeMoveRef.current);
@@ -118,7 +123,16 @@ function Slider({
     }
     activeMoveRef.current = null;
     activeUpRef.current = null;
+  }, []);
+
+  const stopDragging = () => {
+    setDraggingIndex(-1);
+    detachDragListeners();
   };
+
+  useLayoutEffect(() => {
+    if (disabled || readOnly) detachDragListeners();
+  }, [disabled, readOnly, detachDragListeners]);
 
   useEffect(() => {
     const updateSize = () => {

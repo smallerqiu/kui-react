@@ -1,12 +1,19 @@
 import Color, { type ColorInstance, type ColorObject } from "color";
-import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type MouseEvent as ReactMouseEvent,
+} from "react";
 import { clamp } from "../utils/share";
 export interface PaintProps {
+  disabled?: boolean;
   hue?: number;
   value: string | ColorInstance;
   onUpdateRGB?: (color: ColorObject) => void;
 }
-export default function Paint({ hue = 0, value, onUpdateRGB }: PaintProps) {
+export default function Paint({ disabled = false, hue = 0, value, onUpdateRGB }: PaintProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dragCleanupRef = useRef<() => void>(() => undefined);
   const draggingRef = useRef(false);
@@ -42,7 +49,11 @@ export default function Paint({ hue = 0, value, onUpdateRGB }: PaintProps) {
     });
   }, [hsv.s, hsv.v]);
   useEffect(() => () => dragCleanupRef.current(), []);
+  useLayoutEffect(() => {
+    if (disabled) dragCleanupRef.current();
+  }, [disabled]);
   const start = (event: ReactMouseEvent) => {
+    if (disabled) return;
     draggingRef.current = true;
     const move = (x: number, y: number) => {
       const rect = canvasRef.current!.getBoundingClientRect();

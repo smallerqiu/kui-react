@@ -132,7 +132,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         : !filterOption || option.value.toLocaleLowerCase().includes(input.toLocaleLowerCase()),
     );
   const setOpen = (next: boolean) => {
-    if (next && readOnly) return;
+    if (next && (disabled || readOnly)) return;
     if (next && suppressRemoteOptions && !loading) return;
     if (next) {
       setRendered(true);
@@ -223,19 +223,19 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   }, [active, listboxId]);
 
   const update = (next: string) => {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     setInnerValue(next);
     onChange?.(next);
   };
   const choose = (option: AutoCompleteOption) => {
-    if (readOnly || option.disabled) return;
+    if (disabled || readOnly || option.disabled) return;
     update(option.value);
     onSelect?.(option.value, option);
     setOpen(false);
     setActive(-1);
   };
   const handleInput = (next: string) => {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     update(next);
     if (composing.current) return;
     search(next);
@@ -256,7 +256,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
     setActive(-1);
   };
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       if ((!current && !showOnEmpty) || suppressRemoteOptions) return;
       if (!getMatches(current).length) return;
@@ -371,7 +371,9 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
                         "k-select-item-disabled": option.disabled,
                       })}
                       onMouseDown={(event) => event.preventDefault()}
-                      onMouseEnter={() => !option.disabled && setActive(index)}
+                      onMouseEnter={() =>
+                        !disabled && !readOnly && !option.disabled && setActive(index)
+                      }
                       onClick={() => choose(option)}
                     >
                       {option.label ?? option.value}

@@ -338,6 +338,10 @@ const Dropdown: React.FC<DropdownProps> = ({
       }
     };
     triggerProps.onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+      if (disabled) {
+        firstChild?.props.onKeyDown?.(e);
+        return;
+      }
       if (e.key === "Escape" && visible) {
         e.preventDefault();
         openChange(false);

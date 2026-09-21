@@ -119,6 +119,7 @@ export default function FileList({
                   size="small"
                   icon={X}
                   title="Cancel upload"
+                  disabled={disabled}
                   onClick={() => onAbort?.(item)}
                 />
               ) : item.status === "error" ? (
@@ -127,6 +128,7 @@ export default function FileList({
                   size="small"
                   icon={RotateCcw}
                   title="Retry upload"
+                  disabled={disabled}
                   onClick={() => onRetry?.(item)}
                 />
               ) : null)}

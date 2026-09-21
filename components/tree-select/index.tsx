@@ -273,13 +273,13 @@ function TreeSelect({
     onOpenChange?.(false);
   };
   const commit = (keys: string[]) => {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     setInnerValue(keys);
     const result: TreeSelectValue = multiple || treeCheckable ? keys : (keys[0] ?? null);
     onChange?.(result);
   };
   const select = (node: TreeNode) => {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     const exists = currentValue.includes(node.key);
     const keys = multiple
       ? exists
@@ -297,7 +297,7 @@ function TreeSelect({
   const remove = (index: number) =>
     commit(currentValue.filter((_, itemIndex) => itemIndex !== index));
   const clear = () => {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     commit([]);
     setQuery("");
     onClear?.();
@@ -333,7 +333,7 @@ function TreeSelect({
   const tagSize = size || "medium";
 
   const search = (event: ChangeEvent<HTMLInputElement>) => {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     setQuery(event.target.value);
     onSearch?.(event);
   };
@@ -353,6 +353,7 @@ function TreeSelect({
         autoComplete="off"
         value={query}
         readOnly={readOnly}
+        disabled={disabled}
         onChange={search}
         onKeyDown={(event) => {
           if (event.key === "Backspace" && !query && multiple && currentValue.length)
@@ -390,6 +391,7 @@ function TreeSelect({
           ) : hasMatchingNode ? (
             <Tree
               data={data}
+              disabled={disabled}
               checkable={treeCheckable}
               showLine={treeShowLine}
               showIcon={treeShowIcon}

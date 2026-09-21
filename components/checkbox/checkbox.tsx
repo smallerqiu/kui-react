@@ -48,6 +48,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   "aria-describedby": ariaDescribedby,
   "aria-invalid": ariaInvalid,
   "aria-required": ariaRequired,
+  onClick,
   ...rest
 }) => {
   const inheritedAppearance = useConfigAppearance();
@@ -110,7 +111,19 @@ const Checkbox: React.FC<CheckboxProps> = ({
   const labelNode = label ?? children;
 
   return (
-    <label className={rootClasses} aria-readonly={currentReadOnly || undefined} {...rest}>
+    <label
+      className={rootClasses}
+      aria-readonly={currentReadOnly || undefined}
+      {...rest}
+      onClick={(event) => {
+        if (currentDisabled) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
+        onClick?.(event);
+      }}
+    >
       <span className="k-checkbox-symbol">
         <input
           id={id}

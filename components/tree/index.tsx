@@ -43,6 +43,7 @@ export interface TreeProps extends Omit<
   checkedKeys?: string[];
   defaultCheckedKeys?: string[];
   directory?: boolean;
+  disabled?: boolean;
   checkable?: boolean;
   draggable?: boolean;
   showLine?: boolean;
@@ -134,6 +135,7 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
     checkedKeys,
     defaultCheckedKeys = [],
     directory,
+    disabled = false,
     checkable,
     draggable,
     showLine,
@@ -201,13 +203,13 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
           ...raw,
           key: String(raw[names.key] ?? ""),
           title: raw[names.title] as TreeNode["title"],
-          disabled: Boolean(raw[names.disabled]),
+          disabled: disabled || Boolean(raw[names.disabled]),
           isLeaf: raw[names.isLeaf] === undefined ? undefined : Boolean(raw[names.isLeaf]),
           children: Array.isArray(children) ? normalize(children as TreeNodeData[]) : undefined,
         };
       });
     return normalize(data);
-  }, [data, fieldNames, version]);
+  }, [data, disabled, fieldNames, version]);
   const flat = useMemo(() => {
     void version;
     return buildTree({
@@ -230,7 +232,7 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
     [expandedKeys, onExpandedKeysChange],
   );
   const expand = async (node: TreeNode) => {
-    if (node.isLeaf || loadingKeys.has(node.key)) return;
+    if (node.disabled || node.isLeaf || loadingKeys.has(node.key)) return;
     const nextExpanded = !expanded.includes(node.key);
     if (nextExpanded && loadData && !node.children?.length) {
       setLoadingKeys((current) => new Set(current).add(node.key));
@@ -430,6 +432,7 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
   );
 
   const handleKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (focusedKey !== undefined && byKey.get(focusedKey)?.disabled) return;
     const nodes = visible.filter((node) => !node.disabled);
     if (!nodes.length) return;
     let index = nodes.findIndex((node) => node.key === focusedKey);
@@ -455,6 +458,10 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
     if (target) focusNode(target.key);
   };
 
+  const tabStopKey =
+    visible.find((node) => node.key === focusedKey && !node.disabled)?.key ??
+    visible.find((node) => !node.disabled)?.key;
+
   const renderNode = (node: TreeNode) => (
     <div
       key={node.key}
@@ -466,7 +473,7 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
         "k-tree-item-selected": directory && selected.includes(node.key),
       })}
       role="treeitem"
-      tabIndex={(focusedKey ?? visible.find((item) => !item.disabled)?.key) === node.key ? 0 : -1}
+      tabIndex={tabStopKey === node.key ? 0 : -1}
       data-tree-key={node.key}
       aria-level={(node.level ?? 0) + 1}
       aria-selected={selected.includes(node.key) || undefined}
@@ -502,6 +509,7 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
             size="small"
             type="text"
             loading={loadingKeys.has(node.key)}
+            disabled={node.disabled}
             icon={
               showLine ? (expanded.includes(node.key) ? CircleMinus : CirclePlus) : ChevronRight
             }

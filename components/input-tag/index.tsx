@@ -143,6 +143,7 @@ const InputTag: React.FC<InputTagProps> = ({
         className,
       )}
       onClick={(event) => {
+        if (disabled) return;
         onClick?.(event);
         if (!event.defaultPrevented && !disabled) inputRef.current?.focus();
       }}

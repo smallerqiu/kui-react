@@ -119,6 +119,7 @@ const InputOTP = forwardRef<InputOTPRef, InputOTPProps>(function InputOTP(
     requestAnimationFrame(() => focus(Math.min(start + insertedChars.length, otpLength - 1)));
   };
   const keyDown = (event: KeyboardEvent<HTMLInputElement>, index: number) => {
+    if (disabled) return;
     if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
       event.preventDefault();
       focus(index + (event.key === "ArrowLeft" ? -1 : 1));

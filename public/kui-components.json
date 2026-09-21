@@ -49537,6 +49537,19 @@
           "descriptionEn": "Does not display as a directory tree"
         },
         {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "defaultExpression": "false",
+          "descriptionZh": "是否禁用节点",
+          "descriptionEn": "Whether node is disabled"
+        },
+        {
           "name": "checkable",
           "type": "boolean | undefined",
           "required": false,

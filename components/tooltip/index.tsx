@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import type { PlacementsType } from "../const/types";
@@ -139,13 +139,25 @@ const Tooltip: React.FC<TooltipProps> = ({
     onShowChange?.(value);
   };
 
+  const openingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useLayoutEffect(() => {
+    if (disabled) {
+      if (openingTimer.current) clearTimeout(openingTimer.current);
+      if (showTimer.current) clearTimeout(showTimer.current);
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+    }
+    return () => {
+      if (openingTimer.current) clearTimeout(openingTimer.current);
+    };
+  }, [disabled]);
+
   const mouseEnter = () => {
     if (disabled) return;
     if (hideTimer.current) clearTimeout(hideTimer.current);
     if (showTimer.current) clearTimeout(showTimer.current);
     if (!rendered) {
       setRendered(true);
-      setTimeout(() => {
+      openingTimer.current = setTimeout(() => {
         updateShow(true);
         setTimeout(updatePosition, 0);
       }, 0);
@@ -234,7 +246,12 @@ const Tooltip: React.FC<TooltipProps> = ({
     : undefined;
 
   const overlayNode = rendered ? (
-    <Transition show={visible && anchorVisible} name={`k-${preCls}`} nodeRef={refPopper} appear>
+    <Transition
+      show={!disabled && visible && anchorVisible}
+      name={`k-${preCls}`}
+      nodeRef={refPopper}
+      appear
+    >
       <div
         ref={refPopper}
         {...({ "k-placement": currentPlacement } as React.HTMLAttributes<HTMLDivElement>)}

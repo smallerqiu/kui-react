@@ -1,11 +1,12 @@
 import Color, { type ColorInstance } from "color";
-import { useEffect, useRef, type MouseEvent as ReactMouseEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, type MouseEvent as ReactMouseEvent } from "react";
 import { clamp } from "../utils/share";
 export interface AlphaProps {
+  disabled?: boolean;
   value: string | ColorInstance;
   onUpdateAlpha?: (alpha: number) => void;
 }
-export default function Alpha({ value, onUpdateAlpha }: AlphaProps) {
+export default function Alpha({ disabled = false, value, onUpdateAlpha }: AlphaProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dragCleanupRef = useRef<() => void>(() => undefined);
   const color = Color(value);
@@ -26,7 +27,11 @@ export default function Alpha({ value, onUpdateAlpha }: AlphaProps) {
   }, [color]);
 
   useEffect(() => () => dragCleanupRef.current(), []);
+  useLayoutEffect(() => {
+    if (disabled) dragCleanupRef.current();
+  }, [disabled]);
   const start = (event: ReactMouseEvent) => {
+    if (disabled) return;
     const move = (x: number) => {
       const rect = canvasRef.current!.getBoundingClientRect();
       onUpdateAlpha?.(Number((clamp(x - rect.left, 0, rect.width) / rect.width).toFixed(2)));

@@ -264,12 +264,12 @@ const Mentions: React.FC<MentionsProps> = ({
       ?.scrollIntoView({ block: "nearest" });
   }, [active, listboxId]);
   const setValue = (next: string) => {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     setInner(next);
     onChange?.(next);
   };
   const clear = (event: React.SyntheticEvent) => {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     event.stopPropagation();
     setValue("");
     setQuery(null);
@@ -278,7 +278,7 @@ const Mentions: React.FC<MentionsProps> = ({
   };
   const choose = (option: MentionOption) => {
     const textarea = textareaRef.current;
-    if (readOnly || !query || option.disabled || !textarea) return;
+    if (disabled || readOnly || !query || option.disabled || !textarea) return;
     const state = query;
     const caret = textarea.selectionStart;
     setValue(
@@ -409,7 +409,9 @@ const Mentions: React.FC<MentionsProps> = ({
                         "k-select-item-disabled": option.disabled,
                       })}
                       onMouseDown={(event) => event.preventDefault()}
-                      onMouseEnter={() => !option.disabled && setActive(index)}
+                      onMouseEnter={() =>
+                        !disabled && !readOnly && !option.disabled && setActive(index)
+                      }
                       onClick={() => choose(option)}
                     >
                       {option.label ?? option.value}

@@ -110,7 +110,7 @@ function ColorPicker({
         ? next.rgb().string(0)
         : next.hsl().string(0);
   const update = (next: ColorInstance, targetMode = mode) => {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     const formatted = format(next, targetMode);
     setInnerColor(formatted);
     onChange?.(formatted);
@@ -249,9 +249,19 @@ function ColorPicker({
       </div>
     </div>
   );
+  const blockPanelInteraction = (event: React.SyntheticEvent) => {
+    if (disabled || readOnly) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  };
   const dropdownContent = (
     <div
       ref={popoverRef}
+      aria-disabled={disabled || undefined}
+      onClickCapture={blockPanelInteraction}
+      onMouseDownCapture={blockPanelInteraction}
+      onKeyDownCapture={blockPanelInteraction}
       {...({ "k-placement": currentPlacement } as HTMLAttributes<HTMLDivElement>)}
       className={clsx("k-color-picker-dropdown", {
         "k-color-picker-disabled-alpha": disabledAlpha,
@@ -275,8 +285,9 @@ function ColorPicker({
           : undefined
       }
     >
-      <div className="k-color-picker-body">
+      <div className="k-color-picker-body" inert={disabled || readOnly}>
         <Paint
+          disabled={disabled || readOnly}
           hue={currentHue}
           value={color}
           onUpdateRGB={(rgb: ColorObject) => update(Color({ ...rgb, alpha: currentAlpha }).rgb())}
@@ -290,18 +301,20 @@ function ColorPicker({
           </div>
           <div className="k-color-picker-bar-box">
             <Hue
+              disabled={disabled || readOnly}
               hue={currentHue}
               onUpdateHue={(hue) => {
-                if (readOnly) return;
+                if (disabled || readOnly) return;
                 setCurrentHue(hue);
                 update(color.hue(hue).rgb());
               }}
             />
             {!disabledAlpha && (
               <Alpha
+                disabled={disabled || readOnly}
                 value={color}
                 onUpdateAlpha={(alpha) => {
-                  if (readOnly) return;
+                  if (disabled || readOnly) return;
                   setCurrentAlpha(alpha);
                   update(color.alpha(alpha).rgb());
                 }}
@@ -314,13 +327,13 @@ function ColorPicker({
           value={color}
           disabledAlpha={disabledAlpha}
           onUpdateMode={(next) => {
-            if (readOnly) return;
+            if (disabled || readOnly) return;
             if (modeProp === undefined) setInnerMode(next);
             onUpdateMode?.(next);
             update(color, next);
           }}
           onUpdateColorValue={(next) => {
-            if (readOnly) return;
+            if (disabled || readOnly) return;
             setCurrentAlpha(next.alpha());
             if (next.saturationv() > 0) setCurrentHue(next.hue());
             update(next);
@@ -330,7 +343,7 @@ function ColorPicker({
           presets={presets}
           color={color}
           onUpdateColor={(next) => {
-            if (readOnly) return;
+            if (disabled || readOnly) return;
             setCurrentAlpha(next.alpha());
             setCurrentHue(next.hue());
             update(next.rgb());

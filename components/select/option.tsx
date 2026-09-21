@@ -27,6 +27,7 @@ const Option: React.FC<OptionProps> = ({
   active = false,
   multiple = false,
   onSelect,
+  onClick,
   onMouseEnter,
   children,
   className = "",
@@ -34,12 +35,13 @@ const Option: React.FC<OptionProps> = ({
 }) => {
   const labelText = label ?? children ?? value;
 
-  const handleSelect = () => {
+  const handleSelect = (event: React.MouseEvent<HTMLLIElement>) => {
     if (disabled) return;
     onSelect?.({
       value,
       label: typeof labelText === "string" || typeof labelText === "number" ? labelText : value,
     });
+    onClick?.(event);
   };
 
   const classes = clsx(
@@ -53,7 +55,13 @@ const Option: React.FC<OptionProps> = ({
   );
 
   return (
-    <li className={classes} onClick={handleSelect} onMouseEnter={onMouseEnter} {...rest}>
+    <li
+      {...rest}
+      className={classes}
+      onClick={handleSelect}
+      onMouseEnter={disabled ? undefined : onMouseEnter}
+      aria-disabled={disabled}
+    >
       <span>
         {labelText}
         {multiple ? <Icon type={Check} /> : null}

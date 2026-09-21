@@ -49,7 +49,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
   const classNames = clsx(
     `k-${preCls}-item`,
     {
-      [`k-${preCls}-item-active`]: active,
+      [`k-${preCls}-item-active`]: active && !disabled,
       [`k-${preCls}-item-selected`]: selected,
       [`k-${preCls}-item-disabled`]: disabled,
     },
@@ -73,7 +73,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
         paddingLeft: paddingLeft ? `${paddingLeft}px` : style?.paddingLeft,
       }}
       onMouseEnter={() => !disabled && setActive(true)}
-      onMouseLeave={() => !disabled && setActive(false)}
+      onMouseLeave={() => setActive(false)}
       onClick={(event) => {
         if (disabled) {
           event.preventDefault();

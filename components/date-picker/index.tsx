@@ -625,9 +625,21 @@ function DatePicker({
         "k-datepicker-range": isRange,
         "k-datepicker-with-time": hasTime,
         "k-datepicker-panel": panelOnly,
+        "k-datepicker-disabled": disabled,
       })}
       {...({ mode, "k-placement": currentPlacement } as Record<string, string>)}
       role="dialog"
+      aria-disabled={disabled || undefined}
+      onClickCapture={(event) => {
+        if (!disabled) return;
+        event.preventDefault();
+        event.stopPropagation();
+      }}
+      onKeyDownCapture={(event) => {
+        if (!disabled) return;
+        event.preventDefault();
+        event.stopPropagation();
+      }}
       style={
         panelOnly
           ? undefined
@@ -775,7 +787,8 @@ function DatePicker({
                 size={inputSize}
                 value={texts[0] ?? ""}
                 placeholder={placeholders[0]}
-                readOnly={readOnly || !editable || disabled}
+                disabled={disabled}
+                readOnly={readOnly || !editable}
                 onClick={(event) => {
                   event.stopPropagation();
                   setTimeEditSide("start");
@@ -792,7 +805,8 @@ function DatePicker({
                 size={inputSize}
                 value={texts[1] ?? ""}
                 placeholder={placeholders[1]}
-                readOnly={readOnly || !editable || disabled}
+                disabled={disabled}
+                readOnly={readOnly || !editable}
                 onClick={(event) => {
                   event.stopPropagation();
                   setTimeEditSide("end");
@@ -808,7 +822,8 @@ function DatePicker({
               size={inputSize}
               value={texts[0] ?? ""}
               placeholder={placeholders[0]}
-              readOnly={readOnly || !editable || disabled}
+              disabled={disabled}
+              readOnly={readOnly || !editable}
               onClick={(event) => event.stopPropagation()}
               onFocus={() => !disabled && !readOnly && setOpen(true)}
               onChange={(event) => edit(event.target.value, 0)}

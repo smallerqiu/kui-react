@@ -1,10 +1,11 @@
-import { useEffect, useRef, type MouseEvent as ReactMouseEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, type MouseEvent as ReactMouseEvent } from "react";
 import { clamp } from "../utils/share";
 export interface HueProps {
+  disabled?: boolean;
   hue?: number;
   onUpdateHue?: (hue: number) => void;
 }
-export default function Hue({ hue = 0, onUpdateHue }: HueProps) {
+export default function Hue({ disabled = false, hue = 0, onUpdateHue }: HueProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dragCleanupRef = useRef<() => void>(() => undefined);
   useEffect(() => {
@@ -18,7 +19,11 @@ export default function Hue({ hue = 0, onUpdateHue }: HueProps) {
     context.fillRect(0, 0, canvas.width, canvas.height);
   }, []);
   useEffect(() => () => dragCleanupRef.current(), []);
+  useLayoutEffect(() => {
+    if (disabled) dragCleanupRef.current();
+  }, [disabled]);
   const start = (event: ReactMouseEvent) => {
+    if (disabled) return;
     const move = (clientX: number) => {
       const rect = canvasRef.current!.getBoundingClientRect();
       onUpdateHue?.(Math.round((clamp(clientX - rect.left, 0, rect.width) / rect.width) * 360));

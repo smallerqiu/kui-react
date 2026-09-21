@@ -53,7 +53,7 @@ const Rate: React.FC<RateProps> = ({
   const currentValue = innerValue;
 
   const update = (t: "C" | "M", index: number, percent: number) => {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     if (t === "M") {
       if (cleared) return;
       if (allowHalf) {
@@ -83,7 +83,7 @@ const Rate: React.FC<RateProps> = ({
     setCleared(false);
   };
 
-  const tpValue = tempValue !== null ? tempValue : currentValue;
+  const tpValue = !disabled && !readOnly && tempValue !== null ? tempValue : currentValue;
 
   // Normalize count
   let actualCount = count;

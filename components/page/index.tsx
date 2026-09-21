@@ -153,7 +153,7 @@ const Page: React.FC<PageProps> = ({
           role="button"
           tabIndex={disabled ? -1 : 0}
           aria-label="Previous 5 pages"
-          onMouseEnter={() => setPrevHover(true)}
+          onMouseEnter={() => !disabled && setPrevHover(true)}
           onMouseLeave={() => setPrevHover(false)}
           onClick={() => toPage(currentPage - 5)}
           onKeyDown={(event) => activateByKeyboard(event, () => toPage(currentPage - 5))}
@@ -170,7 +170,7 @@ const Page: React.FC<PageProps> = ({
           role="button"
           tabIndex={disabled ? -1 : 0}
           aria-label="Next 5 pages"
-          onMouseEnter={() => setNextHover(true)}
+          onMouseEnter={() => !disabled && setNextHover(true)}
           onMouseLeave={() => setNextHover(false)}
           onClick={() => toPage(currentPage + 5)}
           onKeyDown={(event) => activateByKeyboard(event, () => toPage(currentPage + 5))}

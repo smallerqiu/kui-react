@@ -218,7 +218,9 @@ const Tabs: React.FC<TabsProps> = ({
           "k-tabs-tab-disabled": isDisabled,
         })}
         onClick={() => tabClick(key, isDisabled)}
-        onKeyDown={(event) => moveTabFocus(event, panel)}
+        onKeyDown={(event) => {
+          if (!isDisabled) moveTabFocus(event, panel);
+        }}
         id={`${tabsId}-tab-${key}`}
         role="tab"
         tabIndex={key === activeKey && !isDisabled ? 0 : -1}
@@ -233,11 +235,18 @@ const Tabs: React.FC<TabsProps> = ({
             type={X}
             className="k-tabs-close"
             role="button"
-            tabIndex={0}
+            tabIndex={isDisabled ? -1 : 0}
             aria-label="Close"
-            onClick={(e) => closeTab(key, e)}
+            aria-disabled={isDisabled || undefined}
+            onClick={(e) => {
+              if (isDisabled) {
+                e.stopPropagation();
+                return;
+              }
+              closeTab(key, e);
+            }}
             onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
+              if (!isDisabled && (e.key === "Enter" || e.key === " ")) {
                 e.preventDefault();
                 closeTab(key, e);
               }

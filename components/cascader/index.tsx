@@ -224,7 +224,7 @@ function Cascader({
   };
 
   const choose = (option: CascaderOption, column: number, hover = false) => {
-    if (readOnly || option.disabled) return;
+    if (disabled || readOnly || option.disabled) return;
     const nextPath = [...activePath.slice(0, column), option];
     setActivePath(nextPath);
     const children = getOptionChildren(option);
@@ -240,7 +240,7 @@ function Cascader({
   };
 
   const clear = (event: React.SyntheticEvent) => {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     event.stopPropagation();
     setActivePath([]);
     setActiveColumn(0);
@@ -367,6 +367,7 @@ function Cascader({
         tabIndex={disabled ? -1 : 0}
         onKeyDown={keyboard}
         onClick={(event) => {
+          if (disabled) return;
           onClick?.(event);
           if (!event.defaultPrevented) {
             if (!visible) setActivePath(selectedPath);

@@ -115,4 +115,27 @@ describe("Tree drag and drop", () => {
     expect(onExpandedKeysChange).not.toHaveBeenCalled();
     expect(container.querySelector("[data-tree-key='child']")).not.toBeNull();
   });
+
+  it("does not expand a disabled node from either the row or arrow", () => {
+    const onExpandedKeysChange = vi.fn();
+    const data: TreeNode[] = [
+      {
+        key: "parent",
+        title: "Parent",
+        disabled: true,
+        children: [{ key: "child", title: "Child" }],
+      },
+    ];
+    const { container } = render(
+      <Tree data={data} directory onExpandedKeysChange={onExpandedKeysChange} />,
+    );
+    const row = container.querySelector<HTMLElement>("[data-tree-key='parent']")!;
+
+    fireEvent.click(row);
+    fireEvent.click(row.querySelector(".k-tree-arrow")!);
+
+    expect(onExpandedKeysChange).not.toHaveBeenCalled();
+    expect(container.querySelector("[data-tree-key='child']")).toBeNull();
+    expect(row.classList.contains("k-tree-item-disabled")).toBe(true);
+  });
 });

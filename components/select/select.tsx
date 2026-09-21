@@ -351,7 +351,7 @@ const Select: React.FC<SelectProps> = ({
   };
 
   function handleSelect(item: OptionSelectEvent) {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     const { value: val, label: lbl } = item;
     let selected = true;
     let nextValue = [...currentValue];
@@ -390,7 +390,7 @@ const Select: React.FC<SelectProps> = ({
   }
 
   const searchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     const target = e.target;
     const v = target.value;
     setQueryKey(v);
@@ -434,7 +434,7 @@ const Select: React.FC<SelectProps> = ({
   };
 
   const onClear = (e: React.SyntheticEvent) => {
-    if (readOnly) return;
+    if (disabled || readOnly) return;
     e.stopPropagation();
     const nextValue: (string | number)[] = [];
     setInternalValue(nextValue);
@@ -590,7 +590,7 @@ const Select: React.FC<SelectProps> = ({
     return (
       <Option
         onSelect={handleSelect}
-        onMouseEnter={() => onMouseenter(index)}
+        onMouseEnter={optionDisabled ? undefined : () => onMouseenter(index)}
         key={`${val}-${label}`}
         active={activeIndex === index}
         value={val}
@@ -603,6 +603,7 @@ const Select: React.FC<SelectProps> = ({
   };
 
   const queryKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (disabled || readOnly) return;
     if (e.key === "Backspace") {
       if (queryKey === "" && multiple && currentValue.length > 0) {
         const nextValue = currentValue.slice(0, -1);
@@ -684,6 +685,7 @@ const Select: React.FC<SelectProps> = ({
     ref: queryInputRef,
     className: "k-select-search",
     autoComplete: "off",
+    disabled,
     readOnly,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
       e.stopPropagation();

@@ -46,6 +46,7 @@ export default function Selector({
   children,
 }: SelectorProps) {
   const [dragOver, setDragOver] = useState(false);
+  if (disabled && dragOver) setDragOver(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const directoryProps: InputHTMLAttributes<HTMLInputElement> & {
     webkitdirectory?: string;
@@ -54,7 +55,7 @@ export default function Selector({
   if (type === "picture" && normalizedLimit !== undefined && fileList.length >= normalizedLimit)
     return null;
   const select = (files: FileList | null) => {
-    if (files?.length) onSelect?.(files);
+    if (!disabled && files?.length) onSelect?.(files);
     setDragOver(false);
   };
   const drop = (event: DragEvent) => {
@@ -64,7 +65,7 @@ export default function Selector({
   return (
     <div className="k-upload-select">
       <div
-        className={clsx("k-upload-add", { "k-upload-drag-over": dragOver })}
+        className={clsx("k-upload-add", { "k-upload-drag-over": dragOver && !disabled })}
         role="button"
         tabIndex={disabled ? -1 : 0}
         aria-disabled={disabled || undefined}
@@ -76,7 +77,7 @@ export default function Selector({
           }
         }}
         onDragEnter={
-          draggable
+          draggable && !disabled
             ? (event) => {
                 event.preventDefault();
                 setDragOver(true);
@@ -84,7 +85,7 @@ export default function Selector({
             : undefined
         }
         onDragOver={
-          draggable
+          draggable && !disabled
             ? (event) => {
                 event.preventDefault();
                 setDragOver(true);
@@ -92,7 +93,7 @@ export default function Selector({
             : undefined
         }
         onDragLeave={draggable ? () => setDragOver(false) : undefined}
-        onDrop={draggable ? drop : undefined}
+        onDrop={draggable && !disabled ? drop : undefined}
       >
         <input
           ref={inputRef}
