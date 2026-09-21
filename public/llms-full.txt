@@ -1,8 +1,9 @@
-# React KUI 3.0.0
+# React KUI 3.1.0
 
 React 19.2+ library. Package: react-kui. Import CSS once from react-kui/style/index.css. Prefer installed-version metadata. Use JSX/TSX, not Vue templates or v-model.
 
 - [Affix](https://react.k-ui.cn/components/affix)
+- [Popup](https://react.k-ui.cn/components/popup)
 - [Alert](https://react.k-ui.cn/components/alert)
 - [Calendar](https://react.k-ui.cn/components/calendar)
 - [Kanban](https://react.k-ui.cn/components/kanban)
@@ -280,6 +281,631 @@ export default function App() {
 }
 ```
 
+# Popup
+
+{
+  "name": "Popup",
+  "import": "import { Popup } from \"react-kui\"",
+  "documentation": "https://react.k-ui.cn/components/popup",
+  "props": [
+    {
+      "name": "open",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "受控显示状态，配合 onOpenChange 同步",
+      "descriptionEn": "Controlled visibility; synchronize through onOpenChange"
+    },
+    {
+      "name": "defaultOpen",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "false",
+      "descriptionZh": "非受控初始状态",
+      "descriptionEn": "Initial uncontrolled visibility"
+    },
+    {
+      "name": "disabled",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "false",
+      "descriptionZh": "禁止交互打开并取消待执行的打开操作，不强制覆盖 open",
+      "descriptionEn": "Prevents opening and cancels delayed opening; does not override open"
+    },
+    {
+      "name": "placement",
+      "type": "PlacementsType | undefined",
+      "required": false,
+      "enumValues": [
+        "top",
+        "top-left",
+        "top-right",
+        "bottom",
+        "bottom-left",
+        "bottom-right",
+        "left",
+        "left-bottom",
+        "left-top",
+        "right",
+        "right-top",
+        "right-bottom"
+      ],
+      "boolean": false,
+      "defaultExpression": "\"bottom-left\"",
+      "descriptionZh": "弹层方位，支持 12 个方向",
+      "descriptionEn": "Popup placement; supports 12 positions"
+    },
+    {
+      "name": "trigger",
+      "type": "PopupTrigger | undefined",
+      "required": false,
+      "enumValues": [
+        "manual",
+        "hover",
+        "click",
+        "focus",
+        "contextmenu"
+      ],
+      "boolean": false,
+      "defaultExpression": "\"click\"",
+      "descriptionZh": "触发方式；manual 仅由 open 或实例方法控制",
+      "descriptionEn": "Trigger mode; manual uses open or instance methods"
+    },
+    {
+      "name": "arrow",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "false",
+      "descriptionZh": "显示箭头",
+      "descriptionEn": "Show arrow"
+    },
+    {
+      "name": "offset",
+      "type": "number | undefined",
+      "required": false,
+      "boolean": false,
+      "defaultExpression": "3",
+      "descriptionZh": "定位间距（像素）",
+      "descriptionEn": "Position offset in pixels"
+    },
+    {
+      "name": "openDelay",
+      "type": "number | undefined",
+      "required": false,
+      "boolean": false,
+      "defaultExpression": "0",
+      "descriptionZh": "hover 打开延时（毫秒）",
+      "descriptionEn": "Hover opening delay in milliseconds"
+    },
+    {
+      "name": "closeDelay",
+      "type": "number | undefined",
+      "required": false,
+      "boolean": false,
+      "defaultExpression": "300",
+      "descriptionZh": "hover / focus 关闭延时（毫秒）",
+      "descriptionEn": "Hover / focus closing delay in milliseconds"
+    },
+    {
+      "name": "closeOnOutsideClick",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "true",
+      "descriptionZh": "外部点击关闭，包含嵌套 Popup 的内容边界",
+      "descriptionEn": "Close on outside click; nested Popup content counts as inside"
+    },
+    {
+      "name": "closeOnEscape",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "true",
+      "descriptionZh": "Escape 关闭最上层 Popup 并还原触发器焦点",
+      "descriptionEn": "Escape closes the top Popup and restores trigger focus"
+    },
+    {
+      "name": "matchTriggerWidth",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "false",
+      "descriptionZh": "弹层最小宽度不小于触发器",
+      "descriptionEn": "Use trigger width as the minimum popup width"
+    },
+    {
+      "name": "getPopupContainer",
+      "type": "(() => HTMLElement | null | undefined) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "挂载容器，默认使用 Config 配置或 body",
+      "descriptionEn": "Container; falls back to Config or body"
+    },
+    {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "false",
+      "descriptionZh": "退出动画结束后销毁内容；默认保留表单状态",
+      "descriptionEn": "Destroy after exit; preserves form state by default"
+    },
+    {
+      "name": "target",
+      "type": "React.RefObject<HTMLElement | null> | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "可选外部定位锚点；不自动绑定事件，配合 manual 和 open 使用",
+      "descriptionEn": "Optional external positioning anchor; no event binding, use with manual and open"
+    },
+    {
+      "name": "onOpenChange",
+      "type": "((open: boolean, detail: PopupOpenChangeDetail) => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "请求改变显示状态，参数包含原因和原生事件",
+      "descriptionEn": "Visibility change request with reason and native event"
+    },
+    {
+      "name": "onAfterOpen",
+      "type": "(() => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "进入动画结束",
+      "descriptionEn": "Called after entering"
+    },
+    {
+      "name": "onAfterClose",
+      "type": "(() => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "退出动画结束",
+      "descriptionEn": "Called after leaving"
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "触发元素；自定义组件需要转发 DOM ref 和事件",
+      "descriptionEn": "Trigger; custom components must forward DOM ref and events"
+    },
+    {
+      "name": "overlay",
+      "type": "React.ReactNode | ((popup: PopupRef) => React.ReactNode)",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "弹层内容或返回内容的渲染函数",
+      "descriptionEn": "Overlay content or a render function"
+    },
+    {
+      "name": "raw",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "false",
+      "descriptionZh": "复用唯一弹层根节点及其 DOM 引用，不增加包装元素",
+      "descriptionEn": "Reuse the single overlay root and preserve its DOM ref; no extra wrapper"
+    },
+    {
+      "name": "outsideEvent",
+      "type": "\"click\" | \"mousedown\" | undefined",
+      "required": false,
+      "enumValues": [
+        "click",
+        "mousedown"
+      ],
+      "boolean": false,
+      "defaultExpression": "\"click\"",
+      "descriptionZh": "外部点击事件，适配选择器原有的关闭时机",
+      "descriptionEn": "Outside pointer event used by legacy selector adapters"
+    },
+    {
+      "name": "transitionDuration",
+      "type": "number | undefined",
+      "required": false,
+      "boolean": false,
+      "defaultExpression": "300",
+      "descriptionZh": "过渡时长（毫秒）",
+      "descriptionEn": "Transition duration in milliseconds"
+    },
+    {
+      "name": "getAnchorPosition",
+      "type": "(() => { x: number; y: number; } | null) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "可选视口坐标解析函数，用于 Mentions 光标定位",
+      "descriptionEn": "Optional viewport point resolver, for caret-anchored Mentions"
+    },
+    {
+      "name": "prefixCls",
+      "type": "string | undefined",
+      "required": false,
+      "boolean": false,
+      "defaultExpression": "\"k-popup\"",
+      "descriptionZh": "根样式前缀",
+      "descriptionEn": "Root CSS prefix"
+    },
+    {
+      "name": "transitionName",
+      "type": "string | undefined",
+      "required": false,
+      "boolean": false,
+      "defaultExpression": "prefixCls",
+      "descriptionZh": "动画类名前缀",
+      "descriptionEn": "Transition CSS prefix"
+    },
+    {
+      "name": "panelOnly",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "false",
+      "descriptionZh": "只渲染内联内容，无定位、触发器或全局事件",
+      "descriptionEn": "Inline content only; no positioning, trigger, or global listeners"
+    },
+    {
+      "name": "triggerProps",
+      "type": "React.HTMLAttributes<HTMLElement> | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "触发器附加属性",
+      "descriptionEn": "Additional trigger attributes"
+    },
+    {
+      "name": "respectDefaultPrevented",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "true",
+      "descriptionZh": "遵循触发器 click 的 preventDefault",
+      "descriptionEn": "Honor preventDefault on trigger click"
+    },
+    {
+      "name": "contentStyle",
+      "type": "React.CSSProperties | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "内容容器样式",
+      "descriptionEn": "Content container styles"
+    },
+    {
+      "name": "arrowContent",
+      "type": "React.ReactNode",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "自定义箭头内容",
+      "descriptionEn": "Custom arrow content"
+    },
+    {
+      "name": "hideWhenDetached",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "false",
+      "descriptionZh": "锚点不在视口时隐藏",
+      "descriptionEn": "Hide when the anchor is outside the viewport"
+    },
+    {
+      "name": "onTriggerKeyDown",
+      "type": "((event: React.KeyboardEvent<HTMLElement>, popup: PopupRef) => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "业务键盘处理",
+      "descriptionEn": "Business keyboard handler"
+    }
+  ],
+  "events": [
+    {
+      "name": "onOpenChange",
+      "type": "((open: boolean, detail: PopupOpenChangeDetail) => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "请求改变显示状态，参数包含原因和原生事件",
+      "descriptionEn": "Visibility change request with reason and native event"
+    },
+    {
+      "name": "onAfterOpen",
+      "type": "(() => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "进入动画结束",
+      "descriptionEn": "Called after entering"
+    },
+    {
+      "name": "onAfterClose",
+      "type": "(() => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "退出动画结束",
+      "descriptionEn": "Called after leaving"
+    },
+    {
+      "name": "onTriggerKeyDown",
+      "type": "((event: React.KeyboardEvent<HTMLElement>, popup: PopupRef) => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "业务键盘处理",
+      "descriptionEn": "Business keyboard handler"
+    }
+  ],
+  "renderProps": [
+    "getPopupContainer",
+    "children",
+    "overlay",
+    "getAnchorPosition",
+    "arrowContent"
+  ],
+  "behavior": {
+    "rules": []
+  },
+  "children": []
+}
+
+## 基础用法与自定义内容
+
+```tsx
+import { Button, Input, Popup, Space } from "react-kui";
+export default function App() {
+  return (
+    <Popup
+      arrow
+      overlay={({ close }) => (
+        <Space vertical>
+          <strong>Quick note</strong>
+          <Input aria-label="Note" placeholder="Write a note…" />
+          <Button type="primary" onClick={close}>
+            Done
+          </Button>
+        </Space>
+      )}
+    >
+      <Button>Open popup</Button>
+    </Popup>
+  );
+}
+```
+## 触发方式
+
+```tsx
+import { Button, Popup, Space } from "react-kui";
+export default function App() {
+  return (
+    <Space wrap>
+      {(["click", "hover", "focus", "contextmenu"] as const).map((trigger) => (
+        <Popup
+          key={trigger}
+          trigger={trigger}
+          arrow
+          openDelay={150}
+          closeDelay={300}
+          overlay={<span>Opened by {trigger}</span>}
+        >
+          <Button>{trigger}</Button>
+        </Popup>
+      ))}
+      <Popup disabled overlay="Unavailable">
+        <Button disabled>Disabled</Button>
+      </Popup>
+    </Space>
+  );
+}
+```
+## 方位与箭头
+
+```tsx
+import { useState } from "react";
+import { Button, Checkbox, Popup, Space } from "react-kui";
+export default function App() {
+  const [arrow, setArrow] = useState(true);
+  const placements = [
+    "top-left",
+    "top",
+    "top-right",
+    "bottom-left",
+    "bottom",
+    "bottom-right",
+    "left-top",
+    "left",
+    "left-bottom",
+    "right-top",
+    "right",
+    "right-bottom",
+  ] as const;
+  return (
+    <Space vertical>
+      <Checkbox checked={arrow} onChange={(event) => setArrow(event.checked)}>
+        Show arrow
+      </Checkbox>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          gap: 8,
+          maxWidth: 420,
+        }}
+      >
+        {placements.map((placement) => (
+          <Popup
+            key={placement}
+            placement={placement}
+            arrow={arrow}
+            offset={10}
+            overlay={<span>{placement}</span>}
+          >
+            <Button>{placement}</Button>
+          </Popup>
+        ))}
+      </div>
+    </Space>
+  );
+}
+```
+## 受控开关与实例方法
+
+```tsx
+import { useRef, useState } from "react";
+import { Button, Popup, Space, type PopupOpenReason, type PopupRef } from "react-kui";
+export default function App() {
+  const [open, setOpen] = useState(false);
+  const [reason, setReason] = useState<PopupOpenReason>("programmatic");
+  const popup = useRef<PopupRef>(null);
+  return (
+    <Space vertical>
+      <Space>
+        <Button
+          onClick={(event) => {
+            // This button is outside the anchor; do not treat this opening click as an outside click.
+            event.stopPropagation();
+            popup.current?.open();
+          }}
+        >
+          Open via ref
+        </Button>
+        <Popup
+          ref={popup}
+          trigger="manual"
+          open={open}
+          onOpenChange={(next, detail) => {
+            setOpen(next);
+            setReason(detail.reason);
+          }}
+          overlay={({ close }) => (
+            <Space vertical>
+              <span>Click outside or press Escape.</span>
+              <Button onClick={close}>Close from inside</Button>
+            </Space>
+          )}
+        >
+          <Button onClick={() => setOpen(!open)}>Toggle controlled popup</Button>
+        </Popup>
+      </Space>
+      <span role="status">
+        Open: {String(open)} · Reason: {reason}
+      </span>
+    </Space>
+  );
+}
+```
+## 自定义挂载容器
+
+```tsx
+import { useRef } from "react";
+import { Button, Popup } from "react-kui";
+export default function App() {
+  const container = useRef<HTMLDivElement>(null);
+  return (
+    <div
+      ref={container}
+      style={{
+        position: "relative",
+        minHeight: 200,
+        padding: 24,
+        border: "1px dashed var(--kui-color-border)",
+      }}
+    >
+      <Popup
+        getPopupContainer={() => container.current}
+        matchTriggerWidth
+        overlay={<span>Mounted inside this container.</span>}
+      >
+        <Button style={{ width: 240, maxWidth: "100%" }}>Custom container</Button>
+      </Popup>
+    </div>
+  );
+}
+```
+## 嵌套弹层与选择器
+
+```tsx
+import { useState } from "react";
+import { Button, Popup, Select, Space } from "react-kui";
+export default function App() {
+  const [value, setValue] = useState<string | number>("all");
+  return (
+    <Popup
+      arrow
+      overlay={({ close }) => (
+        <Space vertical>
+          <strong>Filter results</strong>
+          <Select
+            style={{ width: 220 }}
+            value={value}
+            clearable={false}
+            options={[
+              { label: "All", value: "all" },
+              { label: "Active", value: "active" },
+            ]}
+            onChange={(next) => {
+              if (typeof next === "string" || typeof next === "number") setValue(next);
+            }}
+          />
+          <Popup placement="right" overlay="This is a nested popup.">
+            <Button>More details</Button>
+          </Popup>
+          <Button type="primary" onClick={close}>
+            Apply
+          </Button>
+        </Space>
+      )}
+    >
+      <Button>Open filters</Button>
+    </Popup>
+  );
+}
+```
+
 # Alert
 
 {
@@ -370,13 +996,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "主题",
@@ -387,10 +1013,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -924,11 +1550,11 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "\"outline\" | \"fill\" | undefined",
+      "type": "\"fill\" | \"outline\" | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill"
+        "fill",
+        "outline"
       ],
       "boolean": false,
       "defaultExpression": "\"fill\"",
@@ -1180,11 +1806,11 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "\"outline\" | \"fill\" | \"plain\" | undefined",
+      "type": "\"fill\" | \"outline\" | \"plain\" | undefined",
       "required": false,
       "enumValues": [
-        "outline",
         "fill",
+        "outline",
         "plain"
       ],
       "boolean": false,
@@ -1196,10 +1822,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -1535,10 +2161,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -1549,13 +2175,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "主题",
@@ -2190,9 +2816,9 @@ export default function App() {
       "type": "AvatarShape | undefined",
       "required": false,
       "enumValues": [
-        "circle",
+        "round",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "defaultExpression": "\"circle\"",
@@ -2438,9 +3064,9 @@ export default function App() {
       "type": "AvatarShape | undefined",
       "required": false,
       "enumValues": [
-        "circle",
+        "round",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "defaultExpression": "\"circle\"",
@@ -2906,8 +3532,8 @@ export default function App() {
       "required": false,
       "enumValues": [
         "auto",
-        "instant",
-        "smooth"
+        "smooth",
+        "instant"
       ],
       "boolean": false,
       "defaultExpression": "\"smooth\"",
@@ -3093,10 +3719,10 @@ export default function App() {
       "type": "BadgeStatusType | undefined",
       "required": false,
       "enumValues": [
+        "default",
         "success",
         "warning",
-        "error",
-        "default"
+        "error"
       ],
       "boolean": false,
       "defaultExpression": "\"default\"",
@@ -3408,8 +4034,8 @@ export default function App() {
       "enumValues": [
         "link",
         "text",
-        "warning",
         "default",
+        "warning",
         "primary",
         "danger"
       ],
@@ -3436,13 +4062,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "按钮主题",
@@ -3453,10 +4079,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "按钮的外观",
@@ -3864,10 +4490,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "按钮的外观",
@@ -4249,13 +4875,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "外观主题",
@@ -4266,10 +4892,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "外框形状",
@@ -5023,13 +5649,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "组件呈现主题",
@@ -5319,13 +5945,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "组件呈现主题",
@@ -5716,8 +6342,8 @@ export default function App() {
       "type": "import(\"./types\").CheckCardTheme | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill"
+        "fill",
+        "outline"
       ],
       "boolean": false,
       "descriptionZh": "卡片主题",
@@ -5741,10 +6367,10 @@ export default function App() {
       "type": "import(\"../components\").ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "卡片形状",
@@ -5963,8 +6589,8 @@ export default function App() {
       "type": "import(\"./types\").CheckCardTheme | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill"
+        "fill",
+        "outline"
       ],
       "boolean": false,
       "descriptionZh": "卡片主题",
@@ -5988,10 +6614,10 @@ export default function App() {
       "type": "import(\"../components\").ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "卡片形状",
@@ -6199,13 +6825,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "主题",
@@ -6216,10 +6842,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -6619,10 +7245,10 @@ export default function App() {
       "type": "DropPlacementsType | undefined",
       "required": false,
       "enumValues": [
-        "bottom",
         "top",
         "top-left",
         "top-right",
+        "bottom",
         "bottom-left",
         "bottom-right"
       ],
@@ -6660,13 +7286,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "外观主题，支持 `outline`、`fill`、`plain`，未设置时可继承 Form 或 ConfigProvider",
@@ -6677,10 +7303,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "形状，支持 `round`、`circle`、`square`，未设置时可继承 Form 或 ConfigProvider",
@@ -6943,6 +7569,54 @@ export default function App() {
       "descriptionEn": "Called when the color value changes"
     },
     {
+      "name": "disabled",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "是否禁用",
+      "descriptionEn": "Whether the picker is disabled"
+    },
+    {
+      "name": "placement",
+      "type": "DropPlacementsType | undefined",
+      "required": false,
+      "enumValues": [
+        "top",
+        "top-left",
+        "top-right",
+        "bottom",
+        "bottom-left",
+        "bottom-right"
+      ],
+      "boolean": false,
+      "descriptionZh": "弹层位置",
+      "descriptionEn": "Popup placement"
+    },
+    {
+      "name": "trigger",
+      "type": "\"hover\" | \"click\" | undefined",
+      "required": false,
+      "enumValues": [
+        "hover",
+        "click"
+      ],
+      "boolean": false,
+      "descriptionZh": "弹层触发方式",
+      "descriptionEn": "Popup trigger mode"
+    },
+    {
+      "name": "onOpenChange",
+      "type": "((open: boolean) => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "颜色选择器展开或收起时触发",
+      "descriptionEn": "Called when the popup opens or closes"
+    },
+    {
       "name": "size",
       "type": "SizeType | undefined",
       "required": false,
@@ -6964,18 +7638,6 @@ export default function App() {
       "descriptionEn": "color value"
     },
     {
-      "name": "disabled",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "descriptionZh": "是否禁用",
-      "descriptionEn": "Whether the picker is disabled"
-    },
-    {
       "name": "readOnly",
       "type": "boolean | undefined",
       "required": false,
@@ -6992,13 +7654,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "外观主题，支持 `outline`、`fill`、`plain`，未设置时可继承 Form 或 ConfigProvider",
@@ -7009,10 +7671,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "形状，支持 `round`、`circle`、`square`，未设置时可继承 Form 或 ConfigProvider",
@@ -7043,34 +7705,6 @@ export default function App() {
       "descriptionEn": "Whether to display the color text"
     },
     {
-      "name": "placement",
-      "type": "DropPlacementsType | undefined",
-      "required": false,
-      "enumValues": [
-        "bottom",
-        "top",
-        "top-left",
-        "top-right",
-        "bottom-left",
-        "bottom-right"
-      ],
-      "boolean": false,
-      "descriptionZh": "弹层位置",
-      "descriptionEn": "Popup placement"
-    },
-    {
-      "name": "trigger",
-      "type": "\"hover\" | \"click\" | undefined",
-      "required": false,
-      "enumValues": [
-        "hover",
-        "click"
-      ],
-      "boolean": false,
-      "descriptionZh": "弹层触发方式",
-      "descriptionEn": "Popup trigger mode"
-    },
-    {
       "name": "mode",
       "type": "ColorMode | undefined",
       "required": false,
@@ -7098,14 +7732,6 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "颜色模式更新时触发",
       "descriptionEn": "Called when the color mode changes"
-    },
-    {
-      "name": "onOpenChange",
-      "type": "((open: boolean) => void) | undefined",
-      "required": false,
-      "boolean": false,
-      "descriptionZh": "颜色选择器展开或收起时触发",
-      "descriptionEn": "Called when the popup opens or closes"
     }
   ],
   "events": [
@@ -7118,20 +7744,20 @@ export default function App() {
       "descriptionEn": "Called when the color value changes"
     },
     {
-      "name": "onUpdateMode",
-      "type": "((mode: ColorMode) => void) | undefined",
-      "required": false,
-      "boolean": false,
-      "descriptionZh": "颜色模式更新时触发",
-      "descriptionEn": "Called when the color mode changes"
-    },
-    {
       "name": "onOpenChange",
       "type": "((open: boolean) => void) | undefined",
       "required": false,
       "boolean": false,
       "descriptionZh": "颜色选择器展开或收起时触发",
       "descriptionEn": "Called when the popup opens or closes"
+    },
+    {
+      "name": "onUpdateMode",
+      "type": "((mode: ColorMode) => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "颜色模式更新时触发",
+      "descriptionEn": "Called when the color mode changes"
     }
   ],
   "renderProps": [],
@@ -7481,13 +8107,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "theme='fill' 时呈现浅色主题",
@@ -7498,10 +8124,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "组件呈现的形式",
@@ -7524,10 +8150,10 @@ export default function App() {
       "type": "DropPlacementsType | undefined",
       "required": false,
       "enumValues": [
-        "bottom",
         "top",
         "top-left",
         "top-right",
+        "bottom",
         "bottom-left",
         "bottom-right"
       ],
@@ -7922,6 +8548,42 @@ export default function App() {
       "descriptionEn": "Callback after the value changes"
     },
     {
+      "name": "disabled",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "是否禁用组件",
+      "descriptionEn": "Whether the component is disabled"
+    },
+    {
+      "name": "placement",
+      "type": "DropPlacementsType | undefined",
+      "required": false,
+      "enumValues": [
+        "top",
+        "top-left",
+        "top-right",
+        "bottom",
+        "bottom-left",
+        "bottom-right"
+      ],
+      "boolean": false,
+      "descriptionZh": "下拉展示的方位",
+      "descriptionEn": "Direction displayed when pulled down"
+    },
+    {
+      "name": "onOpenChange",
+      "type": "((open: boolean) => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "下拉框展开或收起时触发",
+      "descriptionEn": "Triggered when the dropdown box expands or collapses"
+    },
+    {
       "name": "footer",
       "type": "ReactNode | ((api: { emit: (value: DatePickerInput | DatePickerInput[]) => void; }) => ReactNode)",
       "required": false,
@@ -7959,18 +8621,6 @@ export default function App() {
       "descriptionEn": "date or time value"
     },
     {
-      "name": "disabled",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "descriptionZh": "是否禁用组件",
-      "descriptionEn": "Whether the component is disabled"
-    },
-    {
       "name": "placeholder",
       "type": "string | string[] | undefined",
       "required": false,
@@ -7995,13 +8645,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "theme='fill' 时呈现浅色主题",
@@ -8012,30 +8662,14 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "组件呈现的形式",
       "descriptionEn": "Component shape"
-    },
-    {
-      "name": "placement",
-      "type": "DropPlacementsType | undefined",
-      "required": false,
-      "enumValues": [
-        "bottom",
-        "top",
-        "top-left",
-        "top-right",
-        "bottom-left",
-        "bottom-right"
-      ],
-      "boolean": false,
-      "descriptionZh": "下拉展示的方位",
-      "descriptionEn": "Direction displayed when pulled down"
     },
     {
       "name": "mode",
@@ -8061,14 +8695,6 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "预设日期",
       "descriptionEn": "Preset dates"
-    },
-    {
-      "name": "onOpenChange",
-      "type": "((open: boolean) => void) | undefined",
-      "required": false,
-      "boolean": false,
-      "descriptionZh": "下拉框展开或收起时触发",
-      "descriptionEn": "Triggered when the dropdown box expands or collapses"
     },
     {
       "name": "startDate",
@@ -8572,10 +9198,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -8943,10 +9569,10 @@ export default function App() {
       "type": "DrawerPlacementsType | undefined",
       "required": false,
       "enumValues": [
-        "right",
-        "bottom",
         "top",
-        "left"
+        "bottom",
+        "left",
+        "right"
       ],
       "boolean": false,
       "defaultExpression": "\"right\"",
@@ -9480,10 +10106,10 @@ export default function App() {
       "type": "DropPlacementsType | undefined",
       "required": false,
       "enumValues": [
-        "bottom",
         "top",
         "top-left",
         "top-right",
+        "bottom",
         "bottom-left",
         "bottom-right"
       ],
@@ -9834,10 +10460,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "按钮形状",
@@ -9869,13 +10495,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "按钮主题",
@@ -9899,10 +10525,10 @@ export default function App() {
       "type": "DropPlacementsType | undefined",
       "required": false,
       "enumValues": [
-        "bottom",
         "top",
         "top-left",
         "top-right",
+        "bottom",
         "bottom-left",
         "bottom-right"
       ],
@@ -10423,13 +11049,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "子控件主题",
@@ -10440,10 +11066,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "子控件形状",
@@ -12562,10 +13188,10 @@ export default function App() {
       "required": false,
       "enumValues": [
         "center",
-        "start",
-        "flex-start",
         "end",
         "flex-end",
+        "flex-start",
+        "start",
         "baseline"
       ],
       "boolean": false,
@@ -12578,11 +13204,11 @@ export default function App() {
       "required": false,
       "enumValues": [
         "center",
-        "flex-start",
-        "flex-end",
-        "space-between",
         "space-around",
-        "space-evenly"
+        "space-between",
+        "space-evenly",
+        "flex-end",
+        "flex-start"
       ],
       "boolean": false,
       "descriptionZh": "主轴对齐方式",
@@ -12842,13 +13468,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "外观主题",
@@ -12859,10 +13485,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "卡片形状",
@@ -13394,13 +14020,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "主题样式",
@@ -13411,10 +14037,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -14549,13 +15175,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "主题",
@@ -14566,10 +15192,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -15001,13 +15627,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "主题",
@@ -15018,10 +15644,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -15527,13 +16153,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "主题",
@@ -15949,13 +16575,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "主题",
@@ -15966,10 +16592,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -16502,10 +17128,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -16516,13 +17142,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "主题",
@@ -16836,13 +17462,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "组件呈现主题",
@@ -16853,10 +17479,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "组件的外观",
@@ -17164,13 +17790,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "主题",
@@ -17181,10 +17807,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -18472,11 +19098,11 @@ export default function App() {
   "props": [
     {
       "name": "theme",
-      "type": "\"light\" | \"dark\" | undefined",
+      "type": "\"dark\" | \"light\" | undefined",
       "required": false,
       "enumValues": [
-        "light",
-        "dark"
+        "dark",
+        "light"
       ],
       "boolean": false,
       "descriptionZh": "局部主题，未设置时继承全局主题",
@@ -21073,10 +21699,10 @@ export default function App() {
       "type": "DropPlacementsType | undefined",
       "required": false,
       "enumValues": [
-        "bottom",
         "top",
         "top-left",
         "top-right",
+        "bottom",
         "bottom-left",
         "bottom-right"
       ],
@@ -21102,10 +21728,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -21116,13 +21742,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "主题",
@@ -21449,6 +22075,14 @@ export default function App() {
       "descriptionEn": "Custom icon color"
     },
     {
+      "name": "icon",
+      "type": "IconType[] | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "自定义图标",
+      "descriptionEn": "Custom icon"
+    },
+    {
       "name": "type",
       "type": "NoticeType | undefined",
       "required": false,
@@ -21462,14 +22096,6 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "",
       "descriptionEn": ""
-    },
-    {
-      "name": "icon",
-      "type": "IconType[] | undefined",
-      "required": false,
-      "boolean": false,
-      "descriptionZh": "自定义图标",
-      "descriptionEn": "Custom icon"
     },
     {
       "name": "onClose",
@@ -22418,6 +23044,42 @@ export default function App() {
       "descriptionEn": ""
     },
     {
+      "name": "onOpenChange",
+      "type": "((opened: boolean) => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "打开或者窗口关闭的回调",
+      "descriptionEn": "Callback for opening or closing a window"
+    },
+    {
+      "name": "onAfterClose",
+      "type": "(() => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "关闭动画结束后的回调",
+      "descriptionEn": "Callback after the close animation finishes"
+    },
+    {
+      "name": "panelOnly",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "只渲染弹窗面板本身，不包含遮罩、动画与全局事件",
+      "descriptionEn": "Render only the modal panel, without mask, animation, or global events"
+    },
+    {
+      "name": "top",
+      "type": "number | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "窗口距离顶部的距离",
+      "descriptionEn": "Distance from the top of the window"
+    },
+    {
       "name": "footer",
       "type": "React.ReactNode",
       "required": false,
@@ -22444,34 +23106,6 @@ export default function App() {
       "boolean": true,
       "descriptionZh": "为`true`时此时确定按钮为加载状态",
       "descriptionEn": "When set to `true`, the confirm button will be in a loading state"
-    },
-    {
-      "name": "panelOnly",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "descriptionZh": "只渲染弹窗面板本身，不包含遮罩、动画与全局事件",
-      "descriptionEn": "Render only the modal panel, without mask, animation, or global events"
-    },
-    {
-      "name": "top",
-      "type": "number | undefined",
-      "required": false,
-      "boolean": false,
-      "descriptionZh": "窗口距离顶部的距离",
-      "descriptionEn": "Distance from the top of the window"
-    },
-    {
-      "name": "onOpenChange",
-      "type": "((opened: boolean) => void) | undefined",
-      "required": false,
-      "boolean": false,
-      "descriptionZh": "打开或者窗口关闭的回调",
-      "descriptionEn": "Callback for opening or closing a window"
     },
     {
       "name": "onClose",
@@ -22536,14 +23170,6 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "点击取消的回调",
       "descriptionEn": "Callback when Cancel is clicked"
-    },
-    {
-      "name": "onAfterClose",
-      "type": "(() => void) | undefined",
-      "required": false,
-      "boolean": false,
-      "descriptionZh": "关闭动画结束后的回调",
-      "descriptionEn": "Callback after the close animation finishes"
     }
   ],
   "events": [
@@ -22554,6 +23180,14 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "打开或者窗口关闭的回调",
       "descriptionEn": "Callback for opening or closing a window"
+    },
+    {
+      "name": "onAfterClose",
+      "type": "(() => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "关闭动画结束后的回调",
+      "descriptionEn": "Callback after the close animation finishes"
     },
     {
       "name": "onClose",
@@ -22578,14 +23212,6 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "点击取消的回调",
       "descriptionEn": "Callback when Cancel is clicked"
-    },
-    {
-      "name": "onAfterClose",
-      "type": "(() => void) | undefined",
-      "required": false,
-      "boolean": false,
-      "descriptionZh": "关闭动画结束后的回调",
-      "descriptionEn": "Callback after the close animation finishes"
     }
   ],
   "renderProps": [
@@ -23011,6 +23637,14 @@ export default function App() {
       "descriptionEn": "Custom icon color"
     },
     {
+      "name": "icon",
+      "type": "IconType[] | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "自定义图标",
+      "descriptionEn": "Custom icon"
+    },
+    {
       "name": "type",
       "type": "NoticeType | undefined",
       "required": false,
@@ -23024,14 +23658,6 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "",
       "descriptionEn": ""
-    },
-    {
-      "name": "icon",
-      "type": "IconType[] | undefined",
-      "required": false,
-      "boolean": false,
-      "descriptionZh": "自定义图标",
-      "descriptionEn": "Custom icon"
     },
     {
       "name": "onClose",
@@ -23315,13 +23941,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "主题",
@@ -23332,10 +23958,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "分页器形状",
@@ -23809,16 +24435,16 @@ export default function App() {
       "type": "PlacementsType | undefined",
       "required": false,
       "enumValues": [
-        "right",
-        "bottom",
         "top",
         "top-left",
         "top-right",
+        "bottom",
         "bottom-left",
         "bottom-right",
         "left",
         "left-bottom",
         "left-top",
+        "right",
         "right-top",
         "right-bottom"
       ],
@@ -24063,40 +24689,20 @@ export default function App() {
       "descriptionEn": "Displayed main content"
     },
     {
-      "name": "width",
-      "type": "string | number | undefined",
-      "required": false,
-      "boolean": false,
-      "descriptionZh": "展示的宽度,默认为内容区域的大小",
-      "descriptionEn": "Display width, defaults to content area size"
-    },
-    {
-      "name": "panelOnly",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "descriptionZh": "只渲染浮层本身，不包含触发元素、定位与动画",
-      "descriptionEn": "Render only the popup itself, without trigger, positioning, or animation"
-    },
-    {
       "name": "placement",
       "type": "PlacementsType | undefined",
       "required": false,
       "enumValues": [
-        "right",
-        "bottom",
         "top",
         "top-left",
         "top-right",
+        "bottom",
         "bottom-left",
         "bottom-right",
         "left",
         "left-bottom",
         "left-top",
+        "right",
         "right-top",
         "right-bottom"
       ],
@@ -24126,12 +24732,24 @@ export default function App() {
       "descriptionEn": "Called when visibility is requested to change"
     },
     {
-      "name": "onClose",
-      "type": "(() => void) | undefined",
+      "name": "panelOnly",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "只渲染浮层本身，不包含触发元素、定位与动画",
+      "descriptionEn": "Render only the popup itself, without trigger, positioning, or animation"
+    },
+    {
+      "name": "width",
+      "type": "string | number | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "关闭时的回调",
-      "descriptionEn": "Callback when closed"
+      "descriptionZh": "展示的宽度,默认为内容区域的大小",
+      "descriptionEn": "Display width, defaults to content area size"
     },
     {
       "name": "dark",
@@ -24144,6 +24762,14 @@ export default function App() {
       "boolean": true,
       "descriptionZh": "是否使用暗色主题",
       "descriptionEn": "Use dark theme"
+    },
+    {
+      "name": "onClose",
+      "type": "(() => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "关闭时的回调",
+      "descriptionEn": "Callback when closed"
     },
     {
       "name": "onShowChange",
@@ -24413,16 +25039,16 @@ export default function App() {
       "type": "PlacementsType | undefined",
       "required": false,
       "enumValues": [
-        "right",
-        "bottom",
         "top",
         "top-left",
         "top-right",
+        "bottom",
         "bottom-left",
         "bottom-right",
         "left",
         "left-bottom",
         "left-top",
+        "right",
         "right-top",
         "right-bottom"
       ],
@@ -24626,40 +25252,20 @@ export default function App() {
       "descriptionEn": "Displayed title"
     },
     {
-      "name": "width",
-      "type": "string | number | undefined",
-      "required": false,
-      "boolean": false,
-      "descriptionZh": "展示的宽度,默认为内容区域的大小",
-      "descriptionEn": "Display width, defaults to content area size"
-    },
-    {
-      "name": "panelOnly",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "descriptionZh": "只渲染浮层本身，不包含触发元素、定位与动画",
-      "descriptionEn": "Render only the popup itself, without trigger, positioning, or animation"
-    },
-    {
       "name": "placement",
       "type": "PlacementsType | undefined",
       "required": false,
       "enumValues": [
-        "right",
-        "bottom",
         "top",
         "top-left",
         "top-right",
+        "bottom",
         "bottom-left",
         "bottom-right",
         "left",
         "left-bottom",
         "left-top",
+        "right",
         "right-top",
         "right-bottom"
       ],
@@ -24674,6 +25280,26 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "显示状态变化时触发",
       "descriptionEn": "Called when visibility is requested to change"
+    },
+    {
+      "name": "panelOnly",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "只渲染浮层本身，不包含触发元素、定位与动画",
+      "descriptionEn": "Render only the popup itself, without trigger, positioning, or animation"
+    },
+    {
+      "name": "width",
+      "type": "string | number | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "展示的宽度,默认为内容区域的大小",
+      "descriptionEn": "Display width, defaults to content area size"
     },
     {
       "name": "dark",
@@ -24923,9 +25549,9 @@ export default function App() {
       "type": "ProgressStroke | undefined",
       "required": false,
       "enumValues": [
-        "square",
         "round",
-        "butt"
+        "butt",
+        "square"
       ],
       "boolean": false,
       "defaultExpression": "\"round\"",
@@ -24950,9 +25576,9 @@ export default function App() {
       "type": "ProgressStatus | undefined",
       "required": false,
       "enumValues": [
-        "success",
         "normal",
         "active",
+        "success",
         "exception"
       ],
       "boolean": false,
@@ -25388,10 +26014,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "二维码形状",
@@ -25402,13 +26028,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "二维码主题",
@@ -25419,8 +26045,8 @@ export default function App() {
       "type": "QRCodeStatus | undefined",
       "required": false,
       "enumValues": [
-        "loading",
         "active",
+        "loading",
         "expired",
         "scanned"
       ],
@@ -25785,13 +26411,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "`button` 的主题",
@@ -26104,13 +26730,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "`button` 的主题",
@@ -26190,10 +26816,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "`button` 的形状",
@@ -26511,13 +27137,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "`button` 的主题",
@@ -26528,10 +27154,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "`button` 的形状",
@@ -26890,10 +27516,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -27927,10 +28553,10 @@ export default function App() {
       "type": "DropPlacementsType | undefined",
       "required": false,
       "enumValues": [
-        "bottom",
         "top",
         "top-left",
         "top-right",
+        "bottom",
         "bottom-left",
         "bottom-right"
       ],
@@ -28131,13 +28757,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "主题",
@@ -28172,10 +28798,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "shape='circle' 时呈现圆角",
@@ -28699,10 +29325,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "兼容组件的默认形状",
@@ -28713,13 +29339,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "兼容组件的默认主题",
@@ -29331,10 +29957,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "指定按钮的形状",
@@ -29712,9 +30338,9 @@ export default function App() {
       "type": "\"default\" | SizeType | undefined",
       "required": false,
       "enumValues": [
-        "default",
         "small",
         "medium",
+        "default",
         "large"
       ],
       "boolean": false,
@@ -29726,10 +30352,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "指定按钮的形状",
@@ -30440,9 +31066,9 @@ export default function App() {
       "type": "\"default\" | SizeType | undefined",
       "required": false,
       "enumValues": [
-        "default",
         "small",
         "medium",
+        "default",
         "large"
       ],
       "boolean": false,
@@ -30827,11 +31453,11 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "\"outline\" | \"fill\" | \"plain\" | undefined",
+      "type": "\"fill\" | \"outline\" | \"plain\" | undefined",
       "required": false,
       "enumValues": [
-        "outline",
         "fill",
+        "outline",
         "plain"
       ],
       "boolean": false,
@@ -30843,10 +31469,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -31876,12 +32502,12 @@ export default function App() {
   "props": [
     {
       "name": "align",
-      "type": "\"center\" | \"start\" | \"end\" | \"baseline\" | undefined",
+      "type": "\"center\" | \"end\" | \"start\" | \"baseline\" | undefined",
       "required": false,
       "enumValues": [
         "center",
-        "start",
         "end",
+        "start",
         "baseline"
       ],
       "boolean": false,
@@ -32447,10 +33073,10 @@ export default function App() {
       "type": "SpinModeType | undefined",
       "required": false,
       "enumValues": [
-        "bounce",
         "flip",
-        "rotate",
-        "zoom"
+        "zoom",
+        "bounce",
+        "rotate"
       ],
       "boolean": false,
       "defaultExpression": "\"rotate\"",
@@ -32583,8 +33209,8 @@ export default function App() {
       "type": "StepStatus | undefined",
       "required": false,
       "enumValues": [
-        "error",
         "wait",
+        "error",
         "process",
         "finish"
       ],
@@ -33064,10 +33690,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -33662,10 +34288,10 @@ export default function App() {
       "type": "import(\"../components\").ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -35575,16 +36201,16 @@ export default function ColumnSettingDemo() {
       "type": "PlacementsType | undefined",
       "required": false,
       "enumValues": [
-        "right",
-        "bottom",
         "top",
         "top-left",
         "top-right",
+        "bottom",
         "bottom-left",
         "bottom-right",
         "left",
         "left-bottom",
         "left-top",
+        "right",
         "right-top",
         "right-bottom"
       ],
@@ -35801,40 +36427,20 @@ export default function App() {
       "descriptionEn": "Disabled status"
     },
     {
-      "name": "width",
-      "type": "string | number | undefined",
-      "required": false,
-      "boolean": false,
-      "descriptionZh": "展示的宽度,默认为内容区域的大小",
-      "descriptionEn": "Display width, defaults to content area size"
-    },
-    {
-      "name": "panelOnly",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "descriptionZh": "只渲染浮层本身，不包含触发元素、定位与动画",
-      "descriptionEn": "Render only the tooltip itself, without trigger, positioning, or animation"
-    },
-    {
       "name": "placement",
       "type": "PlacementsType | undefined",
       "required": false,
       "enumValues": [
-        "right",
-        "bottom",
         "top",
         "top-left",
         "top-right",
+        "bottom",
         "bottom-left",
         "bottom-right",
         "left",
         "left-bottom",
         "left-top",
+        "right",
         "right-top",
         "right-bottom"
       ],
@@ -35849,6 +36455,26 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "显示状态变化时触发",
       "descriptionEn": "Called when visibility is requested to change"
+    },
+    {
+      "name": "panelOnly",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "只渲染浮层本身，不包含触发元素、定位与动画",
+      "descriptionEn": "Render only the tooltip itself, without trigger, positioning, or animation"
+    },
+    {
+      "name": "width",
+      "type": "string | number | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "展示的宽度,默认为内容区域的大小",
+      "descriptionEn": "Display width, defaults to content area size"
     },
     {
       "name": "onShowChange",
@@ -37096,9 +37722,9 @@ export default function App() {
       "type": "TimelineMode | undefined",
       "required": false,
       "enumValues": [
-        "center",
-        "right",
         "left",
+        "right",
+        "center",
         "alternate"
       ],
       "boolean": false,
@@ -38381,10 +39007,10 @@ export default function App() {
       "type": "DropPlacementsType | undefined",
       "required": false,
       "enumValues": [
-        "bottom",
         "top",
         "top-left",
         "top-right",
+        "bottom",
         "bottom-left",
         "bottom-right"
       ],
@@ -38561,13 +39187,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "主题",
@@ -38594,10 +39220,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "shape='circle' 时呈现圆角",
@@ -39245,13 +39871,13 @@ export default function Demo() {
       "type": "import(\"../components\").ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "组件主题。",
@@ -39274,10 +39900,10 @@ export default function Demo() {
       "type": "import(\"../components\").ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "组件形状。",
@@ -39421,10 +40047,10 @@ export default function Demo() {
       "type": "import(\"../components\").DropPlacementsType | undefined",
       "required": false,
       "enumValues": [
-        "bottom",
         "top",
         "top-left",
         "top-right",
+        "bottom",
         "bottom-left",
         "bottom-right"
       ],
@@ -39793,10 +40419,10 @@ export default function App() {
       "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
+        "round",
         "default",
-        "circle",
         "square",
-        "round"
+        "circle"
       ],
       "boolean": false,
       "descriptionZh": "组件呈现的形状,",
@@ -39828,13 +40454,13 @@ export default function App() {
       "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill",
-        "plain",
-        "underlined",
-        "default",
+        "dashed",
         "solid",
-        "dashed"
+        "default",
+        "fill",
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "组件呈现主题",
@@ -40444,14 +41070,14 @@ export default function App() {
     },
     {
       "name": "justify",
-      "type": "\"center\" | \"start\" | \"end\" | \"space-between\" | \"space-around\" | undefined",
+      "type": "\"center\" | \"space-around\" | \"space-between\" | \"end\" | \"start\" | undefined",
       "required": false,
       "enumValues": [
         "center",
-        "start",
-        "end",
+        "space-around",
         "space-between",
-        "space-around"
+        "end",
+        "start"
       ],
       "boolean": false,
       "defaultExpression": "\"start\"",
@@ -40460,11 +41086,11 @@ export default function App() {
     },
     {
       "name": "align",
-      "type": "\"bottom\" | \"top\" | \"middle\" | undefined",
+      "type": "\"top\" | \"bottom\" | \"middle\" | undefined",
       "required": false,
       "enumValues": [
-        "bottom",
         "top",
+        "bottom",
         "middle"
       ],
       "boolean": false,
@@ -42159,11 +42785,11 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "\"outline\" | \"fill\" | undefined",
+      "type": "\"fill\" | \"outline\" | undefined",
       "required": false,
       "enumValues": [
-        "outline",
-        "fill"
+        "fill",
+        "outline"
       ],
       "boolean": false,
       "descriptionZh": "外观主题",

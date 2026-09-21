@@ -18,11 +18,43 @@
 </Popup>
 ```
 
+## 何时使用
+
+需要依附触发元素展示自定义表单、筛选条件或复合面板时使用。菜单操作优先用 Dropdown，带标题的气泡卡片用 Poptip，简单文字提示用 Tooltip。Popup 只负责定位与显隐，不代管选择、表单校验或焦点圈定；需要模态交互时请使用 Modal / Drawer。
+
+children 放触发器，overlay 放弹层内容，也可以通过渲染函数获得 PopupRef 方法。受控时需要在 onOpenChange 中同步 open。
+
+## 代码演示
+
+[基础用法与自定义内容](./demo/basic.tsx)
+
+- 弹层可放输入框、按钮等任意内容，通过弹层提供的 close 方法从内部关闭。默认保留已挂载内容，设置 destroyOnClose 可在关闭动画结束后销毁内容。
+
+[触发方式](./demo/trigger.tsx)
+
+- 支持 click、hover、focus 和 contextmenu；右键触发使用鼠标位置。hover 可设置打开和关闭延时，manual 用法见受控示例。
+
+[方位与箭头](./demo/placement.tsx)
+
+- 支持 12 个方位，arrow 控制箭头，offset 控制间距；空间不足时会尝试调整方位。
+
+[受控开关与实例方法](./demo/controlled.tsx)
+
+- 受控状态需要响应显隐请求。可以从实例调用 open / close / updatePosition；示例展示最近一次请求原因。
+
+[自定义挂载容器](./demo/container.tsx)
+
+- getPopupContainer 指定挂载节点，默认继承 ConfigProvider 或挂载到 body。容器需建立定位上下文；matchTriggerWidth 让弹层最小宽度与触发器一致，注意祖先的 overflow 可能裁剪弹层。
+
+[嵌套弹层与选择器](./demo/nested.tsx)
+
+- 选择内部 Select 选项不会关闭外层；Escape 优先关闭最上层弹层，关闭外层会联动关闭内部弹层。
+
 ## Popup API
 
 | 属性                | 说明                                                       | 类型                                                   | 默认值      |
 | ------------------- | ---------------------------------------------------------- | ------------------------------------------------------ | ----------- |
-| open                | 受控显示状态；Vue 支持 v-model:open                        | boolean                                                | -           |
+| open                | 受控显示状态，配合 onOpenChange 同步                        | boolean                                                | -           |
 | defaultOpen         | 非受控初始状态                                             | boolean                                                | false       |
 | disabled            | 禁止交互打开并取消待执行的打开操作，不强制覆盖 open        | boolean                                                | false       |
 | placement           | 弹层方位，支持 12 个方向                                   | PlacementsType                                         | bottom-left |
@@ -37,12 +69,12 @@
 | getPopupContainer   | 挂载容器，默认使用 Config 配置或 body                      | () => HTMLElement                                      | -           |
 | destroyOnClose      | 退出动画结束后销毁内容；默认保留表单状态                   | boolean                                                | false       |
 | target              | 可选外部定位锚点；不自动绑定事件，配合 manual 和 open 使用 | PopupTarget                                            | -           |
-| overlay             | 弹层内容；Vue 推荐 overlay 插槽                            | PopupContent                                           | -           |
+| overlay             | 弹层内容或返回内容的渲染函数                            | PopupContent                                           | -           |
 | onOpenChange        | 请求改变显示状态，参数包含原因和原生事件                   | (open: boolean, detail: PopupOpenChangeDetail) => void | -           |
 | onAfterOpen         | 进入动画结束                                               | () => void                                             | -           |
 | onAfterClose        | 退出动画结束                                               | () => void                                             | -           |
 
-children renders the trigger. overlay accepts ReactNode or (popup: PopupRef) => ReactNode.
+children 放触发器，overlay 接收 ReactNode 或 (popup: PopupRef) => ReactNode。
 
 ## 包装组件选项
 

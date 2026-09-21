@@ -74,7 +74,13 @@ const components = exports.flatMap((exported) => {
   const propsType = checker.getTypeOfSymbolAtLocation(signature.parameters[0], declaration);
   const ownFile = declaration.getSourceFile().fileName;
   const relative = path.relative(path.join(root, "components"), ownFile);
-  const directory = path.join(root, "components", relative.split(path.sep)[0]);
+  const directory = path.join(
+    root,
+    "components",
+    relative.startsWith(`base${path.sep}popup${path.sep}`)
+      ? "base/popup"
+      : relative.split(path.sep)[0],
+  );
   const markdown = path.join(directory, "index.md");
   const docZh = tableDocs(markdown);
   const docEn = tableDocs(path.join(directory, "index.en_US.md"));

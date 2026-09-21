@@ -14,6 +14,31 @@ Vite seems to cache builds—you can manually clear it:
 rm -rf node_modules/.vite
 ```
 
+### 3.1.0
+
+`2026-09-21`
+
+#### Shared popup infrastructure
+
+- Added the public `Popup` component and related types, unifying triggers, placement, arrows, containers, outside-click dismissal, Escape handling, and nested popup management.
+- Migrated `Dropdown`, `Tooltip`, `Poptip`, `Popconfirm`, `Select`, `TreeSelect`, `Cascader`, `AutoComplete`, `Mentions`, `DatePicker`, and `ColorPicker` to the shared popup infrastructure.
+- Fixed switching HEX / RGB / HSL in `ColorPicker` incorrectly closing the outer panel.
+- Fixed internal `Teleport` targets not updating when a target appears later, is replaced, or a container callback returns a different element.
+
+#### Component interactions and styling
+
+- Improved disabled / readonly interactions across components and their items, preventing unintended clicks, hover/active feedback, and incorrect cursors.
+- Fixed rapid consecutive `Carousel` navigation, out-of-sync content and outer collapse animations in `Collapse`, and leftover outer height when closing `Notice`.
+- Improved `Cascader` dropdown animation and width, and aligned `QRCode` status overlays with the Vue version.
+- Fixed `Table` fixed-column/header alignment, inconsistent row hover backgrounds, and insufficient separation from action buttons. Empty content is no longer displayed while loading an empty table.
+- Improved `Tree` dragging and checkbox interactions so checking does not toggle expansion. Refined directory-mode checkbox and row hover contrast in light and dark themes.
+- Improved `ColorPicker` theme / shape support, `Input` prefix/suffix layout, and `DatePicker` ranges, disabled constraints, and state synchronization. Aligned `VirtualList` examples.
+
+#### Types and maintenance
+
+- Completed component event callback and related public type exports; shared multi-select tag and popup logic to reduce duplication.
+- Added regression coverage for nested popups, Teleport lifecycle, disabled interactions, and component behavior.
+
 ### 3.0.0
 
 `2026-09-19`

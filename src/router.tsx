@@ -20,7 +20,7 @@ const pages = new Map<string, ReactNode>();
 for (const [file, loader] of [...Object.entries(componentDocs), ...Object.entries(guideDocs)]) {
   const isComponent = file.startsWith("../components/");
   const part = isComponent
-    ? file.split("/")[2]
+    ? file.split("/").at(-2)!
     : file.split("/")[2].replace(/\.en_US\.md$|\.md$/g, "");
   const english = file.includes("en_US");
   pages.set(

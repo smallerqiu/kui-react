@@ -1,6 +1,7 @@
 {
   "exports": [
     "Affix",
+    "Popup",
     "Alert",
     "Calendar",
     "Kanban",
@@ -136,7 +137,7 @@
     "default"
   ],
   "library": "react-kui",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "framework": "react",
   "components": [
     {
@@ -592,6 +593,813 @@
       ]
     },
     {
+      "name": "Popup",
+      "import": "import { Popup } from \"react-kui\"",
+      "documentation": "https://react.k-ui.cn/components/popup",
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "descriptionZh": "受控显示状态，配合 onOpenChange 同步",
+          "descriptionEn": "Controlled visibility; synchronize through onOpenChange"
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "defaultExpression": "false",
+          "descriptionZh": "非受控初始状态",
+          "descriptionEn": "Initial uncontrolled visibility"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "defaultExpression": "false",
+          "descriptionZh": "禁止交互打开并取消待执行的打开操作，不强制覆盖 open",
+          "descriptionEn": "Prevents opening and cancels delayed opening; does not override open"
+        },
+        {
+          "name": "placement",
+          "type": "PlacementsType | undefined",
+          "required": false,
+          "enumValues": [
+            "top",
+            "top-left",
+            "top-right",
+            "bottom",
+            "bottom-left",
+            "bottom-right",
+            "left",
+            "left-bottom",
+            "left-top",
+            "right",
+            "right-top",
+            "right-bottom"
+          ],
+          "boolean": false,
+          "defaultExpression": "\"bottom-left\"",
+          "descriptionZh": "弹层方位，支持 12 个方向",
+          "descriptionEn": "Popup placement; supports 12 positions"
+        },
+        {
+          "name": "trigger",
+          "type": "PopupTrigger | undefined",
+          "required": false,
+          "enumValues": [
+            "manual",
+            "hover",
+            "click",
+            "focus",
+            "contextmenu"
+          ],
+          "boolean": false,
+          "defaultExpression": "\"click\"",
+          "descriptionZh": "触发方式；manual 仅由 open 或实例方法控制",
+          "descriptionEn": "Trigger mode; manual uses open or instance methods"
+        },
+        {
+          "name": "arrow",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "defaultExpression": "false",
+          "descriptionZh": "显示箭头",
+          "descriptionEn": "Show arrow"
+        },
+        {
+          "name": "offset",
+          "type": "number | undefined",
+          "required": false,
+          "boolean": false,
+          "defaultExpression": "3",
+          "descriptionZh": "定位间距（像素）",
+          "descriptionEn": "Position offset in pixels"
+        },
+        {
+          "name": "openDelay",
+          "type": "number | undefined",
+          "required": false,
+          "boolean": false,
+          "defaultExpression": "0",
+          "descriptionZh": "hover 打开延时（毫秒）",
+          "descriptionEn": "Hover opening delay in milliseconds"
+        },
+        {
+          "name": "closeDelay",
+          "type": "number | undefined",
+          "required": false,
+          "boolean": false,
+          "defaultExpression": "300",
+          "descriptionZh": "hover / focus 关闭延时（毫秒）",
+          "descriptionEn": "Hover / focus closing delay in milliseconds"
+        },
+        {
+          "name": "closeOnOutsideClick",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "defaultExpression": "true",
+          "descriptionZh": "外部点击关闭，包含嵌套 Popup 的内容边界",
+          "descriptionEn": "Close on outside click; nested Popup content counts as inside"
+        },
+        {
+          "name": "closeOnEscape",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "defaultExpression": "true",
+          "descriptionZh": "Escape 关闭最上层 Popup 并还原触发器焦点",
+          "descriptionEn": "Escape closes the top Popup and restores trigger focus"
+        },
+        {
+          "name": "matchTriggerWidth",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "defaultExpression": "false",
+          "descriptionZh": "弹层最小宽度不小于触发器",
+          "descriptionEn": "Use trigger width as the minimum popup width"
+        },
+        {
+          "name": "getPopupContainer",
+          "type": "(() => HTMLElement | null | undefined) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "挂载容器，默认使用 Config 配置或 body",
+          "descriptionEn": "Container; falls back to Config or body"
+        },
+        {
+          "name": "destroyOnClose",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "defaultExpression": "false",
+          "descriptionZh": "退出动画结束后销毁内容；默认保留表单状态",
+          "descriptionEn": "Destroy after exit; preserves form state by default"
+        },
+        {
+          "name": "target",
+          "type": "React.RefObject<HTMLElement | null> | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "可选外部定位锚点；不自动绑定事件，配合 manual 和 open 使用",
+          "descriptionEn": "Optional external positioning anchor; no event binding, use with manual and open"
+        },
+        {
+          "name": "onOpenChange",
+          "type": "((open: boolean, detail: PopupOpenChangeDetail) => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "请求改变显示状态，参数包含原因和原生事件",
+          "descriptionEn": "Visibility change request with reason and native event"
+        },
+        {
+          "name": "onAfterOpen",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "进入动画结束",
+          "descriptionEn": "Called after entering"
+        },
+        {
+          "name": "onAfterClose",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "退出动画结束",
+          "descriptionEn": "Called after leaving"
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "触发元素；自定义组件需要转发 DOM ref 和事件",
+          "descriptionEn": "Trigger; custom components must forward DOM ref and events"
+        },
+        {
+          "name": "overlay",
+          "type": "React.ReactNode | ((popup: PopupRef) => React.ReactNode)",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "弹层内容或返回内容的渲染函数",
+          "descriptionEn": "Overlay content or a render function"
+        },
+        {
+          "name": "raw",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "defaultExpression": "false",
+          "descriptionZh": "复用唯一弹层根节点及其 DOM 引用，不增加包装元素",
+          "descriptionEn": "Reuse the single overlay root and preserve its DOM ref; no extra wrapper"
+        },
+        {
+          "name": "outsideEvent",
+          "type": "\"click\" | \"mousedown\" | undefined",
+          "required": false,
+          "enumValues": [
+            "click",
+            "mousedown"
+          ],
+          "boolean": false,
+          "defaultExpression": "\"click\"",
+          "descriptionZh": "外部点击事件，适配选择器原有的关闭时机",
+          "descriptionEn": "Outside pointer event used by legacy selector adapters"
+        },
+        {
+          "name": "transitionDuration",
+          "type": "number | undefined",
+          "required": false,
+          "boolean": false,
+          "defaultExpression": "300",
+          "descriptionZh": "过渡时长（毫秒）",
+          "descriptionEn": "Transition duration in milliseconds"
+        },
+        {
+          "name": "getAnchorPosition",
+          "type": "(() => { x: number; y: number; } | null) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "可选视口坐标解析函数，用于 Mentions 光标定位",
+          "descriptionEn": "Optional viewport point resolver, for caret-anchored Mentions"
+        },
+        {
+          "name": "prefixCls",
+          "type": "string | undefined",
+          "required": false,
+          "boolean": false,
+          "defaultExpression": "\"k-popup\"",
+          "descriptionZh": "根样式前缀",
+          "descriptionEn": "Root CSS prefix"
+        },
+        {
+          "name": "transitionName",
+          "type": "string | undefined",
+          "required": false,
+          "boolean": false,
+          "defaultExpression": "prefixCls",
+          "descriptionZh": "动画类名前缀",
+          "descriptionEn": "Transition CSS prefix"
+        },
+        {
+          "name": "panelOnly",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "defaultExpression": "false",
+          "descriptionZh": "只渲染内联内容，无定位、触发器或全局事件",
+          "descriptionEn": "Inline content only; no positioning, trigger, or global listeners"
+        },
+        {
+          "name": "triggerProps",
+          "type": "React.HTMLAttributes<HTMLElement> | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "触发器附加属性",
+          "descriptionEn": "Additional trigger attributes"
+        },
+        {
+          "name": "respectDefaultPrevented",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "defaultExpression": "true",
+          "descriptionZh": "遵循触发器 click 的 preventDefault",
+          "descriptionEn": "Honor preventDefault on trigger click"
+        },
+        {
+          "name": "contentStyle",
+          "type": "React.CSSProperties | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "内容容器样式",
+          "descriptionEn": "Content container styles"
+        },
+        {
+          "name": "arrowContent",
+          "type": "React.ReactNode",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "自定义箭头内容",
+          "descriptionEn": "Custom arrow content"
+        },
+        {
+          "name": "hideWhenDetached",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "defaultExpression": "false",
+          "descriptionZh": "锚点不在视口时隐藏",
+          "descriptionEn": "Hide when the anchor is outside the viewport"
+        },
+        {
+          "name": "onTriggerKeyDown",
+          "type": "((event: React.KeyboardEvent<HTMLElement>, popup: PopupRef) => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "业务键盘处理",
+          "descriptionEn": "Business keyboard handler"
+        }
+      ],
+      "nativeProps": [
+        "onChange",
+        "defaultChecked",
+        "defaultValue",
+        "suppressContentEditableWarning",
+        "suppressHydrationWarning",
+        "accessKey",
+        "autoCapitalize",
+        "autoFocus",
+        "className",
+        "contentEditable",
+        "contextMenu",
+        "dir",
+        "draggable",
+        "enterKeyHint",
+        "hidden",
+        "id",
+        "lang",
+        "nonce",
+        "slot",
+        "spellCheck",
+        "style",
+        "tabIndex",
+        "title",
+        "translate",
+        "radioGroup",
+        "role",
+        "about",
+        "content",
+        "datatype",
+        "inlist",
+        "prefix",
+        "property",
+        "rel",
+        "resource",
+        "rev",
+        "typeof",
+        "vocab",
+        "autoCorrect",
+        "autoSave",
+        "color",
+        "itemProp",
+        "itemScope",
+        "itemType",
+        "itemID",
+        "itemRef",
+        "results",
+        "security",
+        "unselectable",
+        "popover",
+        "popoverTargetAction",
+        "popoverTarget",
+        "inert",
+        "inputMode",
+        "is",
+        "exportparts",
+        "part",
+        "aria-activedescendant",
+        "aria-atomic",
+        "aria-autocomplete",
+        "aria-braillelabel",
+        "aria-brailleroledescription",
+        "aria-busy",
+        "aria-checked",
+        "aria-colcount",
+        "aria-colindex",
+        "aria-colindextext",
+        "aria-colspan",
+        "aria-controls",
+        "aria-current",
+        "aria-describedby",
+        "aria-description",
+        "aria-details",
+        "aria-disabled",
+        "aria-dropeffect",
+        "aria-errormessage",
+        "aria-expanded",
+        "aria-flowto",
+        "aria-grabbed",
+        "aria-haspopup",
+        "aria-hidden",
+        "aria-invalid",
+        "aria-keyshortcuts",
+        "aria-label",
+        "aria-labelledby",
+        "aria-level",
+        "aria-live",
+        "aria-modal",
+        "aria-multiline",
+        "aria-multiselectable",
+        "aria-orientation",
+        "aria-owns",
+        "aria-placeholder",
+        "aria-posinset",
+        "aria-pressed",
+        "aria-readonly",
+        "aria-relevant",
+        "aria-required",
+        "aria-roledescription",
+        "aria-rowcount",
+        "aria-rowindex",
+        "aria-rowindextext",
+        "aria-rowspan",
+        "aria-selected",
+        "aria-setsize",
+        "aria-sort",
+        "aria-valuemax",
+        "aria-valuemin",
+        "aria-valuenow",
+        "aria-valuetext",
+        "dangerouslySetInnerHTML",
+        "onCopy",
+        "onCopyCapture",
+        "onCut",
+        "onCutCapture",
+        "onPaste",
+        "onPasteCapture",
+        "onCompositionEnd",
+        "onCompositionEndCapture",
+        "onCompositionStart",
+        "onCompositionStartCapture",
+        "onCompositionUpdate",
+        "onCompositionUpdateCapture",
+        "onFocus",
+        "onFocusCapture",
+        "onBlur",
+        "onBlurCapture",
+        "onChangeCapture",
+        "onBeforeInput",
+        "onBeforeInputCapture",
+        "onInput",
+        "onInputCapture",
+        "onReset",
+        "onResetCapture",
+        "onSubmit",
+        "onSubmitCapture",
+        "onInvalid",
+        "onInvalidCapture",
+        "onLoad",
+        "onLoadCapture",
+        "onError",
+        "onErrorCapture",
+        "onKeyDown",
+        "onKeyDownCapture",
+        "onKeyPress",
+        "onKeyPressCapture",
+        "onKeyUp",
+        "onKeyUpCapture",
+        "onAbort",
+        "onAbortCapture",
+        "onCanPlay",
+        "onCanPlayCapture",
+        "onCanPlayThrough",
+        "onCanPlayThroughCapture",
+        "onDurationChange",
+        "onDurationChangeCapture",
+        "onEmptied",
+        "onEmptiedCapture",
+        "onEncrypted",
+        "onEncryptedCapture",
+        "onEnded",
+        "onEndedCapture",
+        "onLoadedData",
+        "onLoadedDataCapture",
+        "onLoadedMetadata",
+        "onLoadedMetadataCapture",
+        "onLoadStart",
+        "onLoadStartCapture",
+        "onPause",
+        "onPauseCapture",
+        "onPlay",
+        "onPlayCapture",
+        "onPlaying",
+        "onPlayingCapture",
+        "onProgress",
+        "onProgressCapture",
+        "onRateChange",
+        "onRateChangeCapture",
+        "onSeeked",
+        "onSeekedCapture",
+        "onSeeking",
+        "onSeekingCapture",
+        "onStalled",
+        "onStalledCapture",
+        "onSuspend",
+        "onSuspendCapture",
+        "onTimeUpdate",
+        "onTimeUpdateCapture",
+        "onVolumeChange",
+        "onVolumeChangeCapture",
+        "onWaiting",
+        "onWaitingCapture",
+        "onAuxClick",
+        "onAuxClickCapture",
+        "onClick",
+        "onClickCapture",
+        "onContextMenu",
+        "onContextMenuCapture",
+        "onDoubleClick",
+        "onDoubleClickCapture",
+        "onDrag",
+        "onDragCapture",
+        "onDragEnd",
+        "onDragEndCapture",
+        "onDragEnter",
+        "onDragEnterCapture",
+        "onDragExit",
+        "onDragExitCapture",
+        "onDragLeave",
+        "onDragLeaveCapture",
+        "onDragOver",
+        "onDragOverCapture",
+        "onDragStart",
+        "onDragStartCapture",
+        "onDrop",
+        "onDropCapture",
+        "onMouseDown",
+        "onMouseDownCapture",
+        "onMouseEnter",
+        "onMouseLeave",
+        "onMouseMove",
+        "onMouseMoveCapture",
+        "onMouseOut",
+        "onMouseOutCapture",
+        "onMouseOver",
+        "onMouseOverCapture",
+        "onMouseUp",
+        "onMouseUpCapture",
+        "onSelect",
+        "onSelectCapture",
+        "onTouchCancel",
+        "onTouchCancelCapture",
+        "onTouchEnd",
+        "onTouchEndCapture",
+        "onTouchMove",
+        "onTouchMoveCapture",
+        "onTouchStart",
+        "onTouchStartCapture",
+        "onPointerDown",
+        "onPointerDownCapture",
+        "onPointerMove",
+        "onPointerMoveCapture",
+        "onPointerUp",
+        "onPointerUpCapture",
+        "onPointerCancel",
+        "onPointerCancelCapture",
+        "onPointerEnter",
+        "onPointerLeave",
+        "onPointerOver",
+        "onPointerOverCapture",
+        "onPointerOut",
+        "onPointerOutCapture",
+        "onGotPointerCapture",
+        "onGotPointerCaptureCapture",
+        "onLostPointerCapture",
+        "onLostPointerCaptureCapture",
+        "onScroll",
+        "onScrollCapture",
+        "onScrollEnd",
+        "onScrollEndCapture",
+        "onWheel",
+        "onWheelCapture",
+        "onAnimationStart",
+        "onAnimationStartCapture",
+        "onAnimationEnd",
+        "onAnimationEndCapture",
+        "onAnimationIteration",
+        "onAnimationIterationCapture",
+        "onToggle",
+        "onBeforeToggle",
+        "onTransitionCancel",
+        "onTransitionCancelCapture",
+        "onTransitionEnd",
+        "onTransitionEndCapture",
+        "onTransitionRun",
+        "onTransitionRunCapture",
+        "onTransitionStart",
+        "onTransitionStartCapture",
+        "ref",
+        "key"
+      ],
+      "nativeValueTypes": {
+        "defaultChecked": "boolean",
+        "suppressContentEditableWarning": "boolean",
+        "suppressHydrationWarning": "boolean",
+        "accessKey": "string",
+        "autoFocus": "boolean",
+        "className": "string",
+        "contextMenu": "string",
+        "dir": "string",
+        "enterKeyHint": "string",
+        "hidden": "boolean",
+        "id": "string",
+        "lang": "string",
+        "nonce": "string",
+        "slot": "string",
+        "tabIndex": "number",
+        "title": "string",
+        "translate": "string",
+        "radioGroup": "string",
+        "about": "string",
+        "content": "string",
+        "datatype": "string",
+        "prefix": "string",
+        "property": "string",
+        "rel": "string",
+        "resource": "string",
+        "rev": "string",
+        "typeof": "string",
+        "vocab": "string",
+        "autoCorrect": "string",
+        "autoSave": "string",
+        "color": "string",
+        "itemProp": "string",
+        "itemScope": "boolean",
+        "itemType": "string",
+        "itemID": "string",
+        "itemRef": "string",
+        "results": "number",
+        "security": "string",
+        "unselectable": "string",
+        "popover": "string",
+        "popoverTargetAction": "string",
+        "popoverTarget": "string",
+        "inert": "boolean",
+        "inputMode": "string",
+        "is": "string",
+        "exportparts": "string",
+        "part": "string",
+        "aria-activedescendant": "string",
+        "aria-autocomplete": "string",
+        "aria-braillelabel": "string",
+        "aria-brailleroledescription": "string",
+        "aria-colcount": "number",
+        "aria-colindex": "number",
+        "aria-colindextext": "string",
+        "aria-colspan": "number",
+        "aria-controls": "string",
+        "aria-describedby": "string",
+        "aria-description": "string",
+        "aria-details": "string",
+        "aria-dropeffect": "string",
+        "aria-errormessage": "string",
+        "aria-flowto": "string",
+        "aria-keyshortcuts": "string",
+        "aria-label": "string",
+        "aria-labelledby": "string",
+        "aria-level": "number",
+        "aria-live": "string",
+        "aria-orientation": "string",
+        "aria-owns": "string",
+        "aria-placeholder": "string",
+        "aria-posinset": "number",
+        "aria-relevant": "string",
+        "aria-roledescription": "string",
+        "aria-rowcount": "number",
+        "aria-rowindex": "number",
+        "aria-rowindextext": "string",
+        "aria-rowspan": "number",
+        "aria-setsize": "number",
+        "aria-sort": "string",
+        "aria-valuemax": "number",
+        "aria-valuemin": "number",
+        "aria-valuenow": "number",
+        "aria-valuetext": "string"
+      },
+      "events": [
+        {
+          "name": "onOpenChange",
+          "type": "((open: boolean, detail: PopupOpenChangeDetail) => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "请求改变显示状态，参数包含原因和原生事件",
+          "descriptionEn": "Visibility change request with reason and native event"
+        },
+        {
+          "name": "onAfterOpen",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "进入动画结束",
+          "descriptionEn": "Called after entering"
+        },
+        {
+          "name": "onAfterClose",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "退出动画结束",
+          "descriptionEn": "Called after leaving"
+        },
+        {
+          "name": "onTriggerKeyDown",
+          "type": "((event: React.KeyboardEvent<HTMLElement>, popup: PopupRef) => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "业务键盘处理",
+          "descriptionEn": "Business keyboard handler"
+        }
+      ],
+      "renderProps": [
+        "getPopupContainer",
+        "children",
+        "overlay",
+        "getAnchorPosition",
+        "arrowContent"
+      ],
+      "behavior": {
+        "rules": []
+      },
+      "children": [],
+      "examples": [
+        {
+          "id": "components/base/popup/demo/basic.tsx",
+          "title": "基础用法与自定义内容",
+          "source": "import { Button, Input, Popup, Space } from \"react-kui\";\nexport default function App() {\n  return (\n    <Popup\n      arrow\n      overlay={({ close }) => (\n        <Space vertical>\n          <strong>Quick note</strong>\n          <Input aria-label=\"Note\" placeholder=\"Write a note…\" />\n          <Button type=\"primary\" onClick={close}>\n            Done\n          </Button>\n        </Space>\n      )}\n    >\n      <Button>Open popup</Button>\n    </Popup>\n  );\n}"
+        },
+        {
+          "id": "components/base/popup/demo/trigger.tsx",
+          "title": "触发方式",
+          "source": "import { Button, Popup, Space } from \"react-kui\";\nexport default function App() {\n  return (\n    <Space wrap>\n      {([\"click\", \"hover\", \"focus\", \"contextmenu\"] as const).map((trigger) => (\n        <Popup\n          key={trigger}\n          trigger={trigger}\n          arrow\n          openDelay={150}\n          closeDelay={300}\n          overlay={<span>Opened by {trigger}</span>}\n        >\n          <Button>{trigger}</Button>\n        </Popup>\n      ))}\n      <Popup disabled overlay=\"Unavailable\">\n        <Button disabled>Disabled</Button>\n      </Popup>\n    </Space>\n  );\n}"
+        },
+        {
+          "id": "components/base/popup/demo/placement.tsx",
+          "title": "方位与箭头",
+          "source": "import { useState } from \"react\";\nimport { Button, Checkbox, Popup, Space } from \"react-kui\";\nexport default function App() {\n  const [arrow, setArrow] = useState(true);\n  const placements = [\n    \"top-left\",\n    \"top\",\n    \"top-right\",\n    \"bottom-left\",\n    \"bottom\",\n    \"bottom-right\",\n    \"left-top\",\n    \"left\",\n    \"left-bottom\",\n    \"right-top\",\n    \"right\",\n    \"right-bottom\",\n  ] as const;\n  return (\n    <Space vertical>\n      <Checkbox checked={arrow} onChange={(event) => setArrow(event.checked)}>\n        Show arrow\n      </Checkbox>\n      <div\n        style={{\n          display: \"grid\",\n          gridTemplateColumns: \"repeat(3, minmax(0, 1fr))\",\n          gap: 8,\n          maxWidth: 420,\n        }}\n      >\n        {placements.map((placement) => (\n          <Popup\n            key={placement}\n            placement={placement}\n            arrow={arrow}\n            offset={10}\n            overlay={<span>{placement}</span>}\n          >\n            <Button>{placement}</Button>\n          </Popup>\n        ))}\n      </div>\n    </Space>\n  );\n}"
+        },
+        {
+          "id": "components/base/popup/demo/controlled.tsx",
+          "title": "受控开关与实例方法",
+          "source": "import { useRef, useState } from \"react\";\nimport { Button, Popup, Space, type PopupOpenReason, type PopupRef } from \"react-kui\";\nexport default function App() {\n  const [open, setOpen] = useState(false);\n  const [reason, setReason] = useState<PopupOpenReason>(\"programmatic\");\n  const popup = useRef<PopupRef>(null);\n  return (\n    <Space vertical>\n      <Space>\n        <Button\n          onClick={(event) => {\n            // This button is outside the anchor; do not treat this opening click as an outside click.\n            event.stopPropagation();\n            popup.current?.open();\n          }}\n        >\n          Open via ref\n        </Button>\n        <Popup\n          ref={popup}\n          trigger=\"manual\"\n          open={open}\n          onOpenChange={(next, detail) => {\n            setOpen(next);\n            setReason(detail.reason);\n          }}\n          overlay={({ close }) => (\n            <Space vertical>\n              <span>Click outside or press Escape.</span>\n              <Button onClick={close}>Close from inside</Button>\n            </Space>\n          )}\n        >\n          <Button onClick={() => setOpen(!open)}>Toggle controlled popup</Button>\n        </Popup>\n      </Space>\n      <span role=\"status\">\n        Open: {String(open)} · Reason: {reason}\n      </span>\n    </Space>\n  );\n}"
+        },
+        {
+          "id": "components/base/popup/demo/container.tsx",
+          "title": "自定义挂载容器",
+          "source": "import { useRef } from \"react\";\nimport { Button, Popup } from \"react-kui\";\nexport default function App() {\n  const container = useRef<HTMLDivElement>(null);\n  return (\n    <div\n      ref={container}\n      style={{\n        position: \"relative\",\n        minHeight: 200,\n        padding: 24,\n        border: \"1px dashed var(--kui-color-border)\",\n      }}\n    >\n      <Popup\n        getPopupContainer={() => container.current}\n        matchTriggerWidth\n        overlay={<span>Mounted inside this container.</span>}\n      >\n        <Button style={{ width: 240, maxWidth: \"100%\" }}>Custom container</Button>\n      </Popup>\n    </div>\n  );\n}"
+        },
+        {
+          "id": "components/base/popup/demo/nested.tsx",
+          "title": "嵌套弹层与选择器",
+          "source": "import { useState } from \"react\";\nimport { Button, Popup, Select, Space } from \"react-kui\";\nexport default function App() {\n  const [value, setValue] = useState<string | number>(\"all\");\n  return (\n    <Popup\n      arrow\n      overlay={({ close }) => (\n        <Space vertical>\n          <strong>Filter results</strong>\n          <Select\n            style={{ width: 220 }}\n            value={value}\n            clearable={false}\n            options={[\n              { label: \"All\", value: \"all\" },\n              { label: \"Active\", value: \"active\" },\n            ]}\n            onChange={(next) => {\n              if (typeof next === \"string\" || typeof next === \"number\") setValue(next);\n            }}\n          />\n          <Popup placement=\"right\" overlay=\"This is a nested popup.\">\n            <Button>More details</Button>\n          </Popup>\n          <Button type=\"primary\" onClick={close}>\n            Apply\n          </Button>\n        </Space>\n      )}\n    >\n      <Button>Open filters</Button>\n    </Popup>\n  );\n}"
+        }
+      ]
+    },
+    {
       "name": "Alert",
       "import": "import { Alert } from \"react-kui\"",
       "documentation": "https://react.k-ui.cn/components/alert",
@@ -679,13 +1487,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "主题",
@@ -696,10 +1504,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -1750,11 +2558,11 @@
         },
         {
           "name": "theme",
-          "type": "\"outline\" | \"fill\" | undefined",
+          "type": "\"fill\" | \"outline\" | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill"
+            "fill",
+            "outline"
           ],
           "boolean": false,
           "defaultExpression": "\"fill\"",
@@ -2253,11 +3061,11 @@
         },
         {
           "name": "theme",
-          "type": "\"outline\" | \"fill\" | \"plain\" | undefined",
+          "type": "\"fill\" | \"outline\" | \"plain\" | undefined",
           "required": false,
           "enumValues": [
-            "outline",
             "fill",
+            "outline",
             "plain"
           ],
           "boolean": false,
@@ -2269,10 +3077,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -2846,10 +3654,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -2860,13 +3668,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "主题",
@@ -3200,13 +4008,15 @@
         "form",
         "list",
         "step",
+        "disabled",
+        "width",
+        "multiple",
         "pattern",
         "accept",
         "alt",
         "autoComplete",
         "capture",
         "checked",
-        "disabled",
         "formAction",
         "formEncType",
         "formMethod",
@@ -3217,14 +4027,12 @@
         "maxLength",
         "min",
         "minLength",
-        "multiple",
         "name",
         "placeholder",
         "readOnly",
         "required",
         "src",
-        "type",
-        "width"
+        "type"
       ],
       "nativeValueTypes": {
         "defaultChecked": "boolean",
@@ -3312,18 +4120,18 @@
         "aria-valuetext": "string",
         "form": "string",
         "list": "string",
+        "disabled": "boolean",
+        "multiple": "boolean",
         "pattern": "string",
         "accept": "string",
         "alt": "string",
         "checked": "boolean",
-        "disabled": "boolean",
         "formEncType": "string",
         "formMethod": "string",
         "formNoValidate": "boolean",
         "formTarget": "string",
         "maxLength": "number",
         "minLength": "number",
-        "multiple": "boolean",
         "name": "string",
         "placeholder": "string",
         "readOnly": "boolean",
@@ -4177,12 +4985,12 @@
         "onTransitionRunCapture",
         "onTransitionStart",
         "onTransitionStartCapture",
+        "target",
         "type",
         "download",
         "hrefLang",
         "media",
         "ping",
-        "target",
         "referrerPolicy"
       ],
       "nativeValueTypes": {
@@ -4318,9 +5126,9 @@
           "type": "AvatarShape | undefined",
           "required": false,
           "enumValues": [
-            "circle",
+            "round",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "defaultExpression": "\"circle\"",
@@ -4798,9 +5606,9 @@
           "type": "AvatarShape | undefined",
           "required": false,
           "enumValues": [
-            "circle",
+            "round",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "defaultExpression": "\"circle\"",
@@ -6105,8 +6913,8 @@
           "required": false,
           "enumValues": [
             "auto",
-            "instant",
-            "smooth"
+            "smooth",
+            "instant"
           ],
           "boolean": false,
           "defaultExpression": "\"smooth\"",
@@ -6611,10 +7419,10 @@
           "type": "BadgeStatusType | undefined",
           "required": false,
           "enumValues": [
+            "default",
             "success",
             "warning",
-            "error",
-            "default"
+            "error"
           ],
           "boolean": false,
           "defaultExpression": "\"default\"",
@@ -7137,8 +7945,8 @@
           "enumValues": [
             "link",
             "text",
-            "warning",
             "default",
+            "warning",
             "primary",
             "danger"
           ],
@@ -7165,13 +7973,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "按钮主题",
@@ -7182,10 +7990,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "按钮的外观",
@@ -7683,10 +8491,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "按钮的外观",
@@ -8144,13 +8952,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "外观主题",
@@ -8161,10 +8969,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "外框形状",
@@ -10013,13 +10821,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "组件呈现主题",
@@ -10517,13 +11325,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "组件呈现主题",
@@ -11123,8 +11931,8 @@
           "type": "import(\"./types\").CheckCardTheme | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill"
+            "fill",
+            "outline"
           ],
           "boolean": false,
           "descriptionZh": "卡片主题",
@@ -11148,10 +11956,10 @@
           "type": "import(\"../components\").ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "卡片形状",
@@ -11638,8 +12446,8 @@
           "type": "import(\"./types\").CheckCardTheme | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill"
+            "fill",
+            "outline"
           ],
           "boolean": false,
           "descriptionZh": "卡片主题",
@@ -11663,10 +12471,10 @@
           "type": "import(\"../components\").ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "卡片形状",
@@ -12146,13 +12954,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "主题",
@@ -12163,10 +12971,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -13187,10 +13995,10 @@
           "type": "DropPlacementsType | undefined",
           "required": false,
           "enumValues": [
-            "bottom",
             "top",
             "top-left",
             "top-right",
+            "bottom",
             "bottom-left",
             "bottom-right"
           ],
@@ -13228,13 +14036,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "外观主题，支持 `outline`、`fill`、`plain`，未设置时可继承 Form 或 ConfigProvider",
@@ -13245,10 +14053,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "形状，支持 `round`、`circle`、`square`，未设置时可继承 Form 或 ConfigProvider",
@@ -13757,6 +14565,54 @@
           "descriptionEn": "Called when the color value changes"
         },
         {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "descriptionZh": "是否禁用",
+          "descriptionEn": "Whether the picker is disabled"
+        },
+        {
+          "name": "placement",
+          "type": "DropPlacementsType | undefined",
+          "required": false,
+          "enumValues": [
+            "top",
+            "top-left",
+            "top-right",
+            "bottom",
+            "bottom-left",
+            "bottom-right"
+          ],
+          "boolean": false,
+          "descriptionZh": "弹层位置",
+          "descriptionEn": "Popup placement"
+        },
+        {
+          "name": "trigger",
+          "type": "\"hover\" | \"click\" | undefined",
+          "required": false,
+          "enumValues": [
+            "hover",
+            "click"
+          ],
+          "boolean": false,
+          "descriptionZh": "弹层触发方式",
+          "descriptionEn": "Popup trigger mode"
+        },
+        {
+          "name": "onOpenChange",
+          "type": "((open: boolean) => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "颜色选择器展开或收起时触发",
+          "descriptionEn": "Called when the popup opens or closes"
+        },
+        {
           "name": "size",
           "type": "SizeType | undefined",
           "required": false,
@@ -13778,18 +14634,6 @@
           "descriptionEn": "color value"
         },
         {
-          "name": "disabled",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "descriptionZh": "是否禁用",
-          "descriptionEn": "Whether the picker is disabled"
-        },
-        {
           "name": "readOnly",
           "type": "boolean | undefined",
           "required": false,
@@ -13806,13 +14650,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "外观主题，支持 `outline`、`fill`、`plain`，未设置时可继承 Form 或 ConfigProvider",
@@ -13823,10 +14667,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "形状，支持 `round`、`circle`、`square`，未设置时可继承 Form 或 ConfigProvider",
@@ -13857,34 +14701,6 @@
           "descriptionEn": "Whether to display the color text"
         },
         {
-          "name": "placement",
-          "type": "DropPlacementsType | undefined",
-          "required": false,
-          "enumValues": [
-            "bottom",
-            "top",
-            "top-left",
-            "top-right",
-            "bottom-left",
-            "bottom-right"
-          ],
-          "boolean": false,
-          "descriptionZh": "弹层位置",
-          "descriptionEn": "Popup placement"
-        },
-        {
-          "name": "trigger",
-          "type": "\"hover\" | \"click\" | undefined",
-          "required": false,
-          "enumValues": [
-            "hover",
-            "click"
-          ],
-          "boolean": false,
-          "descriptionZh": "弹层触发方式",
-          "descriptionEn": "Popup trigger mode"
-        },
-        {
           "name": "mode",
           "type": "ColorMode | undefined",
           "required": false,
@@ -13912,14 +14728,6 @@
           "boolean": false,
           "descriptionZh": "颜色模式更新时触发",
           "descriptionEn": "Called when the color mode changes"
-        },
-        {
-          "name": "onOpenChange",
-          "type": "((open: boolean) => void) | undefined",
-          "required": false,
-          "boolean": false,
-          "descriptionZh": "颜色选择器展开或收起时触发",
-          "descriptionEn": "Called when the popup opens or closes"
         }
       ],
       "nativeProps": [
@@ -14294,20 +15102,20 @@
           "descriptionEn": "Called when the color value changes"
         },
         {
-          "name": "onUpdateMode",
-          "type": "((mode: ColorMode) => void) | undefined",
-          "required": false,
-          "boolean": false,
-          "descriptionZh": "颜色模式更新时触发",
-          "descriptionEn": "Called when the color mode changes"
-        },
-        {
           "name": "onOpenChange",
           "type": "((open: boolean) => void) | undefined",
           "required": false,
           "boolean": false,
           "descriptionZh": "颜色选择器展开或收起时触发",
           "descriptionEn": "Called when the popup opens or closes"
+        },
+        {
+          "name": "onUpdateMode",
+          "type": "((mode: ColorMode) => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "颜色模式更新时触发",
+          "descriptionEn": "Called when the color mode changes"
         }
       ],
       "renderProps": [],
@@ -14541,13 +15349,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "theme='fill' 时呈现浅色主题",
@@ -14558,10 +15366,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "组件呈现的形式",
@@ -14584,10 +15392,10 @@
           "type": "DropPlacementsType | undefined",
           "required": false,
           "enumValues": [
-            "bottom",
             "top",
             "top-left",
             "top-right",
+            "bottom",
             "bottom-left",
             "bottom-right"
           ],
@@ -15140,6 +15948,42 @@
           "descriptionEn": "Callback after the value changes"
         },
         {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "descriptionZh": "是否禁用组件",
+          "descriptionEn": "Whether the component is disabled"
+        },
+        {
+          "name": "placement",
+          "type": "DropPlacementsType | undefined",
+          "required": false,
+          "enumValues": [
+            "top",
+            "top-left",
+            "top-right",
+            "bottom",
+            "bottom-left",
+            "bottom-right"
+          ],
+          "boolean": false,
+          "descriptionZh": "下拉展示的方位",
+          "descriptionEn": "Direction displayed when pulled down"
+        },
+        {
+          "name": "onOpenChange",
+          "type": "((open: boolean) => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "下拉框展开或收起时触发",
+          "descriptionEn": "Triggered when the dropdown box expands or collapses"
+        },
+        {
           "name": "footer",
           "type": "ReactNode | ((api: { emit: (value: DatePickerInput | DatePickerInput[]) => void; }) => ReactNode)",
           "required": false,
@@ -15177,18 +16021,6 @@
           "descriptionEn": "date or time value"
         },
         {
-          "name": "disabled",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "descriptionZh": "是否禁用组件",
-          "descriptionEn": "Whether the component is disabled"
-        },
-        {
           "name": "placeholder",
           "type": "string | string[] | undefined",
           "required": false,
@@ -15213,13 +16045,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "theme='fill' 时呈现浅色主题",
@@ -15230,30 +16062,14 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "组件呈现的形式",
           "descriptionEn": "Component shape"
-        },
-        {
-          "name": "placement",
-          "type": "DropPlacementsType | undefined",
-          "required": false,
-          "enumValues": [
-            "bottom",
-            "top",
-            "top-left",
-            "top-right",
-            "bottom-left",
-            "bottom-right"
-          ],
-          "boolean": false,
-          "descriptionZh": "下拉展示的方位",
-          "descriptionEn": "Direction displayed when pulled down"
         },
         {
           "name": "mode",
@@ -15279,14 +16095,6 @@
           "boolean": false,
           "descriptionZh": "预设日期",
           "descriptionEn": "Preset dates"
-        },
-        {
-          "name": "onOpenChange",
-          "type": "((open: boolean) => void) | undefined",
-          "required": false,
-          "boolean": false,
-          "descriptionZh": "下拉框展开或收起时触发",
-          "descriptionEn": "Triggered when the dropdown box expands or collapses"
         },
         {
           "name": "startDate",
@@ -15948,10 +16756,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -16523,10 +17331,10 @@
           "type": "DrawerPlacementsType | undefined",
           "required": false,
           "enumValues": [
-            "right",
-            "bottom",
             "top",
-            "left"
+            "bottom",
+            "left",
+            "right"
           ],
           "boolean": false,
           "defaultExpression": "\"right\"",
@@ -16814,10 +17622,10 @@
           "type": "DropPlacementsType | undefined",
           "required": false,
           "enumValues": [
-            "bottom",
             "top",
             "top-left",
             "top-right",
+            "bottom",
             "bottom-left",
             "bottom-right"
           ],
@@ -17302,10 +18110,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "按钮形状",
@@ -17337,13 +18145,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "按钮主题",
@@ -17367,10 +18175,10 @@
           "type": "DropPlacementsType | undefined",
           "required": false,
           "enumValues": [
-            "bottom",
             "top",
             "top-left",
             "top-right",
+            "bottom",
             "bottom-left",
             "bottom-right"
           ],
@@ -18335,13 +19143,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "子控件主题",
@@ -18352,10 +19160,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "子控件形状",
@@ -18699,8 +19507,8 @@
         "onTransitionRunCapture",
         "onTransitionStart",
         "onTransitionStartCapture",
-        "autoComplete",
         "target",
+        "autoComplete",
         "acceptCharset",
         "action",
         "encType",
@@ -18793,8 +19601,8 @@
         "aria-valuemin": "number",
         "aria-valuenow": "number",
         "aria-valuetext": "string",
-        "autoComplete": "string",
         "target": "string",
+        "autoComplete": "string",
         "acceptCharset": "string",
         "encType": "string",
         "method": "string",
@@ -19011,10 +19819,10 @@
           "required": false,
           "enumValues": [
             "center",
-            "start",
-            "flex-start",
             "end",
             "flex-end",
+            "flex-start",
+            "start",
             "baseline"
           ],
           "boolean": false,
@@ -19027,11 +19835,11 @@
           "required": false,
           "enumValues": [
             "center",
-            "flex-start",
-            "flex-end",
-            "space-between",
             "space-around",
-            "space-evenly"
+            "space-between",
+            "space-evenly",
+            "flex-end",
+            "flex-start"
           ],
           "boolean": false,
           "descriptionZh": "主轴对齐方式",
@@ -19530,13 +20338,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "外观主题",
@@ -19547,10 +20355,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "卡片形状",
@@ -20311,13 +21119,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "主题样式",
@@ -20328,10 +21136,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -22236,13 +23044,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "主题",
@@ -22253,10 +23061,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -23226,13 +24034,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "主题",
@@ -23243,10 +24051,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -23580,13 +24388,15 @@
         "form",
         "list",
         "step",
+        "disabled",
+        "width",
+        "multiple",
         "pattern",
         "accept",
         "alt",
         "autoComplete",
         "capture",
         "checked",
-        "disabled",
         "formAction",
         "formEncType",
         "formMethod",
@@ -23597,14 +24407,12 @@
         "maxLength",
         "min",
         "minLength",
-        "multiple",
         "name",
         "placeholder",
         "readOnly",
         "required",
         "src",
         "type",
-        "width",
         "ref",
         "key"
       ],
@@ -23693,18 +24501,18 @@
         "aria-valuetext": "string",
         "form": "string",
         "list": "string",
+        "disabled": "boolean",
+        "multiple": "boolean",
         "pattern": "string",
         "accept": "string",
         "alt": "string",
         "checked": "boolean",
-        "disabled": "boolean",
         "formEncType": "string",
         "formMethod": "string",
         "formNoValidate": "boolean",
         "formTarget": "string",
         "maxLength": "number",
         "minLength": "number",
-        "multiple": "boolean",
         "name": "string",
         "placeholder": "string",
         "readOnly": "boolean",
@@ -23838,13 +24646,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "主题",
@@ -24300,13 +25108,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "主题",
@@ -24317,10 +25125,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -24626,8 +25434,9 @@
         "onTransitionStart",
         "onTransitionStartCapture",
         "form",
-        "autoComplete",
         "disabled",
+        "wrap",
+        "autoComplete",
         "maxLength",
         "minLength",
         "name",
@@ -24637,7 +25446,6 @@
         "cols",
         "dirName",
         "rows",
-        "wrap",
         "ref",
         "key"
       ],
@@ -24726,8 +25534,9 @@
         "aria-valuenow": "number",
         "aria-valuetext": "string",
         "form": "string",
-        "autoComplete": "string",
         "disabled": "boolean",
+        "wrap": "string",
+        "autoComplete": "string",
         "maxLength": "number",
         "minLength": "number",
         "name": "string",
@@ -24736,8 +25545,7 @@
         "required": "boolean",
         "cols": "number",
         "dirName": "string",
-        "rows": "number",
-        "wrap": "string"
+        "rows": "number"
       },
       "events": [
         {
@@ -24920,10 +25728,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -24934,13 +25742,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "主题",
@@ -25544,13 +26352,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "组件呈现主题",
@@ -25561,10 +26369,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "组件的外观",
@@ -26127,13 +26935,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "主题",
@@ -26144,10 +26952,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -28826,11 +29634,11 @@
       "props": [
         {
           "name": "theme",
-          "type": "\"light\" | \"dark\" | undefined",
+          "type": "\"dark\" | \"light\" | undefined",
           "required": false,
           "enumValues": [
-            "light",
-            "dark"
+            "dark",
+            "light"
           ],
           "boolean": false,
           "descriptionZh": "局部主题，未设置时继承全局主题",
@@ -29821,10 +30629,10 @@
           "type": "DropPlacementsType | undefined",
           "required": false,
           "enumValues": [
-            "bottom",
             "top",
             "top-left",
             "top-right",
+            "bottom",
             "bottom-left",
             "bottom-right"
           ],
@@ -29850,10 +30658,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -29864,13 +30672,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "主题",
@@ -30234,8 +31042,9 @@
         "onTransitionStart",
         "onTransitionStartCapture",
         "form",
-        "autoComplete",
         "disabled",
+        "wrap",
+        "autoComplete",
         "maxLength",
         "minLength",
         "name",
@@ -30243,8 +31052,7 @@
         "readOnly",
         "required",
         "cols",
-        "dirName",
-        "wrap"
+        "dirName"
       ],
       "nativeValueTypes": {
         "defaultChecked": "boolean",
@@ -30331,8 +31139,9 @@
         "aria-valuenow": "number",
         "aria-valuetext": "string",
         "form": "string",
-        "autoComplete": "string",
         "disabled": "boolean",
+        "wrap": "string",
+        "autoComplete": "string",
         "maxLength": "number",
         "minLength": "number",
         "name": "string",
@@ -30340,8 +31149,7 @@
         "readOnly": "boolean",
         "required": "boolean",
         "cols": "number",
-        "dirName": "string",
-        "wrap": "string"
+        "dirName": "string"
       },
       "events": [
         {
@@ -30462,6 +31270,14 @@
           "descriptionEn": "Custom icon color"
         },
         {
+          "name": "icon",
+          "type": "IconType[] | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "自定义图标",
+          "descriptionEn": "Custom icon"
+        },
+        {
           "name": "type",
           "type": "NoticeType | undefined",
           "required": false,
@@ -30475,14 +31291,6 @@
           "boolean": false,
           "descriptionZh": "",
           "descriptionEn": ""
-        },
-        {
-          "name": "icon",
-          "type": "IconType[] | undefined",
-          "required": false,
-          "boolean": false,
-          "descriptionZh": "自定义图标",
-          "descriptionEn": "Custom icon"
         },
         {
           "name": "onClose",
@@ -30956,6 +31764,42 @@
           "descriptionEn": ""
         },
         {
+          "name": "onOpenChange",
+          "type": "((opened: boolean) => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "打开或者窗口关闭的回调",
+          "descriptionEn": "Callback for opening or closing a window"
+        },
+        {
+          "name": "onAfterClose",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "关闭动画结束后的回调",
+          "descriptionEn": "Callback after the close animation finishes"
+        },
+        {
+          "name": "panelOnly",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "descriptionZh": "只渲染弹窗面板本身，不包含遮罩、动画与全局事件",
+          "descriptionEn": "Render only the modal panel, without mask, animation, or global events"
+        },
+        {
+          "name": "top",
+          "type": "number | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "窗口距离顶部的距离",
+          "descriptionEn": "Distance from the top of the window"
+        },
+        {
           "name": "footer",
           "type": "React.ReactNode",
           "required": false,
@@ -30982,34 +31826,6 @@
           "boolean": true,
           "descriptionZh": "为`true`时此时确定按钮为加载状态",
           "descriptionEn": "When set to `true`, the confirm button will be in a loading state"
-        },
-        {
-          "name": "panelOnly",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "descriptionZh": "只渲染弹窗面板本身，不包含遮罩、动画与全局事件",
-          "descriptionEn": "Render only the modal panel, without mask, animation, or global events"
-        },
-        {
-          "name": "top",
-          "type": "number | undefined",
-          "required": false,
-          "boolean": false,
-          "descriptionZh": "窗口距离顶部的距离",
-          "descriptionEn": "Distance from the top of the window"
-        },
-        {
-          "name": "onOpenChange",
-          "type": "((opened: boolean) => void) | undefined",
-          "required": false,
-          "boolean": false,
-          "descriptionZh": "打开或者窗口关闭的回调",
-          "descriptionEn": "Callback for opening or closing a window"
         },
         {
           "name": "onClose",
@@ -31074,14 +31890,6 @@
           "boolean": false,
           "descriptionZh": "点击取消的回调",
           "descriptionEn": "Callback when Cancel is clicked"
-        },
-        {
-          "name": "onAfterClose",
-          "type": "(() => void) | undefined",
-          "required": false,
-          "boolean": false,
-          "descriptionZh": "关闭动画结束后的回调",
-          "descriptionEn": "Callback after the close animation finishes"
         }
       ],
       "nativeProps": [],
@@ -31094,6 +31902,14 @@
           "boolean": false,
           "descriptionZh": "打开或者窗口关闭的回调",
           "descriptionEn": "Callback for opening or closing a window"
+        },
+        {
+          "name": "onAfterClose",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "关闭动画结束后的回调",
+          "descriptionEn": "Callback after the close animation finishes"
         },
         {
           "name": "onClose",
@@ -31118,14 +31934,6 @@
           "boolean": false,
           "descriptionZh": "点击取消的回调",
           "descriptionEn": "Callback when Cancel is clicked"
-        },
-        {
-          "name": "onAfterClose",
-          "type": "(() => void) | undefined",
-          "required": false,
-          "boolean": false,
-          "descriptionZh": "关闭动画结束后的回调",
-          "descriptionEn": "Callback after the close animation finishes"
         }
       ],
       "renderProps": [
@@ -31196,6 +32004,14 @@
           "descriptionEn": "Custom icon color"
         },
         {
+          "name": "icon",
+          "type": "IconType[] | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "自定义图标",
+          "descriptionEn": "Custom icon"
+        },
+        {
           "name": "type",
           "type": "NoticeType | undefined",
           "required": false,
@@ -31209,14 +32025,6 @@
           "boolean": false,
           "descriptionZh": "",
           "descriptionEn": ""
-        },
-        {
-          "name": "icon",
-          "type": "IconType[] | undefined",
-          "required": false,
-          "boolean": false,
-          "descriptionZh": "自定义图标",
-          "descriptionEn": "Custom icon"
         },
         {
           "name": "onClose",
@@ -31378,13 +32186,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "主题",
@@ -31395,10 +32203,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "分页器形状",
@@ -32411,16 +33219,16 @@
           "type": "PlacementsType | undefined",
           "required": false,
           "enumValues": [
-            "right",
-            "bottom",
             "top",
             "top-left",
             "top-right",
+            "bottom",
             "bottom-left",
             "bottom-right",
             "left",
             "left-bottom",
             "left-top",
+            "right",
             "right-top",
             "right-bottom"
           ],
@@ -32557,40 +33365,20 @@
           "descriptionEn": "Displayed main content"
         },
         {
-          "name": "width",
-          "type": "string | number | undefined",
-          "required": false,
-          "boolean": false,
-          "descriptionZh": "展示的宽度,默认为内容区域的大小",
-          "descriptionEn": "Display width, defaults to content area size"
-        },
-        {
-          "name": "panelOnly",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "descriptionZh": "只渲染浮层本身，不包含触发元素、定位与动画",
-          "descriptionEn": "Render only the popup itself, without trigger, positioning, or animation"
-        },
-        {
           "name": "placement",
           "type": "PlacementsType | undefined",
           "required": false,
           "enumValues": [
-            "right",
-            "bottom",
             "top",
             "top-left",
             "top-right",
+            "bottom",
             "bottom-left",
             "bottom-right",
             "left",
             "left-bottom",
             "left-top",
+            "right",
             "right-top",
             "right-bottom"
           ],
@@ -32620,12 +33408,24 @@
           "descriptionEn": "Called when visibility is requested to change"
         },
         {
-          "name": "onClose",
-          "type": "(() => void) | undefined",
+          "name": "panelOnly",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "descriptionZh": "只渲染浮层本身，不包含触发元素、定位与动画",
+          "descriptionEn": "Render only the popup itself, without trigger, positioning, or animation"
+        },
+        {
+          "name": "width",
+          "type": "string | number | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "关闭时的回调",
-          "descriptionEn": "Callback when closed"
+          "descriptionZh": "展示的宽度,默认为内容区域的大小",
+          "descriptionEn": "Display width, defaults to content area size"
         },
         {
           "name": "dark",
@@ -32638,6 +33438,14 @@
           "boolean": true,
           "descriptionZh": "是否使用暗色主题",
           "descriptionEn": "Use dark theme"
+        },
+        {
+          "name": "onClose",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "关闭时的回调",
+          "descriptionEn": "Callback when closed"
         },
         {
           "name": "onShowChange",
@@ -32799,16 +33607,16 @@
           "type": "PlacementsType | undefined",
           "required": false,
           "enumValues": [
-            "right",
-            "bottom",
             "top",
             "top-left",
             "top-right",
+            "bottom",
             "bottom-left",
             "bottom-right",
             "left",
             "left-bottom",
             "left-top",
+            "right",
             "right-top",
             "right-bottom"
           ],
@@ -32947,40 +33755,20 @@
           "descriptionEn": "Displayed title"
         },
         {
-          "name": "width",
-          "type": "string | number | undefined",
-          "required": false,
-          "boolean": false,
-          "descriptionZh": "展示的宽度,默认为内容区域的大小",
-          "descriptionEn": "Display width, defaults to content area size"
-        },
-        {
-          "name": "panelOnly",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "descriptionZh": "只渲染浮层本身，不包含触发元素、定位与动画",
-          "descriptionEn": "Render only the popup itself, without trigger, positioning, or animation"
-        },
-        {
           "name": "placement",
           "type": "PlacementsType | undefined",
           "required": false,
           "enumValues": [
-            "right",
-            "bottom",
             "top",
             "top-left",
             "top-right",
+            "bottom",
             "bottom-left",
             "bottom-right",
             "left",
             "left-bottom",
             "left-top",
+            "right",
             "right-top",
             "right-bottom"
           ],
@@ -32995,6 +33783,26 @@
           "boolean": false,
           "descriptionZh": "显示状态变化时触发",
           "descriptionEn": "Called when visibility is requested to change"
+        },
+        {
+          "name": "panelOnly",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "descriptionZh": "只渲染浮层本身，不包含触发元素、定位与动画",
+          "descriptionEn": "Render only the popup itself, without trigger, positioning, or animation"
+        },
+        {
+          "name": "width",
+          "type": "string | number | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "展示的宽度,默认为内容区域的大小",
+          "descriptionEn": "Display width, defaults to content area size"
         },
         {
           "name": "dark",
@@ -33179,9 +33987,9 @@
           "type": "ProgressStroke | undefined",
           "required": false,
           "enumValues": [
-            "square",
             "round",
-            "butt"
+            "butt",
+            "square"
           ],
           "boolean": false,
           "defaultExpression": "\"round\"",
@@ -33206,9 +34014,9 @@
           "type": "ProgressStatus | undefined",
           "required": false,
           "enumValues": [
-            "success",
             "normal",
             "active",
+            "success",
             "exception"
           ],
           "boolean": false,
@@ -33844,10 +34652,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "二维码形状",
@@ -33858,13 +34666,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "二维码主题",
@@ -33875,8 +34683,8 @@
           "type": "QRCodeStatus | undefined",
           "required": false,
           "enumValues": [
-            "loading",
             "active",
+            "loading",
             "expired",
             "scanned"
           ],
@@ -34444,13 +35252,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "`button` 的主题",
@@ -34945,13 +35753,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "`button` 的主题",
@@ -35031,10 +35839,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "`button` 的形状",
@@ -35534,13 +36342,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "`button` 的主题",
@@ -35551,10 +36359,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "`button` 的形状",
@@ -36094,10 +36902,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -38096,10 +38904,10 @@
           "type": "DropPlacementsType | undefined",
           "required": false,
           "enumValues": [
-            "bottom",
             "top",
             "top-left",
             "top-right",
+            "bottom",
             "bottom-left",
             "bottom-right"
           ],
@@ -38300,13 +39108,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "主题",
@@ -38341,10 +39149,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "shape='circle' 时呈现圆角",
@@ -38931,10 +39739,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "兼容组件的默认形状",
@@ -38945,13 +39753,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "兼容组件的默认主题",
@@ -39531,10 +40339,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "指定按钮的形状",
@@ -40033,9 +40841,9 @@
           "type": "\"default\" | SizeType | undefined",
           "required": false,
           "enumValues": [
-            "default",
             "small",
             "medium",
+            "default",
             "large"
           ],
           "boolean": false,
@@ -40047,10 +40855,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "指定按钮的形状",
@@ -41003,9 +41811,9 @@
           "type": "\"default\" | SizeType | undefined",
           "required": false,
           "enumValues": [
-            "default",
             "small",
             "medium",
+            "default",
             "large"
           ],
           "boolean": false,
@@ -41511,11 +42319,11 @@
         },
         {
           "name": "theme",
-          "type": "\"outline\" | \"fill\" | \"plain\" | undefined",
+          "type": "\"fill\" | \"outline\" | \"plain\" | undefined",
           "required": false,
           "enumValues": [
-            "outline",
             "fill",
+            "outline",
             "plain"
           ],
           "boolean": false,
@@ -41527,10 +42335,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -43025,12 +43833,12 @@
       "props": [
         {
           "name": "align",
-          "type": "\"center\" | \"start\" | \"end\" | \"baseline\" | undefined",
+          "type": "\"center\" | \"end\" | \"start\" | \"baseline\" | undefined",
           "required": false,
           "enumValues": [
             "center",
-            "start",
             "end",
+            "start",
             "baseline"
           ],
           "boolean": false,
@@ -43599,10 +44407,10 @@
           "type": "SpinModeType | undefined",
           "required": false,
           "enumValues": [
-            "bounce",
             "flip",
-            "rotate",
-            "zoom"
+            "zoom",
+            "bounce",
+            "rotate"
           ],
           "boolean": false,
           "defaultExpression": "\"rotate\"",
@@ -44042,8 +44850,8 @@
           "type": "StepStatus | undefined",
           "required": false,
           "enumValues": [
-            "error",
             "wait",
+            "error",
             "process",
             "finish"
           ],
@@ -44702,10 +45510,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -46216,10 +47024,10 @@
           "type": "import(\"../components\").ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -47147,16 +47955,16 @@
           "type": "PlacementsType | undefined",
           "required": false,
           "enumValues": [
-            "right",
-            "bottom",
             "top",
             "top-left",
             "top-right",
+            "bottom",
             "bottom-left",
             "bottom-right",
             "left",
             "left-bottom",
             "left-top",
+            "right",
             "right-top",
             "right-bottom"
           ],
@@ -47283,40 +48091,20 @@
           "descriptionEn": "Disabled status"
         },
         {
-          "name": "width",
-          "type": "string | number | undefined",
-          "required": false,
-          "boolean": false,
-          "descriptionZh": "展示的宽度,默认为内容区域的大小",
-          "descriptionEn": "Display width, defaults to content area size"
-        },
-        {
-          "name": "panelOnly",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "descriptionZh": "只渲染浮层本身，不包含触发元素、定位与动画",
-          "descriptionEn": "Render only the tooltip itself, without trigger, positioning, or animation"
-        },
-        {
           "name": "placement",
           "type": "PlacementsType | undefined",
           "required": false,
           "enumValues": [
-            "right",
-            "bottom",
             "top",
             "top-left",
             "top-right",
+            "bottom",
             "bottom-left",
             "bottom-right",
             "left",
             "left-bottom",
             "left-top",
+            "right",
             "right-top",
             "right-bottom"
           ],
@@ -47331,6 +48119,26 @@
           "boolean": false,
           "descriptionZh": "显示状态变化时触发",
           "descriptionEn": "Called when visibility is requested to change"
+        },
+        {
+          "name": "panelOnly",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "descriptionZh": "只渲染浮层本身，不包含触发元素、定位与动画",
+          "descriptionEn": "Render only the tooltip itself, without trigger, positioning, or animation"
+        },
+        {
+          "name": "width",
+          "type": "string | number | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "展示的宽度,默认为内容区域的大小",
+          "descriptionEn": "Display width, defaults to content area size"
         },
         {
           "name": "onShowChange",
@@ -48622,9 +49430,9 @@
           "type": "TimelineMode | undefined",
           "required": false,
           "enumValues": [
-            "center",
-            "right",
             "left",
+            "right",
+            "center",
             "alternate"
           ],
           "boolean": false,
@@ -50381,10 +51189,10 @@
           "type": "DropPlacementsType | undefined",
           "required": false,
           "enumValues": [
-            "bottom",
             "top",
             "top-left",
             "top-right",
+            "bottom",
             "bottom-left",
             "bottom-right"
           ],
@@ -50561,13 +51369,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "主题",
@@ -50594,10 +51402,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "shape='circle' 时呈现圆角",
@@ -51348,13 +52156,13 @@
           "type": "import(\"../components\").ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "组件主题。",
@@ -51377,10 +52185,10 @@
           "type": "import(\"../components\").ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "组件形状。",
@@ -51524,10 +52332,10 @@
           "type": "import(\"../components\").DropPlacementsType | undefined",
           "required": false,
           "enumValues": [
-            "bottom",
             "top",
             "top-left",
             "top-right",
+            "bottom",
             "bottom-left",
             "bottom-right"
           ],
@@ -52026,10 +52834,10 @@
           "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
+            "round",
             "default",
-            "circle",
             "square",
-            "round"
+            "circle"
           ],
           "boolean": false,
           "descriptionZh": "组件呈现的形状,",
@@ -52061,13 +52869,13 @@
           "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill",
-            "plain",
-            "underlined",
-            "default",
+            "dashed",
             "solid",
-            "dashed"
+            "default",
+            "fill",
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "组件呈现主题",
@@ -53033,14 +53841,14 @@
         },
         {
           "name": "justify",
-          "type": "\"center\" | \"start\" | \"end\" | \"space-between\" | \"space-around\" | undefined",
+          "type": "\"center\" | \"space-around\" | \"space-between\" | \"end\" | \"start\" | undefined",
           "required": false,
           "enumValues": [
             "center",
-            "start",
-            "end",
+            "space-around",
             "space-between",
-            "space-around"
+            "end",
+            "start"
           ],
           "boolean": false,
           "defaultExpression": "\"start\"",
@@ -53049,11 +53857,11 @@
         },
         {
           "name": "align",
-          "type": "\"bottom\" | \"top\" | \"middle\" | undefined",
+          "type": "\"top\" | \"bottom\" | \"middle\" | undefined",
           "required": false,
           "enumValues": [
-            "bottom",
             "top",
+            "bottom",
             "middle"
           ],
           "boolean": false,
@@ -55412,11 +56220,11 @@
         },
         {
           "name": "theme",
-          "type": "\"outline\" | \"fill\" | undefined",
+          "type": "\"fill\" | \"outline\" | undefined",
           "required": false,
           "enumValues": [
-            "outline",
-            "fill"
+            "fill",
+            "outline"
           ],
           "boolean": false,
           "descriptionZh": "外观主题",

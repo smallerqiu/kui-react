@@ -1,6 +1,6 @@
 {
   "name": "react-kui",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "packageManager": "pnpm@12.4.2",
   "description": "A high quality UI components Library with React",
   "main": "./lib/index.cjs",

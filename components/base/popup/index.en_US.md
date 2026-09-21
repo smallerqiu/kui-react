@@ -18,11 +18,43 @@ A generic anchored popup. Dropdown adds menu semantics on top; Popup can display
 </Popup>
 ```
 
+## When to use
+
+Use Popup for anchored custom forms, filters, and compound panels. Use Dropdown for menus, Poptip for titled cards, and Tooltip for brief text hints. Popup handles positioning and visibility, not selection, form validation, or focus trapping. Use Modal or Drawer when a modal interaction is needed.
+
+Use children for the trigger and overlay for content. An overlay render function receives PopupRef methods. For controlled state, update open in onOpenChange.
+
+## Examples
+
+[Basic usage and custom content](./demo/basic.tsx)
+
+- Render inputs, buttons, or arbitrary content and call close from inside. Mounted content is retained by default; destroyOnClose unmounts it after the exit animation.
+
+[Trigger modes](./demo/trigger.tsx)
+
+- Supports click, hover, focus, and contextmenu. Context menus use the pointer position. Hover supports opening/closing delays; see the controlled example for manual mode.
+
+[Placement and arrows](./demo/placement.tsx)
+
+- Choose among 12 placements, toggle arrow, and set offset. Placement may adjust when space is limited.
+
+[Controlled state and instance methods](./demo/controlled.tsx)
+
+- Respond to visibility requests when using controlled state. Instances expose open / close / updatePosition; this example displays the latest request reason.
+
+[Custom container](./demo/container.tsx)
+
+- getPopupContainer selects the mount node, otherwise ConfigProvider or body is used. Establish a positioning context on custom containers. matchTriggerWidth matches the trigger's minimum width; ancestor overflow may clip the popup.
+
+[Nested popups and selectors](./demo/nested.tsx)
+
+- Choosing a Select option keeps the outer popup open. Escape dismisses the topmost popup first; dismissing the parent also closes its nested popups.
+
 ## Popup API
 
 | Property            | Description                                                                      | Type                                                   | Default     |
 | ------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------ | ----------- |
-| open                | Controlled visibility; Vue supports v-model:open                                 | boolean                                                | -           |
+| open                | Controlled visibility; synchronize through onOpenChange                                 | boolean                                                | -           |
 | defaultOpen         | Initial uncontrolled visibility                                                  | boolean                                                | false       |
 | disabled            | Prevents opening and cancels delayed opening; does not override open             | boolean                                                | false       |
 | placement           | Popup placement; supports 12 positions                                           | PlacementsType                                         | bottom-left |
@@ -37,7 +69,7 @@ A generic anchored popup. Dropdown adds menu semantics on top; Popup can display
 | getPopupContainer   | Container; falls back to Config or body                                          | () => HTMLElement                                      | -           |
 | destroyOnClose      | Destroy after exit; preserves form state by default                              | boolean                                                | false       |
 | target              | Optional external positioning anchor; no event binding, use with manual and open | PopupTarget                                            | -           |
-| overlay             | Overlay content; prefer the overlay slot in Vue                                  | PopupContent                                           | -           |
+| overlay             | Overlay content or a render function                                  | PopupContent                                           | -           |
 | onOpenChange        | Visibility change request with reason and native event                           | (open: boolean, detail: PopupOpenChangeDetail) => void | -           |
 | onAfterOpen         | Called after entering                                                            | () => void                                             | -           |
 | onAfterClose        | Called after leaving                                                             | () => void                                             | -           |
