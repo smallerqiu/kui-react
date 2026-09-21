@@ -6,7 +6,7 @@ export default function App() {
   return (
     <div
       ref={container}
-      style={{ height: 180, overflow: "auto", border: "1px solid var(--kui-control-border)" }}
+      style={{ height: 180, overflow: "auto", border: "1px solid var(--kui-control-border, var(--kui-color-border))" }}
     >
       <div style={{ height: 600, padding: 16 }}>Scroll this container</div>
       <BackTop target={() => container.current} height={80} right={100} />

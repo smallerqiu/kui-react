@@ -31,7 +31,7 @@ export default function App() {
               padding: "24px 12px",
               overflow: "hidden",
               border: "1px solid var(--kui-color-border)",
-              borderRadius: "var(--kui-card-radius)",
+              borderRadius: "var(--kui-card-radius, var(--kui-border-radius-card))",
             }}
           >
             <div
@@ -39,7 +39,7 @@ export default function App() {
               style={{
                 width: 64,
                 height: 64,
-                borderRadius: "var(--kui-shape-round)",
+                borderRadius: "var(--kui-shape-round, var(--kui-border-radius))",
                 background: "var(--kui-color-primary)",
               }}
             />

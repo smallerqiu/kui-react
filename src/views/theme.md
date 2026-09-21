@@ -114,3 +114,7 @@ return (
 - 组件：`--kui-control-*`、`--kui-card-*`、`--kui-popup-*`
 - 尺寸：`--kui-control-height-*`、`--kui-font-size-*`、`--kui-spacing-*`
 - 动效：`--kui-motion-duration-*`、`--kui-motion-easing`
+
+派生 Token（例如 `--kui-control-bg`、`--kui-control-radius`、`--kui-color-primary-hover`）作为可选覆盖项使用；默认值在组件属性使用处计算，不在根节点预先固定。这样局部基础颜色、圆角变化和嵌套明暗模式也能生效，显式设置的组件 Token 则继续向下继承。
+
+在自定义 CSS 中直接使用这些可选 Token 时，也应提供基础变量作为回退，例如 `background: var(--kui-control-bg, var(--kui-color-bg))`。读取默认主题颜色时优先使用基础 Token。

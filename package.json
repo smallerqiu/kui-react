@@ -54,6 +54,7 @@
     "**/*.less"
   ],
   "scripts": {
+    "check:theme": "node --max-old-space-size=512 scripts/check-theme.cjs",
     "dev": "vite --config vite.config.docs.ts",
     "start": "pnpm dev",
     "typecheck": "node --max-old-space-size=2048 node_modules/typescript/bin/tsc -b",
@@ -123,6 +124,7 @@
   "devDependencies": {
     "@babel/core": "^7.29.7",
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "1.63.0",
     "@rolldown/plugin-babel": "^0.2.4",
     "@stackblitz/sdk": "^1.11.1",
     "@testing-library/react": "^16.3.3",

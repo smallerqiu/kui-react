@@ -12,7 +12,7 @@ export default function App() {
     >
       <Card style={{ padding: 32, height: 220 }}>
         <h3 style={{ margin: "0 0 8px" }}>Hover Ripple</h3>
-        <p style={{ margin: 0, color: "var(--kui-color-text-secondary)" }}>
+        <p style={{ margin: 0, color: "var(--kui-color-text-secondary, var(--kui-color-text-description))" }}>
           移动指针会连续产生较轻的水波轨迹。
         </p>
       </Card>

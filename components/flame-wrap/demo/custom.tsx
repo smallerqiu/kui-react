@@ -19,7 +19,7 @@ export default function App() {
       >
         <Card style={{ padding: 32 }}>
           <h3 style={{ margin: "0 0 8px" }}>Warm flame</h3>
-          <p style={{ margin: 0, color: "var(--kui-color-text-secondary)" }}>
+          <p style={{ margin: 0, color: "var(--kui-color-text-secondary, var(--kui-color-text-description))" }}>
             可以调整颜色、火焰高度、火星、烟雾和燃烧速度。
           </p>
         </Card>
