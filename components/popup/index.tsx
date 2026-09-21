@@ -8,12 +8,12 @@ import React, {
   useRef,
   useState,
 } from "react";
-import Teleport from "../teleport";
-import Transition from "../transition";
-import type { PlacementsType } from "../../const/types";
-import { setPlacement } from "../../utils/placement";
-import { createFrameScheduler, isEventOutside } from "../../utils/popup";
-import { getChildren, setRef } from "../../utils/react-node";
+import Teleport from "../base/teleport";
+import Transition from "../base/transition";
+import type { PlacementsType } from "../const/types";
+import { setPlacement } from "../utils/placement";
+import { createFrameScheduler, isEventOutside } from "../utils/popup";
+import { getChildren, setRef } from "../utils/react-node";
 import {
   registerPopupLayer,
   isTopPopupLayer,
@@ -25,7 +25,6 @@ export type { PopupOpenChangeDetail, PopupOpenReason, PopupRef, PopupTrigger } f
 
 export interface PopupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   open?: boolean;
-  defaultOpen?: boolean;
   disabled?: boolean;
   placement?: PlacementsType;
   trigger?: PopupTrigger;
@@ -63,16 +62,29 @@ export interface PopupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
 
 export const PopupArrow = ({ prefixCls }: { prefixCls: string }) => (
   <div className={`${prefixCls}-arrow`} aria-hidden="true">
-    <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
-      <path
-        id="ot"
-        d="m24,0.97087l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
-      />
-      <path
-        id="in"
-        stroke="currentcolor"
-        d="m24,0l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
-      />
+    <svg
+      style={{ fill: "currentcolor" }}
+      viewBox={prefixCls === "k-popup" ? "0 0 24 9" : "0 0 24 8"}
+    >
+      {prefixCls === "k-popup" ? (
+        <>
+          {/* Cover the panel border; only the curved outer edge is stroked. */}
+          <path d="M0 0V1.5C6 1.5 7 8.5 12 8.5S18 1.5 24 1.5V0Z" />
+          <path id="ot" fill="none" d="M0 1.5C6 1.5 7 8.5 12 8.5S18 1.5 24 1.5" />
+        </>
+      ) : (
+        <>
+          <path
+            id="ot"
+            d="m24,0.97087l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+          />
+          <path
+            id="in"
+            stroke="currentcolor"
+            d="m24,0l0,1c-4,0 -5.5,1 -7.5,3c-2,2 -2.5,3 -4.5,3c-2,0 -2.5,-1 -4.5,-3c-2,-2 -3.5,-3 -7.5,-3l0,-1l24,0z"
+          />
+        </>
+      )}
     </svg>
   </div>
 );
@@ -80,7 +92,6 @@ export const PopupArrow = ({ prefixCls }: { prefixCls: string }) => (
 const Popup = forwardRef<PopupRef, PopupProps>(function Popup(
   {
     open,
-    defaultOpen = false,
     disabled = false,
     placement = "bottom-left",
     trigger = "click",
@@ -118,8 +129,13 @@ const Popup = forwardRef<PopupRef, PopupProps>(function Popup(
   },
   forwardedRef,
 ) {
-  const [innerOpen, setInnerOpen] = useState(defaultOpen);
-  const visible = open ?? innerOpen;
+  const [innerOpen, setInnerOpen] = useState(open ?? false);
+  const [previousOpen, setPreviousOpen] = useState(open);
+  if (open !== previousOpen) {
+    setPreviousOpen(open);
+    setInnerOpen(open ?? false);
+  }
+  const visible = innerOpen;
   const [rendered, setRendered] = useState(visible);
   const [positioned, setPositioned] = useState(false);
   const [previousVisible, setPreviousVisible] = useState(visible);
@@ -157,7 +173,7 @@ const Popup = forwardRef<PopupRef, PopupProps>(function Popup(
     clearTimer();
     if (next === visible) return;
     if (next && disabled) return;
-    if (open === undefined) setInnerOpen(next);
+    setInnerOpen(next);
     onOpenChange?.(next, detail);
   };
   const updatePosition = useCallback(() => {
@@ -222,7 +238,7 @@ const Popup = forwardRef<PopupRef, PopupProps>(function Popup(
     updatePosition();
     const frame = requestAnimationFrame(() => setPositioned(true));
     return () => cancelAnimationFrame(frame);
-  }, [visible, panelOnly, element, overlay, updatePosition]);
+  }, [visible, panelOnly, element, overlay, arrow, updatePosition]);
   useLayoutEffect(() => {
     if (!visible && element) closePopupChildren(element);
   }, [visible, element]);
@@ -428,7 +444,8 @@ const Popup = forwardRef<PopupRef, PopupProps>(function Popup(
               position: "absolute",
               left: position.left,
               top: position.top,
-              transformOrigin: position.origin,
+              transformOrigin:
+                prefixCls === "k-popup" && arrow ? "var(--k-popup-arrow-origin)" : position.origin,
               minWidth: matchTriggerWidth ? position.width : style?.minWidth,
               visibility:
                 positioned && (!hideWhenDetached || anchorVisible) ? style?.visibility : "hidden",

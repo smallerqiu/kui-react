@@ -12,7 +12,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import Popup from "../base/popup";
+import Popup from "../popup";
 import { ConfigContext } from "../config/config-context";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 import Icon from "../icon";

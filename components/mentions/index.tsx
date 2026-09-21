@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { CircleX, Loading } from "kui-icons";
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
-import Popup from "../base/popup";
+import Popup from "../popup";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 import Empty from "../empty";
 import Icon from "../icon";

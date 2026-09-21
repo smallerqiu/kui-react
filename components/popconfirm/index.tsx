@@ -1,5 +1,5 @@
 import React from "react";
-import Popup from "../base/popup";
+import Popup from "../popup";
 import type { PlacementsType } from "../const/types";
 import { CircleQuestionMark } from "kui-icons";
 import Button from "../button/button";

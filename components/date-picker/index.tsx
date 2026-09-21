@@ -27,7 +27,7 @@ import {
   type ReactNode,
   type SetStateAction,
 } from "react";
-import Popup from "../base/popup";
+import Popup from "../popup";
 import { Button } from "../button";
 import { ConfigContext } from "../config/config-context";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";

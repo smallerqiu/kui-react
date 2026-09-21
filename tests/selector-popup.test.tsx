@@ -116,7 +116,7 @@ describe("nested selector popups", () => {
       selected = vi.fn();
     render(
       <Popup
-        defaultOpen
+        open
         onOpenChange={parentChange}
         overlay={
           <Select defaultOpen options={[{ label: "One", value: "one" }]} onChange={selected} />

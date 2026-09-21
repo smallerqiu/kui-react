@@ -1,5 +1,5 @@
 import React from "react";
-import Popup from "../base/popup";
+import Popup from "../popup";
 import type { PlacementsType } from "../const/types";
 import { colors } from "../const/var";
 import { isColor } from "../utils/color";

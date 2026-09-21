@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import Popup, { type PopupRef } from "../base/popup";
+import Popup, { type PopupRef } from "../popup";
 import type { DropPlacementsType, TriggerType } from "../const/types";
 import { DropdownContext } from "./dropdown-context";
 

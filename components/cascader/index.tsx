@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { ChevronDown, ChevronRight, CircleAlert, CircleX, Loading } from "kui-icons";
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
-import Popup from "../base/popup";
+import Popup from "../popup";
 import Empty from "../empty";
 import Icon from "../icon";
 import type { CascaderOption, CascaderProps, CascaderValue } from "./types";

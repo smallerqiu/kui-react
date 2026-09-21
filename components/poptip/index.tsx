@@ -1,5 +1,5 @@
 import React from "react";
-import Popup from "../base/popup";
+import Popup from "../popup";
 import type { PlacementsType } from "../const/types";
 export interface PoptipProps {
   dark?: boolean;

@@ -4,6 +4,23 @@ import { describe, expect, it, vi } from "vitest";
 import { Popup, type PopupRef } from "../components";
 
 describe("Popup foundation", () => {
+  it("initializes from open, allows interaction, and synchronizes later prop changes", () => {
+    const popup = (open: boolean) => (
+      <Popup open={open} overlay="Content">
+        <button>Toggle</button>
+      </Popup>
+    );
+    const { rerender } = render(popup(true));
+    const trigger = screen.getByText("Toggle");
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    fireEvent.click(trigger);
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    rerender(popup(true));
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    rerender(popup(false));
+    rerender(popup(true));
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+  });
   it("cancels a pending hover request when controlled visibility changes", () => {
     vi.useFakeTimers();
     try {
@@ -35,7 +52,7 @@ describe("Popup foundation", () => {
   it("closes retained child portals when the controlled parent closes", async () => {
     const onChildChange = vi.fn();
     const overlay = (
-      <Popup defaultOpen onOpenChange={onChildChange} overlay="Child content">
+      <Popup open onOpenChange={onChildChange} overlay="Child content">
         <button>Child</button>
       </Popup>
     );
@@ -69,7 +86,7 @@ describe("Popup foundation", () => {
     expect(trigger.getAttribute("aria-expanded")).toBe("false");
   });
 
-  it("reports typed reasons without mutating controlled visibility", () => {
+  it("updates visibility and reports typed reasons when open is provided", () => {
     const onOpenChange = vi.fn();
     render(
       <Popup open={false} onOpenChange={onOpenChange} overlay="Content">
@@ -81,7 +98,7 @@ describe("Popup foundation", () => {
       true,
       expect.objectContaining({ reason: "trigger", event: expect.any(Event) }),
     );
-    expect(screen.queryByText("Content")).toBeNull();
+    expect(screen.getByText("Open").getAttribute("aria-expanded")).toBe("true");
   });
 
   it("supports imperative manual triggers and preserves the original ref", async () => {

@@ -8,7 +8,7 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from "react";
-import Popup, { type PopupRef } from "../base/popup";
+import Popup, { type PopupRef } from "../popup";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 import { createFormFieldComponent } from "../form/field-context";

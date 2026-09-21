@@ -14,7 +14,7 @@ import {
   type ChangeEvent,
   type HTMLAttributes,
 } from "react";
-import Popup, { type PopupRef } from "../base/popup";
+import Popup, { type PopupRef } from "../popup";
 import { ConfigContext } from "../config/config-context";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 import Empty from "../empty";

@@ -1368,32 +1368,32 @@
       "children": [],
       "examples": [
         {
-          "id": "components/base/popup/demo/basic.tsx",
+          "id": "components/popup/demo/basic.tsx",
           "title": "基础用法与自定义内容",
           "source": "import { Button, Input, Popup, Space } from \"react-kui\";\nexport default function App() {\n  return (\n    <Popup\n      arrow\n      overlay={({ close }) => (\n        <Space vertical>\n          <strong>Quick note</strong>\n          <Input aria-label=\"Note\" placeholder=\"Write a note…\" />\n          <Button type=\"primary\" onClick={close}>\n            Done\n          </Button>\n        </Space>\n      )}\n    >\n      <Button>Open popup</Button>\n    </Popup>\n  );\n}"
         },
         {
-          "id": "components/base/popup/demo/trigger.tsx",
+          "id": "components/popup/demo/trigger.tsx",
           "title": "触发方式",
           "source": "import { Button, Popup, Space } from \"react-kui\";\nexport default function App() {\n  return (\n    <Space wrap>\n      {([\"click\", \"hover\", \"focus\", \"contextmenu\"] as const).map((trigger) => (\n        <Popup\n          key={trigger}\n          trigger={trigger}\n          arrow\n          openDelay={150}\n          closeDelay={300}\n          overlay={<span>Opened by {trigger}</span>}\n        >\n          <Button>{trigger}</Button>\n        </Popup>\n      ))}\n      <Popup disabled overlay=\"Unavailable\">\n        <Button disabled>Disabled</Button>\n      </Popup>\n    </Space>\n  );\n}"
         },
         {
-          "id": "components/base/popup/demo/placement.tsx",
+          "id": "components/popup/demo/placement.tsx",
           "title": "方位与箭头",
           "source": "import { useState } from \"react\";\nimport { Button, Checkbox, Popup, Space } from \"react-kui\";\nexport default function App() {\n  const [arrow, setArrow] = useState(true);\n  const placements = [\n    \"top-left\",\n    \"top\",\n    \"top-right\",\n    \"bottom-left\",\n    \"bottom\",\n    \"bottom-right\",\n    \"left-top\",\n    \"left\",\n    \"left-bottom\",\n    \"right-top\",\n    \"right\",\n    \"right-bottom\",\n  ] as const;\n  return (\n    <Space vertical>\n      <Checkbox checked={arrow} onChange={(event) => setArrow(event.checked)}>\n        Show arrow\n      </Checkbox>\n      <div\n        style={{\n          display: \"grid\",\n          gridTemplateColumns: \"repeat(3, minmax(0, 1fr))\",\n          gap: 8,\n          maxWidth: 420,\n        }}\n      >\n        {placements.map((placement) => (\n          <Popup\n            key={placement}\n            placement={placement}\n            arrow={arrow}\n            offset={10}\n            overlay={<span>{placement}</span>}\n          >\n            <Button>{placement}</Button>\n          </Popup>\n        ))}\n      </div>\n    </Space>\n  );\n}"
         },
         {
-          "id": "components/base/popup/demo/controlled.tsx",
+          "id": "components/popup/demo/controlled.tsx",
           "title": "受控开关与实例方法",
           "source": "import { useRef, useState } from \"react\";\nimport { Button, Popup, Space, type PopupOpenReason, type PopupRef } from \"react-kui\";\nexport default function App() {\n  const [open, setOpen] = useState(false);\n  const [reason, setReason] = useState<PopupOpenReason>(\"programmatic\");\n  const popup = useRef<PopupRef>(null);\n  return (\n    <Space vertical>\n      <Space>\n        <Button\n          onClick={(event) => {\n            // This button is outside the anchor; do not treat this opening click as an outside click.\n            event.stopPropagation();\n            popup.current?.open();\n          }}\n        >\n          Open via ref\n        </Button>\n        <Popup\n          ref={popup}\n          trigger=\"manual\"\n          open={open}\n          onOpenChange={(next, detail) => {\n            setOpen(next);\n            setReason(detail.reason);\n          }}\n          overlay={({ close }) => (\n            <Space vertical>\n              <span>Click outside or press Escape.</span>\n              <Button onClick={close}>Close from inside</Button>\n            </Space>\n          )}\n        >\n          <Button onClick={() => setOpen(!open)}>Toggle controlled popup</Button>\n        </Popup>\n      </Space>\n      <span role=\"status\">\n        Open: {String(open)} · Reason: {reason}\n      </span>\n    </Space>\n  );\n}"
         },
         {
-          "id": "components/base/popup/demo/container.tsx",
+          "id": "components/popup/demo/container.tsx",
           "title": "自定义挂载容器",
           "source": "import { useRef } from \"react\";\nimport { Button, Popup } from \"react-kui\";\nexport default function App() {\n  const container = useRef<HTMLDivElement>(null);\n  return (\n    <div\n      ref={container}\n      style={{\n        position: \"relative\",\n        minHeight: 200,\n        padding: 24,\n        border: \"1px dashed var(--kui-color-border)\",\n      }}\n    >\n      <Popup\n        getPopupContainer={() => container.current}\n        matchTriggerWidth\n        overlay={<span>Mounted inside this container.</span>}\n      >\n        <Button style={{ width: 240, maxWidth: \"100%\" }}>Custom container</Button>\n      </Popup>\n    </div>\n  );\n}"
         },
         {
-          "id": "components/base/popup/demo/nested.tsx",
+          "id": "components/popup/demo/nested.tsx",
           "title": "嵌套弹层与选择器",
           "source": "import { useState } from \"react\";\nimport { Button, Popup, Select, Space } from \"react-kui\";\nexport default function App() {\n  const [value, setValue] = useState<string | number>(\"all\");\n  return (\n    <Popup\n      arrow\n      overlay={({ close }) => (\n        <Space vertical>\n          <strong>Filter results</strong>\n          <Select\n            style={{ width: 220 }}\n            value={value}\n            clearable={false}\n            options={[\n              { label: \"All\", value: \"all\" },\n              { label: \"Active\", value: \"active\" },\n            ]}\n            onChange={(next) => {\n              if (typeof next === \"string\" || typeof next === \"number\") setValue(next);\n            }}\n          />\n          <Popup placement=\"right\" overlay=\"This is a nested popup.\">\n            <Button>More details</Button>\n          </Popup>\n          <Button type=\"primary\" onClick={close}>\n            Apply\n          </Button>\n        </Space>\n      )}\n    >\n      <Button>Open filters</Button>\n    </Popup>\n  );\n}"
         }

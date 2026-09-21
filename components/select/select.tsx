@@ -13,7 +13,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import Popup, { type PopupRef } from "../base/popup";
+import Popup, { type PopupRef } from "../popup";
 import { ConfigContext } from "../config/config-context";
 import Empty from "../empty";
 import Icon, { type IconType } from "../icon";
