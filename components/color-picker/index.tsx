@@ -1,3 +1,4 @@
+import { isEventOutside } from "../utils/popup";
 import clsx from "clsx";
 import Color, { type ColorInstance, type ColorObject } from "color";
 import {
@@ -152,11 +153,7 @@ function ColorPicker({
   useEffect(() => {
     if (!currentOpen || panelOnly) return;
     const outside = (event: MouseEvent) => {
-      if (
-        !popoverRef.current?.contains(event.target as Node) &&
-        !triggerRef.current?.contains(event.target as Node)
-      )
-        setVisible(false);
+      if (isEventOutside(event, [popoverRef.current, triggerRef.current], false)) setVisible(false);
     };
     const handleResize = () => updatePositionRef.current();
     const handleScroll = () => updatePositionRef.current();

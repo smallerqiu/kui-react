@@ -1,3 +1,5 @@
+import { isEventOutside } from "../utils/popup";
+import { renderSelectionTags } from "../utils/selection-tags";
 import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
@@ -21,9 +23,6 @@ import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../cons
 import Empty from "../empty";
 import Icon, { type IconType } from "../icon";
 import zhCN from "../locale/zh-CN";
-import Space from "../space";
-import Tag from "../tag";
-import Tooltip from "../tooltip";
 import Tree, { type TreeExpandEvent, type TreeNode } from "../tree";
 import { setPlacement } from "../utils/placement";
 
@@ -236,8 +235,7 @@ function TreeSelect({
     if (!visible) return;
     updatePosition();
     const outside = (event: MouseEvent) => {
-      const target = event.target as Node;
-      if (!selectionRef.current?.contains(target) && !overlayRef.current?.contains(target)) {
+      if (isEventOutside(event, [selectionRef.current, overlayRef.current], false)) {
         if (openProp === undefined) setInnerOpen(false);
         setQuery("");
         onOpenChange?.(false);
@@ -326,11 +324,6 @@ function TreeSelect({
     },
     className,
   );
-  const hasDisplayLimit = typeof maxTagCount === "number" && Number.isFinite(maxTagCount);
-  const displayCount = hasDisplayLimit ? Math.max(0, Math.floor(maxTagCount)) : labels.length;
-  const displayedLabels = labels.slice(0, displayCount);
-  const hiddenLabels = labels.slice(displayCount);
-  const tagSize = size || "medium";
 
   const search = (event: ChangeEvent<HTMLInputElement>) => {
     if (disabled || readOnly) return;
@@ -457,44 +450,17 @@ function TreeSelect({
         <div className="k-tree-select-selection">
           {multiple ? (
             <div className="k-tree-select-labels">
-              {displayedLabels.map((label, index) => (
-                <Tag
-                  key={`${currentValue[index]}-${index}`}
-                  size={tagSize}
-                  shape={shape}
-                  theme={theme}
-                  compact
-                  closeable={!disabled && !readOnly}
-                  onClose={() => remove(index)}
-                >
-                  {label}
-                </Tag>
-              ))}
-              {hiddenLabels.length ? (
-                <Tooltip
-                  title={
-                    <Space wrap size={4} theme-mode="dark">
-                      {hiddenLabels.map((label, index) => (
-                        <Tag
-                          key={`${label}-${index}`}
-                          size="small"
-                          shape={shape}
-                          theme={theme}
-                          compact
-                          closeable={!disabled && !readOnly}
-                          onClose={() => remove(displayCount + index)}
-                        >
-                          {label}
-                        </Tag>
-                      ))}
-                    </Space>
-                  }
-                >
-                  <Tag size={tagSize} shape={shape} theme={theme} compact>
-                    +{hiddenLabels.length}...
-                  </Tag>
-                </Tooltip>
-              ) : null}
+              {renderSelectionTags({
+                labels,
+                keys: currentValue,
+                maxTagCount,
+                size,
+                shape,
+                theme,
+                disabled,
+                readOnly,
+                onRemove: remove,
+              })}
               {searchNode}
             </div>
           ) : (

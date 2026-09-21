@@ -1,3 +1,4 @@
+import { isEventOutside } from "../utils/popup";
 import clsx from "clsx";
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Teleport from "../base/teleport";
@@ -186,14 +187,13 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   const outsideClick = useCallback(
     (e: MouseEvent) => {
-      const targetElement = refSelection.current;
       if (!refPopper.current) return;
-      const clickedEl = e.target as HTMLElement;
-
       if (
-        (!refPopper.current.contains(clickedEl) &&
-          (!targetElement || !targetElement.contains(clickedEl))) ||
-        (trigger === "contextmenu" && !refPopper.current.contains(clickedEl))
+        isEventOutside(
+          e,
+          [refPopper.current, trigger === "contextmenu" ? null : refSelection.current],
+          false,
+        )
       ) {
         if (externalOpen === undefined) setVisible(false);
         onOpenChange?.(false);

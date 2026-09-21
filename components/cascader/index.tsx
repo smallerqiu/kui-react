@@ -1,3 +1,4 @@
+import { isEventOutside } from "../utils/popup";
 import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
@@ -174,9 +175,7 @@ function Cascader({
     if (!visible) return;
     requestAnimationFrame(updatePosition);
     const outside = (event: globalThis.MouseEvent) => {
-      const target = event.target as Node;
-      if (!selectionRef.current?.contains(target) && !overlayRef.current?.contains(target))
-        setOpen(false);
+      if (isEventOutside(event, [selectionRef.current, overlayRef.current], false)) setOpen(false);
     };
     document.addEventListener("mousedown", outside);
     window.addEventListener("resize", updatePosition);

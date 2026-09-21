@@ -1,3 +1,4 @@
+import { createFrameScheduler } from "../utils/popup";
 import clsx from "clsx";
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Teleport from "../base/teleport";
@@ -70,13 +71,12 @@ const Tooltip: React.FC<TooltipProps> = ({
   const transOriginRef = useRef("bottom");
   const topRef = useRef(0);
   const leftRef = useRef(0);
-  const positionFrame = useRef(0);
+  const positionFrame = useRef(createFrameScheduler());
   const hideTimer = useRef<NodeJS.Timeout | null>(null);
   const showTimer = useRef<NodeJS.Timeout | null>(null);
 
   const updatePosition = useCallback(() => {
-    cancelAnimationFrame(positionFrame.current);
-    positionFrame.current = requestAnimationFrame(() => {
+    positionFrame.current.schedule(() => {
       if (!visible || !anchorVisible || !refSelection.current || !refPopper.current) return;
       placementRef.current = placement;
       setPlacement({
@@ -102,6 +102,7 @@ const Tooltip: React.FC<TooltipProps> = ({
   useEffect(() => {
     if (panelOnly) return;
     const selection = refSelection.current;
+    const positionScheduler = positionFrame.current;
     let intersectionObserver: IntersectionObserver | null = null;
     let resizeObserver: ResizeObserver | null = null;
     const handlePosition = () => updatePosition();
@@ -123,7 +124,7 @@ const Tooltip: React.FC<TooltipProps> = ({
       if (refPopper.current) resizeObserver.observe(refPopper.current);
     }
     return () => {
-      cancelAnimationFrame(positionFrame.current);
+      positionScheduler.cancel();
       intersectionObserver?.disconnect();
       resizeObserver?.disconnect();
       document.removeEventListener("scroll", handlePosition, true);

@@ -41,7 +41,13 @@ export { Carousel, CarouselItem } from "./carousel";
 export type { CarouselItemProps, CarouselProps, CarouselRef } from "./carousel";
 
 export { Checkbox, CheckboxGroup } from "./checkbox";
-export type { ChangeEvent, CheckboxGroupProps, CheckboxOption, CheckboxProps } from "./checkbox";
+export type {
+  ChangeEvent,
+  CheckboxChangeEvent,
+  CheckboxGroupProps,
+  CheckboxOption,
+  CheckboxProps,
+} from "./checkbox";
 
 export { CheckCard, CheckCardGroup } from "./check-card";
 export type {
@@ -110,7 +116,7 @@ export { default as FeedbackPanel } from "./feedback-panel";
 export type { FeedbackPanelKind, FeedbackPanelProps } from "./feedback-panel";
 
 export { Grid, GridItem } from "./grid";
-export type { GridItemProps, GridProps } from "./grid";
+export type { GridBreakpoint, GridResponsive, GridItemProps, GridProps } from "./grid";
 
 export { ImageGroup, KImage } from "./image";
 export type { ImageGroupProps, ImagePreviewProps, ImageProps, ImageRef, ImageType } from "./image";
@@ -119,7 +125,7 @@ export { default as Icon } from "./icon";
 export type { IconProps, IconType } from "./icon";
 
 export { Input, InputGroup, TextArea } from "./input";
-export type { InputGroupProps, InputProps, TextAreaProps } from "./input";
+export type { InputGroupProps, InputProps, InputRef, TextAreaProps } from "./input";
 
 export { default as InputTag } from "./input-tag";
 export type { InputTagProps } from "./input-tag";
@@ -147,7 +153,7 @@ export type {
 } from "./menu";
 
 export { default as message } from "./message";
-export type { MessageOptions } from "./message";
+export type { MessageOptions, MessageApi } from "./message";
 
 export { default as Mentions } from "./mentions";
 export type { MentionOption, MentionsProps } from "./mentions";
@@ -155,10 +161,10 @@ export { MessagePanel } from "./notice/content";
 export type { MessagePanelProps } from "./notice/content";
 
 export { modal, default as Modal, ModalPanel } from "./modal";
-export type { ModalApiProps, ModalPanelProps, ModalProps } from "./modal";
+export type { ModalApi, ModalInstance, ModalApiProps, ModalPanelProps, ModalProps } from "./modal";
 
 export { default as notice } from "./notice";
-export type { NoticeOptions } from "./notice";
+export type { NoticeOptions, NoticeApi } from "./notice";
 export { NoticePanel } from "./notice/content";
 export type { NoticePanelProps } from "./notice/content";
 
@@ -184,7 +190,13 @@ export { default as QRCode } from "./qrcode";
 export type { QRCodeErrorLevel, QRCodeProps, QRCodeRef, QRCodeStatus } from "./qrcode";
 
 export { Radio, RadioButton, RadioGroup } from "./radio";
-export type { RadioButtonProps, RadioGroupProps, RadioOption, RadioProps } from "./radio";
+export type {
+  RadioButtonProps,
+  RadioGroupProps,
+  RadioOption,
+  RadioProps,
+  RadioChangeEvent,
+} from "./radio";
 
 export { default as Segmented } from "./segmented";
 export type { SegmentedOption, SegmentedProps, SegmentedValue } from "./segmented";
@@ -196,13 +208,20 @@ export { default as Result } from "./result";
 export type { ResultProps, ResultStatus } from "./result";
 
 export { Option, Select } from "./select";
-export type { OptionProps, SelectOption, SelectProps } from "./select";
+export type {
+  OptionProps,
+  OptionSelectEvent,
+  SelectOption,
+  SelectProps,
+  SelectValue,
+} from "./select";
 
 export { default as ConfigProvider } from "./config";
 export type { ConfigProviderProps, Locale } from "./config";
 
 export { Skeleton, SkeletonAvatar, SkeletonButton, SkeletonImage, SkeletonText } from "./skeleton";
 export type {
+  SkeletonAvatarConfig,
   SkeletonAvatarProps,
   SkeletonButtonProps,
   SkeletonImageProps,
@@ -232,7 +251,14 @@ export { Splitter, SplitterPanel } from "./splitter";
 export type { SplitterPanelProps, SplitterProps } from "./splitter";
 
 export { default as Table, TableColumnSetting } from "./table";
-export type { Column, SortState, TableKey, TableProps, TableTreeRow } from "./table";
+export type {
+  Column,
+  SortState,
+  TableColumnSettingProps,
+  TableKey,
+  TableProps,
+  TableTreeRow,
+} from "./table";
 
 export { default as Tooltip, TooltipPanel } from "./tooltip";
 export type { TooltipPanelProps, TooltipProps } from "./tooltip";
@@ -241,7 +267,7 @@ export { default as Tour } from "./tour";
 export type { TourProps, TourStep } from "./tour";
 
 export { TabPanel, Tabs } from "./tabs";
-export type { TabPanelProps, TabsProps } from "./tabs";
+export type { TabPanelProps, TabsProps, TabKey } from "./tabs";
 
 export { TimeLine, TimeLineItem } from "./time-line";
 export type { TimelineItemProps, TimelineMode, TimelineProps } from "./time-line";
@@ -259,7 +285,7 @@ export type {
 } from "./tree";
 
 export { default as TreeSelect } from "./tree-select";
-export type { TreeSelectProps } from "./tree-select";
+export type { TreeSelectProps, TreeSelectValue } from "./tree-select";
 
 export { default as Cascader } from "./cascader";
 export type { CascaderLoadData, CascaderOption, CascaderProps, CascaderValue } from "./cascader";
@@ -284,7 +310,12 @@ export type {
 } from "./upload";
 
 export { default as Watermark } from "./watermark";
-export type { WatermarkLayoutType, WatermarkProps, WatermarkTextItem } from "./watermark";
+export type {
+  Font as WatermarkFont,
+  WatermarkLayoutType,
+  WatermarkProps,
+  WatermarkTextItem,
+} from "./watermark";
 
 export { default as theme } from "./utils/theme";
 
@@ -327,3 +358,6 @@ export type {
   TypographyTag,
   TypographyType,
 } from "./typography";
+
+export type { ColorMode } from "./color-picker/mode";
+export type { ImagePreviewApi } from "./image/preview";

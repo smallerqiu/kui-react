@@ -4,4 +4,5 @@ import RadioGroup from "./radio-group";
 export type { RadioProps } from "./radio";
 export type { RadioButtonProps } from "./radio-button";
 export type { RadioGroupProps, RadioOption } from "./radio-group";
+export type { ChangeEvent as RadioChangeEvent } from "./types";
 export { Radio, RadioButton, RadioGroup };

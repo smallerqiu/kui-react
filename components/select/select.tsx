@@ -1,3 +1,5 @@
+import { createFrameScheduler, isEventOutside } from "../utils/popup";
+import { renderSelectionTags } from "../utils/selection-tags";
 import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
@@ -19,9 +21,6 @@ import { ConfigContext } from "../config/config-context";
 import Empty from "../empty";
 import Icon, { type IconType } from "../icon";
 import zhCN from "../locale/zh-CN";
-import Space from "../space";
-import Tag from "../tag";
-import Tooltip from "../tooltip";
 import { isEmpty } from "../utils/number";
 import { setPlacement } from "../utils/placement";
 import { getChildren } from "../utils/react-node";
@@ -167,7 +166,7 @@ const Select: React.FC<SelectProps> = ({
   const queryInputEventTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const clearQueryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const virtualListRef = useRef<VirtualListRef>(null);
-  const positionRaf = useRef(0);
+  const positionRaf = useRef(createFrameScheduler());
   const openRaf = useRef(0);
 
   const hasSearchEvent = !!onSearch;
@@ -194,8 +193,7 @@ const Select: React.FC<SelectProps> = ({
 
   // Coalesce scroll/resize events, while allowing the first mount to position synchronously.
   const updatePosition = useCallback(() => {
-    cancelAnimationFrame(positionRaf.current);
-    positionRaf.current = requestAnimationFrame(syncPosition);
+    positionRaf.current.schedule(syncPosition);
   }, [syncPosition]);
   const bindPopperRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -227,8 +225,9 @@ const Select: React.FC<SelectProps> = ({
 
   useEffect(() => {
     document.addEventListener("scroll", updatePosition, true);
+    const positionScheduler = positionRaf.current;
     return () => {
-      cancelAnimationFrame(positionRaf.current);
+      positionScheduler.cancel();
       cancelAnimationFrame(openRaf.current);
       if (queryInputEventTimer.current) clearTimeout(queryInputEventTimer.current);
       if (clearQueryTimer.current) clearTimeout(clearQueryTimer.current);
@@ -238,13 +237,7 @@ const Select: React.FC<SelectProps> = ({
 
   // Handle outside click
   const outsideClick = (e: MouseEvent) => {
-    const ctx = refSelection.current;
-    if (
-      refPopper.current &&
-      !refPopper.current.contains(e.target as Node) &&
-      ctx &&
-      !ctx.contains(e.target as Node)
-    ) {
+    if (isEventOutside(e, [refSelection.current, refPopper.current])) {
       setVisible(false);
       onOpenChange?.(false);
       clearQuery();
@@ -724,55 +717,17 @@ const Select: React.FC<SelectProps> = ({
       </div>
     ) : null;
 
-  const renderTags = () => {
-    const hasDisplayLimit = typeof maxTagCount === "number" && Number.isFinite(maxTagCount);
-    const displayCount = hasDisplayLimit ? Math.max(0, Math.floor(maxTagCount)) : labelText.length;
-    const visibleLabels = labelText.slice(0, displayCount);
-    const hiddenLabels = labelText.slice(displayCount);
-    const tagSize = size || "medium";
-    const tags: React.ReactNode[] = visibleLabels.map((label, index) => (
-      <Tag
-        key={`${label}-${index}`}
-        size={tagSize}
-        shape={shape}
-        theme={theme}
-        compact
-        closeable={!disabled && !readOnly}
-        onClose={() => removeTag(index)}
-      >
-        {label}
-      </Tag>
-    ));
-    if (hiddenLabels.length) {
-      tags.push(
-        <Tooltip
-          key="tag-more"
-          title={
-            <Space wrap size={4} theme-mode="dark">
-              {hiddenLabels.map((label, index) => (
-                <Tag
-                  key={`${label}-${index}`}
-                  size="small"
-                  shape={shape}
-                  theme={theme}
-                  compact
-                  closeable={!disabled && !readOnly}
-                  onClose={() => removeTag(displayCount + index)}
-                >
-                  {label}
-                </Tag>
-              ))}
-            </Space>
-          }
-        >
-          <Tag size={tagSize} shape={shape} theme={theme} compact>
-            +{hiddenLabels.length}...
-          </Tag>
-        </Tooltip>,
-      );
-    }
-    return tags;
-  };
+  const renderTags = () =>
+    renderSelectionTags({
+      labels: labelText,
+      maxTagCount: maxTagCount,
+      size,
+      shape,
+      theme,
+      disabled,
+      readOnly: readOnly,
+      onRemove: removeTag,
+    });
 
   const labelsNode = multiple ? (
     <div className="k-select-labels" key="labels">

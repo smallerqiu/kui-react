@@ -19,6 +19,7 @@ import Empty from "../empty";
 import Icon from "../icon";
 import { TextArea } from "../input";
 import { setPlacement } from "../utils/placement";
+import { createFrameScheduler, isEventOutside } from "../utils/popup";
 
 export interface MentionOption {
   value: string;
@@ -232,14 +233,12 @@ const Mentions: React.FC<MentionsProps> = ({
   const positionDropdown = useEffectEvent(updatePosition);
   useEffect(() => {
     if (!query) return;
-    let frame = 0;
+    const frame = createFrameScheduler();
     const update = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(positionDropdown);
+      frame.schedule(positionDropdown);
     };
     const closeOutside = (event: MouseEvent) => {
-      const target = event.target as Node;
-      if (!rootRef.current?.contains(target) && !dropdownRef.current?.contains(target)) {
+      if (isEventOutside(event, [rootRef.current, dropdownRef.current], false)) {
         setQuery(null);
       }
     };
@@ -251,7 +250,7 @@ const Mentions: React.FC<MentionsProps> = ({
     window.addEventListener("scroll", update, true);
     document.addEventListener("mousedown", closeOutside);
     return () => {
-      cancelAnimationFrame(frame);
+      frame.cancel();
       observer.disconnect();
       window.removeEventListener("resize", update);
       window.removeEventListener("scroll", update, true);

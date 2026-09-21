@@ -1,3 +1,4 @@
+import { isEventOutside } from "../utils/popup";
 import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
@@ -281,8 +282,7 @@ function DatePicker({
   useEffect(() => {
     if (!visible || panelOnly) return;
     const outside = (event: globalThis.MouseEvent) => {
-      const target = event.target as Node;
-      if (!rootRef.current?.contains(target) && !overlayRef.current?.contains(target)) {
+      if (isEventOutside(event, [rootRef.current, overlayRef.current], false)) {
         if (isRange && draft.length === 1) {
           setDraft(values);
           setTexts(values.map((item) => item.format(fmt)));

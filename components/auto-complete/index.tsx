@@ -1,3 +1,4 @@
+import { createFrameScheduler } from "../utils/popup";
 import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
@@ -196,10 +197,9 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   }, [syncedOpenChange]);
   useEffect(() => {
     if (!visible) return;
-    let frame = 0;
+    const frame = createFrameScheduler();
     const update = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(updatePosition);
+      frame.schedule(updatePosition);
     };
     const observer = new ResizeObserver(update);
     if (rootRef.current) observer.observe(rootRef.current);
@@ -208,7 +208,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
     document.addEventListener("scroll", update, true);
     window.addEventListener("resize", update);
     return () => {
-      cancelAnimationFrame(frame);
+      frame.cancel();
       observer.disconnect();
       document.removeEventListener("scroll", update, true);
       window.removeEventListener("resize", update);

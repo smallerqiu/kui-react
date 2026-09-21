@@ -1,9 +1,9 @@
 import clsx from "clsx";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import type { PlacementsType } from "../const/types";
-import { setPlacement } from "../utils/placement";
+import { usePopoverPosition, usePopoverOutsideClick } from "../utils/use-popover";
 import { getChildren, setRef } from "../utils/react-node";
 
 export interface PoptipProps {
@@ -60,43 +60,18 @@ const Poptip: React.FC<PoptipProps> = ({
       if (externalOpen) setRendered(true);
     }
   }
-  const [left, setLeft] = useState(0);
-  const [top, setTop] = useState(0);
-  const [currentPlacement, setCurrentPlacement] = useState(placement);
-  const [transOrigin, setTransOrigin] = useState("bottom");
-
-  const refPopper = useRef<HTMLDivElement>(null);
-  const refSelection = useRef<HTMLElement>(null);
-  const placementRef = useRef<string>(placement);
-  const transOriginRef = useRef("bottom");
-  const topRef = useRef(0);
-  const leftRef = useRef(0);
+  const {
+    left,
+    top,
+    currentPlacement,
+    transOrigin,
+    refPopper,
+    refSelection,
+    updatePosition,
+    setSelectionRef,
+  } = usePopoverPosition(placement, visible, panelOnly, title);
   const hideTimer = useRef<NodeJS.Timeout | null>(null);
   const showTimer = useRef<NodeJS.Timeout | null>(null);
-
-  const updatePosition = useCallback(() => {
-    if (!refSelection.current || !refPopper.current) return;
-    placementRef.current = placement;
-
-    setPlacement({
-      refSelection,
-      refPopper,
-      currentPlacement: placementRef,
-      transOrigin: transOriginRef,
-      top: topRef,
-      left: leftRef,
-    });
-
-    setCurrentPlacement(placementRef.current as PlacementsType);
-    setTransOrigin(transOriginRef.current);
-    setTop(topRef.current);
-    setLeft(leftRef.current);
-  }, [placement]);
-
-  useEffect(() => {
-    if (panelOnly || !visible) return;
-    updatePosition();
-  }, [panelOnly, title, updatePosition, visible]);
 
   const updateShow = useCallback(
     (value: boolean) => {
@@ -108,34 +83,7 @@ const Poptip: React.FC<PoptipProps> = ({
     [externalOpen, onClose, onOpenChange, onShowChange],
   );
 
-  const outsideClick = useCallback(
-    (e: MouseEvent) => {
-      const ctx = refSelection.current;
-      if (
-        refPopper.current &&
-        !refPopper.current.contains(e.target as Node) &&
-        ctx &&
-        !ctx.contains(e.target as Node)
-      ) {
-        updateShow(false);
-      }
-    },
-    [updateShow],
-  );
-
-  useEffect(() => {
-    if (panelOnly) return;
-    window.addEventListener("resize", updatePosition);
-    return () => {
-      window.removeEventListener("resize", updatePosition);
-    };
-  }, [panelOnly, updatePosition]);
-
-  useEffect(() => {
-    if (!visible) return;
-    document.addEventListener("click", outsideClick);
-    return () => document.removeEventListener("click", outsideClick);
-  }, [outsideClick, visible]);
+  usePopoverOutsideClick(visible, refSelection, refPopper, updateShow);
 
   const showPoptip = () => {
     if (showTimer.current) clearTimeout(showTimer.current);
@@ -175,9 +123,6 @@ const Poptip: React.FC<PoptipProps> = ({
   }
 
   let triggerNode: React.ReactNode;
-  const setSelectionRef = (node: HTMLElement | null) => {
-    refSelection.current = node;
-  };
   if (
     firstChild &&
     React.isValidElement<React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement> }>(
