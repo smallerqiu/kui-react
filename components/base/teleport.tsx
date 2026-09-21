@@ -45,7 +45,11 @@ const Teleport: React.FC<TeleportProps> = ({ to, disabled = false, defer = false
     } else {
       setContainer(resolveTarget());
     }
-  }, [to, disabled, defer, getPopupContainer]);
+    // A stable selector/callback can resolve to a different node after a commit
+    // (conditional targets, replaced DOM, or a changed ref). Resolve on each
+    // commit, not just when the selector/callback identity changes. React bails
+    // out of setContainer when the resolved element is unchanged.
+  });
 
   // 禁用状态：直接在组件原位渲染
   if (disabled) {

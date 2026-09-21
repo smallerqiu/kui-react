@@ -3,23 +3,12 @@ import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { CircleX, Loading } from "kui-icons";
-import React, {
-  useCallback,
-  useEffect,
-  useEffectEvent,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import Teleport from "../base/teleport";
-import Transition from "../base/transition";
+import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import Popup from "../base/popup";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 import Empty from "../empty";
 import Icon from "../icon";
 import { TextArea } from "../input";
-import { setPlacement } from "../utils/placement";
-import { createFrameScheduler, isEventOutside } from "../utils/popup";
 
 export interface MentionOption {
   value: string;
@@ -130,18 +119,12 @@ const Mentions: React.FC<MentionsProps> = ({
   const [inner, setInner] = useValue(value, (next) => next ?? "");
   const listboxId = `k-mentions-listbox-${useId().replace(/:/g, "")}`;
   const [query, setQuery] = useState<Query | null>(null);
-  const [rendered, setRendered] = useState(false);
   const [active, setActive] = useState(0);
   const [shown, setShown] = useState<MentionOption[]>([]);
-  const [positioned, setPositioned] = useState(false);
-  const [position, setPosition] = useState({ left: 0, top: 0, origin: "left top", width: 260 });
+  const [popupWidth, setPopupWidth] = useState(260);
   const rootRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const placementRef = useRef<string>(placement);
-  const originRef = useRef("left top");
-  const topRef = useRef(0);
-  const leftRef = useRef(0);
   const composing = useRef(false);
   const current = inner;
   const normalized = useMemo(
@@ -181,28 +164,12 @@ const Mentions: React.FC<MentionsProps> = ({
     setPreviousNormalized(normalized);
     if (query) setMatches(getMatches(query));
   }
-  const updatePosition = () => {
-    if (!query || !textareaRef.current || !dropdownRef.current) return;
+  const getAnchorPosition = useCallback(() => {
+    if (!textareaRef.current) return null;
     const rect = caretPosition(textareaRef.current);
-    placementRef.current = placement;
-    setPlacement({
-      refSelection: rootRef,
-      refPopper: dropdownRef,
-      currentPlacement: placementRef,
-      transOrigin: originRef,
-      top: topRef,
-      left: leftRef,
-      position: { x: rect.left, y: rect.bottom },
-      offset: 4,
-    });
-    setPosition({
-      left: leftRef.current,
-      top: topRef.current,
-      origin: originRef.current,
-      width: Math.min(260, rootRef.current?.offsetWidth || 260),
-    });
-    setPositioned(true);
-  };
+    setPopupWidth(Math.min(260, rootRef.current?.offsetWidth || 260));
+    return { x: rect.left, y: rect.bottom };
+  }, []);
   const updateQuery = (text: string, caret: number, search = false) => {
     if (readOnly) {
       setQuery(null);
@@ -221,42 +188,13 @@ const Mentions: React.FC<MentionsProps> = ({
     });
     const nextQuery = found as Query | null;
     setQuery(nextQuery);
-    if (!query && nextQuery) setPositioned(false);
     if (nextQuery) {
-      setRendered(true);
       setMatches(onSearch && search && nextQuery.text ? [] : getMatches(nextQuery));
       if (search && nextQuery.text) onSearch?.(nextQuery.text, nextQuery.trigger);
     } else {
       setMatches([]);
     }
   };
-  const positionDropdown = useEffectEvent(updatePosition);
-  useEffect(() => {
-    if (!query) return;
-    const frame = createFrameScheduler();
-    const update = () => {
-      frame.schedule(positionDropdown);
-    };
-    const closeOutside = (event: MouseEvent) => {
-      if (isEventOutside(event, [rootRef.current, dropdownRef.current], false)) {
-        setQuery(null);
-      }
-    };
-    const observer = new ResizeObserver(update);
-    if (rootRef.current) observer.observe(rootRef.current);
-    if (dropdownRef.current) observer.observe(dropdownRef.current);
-    update();
-    window.addEventListener("resize", update);
-    window.addEventListener("scroll", update, true);
-    document.addEventListener("mousedown", closeOutside);
-    return () => {
-      frame.cancel();
-      observer.disconnect();
-      window.removeEventListener("resize", update);
-      window.removeEventListener("scroll", update, true);
-      document.removeEventListener("mousedown", closeOutside);
-    };
-  }, [query, shown, placement]);
   useEffect(() => {
     dropdownRef.current
       ?.querySelector<HTMLElement>(`#${listboxId}-option-${active}`)
@@ -371,9 +309,24 @@ const Mentions: React.FC<MentionsProps> = ({
           }}
         />
       )}
-      {rendered && (
-        <Teleport to="body">
-          <Transition show={!!query} name="k-select" nodeRef={dropdownRef} appear>
+      {
+        <Popup
+          raw
+          open={!!query}
+          target={rootRef}
+          trigger="manual"
+          placement={placement}
+          prefixCls="k-mentions-dropdown"
+          transitionName="k-select"
+          offset={4}
+          getAnchorPosition={getAnchorPosition}
+          style={{ minWidth: popupWidth }}
+          destroyOnClose
+          outsideEvent="mousedown"
+          onOpenChange={(next) => {
+            if (!next) setQuery(null);
+          }}
+          overlay={
             <div
               ref={dropdownRef}
               id={listboxId}
@@ -381,13 +334,6 @@ const Mentions: React.FC<MentionsProps> = ({
                 "k-select-dropdown-sm": size === "small",
                 "k-select-dropdown-lg": size === "large",
               })}
-              style={{
-                left: position.left,
-                top: position.top,
-                width: position.width,
-                visibility: positioned ? undefined : "hidden",
-                transformOrigin: position.origin,
-              }}
               role="listbox"
             >
               {loading ? (
@@ -421,9 +367,9 @@ const Mentions: React.FC<MentionsProps> = ({
                 <Empty description={emptyText} />
               )}
             </div>
-          </Transition>
-        </Teleport>
-      )}
+          }
+        />
+      }
     </div>
   );
 };

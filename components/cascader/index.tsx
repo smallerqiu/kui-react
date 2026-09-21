@@ -1,15 +1,12 @@
-import { isEventOutside } from "../utils/popup";
 import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { ChevronDown, ChevronRight, CircleAlert, CircleX, Loading } from "kui-icons";
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
-import Teleport from "../base/teleport";
-import Transition from "../base/transition";
+import Popup from "../base/popup";
 import Empty from "../empty";
 import Icon from "../icon";
-import { setPlacement } from "../utils/placement";
 import type { CascaderOption, CascaderProps, CascaderValue } from "./types";
 
 const EMPTY_OPTIONS: CascaderOption[] = [];
@@ -105,15 +102,8 @@ function Cascader({
   const [innerOpen, setInnerOpen] = useState(defaultOpen);
   const [activeColumn, setActiveColumn] = useState(0);
   const visible = openProp ?? innerOpen;
-  const [rendered, setRendered] = useState(visible);
-  const [position, setPosition] = useState({ left: 0, top: 0, minWidth: 0, origin: "top" });
   const selectionRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const currentPlacementRef = useRef(placement);
-  const topRef = useRef(0);
-  const leftRef = useRef(0);
-  const originRef = useRef("top");
-
   useEffect(() => {
     mountedRef.current = true;
     return () => {
@@ -138,31 +128,10 @@ function Cascader({
       .join(showAllLevels ? separator : "") || "";
   const shownLabel = showAllLevels ? displayLabel : (selectedPath.at(-1)?.label ?? "");
 
-  const updatePosition = useCallback(() => {
-    const selection = selectionRef.current;
-    if (!selection) return;
-    currentPlacementRef.current = placement;
-    setPlacement({
-      refSelection: selectionRef,
-      refPopper: overlayRef,
-      currentPlacement: currentPlacementRef,
-      transOrigin: originRef,
-      top: topRef,
-      left: leftRef,
-    });
-    setPosition({
-      left: leftRef.current,
-      top: topRef.current,
-      minWidth: selection.offsetWidth,
-      origin: originRef.current,
-    });
-  }, [placement]);
-
   const setOpen = useCallback(
     (next: boolean) => {
-      if (disabled || readOnly || next === visible) return;
+      if ((next && (disabled || readOnly)) || next === visible) return;
       if (next) {
-        setRendered(true);
         setActiveColumn(0);
       }
       if (openProp === undefined) setInnerOpen(next);
@@ -170,26 +139,6 @@ function Cascader({
     },
     [disabled, onOpenChange, openProp, readOnly, visible],
   );
-
-  useEffect(() => {
-    if (!visible) return;
-    requestAnimationFrame(updatePosition);
-    const outside = (event: globalThis.MouseEvent) => {
-      if (isEventOutside(event, [selectionRef.current, overlayRef.current], false)) setOpen(false);
-    };
-    document.addEventListener("mousedown", outside);
-    window.addEventListener("resize", updatePosition);
-    window.addEventListener("scroll", updatePosition, true);
-    return () => {
-      document.removeEventListener("mousedown", outside);
-      window.removeEventListener("resize", updatePosition);
-      window.removeEventListener("scroll", updatePosition, true);
-    };
-  }, [setOpen, updatePosition, visible]);
-
-  useEffect(() => {
-    if (visible) requestAnimationFrame(updatePosition);
-  }, [activePath, updatePosition, visible]);
 
   const commit = (next: CascaderValue) => {
     setInnerValue(next);
@@ -210,7 +159,6 @@ function Cascader({
       const children = Array.isArray(result) ? result : (option.children ?? []);
       if (mountedRef.current) {
         setLoadedChildren((current) => new Map(current).set(option, children));
-        requestAnimationFrame(updatePosition);
       }
       return children;
     } catch {
@@ -404,21 +352,27 @@ function Cascader({
           />
         )}
       </div>
-      {(rendered || visible) && (
-        <Teleport to="body">
-          <Transition show={visible} name="k-cascader" timeout={250} nodeRef={overlayRef} appear>
+      {
+        <Popup
+          raw
+          open={visible}
+          target={selectionRef}
+          trigger="manual"
+          placement={placement}
+          prefixCls="k-cascader-dropdown"
+          transitionName="k-cascader"
+          transitionDuration={250}
+          matchTriggerWidth
+          destroyOnClose
+          outsideEvent="mousedown"
+          onOpenChange={setOpen}
+          overlay={
             <div
               ref={overlayRef}
               className={clsx("k-cascader-dropdown", {
                 "k-cascader-dropdown-sm": size === "small",
                 "k-cascader-dropdown-lg": size === "large",
               })}
-              style={{
-                left: position.left,
-                top: position.top,
-                minWidth: position.minWidth,
-                transformOrigin: position.origin,
-              }}
             >
               {options.length ? (
                 <div className="k-cascader-dropdown-menus">
@@ -465,9 +419,9 @@ function Cascader({
                 <Empty description={emptyText} />
               )}
             </div>
-          </Transition>
-        </Teleport>
-      )}
+          }
+        />
+      }
     </>
   );
 }

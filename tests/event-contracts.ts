@@ -9,6 +9,9 @@ type TypedHandler<T> =
 
 // Public callback arguments must remain typed rather than falling back to any.
 export type PublicEventContract = [
+  Assert<TypedHandler<Components.PopupProps["onOpenChange"]>>,
+  Assert<TypedHandler<Components.PopupProps["onAfterOpen"]>>,
+  Assert<TypedHandler<Components.PopupProps["onAfterClose"]>>,
   Assert<TypedHandler<Components.AffixProps["onChange"]>>,
   Assert<TypedHandler<Components.AlertProps["onClose"]>>,
   Assert<TypedHandler<Components.CalendarProps["onChange"]>>,

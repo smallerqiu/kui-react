@@ -1,21 +1,17 @@
-import { isEventOutside } from "../utils/popup";
 import clsx from "clsx";
 import Color, { type ColorInstance, type ColorObject } from "color";
 import {
   isValidElement,
   useCallback,
-  useEffect,
   useRef,
   useState,
   type HTMLAttributes,
   type ReactNode,
 } from "react";
-import Teleport from "../base/teleport";
-import Transition from "../base/transition";
+import Popup, { type PopupRef } from "../base/popup";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 import { createFormFieldComponent } from "../form/field-context";
-import { setPlacement } from "../utils/placement";
 import { useValue } from "../utils/use-value";
 import Alpha from "./alpha";
 import Hue from "./hue";
@@ -84,15 +80,9 @@ function ColorPicker({
   const [currentAlpha, setCurrentAlpha] = useState(initialColor.alpha());
   const [innerOpen, setInnerOpen] = useState(defaultOpen);
   const currentOpen = panelOnly || (openProp ?? innerOpen);
-  const [position, setPosition] = useState({ left: 0, top: 0, origin: "bottom" });
-  const [currentPlacement, setCurrentPlacement] = useState(placement);
+  const popup = useRef<PopupRef>(null);
   const triggerRef = useRef<HTMLElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
-  const placementRef = useRef<string>(placement);
-  const transOriginRef = useRef("bottom");
-  const topRef = useRef(0);
-  const leftRef = useRef(0);
-  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const currentValue = innerColor;
   const [syncedValue, setSyncedValue] = useState(currentValue);
   if (syncedValue !== currentValue) {
@@ -116,63 +106,19 @@ function ColorPicker({
     setInnerColor(formatted);
     onChange?.(formatted);
   };
-  const updatePosition = useCallback(() => {
-    if (!triggerRef.current || !popoverRef.current) return;
-    placementRef.current = placement;
-    setPlacement({
-      refSelection: triggerRef,
-      refPopper: popoverRef,
-      currentPlacement: placementRef,
-      transOrigin: transOriginRef,
-      top: topRef,
-      left: leftRef,
-    });
-    setCurrentPlacement(placementRef.current as DropPlacementsType);
-    setPosition({ left: leftRef.current, top: topRef.current, origin: transOriginRef.current });
-  }, [placement]);
   const setVisible = useCallback(
     (next: boolean) => {
-      if (disabled || readOnly || panelOnly) return;
+      if ((next && (disabled || readOnly)) || panelOnly) return;
       if (openProp === undefined) setInnerOpen(next);
       onOpenChange?.(next);
-      if (next) requestAnimationFrame(updatePosition);
     },
-    [disabled, onOpenChange, openProp, panelOnly, readOnly, updatePosition],
+    [disabled, onOpenChange, openProp, panelOnly, readOnly],
   );
-  // 清理未完成的隐藏定时器，防止在组件卸载后调用 setState
-  useEffect(
-    () => () => {
-      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-    },
-    [],
-  );
-  const updatePositionRef = useRef(updatePosition);
-  useEffect(() => {
-    updatePositionRef.current = updatePosition;
-  });
-  useEffect(() => {
-    if (!currentOpen || panelOnly) return;
-    const outside = (event: MouseEvent) => {
-      if (isEventOutside(event, [popoverRef.current, triggerRef.current], false)) setVisible(false);
-    };
-    const handleResize = () => updatePositionRef.current();
-    const handleScroll = () => updatePositionRef.current();
-    document.addEventListener("mousedown", outside);
-    window.addEventListener("resize", handleResize);
-    window.addEventListener("scroll", handleScroll, true);
-    return () => {
-      document.removeEventListener("mousedown", outside);
-      window.removeEventListener("resize", handleResize);
-      window.removeEventListener("scroll", handleScroll, true);
-    };
-  }, [currentOpen, panelOnly, setVisible]);
   const mouseEnter = () => {
-    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    popup.current?.cancelClose();
     setVisible(true);
   };
-  const mouseLeave = () => {
-    hideTimerRef.current = setTimeout(() => setVisible(false), 300);
-  };
+  const mouseLeave = () => popup.current?.scheduleClose();
   const hoverProps =
     trigger === "hover"
       ? { onMouseEnter: mouseEnter, onMouseLeave: mouseLeave }
@@ -259,28 +205,13 @@ function ColorPicker({
       onClickCapture={blockPanelInteraction}
       onMouseDownCapture={blockPanelInteraction}
       onKeyDownCapture={blockPanelInteraction}
-      {...({ "k-placement": currentPlacement } as HTMLAttributes<HTMLDivElement>)}
+      {...({ "k-placement": placement } as HTMLAttributes<HTMLDivElement>)}
       className={clsx("k-color-picker-dropdown", {
         "k-color-picker-disabled-alpha": disabledAlpha,
         "k-color-picker-panel": panelOnly,
       })}
-      style={
-        panelOnly
-          ? undefined
-          : {
-              left: position.left,
-              top: position.top,
-              transformOrigin: position.origin,
-            }
-      }
-      onMouseEnter={() => hideTimerRef.current && clearTimeout(hideTimerRef.current)}
-      onMouseLeave={
-        trigger === "hover"
-          ? () => {
-              hideTimerRef.current = setTimeout(() => setVisible(false), 300);
-            }
-          : undefined
-      }
+      onMouseEnter={() => popup.current?.cancelClose()}
+      onMouseLeave={trigger === "hover" ? mouseLeave : undefined}
     >
       <div className="k-color-picker-body" inert={disabled || readOnly}>
         <Paint
@@ -367,11 +298,21 @@ function ColorPicker({
   const dropdown = panelOnly ? (
     dropdownContent
   ) : (
-    <Teleport to="body">
-      <Transition show={currentOpen} name="k-color-picker" timeout={200} nodeRef={popoverRef}>
-        {dropdownContent}
-      </Transition>
-    </Teleport>
+    <Popup
+      ref={popup}
+      raw
+      open={currentOpen}
+      target={triggerRef}
+      trigger="manual"
+      placement={placement}
+      prefixCls="k-color-picker-dropdown"
+      transitionName="k-color-picker"
+      transitionDuration={200}
+      destroyOnClose
+      outsideEvent="mousedown"
+      onOpenChange={setVisible}
+      overlay={dropdownContent}
+    />
   );
   if (panelOnly) return dropdown;
   return (

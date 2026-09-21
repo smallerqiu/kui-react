@@ -1,4 +1,3 @@
-import { createFrameScheduler, isEventOutside } from "../utils/popup";
 import { renderSelectionTags } from "../utils/selection-tags";
 import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
@@ -9,20 +8,17 @@ import React, {
   useContext,
   useCallback,
   useEffect,
-  useEffectEvent,
   useLayoutEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
-import Teleport from "../base/teleport";
-import Transition from "../base/transition";
+import Popup, { type PopupRef } from "../base/popup";
 import { ConfigContext } from "../config/config-context";
 import Empty from "../empty";
 import Icon, { type IconType } from "../icon";
 import zhCN from "../locale/zh-CN";
 import { isEmpty } from "../utils/number";
-import { setPlacement } from "../utils/placement";
 import { getChildren } from "../utils/react-node";
 import Option, { type OptionSelectEvent } from "./option";
 import VirtualList, { type VirtualListRef } from "../virtual-list";
@@ -137,8 +133,6 @@ const Select: React.FC<SelectProps> = ({
   const setVisible = (next: boolean) => {
     if (openProp === undefined) setInnerVisible(next);
   };
-  const [rendered, setRendered] = useState(visible);
-  if (visible && !rendered) setRendered(true);
   const [currentValue, setInternalValue] = useValue(value, (next) =>
     multiple ? (Array.isArray(next) ? next : []) : normalizeValue(next),
   );
@@ -146,17 +140,7 @@ const Select: React.FC<SelectProps> = ({
   const [queryInputVisible, setQueryInputVisible] = useState(false);
   const [queryKey, setQueryKey] = useState("");
   const [createdOptions, setCreatedOptions] = useState<SelectOption[]>([]);
-  const [minWidth, setMinWidth] = useState(0);
-  const transOrigin = useRef("bottom");
-  const left = useRef(0);
-  const top = useRef(0);
-  const currentPlacement = useRef(placement);
-  const [position, setPosition] = useState({
-    left: 0,
-    top: 0,
-    origin: "bottom",
-    placement,
-  });
+  const popup = useRef<PopupRef>(null);
   const [activeIndex, setActiveIndex] = useState(-1);
 
   const refPopper = useRef<HTMLDivElement>(null);
@@ -166,95 +150,18 @@ const Select: React.FC<SelectProps> = ({
   const queryInputEventTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const clearQueryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const virtualListRef = useRef<VirtualListRef>(null);
-  const positionRaf = useRef(createFrameScheduler());
-  const openRaf = useRef(0);
 
   const hasSearchEvent = !!onSearch;
   const searchable = filterable || hasSearchEvent || (multiple && allowCreate);
 
-  const syncPosition = useCallback(() => {
-    if (!refSelection.current || !refPopper.current) return;
-    setMinWidth(refSelection.current.offsetWidth);
-    setPlacement({
-      refSelection,
-      refPopper,
-      currentPlacement,
-      transOrigin,
-      top,
-      left,
-    });
-    setPosition({
-      left: left.current,
-      top: top.current,
-      origin: transOrigin.current,
-      placement: currentPlacement.current,
-    });
-  }, []);
-
-  // Coalesce scroll/resize events, while allowing the first mount to position synchronously.
-  const updatePosition = useCallback(() => {
-    positionRaf.current.schedule(syncPosition);
-  }, [syncPosition]);
-  const bindPopperRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      refPopper.current = node;
-      if (node) syncPosition();
-    },
-    [syncPosition],
-  );
-
-  useEffect(() => {
-    currentPlacement.current = placement;
-    if (visible) {
-      updatePosition();
-    }
-  }, [visible, placement, updatePosition]);
-
-  // Position ResizeObserver
-  useEffect(() => {
-    if (!visible || !refSelection.current) return;
-    const observer = new ResizeObserver(() => {
-      updatePosition();
-    });
-    observer.observe(refSelection.current);
-    if (refPopper.current) observer.observe(refPopper.current);
-    return () => {
-      observer.disconnect();
-    };
-  }, [visible, updatePosition]);
-
-  useEffect(() => {
-    document.addEventListener("scroll", updatePosition, true);
-    const positionScheduler = positionRaf.current;
-    return () => {
-      positionScheduler.cancel();
-      cancelAnimationFrame(openRaf.current);
+  const updatePosition = useCallback(() => popup.current?.updatePosition(), []);
+  useEffect(
+    () => () => {
       if (queryInputEventTimer.current) clearTimeout(queryInputEventTimer.current);
       if (clearQueryTimer.current) clearTimeout(clearQueryTimer.current);
-      document.removeEventListener("scroll", updatePosition, true);
-    };
-  }, [updatePosition]);
-
-  // Handle outside click
-  const outsideClick = (e: MouseEvent) => {
-    if (isEventOutside(e, [refSelection.current, refPopper.current])) {
-      setVisible(false);
-      onOpenChange?.(false);
-      clearQuery();
-    }
-  };
-  const handleOutsideClick = useEffectEvent(outsideClick);
-
-  useEffect(() => {
-    if (visible) {
-      document.addEventListener("click", handleOutsideClick);
-    } else {
-      document.removeEventListener("click", handleOutsideClick);
-    }
-    return () => {
-      document.removeEventListener("click", handleOutsideClick);
-    };
-  }, [visible]);
+    },
+    [],
+  );
 
   const optionsData = useMemo(() => {
     if (loading) return [];
@@ -392,16 +299,8 @@ const Select: React.FC<SelectProps> = ({
     if (hasSearchEvent) {
       if (queryInputEventTimer.current) clearTimeout(queryInputEventTimer.current);
       queryInputEventTimer.current = setTimeout(() => {
-        if (!rendered) {
-          setRendered(true);
-          openRaf.current = requestAnimationFrame(() => {
-            setVisible(true);
-            onOpenChange?.(true);
-          });
-        } else {
-          setVisible(true);
-          onOpenChange?.(true);
-        }
+        setVisible(true);
+        onOpenChange?.(true);
         onSearch?.(e);
       }, 500);
     }
@@ -453,26 +352,11 @@ const Select: React.FC<SelectProps> = ({
       return;
     }
 
-    if (!rendered) {
-      setRendered(true);
-      openRaf.current = requestAnimationFrame(() => {
-        setVisible(true);
-        onOpenChange?.(true);
-        showQuery();
-      });
-    } else {
-      const nextVisible = show !== null ? show : !visible;
-      setVisible(nextVisible);
-      onOpenChange?.(nextVisible);
-      if (nextVisible) {
-        setTimeout(() => {
-          updatePosition();
-          showQuery();
-        }, 0);
-      } else {
-        clearQuery();
-      }
-    }
+    const nextVisible = show ?? !visible;
+    setVisible(nextVisible);
+    onOpenChange?.(nextVisible);
+    if (nextVisible) showQuery();
+    else clearQuery();
   }
 
   function filterOptions() {
@@ -611,17 +495,9 @@ const Select: React.FC<SelectProps> = ({
     clearable && !disabled && !readOnly && !isEmpty(currentValue) && !isEmpty(labelText);
 
   const renderOverlay = () => {
-    if (!rendered) return null;
-
     const filteredOptions = filterOptions();
     const popperProps = {
-      ref: bindPopperRef,
-      style: {
-        minWidth: extendWidth ? `${minWidth}px` : undefined,
-        left: `${position.left}px`,
-        top: `${position.top}px`,
-        transformOrigin: position.origin,
-      } as React.CSSProperties,
+      ref: refPopper,
       className: clsx("k-select-dropdown", "k-scroll", {
         "k-select-dropdown-multiple": multiple,
         "k-select-dropdown-sm": size === "small",
@@ -664,11 +540,22 @@ const Select: React.FC<SelectProps> = ({
     );
 
     return (
-      <Teleport to="body">
-        <Transition show={visible} name="k-select" nodeRef={refPopper} appear>
-          {overlay}
-        </Transition>
-      </Teleport>
+      <Popup
+        ref={popup}
+        raw
+        open={visible}
+        target={refSelection}
+        trigger="manual"
+        placement={placement}
+        prefixCls="k-select-dropdown"
+        transitionName="k-select"
+        matchTriggerWidth={extendWidth}
+        destroyOnClose
+        onOpenChange={(next) => {
+          if (!next) closeDropdown();
+        }}
+        overlay={overlay}
+      />
     );
   };
 
@@ -731,6 +618,7 @@ const Select: React.FC<SelectProps> = ({
 
   const labelsNode = multiple ? (
     <div className="k-select-labels" key="labels">
+      {/* eslint-disable-next-line react-hooks/refs -- Removal callbacks read refs only on interaction. */}
       {renderTags()}
       {queryNode}
     </div>

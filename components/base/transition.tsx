@@ -22,6 +22,7 @@ function canHoldRef(element: ReactElement): element is TransitionElement {
 }
 
 export interface TransitionProps {
+  unmountOnExit?: boolean;
   show?: boolean;
   name?: string;
   appear?: boolean;
@@ -45,6 +46,7 @@ export interface TransitionProps {
 export const Transition = forwardRef<HTMLElement, TransitionProps>(function Transition(
   {
     show = false,
+    unmountOnExit = true,
     name = "v",
     appear = false,
     timeout = 300,
@@ -100,7 +102,7 @@ export const Transition = forwardRef<HTMLElement, TransitionProps>(function Tran
       timeout={timeout}
       appear={appear}
       mountOnEnter
-      unmountOnExit
+      unmountOnExit={unmountOnExit}
       classNames={{
         appear: enterFromClass,
         appearActive: enterActiveClass,

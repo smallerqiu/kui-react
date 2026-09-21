@@ -1,4 +1,3 @@
-import { createFrameScheduler } from "../utils/popup";
 import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
@@ -13,14 +12,12 @@ import React, {
   useRef,
   useState,
 } from "react";
-import Teleport from "../base/teleport";
-import Transition from "../base/transition";
+import Popup from "../base/popup";
 import { ConfigContext } from "../config/config-context";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 import Icon from "../icon";
 import { Input } from "../input";
 import zhCN from "../locale/zh-CN";
-import { setPlacement } from "../utils/placement";
 
 export interface AutoCompleteOption {
   value: string;
@@ -103,10 +100,6 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
       : [];
   const [innerValue, setInnerValue] = useValue(value, (next) => next ?? "");
   const [innerOpen, setInnerOpen] = useState(defaultOpen);
-  const [rendered, setRendered] = useState(
-    initiallyOpen && (loading || initialShownOptions.length > 0),
-  );
-  const [positioned, setPositioned] = useState(false);
   const [active, setActive] = useState(-1);
   const [shownOptions, setShownOptions] = useState<AutoCompleteOption[]>(initialShownOptions);
   const [suppressRemoteOptions, setSuppressRemoteOptions] = useState(false);
@@ -114,15 +107,10 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
     value: boolean;
     revision: number;
   } | null>(null);
-  const [position, setPosition] = useState({ left: 0, top: 0, origin: "left top", width: 0 });
   const rootRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const blurTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const composing = useRef(false);
-  const placementRef = useRef("bottom-left");
-  const originRef = useRef("left top");
-  const topRef = useRef(0);
-  const leftRef = useRef(0);
   const current = innerValue;
   const requestedOpen = open ?? innerOpen;
   const visible = (loading || (!suppressRemoteOptions && shownOptions.length > 0)) && requestedOpen;
@@ -135,10 +123,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   const setOpen = (next: boolean) => {
     if (next && (disabled || readOnly)) return;
     if (next && suppressRemoteOptions && !loading) return;
-    if (next) {
-      setRendered(true);
-      if (!requestedOpen) setPositioned(false);
-    }
+
     if (open === undefined) setInnerOpen(next);
     if (!next) setActive(-1);
     onOpenChange?.(next);
@@ -149,32 +134,9 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
     return matches.length > 0;
   };
   const syncOpen = (next: boolean) => {
-    if (next) {
-      setRendered(true);
-      if (!requestedOpen) setPositioned(false);
-    }
     if (open === undefined) setInnerOpen(next);
     if (!next) setActive(-1);
     setSyncedOpenChange((state) => ({ value: next, revision: (state?.revision ?? 0) + 1 }));
-  };
-  const updatePosition = () => {
-    if (!rootRef.current || !dropdownRef.current) return;
-    setPlacement({
-      refSelection: rootRef,
-      refPopper: dropdownRef,
-      currentPlacement: placementRef,
-      transOrigin: originRef,
-      top: topRef,
-      left: leftRef,
-      offset: 6,
-    });
-    setPosition({
-      left: leftRef.current,
-      top: topRef.current,
-      origin: originRef.current,
-      width: rootRef.current.offsetWidth,
-    });
-    setPositioned(true);
   };
   const [previousRemoteState, setPreviousRemoteState] = useState({ loading, normalized });
   if (previousRemoteState.loading !== loading || previousRemoteState.normalized !== normalized) {
@@ -195,25 +157,6 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   useEffect(() => {
     if (syncedOpenChange) emitSyncedOpen(syncedOpenChange.value);
   }, [syncedOpenChange]);
-  useEffect(() => {
-    if (!visible) return;
-    const frame = createFrameScheduler();
-    const update = () => {
-      frame.schedule(updatePosition);
-    };
-    const observer = new ResizeObserver(update);
-    if (rootRef.current) observer.observe(rootRef.current);
-    if (dropdownRef.current) observer.observe(dropdownRef.current);
-    update();
-    document.addEventListener("scroll", update, true);
-    window.addEventListener("resize", update);
-    return () => {
-      frame.cancel();
-      observer.disconnect();
-      document.removeEventListener("scroll", update, true);
-      window.removeEventListener("resize", update);
-    };
-  }, [visible, shownOptions, loading]);
   useEffect(() => () => clearTimeout(blurTimer.current), []);
   useEffect(() => {
     const option = dropdownRef.current?.querySelector<HTMLElement>(
@@ -333,9 +276,20 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
           if (!event.defaultPrevented) handleKeyDown(event);
         }}
       />
-      {rendered && (
-        <Teleport to="body">
-          <Transition show={visible} name="k-select" nodeRef={dropdownRef} appear>
+      {
+        <Popup
+          raw
+          open={visible}
+          target={rootRef}
+          trigger="manual"
+          placement="bottom-left"
+          prefixCls="k-auto-complete-dropdown"
+          transitionName="k-select"
+          offset={6}
+          matchTriggerWidth
+          destroyOnClose
+          onOpenChange={setOpen}
+          overlay={
             <div
               ref={dropdownRef}
               id={listboxId}
@@ -343,13 +297,6 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
                 "k-select-dropdown-sm": size === "small",
                 "k-select-dropdown-lg": size === "large",
               })}
-              style={{
-                left: position.left,
-                top: position.top,
-                minWidth: position.width,
-                visibility: positioned ? undefined : "hidden",
-                transformOrigin: position.origin,
-              }}
               role="listbox"
             >
               {loading ? (
@@ -382,9 +329,9 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
                 </ul>
               )}
             </div>
-          </Transition>
-        </Teleport>
-      )}
+          }
+        />
+      }
     </div>
   );
 };

@@ -1,4 +1,3 @@
-import { isEventOutside } from "../utils/popup";
 import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
@@ -21,7 +20,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -29,14 +27,12 @@ import {
   type ReactNode,
   type SetStateAction,
 } from "react";
-import Teleport from "../base/teleport";
-import Transition from "../base/transition";
+import Popup from "../base/popup";
 import { Button } from "../button";
 import { ConfigContext } from "../config/config-context";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
 import zhCN from "../locale/zh-CN";
-import { setPlacement } from "../utils/placement";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(localeData);
@@ -188,7 +184,6 @@ function DatePicker({
   const values = rangeControlled ? initial : inner;
   const [visibleState, setVisibleState] = useState(defaultOpen || panelOnly);
   const visible = panelOnly || (open ?? visibleState);
-  const [rendered, setRendered] = useState(panelOnly || (open ?? defaultOpen));
   const syncSignature = `${fmt}:${parsedSource.map((item) => item?.valueOf() ?? "null").join(",")}`;
   const [panelState, setPanelState] = useState({
     signature: syncSignature,
@@ -229,12 +224,6 @@ function DatePicker({
   );
   const rootRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ left: 0, top: 0, origin: "left top" });
-  const [currentPlacement, setCurrentPlacement] = useState<DropPlacementsType>(placement);
-  const placementRef = useRef<string>(placement);
-  const transOriginRef = useRef("left top");
-  const topRef = useRef(0);
-  const leftRef = useRef(0);
   const timeColRefs = useRef<Partial<Record<UnitType, HTMLUListElement | null>>>({});
   const draftRef = useRef(draft);
   const panelDateRef = useRef(panelDate);
@@ -247,69 +236,18 @@ function DatePicker({
     (next: boolean) => {
       if (panelOnly) return;
       if (open === undefined) setVisibleState(next);
-      setRendered(true);
+
       onOpenChange?.(next);
     },
     [onOpenChange, open, panelOnly],
   );
-  const updatePosition = useCallback(() => {
-    const root = rootRef.current;
-    if (!root) return;
-    const overlay = overlayRef.current;
-    if (!overlay) return;
-    placementRef.current = placement;
-    setPlacement({
-      refSelection: rootRef,
-      refPopper: overlayRef,
-      currentPlacement: placementRef,
-      transOrigin: transOriginRef,
-      top: topRef,
-      left: leftRef,
-    });
-    setCurrentPlacement(placementRef.current as DropPlacementsType);
-    setPosition({ left: leftRef.current, top: topRef.current, origin: transOriginRef.current });
-  }, [placement]);
-  const bindOverlayRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      overlayRef.current = node;
-      if (node && visible && !panelOnly) updatePosition();
-    },
-    [panelOnly, updatePosition, visible],
-  );
-  useLayoutEffect(() => {
-    if (visible && !panelOnly) updatePosition();
-  }, [visible, panelOnly, updatePosition]);
-  useEffect(() => {
-    if (!visible || panelOnly) return;
-    const outside = (event: globalThis.MouseEvent) => {
-      if (isEventOutside(event, [rootRef.current, overlayRef.current], false)) {
-        if (isRange && draft.length === 1) {
-          setDraft(values);
-          setTexts(values.map((item) => item.format(fmt)));
-        }
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", outside);
-    window.addEventListener("resize", updatePosition);
-    window.addEventListener("scroll", updatePosition, true);
-    return () => {
-      document.removeEventListener("mousedown", outside);
-      window.removeEventListener("resize", updatePosition);
-      window.removeEventListener("scroll", updatePosition, true);
-    };
-  }, [
-    visible,
-    updatePosition,
-    isRange,
-    draft,
-    values,
-    fmt,
-    setOpen,
-    panelOnly,
-    setDraft,
-    setTexts,
-  ]);
+  const closePopup = () => {
+    if (isRange && draft.length === 1) {
+      setDraft(values);
+      setTexts(values.map((item) => item.format(fmt)));
+    }
+    setOpen(false);
+  };
 
   const output = (item: Dayjs) =>
     valueType === "date"
@@ -620,14 +558,14 @@ function DatePicker({
     typeof content === "function" ? content({ emit: emitExternal }) : content;
   const overlayContent = (
     <div
-      ref={bindOverlayRef}
+      ref={overlayRef}
       className={clsx("k-datepicker-overlay", {
         "k-datepicker-range": isRange,
         "k-datepicker-with-time": hasTime,
         "k-datepicker-panel": panelOnly,
         "k-datepicker-disabled": disabled,
       })}
-      {...({ mode, "k-placement": currentPlacement } as Record<string, string>)}
+      {...({ mode, "k-placement": placement } as Record<string, string>)}
       role="dialog"
       aria-disabled={disabled || undefined}
       onClickCapture={(event) => {
@@ -640,17 +578,7 @@ function DatePicker({
         event.preventDefault();
         event.stopPropagation();
       }}
-      style={
-        panelOnly
-          ? undefined
-          : {
-              position: "absolute",
-              zIndex: 1050,
-              left: position.left,
-              top: position.top,
-              transformOrigin: position.origin,
-            }
-      }
+      style={panelOnly ? undefined : { zIndex: 1050 }}
     >
       {presets?.length ? (
         <div className="k-picker-presets">
@@ -709,17 +637,25 @@ function DatePicker({
       </div>
     </div>
   );
-  const overlay =
-    rendered &&
-    (panelOnly ? (
-      overlayContent
-    ) : (
-      <Teleport to="body">
-        <Transition show={visible} name="k-date-picker" nodeRef={overlayRef} appear>
-          {overlayContent}
-        </Transition>
-      </Teleport>
-    ));
+  const overlay = panelOnly ? (
+    overlayContent
+  ) : (
+    <Popup
+      raw
+      open={visible}
+      target={rootRef}
+      trigger="manual"
+      placement={placement}
+      prefixCls="k-datepicker-overlay"
+      transitionName="k-date-picker"
+      destroyOnClose
+      outsideEvent="mousedown"
+      onOpenChange={(next) => {
+        if (!next) closePopup();
+      }}
+      overlay={overlayContent}
+    />
+  );
   const datePickerPlaceholders: Record<DatePickerModeType, string> = {
     year: locale.k.datePicker.selectYear,
     month: locale.k.datePicker.selectMonth,

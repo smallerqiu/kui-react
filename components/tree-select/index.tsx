@@ -1,4 +1,3 @@
-import { isEventOutside } from "../utils/popup";
 import { renderSelectionTags } from "../utils/selection-tags";
 import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
@@ -8,7 +7,6 @@ import { ChevronDown, CircleX, LoaderCircle } from "kui-icons";
 import {
   useCallback,
   useContext,
-  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -16,15 +14,13 @@ import {
   type ChangeEvent,
   type HTMLAttributes,
 } from "react";
-import Teleport from "../base/teleport";
-import Transition from "../base/transition";
+import Popup, { type PopupRef } from "../base/popup";
 import { ConfigContext } from "../config/config-context";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 import Empty from "../empty";
 import Icon, { type IconType } from "../icon";
 import zhCN from "../locale/zh-CN";
 import Tree, { type TreeExpandEvent, type TreeNode } from "../tree";
-import { setPlacement } from "../utils/placement";
 
 export type TreeSelectValue = string | number | Array<string | number> | null | undefined;
 
@@ -155,8 +151,6 @@ function TreeSelect({
   const currentValue = innerValue;
   const [innerOpen, setInnerOpen] = useState(defaultOpen);
   const visible = openProp ?? innerOpen;
-  const [rendered, setRendered] = useState(visible);
-  if (visible && !rendered) setRendered(true);
   const [query, setQuery] = useState("");
   const [innerExpanded, setInnerExpanded] = useState<string[]>(() => {
     if (treeDefaultExpandedKeys) return treeDefaultExpandedKeys;
@@ -174,16 +168,11 @@ function TreeSelect({
   const [innerChecked, setInnerChecked] = useState<string[]>([]);
   const expanded = treeExpandedKeys ?? innerExpanded;
   const checked = treeCheckedKeys ?? innerChecked;
-  const [position, setPosition] = useState({ left: 0, top: 0, minWidth: 0, origin: "top" });
+  const popup = useRef<PopupRef>(null);
   const selectionRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const inputMirrorRef = useRef<HTMLSpanElement>(null);
-  const currentPlacementRef = useRef<string>(placement);
-  const originRef = useRef("top");
-  const topRef = useRef(0);
-  const leftRef = useRef(0);
-
   const nodeLookup = useMemo(() => {
     const lookup = new Map<string, string>();
     const collect = (nodes: TreeNode[]) => {
@@ -204,61 +193,12 @@ function TreeSelect({
     return currentValue.map((item) => nodeLookup.get(item) ?? item);
   }, [currentValue, nodeLookup]);
 
-  const updatePosition = useCallback(() => {
-    const element = selectionRef.current;
-    if (!element || !overlayRef.current) return;
-    currentPlacementRef.current = placement;
-    setPlacement({
-      refSelection: selectionRef,
-      refPopper: overlayRef,
-      currentPlacement: currentPlacementRef,
-      transOrigin: originRef,
-      top: topRef,
-      left: leftRef,
-    });
-    setPosition({
-      left: leftRef.current,
-      top: topRef.current,
-      minWidth: element.offsetWidth,
-      origin: originRef.current,
-    });
-  }, [placement]);
-  const bindOverlayRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      overlayRef.current = node;
-      if (node) updatePosition();
-    },
-    [updatePosition],
-  );
-
-  useLayoutEffect(() => {
-    if (!visible) return;
-    updatePosition();
-    const outside = (event: MouseEvent) => {
-      if (isEventOutside(event, [selectionRef.current, overlayRef.current], false)) {
-        if (openProp === undefined) setInnerOpen(false);
-        setQuery("");
-        onOpenChange?.(false);
-      }
-    };
-    const reposition = () => updatePosition();
-    document.addEventListener("mousedown", outside);
-    window.addEventListener("resize", reposition);
-    window.addEventListener("scroll", reposition, true);
-    return () => {
-      document.removeEventListener("mousedown", outside);
-      window.removeEventListener("resize", reposition);
-      window.removeEventListener("scroll", reposition, true);
-    };
-  }, [visible, updatePosition, onOpenChange, openProp]);
-  useEffect(() => {
-    if (visible) requestAnimationFrame(updatePosition);
-  }, [visible, labels.length, updatePosition]);
+  const updatePosition = useCallback(() => popup.current?.updatePosition(), []);
 
   const toggleOpen = () => {
     if (disabled || readOnly) return;
     const next = !visible;
-    setRendered(true);
+
     if (openProp === undefined) setInnerOpen(next);
     onOpenChange?.(next);
     if (next && (filterable || onSearch)) requestAnimationFrame(() => inputRef.current?.focus());
@@ -358,23 +298,32 @@ function TreeSelect({
       </span>
     </div>
   );
-  const overlay = rendered && (
-    <Teleport to="body">
-      <Transition show={visible} name="k-tree-select" nodeRef={overlayRef} appear>
+  const overlay = (
+    <Popup
+      ref={popup}
+      raw
+      open={visible}
+      target={selectionRef}
+      trigger="manual"
+      placement={placement}
+      prefixCls="k-tree-select-dropdown"
+      transitionName="k-tree-select"
+      matchTriggerWidth
+      destroyOnClose
+      outsideEvent="mousedown"
+      onOpenChange={(next) => {
+        if (openProp === undefined) setInnerOpen(next);
+        if (!next) setQuery("");
+        onOpenChange?.(next);
+      }}
+      overlay={
         <div
-          ref={bindOverlayRef}
+          ref={overlayRef}
           className={clsx("k-tree-select-dropdown", "k-scroll", {
             "k-tree-select-dropdown-multiple": multiple,
             "k-tree-select-dropdown-sm": size === "small",
           })}
-          style={{
-            position: "absolute",
-            zIndex: 1050,
-            left: position.left,
-            top: position.top,
-            minWidth: position.minWidth,
-            transformOrigin: position.origin,
-          }}
+          style={{ zIndex: 1050 }}
         >
           {loading ? (
             <div className="k-tree-select-loading">
@@ -416,8 +365,8 @@ function TreeSelect({
             <Empty description={emptyText || locale?.k?.select?.emptyText} />
           )}
         </div>
-      </Transition>
-    </Teleport>
+      }
+    />
   );
 
   return (

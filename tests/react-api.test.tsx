@@ -1010,7 +1010,7 @@ describe("React value synchronization and controlled visibility", () => {
       </Popconfirm>,
     );
     expect(document.querySelector(".k-popconfirm-arrow")).not.toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: zhCN.k.common.cancel }));
+    fireEvent.click(await screen.findByRole("button", { name: zhCN.k.common.cancel }));
     expect(onCancel).toHaveBeenCalledOnce();
     expect(onOpenChange).toHaveBeenCalledWith(false);
     await waitFor(() => expect(screen.queryByText("Delete item?")).toBeNull());
