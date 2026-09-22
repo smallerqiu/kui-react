@@ -9,7 +9,6 @@ import zhCN from "../locale/zh-CN";
 export interface PopconfirmProps {
   dark?: boolean;
   open?: boolean;
-  defaultOpen?: boolean;
   /** @deprecated Use `open` instead. */
   show?: boolean;
   title?: React.ReactNode;
@@ -27,10 +26,7 @@ export interface PopconfirmProps {
   children?: React.ReactNode;
 }
 
-export type PopconfirmPanelProps = Omit<
-  PopconfirmProps,
-  "children" | "open" | "defaultOpen" | "show"
->;
+export type PopconfirmPanelProps = Omit<PopconfirmProps, "children" | "open" | "show">;
 
 /** 与 kui-vue 一致：`PopconfirmPanel` 是 `panelOnly` 模式的 `Popconfirm` */
 export function PopconfirmPanel(props: PopconfirmPanelProps) {
@@ -40,7 +36,6 @@ export function PopconfirmPanel(props: PopconfirmPanelProps) {
 const Popconfirm: React.FC<PopconfirmProps> = ({
   dark = false,
   open,
-  defaultOpen = false,
   show,
   title,
   width,
@@ -59,7 +54,6 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   return (
     <Popup
       open={open ?? show}
-      defaultOpen={defaultOpen}
       trigger="click"
       placement={placement}
       panelOnly={panelOnly}

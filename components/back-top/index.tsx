@@ -15,7 +15,10 @@ import Icon from "../icon";
 
 const defaultTarget = () => (typeof document === "undefined" ? null : document.body);
 
-export interface BackTopProps extends Omit<HTMLAttributes<HTMLDivElement>, "onClick"> {
+export interface BackTopProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onClick" | "defaultValue" | "defaultChecked"
+> {
   height?: number;
   right?: CSSProperties["right"];
   bottom?: CSSProperties["bottom"];

@@ -33,8 +33,7 @@ Content area that can be collapsed/expanded.
 
 | Property         | Description                                    | Type                                 | Default |
 | ---------------- | ---------------------------------------------- | ------------------------------------ | ------- |
-| openKeys         | Expanded panel keys in controlled mode         | (string \| number)[]                 | -       |
-| defaultOpenKeys  | Initially expanded keys in uncontrolled mode   | (string \| number)[]                 | []      |
+| openKeys         | Expanded panel keys in mode                    | (string \| number)[]                 | -       |
 | accordion        | Whether at most one panel can be expanded      | boolean                              | false   |
 | sample           | Whether to enable simple mode                  | boolean                              | false   |
 | theme            | Theme                                          | ThemeType                            | outline |

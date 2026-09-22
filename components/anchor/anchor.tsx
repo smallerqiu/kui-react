@@ -10,7 +10,10 @@ import {
 } from "react";
 import { AnchorContext, type AnchorContextValue } from "./anchor-context";
 
-export interface AnchorProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "onClick"> {
+export interface AnchorProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onChange" | "onClick" | "defaultValue" | "defaultChecked"
+> {
   affix?: boolean;
   offsetTop?: number;
   bounds?: number;

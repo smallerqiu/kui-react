@@ -5,7 +5,10 @@ import Icon, { type IconType } from "../icon";
 import { getChildren } from "../utils/react-node";
 import { AvatarGroupContext, type AvatarShape, type AvatarSize } from "./avatar-group-context";
 
-export interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface AvatarProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   icon?: IconType[];
   shape?: AvatarShape;
   size?: AvatarSize;

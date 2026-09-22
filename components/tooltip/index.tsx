@@ -4,8 +4,8 @@ import type { PlacementsType } from "../const/types";
 import { colors } from "../const/var";
 import { isColor } from "../utils/color";
 export interface TooltipProps {
+  trigger?: "hover" | "manual";
   open?: boolean;
-  defaultOpen?: boolean;
   /** @deprecated Use `open` instead. */
   show?: boolean;
   title?: React.ReactNode;
@@ -21,15 +21,15 @@ export interface TooltipProps {
   children?: React.ReactNode;
 }
 
-export type TooltipPanelProps = Omit<TooltipProps, "children" | "open" | "defaultOpen" | "show">;
+export type TooltipPanelProps = Omit<TooltipProps, "children" | "open" | "show">;
 
 export function TooltipPanel(props: TooltipPanelProps) {
   return <Tooltip {...props} panelOnly />;
 }
 
 const Tooltip: React.FC<TooltipProps> = ({
+  trigger = "hover",
   open,
-  defaultOpen = false,
   show,
   title,
   color,
@@ -49,9 +49,8 @@ const Tooltip: React.FC<TooltipProps> = ({
   return (
     <Popup
       open={disabled ? false : (open ?? show)}
-      defaultOpen={defaultOpen}
       disabled={disabled}
-      trigger="hover"
+      trigger={trigger}
       openDelay={1}
       placement={placement}
       panelOnly={panelOnly}

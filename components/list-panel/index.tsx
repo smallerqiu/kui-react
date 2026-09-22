@@ -4,7 +4,10 @@ import type { HTMLAttributes, ReactNode } from "react";
 import Card from "../card";
 import type { ShapeType, SizeType } from "../const/types";
 
-export interface ListPanelProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
+export interface ListPanelProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "title" | "defaultValue" | "defaultChecked"
+> {
   summary?: ReactNode;
   bordered?: boolean;
   theme?: "fill" | "outline" | "plain";

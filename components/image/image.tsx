@@ -25,7 +25,10 @@ export interface ImageRef {
   destroy: () => void;
   togglePanel: () => void;
 }
-export interface ImageProps extends Omit<HTMLAttributes<HTMLDivElement>, "onSwitch"> {
+export interface ImageProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onSwitch" | "defaultValue" | "defaultChecked"
+> {
   alt?: string;
   src?: string;
   type?: ImageType;

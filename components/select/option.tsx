@@ -8,7 +8,10 @@ export interface OptionSelectEvent {
   label: string | number;
 }
 
-export interface OptionProps extends Omit<React.HTMLAttributes<HTMLLIElement>, "onSelect"> {
+export interface OptionProps extends Omit<
+  React.HTMLAttributes<HTMLLIElement>,
+  "onSelect" | "defaultValue" | "defaultChecked"
+> {
   value: string | number;
   label?: React.ReactNode;
   disabled?: boolean;

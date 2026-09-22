@@ -42,21 +42,20 @@ The navigation menu is the soul of a website. Users rely on navigation to jump b
 
 ### MenuAPI
 
-| Property         | Description                                          | Type                                   | Default    |
-| ---------------- | ---------------------------------------------------- | -------------------------------------- | ---------- |
-| value            | Currently selected menu items                        | string[]                               | -          |
-| theme            | Local theme; inherits global theme when omitted      | `light` \| `dark`                      | -          |
-| items            | Menu data                                            | MenuOptionsProps[]                     | -          |
-| openKeys         | Currently expanded SubMenu menu item key array       | string[]                               | -          |
-| defaultOpenKeys  | Initially expanded SubMenu keys in uncontrolled mode | string[]                               | []         |
-| selectedKeys     | Currently selected menu items                        | string[]                               | -          |
-| mode             | Menu type                                            | `vertical` \| `horizontal` \| `inline` | `vertical` |
-| onSelect         | Called when MenuItem is clicked                      | (data: MenuSelectEvent) => void        | -          |
-| onOpenChange     | Callback when SubMenu expands/collapses              | (openKeys: string[]) => void           | -          |
-| onChange         | Called when the selected key collection changes      | (selectedKeys: string[]) => void       | -          |
-| accordion        | Whether only one menu item can be expanded           | boolean                                | false      |
-| inlineCollapsed  | Whether the menu is collapsed in inline mode         | boolean                                | false      |
-| collapsedTooltip | Whether leaf items show a tooltip when collapsed     | boolean                                | true       |
+| Property         | Description                                      | Type                                   | Default    |
+| ---------------- | ------------------------------------------------ | -------------------------------------- | ---------- |
+| value            | Currently selected menu items                    | string[]                               | -          |
+| theme            | Local theme; inherits global theme when omitted  | `light` \| `dark`                      | -          |
+| items            | Menu data                                        | MenuOptionsProps[]                     | -          |
+| openKeys         | Currently expanded SubMenu menu item key array   | string[]                               | -          |
+| selectedKeys     | Currently selected menu items                    | string[]                               | -          |
+| mode             | Menu type                                        | `vertical` \| `horizontal` \| `inline` | `vertical` |
+| onSelect         | Called when MenuItem is clicked                  | (data: MenuSelectEvent) => void        | -          |
+| onOpenChange     | Callback when SubMenu expands/collapses          | (openKeys: string[]) => void           | -          |
+| onChange         | Called when the selected key collection changes  | (selectedKeys: string[]) => void       | -          |
+| accordion        | Whether only one menu item can be expanded       | boolean                                | false      |
+| inlineCollapsed  | Whether the menu is collapsed in inline mode     | boolean                                | false      |
+| collapsedTooltip | Whether leaf items show a tooltip when collapsed | boolean                                | true       |
 
 ### Menu(items)
 

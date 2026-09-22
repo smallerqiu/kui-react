@@ -2,13 +2,19 @@ import clsx from "clsx";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { SiderHookContext } from "./layout-context";
 
-export interface LayoutProps extends React.HTMLAttributes<HTMLElement> {
+export interface LayoutProps extends Omit<
+  React.HTMLAttributes<HTMLElement>,
+  "defaultValue" | "defaultChecked"
+> {
   suffixCls?: string;
   hasSider?: boolean;
   children?: React.ReactNode;
 }
 
-export interface SiderProps extends React.HTMLAttributes<HTMLElement> {
+export interface SiderProps extends Omit<
+  React.HTMLAttributes<HTMLElement>,
+  "defaultValue" | "defaultChecked"
+> {
   suffixCls?: string;
   width?: number | string;
   collapsedWidth?: number | string;

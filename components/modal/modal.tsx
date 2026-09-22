@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import clsx from "clsx";
 import { X } from "kui-icons";
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
@@ -11,7 +12,6 @@ import zhCN from "../locale/zh-CN";
 export interface ModalProps {
   className?: string;
   open?: boolean;
-  defaultOpen?: boolean;
   title?: React.ReactNode;
   okText?: string;
   cancelText?: string;
@@ -39,7 +39,6 @@ export interface ModalProps {
 const Modal: React.FC<ModalProps> = ({
   className,
   open,
-  defaultOpen = false,
   title,
   okText,
   cancelText,
@@ -65,8 +64,8 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
-  const [innerOpen, setInnerOpen] = useState(defaultOpen);
-  const currentOpen = open ?? innerOpen;
+  const [innerOpen, setInnerOpen] = useValue(open, (next) => next ?? false);
+  const currentOpen = innerOpen;
 
   // Vue's v-show equivalent: always rendered but controlled by visibility
   const [visible, setVisible] = useState(false);
@@ -134,10 +133,10 @@ const Modal: React.FC<ModalProps> = ({
 
   const requestOpen = useCallback(
     (next: boolean) => {
-      if (open === undefined) setInnerOpen(next);
+      setInnerOpen(next);
       onOpenChange?.(next);
     },
-    [onOpenChange, open],
+    [onOpenChange, setInnerOpen],
   );
 
   // Watch currentOpen and trigger toggle
@@ -341,7 +340,7 @@ export default Modal;
 
 export type ModalPanelProps = Omit<
   ModalProps,
-  "open" | "defaultOpen" | "mask" | "maskClosable" | "centered" | "draggable" | "maximized"
+  "open" | "mask" | "maskClosable" | "centered" | "draggable" | "maximized"
 >;
 
 export function ModalPanel(props: ModalPanelProps) {

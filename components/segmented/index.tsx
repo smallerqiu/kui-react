@@ -16,7 +16,7 @@ export interface SegmentedOption {
 }
 export interface SegmentedProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "defaultValue" | "onChange"
+  "defaultValue" | "onChange" | "defaultChecked"
 > {
   value?: SegmentedValue;
   options?: SegmentedOption[];

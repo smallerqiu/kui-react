@@ -2,7 +2,10 @@ import clsx from "clsx";
 import React from "react";
 import { BreadcrumbContext } from "./breadcrumb-context";
 
-export interface BreadcrumbProps extends React.HTMLAttributes<HTMLElement> {
+export interface BreadcrumbProps extends Omit<
+  React.HTMLAttributes<HTMLElement>,
+  "defaultValue" | "defaultChecked"
+> {
   separator?: React.ReactNode;
   children?: React.ReactNode;
 }

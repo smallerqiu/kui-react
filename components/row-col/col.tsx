@@ -1,7 +1,10 @@
 import clsx from "clsx";
 import React from "react";
 
-export interface ColProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ColProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   span?: number;
   offset?: number;
   order?: number;

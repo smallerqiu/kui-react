@@ -1,7 +1,10 @@
 import clsx from "clsx";
 import { useCallback, useEffect, useState, type HTMLAttributes } from "react";
 
-export interface RollUpProps extends HTMLAttributes<HTMLDivElement> {
+export interface RollUpProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   value?: number;
   duration?: number;
   precision?: number;

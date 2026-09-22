@@ -23,7 +23,10 @@ export interface QRCodeRef {
   download: (fileName?: string) => Promise<void>;
 }
 
-export interface QRCodeProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+export interface QRCodeProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "children" | "defaultValue" | "defaultChecked"
+> {
   value: string;
   size?: number;
   colorDark?: string;

@@ -25,18 +25,24 @@ type FormChangeHandler = {
 export interface FormItemHandle {
   prop: string;
   rules?: FormRule | FormRule[];
-  validate: (rules?: FormRule | FormRule[], trigger?: import("./types").FormValidateTrigger) => Promise<boolean>;
+  validate: (
+    rules?: FormRule | FormRule[],
+    trigger?: import("./types").FormValidateTrigger,
+  ) => Promise<boolean>;
   reset: (value?: unknown) => void;
 }
 export interface FormExpose {
   validate: (callback?: (result: FormSubmitEvent) => void) => Promise<FormSubmitEvent>;
   reset: () => void;
-  test: (key: string, trigger?: import("./types").FormValidateTrigger) => Promise<boolean> | undefined;
+  test: (
+    key: string,
+    trigger?: import("./types").FormValidateTrigger,
+  ) => Promise<boolean> | undefined;
   submit: () => Promise<void>;
 }
 export interface FormProps extends Omit<
   FormHTMLAttributes<HTMLFormElement>,
-  "onSubmit" | "onReset" | "onChange"
+  "onSubmit" | "onReset" | "onChange" | "defaultValue" | "defaultChecked"
 > {
   layout?: DirectionType;
   model?: Record<string, unknown>;

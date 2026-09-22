@@ -1,14 +1,17 @@
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { X } from "kui-icons";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Transition from "../base/transition";
 import { type ColorType, type ShapeType, type SizeType, type ThemeType } from "../const/types";
 import { colors } from "../const/var";
 import Icon, { type IconType } from "../icon";
 import { isColor } from "../utils/color";
 
-export interface TagProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface TagProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   closeable?: boolean;
   compact?: boolean;
   color?: ColorType;
@@ -17,6 +20,7 @@ export interface TagProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: SizeType;
   theme?: ThemeType;
   onClose?: () => void;
+  onAfterClose?: () => void;
   children?: React.ReactNode;
 }
 
@@ -29,6 +33,7 @@ const Tag: React.FC<TagProps> = ({
   size: sizeProp,
   theme: themeProp,
   onClose,
+  onAfterClose,
   children,
   className = "",
   style,
@@ -39,11 +44,14 @@ const Tag: React.FC<TagProps> = ({
   const size = sizeProp ?? inheritedAppearance.size ?? "small";
   const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
   const [visible, setVisible] = useState(true);
+  const closing = useRef(false);
 
   const closeHandler = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onClose?.();
+    if (closing.current) return;
+    closing.current = true;
     setVisible(false);
+    onClose?.();
   };
 
   const isPresetColor = color !== undefined && colors.some((preset) => preset === color);
@@ -71,7 +79,7 @@ const Tag: React.FC<TagProps> = ({
   };
 
   return (
-    <Transition show={visible} name="k-tag" timeout={200}>
+    <Transition show={visible} name="k-tag" timeout={200} onAfterLeave={onAfterClose}>
       <div className={tagClasses} style={tagStyle} {...rest}>
         {icon && <Icon className="k-tag-icon" type={icon} />}
         <span className="k-tag-text">{children}</span>

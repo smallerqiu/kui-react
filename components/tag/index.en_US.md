@@ -11,7 +11,7 @@ Small labels for marking and categorization.
 
 [Basic Usage](./demo/basic.tsx)
 
-- Use `closeable` to show a close button. Clicking hides the tag and triggers the `close` callback.
+- Use `closeable` to show a close button. Clicking closes the tag and triggers `onClose`.
 
 [Size and Shape](./demo/size.tsx)
 
@@ -29,15 +29,22 @@ Small labels for marking and categorization.
 
 - Use `closeable` to show a close button.
 
+## Closing
+
+Clicking the close button triggers `onClose`. After the exit animation, the content is removed and `onAfterClose` fires.
+
+For dynamic lists, remove the corresponding item from the array in `onAfterClose` to preserve the exit animation.
+
 ## Tag API
 
-| Property  | Description                                                         | Type            | Default |
-| --------- | ------------------------------------------------------------------- | --------------- | ------- |
-| closeable | Whether to show close button                                        | boolean         | false   |
-| compact   | Whether to use the compact size for embedding in input controls     | boolean         | false   |
-| color     | Tag color                                                           | string          | -       |
-| icon      | Tag icon                                                            | string          | -       |
-| onClose   | Callback event when tag is closed                                   | () => void      | -       |
-| size      | Button size, optional values `small`, `large`, default not selected | string          | -       |
-| theme     | The component renders the theme                                     | string          | fill    |
-| shape     | The shape in which the component is presented                       | [circle,square] | circle  |
+| Property     | Description                                                         | Type            | Default |
+| ------------ | ------------------------------------------------------------------- | --------------- | ------- |
+| closeable    | Whether to show close button                                        | boolean         | false   |
+| compact      | Whether to use the compact size for embedding in input controls     | boolean         | false   |
+| color        | Tag color                                                           | string          | -       |
+| icon         | Tag icon                                                            | string          | -       |
+| onClose      | Triggered when the close button is clicked                          | () => void      | -       |
+| onAfterClose | Triggered after the exit animation                                  | () => void      | -       |
+| size         | Button size, optional values `small`, `large`, default not selected | string          | -       |
+| theme        | The component renders the theme                                     | string          | fill    |
+| shape        | The shape in which the component is presented                       | [circle,square] | circle  |

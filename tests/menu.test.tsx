@@ -140,17 +140,11 @@ describe("Menu inline collapse", () => {
   });
   it("restores nested memory across rapid toggles, but not manually closed menus", async () => {
     vi.useFakeTimers();
-    const { rerender } = render(
-      <Menu mode="inline" defaultOpenKeys={["root", "nested"]} items={items} />,
-    );
+    const openKeys = ["root", "nested"];
+    const { rerender } = render(<Menu mode="inline" openKeys={openKeys} items={items} />);
     const toggle = (inlineCollapsed: boolean) =>
       rerender(
-        <Menu
-          mode="inline"
-          defaultOpenKeys={["root", "nested"]}
-          items={items}
-          inlineCollapsed={inlineCollapsed}
-        />,
+        <Menu mode="inline" openKeys={openKeys} items={items} inlineCollapsed={inlineCollapsed} />,
       );
     toggle(true);
     await act(() => vi.advanceTimersByTimeAsync(250));

@@ -12,7 +12,7 @@ import { isValidBig, normalize } from "../utils/number";
 
 export interface InputNumberProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "onChange" | "defaultValue" | "prefix"
+  "onChange" | "defaultValue" | "prefix" | "defaultChecked"
 > {
   value?: number | string;
   min?: number;

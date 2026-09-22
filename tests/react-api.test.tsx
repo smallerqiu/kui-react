@@ -40,11 +40,11 @@ import Transition from "../components/base/transition";
 import enUS from "../components/locale/en";
 import zhCN from "../components/locale/zh-CN";
 
-describe("React value synchronization and controlled visibility", () => {
-  it("uses defaultChecked only as the initial Checkbox state", () => {
+describe("React state initialization and synchronization", () => {
+  it("initializes Checkbox from checked and allows local changes", () => {
     const onChange = vi.fn();
     render(
-      <Checkbox defaultChecked onChange={onChange}>
+      <Checkbox checked onChange={onChange}>
         Remember
       </Checkbox>,
     );
@@ -55,7 +55,7 @@ describe("React value synchronization and controlled visibility", () => {
     expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ checked: false }));
   });
 
-  it("does not mutate a controlled Radio or Switch", () => {
+  it("updates Radio and Switch locally with checked supplied", () => {
     const radioChange = vi.fn();
     const switchChange = vi.fn();
     render(
@@ -70,8 +70,8 @@ describe("React value synchronization and controlled visibility", () => {
     const button = screen.getByRole("switch");
     fireEvent.click(radio);
     fireEvent.click(button);
-    expect((radio as HTMLInputElement).checked).toBe(false);
-    expect(button.classList.contains("k-switch-checked")).toBe(false);
+    expect((radio as HTMLInputElement).checked).toBe(true);
+    expect(button.classList.contains("k-switch-checked")).toBe(true);
     expect(radioChange).toHaveBeenCalledOnce();
     expect(switchChange).toHaveBeenCalledWith(true);
   });
@@ -161,10 +161,10 @@ describe("React value synchronization and controlled visibility", () => {
     );
   });
 
-  it("supports controlled and uncontrolled Collapse open keys", () => {
+  it("synchronizes Collapse open keys and permits subsequent interaction", () => {
     const onOpenKeysChange = vi.fn();
     const { rerender } = render(
-      <Collapse defaultOpenKeys={["one"]} onOpenKeysChange={onOpenKeysChange}>
+      <Collapse openKeys={["one"]} onOpenKeysChange={onOpenKeysChange}>
         <CollapsePanel key="one" title="One">
           First
         </CollapsePanel>
@@ -189,7 +189,7 @@ describe("React value synchronization and controlled visibility", () => {
     );
     fireEvent.click(screen.getByText("Two"));
     expect(onOpenKeysChange).toHaveBeenLastCalledWith(["one", "two"]);
-    expect(document.querySelectorAll(".k-collapse-item-active")).toHaveLength(1);
+    expect(document.querySelectorAll(".k-collapse-item-active")).toHaveLength(2);
   });
 
   it("supports keyboard interaction and disabled Collapse panels", () => {
@@ -219,7 +219,7 @@ describe("React value synchronization and controlled visibility", () => {
   it("preserves numeric Collapse keys and does not toggle from extra controls", () => {
     const onOpenKeysChange = vi.fn();
     render(
-      <Collapse defaultOpenKeys={[1]} onOpenKeysChange={onOpenKeysChange}>
+      <Collapse openKeys={[1]} onOpenKeysChange={onOpenKeysChange}>
         <CollapsePanel key={1} title="One" extra={<button>Settings</button>}>
           First
         </CollapsePanel>
@@ -240,7 +240,7 @@ describe("React value synchronization and controlled visibility", () => {
   it("closes equivalent numeric and string Collapse keys", () => {
     const onOpenKeysChange = vi.fn();
     render(
-      <Collapse defaultOpenKeys={[1]} onOpenKeysChange={onOpenKeysChange}>
+      <Collapse openKeys={[1]} onOpenKeysChange={onOpenKeysChange}>
         <CollapsePanel panelKey="1" title="One">
           First
         </CollapsePanel>
@@ -278,7 +278,7 @@ describe("React value synchronization and controlled visibility", () => {
 
   it("animates Collapse layout height while a panel closes", () => {
     render(
-      <Collapse defaultOpenKeys={["one"]}>
+      <Collapse openKeys={["one"]}>
         <CollapsePanel key="one" title="One">
           Content
         </CollapsePanel>
@@ -308,7 +308,7 @@ describe("React value synchronization and controlled visibility", () => {
     const onChange = vi.fn();
     const { unmount } = render(
       <DatePicker
-        defaultOpen
+        open
         value="2025-06-10"
         disabledDate={(date) => date.getDate() === 11}
         onChange={onChange}
@@ -322,13 +322,13 @@ describe("React value synchronization and controlled visibility", () => {
     expect(onChange).not.toHaveBeenCalled();
     unmount();
 
-    render(<DatePicker mode="time" defaultOpen value="10:20:30" />);
+    render(<DatePicker mode="time" open value="10:20:30" />);
     expect(document.querySelectorAll(".k-picker-time-col")).toHaveLength(3);
   });
 
   it("emits a complete DatePicker range and uses ConfigProvider locale", () => {
     const onChange = vi.fn();
-    const { unmount } = render(<DatePicker mode="dateRange" defaultOpen onChange={onChange} />);
+    const { unmount } = render(<DatePicker mode="dateRange" open onChange={onChange} />);
     const days = document.querySelectorAll<HTMLElement>(
       ".k-picker-day:not(.k-picker-day-out):not(.k-picker-day-disabled)",
     );
@@ -418,7 +418,7 @@ describe("React value synchronization and controlled visibility", () => {
     render(
       <Menu
         mode="inline"
-        defaultOpenKeys={["parent"]}
+        openKeys={["parent"]}
         onSelect={onSelect}
         items={[{ key: "parent", title: "Parent", children: [{ key: "child", title: "Child" }] }]}
       />,
@@ -436,10 +436,10 @@ describe("React value synchronization and controlled visibility", () => {
       { key: "parent", title: "Parent", children: [{ key: "child", title: "Child" }] },
     ];
     const { rerender } = render(
-      <Menu mode="inline" defaultOpenKeys={["parent"]} items={items} inlineCollapsed={false} />,
+      <Menu mode="inline" openKeys={["parent"]} items={items} inlineCollapsed={false} />,
     );
     await waitFor(() => expect(screen.getByText("Child")).not.toBeNull());
-    rerender(<Menu mode="inline" defaultOpenKeys={["parent"]} items={items} inlineCollapsed />);
+    rerender(<Menu mode="inline" openKeys={["parent"]} items={items} inlineCollapsed />);
     expect(screen.getByText("Child")).not.toBeNull();
     await waitFor(() => expect(screen.queryByText("Child")).toBeNull());
     expect(document.querySelector(".k-menu-inline-collapsed")).not.toBeNull();
@@ -636,7 +636,7 @@ describe("React value synchronization and controlled visibility", () => {
     checkbox.focus();
     await user.keyboard("[Space]");
     expect(onSelectedKeysChange).toHaveBeenCalledWith(["one"]);
-    expect((document.querySelector(".k-table-body input") as HTMLInputElement).checked).toBe(false);
+    expect((document.querySelector(".k-table-body input") as HTMLInputElement).checked).toBe(true);
     fireEvent.click(document.querySelector(".k-table-sorter-up")!);
     expect(onSort).toHaveBeenCalledWith({ key: "name", order: "asc" });
 
@@ -646,7 +646,7 @@ describe("React value synchronization and controlled visibility", () => {
     expect(document.querySelector(".k-spin")).not.toBeNull();
   });
 
-  it("supports controlled Table tree expansion", () => {
+  it("supports local Table tree expansion and external synchronization", () => {
     const onExpand = vi.fn();
     const onExpandedKeysChange = vi.fn();
     const data = [
@@ -671,7 +671,7 @@ describe("React value synchronization and controlled visibility", () => {
     fireEvent.click(screen.getByRole("button", { name: "Expand row" }));
     expect(onExpand).toHaveBeenCalledWith(true, data[0]);
     expect(onExpandedKeysChange).toHaveBeenCalledWith(["parent"]);
-    expect(screen.queryByText("Child row")).toBeNull();
+    expect(screen.queryByText("Child row")).not.toBeNull();
 
     rerender(
       <Table
@@ -686,7 +686,7 @@ describe("React value synchronization and controlled visibility", () => {
     expect(document.querySelectorAll(".k-table-body tbody tr")).toHaveLength(2);
   });
 
-  it("supports Tree selection, controlled expansion, and async loading", async () => {
+  it("supports local Tree selection, expansion, and async loading", async () => {
     const onSelectedKeysChange = vi.fn();
     const onExpandedKeysChange = vi.fn();
     const loadData = vi.fn().mockResolvedValue(undefined);
@@ -702,13 +702,13 @@ describe("React value synchronization and controlled visibility", () => {
     );
     fireEvent.click(screen.getByText("Parent"));
     expect(onSelectedKeysChange).toHaveBeenCalledWith(["parent"]);
-    expect(document.querySelector(".k-tree-title-selected")).toBeNull();
+    expect(document.querySelector(".k-tree-title-selected")).not.toBeNull();
     fireEvent.click(document.querySelector(".k-tree-arrow")!);
     await waitFor(() =>
       expect(loadData).toHaveBeenCalledWith(expect.objectContaining({ key: "parent" })),
     );
     await waitFor(() => expect(onExpandedKeysChange).toHaveBeenCalledWith(["parent"]));
-    expect(document.querySelector(".k-tree-arrow-open")).toBeNull();
+    expect(document.querySelector(".k-tree-arrow-open")).not.toBeNull();
   });
 
   it("validates Upload file size before creating a request", () => {
@@ -774,7 +774,7 @@ describe("React value synchronization and controlled visibility", () => {
       <>
         <button autoFocus>Before modal</button>
         <Modal
-          defaultOpen
+          open
           title="Dialog title"
           footer={<button>Custom footer</button>}
           onOpenChange={onOpenChange}
@@ -797,7 +797,7 @@ describe("React value synchronization and controlled visibility", () => {
   it("supports Drawer mask closing and omits footer markup when disabled", async () => {
     const onOpenChange = vi.fn();
     render(
-      <Drawer defaultOpen title="Drawer title" footer={false} onOpenChange={onOpenChange}>
+      <Drawer open title="Drawer title" footer={false} onOpenChange={onOpenChange}>
         Drawer body
       </Drawer>,
     );
@@ -835,7 +835,7 @@ describe("React value synchronization and controlled visibility", () => {
     const onChange = vi.fn();
     render(
       <Select
-        defaultOpen
+        open
         value="one"
         options={[
           { label: "One", value: "one" },
@@ -852,9 +852,7 @@ describe("React value synchronization and controlled visibility", () => {
 
   it("closes an uncontrolled Select on outside click", async () => {
     const onOpenChange = vi.fn();
-    render(
-      <Select defaultOpen options={[{ label: "One", value: "one" }]} onOpenChange={onOpenChange} />,
-    );
+    render(<Select open options={[{ label: "One", value: "one" }]} onOpenChange={onOpenChange} />);
     expect(document.querySelector(".k-select-opened")).not.toBeNull();
     fireEvent.click(document.body);
     await waitFor(() => expect(document.querySelector(".k-select-opened")).toBeNull());
@@ -863,7 +861,7 @@ describe("React value synchronization and controlled visibility", () => {
 
   it("supports Select keyboard selection", async () => {
     const onChange = vi.fn();
-    render(<Select defaultOpen options={[{ label: "One", value: "one" }]} onChange={onChange} />);
+    render(<Select open options={[{ label: "One", value: "one" }]} onChange={onChange} />);
     const select = document.querySelector<HTMLElement>(".k-select");
     expect(select).not.toBeNull();
     fireEvent.focus(select!);
@@ -876,7 +874,7 @@ describe("React value synchronization and controlled visibility", () => {
     const onChange = vi.fn();
     render(
       <Select
-        defaultOpen
+        open
         filterable
         multiple
         value={["one", "two"]}
@@ -917,7 +915,7 @@ describe("React value synchronization and controlled visibility", () => {
     expect(document.querySelectorAll(".k-tree-select-labels .k-tag")).toHaveLength(0);
   });
 
-  it("requests changes without mutating controlled Poptip visibility", async () => {
+  it("updates Poptip visibility locally and reports changes", async () => {
     const onOpenChange = vi.fn();
     render(
       <Poptip open={false} trigger="click" content="Details" onOpenChange={onOpenChange}>
@@ -926,7 +924,7 @@ describe("React value synchronization and controlled visibility", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Open" }));
     await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(true));
-    expect(screen.queryByText("Details")).toBeNull();
+    expect(screen.queryByText("Details")).not.toBeNull();
   });
 
   it("keeps the deprecated Tooltip show callbacks compatible", async () => {
@@ -983,12 +981,7 @@ describe("React value synchronization and controlled visibility", () => {
   it("renders Poptip placement and arrow and keeps content during its exit transition", async () => {
     const onOpenChange = vi.fn();
     render(
-      <Poptip
-        defaultOpen
-        placement="bottom-left"
-        content="Popover body"
-        onOpenChange={onOpenChange}
-      >
+      <Poptip open placement="bottom-left" content="Popover body" onOpenChange={onOpenChange}>
         <button>Popover target</button>
       </Poptip>,
     );
@@ -1005,7 +998,7 @@ describe("React value synchronization and controlled visibility", () => {
     const onCancel = vi.fn();
     const onOpenChange = vi.fn();
     render(
-      <Popconfirm defaultOpen title="Delete item?" onCancel={onCancel} onOpenChange={onOpenChange}>
+      <Popconfirm open title="Delete item?" onCancel={onCancel} onOpenChange={onOpenChange}>
         <button>Delete</button>
       </Popconfirm>,
     );
@@ -1018,7 +1011,7 @@ describe("React value synchronization and controlled visibility", () => {
 
   it("renders ColorPicker arrow and closes on outside pointer input", async () => {
     const onOpenChange = vi.fn();
-    render(<ColorPicker defaultOpen placement="top-right" onOpenChange={onOpenChange} />);
+    render(<ColorPicker open placement="top-right" onOpenChange={onOpenChange} />);
     const dropdown = document.querySelector(".k-color-picker-dropdown");
     expect(dropdown?.getAttribute("k-placement")).not.toBeNull();
     expect(dropdown?.querySelector(".k-color-picker-arrow")).not.toBeNull();

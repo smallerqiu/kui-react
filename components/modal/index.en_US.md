@@ -33,8 +33,7 @@ Modal dialog box.
 
 | Property     | Description                                                            | Type                     | Default |
 | ------------ | ---------------------------------------------------------------------- | ------------------------ | ------- |
-| open         | Controlled dialog visibility                                           | boolean                  | -       |
-| defaultOpen  | Initial visibility in uncontrolled mode                                | boolean                  | false   |
+| open         | dialog visibility                                                      | boolean                  | -       |
 | title        | Dialog title                                                           | string                   | -       |
 | width        | Dialog width                                                           | number, string           | 520     |
 | okText       | OK button text                                                         | string                   | OK      |

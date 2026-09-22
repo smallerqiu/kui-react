@@ -1,5 +1,6 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { createFormFieldComponent } from "../form/field-context";
 import { Button } from "../button";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
@@ -9,7 +10,7 @@ import type { ChangeEvent } from "./types";
 
 export interface RadioButtonProps extends Omit<
   React.HTMLAttributes<HTMLButtonElement>,
-  "onChange"
+  "onChange" | "defaultValue" | "defaultChecked"
 > {
   label?: string;
   value?: string | number;
@@ -17,7 +18,6 @@ export interface RadioButtonProps extends Omit<
   disabled?: boolean;
   readOnly?: boolean;
   checked?: boolean;
-  defaultChecked?: boolean;
   icon?: IconType[];
   size?: SizeType;
   shape?: ShapeType;
@@ -34,7 +34,6 @@ const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
       disabled = false,
       readOnly = false,
       checked,
-      defaultChecked = false,
       icon,
       size: sizeProp,
       shape: shapeProp,
@@ -51,10 +50,10 @@ const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
     const shape = shapeProp ?? inheritedAppearance.shape;
     const group = useContext(RadioGroupContext);
     const isGroup = !!group;
-    const [localChecked, setLocalChecked] = useState(defaultChecked);
+    const [localChecked, setLocalChecked] = useValue(checked, (next) => next ?? false);
 
     const groupChecked = isGroup ? group.value === value : false;
-    const isChecked = isGroup ? groupChecked : (checked ?? localChecked);
+    const isChecked = isGroup ? groupChecked : localChecked;
     const currentDisabled = disabled || (isGroup && group.disabled);
     const currentReadOnly = readOnly || Boolean(isGroup && group.readOnly);
     const currentTheme = themeProp ?? group?.theme ?? theme;
@@ -68,7 +67,7 @@ const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
       if (e.defaultPrevented) return;
       if (currentDisabled || currentReadOnly || isChecked) return;
       const nextChecked = true;
-      if (!isGroup && checked === undefined) setLocalChecked(nextChecked);
+      if (!isGroup) setLocalChecked(nextChecked);
       const eventObj: ChangeEvent = {
         checked: nextChecked,
         value: value,

@@ -1,7 +1,10 @@
 import clsx from "clsx";
 import React from "react";
 
-export interface InputBoxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
+export interface InputBoxProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "size" | "defaultValue" | "defaultChecked"
+> {
   multiple?: boolean;
   disabled?: boolean;
   size?: string;

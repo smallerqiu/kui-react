@@ -10,7 +10,7 @@ import Icon from "../icon";
 
 export interface InputTagProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "onChange" | "defaultValue"
+  "onChange" | "defaultValue" | "defaultChecked"
 > {
   value?: string[];
   placeholder?: string;

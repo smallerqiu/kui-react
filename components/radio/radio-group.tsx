@@ -22,7 +22,7 @@ export interface RadioOption {
 
 export interface RadioGroupProps<T extends RadioValue = string | number> extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "defaultValue" | "onChange"
+  "defaultValue" | "onChange" | "defaultChecked"
 > {
   value?: T;
   disabled?: boolean;

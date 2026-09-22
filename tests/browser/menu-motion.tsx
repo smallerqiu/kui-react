@@ -39,7 +39,7 @@ export function Fixture() {
       <Menu
         mode="inline"
         inlineCollapsed={collapsed}
-        defaultOpenKeys={["root", "nested", "deep"]}
+        openKeys={["root", "nested", "deep"]}
         items={items}
       />
     </div>

@@ -7,7 +7,10 @@ export type FlexAlignType = "start" | "flex-start" | "end" | "flex-end" | "cente
 export type FlexJustifyType =
   "flex-start" | "center" | "flex-end" | "space-between" | "space-around" | "space-evenly";
 
-export interface FlexProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface FlexProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   align?: FlexAlignType;
   justify?: FlexJustifyType;
   vertical?: boolean;

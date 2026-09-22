@@ -24,7 +24,7 @@ export interface TypographyEllipsisOptions {
 }
 export interface TypographyProps extends Omit<
   React.HTMLAttributes<HTMLElement>,
-  "onChange" | "onCopy" | "title" | "defaultValue"
+  "onChange" | "onCopy" | "title" | "defaultValue" | "defaultChecked"
 > {
   value?: string;
   tag?: TypographyTag;

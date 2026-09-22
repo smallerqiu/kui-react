@@ -12,7 +12,10 @@ export interface WatermarkTextItem extends Font {
   text: string;
 }
 export type WatermarkLayoutType = "stagger" | "grid";
-export interface WatermarkProps extends Omit<HTMLAttributes<HTMLDivElement>, "content"> {
+export interface WatermarkProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "content" | "defaultValue" | "defaultChecked"
+> {
   content?: string | string[] | WatermarkTextItem[];
   image?: string;
   width?: number;
@@ -68,7 +71,7 @@ export default function Watermark({
       };
       const raw = Array.isArray(content) ? content : [content];
       const lines: WatermarkTextItem[] = raw.map((item) =>
-        typeof item === "string" ? { text: item } : item
+        typeof item === "string" ? { text: item } : item,
       );
       const heights = lines.map((item) => (item.fontSize ?? globalFont.fontSize) + 8);
       let y = -heights.reduce((sum, item) => sum + item, 0) / 2;

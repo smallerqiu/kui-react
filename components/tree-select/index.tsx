@@ -26,7 +26,7 @@ export type TreeSelectValue = string | number | Array<string | number> | null | 
 
 export interface TreeSelectProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
-  "onChange" | "onSelect" | "defaultValue"
+  "onChange" | "onSelect" | "defaultValue" | "defaultChecked"
 > {
   placeholder?: string;
   size?: SizeType;
@@ -35,7 +35,6 @@ export interface TreeSelectProps extends Omit<
   maxTagCount?: number;
   value?: TreeSelectValue;
   open?: boolean;
-  defaultOpen?: boolean;
   clearable?: boolean;
   filterable?: boolean;
   block?: boolean;
@@ -97,7 +96,6 @@ function TreeSelect({
   maxTagCount,
   value,
   open: openProp,
-  defaultOpen = false,
   clearable = true,
   filterable,
   block,
@@ -149,8 +147,8 @@ function TreeSelect({
   const data = useMemo(() => treeData ?? options ?? [], [options, treeData]);
   const [innerValue, setInnerValue] = useValue(value, (next) => normalize(next, !!multiple));
   const currentValue = innerValue;
-  const [innerOpen, setInnerOpen] = useState(defaultOpen);
-  const visible = openProp ?? innerOpen;
+  const [innerOpen, setInnerOpen] = useValue(openProp, (next) => next ?? false);
+  const visible = innerOpen;
   const [query, setQuery] = useState("");
   const [innerExpanded, setInnerExpanded] = useState<string[]>(() => {
     if (treeDefaultExpandedKeys) return treeDefaultExpandedKeys;
@@ -199,14 +197,14 @@ function TreeSelect({
     if (disabled || readOnly) return;
     const next = !visible;
 
-    if (openProp === undefined) setInnerOpen(next);
+    setInnerOpen(next);
     onOpenChange?.(next);
     if (next && (filterable || onSearch)) requestAnimationFrame(() => inputRef.current?.focus());
     if (!next) setQuery("");
   };
   const close = () => {
     if (!visible) return;
-    if (openProp === undefined) setInnerOpen(false);
+    setInnerOpen(false);
     setQuery("");
     onOpenChange?.(false);
   };
@@ -227,7 +225,7 @@ function TreeSelect({
     commit(keys);
     onTreeSelect?.(node.key, String(node.title ?? node.key), !exists);
     if (!multiple) {
-      if (openProp === undefined) setInnerOpen(false);
+      setInnerOpen(false);
       onOpenChange?.(false);
     }
     setQuery("");
@@ -312,7 +310,7 @@ function TreeSelect({
       destroyOnClose
       outsideEvent="mousedown"
       onOpenChange={(next) => {
-        if (openProp === undefined) setInnerOpen(next);
+        setInnerOpen(next);
         if (!next) setQuery("");
         onOpenChange?.(next);
       }}

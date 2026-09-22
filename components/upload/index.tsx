@@ -66,7 +66,10 @@ export interface UploadRef {
   abort: (file?: UploadFile) => void;
   retry: (file: UploadFile) => void;
 }
-export interface UploadProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "onSelect"> {
+export interface UploadProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onChange" | "onSelect" | "defaultValue" | "defaultChecked"
+> {
   method?: string;
   name?: string;
   action?: string;
@@ -85,7 +88,6 @@ export interface UploadProps extends Omit<HTMLAttributes<HTMLDivElement>, "onCha
   showUploadList?: boolean;
   transformFile?: (file: File) => File | Blob | Promise<File | Blob>;
   fileList?: UploadFile[];
-  defaultFileList?: UploadFile[];
   autoTrigger?: boolean;
   limit?: number;
   minSize?: number;
@@ -141,7 +143,6 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
     showUploadList = true,
     transformFile,
     fileList,
-    defaultFileList = [],
     autoTrigger = true,
     limit,
     minSize,
@@ -170,7 +171,7 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
 ) {
   const { locale } = useContext(ConfigContext);
   const messages = locale ?? zhCN;
-  const [files, setFiles] = useState<UploadFile[]>(fileList ?? defaultFileList);
+  const [files, setFiles] = useState<UploadFile[]>(fileList ?? []);
   const filesRef = useRef(files);
   filesRef.current = files;
   const pendingRef = useRef(new Map<string, File>());
@@ -186,10 +187,10 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
     onChangeRef.current = onChange;
   }, [onChange]);
   useEffect(() => {
-    if (!fileList) return;
-    const retained = new Set(fileList.map((item) => item.uid));
+    const nextFiles = fileList ?? [];
+    const retained = new Set(nextFiles.map((item) => item.uid));
     const removed = filesRef.current.filter((item) => !retained.has(item.uid));
-    filesRef.current = [...fileList];
+    filesRef.current = [...nextFiles];
     queueRef.current = queueRef.current.filter(({ item }) => retained.has(item.uid));
     removed.forEach((item) => {
       if (!item.uid) return;
@@ -200,14 +201,14 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
       handle?.abort();
       if (activeUidsRef.current.delete(item.uid)) activeRef.current -= 1;
     });
-    const activePreviews = new Set(fileList.map((item) => item.preview).filter(Boolean));
+    const activePreviews = new Set(nextFiles.map((item) => item.preview).filter(Boolean));
     generatedPreviewUrlsRef.current.forEach((url) => {
       if (!activePreviews.has(url)) {
         URL.revokeObjectURL(url);
         generatedPreviewUrlsRef.current.delete(url);
       }
     });
-    setFiles([...fileList]);
+    setFiles([...nextFiles]);
   }, [fileList]);
   useEffect(() => {
     unmountedRef.current = false;

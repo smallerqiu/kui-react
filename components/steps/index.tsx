@@ -11,7 +11,10 @@ export interface StepProps {
   status?: StepStatus;
   disabled?: boolean;
 }
-export interface StepsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface StepsProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange" | "defaultValue" | "defaultChecked"
+> {
   current?: number;
   direction?: "horizontal" | "vertical";
   status?: "process" | "error";

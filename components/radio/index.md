@@ -33,15 +33,14 @@
 
 ## Radio API
 
-| 属性           | 说明                     | 类型                     | 默认值 |
-| -------------- | ------------------------ | ------------------------ | ------ |
-| checked        | 受控的选中状态           | boolean                  | -      |
-| defaultChecked | 非受控模式的初始选中状态 | boolean                  | false  |
-| label          | 文字提示                 | string                   | -      |
-| value          | 组合使用时的值           | string \| number         | -      |
-| disabled       | 是否禁用当前项           | boolean                  | false  |
-| readOnly       | 是否只读当前项           | boolean                  | false  |
-| onChange       | 在选项状态发生改变时回调 | (e: ChangeEvent) => void | -      |
+| 属性     | 说明                     | 类型                     | 默认值 |
+| -------- | ------------------------ | ------------------------ | ------ |
+| checked  | 选中状态                 | boolean                  | -      |
+| label    | 文字提示                 | string                   | -      |
+| value    | 组合使用时的值           | string \| number         | -      |
+| disabled | 是否禁用当前项           | boolean                  | false  |
+| readOnly | 是否只读当前项           | boolean                  | false  |
+| onChange | 在选项状态发生改变时回调 | (e: ChangeEvent) => void | -      |
 
 `RadioButton` 额外支持 `icon`、`theme`、`size` 和 `shape`，在 `RadioGroup type="button"` 中使用。
 
@@ -51,24 +50,24 @@
 
 在 Radio 属性的基础上，RadioButton 还支持：
 
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| icon | 从 `kui-icons` 导入的图标定义 | IconType[] | - |
-| theme | 按钮外观 | ThemeType | - |
-| size | 按钮尺寸 | SizeType | - |
-| shape | 按钮形状 | ShapeType | - |
+| 属性  | 说明                          | 类型       | 默认值 |
+| ----- | ----------------------------- | ---------- | ------ |
+| icon  | 从 `kui-icons` 导入的图标定义 | IconType[] | -      |
+| theme | 按钮外观                      | ThemeType  | -      |
+| size  | 按钮尺寸                      | SizeType   | -      |
+| shape | 按钮形状                      | ShapeType  | -      |
 
 ## RadioGroup API
 
-| 属性         | 说明                                       | 类型                              | 默认值     |
-| ------------ | ------------------------------------------ | --------------------------------- | ---------- |
-| value        | 的当前选中值                           | string \| number                  | -          |
-| disabled     | 是否禁用整个单选组                         | boolean                           | false      |
-| readOnly     | 是否只读                                   | boolean                           | false      |
-| size         | 按钮尺寸                                   | SizeType                          | -          |
-| direction    | 布局方向                                   | 'horizontal' \| 'vertical'        | horizontal |
-| shape        | `button` 的形状                            | ShapeType                         | -          |
-| theme        | `button` 的主题                            | ThemeType                         | -          |
-| onChange     | 在选项状态发生改变时触发，返回当前选中的项 | (value: string \| number) => void | -          |
-| options      | 可以指定子项 `radio`                       | RadioOption[]                     | -          |
-| type         | 使用按钮样式的单选项                       | 'radio' \| 'button'               | radio      |
+| 属性      | 说明                                       | 类型                              | 默认值     |
+| --------- | ------------------------------------------ | --------------------------------- | ---------- |
+| value     | 的当前选中值                               | string \| number                  | -          |
+| disabled  | 是否禁用整个单选组                         | boolean                           | false      |
+| readOnly  | 是否只读                                   | boolean                           | false      |
+| size      | 按钮尺寸                                   | SizeType                          | -          |
+| direction | 布局方向                                   | 'horizontal' \| 'vertical'        | horizontal |
+| shape     | `button` 的形状                            | ShapeType                         | -          |
+| theme     | `button` 的主题                            | ThemeType                         | -          |
+| onChange  | 在选项状态发生改变时触发，返回当前选中的项 | (value: string \| number) => void | -          |
+| options   | 可以指定子项 `radio`                       | RadioOption[]                     | -          |
+| type      | 使用按钮样式的单选项                       | 'radio' \| 'button'               | radio      |

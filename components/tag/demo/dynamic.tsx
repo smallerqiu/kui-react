@@ -22,7 +22,7 @@ export default function App() {
           color="blue"
           closeable
           key={value}
-          onClose={() => setTags((items) => items.filter((item) => item !== value))}
+          onAfterClose={() => setTags((items) => items.filter((item) => item !== value))}
         >
           {value}
         </Tag>

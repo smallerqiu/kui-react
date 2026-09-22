@@ -11,7 +11,10 @@ import Icon, { type IconType } from "../icon";
 import type { UploadFile } from "./index";
 import type { Locale } from "../config/config-context";
 
-export interface SelectorProps extends Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> {
+export interface SelectorProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onSelect" | "defaultValue" | "defaultChecked"
+> {
   disabled?: boolean;
   name?: string;
   accept?: string;

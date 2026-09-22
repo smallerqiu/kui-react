@@ -13,7 +13,7 @@ import InputGroup from "./input-group";
 
 export interface InputProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
-  "size" | "prefix" | "onChange" | "defaultValue"
+  "size" | "prefix" | "onChange" | "defaultValue" | "defaultChecked"
 > {
   clearable?: boolean;
   visiblePasswordIcon?: boolean;

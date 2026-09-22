@@ -19,7 +19,10 @@ export interface StatNumberItem {
   autoAnimateOnce?: boolean;
 }
 
-export interface StatCardProps extends Omit<HTMLAttributes<HTMLDivElement>, "title" | "prefix"> {
+export interface StatCardProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "title" | "prefix" | "defaultValue" | "defaultChecked"
+> {
   title?: ReactNode;
   precision?: number;
   items?: StatNumberItem[];

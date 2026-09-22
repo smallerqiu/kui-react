@@ -164,7 +164,7 @@ describe("disabled interaction guards", () => {
     const { container } = render(
       <Select
         disabled
-        defaultOpen
+        open
         onChange={onChange}
         options={[
           { label: "Disabled", value: "disabled", disabled: true },

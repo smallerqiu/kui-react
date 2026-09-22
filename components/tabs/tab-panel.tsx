@@ -2,7 +2,10 @@ import clsx from "clsx";
 import React from "react";
 import type { IconType } from "../icon";
 
-export interface TabPanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+export interface TabPanelProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "title" | "defaultValue" | "defaultChecked"
+> {
   title?: React.ReactNode;
   icon?: IconType[];
   disabled?: boolean;

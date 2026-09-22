@@ -4,7 +4,10 @@ import { SizeContext } from "../config/size-context";
 import type { SizeType } from "../const/types";
 import { getChildren } from "../utils/react-node";
 
-export interface SpaceProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SpaceProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   align?: "start" | "end" | "center" | "baseline";
   vertical?: boolean;
   direction?: "horizontal" | "vertical";
@@ -48,7 +51,7 @@ const Space: React.FC<SpaceProps> = ({
       "k-space-block": block,
       [`k-space-align-${currentAlign}`]: currentAlign,
     },
-    className
+    className,
   );
 
   const toCssLength = (value: number | string | undefined) => {
@@ -103,7 +106,7 @@ const Space: React.FC<SpaceProps> = ({
         ...(typeof currentSize === "string" && typeof item.type !== "string"
           ? { size: currentSize }
           : null),
-      }
+      },
     );
   };
 

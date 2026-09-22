@@ -9,7 +9,10 @@ export type ProgressStatus = "active" | "exception" | "success" | "normal";
 export type ProgressStroke = "round" | "butt" | "square";
 export type ProgressType = "line" | "circle" | "dashboard";
 
-export interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ProgressProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   percent?: number;
   strokeWidth?: number;
   color?: string;
@@ -153,7 +156,7 @@ const Progress: React.FC<ProgressProps> = ({
     `k-progress-${type}`,
     `k-progress-${finalStatus}`,
     { "k-progress-sm": type === "line" && size === "small", "k-progress-hide-info": !showInfo },
-    className
+    className,
   );
 
   const pgStyle: React.CSSProperties = { ...style };

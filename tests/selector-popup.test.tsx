@@ -23,14 +23,14 @@ const cases: Array<{
     name: "ColorPicker",
     selector: ".k-color-picker-dropdown",
     event: "mousedown",
-    render: (onOpenChange) => <ColorPicker defaultOpen onOpenChange={onOpenChange} />,
+    render: (onOpenChange) => <ColorPicker open onOpenChange={onOpenChange} />,
   },
   {
     name: "Select",
     selector: ".k-select-dropdown",
     event: "click",
     render: (onOpenChange) => (
-      <Select defaultOpen options={[{ label: "One", value: "one" }]} onOpenChange={onOpenChange} />
+      <Select open options={[{ label: "One", value: "one" }]} onOpenChange={onOpenChange} />
     ),
   },
   {
@@ -38,11 +38,7 @@ const cases: Array<{
     selector: ".k-tree-select-dropdown",
     event: "mousedown",
     render: (onOpenChange) => (
-      <TreeSelect
-        defaultOpen
-        treeData={[{ key: "one", title: "One" }]}
-        onOpenChange={onOpenChange}
-      />
+      <TreeSelect open treeData={[{ key: "one", title: "One" }]} onOpenChange={onOpenChange} />
     ),
   },
   {
@@ -50,11 +46,7 @@ const cases: Array<{
     selector: ".k-cascader-dropdown",
     event: "mousedown",
     render: (onOpenChange) => (
-      <Cascader
-        defaultOpen
-        options={[{ value: "one", label: "One" }]}
-        onOpenChange={onOpenChange}
-      />
+      <Cascader open options={[{ value: "one", label: "One" }]} onOpenChange={onOpenChange} />
     ),
   },
   {
@@ -62,14 +54,14 @@ const cases: Array<{
     selector: ".k-auto-complete-dropdown",
     event: "click",
     render: (onOpenChange) => (
-      <AutoComplete defaultOpen showOnEmpty options={["one"]} onOpenChange={onOpenChange} />
+      <AutoComplete open showOnEmpty options={["one"]} onOpenChange={onOpenChange} />
     ),
   },
   {
     name: "DatePicker",
     selector: ".k-datepicker-overlay",
     event: "mousedown",
-    render: (onOpenChange) => <DatePicker defaultOpen onOpenChange={onOpenChange} />,
+    render: (onOpenChange) => <DatePicker open onOpenChange={onOpenChange} />,
   },
 ];
 
@@ -118,9 +110,7 @@ describe("nested selector popups", () => {
       <Popup
         open
         onOpenChange={parentChange}
-        overlay={
-          <Select defaultOpen options={[{ label: "One", value: "one" }]} onChange={selected} />
-        }
+        overlay={<Select open options={[{ label: "One", value: "one" }]} onChange={selected} />}
       >
         <button>Parent</button>
       </Popup>,

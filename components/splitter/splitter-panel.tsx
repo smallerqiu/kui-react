@@ -1,7 +1,10 @@
 import clsx from "clsx";
 import type { HTMLAttributes } from "react";
 
-export interface SplitterPanelProps extends HTMLAttributes<HTMLDivElement> {
+export interface SplitterPanelProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   size?: number | string;
   min?: number | string;
   max?: number | string;

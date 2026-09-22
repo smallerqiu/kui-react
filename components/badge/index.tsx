@@ -4,7 +4,10 @@ import { getChildren } from "../utils/react-node";
 
 export type BadgeStatusType = "default" | "success" | "error" | "warning";
 
-export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface BadgeProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   count?: string | number;
   dot?: boolean;
   pill?: boolean;
@@ -62,7 +65,7 @@ const Badge: React.FC<BadgeProps> = ({
       statusNodes.push(
         <span key="text" className="k-badge-status-text">
           {text}
-        </span>
+        </span>,
       );
     }
   }

@@ -46,9 +46,8 @@
 
 | 属性                    | 说明                                                 | 类型                                  | 默认值      |
 | ----------------------- | ---------------------------------------------------- | ------------------------------------- | ----------- |
-| value                   | 的选中值                                         | TreeSelectValue                       | -           |
-| open                    | 受控的下拉框显示状态                                 | boolean                               | -           |
-| defaultOpen             | 非受控模式的初始下拉框状态                           | boolean                               | false       |
+| value                   | 的选中值                                             | TreeSelectValue                       | -           |
+| open                    | 下拉框显示状态                                       | boolean                               | -           |
 | width                   | 组件宽度                                             | string,number                         | -           |
 | placement               | 下拉框弹出位置                                       | DropPlacementsType                    | bottom-left |
 | maxTagCount             | 多选时最多展示的标签数量，超出部分通过 Tooltip 展示  | number                                | -           |

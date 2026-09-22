@@ -5,7 +5,10 @@ import { SizeContext } from "../config/size-context";
 import type { SizeType, ThemeType } from "../const/types";
 import { getChildren } from "../utils/react-node";
 
-export interface InputGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface InputGroupProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   block?: boolean;
   compact?: boolean;
   theme?: ThemeType;
@@ -72,11 +75,14 @@ const InputGroup: React.FC<InputGroupProps> = ({
                 className: clsx(nestedChildren[0].props.className, itemClass),
               })
             : childProps.children;
-        return React.cloneElement(child as React.ReactElement<{ className?: string; children?: React.ReactNode }>, {
-          className: itemClass,
-          children: nextChildren,
-          key: child.key || `item-${i}`,
-        });
+        return React.cloneElement(
+          child as React.ReactElement<{ className?: string; children?: React.ReactNode }>,
+          {
+            className: itemClass,
+            children: nextChildren,
+            key: child.key || `item-${i}`,
+          },
+        );
       }
       return child;
     });

@@ -5,7 +5,10 @@ import { Avatar } from "../avatar";
 import Icon, { type IconType } from "../icon";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 
-export interface CardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+export interface CardProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "title" | "defaultValue" | "defaultChecked"
+> {
   bordered?: boolean;
   theme?: ThemeType;
   shape?: ShapeType;
@@ -51,7 +54,7 @@ const Card: React.FC<CardProps> = ({
       [`k-card-${shape}`]: shape,
       [`k-card-${size}`]: size,
     },
-    className
+    className,
   );
 
   return (
@@ -69,7 +72,10 @@ const Card: React.FC<CardProps> = ({
   );
 };
 
-export interface CardMetaProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+export interface CardMetaProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "title" | "defaultValue" | "defaultChecked"
+> {
   avatar?: string | React.ReactNode;
   title?: React.ReactNode;
   description?: React.ReactNode;

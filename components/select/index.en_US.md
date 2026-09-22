@@ -47,9 +47,8 @@ Dropdown selector.
 
 | Property     | Description                                                               | Type                               | Default       |
 | ------------ | ------------------------------------------------------------------------- | ---------------------------------- | ------------- |
-| value        | selected value                                                 | string, number, (string\|number)[] | -             |
-| open         | Controlled dropdown visibility                                            | boolean                            | -             |
-| defaultOpen  | Initial dropdown visibility in uncontrolled mode                          | boolean                            | false         |
+| value        | selected value                                                            | string, number, (string\|number)[] | -             |
+| open         | dropdown visibility                                                       | boolean                            | -             |
 | placement    | Dropdown placement                                                        | DropPlacementsType                 | bottom-left   |
 | block        | Whether to fill the parent width                                          | boolean                            | false         |
 | filterable   | Whether search filtering is enabled                                       | boolean                            | false         |

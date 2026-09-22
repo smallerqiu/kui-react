@@ -19,7 +19,7 @@ describe("Drawer target", () => {
     const { unmount } = render(
       <>
         <button autoFocus>Open drawer</button>
-        <Drawer defaultOpen footer={false}>
+        <Drawer open footer={false}>
           Content
         </Drawer>
       </>,

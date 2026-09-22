@@ -5,7 +5,7 @@ import { Poptip, Popconfirm } from "../components";
 describe.each([Poptip, Popconfirm])("shared popover positioning", (Component) => {
   it("repositions on ancestor scroll and removes the listener on unmount", async () => {
     const { unmount } = render(
-      <Component defaultOpen title="Details">
+      <Component open title="Details">
         <button>Open</button>
       </Component>,
     );

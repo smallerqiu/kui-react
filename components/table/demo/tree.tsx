@@ -50,9 +50,7 @@ const columns: Column<Department>[] = [
   {
     key: "status",
     title: "Status",
-    render: (status) => (
-      <Tag color={status === "active" ? "green" : "gold"}>{String(status)}</Tag>
-    ),
+    render: (status) => <Tag color={status === "active" ? "green" : "gold"}>{String(status)}</Tag>,
   },
 ];
 
@@ -62,7 +60,7 @@ export default function App() {
       bordered
       checkable
       expandRowByClick
-      defaultExpandedKeys={["product"]}
+      expandedKeys={["product"]}
       data={data}
       columns={columns}
     />

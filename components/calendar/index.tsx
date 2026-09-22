@@ -22,7 +22,7 @@ export interface CalendarDateCell {
 }
 export interface CalendarProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "onChange" | "title" | "defaultValue"
+  "onChange" | "title" | "defaultValue" | "defaultChecked"
 > {
   value?: string;
   events?: CalendarEventData[];

@@ -4,7 +4,10 @@ import React from "react";
 import type { ShapeType, SizeType } from "../const/types";
 import { useSkeletonLoading } from "./use-skeleton-loading";
 
-export interface SkeletonAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SkeletonAvatarProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   animated?: boolean;
   radius?: number;
   loading?: boolean;

@@ -40,9 +40,8 @@ When there are too many operation commands on the page, this component can be us
 
 | Property     | Description                                  | Type                                | Default       |
 | ------------ | -------------------------------------------- | ----------------------------------- | ------------- |
-| open         | Controlled visibility                        | boolean                             | -             |
+| open         | visibility                                   | boolean                             | -             |
 | show         | Deprecated; use `open` instead               | boolean                             | -             |
-| defaultOpen  | Initial visibility in uncontrolled mode      | boolean                             | false         |
 | trigger      | Trigger method                               | `hover` \| `click` \| `contextmenu` | `hover`       |
 | placement    | Dropdown placement                           | DropPlacementsType                  | `bottom-left` |
 | arrow        | Whether to display the arrow                 | boolean                             | false         |

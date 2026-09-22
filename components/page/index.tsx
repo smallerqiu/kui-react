@@ -9,7 +9,10 @@ import InputNumber from "../input-number";
 import zhCN from "../locale/zh-CN";
 import Select from "../select/select";
 
-export interface PageProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface PageProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange" | "defaultValue" | "defaultChecked"
+> {
   simple?: boolean;
   disabled?: boolean;
   showSizer?: boolean;

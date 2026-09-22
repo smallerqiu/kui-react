@@ -169,12 +169,12 @@ describe("single value API", () => {
     ];
     const source = ["one"];
     const { container, rerender } = render(
-      <Select multiple value={source} options={options} defaultOpen />,
+      <Select multiple value={source} options={options} open />,
     );
     fireEvent.click(document.querySelectorAll(".k-select-item")[1]);
     expect(container.querySelectorAll(".k-select-labels .k-tag")).toHaveLength(2);
     expect(source).toEqual(["one"]);
-    rerender(<Select multiple value={[]} options={options} defaultOpen />);
+    rerender(<Select multiple value={[]} options={options} open />);
     expect(container.querySelectorAll(".k-select-labels .k-tag")).toHaveLength(0);
   });
 
@@ -268,7 +268,7 @@ describe("single value API", () => {
 
   it("synchronizes ColorPicker colors without requiring a listener", () => {
     const { container, rerender } = render(
-      <ColorPicker value="#ff0000" defaultOpen presets={["#00ff00"]} />,
+      <ColorPicker value="#ff0000" open presets={["#00ff00"]} />,
     );
     const color = () =>
       (container.querySelector(".k-color-picker-color-inner") as HTMLElement).style.backgroundColor;
@@ -294,7 +294,7 @@ describe("single value API", () => {
     ];
     const onChange = vi.fn();
     const { container, rerender } = render(
-      <Cascader value={["one"]} options={options} defaultOpen onChange={onChange} />,
+      <Cascader value={["one"]} options={options} open onChange={onChange} />,
     );
     fireEvent.click(document.querySelectorAll(".k-cascader-dropdown-item")[1]);
     expect(onChange).toHaveBeenLastCalledWith(["two"]);

@@ -2,7 +2,10 @@ import clsx from "clsx";
 import React from "react";
 import type { DirectionType } from "../const/types";
 
-export interface DividerProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface DividerProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   type?: DirectionType;
   text?: string;
   dashed?: boolean;
@@ -28,7 +31,7 @@ class Divider extends React.Component<DividerProps> {
         "k-divider-dashed": dashed,
         [`k-divider-with-text-${orientation}`]: type === "horizontal" && hasText,
       },
-      className || ""
+      className || "",
     );
 
     return (

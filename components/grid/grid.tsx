@@ -4,7 +4,10 @@ import { GridContext, useBreakpoint, type Breakpoint, type ResponsiveValue } fro
 
 type GridDimension = number | string;
 
-export interface GridProps extends HTMLAttributes<HTMLDivElement> {
+export interface GridProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   cols?: ResponsiveValue<GridDimension>;
   rows?: ResponsiveValue<GridDimension>;
   autoRows?: string;

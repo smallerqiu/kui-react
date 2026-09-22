@@ -25,7 +25,7 @@ export interface CarouselRef {
 
 export interface CarouselProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
-  "onChange" | "defaultValue"
+  "onChange" | "defaultValue" | "defaultChecked"
 > {
   value?: number;
   loop?: boolean;

@@ -30,7 +30,6 @@ const pathFromValue = (
 function Cascader({
   value,
   open: openProp,
-  defaultOpen = false,
   options: optionsProp,
   theme: themeProp,
   bordered = true,
@@ -99,9 +98,9 @@ function Cascader({
   const setActivePath = (path: CascaderOption[]) => {
     setActiveState({ options, path, selectionKey });
   };
-  const [innerOpen, setInnerOpen] = useState(defaultOpen);
+  const [innerOpen, setInnerOpen] = useValue(openProp, (next) => next ?? false);
   const [activeColumn, setActiveColumn] = useState(0);
-  const visible = openProp ?? innerOpen;
+  const visible = innerOpen;
   const selectionRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -134,10 +133,10 @@ function Cascader({
       if (next) {
         setActiveColumn(0);
       }
-      if (openProp === undefined) setInnerOpen(next);
+      setInnerOpen(next);
       onOpenChange?.(next);
     },
-    [disabled, onOpenChange, openProp, readOnly, visible],
+    [disabled, onOpenChange, setInnerOpen, readOnly, visible],
   );
 
   const commit = (next: CascaderValue) => {

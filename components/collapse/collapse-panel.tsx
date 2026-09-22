@@ -4,7 +4,10 @@ import React from "react";
 import Transition from "../base/transition";
 import Icon from "../icon";
 
-export interface CollapsePanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+export interface CollapsePanelProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "title" | "defaultValue" | "defaultChecked"
+> {
   title?: React.ReactNode;
   disabled?: boolean;
   active?: boolean;

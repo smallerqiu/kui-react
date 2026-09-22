@@ -2,7 +2,10 @@ import clsx from "clsx";
 import { useContext, useEffect, type AnchorHTMLAttributes, type ReactNode } from "react";
 import { AnchorContext } from "./anchor-context";
 
-export interface AnchorLinkProps extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "title"> {
+export interface AnchorLinkProps extends Omit<
+  AnchorHTMLAttributes<HTMLAnchorElement>,
+  "title" | "defaultValue" | "defaultChecked"
+> {
   href: string;
   title?: ReactNode;
 }

@@ -18,12 +18,12 @@ export default function App() {
       </Button>
       <Switch checked={checked} onChange={(v) => setChecked(Boolean(v))} />
       <Space>
-        <Switch defaultChecked type="primary" />
-        <Switch defaultChecked type="success" />
-        <Switch defaultChecked type="warning" />
-        <Switch defaultChecked type="danger" />
-        <Switch defaultChecked color="#8b5cf6" />
-        <Switch defaultChecked shape="square" />
+        <Switch checked type="primary" />
+        <Switch checked type="success" />
+        <Switch checked type="warning" />
+        <Switch checked type="danger" />
+        <Switch checked color="#8b5cf6" />
+        <Switch checked shape="square" />
       </Space>
     </Space>
   );

@@ -36,9 +36,8 @@
 
 | 属性           | 说明                                                                                   | 类型                      | 默认值        |
 | :------------- | :------------------------------------------------------------------------------------- | :------------------------ | :------------ |
-| value          | 选中项的路径值数组（模式，如 `['zhejiang', 'hangzhou', 'xihu']`）。                | `(string \| number)[]`    | -             |
-| open           | 受控的下拉框显示状态。                                                                 | `boolean`                 | -             |
-| defaultOpen    | 非受控模式下的初始下拉框状态。                                                         | `boolean`                 | `false`       |
+| value          | 选中项的路径值数组（模式，如 `['zhejiang', 'hangzhou', 'xihu']`）。                    | `(string \| number)[]`    | -             |
+| open           | 下拉框显示状态。                                                                       | `boolean`                 | -             |
 | theme          | 组件主题。                                                                             | `ThemeType`               | `fill`        |
 | bordered       | 是否显示边框。                                                                         | `boolean`                 | `true`        |
 | shape          | 组件形状。                                                                             | `ShapeType`               | -             |

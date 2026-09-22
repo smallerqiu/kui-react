@@ -4,7 +4,10 @@ import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import type { ShapeType, ThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
 
-export interface FeatureCardProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
+export interface FeatureCardProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "title" | "defaultValue" | "defaultChecked"
+> {
   icon?: IconType[] | ReactNode;
   title?: ReactNode;
   desc?: ReactNode;

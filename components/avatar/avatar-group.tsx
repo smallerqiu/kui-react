@@ -4,7 +4,10 @@ import { getChildren } from "../utils/react-node";
 import Avatar from "./avatar";
 import { AvatarGroupContext, type AvatarShape, type AvatarSize } from "./avatar-group-context";
 
-export interface AvatarGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface AvatarGroupProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   maxCount?: number;
   spacing?: number;
   shape?: AvatarShape;

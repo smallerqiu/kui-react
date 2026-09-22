@@ -34,10 +34,9 @@ Suggest options while keeping free-form input available.
 
 | Property     | Description                                       | Type                                         | Default |
 | ------------ | ------------------------------------------------- | -------------------------------------------- | ------- |
-| value        | value                                  | string                                       | -       |
+| value        | value                                             | string                                       | -       |
 | options      | Suggestions                                       | (string \| AutoCompleteOption)[]             | []      |
-| open         | Controlled open state                             | boolean                                      | -       |
-| defaultOpen  | Initial open state                                | boolean                                      | false   |
+| open         | open state                                        | boolean                                      | -       |
 | showOnEmpty  | Show suggestions for an empty focused input       | boolean                                      | false   |
 | clearable    | Show clear button on hover                        | boolean                                      | false   |
 | disabled     | Disabled                                          | boolean                                      | false   |

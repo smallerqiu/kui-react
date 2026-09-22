@@ -16,7 +16,10 @@ import {
 import type { DirectionType } from "../const/types";
 import type { SplitterPanelProps } from "./splitter-panel";
 
-export interface SplitterProps extends Omit<HTMLAttributes<HTMLDivElement>, "onResize"> {
+export interface SplitterProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onResize" | "defaultValue" | "defaultChecked"
+> {
   direction?: DirectionType;
   onResize?: (sizes: number[]) => void;
   onResizeEnd?: (sizes: number[]) => void;

@@ -6,7 +6,10 @@ export interface IconType {
   s?: string;
 }
 
-export interface IconProps extends Omit<HTMLAttributes<HTMLElement>, "color"> {
+export interface IconProps extends Omit<
+  HTMLAttributes<HTMLElement>,
+  "color" | "defaultValue" | "defaultChecked"
+> {
   type?: IconType[];
   size?: string | number;
   color?: string;
@@ -42,7 +45,7 @@ const Icon = forwardRef<HTMLElement, IconProps>(function Icon(
     onClick,
     ...rest
   },
-  ref
+  ref,
 ) {
   const iconStyle: CSSProperties = {
     ...style,

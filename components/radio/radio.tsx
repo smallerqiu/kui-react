@@ -1,14 +1,17 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import type { SizeType, ThemeType } from "../const/types";
 import { RadioGroupContext } from "./radio-group-context";
 import type { ChangeEvent } from "./types";
 
-export interface RadioProps extends Omit<React.HTMLAttributes<HTMLLabelElement>, "onChange"> {
+export interface RadioProps extends Omit<
+  React.HTMLAttributes<HTMLLabelElement>,
+  "onChange" | "defaultValue" | "defaultChecked"
+> {
   checked?: boolean;
-  defaultChecked?: boolean;
   value?: string | number;
   label?: string;
   theme?: ThemeType;
@@ -23,7 +26,6 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
   (
     {
       checked,
-      defaultChecked = false,
       value,
       label,
       theme: themeProp,
@@ -50,15 +52,15 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
     const isGroup = !!group;
     const groupChecked = isGroup ? group.value === value : false;
 
-    const [localChecked, setLocalChecked] = useState(defaultChecked);
-    const isChecked = isGroup ? groupChecked : (checked ?? localChecked);
+    const [localChecked, setLocalChecked] = useValue(checked, (next) => next ?? false);
+    const isChecked = isGroup ? groupChecked : localChecked;
     const currentDisabled = disabled || (isGroup && group.disabled);
     const currentReadOnly = readOnly || Boolean(isGroup && group.readOnly);
     const currentTheme = themeProp ?? group?.theme ?? theme;
     const currentSize = sizeProp ?? group?.size ?? size;
 
     const emitValue = (newChecked: boolean) => {
-      if (!isGroup && checked === undefined) {
+      if (!isGroup) {
         setLocalChecked(newChecked);
       }
       const labelVal = label ?? String(value ?? "");

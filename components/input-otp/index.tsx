@@ -23,7 +23,7 @@ export interface InputOTPRef {
 }
 export interface InputOTPProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
-  "onChange" | "defaultValue"
+  "onChange" | "defaultValue" | "defaultChecked"
 > {
   value?: string | number;
   length?: number;

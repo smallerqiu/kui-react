@@ -9,7 +9,10 @@ import {
   type ReactNode,
 } from "react";
 
-export interface AffixProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface AffixProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onChange" | "defaultValue" | "defaultChecked"
+> {
   children?: ReactNode;
   offsetTop?: number;
   offsetBottom?: number;

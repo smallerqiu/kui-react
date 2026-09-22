@@ -3,7 +3,10 @@ import type { HTMLAttributes } from "react";
 
 export type TimelineMode = "left" | "right" | "center" | "alternate";
 
-export interface TimelineProps extends HTMLAttributes<HTMLUListElement> {
+export interface TimelineProps extends Omit<
+  HTMLAttributes<HTMLUListElement>,
+  "defaultValue" | "defaultChecked"
+> {
   mode?: TimelineMode;
 }
 

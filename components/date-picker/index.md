@@ -50,9 +50,8 @@
 
 | 属性              | 说明                                                                                         | 类型                                                                                | 默认值      |
 | ----------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------- |
-| value             | 的日期或时间值                                                                           | DatePickerInput, DatePickerInput[]                                                  | -           |
-| open              | 受控的下拉面板显示状态                                                                       | boolean                                                                             | -           |
-| defaultOpen       | 非受控模式的初始下拉面板状态                                                                 | boolean                                                                             | false       |
+| value             | 的日期或时间值                                                                               | DatePickerInput, DatePickerInput[]                                                  | -           |
+| open              | 下拉面板显示状态                                                                             | boolean                                                                             | -           |
 | startDate         | 开始时间（范围选择）                                                                         | DatePickerInput                                                                     | -           |
 | endDate           | 结束时间（范围选择）                                                                         | DatePickerInput                                                                     | -           |
 | mode              | 日期选择模式                                                                                 | DatePickerModeType                                                                  | date        |

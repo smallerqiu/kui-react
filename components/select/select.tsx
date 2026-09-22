@@ -41,7 +41,7 @@ const normalizeValue = (value: SelectValue): SelectPrimitive[] => {
 
 export interface SelectProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "onChange" | "onSelect" | "defaultValue"
+  "onChange" | "onSelect" | "defaultValue" | "defaultChecked"
 > {
   placeholder?: string;
   size?: SizeType;
@@ -50,7 +50,6 @@ export interface SelectProps extends Omit<
   maxTagCount?: number;
   value?: SelectValue;
   open?: boolean;
-  defaultOpen?: boolean;
   clearable?: boolean;
   filterable?: boolean;
   /** Allow creating a new option from the search text in multiple mode. */
@@ -89,7 +88,6 @@ const Select: React.FC<SelectProps> = ({
   maxTagCount,
   value,
   open: openProp,
-  defaultOpen = false,
   clearable = true,
   filterable = false,
   allowCreate = false,
@@ -128,10 +126,10 @@ const Select: React.FC<SelectProps> = ({
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
 
-  const [innerVisible, setInnerVisible] = useState(defaultOpen);
-  const visible = openProp ?? innerVisible;
+  const [innerVisible, setInnerVisible] = useValue(openProp, (next) => next ?? false);
+  const visible = innerVisible;
   const setVisible = (next: boolean) => {
-    if (openProp === undefined) setInnerVisible(next);
+    setInnerVisible(next);
   };
   const [currentValue, setInternalValue] = useValue(value, (next) =>
     multiple ? (Array.isArray(next) ? next : []) : normalizeValue(next),

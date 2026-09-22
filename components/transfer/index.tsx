@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { ChevronLeft, ChevronRight, Search } from "kui-icons";
@@ -23,10 +24,12 @@ export interface TransferChangeEvent {
   movedKeys: TransferKey[];
 }
 
-export interface TransferProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface TransferProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange" | "defaultValue" | "defaultChecked"
+> {
   dataSource?: TransferItem[];
   targetKeys?: TransferKey[];
-  defaultTargetKeys?: TransferKey[];
   titles?: [React.ReactNode, React.ReactNode];
   operations?: [string, string];
   searchable?: boolean;
@@ -42,12 +45,10 @@ export interface TransferProps extends Omit<React.HTMLAttributes<HTMLDivElement>
 }
 
 const EMPTY_ITEMS: TransferItem[] = [];
-const EMPTY_KEYS: TransferKey[] = [];
 
 function Transfer({
   dataSource = EMPTY_ITEMS,
   targetKeys,
-  defaultTargetKeys = EMPTY_KEYS,
   titles = ["Source", "Target"],
   operations = ["", ""],
   searchable = false,
@@ -63,11 +64,11 @@ function Transfer({
   className,
   ...rest
 }: TransferProps) {
-  const [innerTargets, setInnerTargets] = useState(defaultTargetKeys);
+  const [innerTargets, setInnerTargets] = useValue(targetKeys, (next): TransferKey[] => next ?? []);
   const [sourceSelected, setSourceSelected] = useState<TransferKey[]>([]);
   const [targetSelected, setTargetSelected] = useState<TransferKey[]>([]);
   const [queries, setQueries] = useState<[string, string]>(["", ""]);
-  const targets = targetKeys ?? innerTargets;
+  const targets = innerTargets;
   const targetSet = useMemo(() => new Set(targets), [targets]);
   const itemMap = useMemo(
     () => new Map(dataSource.map((entry) => [entry.key, entry])),
@@ -159,7 +160,7 @@ function Transfer({
       direction === "right"
         ? [...new Set([...targets, ...movedKeys])]
         : targets.filter((key) => !movedKeys.includes(key));
-    if (targetKeys === undefined) setInnerTargets(next);
+    setInnerTargets(next);
     onChange?.({ targetKeys: next, direction, movedKeys: [...movedKeys] });
 
     if (direction === "right") {

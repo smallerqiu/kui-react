@@ -33,8 +33,7 @@
 
 | 属性              | 说明                                                      | 类型                                         | 默认值  |
 | ----------------- | --------------------------------------------------------- | -------------------------------------------- | ------- |
-| checked           | 受控的开关状态                                            | boolean                                      | -       |
-| defaultChecked    | 非受控模式的初始开关状态                                  | boolean                                      | false   |
+| checked           | 开关状态                                                  | boolean                                      | -       |
 | disabled          | 禁用开关                                                  | boolean                                      | false   |
 | readOnly          | 只读开关                                                  | boolean                                      | false   |
 | loading           | 加载状态，加载时不可操作                                  | boolean                                      | false   |

@@ -47,9 +47,8 @@
 
 | 属性         | 说明                                                 | 类型                             | 默认值      |
 | ------------ | ---------------------------------------------------- | -------------------------------- | ----------- |
-| value        | 的选中值                                         | string,number,(string\|number)[] | -           |
-| open         | 受控的下拉框显示状态                                 | boolean                          | -           |
-| defaultOpen  | 非受控模式的初始下拉框状态                           | boolean                          | false       |
+| value        | 的选中值                                             | string,number,(string\|number)[] | -           |
+| open         | 下拉框显示状态                                       | boolean                          | -           |
 | placement    | 下拉框弹出位置                                       | DropPlacementsType               | bottom-left |
 | block        | 是否撑满父容器宽度                                   | boolean                          | false       |
 | filterable   | 是否允许搜索过滤                                     | boolean                          | false       |

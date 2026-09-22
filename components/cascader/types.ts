@@ -18,11 +18,10 @@ export interface CascaderOption {
 
 export interface CascaderProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
-  "onChange" | "defaultValue"
+  "onChange" | "defaultValue" | "defaultChecked"
 > {
   value?: CascaderValue;
   open?: boolean;
-  defaultOpen?: boolean;
   options?: CascaderOption[];
   theme?: ThemeType;
   bordered?: boolean;

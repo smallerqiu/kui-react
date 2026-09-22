@@ -21,10 +21,9 @@ export interface CheckCardOption {
 
 export interface CheckCardProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "onChange" | "title" | "defaultValue"
+  "onChange" | "title" | "defaultValue" | "defaultChecked"
 > {
   checked?: boolean;
-  defaultChecked?: boolean;
   value?: CheckCardValue;
   title?: React.ReactNode;
   description?: React.ReactNode;
@@ -42,7 +41,7 @@ export interface CheckCardProps extends Omit<
 
 export interface CheckCardGroupProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "onChange" | "defaultValue"
+  "onChange" | "defaultValue" | "defaultChecked"
 > {
   value?: CheckCardValue;
 

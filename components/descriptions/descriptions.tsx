@@ -81,7 +81,10 @@ const Cell: React.FC<CellProps> = ({ label, span = 1, type, bordered, layout, ch
   );
 };
 
-export interface DescriptionsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+export interface DescriptionsProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "title" | "defaultValue" | "defaultChecked"
+> {
   bordered?: boolean;
   column?: DescriptionsColumn;
   layout?: DirectionType;

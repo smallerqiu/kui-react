@@ -18,7 +18,7 @@ export interface VirtualListRef {
 }
 export interface VirtualListProps<T = unknown> extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "children" | "onScroll"
+  "children" | "onScroll" | "defaultValue" | "defaultChecked"
 > {
   data?: T[];
   height?: number | string;

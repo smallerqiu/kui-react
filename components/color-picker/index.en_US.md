@@ -35,8 +35,7 @@ Freely output colors.
 | Property      | Description                                                                           | Type                        | Default          |
 | ------------- | ------------------------------------------------------------------------------------- | --------------------------- | ---------------- |
 | value         | color value                                                                           | `string`                    | -                |
-| open          | Controlled popup visibility                                                           | `boolean`                   | -                |
-| defaultOpen   | Initial popup visibility in uncontrolled mode                                         | `boolean`                   | `false`          |
+| open          | popup visibility                                                                      | `boolean`                   | -                |
 | mode          | Color output mode: `hex`, `rgb`, or `hsl`                                             | `ColorMode`                 | `hex`            |
 | presets       | Custom color palette                                                                  | `string[]`                  | Built-in palette |
 | disabledAlpha | Whether alpha editing is disabled                                                     | `boolean`                   | `false`          |

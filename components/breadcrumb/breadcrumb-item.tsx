@@ -3,7 +3,10 @@ import React, { useContext } from "react";
 import Icon, { type IconType } from "../icon";
 import { BreadcrumbContext } from "./breadcrumb-context";
 
-export interface BreadcrumbItemProps extends React.HTMLAttributes<HTMLLIElement> {
+export interface BreadcrumbItemProps extends Omit<
+  React.HTMLAttributes<HTMLLIElement>,
+  "defaultValue" | "defaultChecked"
+> {
   href?: string;
   target?: string;
   rel?: string;

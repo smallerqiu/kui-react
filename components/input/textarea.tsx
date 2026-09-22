@@ -7,7 +7,7 @@ import type { ShapeType, SizeType, ThemeType } from "../const/types";
 
 export interface TextAreaProps extends Omit<
   React.TextareaHTMLAttributes<HTMLTextAreaElement>,
-  "onChange" | "defaultValue"
+  "onChange" | "defaultValue" | "defaultChecked"
 > {
   value?: string | number | readonly string[];
   theme?: ThemeType;

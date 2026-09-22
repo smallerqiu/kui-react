@@ -11,7 +11,7 @@ import type { TabPanelProps } from "./tab-panel";
 
 export interface TabsProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "onChange" | "defaultValue"
+  "onChange" | "defaultValue" | "defaultChecked"
 > {
   value?: string | number;
   variant?: "line" | "card" | "sample" | "browser";

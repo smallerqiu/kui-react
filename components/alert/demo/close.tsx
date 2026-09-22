@@ -1,11 +1,17 @@
-import { Space, Alert } from "react-kui";
+import { Space, Alert, Button } from "react-kui";
+import { useState } from "react";
 
 export default function App() {
+  const [visible, setVisible] = useState(true);
   return (
     <Space vertical block>
-      <Alert type="success" closable>
-        Success Text
-      </Alert>
+      {visible ? (
+        <Alert type="success" closable onAfterClose={() => setVisible(false)}>
+          Success Text
+        </Alert>
+      ) : (
+        <Button onClick={() => setVisible(true)}>Show Alert</Button>
+      )}
       <Alert type="info" closable>
         Info Text
       </Alert>

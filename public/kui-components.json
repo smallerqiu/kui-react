@@ -189,8 +189,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -467,7 +465,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -606,21 +603,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控显示状态，配合 onOpenChange 同步",
-          "descriptionEn": "Controlled visibility; synchronize through onOpenChange"
-        },
-        {
-          "name": "defaultOpen",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "defaultExpression": "false",
-          "descriptionZh": "非受控初始状态",
-          "descriptionEn": "Initial uncontrolled visibility"
+          "descriptionZh": "初始显示状态，后续属性变化会同步内部状态，配合 onOpenChange 同步",
+          "descriptionEn": "Initial visibility; subsequent changes synchronize the state; synchronize through onOpenChange"
         },
         {
           "name": "disabled",
@@ -957,8 +941,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -1237,7 +1219,6 @@
         "key"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -1518,8 +1499,16 @@
           "type": "((e: React.MouseEvent<HTMLElement>) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "关闭时触发的回调函数",
-          "descriptionEn": "Callback function triggered when closing"
+          "descriptionZh": "点击关闭按钮时触发",
+          "descriptionEn": "Triggered when the close button is clicked"
+        },
+        {
+          "name": "onAfterClose",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "退出动画结束后触发",
+          "descriptionEn": "Triggered after the exit animation"
         },
         {
           "name": "children",
@@ -1531,8 +1520,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -1656,7 +1644,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -1810,7 +1797,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -1900,8 +1886,16 @@
           "type": "((e: React.MouseEvent<HTMLElement>) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "关闭时触发的回调函数",
-          "descriptionEn": "Callback function triggered when closing"
+          "descriptionZh": "点击关闭按钮时触发",
+          "descriptionEn": "Triggered when the close button is clicked"
+        },
+        {
+          "name": "onAfterClose",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "退出动画结束后触发",
+          "descriptionEn": "Triggered after the exit animation"
         }
       ],
       "renderProps": [
@@ -1927,7 +1921,7 @@
         {
           "id": "components/alert/demo/close.tsx",
           "title": "可关闭",
-          "source": "import { Space, Alert } from \"react-kui\";\n\nexport default function App() {\n  return (\n    <Space vertical block>\n      <Alert type=\"success\" closable>\n        Success Text\n      </Alert>\n      <Alert type=\"info\" closable>\n        Info Text\n      </Alert>\n      <Alert type=\"warning\" closable>\n        Warning Text\n      </Alert>\n      <Alert type=\"error\" closable>\n        Error Text\n      </Alert>\n      <Alert\n        type=\"success\"\n        closable\n        message=\"Success Tip\"\n        description=\"Congratulations, the operation is successful.\"\n      />\n    </Space>\n  );\n}"
+          "source": "import { Space, Alert, Button } from \"react-kui\";\nimport { useState } from \"react\";\n\nexport default function App() {\n  const [visible, setVisible] = useState(true);\n  return (\n    <Space vertical block>\n      {visible ? (\n        <Alert type=\"success\" closable onAfterClose={() => setVisible(false)}>\n          Success Text\n        </Alert>\n      ) : (\n        <Button onClick={() => setVisible(true)}>Show Alert</Button>\n      )}\n      <Alert type=\"info\" closable>\n        Info Text\n      </Alert>\n      <Alert type=\"warning\" closable>\n        Warning Text\n      </Alert>\n      <Alert type=\"error\" closable>\n        Error Text\n      </Alert>\n      <Alert\n        type=\"success\"\n        closable\n        message=\"Success Tip\"\n        description=\"Congratulations, the operation is successful.\"\n      />\n    </Space>\n  );\n}"
         },
         {
           "id": "components/alert/demo/custom-icon.tsx",
@@ -2070,7 +2064,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -2347,7 +2340,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -2619,8 +2611,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -2744,7 +2735,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -2898,7 +2888,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -3151,8 +3140,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -3428,7 +3415,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -3577,20 +3563,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控展开状态",
-          "descriptionEn": "Controlled open state"
-        },
-        {
-          "name": "defaultOpen",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "descriptionZh": "初始展开状态",
-          "descriptionEn": "Initial open state"
+          "descriptionZh": "展开状态",
+          "descriptionEn": "open state"
         },
         {
           "name": "showOnEmpty",
@@ -3730,7 +3704,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -4035,7 +4008,6 @@
         "type"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -4282,8 +4254,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -4560,7 +4530,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -4709,8 +4678,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -4994,7 +4961,6 @@
         "referrerPolicy"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -5178,8 +5144,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -5303,7 +5268,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -5456,7 +5420,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -5634,8 +5597,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -5759,7 +5721,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -5913,7 +5874,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -6052,8 +6012,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -6177,7 +6136,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -6331,7 +6289,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -6489,8 +6446,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -6613,7 +6569,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -6767,7 +6722,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -6949,8 +6903,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -7227,7 +7179,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -7350,7 +7301,7 @@
         {
           "id": "components/back-top/demo/target.tsx",
           "title": "自定义滚动容器",
-          "source": "import { useRef } from \"react\";\nimport { BackTop } from \"react-kui\";\n\nexport default function App() {\n  const container = useRef<HTMLDivElement>(null);\n  return (\n    <div\n      ref={container}\n      style={{ height: 180, overflow: \"auto\", border: \"1px solid var(--kui-control-border)\" }}\n    >\n      <div style={{ height: 600, padding: 16 }}>Scroll this container</div>\n      <BackTop target={() => container.current} height={80} right={100} />\n    </div>\n  );\n}"
+          "source": "import { useRef } from \"react\";\nimport { BackTop } from \"react-kui\";\n\nexport default function App() {\n  const container = useRef<HTMLDivElement>(null);\n  return (\n    <div\n      ref={container}\n      style={{ height: 180, overflow: \"auto\", border: \"1px solid var(--kui-control-border, var(--kui-color-border))\" }}\n    >\n      <div style={{ height: 600, padding: 16 }}>Scroll this container</div>\n      <BackTop target={() => container.current} height={80} right={100} />\n    </div>\n  );\n}"
         }
       ]
     },
@@ -7456,8 +7407,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -7580,7 +7530,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -7734,7 +7683,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -8026,8 +7974,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -8313,7 +8259,6 @@
         "key"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -8510,8 +8455,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -8635,7 +8579,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -8789,7 +8732,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -9034,8 +8976,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -9311,7 +9251,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -9470,8 +9409,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -9748,7 +9685,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -9967,7 +9903,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -10247,7 +10182,6 @@
         "key"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -10370,8 +10304,7 @@
       "documentation": "https://react.k-ui.cn/components/carousel",
       "props": [],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -10496,7 +10429,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -10650,7 +10582,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -10772,20 +10703,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控的选中状态",
-          "descriptionEn": "Controlled checked state"
-        },
-        {
-          "name": "defaultChecked",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "descriptionZh": "非受控模式的初始选中状态",
-          "descriptionEn": "Initial checked state in uncontrolled mode"
+          "descriptionZh": "选中状态",
+          "descriptionEn": "checked state"
         },
         {
           "name": "valueType",
@@ -10900,7 +10819,6 @@
         }
       ],
       "nativeProps": [
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -11413,7 +11331,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -11690,7 +11607,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -11835,20 +11751,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控选中状态",
-          "descriptionEn": "Controlled checked state"
-        },
-        {
-          "name": "defaultChecked",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "descriptionZh": "初始选中状态",
-          "descriptionEn": "Initial checked state"
+          "descriptionZh": "选中状态",
+          "descriptionEn": "checked state"
         },
         {
           "name": "value",
@@ -12498,7 +12402,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -12777,7 +12680,6 @@
         "key"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -12911,17 +12813,8 @@
           "type": "(string | number)[] | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "受控模式下当前展开面板的 key",
-          "descriptionEn": "Expanded panel keys in controlled mode"
-        },
-        {
-          "name": "defaultOpenKeys",
-          "type": "(string | number)[] | undefined",
-          "required": false,
-          "boolean": false,
-          "defaultExpression": "[]",
-          "descriptionZh": "非受控模式下默认展开面板的 key",
-          "descriptionEn": "Initially expanded keys in uncontrolled mode"
+          "descriptionZh": "模式下当前展开面板的 key",
+          "descriptionEn": "Expanded panel keys in mode"
         },
         {
           "name": "accordion",
@@ -13006,8 +12899,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -13284,7 +13175,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -13409,12 +13299,12 @@
         {
           "id": "components/collapse/demo/nesting.tsx",
           "title": "嵌套面板",
-          "source": "import { Collapse, CollapsePanel } from \"react-kui\";\nimport { text } from \"./content\";\nexport default function App() {\n  return (\n    <div className=\"demo-collapse\">\n      <Collapse defaultOpenKeys={[\"1\"]}>\n        <CollapsePanel key=\"1\" title=\"Panel title\">\n          <Collapse defaultOpenKeys={[\"1-1\"]}>\n            <CollapsePanel key=\"1-1\" title=\"Panel title\">\n              <div>{text}</div>\n            </CollapsePanel>\n            <CollapsePanel key=\"1-2\" title=\"Panel title\">\n              <div>{text}</div>\n            </CollapsePanel>\n          </Collapse>\n        </CollapsePanel>\n        <CollapsePanel key=\"2\" title=\"Panel title\">\n          <div>{text}</div>\n        </CollapsePanel>\n        <CollapsePanel key=\"3\" title=\"Panel title\">\n          <div>{text}</div>\n        </CollapsePanel>\n      </Collapse>\n    </div>\n  );\n}"
+          "source": "import { Collapse, CollapsePanel } from \"react-kui\";\nimport { text } from \"./content\";\nexport default function App() {\n  return (\n    <div className=\"demo-collapse\">\n      <Collapse openKeys={[\"1\"]}>\n        <CollapsePanel key=\"1\" title=\"Panel title\">\n          <Collapse openKeys={[\"1-1\"]}>\n            <CollapsePanel key=\"1-1\" title=\"Panel title\">\n              <div>{text}</div>\n            </CollapsePanel>\n            <CollapsePanel key=\"1-2\" title=\"Panel title\">\n              <div>{text}</div>\n            </CollapsePanel>\n          </Collapse>\n        </CollapsePanel>\n        <CollapsePanel key=\"2\" title=\"Panel title\">\n          <div>{text}</div>\n        </CollapsePanel>\n        <CollapsePanel key=\"3\" title=\"Panel title\">\n          <div>{text}</div>\n        </CollapsePanel>\n      </Collapse>\n    </div>\n  );\n}"
         },
         {
           "id": "components/collapse/demo/extra.tsx",
           "title": "额外节点",
-          "source": "import { Settings } from \"kui-icons\";\nimport { Icon, Collapse, CollapsePanel } from \"react-kui\";\nimport { text } from \"./content\";\nexport default function App() {\n  const extra = <Icon type={Settings} />;\n  return (\n    <div className=\"demo-collapse\">\n      <Collapse defaultOpenKeys={[1, 2]}>\n        {[1, 2, 3].map((key) => (\n          <CollapsePanel key={key} title=\"Panel title\" extra={extra}>\n            <div>{text}</div>\n          </CollapsePanel>\n        ))}\n      </Collapse>\n    </div>\n  );\n}"
+          "source": "import { Settings } from \"kui-icons\";\nimport { Icon, Collapse, CollapsePanel } from \"react-kui\";\nimport { text } from \"./content\";\nexport default function App() {\n  const extra = <Icon type={Settings} />;\n  return (\n    <div className=\"demo-collapse\">\n      <Collapse openKeys={[1, 2]}>\n        {[1, 2, 3].map((key) => (\n          <CollapsePanel key={key} title=\"Panel title\" extra={extra}>\n            <div>{text}</div>\n          </CollapsePanel>\n        ))}\n      </Collapse>\n    </div>\n  );\n}"
         },
         {
           "id": "components/collapse/demo/sample.tsx",
@@ -13497,8 +13387,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -13774,7 +13662,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -13891,12 +13778,12 @@
         {
           "id": "components/collapse/demo/nesting.tsx",
           "title": "嵌套面板",
-          "source": "import { Collapse, CollapsePanel } from \"react-kui\";\nimport { text } from \"./content\";\nexport default function App() {\n  return (\n    <div className=\"demo-collapse\">\n      <Collapse defaultOpenKeys={[\"1\"]}>\n        <CollapsePanel key=\"1\" title=\"Panel title\">\n          <Collapse defaultOpenKeys={[\"1-1\"]}>\n            <CollapsePanel key=\"1-1\" title=\"Panel title\">\n              <div>{text}</div>\n            </CollapsePanel>\n            <CollapsePanel key=\"1-2\" title=\"Panel title\">\n              <div>{text}</div>\n            </CollapsePanel>\n          </Collapse>\n        </CollapsePanel>\n        <CollapsePanel key=\"2\" title=\"Panel title\">\n          <div>{text}</div>\n        </CollapsePanel>\n        <CollapsePanel key=\"3\" title=\"Panel title\">\n          <div>{text}</div>\n        </CollapsePanel>\n      </Collapse>\n    </div>\n  );\n}"
+          "source": "import { Collapse, CollapsePanel } from \"react-kui\";\nimport { text } from \"./content\";\nexport default function App() {\n  return (\n    <div className=\"demo-collapse\">\n      <Collapse openKeys={[\"1\"]}>\n        <CollapsePanel key=\"1\" title=\"Panel title\">\n          <Collapse openKeys={[\"1-1\"]}>\n            <CollapsePanel key=\"1-1\" title=\"Panel title\">\n              <div>{text}</div>\n            </CollapsePanel>\n            <CollapsePanel key=\"1-2\" title=\"Panel title\">\n              <div>{text}</div>\n            </CollapsePanel>\n          </Collapse>\n        </CollapsePanel>\n        <CollapsePanel key=\"2\" title=\"Panel title\">\n          <div>{text}</div>\n        </CollapsePanel>\n        <CollapsePanel key=\"3\" title=\"Panel title\">\n          <div>{text}</div>\n        </CollapsePanel>\n      </Collapse>\n    </div>\n  );\n}"
         },
         {
           "id": "components/collapse/demo/extra.tsx",
           "title": "额外节点",
-          "source": "import { Settings } from \"kui-icons\";\nimport { Icon, Collapse, CollapsePanel } from \"react-kui\";\nimport { text } from \"./content\";\nexport default function App() {\n  const extra = <Icon type={Settings} />;\n  return (\n    <div className=\"demo-collapse\">\n      <Collapse defaultOpenKeys={[1, 2]}>\n        {[1, 2, 3].map((key) => (\n          <CollapsePanel key={key} title=\"Panel title\" extra={extra}>\n            <div>{text}</div>\n          </CollapsePanel>\n        ))}\n      </Collapse>\n    </div>\n  );\n}"
+          "source": "import { Settings } from \"kui-icons\";\nimport { Icon, Collapse, CollapsePanel } from \"react-kui\";\nimport { text } from \"./content\";\nexport default function App() {\n  const extra = <Icon type={Settings} />;\n  return (\n    <div className=\"demo-collapse\">\n      <Collapse openKeys={[1, 2]}>\n        {[1, 2, 3].map((key) => (\n          <CollapsePanel key={key} title=\"Panel title\" extra={extra}>\n            <div>{text}</div>\n          </CollapsePanel>\n        ))}\n      </Collapse>\n    </div>\n  );\n}"
         },
         {
           "id": "components/collapse/demo/sample.tsx",
@@ -13927,20 +13814,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控的弹层显示状态",
-          "descriptionEn": "Controlled popup visibility"
-        },
-        {
-          "name": "defaultOpen",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "descriptionZh": "非受控模式的初始弹层状态",
-          "descriptionEn": "Initial popup visibility in uncontrolled mode"
+          "descriptionZh": "弹层显示状态",
+          "descriptionEn": "popup visibility"
         },
         {
           "name": "disabled",
@@ -14129,7 +14004,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -14406,7 +14280,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -14731,7 +14604,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -15008,7 +14880,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -15252,20 +15123,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控的下拉面板显示状态",
-          "descriptionEn": "Controlled dropdown visibility"
-        },
-        {
-          "name": "defaultOpen",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "descriptionZh": "非受控模式的初始下拉面板状态",
-          "descriptionEn": "Initial dropdown visibility in uncontrolled mode"
+          "descriptionZh": "下拉面板显示状态",
+          "descriptionEn": "dropdown visibility"
         },
         {
           "name": "clearable",
@@ -15473,7 +15332,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -15750,7 +15608,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -16220,7 +16077,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -16497,7 +16353,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -16776,8 +16631,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -17053,7 +16906,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -17267,21 +17119,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控的抽屉显示状态",
-          "descriptionEn": "Controlled drawer visibility"
-        },
-        {
-          "name": "defaultOpen",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "defaultExpression": "false",
-          "descriptionZh": "非受控模式的初始显示状态",
-          "descriptionEn": "Initial visibility in uncontrolled mode"
+          "descriptionZh": "抽屉显示状态",
+          "descriptionEn": "drawer visibility"
         },
         {
           "name": "title",
@@ -17508,7 +17347,7 @@
       ],
       "behavior": {
         "rules": [
-          "Use open plus onOpenChange for controlled visibility. Keep the state in React; do not use v-model."
+          "Use open and onOpenChange. open initializes local visibility, allows interaction, and synchronizes changed props. Do not use v-model."
         ]
       },
       "children": [],
@@ -17589,21 +17428,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控的显示状态",
-          "descriptionEn": "Controlled visibility"
-        },
-        {
-          "name": "defaultOpen",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "defaultExpression": "false",
-          "descriptionZh": "非受控模式的初始显示状态",
-          "descriptionEn": "Initial visibility in uncontrolled mode"
+          "descriptionZh": "显示状态",
+          "descriptionEn": "visibility"
         },
         {
           "name": "show",
@@ -17669,8 +17495,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -17947,7 +17771,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -18214,8 +18037,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -18491,7 +18312,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -18670,8 +18490,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -18795,7 +18614,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -18949,7 +18767,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -19232,8 +19049,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -19518,7 +19333,6 @@
         "key"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -19889,8 +19703,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -20014,7 +19827,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -20168,7 +19980,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -20443,8 +20254,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -20719,7 +20528,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -21040,12 +20848,12 @@
         {
           "id": "components/flame-wrap/demo/basic.tsx",
           "title": "基础用法",
-          "source": "import { Button, Card, FlameWrap, Space, Tag } from \"react-kui\";\n\nexport default function App() {\n  return (\n    <div style={{ padding: \"150px 60px 48px\" }}>\n      <FlameWrap\n        style={{\n          borderRadius: 18,\n        }}\n      >\n        <Card style={{ padding: 20 }}>\n          <Tag color=\"blue\">WebGL Effect</Tag>\n          <h3 style={{ margin: \"18px 0 8px\" }}>Flame wrapped content</h3>\n          <p style={{ margin: \"0 0 24px\", color: \"var(--kui-color-text-secondary)\" }}>\n            火焰沿内容轮廓燃烧，内部仍然是真实且可交互的 DOM。\n          </p>\n          <Space>\n            <Button type=\"primary\">Explore</Button>\n            <Button>Details</Button>\n          </Space>\n        </Card>\n      </FlameWrap>\n    </div>\n  );\n}"
+          "source": "import { Button, Card, FlameWrap, Space, Tag } from \"react-kui\";\n\nexport default function App() {\n  return (\n    <div style={{ padding: \"150px 60px 48px\" }}>\n      <FlameWrap\n        style={{\n          borderRadius: 18,\n        }}\n      >\n        <Card style={{ padding: 20 }}>\n          <Tag color=\"blue\">WebGL Effect</Tag>\n          <h3 style={{ margin: \"18px 0 8px\" }}>Flame wrapped content</h3>\n          <p style={{ margin: \"0 0 24px\", color: \"var(--kui-color-text-secondary, var(--kui-color-text-description))\" }}>\n            火焰沿内容轮廓燃烧，内部仍然是真实且可交互的 DOM。\n          </p>\n          <Space>\n            <Button type=\"primary\">Explore</Button>\n            <Button>Details</Button>\n          </Space>\n        </Card>\n      </FlameWrap>\n    </div>\n  );\n}"
         },
         {
           "id": "components/flame-wrap/demo/custom.tsx",
           "title": "自定义火焰",
-          "source": "import { Card, FlameWrap } from \"react-kui\";\n\nexport default function App() {\n  return (\n    <div style={{ padding: \"130px 60px 48px\" }}>\n      <FlameWrap\n        color={[1, 0.28, 0.08]}\n        intensity={0.85}\n        height={120}\n        speed={0.55}\n        sparks={2}\n        smoke={0.6}\n        radius={18}\n        style={{\n          minHeight: 180,\n          borderRadius: 18,\n          background: \"var(--kui-color-bg-component)\",\n        }}\n      >\n        <Card style={{ padding: 32 }}>\n          <h3 style={{ margin: \"0 0 8px\" }}>Warm flame</h3>\n          <p style={{ margin: 0, color: \"var(--kui-color-text-secondary)\" }}>\n            可以调整颜色、火焰高度、火星、烟雾和燃烧速度。\n          </p>\n        </Card>\n      </FlameWrap>\n    </div>\n  );\n}"
+          "source": "import { Card, FlameWrap } from \"react-kui\";\n\nexport default function App() {\n  return (\n    <div style={{ padding: \"130px 60px 48px\" }}>\n      <FlameWrap\n        color={[1, 0.28, 0.08]}\n        intensity={0.85}\n        height={120}\n        speed={0.55}\n        sparks={2}\n        smoke={0.6}\n        radius={18}\n        style={{\n          minHeight: 180,\n          borderRadius: 18,\n          background: \"var(--kui-color-bg-component)\",\n        }}\n      >\n        <Card style={{ padding: 32 }}>\n          <h3 style={{ margin: \"0 0 8px\" }}>Warm flame</h3>\n          <p style={{ margin: 0, color: \"var(--kui-color-text-secondary, var(--kui-color-text-description))\" }}>\n            可以调整颜色、火焰高度、火星、烟雾和燃烧速度。\n          </p>\n        </Card>\n      </FlameWrap>\n    </div>\n  );\n}"
         }
       ]
     },
@@ -21147,8 +20955,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -21273,7 +21080,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -21427,7 +21233,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -21633,8 +21438,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -21759,7 +21563,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -21913,7 +21716,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -22097,8 +21899,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -22223,7 +22024,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -22377,7 +22177,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -22521,8 +22320,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -22647,7 +22445,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -22801,7 +22598,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -23073,8 +22869,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -23354,7 +23148,6 @@
         "key"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -23557,8 +23350,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -23837,7 +23628,6 @@
         "key"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -24110,7 +23900,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -24417,7 +24206,6 @@
         "key"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -24676,8 +24464,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -24801,7 +24588,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -24955,7 +24741,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -25157,7 +24942,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -25450,7 +25234,6 @@
         "key"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -25788,7 +25571,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -26066,7 +25848,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -26417,7 +26198,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -26694,7 +26474,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -26995,7 +26774,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -27272,7 +27050,6 @@
         "key"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -27475,8 +27252,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -27600,7 +27376,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -27754,7 +27529,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -27906,8 +27680,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -28031,7 +27804,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -28185,7 +27957,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -28337,8 +28108,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -28462,7 +28232,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -28616,7 +28385,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -28767,8 +28535,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -28892,7 +28659,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -29046,7 +28812,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -29232,8 +28997,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -29357,7 +29121,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -29511,7 +29274,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -29730,15 +29492,6 @@
           "descriptionEn": "Currently expanded SubMenu menu item key array"
         },
         {
-          "name": "defaultOpenKeys",
-          "type": "string[] | undefined",
-          "required": false,
-          "boolean": false,
-          "defaultExpression": "[]",
-          "descriptionZh": "非受控模式初始展开的 SubMenu key 数组",
-          "descriptionEn": "Initially expanded SubMenu keys in uncontrolled mode"
-        },
-        {
           "name": "onSelect",
           "type": "((data: MenuSelectEvent) => void) | undefined",
           "required": false,
@@ -29772,7 +29525,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -30048,7 +29800,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -30766,7 +30517,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -31055,7 +30805,6 @@
         "dirName"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -31399,21 +31148,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控的对话框显示状态",
-          "descriptionEn": "Controlled dialog visibility"
-        },
-        {
-          "name": "defaultOpen",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "defaultExpression": "false",
-          "descriptionZh": "非受控模式的初始显示状态",
-          "descriptionEn": "Initial visibility in uncontrolled mode"
+          "descriptionZh": "对话框显示状态",
+          "descriptionEn": "dialog visibility"
         },
         {
           "name": "title",
@@ -31692,7 +31428,7 @@
       ],
       "behavior": {
         "rules": [
-          "Use open plus onOpenChange, or defaultOpen. When open is supplied, update it in the parent.",
+          "Use open and onOpenChange. open initializes local visibility; interactions update it internally, and changed open props synchronize it.",
           "onOk does not automatically save or close. Validate/save first, then set open=false. loading blocks user dismissal during saving.",
           "Use children or content and footer props, not Vue named slots."
         ]
@@ -32271,8 +32007,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -32550,7 +32284,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -32730,8 +32463,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -33007,7 +32738,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -33148,21 +32878,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控的显示状态",
-          "descriptionEn": "Controlled visibility"
-        },
-        {
-          "name": "defaultOpen",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "defaultExpression": "false",
-          "descriptionZh": "非受控模式的初始显示状态",
-          "descriptionEn": "Initial visibility in uncontrolled mode"
+          "descriptionZh": "显示状态",
+          "descriptionEn": "visibility"
         },
         {
           "name": "show",
@@ -33542,21 +33259,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控的显示状态",
-          "descriptionEn": "Controlled visibility"
-        },
-        {
-          "name": "defaultOpen",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "defaultExpression": "false",
-          "descriptionZh": "非受控模式的初始显示状态",
-          "descriptionEn": "Initial visibility in uncontrolled mode"
+          "descriptionZh": "显示状态",
+          "descriptionEn": "visibility"
         },
         {
           "name": "show",
@@ -34053,8 +33757,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -34178,7 +33881,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -34332,7 +34034,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -34585,12 +34286,12 @@
         {
           "id": "components/ripple/demo/basic.tsx",
           "title": "基础用法",
-          "source": "import { Button, Card, Ripple, Space, Tag } from \"react-kui\";\n\nexport default function App() {\n  return (\n    <Ripple\n      style={{\n        minHeight: 260,\n        borderRadius: \"var(--kui-card-radius)\",\n      }}\n    >\n      <Card style={{ padding: 32 }}>\n        <Tag color=\"blue\">Interactive surface</Tag>\n        <h3 style={{ margin: \"18px 0 8px\" }}>点击任意位置，观察水波扩散</h3>\n        <p style={{ margin: \"0 0 24px\", color: \"var(--kui-color-text-secondary)\" }}>\n          在支持 HTML-in-Canvas 的浏览器中，水波会折射下方的实时 DOM 内容。\n        </p>\n        <Space>\n          <Button type=\"primary\">Primary</Button>\n          <Button>Default</Button>\n        </Space>\n      </Card>\n    </Ripple>\n  );\n}"
+          "source": "import { Button, Card, Ripple, Space, Tag } from \"react-kui\";\n\nexport default function App() {\n  return (\n    <Ripple\n      style={{\n        minHeight: 260,\n        borderRadius: \"var(--kui-card-radius, var(--kui-border-radius-card))\",\n      }}\n    >\n      <Card style={{ padding: 32 }}>\n        <Tag color=\"blue\">Interactive surface</Tag>\n        <h3 style={{ margin: \"18px 0 8px\" }}>点击任意位置，观察水波扩散</h3>\n        <p style={{ margin: \"0 0 24px\", color: \"var(--kui-color-text-secondary, var(--kui-color-text-description))\" }}>\n          在支持 HTML-in-Canvas 的浏览器中，水波会折射下方的实时 DOM 内容。\n        </p>\n        <Space>\n          <Button type=\"primary\">Primary</Button>\n          <Button>Default</Button>\n        </Space>\n      </Card>\n    </Ripple>\n  );\n}"
         },
         {
           "id": "components/ripple/demo/options.tsx",
           "title": "自定义效果",
-          "source": "import { Card, Ripple } from \"react-kui\";\n\nexport default function App() {\n  return (\n    <Ripple\n      trigger=\"hover\"\n      amplitude={0.8}\n      rings={4}\n      wavelength={48}\n      refraction={72}\n      dispersion={0.35}\n    >\n      <Card style={{ padding: 32, height: 220 }}>\n        <h3 style={{ margin: \"0 0 8px\" }}>Hover Ripple</h3>\n        <p style={{ margin: 0, color: \"var(--kui-color-text-secondary)\" }}>\n          移动指针会连续产生较轻的水波轨迹。\n        </p>\n      </Card>\n    </Ripple>\n  );\n}"
+          "source": "import { Card, Ripple } from \"react-kui\";\n\nexport default function App() {\n  return (\n    <Ripple\n      trigger=\"hover\"\n      amplitude={0.8}\n      rings={4}\n      wavelength={48}\n      refraction={72}\n      dispersion={0.35}\n    >\n      <Card style={{ padding: 32, height: 220 }}>\n        <h3 style={{ margin: \"0 0 8px\" }}>Hover Ripple</h3>\n        <p style={{ margin: 0, color: \"var(--kui-color-text-secondary, var(--kui-color-text-description))\" }}>\n          移动指针会连续产生较轻的水波轨迹。\n        </p>\n      </Card>\n    </Ripple>\n  );\n}"
         }
       ]
     },
@@ -34791,8 +34492,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -35071,7 +34770,6 @@
         "key"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -35216,20 +34914,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控的选中状态",
-          "descriptionEn": "Controlled checked state"
-        },
-        {
-          "name": "defaultChecked",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "descriptionZh": "非受控模式的初始选中状态",
-          "descriptionEn": "Initial checked state in uncontrolled mode"
+          "descriptionZh": "选中状态",
+          "descriptionEn": "checked state"
         },
         {
           "name": "value",
@@ -35319,7 +35005,6 @@
         }
       ],
       "nativeProps": [
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -35798,20 +35483,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控的选中状态",
-          "descriptionEn": "Controlled checked state"
-        },
-        {
-          "name": "defaultChecked",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "descriptionZh": "非受控模式的初始选中状态",
-          "descriptionEn": "Initial checked state in uncontrolled mode"
+          "descriptionZh": "选中状态",
+          "descriptionEn": "checked state"
         },
         {
           "name": "icon",
@@ -35866,7 +35539,6 @@
         }
       ],
       "nativeProps": [
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -36406,7 +36078,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -36683,7 +36354,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -36929,7 +36599,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -37207,7 +36876,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -37482,7 +37150,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -37759,7 +37426,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -37936,8 +37602,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -38214,7 +37878,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -38443,8 +38106,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -38720,7 +38381,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -38948,20 +38608,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控的下拉框显示状态",
-          "descriptionEn": "Controlled dropdown visibility"
-        },
-        {
-          "name": "defaultOpen",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "descriptionZh": "非受控模式的初始下拉框状态",
-          "descriptionEn": "Initial dropdown visibility in uncontrolled mode"
+          "descriptionZh": "下拉框显示状态",
+          "descriptionEn": "dropdown visibility"
         },
         {
           "name": "clearable",
@@ -39244,7 +38892,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -39520,7 +39167,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -39880,8 +39526,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -40157,7 +39801,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -40366,8 +40009,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -40491,7 +40133,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -40645,7 +40286,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -40874,8 +40514,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -40999,7 +40638,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -41153,7 +40791,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -41349,8 +40986,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -41474,7 +41110,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -41628,7 +41263,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -41830,8 +41464,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -41955,7 +41588,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -42109,7 +41741,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -42376,8 +42007,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -42653,7 +42282,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -42865,8 +42493,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -43143,7 +42769,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -43409,7 +43034,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -43687,7 +43311,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -43935,8 +43558,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -44060,7 +43682,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -44214,7 +43835,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -44427,8 +44047,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -44552,7 +44171,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -44706,7 +44324,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -44984,8 +44601,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -45262,7 +44877,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -45412,20 +45026,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控的开关状态",
-          "descriptionEn": "Controlled switch state"
-        },
-        {
-          "name": "defaultChecked",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "descriptionZh": "非受控模式的初始开关状态",
-          "descriptionEn": "Initial switch state in uncontrolled mode"
+          "descriptionZh": "开关状态",
+          "descriptionEn": "switch state"
         },
         {
           "name": "valueType",
@@ -45561,7 +45163,6 @@
         }
       ],
       "nativeProps": [
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -45950,7 +45551,7 @@
       ],
       "behavior": {
         "rules": [
-          "Use checked and onChange, or defaultChecked. When checked is supplied, the parent must update it.",
+          "Use checked and onChange. checked initializes local state; interactions update it internally, and changed checked props synchronize it.",
           "checked is boolean. onChange returns boolean/string/number according to valueType; default valueType is boolean."
         ]
       },
@@ -45959,7 +45560,7 @@
         {
           "id": "components/switch/demo/basic.tsx",
           "title": "基本用法",
-          "source": "import { useState } from \"react\";\nimport { Button, Space, Switch } from \"react-kui\";\nexport default function App() {\n  const [v1, setV1] = useState(true),\n    [v2, setV2] = useState(true),\n    [v3, setV3] = useState(true),\n    [checked, setChecked] = useState(true);\n  return (\n    <Space vertical>\n      <code>value(boolean): {String(v1)}</code>\n      <Switch checked={v1} onChange={(v) => setV1(Boolean(v))} />\n      <code>value(string): {v2 ? \"1\" : \"0\"}</code>\n      <Switch checked={v2} valueType=\"string\" onChange={(v) => setV2(Boolean(Number(v)))} />\n      <code>value(number): {v3 ? 1 : 0}</code>\n      <Switch checked={v3} valueType=\"number\" onChange={(v) => setV3(Boolean(v))} />\n      <Button onClick={() => setChecked((v) => !v)} size=\"small\">\n        {checked ? \"Checked\" : \"Unchecked\"}\n      </Button>\n      <Switch checked={checked} onChange={(v) => setChecked(Boolean(v))} />\n      <Space>\n        <Switch defaultChecked type=\"primary\" />\n        <Switch defaultChecked type=\"success\" />\n        <Switch defaultChecked type=\"warning\" />\n        <Switch defaultChecked type=\"danger\" />\n        <Switch defaultChecked color=\"#8b5cf6\" />\n        <Switch defaultChecked shape=\"square\" />\n      </Space>\n    </Space>\n  );\n}"
+          "source": "import { useState } from \"react\";\nimport { Button, Space, Switch } from \"react-kui\";\nexport default function App() {\n  const [v1, setV1] = useState(true),\n    [v2, setV2] = useState(true),\n    [v3, setV3] = useState(true),\n    [checked, setChecked] = useState(true);\n  return (\n    <Space vertical>\n      <code>value(boolean): {String(v1)}</code>\n      <Switch checked={v1} onChange={(v) => setV1(Boolean(v))} />\n      <code>value(string): {v2 ? \"1\" : \"0\"}</code>\n      <Switch checked={v2} valueType=\"string\" onChange={(v) => setV2(Boolean(Number(v)))} />\n      <code>value(number): {v3 ? 1 : 0}</code>\n      <Switch checked={v3} valueType=\"number\" onChange={(v) => setV3(Boolean(v))} />\n      <Button onClick={() => setChecked((v) => !v)} size=\"small\">\n        {checked ? \"Checked\" : \"Unchecked\"}\n      </Button>\n      <Switch checked={checked} onChange={(v) => setChecked(Boolean(v))} />\n      <Space>\n        <Switch checked type=\"primary\" />\n        <Switch checked type=\"success\" />\n        <Switch checked type=\"warning\" />\n        <Switch checked type=\"danger\" />\n        <Switch checked color=\"#8b5cf6\" />\n        <Switch checked shape=\"square\" />\n      </Space>\n    </Space>\n  );\n}"
         },
         {
           "id": "components/switch/demo/with-text.tsx",
@@ -46029,8 +45630,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -46308,7 +45907,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -46469,8 +46067,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -46595,7 +46192,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -46749,7 +46345,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -46885,15 +46480,6 @@
           "descriptionEn": "Collection of selected keys"
         },
         {
-          "name": "defaultSelectedKeys",
-          "type": "TableKey[] | undefined",
-          "required": false,
-          "boolean": false,
-          "defaultExpression": "[]",
-          "descriptionZh": "非受控模式下的初始勾选 key 集合",
-          "descriptionEn": "Initial selected keys in uncontrolled mode"
-        },
-        {
           "name": "disabledKeys",
           "type": "TableKey[] | undefined",
           "required": false,
@@ -46925,20 +46511,11 @@
           "type": "TableKey[] | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "受控展开行 key 集合",
-          "descriptionEn": "Controlled expanded row keys"
+          "descriptionZh": "展开行 key 集合",
+          "descriptionEn": "expanded row keys"
         },
         {
-          "name": "defaultExpandedKeys",
-          "type": "TableKey[] | undefined",
-          "required": false,
-          "boolean": false,
-          "defaultExpression": "[]",
-          "descriptionZh": "默认展开行 key 集合",
-          "descriptionEn": "Initially expanded row keys"
-        },
-        {
-          "name": "defaultExpandAllRows",
+          "name": "expandAllRows",
           "type": "boolean | undefined",
           "required": false,
           "enumValues": [
@@ -46947,8 +46524,8 @@
           ],
           "boolean": true,
           "defaultExpression": "false",
-          "descriptionZh": "默认展开所有树节点",
-          "descriptionEn": "Expand every tree node initially"
+          "descriptionZh": "初始化及属性变化时展开所有树节点（expandedKeys 优先）",
+          "descriptionEn": "Expand every tree node on initialization or when this prop changes (explicit expandedKeys takes precedence)"
         },
         {
           "name": "expandRowByClick",
@@ -47180,8 +46757,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -47458,7 +47033,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -47622,7 +47196,7 @@
         {
           "id": "components/table/demo/tree.tsx",
           "title": "树形数据",
-          "source": "import { Tag, Table, type Column } from \"react-kui\";\n\ninterface Department {\n  key: string;\n  name: string;\n  owner: string;\n  members: number;\n  status: \"active\" | \"planning\";\n  children?: Department[];\n}\n\nconst data: Department[] = [\n  {\n    key: \"product\",\n    name: \"Product Center\",\n    owner: \"Alice\",\n    members: 24,\n    status: \"active\",\n    children: [\n      { key: \"design\", name: \"Design Team\", owner: \"Mia\", members: 8, status: \"active\" },\n      {\n        key: \"research\",\n        name: \"Research Team\",\n        owner: \"Leo\",\n        members: 6,\n        status: \"planning\",\n        children: [\n          { key: \"ai-lab\", name: \"AI Lab\", owner: \"Noah\", members: 3, status: \"planning\" },\n        ],\n      },\n    ],\n  },\n  {\n    key: \"engineering\",\n    name: \"Engineering Center\",\n    owner: \"Jack\",\n    members: 36,\n    status: \"active\",\n    children: [\n      { key: \"frontend\", name: \"Frontend Team\", owner: \"Emma\", members: 12, status: \"active\" },\n      { key: \"backend\", name: \"Backend Team\", owner: \"Ethan\", members: 16, status: \"active\" },\n    ],\n  },\n];\n\nconst columns: Column<Department>[] = [\n  { key: \"name\", title: \"Department\", width: 240 },\n  { key: \"owner\", title: \"Owner\" },\n  { key: \"members\", title: \"Members\", sorter: true },\n  {\n    key: \"status\",\n    title: \"Status\",\n    render: (status) => (\n      <Tag color={status === \"active\" ? \"green\" : \"gold\"}>{String(status)}</Tag>\n    ),\n  },\n];\n\nexport default function App() {\n  return (\n    <Table\n      bordered\n      checkable\n      expandRowByClick\n      defaultExpandedKeys={[\"product\"]}\n      data={data}\n      columns={columns}\n    />\n  );\n}"
+          "source": "import { Tag, Table, type Column } from \"react-kui\";\n\ninterface Department {\n  key: string;\n  name: string;\n  owner: string;\n  members: number;\n  status: \"active\" | \"planning\";\n  children?: Department[];\n}\n\nconst data: Department[] = [\n  {\n    key: \"product\",\n    name: \"Product Center\",\n    owner: \"Alice\",\n    members: 24,\n    status: \"active\",\n    children: [\n      { key: \"design\", name: \"Design Team\", owner: \"Mia\", members: 8, status: \"active\" },\n      {\n        key: \"research\",\n        name: \"Research Team\",\n        owner: \"Leo\",\n        members: 6,\n        status: \"planning\",\n        children: [\n          { key: \"ai-lab\", name: \"AI Lab\", owner: \"Noah\", members: 3, status: \"planning\" },\n        ],\n      },\n    ],\n  },\n  {\n    key: \"engineering\",\n    name: \"Engineering Center\",\n    owner: \"Jack\",\n    members: 36,\n    status: \"active\",\n    children: [\n      { key: \"frontend\", name: \"Frontend Team\", owner: \"Emma\", members: 12, status: \"active\" },\n      { key: \"backend\", name: \"Backend Team\", owner: \"Ethan\", members: 16, status: \"active\" },\n    ],\n  },\n];\n\nconst columns: Column<Department>[] = [\n  { key: \"name\", title: \"Department\", width: 240 },\n  { key: \"owner\", title: \"Owner\" },\n  { key: \"members\", title: \"Members\", sorter: true },\n  {\n    key: \"status\",\n    title: \"Status\",\n    render: (status) => <Tag color={status === \"active\" ? \"green\" : \"gold\"}>{String(status)}</Tag>,\n  },\n];\n\nexport default function App() {\n  return (\n    <Table\n      bordered\n      checkable\n      expandRowByClick\n      expandedKeys={[\"product\"]}\n      data={data}\n      columns={columns}\n    />\n  );\n}"
         },
         {
           "id": "components/table/demo/base-render.tsx",
@@ -47807,7 +47381,7 @@
         {
           "id": "components/table/demo/tree.tsx",
           "title": "树形数据",
-          "source": "import { Tag, Table, type Column } from \"react-kui\";\n\ninterface Department {\n  key: string;\n  name: string;\n  owner: string;\n  members: number;\n  status: \"active\" | \"planning\";\n  children?: Department[];\n}\n\nconst data: Department[] = [\n  {\n    key: \"product\",\n    name: \"Product Center\",\n    owner: \"Alice\",\n    members: 24,\n    status: \"active\",\n    children: [\n      { key: \"design\", name: \"Design Team\", owner: \"Mia\", members: 8, status: \"active\" },\n      {\n        key: \"research\",\n        name: \"Research Team\",\n        owner: \"Leo\",\n        members: 6,\n        status: \"planning\",\n        children: [\n          { key: \"ai-lab\", name: \"AI Lab\", owner: \"Noah\", members: 3, status: \"planning\" },\n        ],\n      },\n    ],\n  },\n  {\n    key: \"engineering\",\n    name: \"Engineering Center\",\n    owner: \"Jack\",\n    members: 36,\n    status: \"active\",\n    children: [\n      { key: \"frontend\", name: \"Frontend Team\", owner: \"Emma\", members: 12, status: \"active\" },\n      { key: \"backend\", name: \"Backend Team\", owner: \"Ethan\", members: 16, status: \"active\" },\n    ],\n  },\n];\n\nconst columns: Column<Department>[] = [\n  { key: \"name\", title: \"Department\", width: 240 },\n  { key: \"owner\", title: \"Owner\" },\n  { key: \"members\", title: \"Members\", sorter: true },\n  {\n    key: \"status\",\n    title: \"Status\",\n    render: (status) => (\n      <Tag color={status === \"active\" ? \"green\" : \"gold\"}>{String(status)}</Tag>\n    ),\n  },\n];\n\nexport default function App() {\n  return (\n    <Table\n      bordered\n      checkable\n      expandRowByClick\n      defaultExpandedKeys={[\"product\"]}\n      data={data}\n      columns={columns}\n    />\n  );\n}"
+          "source": "import { Tag, Table, type Column } from \"react-kui\";\n\ninterface Department {\n  key: string;\n  name: string;\n  owner: string;\n  members: number;\n  status: \"active\" | \"planning\";\n  children?: Department[];\n}\n\nconst data: Department[] = [\n  {\n    key: \"product\",\n    name: \"Product Center\",\n    owner: \"Alice\",\n    members: 24,\n    status: \"active\",\n    children: [\n      { key: \"design\", name: \"Design Team\", owner: \"Mia\", members: 8, status: \"active\" },\n      {\n        key: \"research\",\n        name: \"Research Team\",\n        owner: \"Leo\",\n        members: 6,\n        status: \"planning\",\n        children: [\n          { key: \"ai-lab\", name: \"AI Lab\", owner: \"Noah\", members: 3, status: \"planning\" },\n        ],\n      },\n    ],\n  },\n  {\n    key: \"engineering\",\n    name: \"Engineering Center\",\n    owner: \"Jack\",\n    members: 36,\n    status: \"active\",\n    children: [\n      { key: \"frontend\", name: \"Frontend Team\", owner: \"Emma\", members: 12, status: \"active\" },\n      { key: \"backend\", name: \"Backend Team\", owner: \"Ethan\", members: 16, status: \"active\" },\n    ],\n  },\n];\n\nconst columns: Column<Department>[] = [\n  { key: \"name\", title: \"Department\", width: 240 },\n  { key: \"owner\", title: \"Owner\" },\n  { key: \"members\", title: \"Members\", sorter: true },\n  {\n    key: \"status\",\n    title: \"Status\",\n    render: (status) => <Tag color={status === \"active\" ? \"green\" : \"gold\"}>{String(status)}</Tag>,\n  },\n];\n\nexport default function App() {\n  return (\n    <Table\n      bordered\n      checkable\n      expandRowByClick\n      expandedKeys={[\"product\"]}\n      data={data}\n      columns={columns}\n    />\n  );\n}"
         },
         {
           "id": "components/table/demo/base-render.tsx",
@@ -47877,6 +47451,19 @@
       "documentation": "https://react.k-ui.cn/components/tooltip",
       "props": [
         {
+          "name": "trigger",
+          "type": "\"manual\" | \"hover\" | undefined",
+          "required": false,
+          "enumValues": [
+            "manual",
+            "hover"
+          ],
+          "boolean": false,
+          "defaultExpression": "\"hover\"",
+          "descriptionZh": "自动悬停触发或手动控制显隐",
+          "descriptionEn": "Automatic hover or manual visibility"
+        },
+        {
           "name": "open",
           "type": "boolean | undefined",
           "required": false,
@@ -47885,21 +47472,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控的显示状态",
-          "descriptionEn": "Controlled visibility"
-        },
-        {
-          "name": "defaultOpen",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "defaultExpression": "false",
-          "descriptionZh": "非受控模式的初始显示状态",
-          "descriptionEn": "Initial visibility in uncontrolled mode"
+          "descriptionZh": "显示状态",
+          "descriptionEn": "visibility"
         },
         {
           "name": "show",
@@ -48113,6 +47687,18 @@
           "descriptionEn": "Position where tooltip appears, optional values: `top`, `top-left`, `top-right`, `bottom`, `bottom-left`, `bottom-right`, `left`, `left-top`, `left-bottom`, `right`, `right-top`, `right-bottom`"
         },
         {
+          "name": "trigger",
+          "type": "\"manual\" | \"hover\" | undefined",
+          "required": false,
+          "enumValues": [
+            "manual",
+            "hover"
+          ],
+          "boolean": false,
+          "descriptionZh": "自动悬停触发或手动控制显隐",
+          "descriptionEn": "Automatic hover or manual visibility"
+        },
+        {
           "name": "onOpenChange",
           "type": "((open: boolean) => void) | undefined",
           "required": false,
@@ -48208,21 +47794,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控显示状态",
-          "descriptionEn": "Controlled visibility"
-        },
-        {
-          "name": "defaultOpen",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "defaultExpression": "false",
-          "descriptionZh": "初始显示状态",
-          "descriptionEn": "Initial visibility"
+          "descriptionZh": "显示状态",
+          "descriptionEn": "visibility"
         },
         {
           "name": "current",
@@ -48230,16 +47803,7 @@
           "required": false,
           "boolean": false,
           "descriptionZh": "当前步骤",
-          "descriptionEn": "Controlled step"
-        },
-        {
-          "name": "defaultCurrent",
-          "type": "number | undefined",
-          "required": false,
-          "boolean": false,
-          "defaultExpression": "0",
-          "descriptionZh": "初始步骤",
-          "descriptionEn": "Initial step"
+          "descriptionEn": "step"
         },
         {
           "name": "steps",
@@ -48436,8 +48000,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -48713,7 +48275,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -48975,7 +48536,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -49252,7 +48812,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -49442,8 +49001,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -49568,7 +49126,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -49722,7 +49279,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -49877,8 +49433,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -50002,7 +49557,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -50156,7 +49710,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -50290,15 +49843,6 @@
           "descriptionEn": "Selected nodes"
         },
         {
-          "name": "defaultSelectedKeys",
-          "type": "string[] | undefined",
-          "required": false,
-          "boolean": false,
-          "defaultExpression": "[]",
-          "descriptionZh": "非受控模式的初始选中节点",
-          "descriptionEn": "Initial selected nodes in uncontrolled mode"
-        },
-        {
           "name": "expandedKeys",
           "type": "string[] | undefined",
           "required": false,
@@ -50307,30 +49851,12 @@
           "descriptionEn": "Specify expanded nodes"
         },
         {
-          "name": "defaultExpandedKeys",
-          "type": "string[] | undefined",
-          "required": false,
-          "boolean": false,
-          "defaultExpression": "[]",
-          "descriptionZh": "非受控模式的初始展开节点",
-          "descriptionEn": "Initial expanded nodes in uncontrolled mode"
-        },
-        {
           "name": "checkedKeys",
           "type": "string[] | undefined",
           "required": false,
           "boolean": false,
           "descriptionZh": "选中复选框的树节点",
           "descriptionEn": "Tree nodes with checked checkboxes"
-        },
-        {
-          "name": "defaultCheckedKeys",
-          "type": "string[] | undefined",
-          "required": false,
-          "boolean": false,
-          "defaultExpression": "[]",
-          "descriptionZh": "非受控模式的初始勾选节点",
-          "descriptionEn": "Initial checked nodes in uncontrolled mode"
         },
         {
           "name": "directory",
@@ -50645,8 +50171,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -50919,7 +50443,6 @@
         "key"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -51233,20 +50756,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控的下拉框显示状态",
-          "descriptionEn": "Controlled dropdown visibility"
-        },
-        {
-          "name": "defaultOpen",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "descriptionZh": "非受控模式的初始下拉框状态",
-          "descriptionEn": "Initial dropdown visibility in uncontrolled mode"
+          "descriptionZh": "下拉框显示状态",
+          "descriptionEn": "dropdown visibility"
         },
         {
           "name": "clearable",
@@ -51629,7 +51140,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -51906,7 +51416,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -52128,20 +51637,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "受控的下拉框显示状态。",
-          "descriptionEn": "Controlled dropdown visibility."
-        },
-        {
-          "name": "defaultOpen",
-          "type": "boolean | undefined",
-          "required": false,
-          "enumValues": [
-            false,
-            true
-          ],
-          "boolean": true,
-          "descriptionZh": "非受控模式下的初始下拉框状态。",
-          "descriptionEn": "Initial dropdown visibility in uncontrolled mode."
+          "descriptionZh": "下拉框显示状态。",
+          "descriptionEn": "dropdown visibility."
         },
         {
           "name": "options",
@@ -52369,7 +51866,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -52647,7 +52143,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -52886,8 +52381,16 @@
           "type": "(() => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "关闭标签的回调事件",
-          "descriptionEn": "Callback event when tag is closed"
+          "descriptionZh": "点击关闭按钮时触发",
+          "descriptionEn": "Triggered when the close button is clicked"
+        },
+        {
+          "name": "onAfterClose",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "退出动画结束后触发",
+          "descriptionEn": "Triggered after the exit animation"
         },
         {
           "name": "children",
@@ -52899,8 +52402,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -53023,7 +52525,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -53177,7 +52678,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -53266,8 +52766,16 @@
           "type": "(() => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "关闭标签的回调事件",
-          "descriptionEn": "Callback event when tag is closed"
+          "descriptionZh": "点击关闭按钮时触发",
+          "descriptionEn": "Triggered when the close button is clicked"
+        },
+        {
+          "name": "onAfterClose",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "退出动画结束后触发",
+          "descriptionEn": "Triggered after the exit animation"
         }
       ],
       "renderProps": [
@@ -53301,7 +52809,7 @@
         {
           "id": "components/tag/demo/dynamic.tsx",
           "title": "动态添加和删除",
-          "source": "import { Bookmark } from \"kui-icons\";\nimport { useEffect, useRef, useState } from \"react\";\nimport { Button, Input, Space, Tag } from \"react-kui\";\nexport default function App() {\n  const [tags, setTags] = useState([\"Apple\", \"Banana\", \"Cat\", \"Dog\"]),\n    [showInput, setShowInput] = useState(false),\n    [tag, setTag] = useState(\"\"),\n    ref = useRef<HTMLInputElement>(null);\n  useEffect(() => {\n    if (showInput) ref.current?.focus();\n  }, [showInput]);\n  const add = () => {\n    const value = tag.trim();\n    if (value && !tags.includes(value)) setTags((items) => [...items, value]);\n    setTag(\"\");\n    setShowInput(false);\n  };\n  return (\n    <Space wrap>\n      {tags.map((value) => (\n        <Tag\n          color=\"blue\"\n          closeable\n          key={value}\n          onClose={() => setTags((items) => items.filter((item) => item !== value))}\n        >\n          {value}\n        </Tag>\n      ))}\n      {showInput ? (\n        <Input\n          ref={ref}\n          value={tag}\n          onChange={setTag}\n          onBlur={add}\n          onKeyDown={(e) => e.key === \"Enter\" && add()}\n          size=\"small\"\n          style={{ width: 81 }}\n        />\n      ) : (\n        <Button onClick={() => setShowInput(true)} size=\"small\" icon={Bookmark}>\n          New Tag\n        </Button>\n      )}\n    </Space>\n  );\n}"
+          "source": "import { Bookmark } from \"kui-icons\";\nimport { useEffect, useRef, useState } from \"react\";\nimport { Button, Input, Space, Tag } from \"react-kui\";\nexport default function App() {\n  const [tags, setTags] = useState([\"Apple\", \"Banana\", \"Cat\", \"Dog\"]),\n    [showInput, setShowInput] = useState(false),\n    [tag, setTag] = useState(\"\"),\n    ref = useRef<HTMLInputElement>(null);\n  useEffect(() => {\n    if (showInput) ref.current?.focus();\n  }, [showInput]);\n  const add = () => {\n    const value = tag.trim();\n    if (value && !tags.includes(value)) setTags((items) => [...items, value]);\n    setTag(\"\");\n    setShowInput(false);\n  };\n  return (\n    <Space wrap>\n      {tags.map((value) => (\n        <Tag\n          color=\"blue\"\n          closeable\n          key={value}\n          onAfterClose={() => setTags((items) => items.filter((item) => item !== value))}\n        >\n          {value}\n        </Tag>\n      ))}\n      {showInput ? (\n        <Input\n          ref={ref}\n          value={tag}\n          onChange={setTag}\n          onBlur={add}\n          onKeyDown={(e) => e.key === \"Enter\" && add()}\n          size=\"small\"\n          style={{ width: 81 }}\n        />\n      ) : (\n        <Button onClick={() => setShowInput(true)} size=\"small\" icon={Bookmark}>\n          New Tag\n        </Button>\n      )}\n    </Space>\n  );\n}"
         }
       ]
     },
@@ -53416,8 +52924,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -53541,7 +53048,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -53695,7 +53201,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -53879,8 +53384,7 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
+        "onChange",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -54004,7 +53508,6 @@
         "onFocusCapture",
         "onBlur",
         "onBlurCapture",
-        "onChange",
         "onChangeCapture",
         "onBeforeInput",
         "onBeforeInputCapture",
@@ -54158,7 +53661,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -54468,14 +53970,6 @@
           "descriptionEn": "Uploaded file list"
         },
         {
-          "name": "defaultFileList",
-          "type": "UploadFile[] | undefined",
-          "required": false,
-          "boolean": false,
-          "descriptionZh": "非受控模式的初始文件列表",
-          "descriptionEn": "Initial file list in uncontrolled mode"
-        },
-        {
           "name": "autoTrigger",
           "type": "boolean | undefined",
           "required": false,
@@ -54657,8 +54151,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -54936,7 +54428,6 @@
         "key"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -55289,8 +54780,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -55567,7 +55056,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -55748,8 +55236,6 @@
       ],
       "nativeProps": [
         "onChange",
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -56027,7 +55513,6 @@
         "key"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -56155,16 +55640,8 @@
           "type": "TransferKey[] | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "受控目标项",
-          "descriptionEn": "Controlled target items"
-        },
-        {
-          "name": "defaultTargetKeys",
-          "type": "TransferKey[] | undefined",
-          "required": false,
-          "boolean": false,
-          "descriptionZh": "初始目标项",
-          "descriptionEn": "Initial target items"
+          "descriptionZh": "目标项",
+          "descriptionEn": "target items"
         },
         {
           "name": "titles",
@@ -56280,8 +55757,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
-        "defaultValue",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -56559,7 +56034,6 @@
         "onTransitionStartCapture"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -56897,7 +56371,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -57174,7 +56647,6 @@
         "key"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -57495,7 +56967,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -57772,7 +57243,6 @@
         "key"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -58093,7 +57563,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -58370,7 +57839,6 @@
         "key"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",
@@ -58691,7 +58159,6 @@
         }
       ],
       "nativeProps": [
-        "defaultChecked",
         "suppressContentEditableWarning",
         "suppressHydrationWarning",
         "accessKey",
@@ -58968,7 +58435,6 @@
         "key"
       ],
       "nativeValueTypes": {
-        "defaultChecked": "boolean",
         "suppressContentEditableWarning": "boolean",
         "suppressHydrationWarning": "boolean",
         "accessKey": "string",

@@ -4,7 +4,10 @@ import React from "react";
 import type { ShapeType, SizeType } from "../const/types";
 import { useSkeletonLoading } from "./use-skeleton-loading";
 
-export interface SkeletonButtonProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SkeletonButtonProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   animated?: boolean;
   loading?: boolean;
   delay?: number;

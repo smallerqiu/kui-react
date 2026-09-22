@@ -8,7 +8,10 @@ import { type IconType } from "../icon";
 import Dropdown from "./dropdown";
 import TriggerButton from "./trigger";
 
-export interface DropdownButtonProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onClick"> {
+export interface DropdownButtonProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onClick" | "defaultValue" | "defaultChecked"
+> {
   size?: SizeType;
   shape?: ShapeType;
   disabled?: boolean;

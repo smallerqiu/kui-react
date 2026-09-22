@@ -17,7 +17,7 @@ export interface MentionOption {
 }
 export interface MentionsProps extends Omit<
   React.TextareaHTMLAttributes<HTMLTextAreaElement>,
-  "size" | "value" | "defaultValue" | "onChange" | "onSelect" | "onSearch"
+  "size" | "value" | "defaultValue" | "onChange" | "onSelect" | "onSearch" | "defaultChecked"
 > {
   value?: string;
   options?: Array<string | MentionOption>;

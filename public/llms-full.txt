@@ -297,21 +297,8 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控显示状态，配合 onOpenChange 同步",
-      "descriptionEn": "Controlled visibility; synchronize through onOpenChange"
-    },
-    {
-      "name": "defaultOpen",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "defaultExpression": "false",
-      "descriptionZh": "非受控初始状态",
-      "descriptionEn": "Initial uncontrolled visibility"
+      "descriptionZh": "初始显示状态，后续属性变化会同步内部状态，配合 onOpenChange 同步",
+      "descriptionEn": "Initial visibility; subsequent changes synchronize the state; synchronize through onOpenChange"
     },
     {
       "name": "disabled",
@@ -1027,8 +1014,16 @@ export default function App() {
       "type": "((e: React.MouseEvent<HTMLElement>) => void) | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "关闭时触发的回调函数",
-      "descriptionEn": "Callback function triggered when closing"
+      "descriptionZh": "点击关闭按钮时触发",
+      "descriptionEn": "Triggered when the close button is clicked"
+    },
+    {
+      "name": "onAfterClose",
+      "type": "(() => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "退出动画结束后触发",
+      "descriptionEn": "Triggered after the exit animation"
     },
     {
       "name": "children",
@@ -1045,8 +1040,16 @@ export default function App() {
       "type": "((e: React.MouseEvent<HTMLElement>) => void) | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "关闭时触发的回调函数",
-      "descriptionEn": "Callback function triggered when closing"
+      "descriptionZh": "点击关闭按钮时触发",
+      "descriptionEn": "Triggered when the close button is clicked"
+    },
+    {
+      "name": "onAfterClose",
+      "type": "(() => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "退出动画结束后触发",
+      "descriptionEn": "Triggered after the exit animation"
     }
   ],
   "renderProps": [
@@ -1140,14 +1143,20 @@ export default function App() {
 ## 可关闭
 
 ```tsx
-import { Space, Alert } from "react-kui";
+import { Space, Alert, Button } from "react-kui";
+import { useState } from "react";
 
 export default function App() {
+  const [visible, setVisible] = useState(true);
   return (
     <Space vertical block>
-      <Alert type="success" closable>
-        Success Text
-      </Alert>
+      {visible ? (
+        <Alert type="success" closable onAfterClose={() => setVisible(false)}>
+          Success Text
+        </Alert>
+      ) : (
+        <Button onClick={() => setVisible(true)}>Show Alert</Button>
+      )}
       <Alert type="info" closable>
         Info Text
       </Alert>
@@ -2084,20 +2093,8 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控展开状态",
-      "descriptionEn": "Controlled open state"
-    },
-    {
-      "name": "defaultOpen",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "descriptionZh": "初始展开状态",
-      "descriptionEn": "Initial open state"
+      "descriptionZh": "展开状态",
+      "descriptionEn": "open state"
     },
     {
       "name": "showOnEmpty",
@@ -3643,7 +3640,7 @@ export default function App() {
   return (
     <div
       ref={container}
-      style={{ height: 180, overflow: "auto", border: "1px solid var(--kui-control-border)" }}
+      style={{ height: 180, overflow: "auto", border: "1px solid var(--kui-control-border, var(--kui-color-border))" }}
     >
       <div style={{ height: 600, padding: 16 }}>Scroll this container</div>
       <BackTop target={() => container.current} height={80} right={100} />
@@ -5600,20 +5597,8 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控的选中状态",
-      "descriptionEn": "Controlled checked state"
-    },
-    {
-      "name": "defaultChecked",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "descriptionZh": "非受控模式的初始选中状态",
-      "descriptionEn": "Initial checked state in uncontrolled mode"
+      "descriptionZh": "选中状态",
+      "descriptionEn": "checked state"
     },
     {
       "name": "valueType",
@@ -6246,20 +6231,8 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控选中状态",
-      "descriptionEn": "Controlled checked state"
-    },
-    {
-      "name": "defaultChecked",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "descriptionZh": "初始选中状态",
-      "descriptionEn": "Initial checked state"
+      "descriptionZh": "选中状态",
+      "descriptionEn": "checked state"
     },
     {
       "name": "value",
@@ -6782,17 +6755,8 @@ export default function App() {
       "type": "(string | number)[] | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "受控模式下当前展开面板的 key",
-      "descriptionEn": "Expanded panel keys in controlled mode"
-    },
-    {
-      "name": "defaultOpenKeys",
-      "type": "(string | number)[] | undefined",
-      "required": false,
-      "boolean": false,
-      "defaultExpression": "[]",
-      "descriptionZh": "非受控模式下默认展开面板的 key",
-      "descriptionEn": "Initially expanded keys in uncontrolled mode"
+      "descriptionZh": "模式下当前展开面板的 key",
+      "descriptionEn": "Expanded panel keys in mode"
     },
     {
       "name": "accordion",
@@ -6929,9 +6893,9 @@ import { text } from "./content";
 export default function App() {
   return (
     <div className="demo-collapse">
-      <Collapse defaultOpenKeys={["1"]}>
+      <Collapse openKeys={["1"]}>
         <CollapsePanel key="1" title="Panel title">
-          <Collapse defaultOpenKeys={["1-1"]}>
+          <Collapse openKeys={["1-1"]}>
             <CollapsePanel key="1-1" title="Panel title">
               <div>{text}</div>
             </CollapsePanel>
@@ -6961,7 +6925,7 @@ export default function App() {
   const extra = <Icon type={Settings} />;
   return (
     <div className="demo-collapse">
-      <Collapse defaultOpenKeys={[1, 2]}>
+      <Collapse openKeys={[1, 2]}>
         {[1, 2, 3].map((key) => (
           <CollapsePanel key={key} title="Panel title" extra={extra}>
             <div>{text}</div>
@@ -7101,9 +7065,9 @@ import { text } from "./content";
 export default function App() {
   return (
     <div className="demo-collapse">
-      <Collapse defaultOpenKeys={["1"]}>
+      <Collapse openKeys={["1"]}>
         <CollapsePanel key="1" title="Panel title">
-          <Collapse defaultOpenKeys={["1-1"]}>
+          <Collapse openKeys={["1-1"]}>
             <CollapsePanel key="1-1" title="Panel title">
               <div>{text}</div>
             </CollapsePanel>
@@ -7133,7 +7097,7 @@ export default function App() {
   const extra = <Icon type={Settings} />;
   return (
     <div className="demo-collapse">
-      <Collapse defaultOpenKeys={[1, 2]}>
+      <Collapse openKeys={[1, 2]}>
         {[1, 2, 3].map((key) => (
           <CollapsePanel key={key} title="Panel title" extra={extra}>
             <div>{text}</div>
@@ -7177,20 +7141,8 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控的弹层显示状态",
-      "descriptionEn": "Controlled popup visibility"
-    },
-    {
-      "name": "defaultOpen",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "descriptionZh": "非受控模式的初始弹层状态",
-      "descriptionEn": "Initial popup visibility in uncontrolled mode"
+      "descriptionZh": "弹层显示状态",
+      "descriptionEn": "popup visibility"
     },
     {
       "name": "disabled",
@@ -8010,20 +7962,8 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控的下拉面板显示状态",
-      "descriptionEn": "Controlled dropdown visibility"
-    },
-    {
-      "name": "defaultOpen",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "descriptionZh": "非受控模式的初始下拉面板状态",
-      "descriptionEn": "Initial dropdown visibility in uncontrolled mode"
+      "descriptionZh": "下拉面板显示状态",
+      "descriptionEn": "dropdown visibility"
     },
     {
       "name": "clearable",
@@ -9505,21 +9445,8 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控的抽屉显示状态",
-      "descriptionEn": "Controlled drawer visibility"
-    },
-    {
-      "name": "defaultOpen",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "defaultExpression": "false",
-      "descriptionZh": "非受控模式的初始显示状态",
-      "descriptionEn": "Initial visibility in uncontrolled mode"
+      "descriptionZh": "抽屉显示状态",
+      "descriptionEn": "drawer visibility"
     },
     {
       "name": "title",
@@ -9744,7 +9671,7 @@ export default function App() {
   ],
   "behavior": {
     "rules": [
-      "Use open plus onOpenChange for controlled visibility. Keep the state in React; do not use v-model."
+      "Use open and onOpenChange. open initializes local visibility, allows interaction, and synchronizes changed props. Do not use v-model."
     ]
   },
   "children": []
@@ -10073,21 +10000,8 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控的显示状态",
-      "descriptionEn": "Controlled visibility"
-    },
-    {
-      "name": "defaultOpen",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "defaultExpression": "false",
-      "descriptionZh": "非受控模式的初始显示状态",
-      "descriptionEn": "Initial visibility in uncontrolled mode"
+      "descriptionZh": "显示状态",
+      "descriptionEn": "visibility"
     },
     {
       "name": "show",
@@ -13901,7 +13815,7 @@ export default function App() {
         <Card style={{ padding: 20 }}>
           <Tag color="blue">WebGL Effect</Tag>
           <h3 style={{ margin: "18px 0 8px" }}>Flame wrapped content</h3>
-          <p style={{ margin: "0 0 24px", color: "var(--kui-color-text-secondary)" }}>
+          <p style={{ margin: "0 0 24px", color: "var(--kui-color-text-secondary, var(--kui-color-text-description))" }}>
             火焰沿内容轮廓燃烧，内部仍然是真实且可交互的 DOM。
           </p>
           <Space>
@@ -13938,7 +13852,7 @@ export default function App() {
       >
         <Card style={{ padding: 32 }}>
           <h3 style={{ margin: "0 0 8px" }}>Warm flame</h3>
-          <p style={{ margin: 0, color: "var(--kui-color-text-secondary)" }}>
+          <p style={{ margin: 0, color: "var(--kui-color-text-secondary, var(--kui-color-text-description))" }}>
             可以调整颜色、火焰高度、火星、烟雾和燃烧速度。
           </p>
         </Card>
@@ -19194,15 +19108,6 @@ export default function App() {
       "descriptionEn": "Currently expanded SubMenu menu item key array"
     },
     {
-      "name": "defaultOpenKeys",
-      "type": "string[] | undefined",
-      "required": false,
-      "boolean": false,
-      "defaultExpression": "[]",
-      "descriptionZh": "非受控模式初始展开的 SubMenu key 数组",
-      "descriptionEn": "Initially expanded SubMenu keys in uncontrolled mode"
-    },
-    {
       "name": "onSelect",
       "type": "((data: MenuSelectEvent) => void) | undefined",
       "required": false,
@@ -22326,21 +22231,8 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控的对话框显示状态",
-      "descriptionEn": "Controlled dialog visibility"
-    },
-    {
-      "name": "defaultOpen",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "defaultExpression": "false",
-      "descriptionZh": "非受控模式的初始显示状态",
-      "descriptionEn": "Initial visibility in uncontrolled mode"
+      "descriptionZh": "对话框显示状态",
+      "descriptionEn": "dialog visibility"
     },
     {
       "name": "title",
@@ -22617,7 +22509,7 @@ export default function App() {
   ],
   "behavior": {
     "rules": [
-      "Use open plus onOpenChange, or defaultOpen. When open is supplied, update it in the parent.",
+      "Use open and onOpenChange. open initializes local visibility; interactions update it internally, and changed open props synchronize it.",
       "onOk does not automatically save or close. Validate/save first, then set open=false. loading blocks user dismissal during saving.",
       "Use children or content and footer props, not Vue named slots."
     ]
@@ -24364,21 +24256,8 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控的显示状态",
-      "descriptionEn": "Controlled visibility"
-    },
-    {
-      "name": "defaultOpen",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "defaultExpression": "false",
-      "descriptionZh": "非受控模式的初始显示状态",
-      "descriptionEn": "Initial visibility in uncontrolled mode"
+      "descriptionZh": "显示状态",
+      "descriptionEn": "visibility"
     },
     {
       "name": "show",
@@ -24974,21 +24853,8 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控的显示状态",
-      "descriptionEn": "Controlled visibility"
-    },
-    {
-      "name": "defaultOpen",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "defaultExpression": "false",
-      "descriptionZh": "非受控模式的初始显示状态",
-      "descriptionEn": "Initial visibility in uncontrolled mode"
+      "descriptionZh": "显示状态",
+      "descriptionEn": "visibility"
     },
     {
       "name": "show",
@@ -25910,13 +25776,13 @@ export default function App() {
     <Ripple
       style={{
         minHeight: 260,
-        borderRadius: "var(--kui-card-radius)",
+        borderRadius: "var(--kui-card-radius, var(--kui-border-radius-card))",
       }}
     >
       <Card style={{ padding: 32 }}>
         <Tag color="blue">Interactive surface</Tag>
         <h3 style={{ margin: "18px 0 8px" }}>点击任意位置，观察水波扩散</h3>
-        <p style={{ margin: "0 0 24px", color: "var(--kui-color-text-secondary)" }}>
+        <p style={{ margin: "0 0 24px", color: "var(--kui-color-text-secondary, var(--kui-color-text-description))" }}>
           在支持 HTML-in-Canvas 的浏览器中，水波会折射下方的实时 DOM 内容。
         </p>
         <Space>
@@ -25945,7 +25811,7 @@ export default function App() {
     >
       <Card style={{ padding: 32, height: 220 }}>
         <h3 style={{ margin: "0 0 8px" }}>Hover Ripple</h3>
-        <p style={{ margin: 0, color: "var(--kui-color-text-secondary)" }}>
+        <p style={{ margin: 0, color: "var(--kui-color-text-secondary, var(--kui-color-text-description))" }}>
           移动指针会连续产生较轻的水波轨迹。
         </p>
       </Card>
@@ -26375,20 +26241,8 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控的选中状态",
-      "descriptionEn": "Controlled checked state"
-    },
-    {
-      "name": "defaultChecked",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "descriptionZh": "非受控模式的初始选中状态",
-      "descriptionEn": "Initial checked state in uncontrolled mode"
+      "descriptionZh": "选中状态",
+      "descriptionEn": "checked state"
     },
     {
       "name": "value",
@@ -26775,20 +26629,8 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控的选中状态",
-      "descriptionEn": "Controlled checked state"
-    },
-    {
-      "name": "defaultChecked",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "descriptionZh": "非受控模式的初始选中状态",
-      "descriptionEn": "Initial checked state in uncontrolled mode"
+      "descriptionZh": "选中状态",
+      "descriptionEn": "checked state"
     },
     {
       "name": "icon",
@@ -28597,20 +28439,8 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控的下拉框显示状态",
-      "descriptionEn": "Controlled dropdown visibility"
-    },
-    {
-      "name": "defaultOpen",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "descriptionZh": "非受控模式的初始下拉框状态",
-      "descriptionEn": "Initial dropdown visibility in uncontrolled mode"
+      "descriptionZh": "下拉框显示状态",
+      "descriptionEn": "dropdown visibility"
     },
     {
       "name": "clearable",
@@ -33592,20 +33422,8 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控的开关状态",
-      "descriptionEn": "Controlled switch state"
-    },
-    {
-      "name": "defaultChecked",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "descriptionZh": "非受控模式的初始开关状态",
-      "descriptionEn": "Initial switch state in uncontrolled mode"
+      "descriptionZh": "开关状态",
+      "descriptionEn": "switch state"
     },
     {
       "name": "valueType",
@@ -33756,7 +33574,7 @@ export default function App() {
   ],
   "behavior": {
     "rules": [
-      "Use checked and onChange, or defaultChecked. When checked is supplied, the parent must update it.",
+      "Use checked and onChange. checked initializes local state; interactions update it internally, and changed checked props synchronize it.",
       "checked is boolean. onChange returns boolean/string/number according to valueType; default valueType is boolean."
     ]
   },
@@ -33786,12 +33604,12 @@ export default function App() {
       </Button>
       <Switch checked={checked} onChange={(v) => setChecked(Boolean(v))} />
       <Space>
-        <Switch defaultChecked type="primary" />
-        <Switch defaultChecked type="success" />
-        <Switch defaultChecked type="warning" />
-        <Switch defaultChecked type="danger" />
-        <Switch defaultChecked color="#8b5cf6" />
-        <Switch defaultChecked shape="square" />
+        <Switch checked type="primary" />
+        <Switch checked type="success" />
+        <Switch checked type="warning" />
+        <Switch checked type="danger" />
+        <Switch checked color="#8b5cf6" />
+        <Switch checked shape="square" />
       </Space>
     </Space>
   );
@@ -34149,15 +33967,6 @@ export default function App() {
       "descriptionEn": "Collection of selected keys"
     },
     {
-      "name": "defaultSelectedKeys",
-      "type": "TableKey[] | undefined",
-      "required": false,
-      "boolean": false,
-      "defaultExpression": "[]",
-      "descriptionZh": "非受控模式下的初始勾选 key 集合",
-      "descriptionEn": "Initial selected keys in uncontrolled mode"
-    },
-    {
       "name": "disabledKeys",
       "type": "TableKey[] | undefined",
       "required": false,
@@ -34189,20 +33998,11 @@ export default function App() {
       "type": "TableKey[] | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "受控展开行 key 集合",
-      "descriptionEn": "Controlled expanded row keys"
+      "descriptionZh": "展开行 key 集合",
+      "descriptionEn": "expanded row keys"
     },
     {
-      "name": "defaultExpandedKeys",
-      "type": "TableKey[] | undefined",
-      "required": false,
-      "boolean": false,
-      "defaultExpression": "[]",
-      "descriptionZh": "默认展开行 key 集合",
-      "descriptionEn": "Initially expanded row keys"
-    },
-    {
-      "name": "defaultExpandAllRows",
+      "name": "expandAllRows",
       "type": "boolean | undefined",
       "required": false,
       "enumValues": [
@@ -34211,8 +34011,8 @@ export default function App() {
       ],
       "boolean": true,
       "defaultExpression": "false",
-      "descriptionZh": "默认展开所有树节点",
-      "descriptionEn": "Expand every tree node initially"
+      "descriptionZh": "初始化及属性变化时展开所有树节点（expandedKeys 优先）",
+      "descriptionEn": "Expand every tree node on initialization or when this prop changes (explicit expandedKeys takes precedence)"
     },
     {
       "name": "expandRowByClick",
@@ -34661,9 +34461,7 @@ const columns: Column<Department>[] = [
   {
     key: "status",
     title: "Status",
-    render: (status) => (
-      <Tag color={status === "active" ? "green" : "gold"}>{String(status)}</Tag>
-    ),
+    render: (status) => <Tag color={status === "active" ? "green" : "gold"}>{String(status)}</Tag>,
   },
 ];
 
@@ -34673,7 +34471,7 @@ export default function App() {
       bordered
       checkable
       expandRowByClick
-      defaultExpandedKeys={["product"]}
+      expandedKeys={["product"]}
       data={data}
       columns={columns}
     />
@@ -35518,9 +35316,7 @@ const columns: Column<Department>[] = [
   {
     key: "status",
     title: "Status",
-    render: (status) => (
-      <Tag color={status === "active" ? "green" : "gold"}>{String(status)}</Tag>
-    ),
+    render: (status) => <Tag color={status === "active" ? "green" : "gold"}>{String(status)}</Tag>,
   },
 ];
 
@@ -35530,7 +35326,7 @@ export default function App() {
       bordered
       checkable
       expandRowByClick
-      defaultExpandedKeys={["product"]}
+      expandedKeys={["product"]}
       data={data}
       columns={columns}
     />
@@ -36123,6 +35919,19 @@ export default function ColumnSettingDemo() {
   "documentation": "https://react.k-ui.cn/components/tooltip",
   "props": [
     {
+      "name": "trigger",
+      "type": "\"manual\" | \"hover\" | undefined",
+      "required": false,
+      "enumValues": [
+        "manual",
+        "hover"
+      ],
+      "boolean": false,
+      "defaultExpression": "\"hover\"",
+      "descriptionZh": "自动悬停触发或手动控制显隐",
+      "descriptionEn": "Automatic hover or manual visibility"
+    },
+    {
       "name": "open",
       "type": "boolean | undefined",
       "required": false,
@@ -36131,21 +35940,8 @@ export default function ColumnSettingDemo() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控的显示状态",
-      "descriptionEn": "Controlled visibility"
-    },
-    {
-      "name": "defaultOpen",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "defaultExpression": "false",
-      "descriptionZh": "非受控模式的初始显示状态",
-      "descriptionEn": "Initial visibility in uncontrolled mode"
+      "descriptionZh": "显示状态",
+      "descriptionEn": "visibility"
     },
     {
       "name": "show",
@@ -36449,6 +36245,18 @@ export default function App() {
       "descriptionEn": "Position where tooltip appears, optional values: `top`, `top-left`, `top-right`, `bottom`, `bottom-left`, `bottom-right`, `left`, `left-top`, `left-bottom`, `right`, `right-top`, `right-bottom`"
     },
     {
+      "name": "trigger",
+      "type": "\"manual\" | \"hover\" | undefined",
+      "required": false,
+      "enumValues": [
+        "manual",
+        "hover"
+      ],
+      "boolean": false,
+      "descriptionZh": "自动悬停触发或手动控制显隐",
+      "descriptionEn": "Automatic hover or manual visibility"
+    },
+    {
       "name": "onOpenChange",
       "type": "((open: boolean) => void) | undefined",
       "required": false,
@@ -36634,21 +36442,8 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控显示状态",
-      "descriptionEn": "Controlled visibility"
-    },
-    {
-      "name": "defaultOpen",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "defaultExpression": "false",
-      "descriptionZh": "初始显示状态",
-      "descriptionEn": "Initial visibility"
+      "descriptionZh": "显示状态",
+      "descriptionEn": "visibility"
     },
     {
       "name": "current",
@@ -36656,16 +36451,7 @@ export default function App() {
       "required": false,
       "boolean": false,
       "descriptionZh": "当前步骤",
-      "descriptionEn": "Controlled step"
-    },
-    {
-      "name": "defaultCurrent",
-      "type": "number | undefined",
-      "required": false,
-      "boolean": false,
-      "defaultExpression": "0",
-      "descriptionZh": "初始步骤",
-      "descriptionEn": "Initial step"
+      "descriptionEn": "step"
     },
     {
       "name": "steps",
@@ -37984,15 +37770,6 @@ export default function App() {
       "descriptionEn": "Selected nodes"
     },
     {
-      "name": "defaultSelectedKeys",
-      "type": "string[] | undefined",
-      "required": false,
-      "boolean": false,
-      "defaultExpression": "[]",
-      "descriptionZh": "非受控模式的初始选中节点",
-      "descriptionEn": "Initial selected nodes in uncontrolled mode"
-    },
-    {
       "name": "expandedKeys",
       "type": "string[] | undefined",
       "required": false,
@@ -38001,30 +37778,12 @@ export default function App() {
       "descriptionEn": "Specify expanded nodes"
     },
     {
-      "name": "defaultExpandedKeys",
-      "type": "string[] | undefined",
-      "required": false,
-      "boolean": false,
-      "defaultExpression": "[]",
-      "descriptionZh": "非受控模式的初始展开节点",
-      "descriptionEn": "Initial expanded nodes in uncontrolled mode"
-    },
-    {
       "name": "checkedKeys",
       "type": "string[] | undefined",
       "required": false,
       "boolean": false,
       "descriptionZh": "选中复选框的树节点",
       "descriptionEn": "Tree nodes with checked checkboxes"
-    },
-    {
-      "name": "defaultCheckedKeys",
-      "type": "string[] | undefined",
-      "required": false,
-      "boolean": false,
-      "defaultExpression": "[]",
-      "descriptionZh": "非受控模式的初始勾选节点",
-      "descriptionEn": "Initial checked nodes in uncontrolled mode"
     },
     {
       "name": "directory",
@@ -39051,20 +38810,8 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控的下拉框显示状态",
-      "descriptionEn": "Controlled dropdown visibility"
-    },
-    {
-      "name": "defaultOpen",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "descriptionZh": "非受控模式的初始下拉框状态",
-      "descriptionEn": "Initial dropdown visibility in uncontrolled mode"
+      "descriptionZh": "下拉框显示状态",
+      "descriptionEn": "dropdown visibility"
     },
     {
       "name": "clearable",
@@ -39843,20 +39590,8 @@ export default function Demo() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "受控的下拉框显示状态。",
-      "descriptionEn": "Controlled dropdown visibility."
-    },
-    {
-      "name": "defaultOpen",
-      "type": "boolean | undefined",
-      "required": false,
-      "enumValues": [
-        false,
-        true
-      ],
-      "boolean": true,
-      "descriptionZh": "非受控模式下的初始下拉框状态。",
-      "descriptionEn": "Initial dropdown visibility in uncontrolled mode."
+      "descriptionZh": "下拉框显示状态。",
+      "descriptionEn": "dropdown visibility."
     },
     {
       "name": "options",
@@ -40471,8 +40206,16 @@ export default function App() {
       "type": "(() => void) | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "关闭标签的回调事件",
-      "descriptionEn": "Callback event when tag is closed"
+      "descriptionZh": "点击关闭按钮时触发",
+      "descriptionEn": "Triggered when the close button is clicked"
+    },
+    {
+      "name": "onAfterClose",
+      "type": "(() => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "退出动画结束后触发",
+      "descriptionEn": "Triggered after the exit animation"
     },
     {
       "name": "children",
@@ -40489,8 +40232,16 @@ export default function App() {
       "type": "(() => void) | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "关闭标签的回调事件",
-      "descriptionEn": "Callback event when tag is closed"
+      "descriptionZh": "点击关闭按钮时触发",
+      "descriptionEn": "Triggered when the close button is clicked"
+    },
+    {
+      "name": "onAfterClose",
+      "type": "(() => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "退出动画结束后触发",
+      "descriptionEn": "Triggered after the exit animation"
     }
   ],
   "renderProps": [
@@ -40649,7 +40400,7 @@ export default function App() {
           color="blue"
           closeable
           key={value}
-          onClose={() => setTags((items) => items.filter((item) => item !== value))}
+          onAfterClose={() => setTags((items) => items.filter((item) => item !== value))}
         >
           {value}
         </Tag>
@@ -41553,14 +41304,6 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "上传的文件列表",
       "descriptionEn": "Uploaded file list"
-    },
-    {
-      "name": "defaultFileList",
-      "type": "UploadFile[] | undefined",
-      "required": false,
-      "boolean": false,
-      "descriptionZh": "非受控模式的初始文件列表",
-      "descriptionEn": "Initial file list in uncontrolled mode"
     },
     {
       "name": "autoTrigger",
@@ -42720,16 +42463,8 @@ export default function App() {
       "type": "TransferKey[] | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "受控目标项",
-      "descriptionEn": "Controlled target items"
-    },
-    {
-      "name": "defaultTargetKeys",
-      "type": "TransferKey[] | undefined",
-      "required": false,
-      "boolean": false,
-      "descriptionZh": "初始目标项",
-      "descriptionEn": "Initial target items"
+      "descriptionZh": "目标项",
+      "descriptionEn": "target items"
     },
     {
       "name": "titles",

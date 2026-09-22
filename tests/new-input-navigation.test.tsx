@@ -10,7 +10,7 @@ describe("new input and navigation components", () => {
         multiple
         allowCreate
         filterable
-        defaultOpen
+        open
         value={[]}
         options={[{ label: "React", value: "React" }]}
         onChange={onChange}
@@ -32,7 +32,7 @@ describe("new input and navigation components", () => {
     render(
       <Select
         multiple
-        defaultOpen
+        open
         options={[
           { label: "One", value: 1 },
           { label: "Two", value: 2 },

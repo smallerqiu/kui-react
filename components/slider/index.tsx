@@ -20,7 +20,7 @@ import Thumb from "./thumb";
 
 export interface SliderProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
-  "onChange" | "defaultValue"
+  "onChange" | "defaultValue" | "defaultChecked"
 > {
   value?: number | number[];
   min?: number;

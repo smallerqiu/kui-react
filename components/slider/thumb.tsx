@@ -56,6 +56,7 @@ const Thumb = forwardRef<HTMLDivElement, ThumbProps>(function Thumb(
 
   return (
     <Tooltip
+      trigger="manual"
       title={tipFormatter ? tipFormatter(value) : String(value)}
       disabled={disabled || tooltipVisible === false}
       show={shown && !disabled}

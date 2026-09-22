@@ -4,7 +4,6 @@ import type { PlacementsType } from "../const/types";
 export interface PoptipProps {
   dark?: boolean;
   open?: boolean;
-  defaultOpen?: boolean;
   /** @deprecated Use `open` instead. */
   show?: boolean;
   title?: React.ReactNode;
@@ -21,7 +20,7 @@ export interface PoptipProps {
   children?: React.ReactNode;
 }
 
-export type PoptipPanelProps = Omit<PoptipProps, "children" | "open" | "defaultOpen" | "show">;
+export type PoptipPanelProps = Omit<PoptipProps, "children" | "open" | "show">;
 
 export function PoptipPanel(props: PoptipPanelProps) {
   return <Poptip {...props} panelOnly />;
@@ -30,7 +29,6 @@ export function PoptipPanel(props: PoptipPanelProps) {
 const Poptip: React.FC<PoptipProps> = ({
   dark = false,
   open,
-  defaultOpen = false,
   show,
   title,
   content,
@@ -45,7 +43,6 @@ const Poptip: React.FC<PoptipProps> = ({
 }) => (
   <Popup
     open={open ?? show}
-    defaultOpen={defaultOpen}
     trigger={trigger}
     placement={placement}
     panelOnly={panelOnly}

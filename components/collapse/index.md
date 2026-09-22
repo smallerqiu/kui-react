@@ -33,8 +33,7 @@
 
 | 属性             | 说明                               | 类型                                 | 默认值  |
 | ---------------- | ---------------------------------- | ------------------------------------ | ------- |
-| openKeys         | 受控模式下当前展开面板的 key       | (string \| number)[]                 | -       |
-| defaultOpenKeys  | 非受控模式下默认展开面板的 key     | (string \| number)[]                 | []      |
+| openKeys         | 模式下当前展开面板的 key           | (string \| number)[]                 | -       |
 | accordion        | 是否开启手风琴模式                 | boolean                              | false   |
 | sample           | 是否开启简洁模式                   | boolean                              | false   |
 | theme            | 主题                               | ThemeType                            | outline |

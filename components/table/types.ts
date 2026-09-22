@@ -24,18 +24,16 @@ export interface Column<T = Record<string, unknown>> {
 
 export interface TableProps<T = Record<string, unknown>> extends Omit<
   HTMLAttributes<HTMLDivElement>,
-  "onSelect"
+  "onSelect" | "defaultValue" | "defaultChecked"
 > {
   data?: T[];
   columns?: Column<T>[];
   selectedKeys?: TableKey[];
-  defaultSelectedKeys?: TableKey[];
   disabledKeys?: TableKey[];
   rowKey?: string | ((record: T) => TableKey);
   childrenColumnName?: string;
   expandedKeys?: TableKey[];
-  defaultExpandedKeys?: TableKey[];
-  defaultExpandAllRows?: boolean;
+  expandAllRows?: boolean;
   expandRowByClick?: boolean;
   indentSize?: number;
   scroll?: { x?: number | string; y?: number | string };

@@ -1,7 +1,10 @@
 import clsx from "clsx";
 import React from "react";
 
-export interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface RowProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   gutter?: number | [number, number];
   justify?: "start" | "end" | "center" | "space-around" | "space-between";
   align?: "top" | "middle" | "bottom";

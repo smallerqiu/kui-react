@@ -3,7 +3,10 @@ import { useEffect, useRef, type HTMLAttributes } from "react";
 import { CountUp, type CountUpOptions } from "./utils/countup";
 import { Odometer } from "./utils/odometer";
 
-export interface CountUpNumberProps extends HTMLAttributes<HTMLSpanElement> {
+export interface CountUpNumberProps extends Omit<
+  HTMLAttributes<HTMLSpanElement>,
+  "defaultValue" | "defaultChecked"
+> {
   value?: number;
   separator?: string;
   duration?: number;

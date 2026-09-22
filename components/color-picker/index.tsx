@@ -21,11 +21,10 @@ import Presets from "./presets";
 
 export interface ColorPickerProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
-  "onChange" | "defaultValue"
+  "onChange" | "defaultValue" | "defaultChecked"
 > {
   value?: string;
   open?: boolean;
-  defaultOpen?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
   disabledAlpha?: boolean;
@@ -48,7 +47,6 @@ export interface ColorPickerProps extends Omit<
 function ColorPicker({
   value,
   open: openProp,
-  defaultOpen = false,
   disabled = false,
   readOnly = false,
   disabledAlpha = false,
@@ -78,8 +76,8 @@ function ColorPicker({
   const [initialColor] = useState(() => Color(value ?? "#000000ff"));
   const [currentHue, setCurrentHue] = useState(initialColor.hue());
   const [currentAlpha, setCurrentAlpha] = useState(initialColor.alpha());
-  const [innerOpen, setInnerOpen] = useState(defaultOpen);
-  const currentOpen = panelOnly || (openProp ?? innerOpen);
+  const [innerOpen, setInnerOpen] = useValue(openProp, (next) => next ?? false);
+  const currentOpen = panelOnly || innerOpen;
   const popup = useRef<PopupRef>(null);
   const triggerRef = useRef<HTMLElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -109,10 +107,10 @@ function ColorPicker({
   const setVisible = useCallback(
     (next: boolean) => {
       if ((next && (disabled || readOnly)) || panelOnly) return;
-      if (openProp === undefined) setInnerOpen(next);
+      setInnerOpen(next);
       onOpenChange?.(next);
     },
-    [disabled, onOpenChange, openProp, panelOnly, readOnly],
+    [disabled, onOpenChange, setInnerOpen, panelOnly, readOnly],
   );
   const mouseEnter = () => {
     popup.current?.cancelClose();
@@ -323,10 +321,7 @@ function ColorPicker({
   );
 }
 
-export type ColorPickerPanelProps = Omit<
-  ColorPickerProps,
-  "panelOnly" | "open" | "defaultOpen" | "children"
->;
+export type ColorPickerPanelProps = Omit<ColorPickerProps, "panelOnly" | "open" | "children">;
 export function ColorPickerPanel(props: ColorPickerPanelProps) {
   return <ColorPicker {...props} panelOnly />;
 }

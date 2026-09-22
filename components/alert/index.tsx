@@ -1,11 +1,16 @@
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { CircleAlert, CircleCheck, CircleX, Info, X } from "kui-icons";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import Transition from "../base/transition";
+import { getTransitionProp } from "../utils/transition";
 import Icon, { type IconType } from "../icon";
 import type { ShapeType, ThemeType } from "../const/types";
 
-export interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface AlertProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   type?: "info" | "success" | "warning" | "error";
   closable?: boolean;
   showIcon?: boolean;
@@ -16,6 +21,7 @@ export interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
   theme?: ThemeType;
   shape?: ShapeType;
   onClose?: (e: React.MouseEvent<HTMLElement>) => void;
+  onAfterClose?: () => void;
   children?: React.ReactNode;
 }
 
@@ -30,6 +36,7 @@ const Alert: React.FC<AlertProps> = ({
   theme: themeProp,
   shape: shapeProp,
   onClose,
+  onAfterClose,
   children,
   className = "",
   ...rest
@@ -38,13 +45,16 @@ const Alert: React.FC<AlertProps> = ({
   const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
   const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
   const [closed, setClosed] = useState(false);
+  const closing = useRef(false);
 
   const close = (e: React.MouseEvent<HTMLElement>) => {
+    if (closing.current) return;
+    closing.current = true;
     setClosed(true);
     onClose?.(e);
   };
 
-  if (closed) return null;
+  const transitionProps = getTransitionProp("k-alert-slide");
 
   const icons = {
     info: Info,
@@ -76,18 +86,28 @@ const Alert: React.FC<AlertProps> = ({
       [`k-alert-shape-${shape}`]: shape,
       "k-alert-has-description": description,
     },
-    className
+    className,
   );
 
   return (
-    <div className={classes} {...rest}>
-      {iconNode}
-      <div className="k-alert-content">
-        {msgNode}
-        {descriptionNode}
+    <Transition
+      {...transitionProps}
+      show={!closed}
+      timeout={300}
+      onAfterLeave={(el) => {
+        transitionProps.onAfterLeave?.(el);
+        onAfterClose?.();
+      }}
+    >
+      <div className={classes} {...rest}>
+        {iconNode}
+        <div className="k-alert-content">
+          {msgNode}
+          {descriptionNode}
+        </div>
+        {closeIcon}
       </div>
-      {closeIcon}
-    </div>
+    </Transition>
   );
 };
 

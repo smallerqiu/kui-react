@@ -5,7 +5,10 @@ import { isValidElement, type HTMLAttributes, type ReactNode } from "react";
 import type { FeedbackPanelKind, ShapeType, ThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
 
-export interface FeedbackPanelProps extends HTMLAttributes<HTMLElement> {
+export interface FeedbackPanelProps extends Omit<
+  HTMLAttributes<HTMLElement>,
+  "defaultValue" | "defaultChecked"
+> {
   kind?: FeedbackPanelKind;
   heading?: ReactNode;
   description?: ReactNode;

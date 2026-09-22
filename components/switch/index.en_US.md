@@ -33,8 +33,7 @@ Switch selector.
 
 | Property          | Description                                                     | Type                                         | Default |
 | ----------------- | --------------------------------------------------------------- | -------------------------------------------- | ------- |
-| checked           | Controlled switch state                                         | boolean                                      | -       |
-| defaultChecked    | Initial switch state in uncontrolled mode                       | boolean                                      | false   |
+| checked           | switch state                                                    | boolean                                      | -       |
 | disabled          | Disable switch                                                  | boolean                                      | false   |
 | readOnly          | Make the switch read-only                                       | boolean                                      | false   |
 | loading           | Loading state; interaction is disabled while loading            | boolean                                      | false   |

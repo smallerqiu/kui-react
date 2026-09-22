@@ -9,8 +9,10 @@ import Icon, { type IconType } from "../icon";
 import { getChildren } from "../utils/react-node";
 import { ButtonGroupContext } from "./button-group-context";
 
-export interface ButtonProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "type" | "onClick"> {
+export interface ButtonProps extends Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  "type" | "onClick" | "defaultValue" | "defaultChecked"
+> {
   htmlType?: "button" | "submit" | "reset";
   icon?: IconType[];
   block?: boolean;
@@ -46,7 +48,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
       onClick,
       ...rest
     },
-    ref
+    ref,
   ) => {
     const inheritedAppearance = useConfigAppearance();
     const size = sizeProp ?? inheritedAppearance.size;
@@ -75,9 +77,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
         const firstChild = childList[0];
         if (React.isValidElement(firstChild)) {
           const childType = firstChild.type;
-          return (
-            childType === Icon
-          );
+          return childType === Icon;
         }
       }
       return false;
@@ -98,7 +98,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
         "k-btn-square": computedShape === "square",
         [`k-btn-${theme}`]: theme,
       },
-      className
+      className,
     );
 
     let childNodes: React.ReactNode[] = [];
@@ -117,7 +117,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
           </span>
         ) : (
           <Icon key="btn-icon" type={iconType} />
-        )
+        ),
       );
     }
 
@@ -160,7 +160,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
         {childNodes}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = "Button";

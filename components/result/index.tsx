@@ -4,7 +4,10 @@ import { isValidElement, type HTMLAttributes, type ReactNode } from "react";
 import type { ResultStatus } from "../const/types";
 import Icon, { type IconType } from "../icon";
 
-export interface ResultProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
+export interface ResultProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "title" | "defaultValue" | "defaultChecked"
+> {
   status?: ResultStatus;
   title?: ReactNode;
   subTitle?: ReactNode;
@@ -45,7 +48,9 @@ export default function Result({
 
   return (
     <div {...rest} className={clsx("k-result", `k-result-${status}`, className)} role="status">
-      <div className="k-result-icon" aria-hidden="true">{iconNode}</div>
+      <div className="k-result-icon" aria-hidden="true">
+        {iconNode}
+      </div>
       {title != null && <div className="k-result-title">{title}</div>}
       {subTitle != null && <div className="k-result-subtitle">{subTitle}</div>}
       {children != null && <div className="k-result-content">{children}</div>}

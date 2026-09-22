@@ -53,7 +53,7 @@ describe("Tree drag and drop", () => {
     const data: TreeNode[] = [
       { key: "parent", title: "Parent", children: [{ key: "child", title: "Child" }] },
     ];
-    const { container } = render(<Tree data={data} draggable defaultExpandedKeys={["parent"]} />);
+    const { container } = render(<Tree data={data} draggable expandedKeys={["parent"]} />);
     const parent = container.querySelector<HTMLElement>("[data-tree-key='parent'] .k-tree-title")!;
     const child = container.querySelector<HTMLElement>("[data-tree-key='child'] .k-tree-title")!;
     rect(child);
@@ -99,7 +99,7 @@ describe("Tree drag and drop", () => {
         data={data}
         directory
         checkable
-        defaultExpandedKeys={["parent"]}
+        expandedKeys={["parent"]}
         onExpandedKeysChange={onExpandedKeysChange}
         onCheckedKeysChange={onCheckedKeysChange}
       />,

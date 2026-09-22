@@ -1,8 +1,9 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { Check } from "kui-icons";
-import React, { useContext, useLayoutEffect, useRef, useState } from "react";
+import React, { useContext, useLayoutEffect, useRef } from "react";
 import type { SizeType, ThemeType, ValueType } from "../const/types";
 import Icon from "../icon";
 import { getValueWithType } from "../utils/checked";
@@ -14,9 +15,11 @@ export interface ChangeEvent {
   checked: boolean;
 }
 
-export interface CheckboxProps extends Omit<React.HTMLAttributes<HTMLLabelElement>, "onChange"> {
+export interface CheckboxProps extends Omit<
+  React.HTMLAttributes<HTMLLabelElement>,
+  "onChange" | "defaultValue" | "defaultChecked"
+> {
   checked?: boolean;
-  defaultChecked?: boolean;
   valueType?: ValueType;
   value?: unknown;
   label?: React.ReactNode;
@@ -31,7 +34,6 @@ export interface CheckboxProps extends Omit<React.HTMLAttributes<HTMLLabelElemen
 
 const Checkbox: React.FC<CheckboxProps> = ({
   checked,
-  defaultChecked = false,
   valueType = "boolean",
   value,
   label,
@@ -60,15 +62,15 @@ const Checkbox: React.FC<CheckboxProps> = ({
   const isGroup = !!group;
   const groupChecked = isGroup && group.value ? group.value.indexOf(value) > -1 : false;
 
-  const [localChecked, setLocalChecked] = useState(defaultChecked);
-  const isChecked = isGroup ? groupChecked : (checked ?? localChecked);
+  const [localChecked, setLocalChecked] = useValue(checked, (next) => next ?? false);
+  const isChecked = isGroup ? groupChecked : localChecked;
   const currentDisabled = disabled || (isGroup && group.disabled);
   const currentReadOnly = readOnly || Boolean(isGroup && group.readOnly);
   const currentTheme = themeProp ?? group?.theme ?? theme;
   const currentSize = sizeProp ?? group?.size ?? size;
 
   const emitValue = (newChecked: boolean) => {
-    if (!isGroup && checked === undefined) {
+    if (!isGroup) {
       setLocalChecked(newChecked);
     }
     const labelVal =

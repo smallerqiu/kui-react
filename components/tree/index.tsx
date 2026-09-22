@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import clsx from "clsx";
 import { ChevronRight, CircleMinus, CirclePlus } from "kui-icons";
 import {
@@ -33,15 +34,19 @@ import { buildTree, updateParentIndeterminate, type TreeNode, type TreeNodeData 
 
 export interface TreeProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
-  "onSelect" | "onDragStart" | "onDragEnter" | "onDragLeave" | "onDrop" | "onDragEnd"
+  | "onSelect"
+  | "onDragStart"
+  | "onDragEnter"
+  | "onDragLeave"
+  | "onDrop"
+  | "onDragEnd"
+  | "defaultValue"
+  | "defaultChecked"
 > {
   data?: TreeNodeData[];
   selectedKeys?: string[];
-  defaultSelectedKeys?: string[];
   expandedKeys?: string[];
-  defaultExpandedKeys?: string[];
   checkedKeys?: string[];
-  defaultCheckedKeys?: string[];
   directory?: boolean;
   disabled?: boolean;
   checkable?: boolean;
@@ -129,11 +134,8 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
   {
     data = [],
     selectedKeys,
-    defaultSelectedKeys = [],
     expandedKeys,
-    defaultExpandedKeys = [],
     checkedKeys,
-    defaultCheckedKeys = [],
     directory,
     disabled = false,
     checkable,
@@ -171,9 +173,9 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
   }: TreeProps,
   ref,
 ) {
-  const [innerSelected, setInnerSelected] = useState(defaultSelectedKeys);
-  const [innerExpanded, setInnerExpanded] = useState(defaultExpandedKeys);
-  const [innerChecked, setInnerChecked] = useState(defaultCheckedKeys);
+  const [innerSelected, setInnerSelected] = useValue(selectedKeys, (next): string[] => next ?? []);
+  const [innerExpanded, setInnerExpanded] = useValue(expandedKeys, (next): string[] => next ?? []);
+  const [innerChecked, setInnerChecked] = useValue(checkedKeys, (next): string[] => next ?? []);
   const [loadingKeys, setLoadingKeys] = useState(new Set<string>());
   const [dropKey, setDropKey] = useState<string>();
   const [dropPosition, setDropPosition] = useState<TreeDropPosition>("inside");
@@ -183,9 +185,9 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
   const dropPositionRef = useRef<TreeDropPosition>("inside");
   const rootRef = useRef<HTMLDivElement>(null);
   const virtualListRef = useRef<VirtualListRef>(null);
-  const selected = selectedKeys ?? innerSelected;
-  const expanded = expandedKeys ?? innerExpanded;
-  const checked = checkedKeys ?? innerChecked;
+  const selected = innerSelected;
+  const expanded = innerExpanded;
+  const checked = innerChecked;
   const normalizedData = useMemo(() => {
     // loadData may mutate nodes in place; version invalidates the normalized snapshot.
     void version;
@@ -226,10 +228,10 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
 
   const commitExpanded = useCallback(
     (keys: string[]) => {
-      if (!expandedKeys) setInnerExpanded(keys);
+      setInnerExpanded(keys);
       onExpandedKeysChange?.(keys);
     },
-    [expandedKeys, onExpandedKeysChange],
+    [setInnerExpanded, onExpandedKeysChange],
   );
   const expand = async (node: TreeNode) => {
     if (node.disabled || node.isLeaf || loadingKeys.has(node.key)) return;
@@ -257,7 +259,7 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
     onExpand?.({ key: node.key, expanded: nextExpanded, node });
   };
   const commitChecked = (keys: string[]) => {
-    if (!checkedKeys) setInnerChecked(keys);
+    setInnerChecked(keys);
     onCheckedKeysChange?.(keys);
   };
   const toggleCheck = (event: ChangeEvent, node: TreeNode) => {
@@ -302,7 +304,7 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
       : selected.includes(node.key)
         ? []
         : [node.key];
-    if (!selectedKeys) setInnerSelected(keys);
+    setInnerSelected(keys);
     onSelectedKeysChange?.(keys);
     onSelect?.(node, keys);
   };

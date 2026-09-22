@@ -6,7 +6,7 @@ const treeData = [{ key: "fruit", title: "Fruit", children: [{ key: "apple", tit
 
 describe("TreeSelect", () => {
   it("shows Empty instead of leaving a blank popup when search has no match", () => {
-    render(<TreeSelect defaultOpen filterable treeData={treeData} emptyText="No match" />);
+    render(<TreeSelect open filterable treeData={treeData} emptyText="No match" />);
 
     fireEvent.change(document.querySelector(".k-tree-select-search")!, {
       target: { value: "missing" },

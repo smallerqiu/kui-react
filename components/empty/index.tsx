@@ -5,7 +5,10 @@ import { ConfigContext } from "../config/config-context";
 import Icon from "../icon";
 import zhCN from "../locale/zh-CN";
 
-export interface EmptyProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface EmptyProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   description?: string | boolean | React.ReactNode;
   image?: string | React.ReactNode;
   imageStyle?: React.CSSProperties;

@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import clsx from "clsx";
 import { X } from "kui-icons";
 import React, { useEffect, useState } from "react";
@@ -15,9 +16,7 @@ export interface TourStep {
 }
 export interface TourProps {
   open?: boolean;
-  defaultOpen?: boolean;
   current?: number;
-  defaultCurrent?: number;
   steps: TourStep[];
   mask?: boolean;
   closable?: boolean;
@@ -27,9 +26,7 @@ export interface TourProps {
 }
 const Tour: React.FC<TourProps> = ({
   open,
-  defaultOpen = false,
   current,
-  defaultCurrent = 0,
   steps,
   mask = true,
   closable = true,
@@ -37,17 +34,17 @@ const Tour: React.FC<TourProps> = ({
   onOpenChange,
   onFinish,
 }) => {
-  const [innerOpen, setInnerOpen] = useState(defaultOpen);
-  const [innerCurrent, setInnerCurrent] = useState(defaultCurrent);
+  const [innerOpen, setInnerOpen] = useValue(open, (next) => next ?? false);
+  const [innerCurrent, setInnerCurrent] = useValue(current, (next) => next ?? 0);
   const [, refresh] = useState(0);
-  const visible = open ?? innerOpen;
+  const visible = innerOpen;
   const [rendered, setRendered] = useState(visible);
   const [previousVisible, setPreviousVisible] = useState(visible);
   if (previousVisible !== visible) {
     setPreviousVisible(visible);
     if (visible) setRendered(true);
   }
-  const index = current ?? innerCurrent;
+  const index = innerCurrent;
   const step = steps[index];
   useEffect(() => {
     toggleContainerScroll(document.body, visible);
@@ -68,11 +65,11 @@ const Tour: React.FC<TourProps> = ({
   const rect = target?.getBoundingClientRect();
   const placement = step.placement ?? "bottom";
   const close = () => {
-    if (open === undefined) setInnerOpen(false);
+    setInnerOpen(false);
     onOpenChange?.(false);
   };
   const go = (next: number) => {
-    if (current === undefined) setInnerCurrent(next);
+    setInnerCurrent(next);
     onChange?.(next);
   };
   const panelStyle: React.CSSProperties = rect

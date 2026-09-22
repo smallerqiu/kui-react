@@ -4,7 +4,10 @@ import React from "react";
 import type { SizeType } from "../const/types";
 import { useSkeletonLoading } from "./use-skeleton-loading";
 
-export interface SkeletonTextProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SkeletonTextProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   animated?: boolean;
   loading?: boolean;
   delay?: number;

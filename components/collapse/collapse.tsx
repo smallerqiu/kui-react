@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance, normalizeSurfaceShape } from "../config/use-config-appearance";
 import clsx from "clsx";
 import React, { useState } from "react";
@@ -5,9 +6,11 @@ import { getChildren } from "../utils/react-node";
 import type { CollapsePanelProps } from "./collapse-panel";
 import type { ShapeType, ThemeType } from "../const/types";
 
-export interface CollapseProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface CollapseProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange" | "defaultValue" | "defaultChecked"
+> {
   openKeys?: (string | number)[];
-  defaultOpenKeys?: (string | number)[];
   accordion?: boolean;
   sample?: boolean;
   theme?: ThemeType;
@@ -19,7 +22,6 @@ export interface CollapseProps extends Omit<React.HTMLAttributes<HTMLDivElement>
 
 const Collapse: React.FC<CollapseProps> = ({
   openKeys,
-  defaultOpenKeys = [],
   accordion = false,
   sample = false,
   theme: themeProp,
@@ -33,11 +35,13 @@ const Collapse: React.FC<CollapseProps> = ({
   const inheritedAppearance = useConfigAppearance();
   const theme = themeProp ?? inheritedAppearance.theme ?? "outline";
   const shape = normalizeSurfaceShape(shapeProp ?? inheritedAppearance.shape ?? "round");
-  const [innerActiveKeys, setInnerActiveKeys] = useState<(string | number)[]>(defaultOpenKeys);
-  const activeKeys = openKeys ?? innerActiveKeys;
+  const [innerActiveKeys, setInnerActiveKeys] = useValue(
+    openKeys,
+    (next): (string | number)[] => next ?? [],
+  );
+  const activeKeys = innerActiveKeys;
   const [keyRegistry, setKeyRegistry] = useState(
-    () =>
-      new Map([...defaultOpenKeys, ...(openKeys ?? [])].map((key) => [String(key), key] as const)),
+    () => new Map((openKeys ?? []).map((key) => [String(key), key] as const)),
   );
   // Preserve numeric keys after closing without mutating refs during render.
   const resolvedKeys = new Map(keyRegistry);
@@ -61,7 +65,7 @@ const Collapse: React.FC<CollapseProps> = ({
       nextKeys = accordion ? [key] : [...nextKeys, key];
     }
 
-    if (openKeys === undefined) setInnerActiveKeys(nextKeys);
+    setInnerActiveKeys(nextKeys);
     onOpenKeysChange?.(nextKeys);
     onChange?.(key);
   };

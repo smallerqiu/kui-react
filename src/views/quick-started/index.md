@@ -84,11 +84,11 @@ export default function AddButton() {
 
 [输入值与开关状态](./value.tsx?show=vertical)
 
-| 场景                        | 属性和回调              | 行为                                                                                                                                    |
-| --------------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Input、Select 等值输入组件  | `value` / `onChange`    | `value` 初始化组件，并在外部值变化时同步；用户操作也会更新组件内部值。需要父子同步时配合 React state 使用。                             |
-| Switch、Checkbox 等勾选组件 | `checked` / `onChange`  | 传入 `checked` 后由父组件控制状态；只设置初始状态时使用 `defaultChecked`。Switch 回调直接返回值，Checkbox 回调返回含 `checked` 的对象。 |
-| Modal、Drawer 等显隐组件    | `open` / `onOpenChange` | 传入 `open` 后由父组件控制显隐；只设置初始状态时使用 `defaultOpen`。                                                                    |
+| 场景                        | 属性和回调              | 行为                                                                                                                      |
+| --------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Input、Select 等值输入组件  | `value` / `onChange`    | `value` 初始化组件，并在外部值变化时同步；用户操作也会更新组件内部值。需要父子同步时配合 React state 使用。               |
+| Switch、Checkbox 等勾选组件 | `checked` / `onChange`  | `checked` 设置初始状态，交互可更新内部状态，属性变化时同步。Switch 回调直接返回值，Checkbox 回调返回含 `checked` 的对象。 |
+| Modal、Drawer 等显隐组件    | `open` / `onOpenChange` | `open` 设置初始显隐，交互可更新内部状态，属性变化时同步。                                                                 |
 
 固定的 `value` 不会锁定 Input；要禁止编辑，请使用 `disabled` 或 `readOnly`。更新数组或对象值时创建新值，避免直接修改原对象。各组件的回调参数以其 API 为准，例如 Checkbox 可以写成 `onChange={({ checked }) => setChecked(checked)}`。
 

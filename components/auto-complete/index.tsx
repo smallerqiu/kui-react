@@ -26,12 +26,11 @@ export interface AutoCompleteOption {
 }
 export interface AutoCompleteProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
-  "size" | "value" | "defaultValue" | "onChange" | "onSelect"
+  "size" | "value" | "defaultValue" | "onChange" | "onSelect" | "defaultChecked"
 > {
   value?: string;
   options?: Array<string | AutoCompleteOption>;
   open?: boolean;
-  defaultOpen?: boolean;
   showOnEmpty?: boolean;
   clearable?: boolean;
   loading?: boolean;
@@ -53,7 +52,6 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   value,
   options = EMPTY_OPTIONS,
   open,
-  defaultOpen = false,
   showOnEmpty = false,
   clearable = false,
   loading = false,
@@ -88,7 +86,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
     [options],
   );
   const initialCurrent = value ?? "";
-  const initiallyOpen = open ?? defaultOpen;
+  const initiallyOpen = open ?? false;
   const initialShownOptions =
     initiallyOpen && (initialCurrent || showOnEmpty) && !loading
       ? normalized.filter((option) =>
@@ -99,7 +97,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         )
       : [];
   const [innerValue, setInnerValue] = useValue(value, (next) => next ?? "");
-  const [innerOpen, setInnerOpen] = useState(defaultOpen);
+  const [innerOpen, setInnerOpen] = useValue(open, (next) => next ?? false);
   const [active, setActive] = useState(-1);
   const [shownOptions, setShownOptions] = useState<AutoCompleteOption[]>(initialShownOptions);
   const [suppressRemoteOptions, setSuppressRemoteOptions] = useState(false);
@@ -112,7 +110,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   const blurTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const composing = useRef(false);
   const current = innerValue;
-  const requestedOpen = open ?? innerOpen;
+  const requestedOpen = innerOpen;
   const visible = (loading || (!suppressRemoteOptions && shownOptions.length > 0)) && requestedOpen;
   const getMatches = (input: string) =>
     normalized.filter((option) =>
@@ -124,7 +122,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
     if (next && (disabled || readOnly)) return;
     if (next && suppressRemoteOptions && !loading) return;
 
-    if (open === undefined) setInnerOpen(next);
+    setInnerOpen(next);
     if (!next) setActive(-1);
     onOpenChange?.(next);
   };
@@ -134,7 +132,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
     return matches.length > 0;
   };
   const syncOpen = (next: boolean) => {
-    if (open === undefined) setInnerOpen(next);
+    setInnerOpen(next);
     if (!next) setActive(-1);
     setSyncedOpenChange((state) => ({ value: next, revision: (state?.revision ?? 0) + 1 }));
   };
@@ -151,6 +149,17 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
       const matched = commitMatches(current);
       setSuppressRemoteOptions(!!onSearch && !matched);
       syncOpen(matched);
+    }
+  }
+  const [previousOpen, setPreviousOpen] = useState(open);
+  if (previousOpen !== open) {
+    setPreviousOpen(open);
+    if (open) {
+      const matches = current || showOnEmpty ? getMatches(current) : [];
+      setShownOptions(matches);
+      setSuppressRemoteOptions(false);
+    } else {
+      setActive(-1);
     }
   }
   const emitSyncedOpen = useEffectEvent((next: boolean) => onOpenChange?.(next));

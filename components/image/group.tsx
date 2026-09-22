@@ -2,7 +2,10 @@ import clsx from "clsx";
 import { useEffect, useMemo, useRef, type HTMLAttributes } from "react";
 import createInstance, { type ImagePreviewInstance } from "./instance";
 import { ImageGroupContext, type ImageGroupContextValue } from "./image-group-context";
-export interface ImageGroupProps extends HTMLAttributes<HTMLDivElement> {
+export interface ImageGroupProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   data?: string[];
 }
 

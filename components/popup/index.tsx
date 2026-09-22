@@ -23,7 +23,10 @@ import {
 import type { PopupOpenChangeDetail, PopupRef, PopupTrigger } from "./types";
 export type { PopupOpenChangeDetail, PopupOpenReason, PopupRef, PopupTrigger } from "./types";
 
-export interface PopupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+export interface PopupProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "children" | "defaultValue" | "defaultChecked"
+> {
   open?: boolean;
   disabled?: boolean;
   placement?: PlacementsType;

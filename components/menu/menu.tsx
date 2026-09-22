@@ -34,7 +34,7 @@ export interface MenuOptionsProps {
 
 export interface MenuProps extends Omit<
   React.HTMLAttributes<HTMLUListElement>,
-  "defaultValue" | "onChange" | "onSelect"
+  "defaultValue" | "onChange" | "onSelect" | "defaultChecked"
 > {
   theme?: "light" | "dark";
   mode?: DirectionType;
@@ -45,7 +45,6 @@ export interface MenuProps extends Omit<
   inlineCollapsed?: boolean;
   collapsedTooltip?: boolean;
   openKeys?: string[];
-  defaultOpenKeys?: string[];
   onSelect?: (data: MenuSelectEvent) => void;
   onOpenChange?: (openKeys: string[]) => void;
   onChange?: (selectedKeys: string[]) => void;
@@ -62,7 +61,6 @@ export const Menu: React.FC<MenuProps> = ({
   inlineCollapsed = false,
   collapsedTooltip = true,
   openKeys,
-  defaultOpenKeys = [],
   onSelect,
   onOpenChange,
   onChange,
@@ -76,7 +74,10 @@ export const Menu: React.FC<MenuProps> = ({
     value,
     (next): string[] => next ?? [],
   );
-  const [internalOpenKeys, setInternalOpenKeys] = useState<string[]>(defaultOpenKeys);
+  const [internalOpenKeys, setInternalOpenKeys] = useValue(
+    openKeys,
+    (next): string[] => next ?? [],
+  );
   const [popupOpenKeys, setPopupOpenKeys] = useState<string[]>([]);
   const [collapseState, setCollapseState] = useState({
     inlineCollapsed,
@@ -93,7 +94,7 @@ export const Menu: React.FC<MenuProps> = ({
 
   // --- tempOpenKeys: save/restore openKeys during mode switch & collapse ---
   // Using useState so React tracks changes and the value is available during render.
-  const [tempOpenKeys, setTempOpenKeys] = useState<string[]>(openKeys ?? defaultOpenKeys);
+  const [tempOpenKeys, setTempOpenKeys] = useState<string[]>(openKeys ?? []);
 
   // Render-time change detection (React "adjusting state when prop changes" pattern)
   const [prevMode, setPrevMode] = useState(mode);
@@ -111,11 +112,11 @@ export const Menu: React.FC<MenuProps> = ({
   if (prevMode !== mode) {
     setPrevMode(mode);
     if (mode === "vertical") {
-      const current = openKeys ?? internalOpenKeys;
+      const current = internalOpenKeys;
       if (current.length > 0) setTempOpenKeys([...current]);
-      if (openKeys === undefined) setInternalOpenKeys([]);
+      setInternalOpenKeys([]);
     } else if (!inlineCollapsed && tempOpenKeys.length > 0) {
-      if (openKeys === undefined) setInternalOpenKeys([...tempOpenKeys]);
+      setInternalOpenKeys([...tempOpenKeys]);
     }
   }
 
@@ -124,17 +125,17 @@ export const Menu: React.FC<MenuProps> = ({
     setPrevInlineCollapsed(inlineCollapsed);
     setInlineTransition(true);
     if (inlineCollapsed) {
-      const current = openKeys ?? internalOpenKeys;
+      const current = internalOpenKeys;
       if (!inlineTransition) setTempOpenKeys([...current]);
-      if (openKeys === undefined) setInternalOpenKeys([]);
+      setInternalOpenKeys([]);
     } else if (tempOpenKeys.length > 0) {
-      if (openKeys === undefined) setInternalOpenKeys([...tempOpenKeys]);
+      setInternalOpenKeys([...tempOpenKeys]);
     }
   }
 
   const currentSelectedKeys =
     value === undefined && selectedKeys !== undefined ? selectedKeys : internalSelectedKeys;
-  const currentOpenKeys = openKeys ?? internalOpenKeys;
+  const currentOpenKeys = internalOpenKeys;
   const popupInlineCollapsed =
     inlineCollapsed &&
     collapseState.inlineCollapsed === inlineCollapsed &&
@@ -145,7 +146,7 @@ export const Menu: React.FC<MenuProps> = ({
       ? currentOpenKeys
       : [];
 
-  // Switching the collapsed presentation must not mutate controlled openKeys.
+  // Preserve the expanded path across collapsed presentation changes.
   // Keep the expanded path intact so it can be restored when inline mode returns.
   useEffect(() => {
     const changed = prevCollapsedEffectRef.current !== inlineCollapsed;
@@ -200,11 +201,11 @@ export const Menu: React.FC<MenuProps> = ({
         dropdownContext?.menuSelected?.({ key, keyPath });
         return;
       }
-      const current = openKeys ?? internalOpenKeys;
+      const current = internalOpenKeys;
       if (current.length > 0) {
         setTempOpenKeys([...current]);
       }
-      if (openKeys === undefined) setInternalOpenKeys([]);
+      setInternalOpenKeys([]);
       onOpenChange?.([]);
     }
     dropdownContext?.menuSelected?.({ key, keyPath });
@@ -223,7 +224,7 @@ export const Menu: React.FC<MenuProps> = ({
     }
 
     if (inlineCollapsed) setPopupOpenKeys(nextOpenKeys);
-    else if (openKeys === undefined) setInternalOpenKeys(nextOpenKeys);
+    else setInternalOpenKeys(nextOpenKeys);
     onOpenChange?.(nextOpenKeys);
   };
 

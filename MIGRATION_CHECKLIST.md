@@ -16,8 +16,8 @@ item must pass ESLint, TypeScript, the relevant tests, and the documentation bui
 ## React API conventions
 
 - [x] Value components use `value` for initialization and external synchronization, with local edits reported through `onChange`
-- [x] Visibility components use `open`, `defaultOpen`, and `onOpenChange`
-- [x] Boolean input components use `checked`, `defaultChecked`, and `onChange`
+- [x] Visibility components use `open` and `onOpenChange` (initialization, local interaction, and external synchronization)
+- [x] Boolean input components use `checked` and `onChange` (initialization, local interaction, and external synchronization)
 - [x] ReactNode content consistently replaces Vue slots
 - [x] Public prop and callback types are exported from `react-kui`
 - [x] Controlled and uncontrolled behavior is covered by tests

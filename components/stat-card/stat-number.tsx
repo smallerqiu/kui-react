@@ -2,7 +2,10 @@ import clsx from "clsx";
 import type { HTMLAttributes, ReactNode } from "react";
 import CountUp from "./countup";
 
-export interface StatNumberProps extends Omit<HTMLAttributes<HTMLDivElement>, "prefix"> {
+export interface StatNumberProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "prefix" | "defaultValue" | "defaultChecked"
+> {
   value?: number;
   separator?: string;
   duration?: number;

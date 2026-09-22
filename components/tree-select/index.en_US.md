@@ -46,9 +46,8 @@ Similar to the Select selection control, when the selectable data structure is a
 
 | Property                | Description                                                               | Type                                  | Default       |
 | ----------------------- | ------------------------------------------------------------------------- | ------------------------------------- | ------------- |
-| value                   | selected value                                                 | TreeSelectValue                       | -             |
-| open                    | Controlled dropdown visibility                                            | boolean                               | -             |
-| defaultOpen             | Initial dropdown visibility in uncontrolled mode                          | boolean                               | false         |
+| value                   | selected value                                                            | TreeSelectValue                       | -             |
+| open                    | dropdown visibility                                                       | boolean                               | -             |
 | width                   | Component width                                                           | string, number                        | -             |
 | placement               | Dropdown placement                                                        | DropPlacementsType                    | bottom-left   |
 | maxTagCount             | Maximum visible tags in multiple mode; excess tags are shown in a Tooltip | number                                | -             |

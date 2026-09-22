@@ -1,6 +1,9 @@
 import type { HTMLAttributes, ReactNode } from "react";
 
-export interface PageHeaderProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
+export interface PageHeaderProps extends Omit<
+  HTMLAttributes<HTMLElement>,
+  "title" | "defaultValue" | "defaultChecked"
+> {
   title?: ReactNode;
   description?: ReactNode;
   breadcrumb?: ReactNode;

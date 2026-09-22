@@ -5,7 +5,10 @@ import { SizeContext } from "../config/size-context";
 import type { ShapeType, SizeType } from "../const/types";
 import { ButtonGroupContext } from "./button-group-context";
 
-export interface ButtonGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ButtonGroupProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   size?: SizeType;
   shape?: ShapeType;
   children?: React.ReactNode;
@@ -32,7 +35,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
       "k-btn-group-circle": shape === "circle",
       "k-btn-group-square": shape === "square",
     },
-    className
+    className,
   );
 
   return (

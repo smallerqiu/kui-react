@@ -2,7 +2,10 @@ import clsx from "clsx";
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import Icon, { type IconType } from "../icon";
 
-export interface TimelineItemProps extends HTMLAttributes<HTMLLIElement> {
+export interface TimelineItemProps extends Omit<
+  HTMLAttributes<HTMLLIElement>,
+  "defaultValue" | "defaultChecked"
+> {
   color?: string;
   icon?: IconType[];
   time?: ReactNode;

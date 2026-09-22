@@ -17,7 +17,7 @@ export interface CheckboxOption<T extends string | number = string | number> {
 
 export interface CheckboxGroupProps<T extends string | number = string | number> extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "onChange" | "defaultValue"
+  "onChange" | "defaultValue" | "defaultChecked"
 > {
   value?: T[];
   theme?: ThemeType;

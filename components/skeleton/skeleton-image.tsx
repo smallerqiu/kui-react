@@ -4,7 +4,10 @@ import React from "react";
 import Icon from "../icon";
 import { useSkeletonLoading } from "./use-skeleton-loading";
 
-export interface SkeletonImageProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SkeletonImageProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   animated?: boolean;
   loading?: boolean;
   delay?: number;

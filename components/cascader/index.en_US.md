@@ -36,9 +36,8 @@ A cascading selection box.
 
 | Property       | Description                                                                                                         | Type                      | Default           |
 | :------------- | :------------------------------------------------------------------------------------------------------------------ | :------------------------ | :---------------- |
-| value          | array of path values (e.g., `['zhejiang', 'hangzhou', 'xihu']`).                                         | `(string \| number)[]`    | -                 |
-| open           | Controlled dropdown visibility.                                                                                     | `boolean`                 | -                 |
-| defaultOpen    | Initial dropdown visibility in uncontrolled mode.                                                                   | `boolean`                 | `false`           |
+| value          | array of path values (e.g., `['zhejiang', 'hangzhou', 'xihu']`).                                                    | `(string \| number)[]`    | -                 |
+| open           | dropdown visibility.                                                                                                | `boolean`                 | -                 |
 | theme          | Component theme.                                                                                                    | `ThemeType`               | `fill`            |
 | bordered       | Whether to display the border.                                                                                      | `boolean`                 | `true`            |
 | shape          | Component shape.                                                                                                    | `ShapeType`               | -                 |

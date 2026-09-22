@@ -1,8 +1,9 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { Check } from "kui-icons";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import Icon from "../icon";
 import { CheckCardGroupContext } from "./context";
 import type { CheckCardProps } from "./types";
@@ -11,7 +12,6 @@ const CheckCard = React.forwardRef<HTMLDivElement, CheckCardProps>(
   (
     {
       checked,
-      defaultChecked = false,
       value,
       title,
       description,
@@ -36,9 +36,9 @@ const CheckCard = React.forwardRef<HTMLDivElement, CheckCardProps>(
     const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
     const group = useContext(CheckCardGroupContext);
     const rootRef = useRef<HTMLDivElement | null>(null);
-    const [localChecked, setLocalChecked] = useState(defaultChecked);
+    const [localChecked, setLocalChecked] = useValue(checked, (next) => next ?? false);
     const grouped = !!group && value !== undefined;
-    const isChecked = grouped ? group.value === value : (checked ?? localChecked);
+    const isChecked = grouped ? group.value === value : localChecked;
     const isDisabled = disabled || !!group?.disabled;
     const isReadOnly = readOnly || !!group?.readOnly;
     const currentTheme = themeProp ?? group?.theme ?? theme;
@@ -67,7 +67,7 @@ const CheckCard = React.forwardRef<HTMLDivElement, CheckCardProps>(
         return;
       }
       const next = !isChecked;
-      if (checked === undefined) setLocalChecked(next);
+      setLocalChecked(next);
       onChange?.({ checked: next, value });
     };
 

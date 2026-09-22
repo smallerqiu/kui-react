@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance, normalizeSurfaceShape } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { ChevronDown, ChevronRight, Triangle } from "kui-icons";
@@ -32,13 +33,11 @@ export default function Table<T extends object = Record<string, unknown>>({
   data = [],
   columns = [],
   selectedKeys,
-  defaultSelectedKeys = [],
   disabledKeys = [],
   rowKey = "key",
   childrenColumnName = "children",
   expandedKeys,
-  defaultExpandedKeys = [],
-  defaultExpandAllRows = false,
+  expandAllRows = false,
   expandRowByClick = false,
   indentSize = 20,
   scroll = {},
@@ -71,28 +70,33 @@ export default function Table<T extends object = Record<string, unknown>>({
   const headerRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const scrollFrameRef = useRef(0);
-  const controlledSelection = selectedKeys !== undefined;
-  const [innerSelected, setInnerSelected] = useState(new Set(selectedKeys ?? defaultSelectedKeys));
-  const [innerExpanded, setInnerExpanded] = useState(
-    () =>
+  const [innerSelected, setInnerSelected] = useValue(selectedKeys, (next) => new Set(next ?? []));
+  const expansionSource = useMemo(
+    () => ({ expandedKeys, expandAllRows }),
+    [expandedKeys, expandAllRows],
+  );
+  const [innerExpanded, setInnerExpanded] = useValue(
+    expansionSource,
+    (source) =>
       new Set<TableKey>(
-        defaultExpandAllRows
-          ? flattenTreeData({
-              data,
-              childrenColumnName,
-              getKey: (record) => {
-                if (typeof rowKey === "function") return rowKey(record);
-                const key = getRecordValue(record, rowKey);
-                return typeof key === "string" || typeof key === "number" ? key : "";
-              },
-            })
-              .filter((row) => row.hasChildren)
-              .map((row) =>
-                typeof rowKey === "function"
-                  ? rowKey(row.record)
-                  : ((getRecordValue(row.record, rowKey) as TableKey) ?? ""),
-              )
-          : defaultExpandedKeys,
+        source.expandedKeys ??
+          (source.expandAllRows
+            ? flattenTreeData({
+                data,
+                childrenColumnName,
+                getKey: (record) => {
+                  if (typeof rowKey === "function") return rowKey(record);
+                  const key = getRecordValue(record, rowKey);
+                  return typeof key === "string" || typeof key === "number" ? key : "";
+                },
+              })
+                .filter((row) => row.hasChildren)
+                .map((row) =>
+                  typeof rowKey === "function"
+                    ? rowKey(row.record)
+                    : ((getRecordValue(row.record, rowKey) as TableKey) ?? ""),
+                )
+            : []),
       ),
   );
   const [sort, setSort] = useState<SortState>({ key: "", order: null });
@@ -100,8 +104,8 @@ export default function Table<T extends object = Record<string, unknown>>({
   const [scrollbarWidth, setScrollbarWidth] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(0);
-  const selected = controlledSelection ? new Set(selectedKeys) : innerSelected;
-  const currentExpanded = expandedKeys === undefined ? innerExpanded : new Set(expandedKeys);
+  const selected = innerSelected;
+  const currentExpanded = innerExpanded;
   const visibleColumns = useMemo(() => {
     const filter = (items: Column<T>[]): Column<T>[] =>
       items.flatMap((column) => {
@@ -273,7 +277,7 @@ export default function Table<T extends object = Record<string, unknown>>({
   const indeterminate = checkedCount > 0 && checkedCount < enabled.length;
   const commitSelection = (next: Set<string | number>) => {
     const keys = [...next];
-    if (!controlledSelection) setInnerSelected(next);
+    setInnerSelected(next);
     onSelectedKeysChange?.(keys);
     return keys;
   };
@@ -310,7 +314,7 @@ export default function Table<T extends object = Record<string, unknown>>({
     const nextExpanded = !next.has(key);
     if (nextExpanded) next.add(key);
     else next.delete(key);
-    if (expandedKeys === undefined) setInnerExpanded(next);
+    setInnerExpanded(next);
     onExpandedKeysChange?.([...next]);
     onExpand?.(nextExpanded, record);
   };

@@ -1,3 +1,4 @@
+import { useValue } from "../utils/use-value";
 import clsx from "clsx";
 import { X } from "kui-icons";
 import React, {
@@ -22,7 +23,6 @@ export type DrawerTarget =
 
 export interface DrawerProps {
   open?: boolean;
-  defaultOpen?: boolean;
   title?: React.ReactNode;
   width?: number | string;
   height?: number | string;
@@ -58,7 +58,6 @@ const ensurePositioningContext = (element: HTMLElement) => {
 
 const Drawer: React.FC<DrawerProps> = ({
   open,
-  defaultOpen = false,
   title = "Title",
   width = 520,
   height = 520,
@@ -80,8 +79,8 @@ const Drawer: React.FC<DrawerProps> = ({
 }) => {
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
-  const [innerOpen, setInnerOpen] = useState(defaultOpen);
-  const currentOpen = open ?? innerOpen;
+  const [innerOpen, setInnerOpen] = useValue(open, (next) => next ?? false);
+  const currentOpen = innerOpen;
 
   const [visible, setVisible] = useState(false);
   const [rendered, setRendered] = useState(false);
@@ -127,10 +126,10 @@ const Drawer: React.FC<DrawerProps> = ({
 
   const requestOpen = useCallback(
     (next: boolean) => {
-      if (open === undefined) setInnerOpen(next);
+      setInnerOpen(next);
       onOpenChange?.(next);
     },
-    [onOpenChange, open],
+    [onOpenChange, setInnerOpen],
   );
 
   const close = useCallback(() => {

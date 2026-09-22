@@ -61,7 +61,7 @@ export interface DatePickerPreset {
 
 export interface DatePickerProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
-  "onChange" | "children" | "defaultValue"
+  "onChange" | "children" | "defaultValue" | "defaultChecked"
 > {
   value?: DatePickerInput | DatePickerInput[];
   startDate?: DatePickerInput;
@@ -72,7 +72,6 @@ export interface DatePickerProps extends Omit<
   disabled?: boolean;
   readOnly?: boolean;
   open?: boolean;
-  defaultOpen?: boolean;
   clearable?: boolean;
   editable?: boolean;
   placeholder?: string | string[];
@@ -131,7 +130,6 @@ function DatePicker({
   disabled,
   readOnly,
   open,
-  defaultOpen = false,
   clearable = true,
   editable = true,
   placeholder = "",
@@ -182,8 +180,8 @@ function DatePicker({
   const [inner, setInner] = useValue(initial, (next) => next);
   const rangeControlled = value === undefined && (startDate !== undefined || endDate !== undefined);
   const values = rangeControlled ? initial : inner;
-  const [visibleState, setVisibleState] = useState(defaultOpen || panelOnly);
-  const visible = panelOnly || (open ?? visibleState);
+  const [visibleState, setVisibleState] = useValue(open, (next) => next ?? false);
+  const visible = panelOnly || visibleState;
   const syncSignature = `${fmt}:${parsedSource.map((item) => item?.valueOf() ?? "null").join(",")}`;
   const [panelState, setPanelState] = useState({
     signature: syncSignature,
@@ -235,11 +233,11 @@ function DatePicker({
   const setOpen = useCallback(
     (next: boolean) => {
       if (panelOnly) return;
-      if (open === undefined) setVisibleState(next);
+      setVisibleState(next);
 
       onOpenChange?.(next);
     },
-    [onOpenChange, open, panelOnly],
+    [onOpenChange, setVisibleState, panelOnly],
   );
   const closePopup = () => {
     if (isRange && draft.length === 1) {
@@ -792,7 +790,7 @@ function DatePicker({
   );
 }
 
-export type DatePickerPanelProps = Omit<DatePickerProps, "panelOnly" | "open" | "defaultOpen">;
+export type DatePickerPanelProps = Omit<DatePickerProps, "panelOnly" | "open">;
 export function DatePickerPanel(props: DatePickerPanelProps) {
   return <DatePicker {...props} panelOnly />;
 }

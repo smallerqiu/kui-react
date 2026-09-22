@@ -40,9 +40,8 @@
 
 | 属性         | 说明                     | 类型                                | 默认值        |
 | ------------ | ------------------------ | ----------------------------------- | ------------- |
-| open         | 受控的显示状态           | boolean                             | -             |
+| open         | 显示状态                 | boolean                             | -             |
 | show         | 已废弃，请使用 `open`    | boolean                             | -             |
-| defaultOpen  | 非受控模式的初始显示状态 | boolean                             | false         |
 | trigger      | 触发方式                 | `hover` \| `click` \| `contextmenu` | `hover`       |
 | placement    | 下拉层位置               | DropPlacementsType                  | `bottom-left` |
 | arrow        | 是否显示箭头             | boolean                             | false         |

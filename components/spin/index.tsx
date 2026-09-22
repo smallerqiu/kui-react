@@ -3,7 +3,10 @@ import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
 import type { SizeType, SpinModeType } from "../const/types";
 
-export interface SpinProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SpinProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   spinning?: boolean;
   delay?: number;
   size?: SizeType;

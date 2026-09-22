@@ -1,18 +1,18 @@
+import { useValue } from "../utils/use-value";
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { Loading } from "kui-icons";
-import React, { useState } from "react";
+import React from "react";
 import type { ShapeType, SizeType, ValueType } from "../const/types";
 import Icon from "../icon";
 import { getValueWithType } from "../utils/checked";
 
 export interface SwitchProps extends Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
-  "onChange" | "type"
+  "onChange" | "type" | "defaultValue" | "defaultChecked"
 > {
   checked?: boolean;
-  defaultChecked?: boolean;
   valueType?: ValueType;
   type?: string;
   color?: string;
@@ -30,7 +30,6 @@ export interface SwitchProps extends Omit<
 
 const Switch: React.FC<SwitchProps> = ({
   checked,
-  defaultChecked = false,
   valueType = "boolean",
   type,
   color,
@@ -52,15 +51,15 @@ const Switch: React.FC<SwitchProps> = ({
   const inheritedAppearance = useConfigAppearance();
   const size = sizeProp ?? inheritedAppearance.size;
   const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
-  const [innerChecked, setInnerChecked] = useState(defaultChecked);
-  const currentChecked = checked !== undefined ? Boolean(checked) : innerChecked;
+  const [innerChecked, setInnerChecked] = useValue(checked, (next) => next ?? false);
+  const currentChecked = innerChecked;
 
   const change = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled || readOnly || loading) {
       return;
     }
     const nextChecked = !currentChecked;
-    if (checked === undefined) setInnerChecked(nextChecked);
+    setInnerChecked(nextChecked);
 
     const val = getValueWithType(nextChecked, valueType);
     onChange?.(val);

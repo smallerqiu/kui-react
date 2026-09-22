@@ -2,7 +2,10 @@ import clsx from "clsx";
 import { useContext, type CSSProperties, type HTMLAttributes } from "react";
 import { GridContext, type ResponsiveValue } from "./useBreakpoint";
 
-export interface GridItemProps extends HTMLAttributes<HTMLDivElement> {
+export interface GridItemProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   span?: ResponsiveValue<number>;
   rowSpan?: ResponsiveValue<number>;
   columnStart?: ResponsiveValue<number>;

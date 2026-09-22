@@ -3,12 +3,14 @@ import Popup, { type PopupRef } from "../popup";
 import type { DropPlacementsType, TriggerType } from "../const/types";
 import { DropdownContext } from "./dropdown-context";
 
-export interface DropdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "show"> {
+export interface DropdownProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "show" | "defaultValue" | "defaultChecked"
+> {
   trigger?: TriggerType;
   disabled?: boolean;
   arrow?: boolean;
   open?: boolean;
-  defaultOpen?: boolean;
   /** @deprecated Use `open` instead. */
   show?: boolean;
   placement?: DropPlacementsType;
@@ -23,7 +25,6 @@ const Dropdown: React.FC<DropdownProps> = ({
   disabled = false,
   arrow = false,
   open,
-  defaultOpen = false,
   show,
   placement = "bottom-left",
   target,
@@ -61,7 +62,6 @@ const Dropdown: React.FC<DropdownProps> = ({
         {...attrs}
         ref={popupRef}
         open={open ?? show}
-        defaultOpen={defaultOpen}
         trigger={trigger}
         disabled={disabled}
         arrow={arrow}

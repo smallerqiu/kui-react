@@ -17,7 +17,10 @@ export interface KanbanMoveEvent {
   to: string | number;
 }
 const toRenderKey = (value: unknown) => `${typeof value}:${String(value)}`;
-export interface KanbanProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface KanbanProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "defaultChecked"
+> {
   columns?: KanbanColumnData[];
   data?: KanbanItemData[];
   rowKey?: string;

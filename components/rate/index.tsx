@@ -8,7 +8,7 @@ import Star from "./star";
 
 export interface RateProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "onChange" | "defaultValue"
+  "onChange" | "defaultValue" | "defaultChecked"
 > {
   value?: number;
   allowClear?: boolean;

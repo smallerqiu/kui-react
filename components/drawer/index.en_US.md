@@ -30,8 +30,7 @@ A floating panel that slides in from the edge of the screen.
 
 | Property     | Description                                                                                       | Type                                                         | Default             |
 | ------------ | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------- |
-| open         | Controlled drawer visibility                                                                      | boolean                                                      | -                   |
-| defaultOpen  | Initial visibility in uncontrolled mode                                                           | boolean                                                      | false               |
+| open         | drawer visibility                                                                                 | boolean                                                      | -                   |
 | escKey       | Whether to support closing with Esc key                                                           | boolean                                                      | true                |
 | maskClosable | Whether clicking the mask allows closing                                                          | boolean                                                      | true                |
 | title        | Drawer title. When null or false, the title is not displayed                                      | string                                                       | -                   |

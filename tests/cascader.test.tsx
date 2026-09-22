@@ -29,7 +29,7 @@ describe("Cascader", () => {
   });
 
   it("renders custom empty text", () => {
-    render(<Cascader emptyText="Nothing here" defaultOpen />);
+    render(<Cascader emptyText="Nothing here" open />);
     expect(screen.getByText("Nothing here")).not.toBeNull();
   });
 
@@ -60,7 +60,7 @@ describe("Cascader", () => {
     );
     render(
       <Cascader
-        defaultOpen
+        open
         options={[{ label: "Async", value: "async", isLeaf: false }]}
         loadData={loadData}
       />,

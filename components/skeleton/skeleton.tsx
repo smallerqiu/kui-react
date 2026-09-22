@@ -8,7 +8,10 @@ export interface SkeletonAvatarConfig {
   shape?: ShapeType;
 }
 
-export interface SkeletonProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+export interface SkeletonProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "title" | "defaultValue" | "defaultChecked"
+> {
   animated?: boolean;
   loading?: boolean;
   delay?: number;
