@@ -32,7 +32,8 @@ const packOutput = execFileSync("pnpm", ["pack", "--dry-run", "--json"], {
   cwd: root,
   encoding: "utf8",
 });
-const parsed = JSON.parse(packOutput);
+type PackResult = { files: Array<{ path: string }> };
+const parsed: PackResult | PackResult[] = JSON.parse(packOutput);
 const pack = Array.isArray(parsed) ? parsed[0] : parsed;
 const packedFiles = new Set(pack.files.map((file) => file.path));
 const missing = requiredFiles.filter((file) => !packedFiles.has(file));

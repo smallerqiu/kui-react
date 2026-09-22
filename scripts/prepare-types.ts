@@ -8,7 +8,7 @@ if (process.argv.includes("--clean")) {
   fs.rmSync(root, { recursive: true, force: true });
   process.exit(0);
 }
-const walk = (directory) =>
+const walk = (directory: string): string[] =>
   fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const file = path.join(directory, entry.name);
     return entry.isDirectory() ? walk(file) : file.endsWith(".d.ts") ? [file] : [];
@@ -17,8 +17,8 @@ const files = walk(root);
 for (const file of files) {
   const source = fs.readFileSync(file, "utf8");
   const tree = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true);
-  const edits = [];
-  const visit = (node) => {
+  const edits: Array<{ start: number; end: number; relative: string }> = [];
+  const visit = (node: ts.Node) => {
     if (
       ts.isStringLiteral(node) &&
       node.text.startsWith(".") &&
@@ -26,7 +26,10 @@ for (const file of files) {
         node.parent.moduleSpecifier === node) ||
         (ts.isLiteralTypeNode(node.parent) && ts.isImportTypeNode(node.parent.parent)))
     ) {
-      const base = path.resolve(path.dirname(file), node.text.replace(/\.(?:js|cjs|mjs|ts|tsx)$/, ""));
+      const base = path.resolve(
+        path.dirname(file),
+        node.text.replace(/\.(?:js|cjs|mjs|ts|tsx)$/, ""),
+      );
       const target = [base + ".d.ts", path.join(base, "index.d.ts")].find((candidate) =>
         fs.existsSync(candidate),
       );
@@ -42,7 +45,7 @@ for (const file of files) {
     ts.forEachChild(node, visit);
   };
   visit(tree);
-  const rewrite = (extension) => {
+  const rewrite = (extension: string) => {
     let result = source;
     for (const edit of edits.sort((a, b) => b.start - a.start)) {
       result = result.slice(0, edit.start) + edit.relative + extension + result.slice(edit.end);

@@ -8,7 +8,8 @@ import { execFileSync } from "node:child_process";
 const root = process.cwd();
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), "react-kui-package-"));
 const tarball = process.argv[2] ? path.resolve(process.argv[2]) : path.join(temp, "react-kui.tgz");
-const run = (cmd, args, cwd = temp) => execFileSync(cmd, args, { cwd, stdio: "inherit" });
+const run = (cmd: string, args: string[], cwd = temp) =>
+  execFileSync(cmd, args, { cwd, stdio: "inherit" });
 try {
   if (!process.argv[2]) run("pnpm", ["pack", "--out", tarball], root);
   fs.writeFileSync(
