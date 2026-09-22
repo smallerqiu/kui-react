@@ -95,7 +95,7 @@ React 19.2+ library. Package: react-kui. Import CSS once from react-kui/style/in
 - [SkeletonImage](https://react.k-ui.cn/components/skeleton)
 - [SkeletonText](https://react.k-ui.cn/components/skeleton)
 - [StatCard](https://react.k-ui.cn/components/stat-card)
-- [StatNumber](https://react.k-ui.cn/components/stat-card)
+- [StatNumber](https://react.k-ui.cn/components/stat-number)
 - [Slider](https://react.k-ui.cn/components/slider)
 - [Space](https://react.k-ui.cn/components/space)
 - [Spin](https://react.k-ui.cn/components/spin)
@@ -31497,33 +31497,6 @@ export default function App() {
   );
 }
 ```
-## 基本用法
-
-```tsx
-import { useState } from "react";
-import { Button, Space, StatNumber } from "react-kui";
-const initValue = Math.random() * 100000;
-export default function App() {
-  const [value, setValue] = useState(initValue);
-  return (
-    <Space vertical>
-      <Button onClick={() => setValue(Math.random() * 10000000)} size="small">
-        change
-      </Button>
-      <code>default:</code>
-      <StatNumber value={value} />
-      <code>type=`rollup`:</code>
-      <StatNumber value={value} type="rollup" />
-      <code>precision=`3`:</code>
-      <StatNumber value={value} precision={3} />
-      <StatNumber value={value} type="rollup" precision={3} />
-      <code>prefix & suffix:</code>
-      <StatNumber value={value} prefix="$" />
-      <StatNumber value={value} type="rollup" suffix="元" />
-    </Space>
-  );
-}
-```
 ## 组合展示
 
 ```tsx
@@ -31567,7 +31540,7 @@ export default function App() {
 {
   "name": "StatNumber",
   "import": "import { StatNumber } from \"react-kui\"",
-  "documentation": "https://react.k-ui.cn/components/stat-card",
+  "documentation": "https://react.k-ui.cn/components/stat-number",
   "props": [
     {
       "name": "value",
@@ -31670,166 +31643,33 @@ export default function App() {
   "children": []
 }
 
-## 卡片展示
-
-```tsx
-import { Heart, Star } from "kui-icons";
-import { useState } from "react";
-import {
-  Checkbox,
-  Grid,
-  GridItem,
-  Icon,
-  Segmented,
-  Space,
-  StatCard,
-  type SizeType,
-  type StatNumberItem,
-  type StatCardProps,
-} from "react-kui";
-const sizes = ["small", "medium", "large"].map((value) => ({ value, label: value }));
-const themeOptions = ["outline", "fill", "plain"].map((value) => ({ value, label: value }));
-const items = [
-  { value: 5872, desc: "Number of orders" },
-  { value: 9873672, desc: "Total Order Amount", prefix: "￥" },
-];
-const items1 = [
-  { value: 5872, desc: "Alipay Revenue", prefix: "$", precision: 2 },
-  { value: 9873672, desc: "WeChat Revenue", prefix: "￥", precision: 2 },
-];
-const items2: StatNumberItem[] = [
-  { value: 5872, desc: "Number of likes", prefix: <Icon type={Heart} /> },
-  { value: 9873672, desc: "Number of Favorites", prefix: <Icon type={Star} /> },
-];
-export default function App() {
-  const [showTitle, setShowTitle] = useState(true),
-    [theme, setTheme] = useState<NonNullable<StatCardProps["theme"]>>("fill"),
-    [reverse, setReverse] = useState(false),
-    [size, setSize] = useState<SizeType>("medium");
-  const check =
-    (setter: (value: boolean) => void) =>
-    ({ checked }: { checked: boolean }) =>
-      setter(checked);
-  return (
-    <Space vertical block>
-      <Space>
-        <Checkbox checked={showTitle} onChange={check(setShowTitle)}>
-          Show Title
-        </Checkbox>
-        <Checkbox checked={reverse} onChange={check(setReverse)}>
-          Reverse
-        </Checkbox>
-        <Segmented value={size} options={sizes} onChange={(value) => setSize(value as SizeType)} />
-        <Segmented
-          value={theme}
-          options={themeOptions}
-          onChange={(value) => setTheme(value as typeof theme)}
-        />
-      </Space>
-      <Grid cols={{ xs: 1, sm: 2, md: 3 }} xGap={16} yGap={16}>
-        <GridItem>
-          <StatCard
-            title={showTitle ? "Today's Orders" : undefined}
-            reverse={reverse}
-            items={items}
-            theme={theme}
-            size={size}
-          />
-        </GridItem>
-        <GridItem>
-          <StatCard
-            statNumberType="rollup"
-            title={showTitle ? "Today's income" : undefined}
-            items={items1}
-            theme={theme}
-            reverse={reverse}
-            size={size}
-          />
-        </GridItem>
-        <GridItem span={{ xs: 1, sm: 2, md: 1 }}>
-          <StatCard
-            reverse={reverse}
-            statNumberType="rollup"
-            title={showTitle ? "Media data" : undefined}
-            items={items2}
-            theme={theme}
-            size={size}
-          />
-        </GridItem>
-      </Grid>
-    </Space>
-  );
-}
-```
-## 趋势信息
-
-```tsx
-import { Grid, GridItem, StatCard, type StatNumberItem } from "react-kui";
-
-const cards: Array<{ title: string; data: StatNumberItem }> = [
-  {
-    title: "请求数",
-    data: {
-      value: 12840,
-      separator: ",",
-      desc: "本月累计",
-      trend: "+18.2% 较上月",
-      trendStatus: "success",
-    },
-  },
-  {
-    title: "转化率",
-    data: {
-      value: 8.6,
-      precision: 1,
-      suffix: "%",
-      desc: "本周平均",
-      trend: "接近目标值",
-      trendStatus: "warning",
-    },
-  },
-  {
-    title: "退款率",
-    data: {
-      value: 2.4,
-      precision: 1,
-      suffix: "%",
-      desc: "近 30 天",
-      trend: "+0.6% 需要关注",
-      trendStatus: "danger",
-    },
-  },
-  {
-    title: "在线用户",
-    data: { value: 3268, separator: ",", desc: "当前数据" },
-  },
-];
-
-export default function App() {
-  return (
-    <Grid cols={{ xs: 1, sm: 2, md: 4 }} xGap={16} yGap={16}>
-      {cards.map((item) => (
-        <GridItem key={item.title}>
-          <StatCard title={item.title} items={[item.data]} reverse bordered />
-        </GridItem>
-      ))}
-    </Grid>
-  );
-}
-```
-## 基本用法
+## 动画与格式化
 
 ```tsx
 import { useState } from "react";
 import { Button, Space, StatNumber } from "react-kui";
-const initValue = Math.random() * 100000;
+const initValue = 12345;
 export default function App() {
   const [value, setValue] = useState(initValue);
   return (
     <Space vertical>
-      <Button onClick={() => setValue(Math.random() * 10000000)} size="small">
-        change
-      </Button>
+      <Space wrap>
+        <Button onClick={() => setValue(12345)} size="small">
+          12,345
+        </Button>
+        <Button onClick={() => setValue(54321)} size="small">
+          54,321
+        </Button>
+        <Button onClick={() => setValue((current) => current - 100)} size="small">
+          -100
+        </Button>
+        <Button onClick={() => setValue((current) => current + 100)} size="small">
+          +100
+        </Button>
+        <Button onClick={() => setValue(Math.random() * 10000000)} size="small">
+          change
+        </Button>
+      </Space>
       <code>default:</code>
       <StatNumber value={value} />
       <code>type=`rollup`:</code>
@@ -31844,39 +31684,25 @@ export default function App() {
   );
 }
 ```
-## 组合展示
+## 动画时长
 
 ```tsx
-import { ArrowDown, ArrowUp } from "kui-icons";
 import { useState } from "react";
-import { Button, Card, Icon, Space, StatNumber } from "react-kui";
-const initialValue = Math.random() * 100000;
+import { Button, Space, StatNumber } from "react-kui";
 
 export default function App() {
-  const [value, setValue] = useState(initialValue);
+  const [value, setValue] = useState(12345);
   return (
-    <Space vertical className="demo-view-fill">
-      <Card>
-        <StatNumber value={value} prefix="$" suffix="%" style={{ fontSize: "2em" }} />
-      </Card>
-      <Card title="Today's Trends">
-        <StatNumber
-          value={value}
-          suffix="%"
-          style={{ fontSize: "2em", color: "green" }}
-          prefix={<Icon type={ArrowUp} />}
-        />
-      </Card>
-      <Card title="Yesterday's Trend">
-        <StatNumber
-          value={value}
-          suffix="%"
-          style={{ fontSize: "2em", color: "red" }}
-          type="rollup"
-          prefix={<Icon type={ArrowDown} />}
-        />
-      </Card>
-      <Button onClick={() => setValue(Math.random() * 100000)}>change</Button>
+    <Space vertical>
+      <Button onClick={() => setValue((current) => (current === 12345 ? 54321 : 12345))}>
+        12,345 ↔ 54,321
+      </Button>
+      {[0, 0.6, 1.2, 2].map((duration) => (
+        <Space key={duration}>
+          <code>{duration}s</code>
+          <StatNumber value={value} type="rollup" duration={duration} autoAnimate={false} />
+        </Space>
+      ))}
     </Space>
   );
 }

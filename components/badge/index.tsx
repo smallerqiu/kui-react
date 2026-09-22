@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import React from "react";
+import RollUp from "../stat-card/rollup";
 import { getChildren } from "../utils/react-node";
 
 export type BadgeStatusType = "default" | "success" | "error" | "warning";
@@ -87,7 +88,13 @@ const Badge: React.FC<BadgeProps> = ({
 
     supNode = (
       <sup className={supClasses} style={supStyle}>
-        {!dot ? displayCount : null}
+        {!dot ? (
+          typeof displayCount === "number" && Number.isFinite(displayCount) ? (
+            <RollUp value={displayCount} text={String(displayCount)} />
+          ) : (
+            displayCount
+          )
+        ) : null}
       </sup>
     );
   }

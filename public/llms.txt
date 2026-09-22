@@ -95,7 +95,7 @@ React 19.2+ library. Package: react-kui. Import CSS once from react-kui/style/in
 - [SkeletonImage](https://react.k-ui.cn/components/skeleton)
 - [SkeletonText](https://react.k-ui.cn/components/skeleton)
 - [StatCard](https://react.k-ui.cn/components/stat-card)
-- [StatNumber](https://react.k-ui.cn/components/stat-card)
+- [StatNumber](https://react.k-ui.cn/components/stat-number)
 - [Slider](https://react.k-ui.cn/components/slider)
 - [Space](https://react.k-ui.cn/components/space)
 - [Spin](https://react.k-ui.cn/components/spin)

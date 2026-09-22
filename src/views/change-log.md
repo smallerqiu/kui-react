@@ -20,6 +20,8 @@ rm -rf node_modules/.vite
 
 `2026-09-21`
 
+- Badge 数字更新时支持滚动动画；Badge 与 StatNumber 的 rollup 模式统一为数值增大向上、减小向下，支持进位、退位，并遵循系统减少动态效果的偏好。
+
 - Alert、Tag 在退出动画结束后移除内容，新增 `afterClose`（React 为 `onAfterClose`）事件，支持在动画结束后更新父级显隐状态或标签列表。
 
 #### 弹层基础能力

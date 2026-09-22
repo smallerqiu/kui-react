@@ -17,6 +17,7 @@ const ignoredByInterface: Record<string, Set<string> | "all"> = {
   TabPanelProps: new Set(["tabKey", "activeKey", "tabsId"]),
 };
 const docsByInterface: Record<string, string[]> = {
+  StatNumberProps: ["components/stat-number/index.md", "components/stat-number/index.en_US.md"],
   ConfigProviderProps: ["src/views/language/index.md", "src/views/language/index.en_US.md"],
   // 这些类型定义在子目录中，但文档与组件主入口放在一起
   FlameWrapProps: ["components/flame-wrap/index.md", "components/flame-wrap/index.en_US.md"],

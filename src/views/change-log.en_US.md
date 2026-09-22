@@ -20,6 +20,8 @@ rm -rf node_modules/.vite
 
 `2026-09-21`
 
+- Badge numeric counts now roll when updated. Badge and StatNumber rollup animations move upward for increases and downward for decreases, including digit carry and borrow. Reduced-motion preferences are respected.
+
 - Alert and Tag now remove their content after the exit animation and expose `afterClose` (`onAfterClose` in React). Update parent visibility or tag list data in this callback to unmount components without interrupting the animation.
 
 #### Shared popup infrastructure

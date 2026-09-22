@@ -31,6 +31,7 @@ export default function CountUpNumber({
   const countRef = useRef<CountUp | null>(null);
   const currentValue = value ?? 0;
   const latestValueRef = useRef(currentValue);
+  const renderedValueRef = useRef(currentValue);
 
   useEffect(() => {
     latestValueRef.current = currentValue;
@@ -44,16 +45,19 @@ export default function CountUpNumber({
       ? Math.min(100, Math.max(0, Math.floor(precision)))
       : 0;
     const options: CountUpOptions = {
-      duration: safeDuration,
+      duration: type === "rollup" ? 0 : safeDuration,
       separator,
       decimalPlaces: safePrecision,
       autoAnimate: observeVisibility,
       autoAnimateOnce,
       plugin:
-        type === "rollup" ? new Odometer({ duration: safeDuration, lastDigitDelay: 0 }) : undefined,
+        type === "rollup"
+          ? new Odometer({ duration: safeDuration, mode: "continuous" })
+          : undefined,
     };
     const count = new CountUp(elementRef.current, latestValueRef.current, options);
     countRef.current = count;
+    renderedValueRef.current = latestValueRef.current;
     if (!observeVisibility) count.start();
     return () => {
       count.onDestroy();
@@ -62,6 +66,8 @@ export default function CountUpNumber({
   }, [autoAnimate, autoAnimateOnce, duration, precision, separator, type]);
 
   useEffect(() => {
+    if (renderedValueRef.current === currentValue) return;
+    renderedValueRef.current = currentValue;
     countRef.current?.update(currentValue);
   }, [currentValue]);
 

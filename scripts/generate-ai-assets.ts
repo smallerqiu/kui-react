@@ -77,7 +77,7 @@ const components = exports.flatMap((exported) => {
   const directory = path.join(
     root,
     "components",
-    relative.split(path.sep)[0],
+    name === "StatNumber" ? "stat-number" : relative.split(path.sep)[0],
   );
   const markdown = path.join(directory, "index.md");
   const docZh = tableDocs(markdown);
