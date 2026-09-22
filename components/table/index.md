@@ -139,6 +139,20 @@ const columns = [
 | onExpand             | 展开状态变化时触发                                    | (expanded: boolean, record: T) => void                                     | -        |
 | onExpandedKeysChange | 展开 key 集合变化时触发                               | (expandedKeys: (string \| number)[]) => void                               | -        |
 
+## TableColumnSetting API
+
+| 属性                     | 说明                                                        | 类型                                 | 默认值            |
+| ------------------------ | ----------------------------------------------------------- | ------------------------------------ | ----------------- |
+| columns                  | 列定义；设置面板仅列出顶层无子列的列。                      | Column<T>[]                          | []                |
+| hiddenColumnKeys         | 隐藏列的 key 集合；在变更回调中更新，并将同一值传给 Table。 | (string \| number)[]                 | []                |
+| onHiddenColumnKeysChange | 切换列或点击重置时触发，返回新的隐藏列 key 集合。           | (keys: (string \| number)[]) => void | -                 |
+| disabledKeys             | 不参与设置的列 key；重置时保留这些列的隐藏状态。            | (string \| number)[]                 | []                |
+| title                    | 弹层标题及默认触发按钮文案。                                | string                               | 'Column settings' |
+| resetText                | 重置按钮文案；重置会显示所有可配置列。                      | string                               | 'Reset'           |
+| showReset                | 是否显示重置按钮。                                          | boolean                              | true              |
+| size                     | 默认触发按钮及勾选框的尺寸。                                | SizeType                             | -                 |
+| children                 | 自定义触发器内容。                                          | ReactNode                            | -                 |
+
 ## Column API
 
 | 属性         | 说明                              | 类型                                                                          | 默认值 |

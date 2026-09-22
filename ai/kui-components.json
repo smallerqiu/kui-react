@@ -46453,8 +46453,8 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "[]",
-          "descriptionZh": "表格列的配置描述，",
-          "descriptionEn": "Configuration description of table columns"
+          "descriptionZh": "列定义；设置面板仅列出顶层无子列的列。",
+          "descriptionEn": "Column definitions; only top-level columns without children appear in the settings."
         },
         {
           "name": "selectedKeys",
@@ -46470,8 +46470,8 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "[]",
-          "descriptionZh": "禁用的key集合",
-          "descriptionEn": "Disabled key set"
+          "descriptionZh": "不参与设置的列 key；重置时保留这些列的隐藏状态。",
+          "descriptionEn": "Column keys excluded from the settings; their hidden state is preserved on reset."
         },
         {
           "name": "rowKey",
@@ -46553,8 +46553,8 @@
             "large"
           ],
           "boolean": false,
-          "descriptionZh": "值为`small`时展示紧凑模式",
-          "descriptionEn": "Display compact mode when the value is `small`"
+          "descriptionZh": "默认触发按钮及勾选框的尺寸。",
+          "descriptionEn": "Size of the default trigger button and checkboxes."
         },
         {
           "name": "striped",
@@ -46680,8 +46680,8 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "[]",
-          "descriptionZh": "隐藏的列 key 集合",
-          "descriptionEn": "Hidden column key collection"
+          "descriptionZh": "隐藏列的 key 集合；在变更回调中更新，并将同一值传给 Table。",
+          "descriptionEn": "Hidden column keys. Update this value in the change callback and pass the same value to Table."
         },
         {
           "name": "onSort",
@@ -47256,8 +47256,8 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "[]",
-          "descriptionZh": "表格列的配置描述，",
-          "descriptionEn": "Configuration description of table columns"
+          "descriptionZh": "列定义；设置面板仅列出顶层无子列的列。",
+          "descriptionEn": "Column definitions; only top-level columns without children appear in the settings."
         },
         {
           "name": "hiddenColumnKeys",
@@ -47265,16 +47265,16 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "[]",
-          "descriptionZh": "隐藏的列 key 集合",
-          "descriptionEn": "Hidden column key collection"
+          "descriptionZh": "隐藏列的 key 集合；在变更回调中更新，并将同一值传给 Table。",
+          "descriptionEn": "Hidden column keys. Update this value in the change callback and pass the same value to Table."
         },
         {
           "name": "onHiddenColumnKeysChange",
           "type": "((keys: (string | number)[]) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "隐藏列变化时触发",
-          "descriptionEn": "隐藏列变化时触发"
+          "descriptionZh": "切换列或点击重置时触发，返回新的隐藏列 key 集合。",
+          "descriptionEn": "Called with the new hidden keys when a column is toggled or Reset is clicked."
         },
         {
           "name": "disabledKeys",
@@ -47282,8 +47282,8 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "[]",
-          "descriptionZh": "禁用的key集合",
-          "descriptionEn": "Disabled key set"
+          "descriptionZh": "不参与设置的列 key；重置时保留这些列的隐藏状态。",
+          "descriptionEn": "Column keys excluded from the settings; their hidden state is preserved on reset."
         },
         {
           "name": "title",
@@ -47300,8 +47300,8 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "\"Reset\"",
-          "descriptionZh": "重置按钮文案",
-          "descriptionEn": "重置按钮文案"
+          "descriptionZh": "重置按钮文案；重置会显示所有可配置列。",
+          "descriptionEn": "Reset button text. Reset shows all configurable columns."
         },
         {
           "name": "size",
@@ -47313,8 +47313,8 @@
             "large"
           ],
           "boolean": false,
-          "descriptionZh": "值为`small`时展示紧凑模式",
-          "descriptionEn": "Display compact mode when the value is `small`"
+          "descriptionZh": "默认触发按钮及勾选框的尺寸。",
+          "descriptionEn": "Size of the default trigger button and checkboxes."
         },
         {
           "name": "showReset",
@@ -47326,8 +47326,8 @@
           ],
           "boolean": true,
           "defaultExpression": "true",
-          "descriptionZh": "是否显示重置按钮",
-          "descriptionEn": "是否显示重置按钮"
+          "descriptionZh": "是否显示重置按钮。",
+          "descriptionEn": "Show the reset button."
         },
         {
           "name": "children",
@@ -47346,8 +47346,8 @@
           "type": "((keys: (string | number)[]) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "隐藏列变化时触发",
-          "descriptionEn": "隐藏列变化时触发"
+          "descriptionZh": "切换列或点击重置时触发，返回新的隐藏列 key 集合。",
+          "descriptionEn": "Called with the new hidden keys when a column is toggled or Reset is clicked."
         }
       ],
       "renderProps": [

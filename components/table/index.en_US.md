@@ -139,6 +139,20 @@ const columns = [
 | onExpand             | Called when a row expands or collapses                                                                      | (expanded: boolean, record: T) => void                                     | -        |
 | onExpandedKeysChange | Called when expanded keys change                                                                            | (expandedKeys: (string \| number)[]) => void                               | -        |
 
+## TableColumnSetting API
+
+| Property                 | Description                                                                                    | Type                                 | Default           |
+| ------------------------ | ---------------------------------------------------------------------------------------------- | ------------------------------------ | ----------------- |
+| columns                  | Column definitions; only top-level columns without children appear in the settings.            | Column<T>[]                          | []                |
+| hiddenColumnKeys         | Hidden column keys. Update this value in the change callback and pass the same value to Table. | (string \| number)[]                 | []                |
+| onHiddenColumnKeysChange | Called with the new hidden keys when a column is toggled or Reset is clicked.                  | (keys: (string \| number)[]) => void | -                 |
+| disabledKeys             | Column keys excluded from the settings; their hidden state is preserved on reset.              | (string \| number)[]                 | []                |
+| title                    | Popup title and default trigger button text.                                                   | string                               | 'Column settings' |
+| resetText                | Reset button text. Reset shows all configurable columns.                                       | string                               | 'Reset'           |
+| showReset                | Show the reset button.                                                                         | boolean                              | true              |
+| size                     | Size of the default trigger button and checkboxes.                                             | SizeType                             | -                 |
+| children                 | Custom trigger content.                                                                        | ReactNode                            | -                 |
+
 ## Column API
 
 | Property     | Description                                    | Type                                                                          | Default |
