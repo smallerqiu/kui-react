@@ -7,11 +7,12 @@ import {
   type ReactNode,
 } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router";
-import { loading, modal, Skeleton } from "react-kui";
+import { modal, Skeleton } from "react-kui";
 import { useDocs } from "./context";
 import AppLayout from "./components/app-layout";
 import Home from "./views";
 import Playground from "./views/playground";
+import { withRouteLoading } from "./utils/route-loading";
 
 type PageModule = { default: ComponentType };
 const componentDocs = import.meta.glob<PageModule>("../components/**/index*.md");
@@ -25,7 +26,7 @@ for (const [file, loader] of [...Object.entries(componentDocs), ...Object.entrie
   const english = file.includes("en_US");
   pages.set(
     `/${isComponent ? "components" : "guide"}/${part}${english ? "-en" : ""}`,
-    createElement(lazy(loader)),
+    createElement(lazy(withRouteLoading(loader))),
   );
 }
 
@@ -42,10 +43,6 @@ function RoutedPage() {
 
 function RouteLoading() {
   const { lang } = useDocs();
-  useEffect(() => {
-    loading.start();
-    return () => loading.finish();
-  }, []);
   return (
     <div
       className="docs-page-skeleton"
