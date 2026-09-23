@@ -16,11 +16,18 @@ rm -rf node_modules/.vite
 
 ### 3.1.0
 
+`2026-09-23`
+
 - 统一状态 API：移除 `defaultOpen`、`defaultChecked`、`defaultCurrent`、`defaultFileList`、`default*Keys`，改用对应的不带 default 前缀的属性；Table 的 `defaultExpandAllRows` 改为 `expandAllRows`。属性负责初始化及外部变化同步，交互仍更新内部状态；升级时需调整旧属性用法。
 
-`2026-09-21`
-
-- Badge 数字更新时支持滚动动画；Badge 与 StatNumber 的 rollup 模式统一为数值增大向上、减小向下，支持进位、退位，并遵循系统减少动态效果的偏好。
+- `Badge` 数字更新时支持滚动动画，数值增大向上、减小向下，支持进位与退位；修正数字垂直对齐。
+- `StatNumber` 的 rollup 动画改为逐位判断方向：当前位增大向上、减小向下，未变化的数字保持静止；优化大幅数值变化的过渡，并遵循系统减少动态效果的偏好。
+- `StatNumber` 拆分独立文档与示例，展示数字格式化、动画时长和动态更新，不再与 `StatCard` 的卡片示例混排。
+- 修复 `Slider` 拖动期间鼠标离开滑块后 Tooltip 提前隐藏的问题。
+- 修复浅色主题下 `DatePicker` 选中日期的 hover 对比度，移除 fill 外观控件交互时意外出现的边框。
+- 完善局部主题色、圆角、嵌套明暗主题及显式 CSS 变量覆盖，增加浏览器主题回归检查。
+- 补充公共 API 与事件文档，完善回调参数说明和使用示例。
+- 仓库构建及校验脚本统一为 TypeScript，增加 Node 脚本类型检查；贡献者运行工具链需使用 Node.js 24 或更高版本，发布包继续支持 ESM / CommonJS。
 
 - Alert、Tag 在退出动画结束后移除内容，新增 `afterClose`（React 为 `onAfterClose`）事件，支持在动画结束后更新父级显隐状态或标签列表。
 
@@ -66,6 +73,21 @@ rm -rf node_modules/.vite
 - `Select` 修复值为空字符串时占位文字不显示的问题。
 - `Collapse` 完善数字 key 支持，统一数字与对应字符串 key 的关闭行为。
 - 完善组件类型声明，修复 TypeScript NodeNext 模式下通过 ESM / CommonJS 导入组件时的类型解析问题。
+
+#### 新增能力与布局
+
+- 新增 `Segmented` 分段控制器，替代 RadioGroup 的卡片式选择场景。
+- `Tabs` 增加浏览器风格页签；`InputTag` 完善清除、禁用及标签数量限制。
+- `BackTop` 支持自定义滚动容器；`Splitter` 完善拖拽调整和无障碍交互。
+- `Grid`、`Row`、`Col` 完善布局属性及样式传递；修复 Layout.Sider 在 Flex 容器中被压缩及重复注册的问题。
+- `Form` 完善字段校验与无障碍关联；清除按钮、菜单、分页、步骤条和面包屑补充键盘操作及相关语义。
+- 修复链接按钮的属性传递，补充 `Input` 的 `onInput` 事件及图标映射类型。
+
+#### AI 支持与发布校验
+
+- 提供组件 metadata、AI 开发指南、示例模板、CLI 与 MCP 工具，支持组件查询和使用校验。
+- 新增 AI 评测及资源一致性检查，并接入发布验证流程。
+- 完善包导出检查和临时消费者安装验证，覆盖 ESM / CommonJS、类型声明、样式与工具入口。
 
 ### 2.0.0
 

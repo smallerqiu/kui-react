@@ -16,11 +16,18 @@ rm -rf node_modules/.vite
 
 ### 3.1.0
 
+`2026-09-23`
+
 - Unify state APIs: replace `defaultOpen`, `defaultChecked`, `defaultCurrent`, `defaultFileList` and `default*Keys` with their unprefixed props; rename Table `defaultExpandAllRows` to `expandAllRows`. State props initialize local state, allow interaction, and synchronize external changes. Update usages when upgrading.
 
-`2026-09-21`
-
-- Badge numeric counts now roll when updated. Badge and StatNumber rollup animations move upward for increases and downward for decreases, including digit carry and borrow. Reduced-motion preferences are respected.
+- `Badge` numeric counts now roll upward for increases and downward for decreases, including carry and borrow; corrected vertical alignment of the count.
+- `StatNumber` rollup animations now determine direction independently for each digit: increasing digits move upward, decreasing digits move downward, and unchanged digits stay still. Improved transitions across large value changes and respect for reduced-motion preferences.
+- Added a dedicated `StatNumber` documentation page with formatting, animation duration, and dynamic-value examples, separate from `StatCard`.
+- Fixed `Slider` tooltips disappearing when the pointer leaves the thumb during an active drag.
+- Improved light-theme selected-date hover contrast in `DatePicker` and removed unintended interaction borders from fill-style controls.
+- Improved scoped theme colors and radii, nested light/dark themes, and explicit CSS variable overrides; added browser-based theme regression checks.
+- Completed public API and event documentation, including callback parameters and examples.
+- Migrated repository build and validation scripts to TypeScript and added Node-script type checking. Contributor tooling requires Node.js 24 or later; published ESM/CommonJS entry points remain supported.
 
 - Alert and Tag now remove their content after the exit animation and expose `afterClose` (`onAfterClose` in React). Update parent visibility or tag list data in this callback to unmount components without interrupting the animation.
 
@@ -66,6 +73,21 @@ rm -rf node_modules/.vite
 - `Select`: Fixed missing placeholder text when the value is an empty string.
 - `Collapse`: Improved numeric key support and made closing behavior consistent for equivalent numeric and string keys.
 - Improved component declarations and fixed TypeScript NodeNext type resolution for ESM and CommonJS component imports.
+
+#### New capabilities and layout
+
+- Added `Segmented` for segmented selection, replacing RadioGroup's card-style selection use case.
+- Added browser-style `Tabs`; improved clearing, disabled states, and tag limits in `InputTag`.
+- Added custom scroll-container support to `BackTop`; improved `Splitter` resizing and accessibility.
+- Improved layout props and style forwarding in `Grid`, `Row`, and `Col`; fixed Layout.Sider shrinking inside flex containers and duplicate registration.
+- Improved `Form` validation and accessibility associations; expanded keyboard support and semantics for clear buttons, menus, pagination, steps, and breadcrumbs.
+- Fixed link-button prop forwarding and added `Input`'s `onInput` event and stronger icon mapping types.
+
+#### AI support and release validation
+
+- Added component metadata, AI development guides, example templates, CLI, and MCP tools for component queries and usage validation.
+- Added AI evaluations and asset consistency checks to release validation.
+- Improved package export checks and temporary-consumer installation tests covering ESM / CommonJS, declarations, styles, and tool entry points.
 
 ### 2.0.0
 
