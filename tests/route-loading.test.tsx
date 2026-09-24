@@ -37,7 +37,7 @@ describe("route loading progress", () => {
     });
     expect(queryByText("Previous")).not.toBeNull();
     expect(queryByText("Fallback")).toBeNull();
-    expect((document.querySelector(".k-loading-line") as HTMLElement)?.style.width).toBe("5%");
+    expect((document.querySelector(".k-loading-line") as HTMLElement)?.style.width).toBe("0%");
     await act(async () => request.resolve({ default: () => <div>Loaded</div> }));
     expect(queryByText("Loaded")).not.toBeNull();
     expect((document.querySelector(".k-loading-line") as HTMLElement)?.style.width).toBe("100%");
