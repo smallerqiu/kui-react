@@ -7,7 +7,7 @@ import React, { useContext, useState } from "react";
 import { SizeContext } from "../config/size-context";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
-import Input from "../input/input";
+import InputBase from "../input/input-base";
 import { isValidBig, normalize } from "../utils/number";
 
 export interface InputNumberProps extends Omit<
@@ -185,8 +185,9 @@ const InputNumber: React.FC<InputNumberProps> = ({
     ) : undefined;
 
   return (
-    <Input
-      {...(rest as React.ComponentProps<typeof Input>)}
+    <InputBase
+      {...(rest as React.ComponentProps<typeof InputBase>)}
+      stylePrefix="input-number"
       value={displayValue}
       disabled={disabled}
       readOnly={readOnly}
@@ -198,7 +199,6 @@ const InputNumber: React.FC<InputNumberProps> = ({
       icon={icon}
       shape={shape}
       theme={theme}
-      inputType="input-number"
       role="spinbutton"
       inputMode="decimal"
       aria-valuemin={min === -Infinity ? undefined : min}

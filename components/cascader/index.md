@@ -42,10 +42,10 @@
 | bordered | 是否显示边框。 | `boolean` | `true` |
 | shape | 组件形状。 | `"round" \| "default" \| "square" \| "circle"` | - |
 | showArrow | 是否显示下拉箭头。 | `boolean` | `true` |
-| icon | 自定义前缀图标。 | `import("../icon").IconType[]` | - |
-| arrowIcon | 自定义下拉箭头。 | `import("../icon").IconType[]` | - |
+| icon | 自定义前缀图标。 | `IconType[]` | - |
+| arrowIcon | 自定义下拉箭头。 | `IconType[]` | - |
 | emptyText | 空数据提示。 | `string` | - |
-| loadData | 异步加载子节点；返回子节点数组，或自行更新 `option.children` | `import("./types").CascaderLoadData` | - |
+| loadData | 异步加载子节点；返回子节点数组，或自行更新 `option.children` | `CascaderLoadData` | - |
 | placement | 弹层位置。 | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | `bottom-left` |
 | onChange | 选择或清空路径时触发。 | `((value: CascaderValue) => void)` | - |
 | onExpandChange | 展开的级联路径变化时触发。 | `((value: CascaderValue) => void)` | - |

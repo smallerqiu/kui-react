@@ -22,7 +22,7 @@ Full burning and refraction rely on the experimental HTML-in-Canvas API. It can 
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
-| children | Content wrapped by the flame | `import("react").ReactNode` | - |
+| children | Content wrapped by the flame | `ReactNode` | - |
 | color | Flame RGB values in the 0–1 range | `[number, number, number]` | `[0.31, 0.54, 1]` |
 | intensity | Overall brightness, recommended range 0–3 | `number` | `0.5` |
 | height | Flame reach above the top edge in px | `number` | `170` |
@@ -44,6 +44,6 @@ Full burning and refraction rely on the experimental HTML-in-Canvas API. It can 
 | ember | Burnt-edge ember brightness | `number` | `2` |
 | scorch | Content-edge charring strength | `number` | `0` |
 | className | Wrapper class name | `string` | - |
-| style | Wrapper styles | `import("react").CSSProperties` | - |
+| style | Wrapper styles | `CSSProperties` | - |
 
 FlameWrap respects `prefers-reduced-motion` and stops flame animation when reduced motion is requested.

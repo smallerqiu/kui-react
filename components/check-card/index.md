@@ -34,25 +34,25 @@
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | checked | 选中状态 | `boolean` | - |
-| value | 在 Group 中使用的选项值 | `import("./types").CheckCardValue` | - |
-| title | 标题 | `React.ReactNode` | - |
-| description | 描述 | `React.ReactNode` | - |
-| symbol | 未选中图标 | `import("../icon").IconType[]` | - |
-| checkedSymbol | 选中图标 | `import("../icon").IconType[]` | - |
+| value | 在 Group 中使用的选项值 | `CheckCardValue` | - |
+| title | 标题 | `ReactNode` | - |
+| description | 描述 | `ReactNode` | - |
+| symbol | 未选中图标 | `IconType[]` | - |
+| checkedSymbol | 选中图标 | `IconType[]` | - |
 | showIndicator | 是否显示选中标记 | `boolean` | true |
 | disabled | 是否禁用 | `boolean` | false |
 | readOnly | 是否只读 | `boolean` | false |
 | theme | 主题 | `"fill" \| "outline"` | outline |
 | size | 尺寸 | `"small" \| "medium" \| "large"` | medium |
 | shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | round |
-| onChange | 状态变化回调 | `((event: import("./types").CheckCardChangeEvent) => void)` | - |
+| onChange | 状态变化回调 | `((event: CheckCardChangeEvent) => void)` | - |
 
 ## CheckCardGroup API
 
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | value | 值 | `CheckCardValue` | - |
-| options | 选项 | `import("./types").CheckCardOption[]` | - |
+| options | 选项 | `CheckCardOption[]` | - |
 | disabled | 是否禁用 | `boolean` | false |
 | readOnly | 是否只读 | `boolean` | false |
 | direction | 排列方向 | `"horizontal" \| "vertical"` | horizontal |

@@ -56,8 +56,6 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 | addonAfter | Addon after the input | `React.ReactNode` | - |
 | theme | The theme of Input | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | Input shape | `"round" \| "default" \| "square" \| "circle"` | - |
-| inputType | Custom style class prefix | `string` | input |
-| controls | Control area used by components such as InputNumber | `React.ReactNode` | - |
 | disabled | Whether the input is disabled | boolean | false |
 | multiple | Whether native multiple input is enabled | boolean | false |
 | clearable | Show the clear button on hover when a value exists | `boolean` | true |

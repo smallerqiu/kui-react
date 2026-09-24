@@ -34,6 +34,6 @@ Full content refraction relies on the experimental HTML-in-Canvas API. It can cu
 | shine | Crest highlight intensity, recommended range 0–2 | `number` | `0.5` |
 | interval | Seconds between ambient ripples; `0` disables them | `number` | `0` |
 | className | Wrapper class name | `string` | - |
-| style | Wrapper styles | `import("react").CSSProperties` | - |
+| style | Wrapper styles | `CSSProperties` | - |
 
 Ripple respects `prefers-reduced-motion` and disables wave animation when reduced motion is requested.

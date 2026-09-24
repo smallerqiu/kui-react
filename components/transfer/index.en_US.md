@@ -38,7 +38,7 @@ Move and select items between two lists.
 | --- | --- | --- | --- |
 | dataSource | Source data | `TransferItem[]` | [] |
 | targetKeys | target items | `TransferKey[]` | [] |
-| titles | Titles for both lists | `[import("react").ReactNode, import("react").ReactNode]` | Source, Target |
+| titles | Titles for both lists | `[ReactNode, ReactNode]` | Source, Target |
 | operations | Right and left operation labels | `[string, string]` | ['', ''] |
 | searchable | Whether searchable | `boolean` | false |
 | disabled | Whether disabled | `boolean` | false |

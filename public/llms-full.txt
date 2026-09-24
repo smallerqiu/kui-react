@@ -3510,7 +3510,7 @@ export default function App() {
     },
     {
       "name": "right",
-      "type": "import(\".pnpm/csstype@3.2.3/node_modules/csstype\").Property.Right<string | number> | undefined",
+      "type": "Property.Right<string | number> | undefined",
       "required": false,
       "boolean": false,
       "descriptionZh": "组件距离右部的距离",
@@ -3518,7 +3518,7 @@ export default function App() {
     },
     {
       "name": "bottom",
-      "type": "import(\".pnpm/csstype@3.2.3/node_modules/csstype\").Property.Bottom<string | number> | undefined",
+      "type": "Property.Bottom<string | number> | undefined",
       "required": false,
       "boolean": false,
       "descriptionZh": "组件距离底部的距离",
@@ -6237,7 +6237,7 @@ export default function App() {
     },
     {
       "name": "value",
-      "type": "import(\"./types\").CheckCardValue | undefined",
+      "type": "CheckCardValue | undefined",
       "required": false,
       "boolean": false,
       "descriptionZh": "选项值",
@@ -6245,7 +6245,7 @@ export default function App() {
     },
     {
       "name": "title",
-      "type": "React.ReactNode",
+      "type": "ReactNode",
       "required": false,
       "boolean": false,
       "descriptionZh": "标题",
@@ -6253,7 +6253,7 @@ export default function App() {
     },
     {
       "name": "description",
-      "type": "React.ReactNode",
+      "type": "ReactNode",
       "required": false,
       "boolean": false,
       "descriptionZh": "描述",
@@ -6261,7 +6261,7 @@ export default function App() {
     },
     {
       "name": "symbol",
-      "type": "import(\"../icon\").IconType[] | undefined",
+      "type": "IconType[] | undefined",
       "required": false,
       "boolean": false,
       "descriptionZh": "未选中图标",
@@ -6269,7 +6269,7 @@ export default function App() {
     },
     {
       "name": "checkedSymbol",
-      "type": "import(\"../icon\").IconType[] | undefined",
+      "type": "IconType[] | undefined",
       "required": false,
       "boolean": false,
       "descriptionZh": "选中图标",
@@ -6313,7 +6313,7 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "import(\"./types\").CheckCardTheme | undefined",
+      "type": "CheckCardTheme | undefined",
       "required": false,
       "enumValues": [
         "fill",
@@ -6325,7 +6325,7 @@ export default function App() {
     },
     {
       "name": "size",
-      "type": "import(\"../components\").SizeType | undefined",
+      "type": "SizeType | undefined",
       "required": false,
       "enumValues": [
         "small",
@@ -6338,7 +6338,7 @@ export default function App() {
     },
     {
       "name": "shape",
-      "type": "import(\"../components\").ShapeType | undefined",
+      "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
         "round",
@@ -6352,7 +6352,7 @@ export default function App() {
     },
     {
       "name": "onChange",
-      "type": "((event: import(\"./types\").CheckCardChangeEvent) => void) | undefined",
+      "type": "((event: CheckCardChangeEvent) => void) | undefined",
       "required": false,
       "boolean": false,
       "descriptionZh": "选中值变化回调",
@@ -6360,7 +6360,7 @@ export default function App() {
     },
     {
       "name": "children",
-      "type": "React.ReactNode",
+      "type": "ReactNode",
       "required": false,
       "boolean": false,
       "descriptionZh": "",
@@ -6370,7 +6370,7 @@ export default function App() {
   "events": [
     {
       "name": "onChange",
-      "type": "((event: import(\"./types\").CheckCardChangeEvent) => void) | undefined",
+      "type": "((event: CheckCardChangeEvent) => void) | undefined",
       "required": false,
       "boolean": false,
       "descriptionZh": "选中值变化回调",
@@ -6516,7 +6516,7 @@ export default function App() {
     },
     {
       "name": "options",
-      "type": "import(\"./types\").CheckCardOption[] | undefined",
+      "type": "CheckCardOption[] | undefined",
       "required": false,
       "boolean": false,
       "descriptionZh": "选项",
@@ -6560,7 +6560,7 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "import(\"./types\").CheckCardTheme | undefined",
+      "type": "CheckCardTheme | undefined",
       "required": false,
       "enumValues": [
         "fill",
@@ -6572,7 +6572,7 @@ export default function App() {
     },
     {
       "name": "size",
-      "type": "import(\"../components\").SizeType | undefined",
+      "type": "SizeType | undefined",
       "required": false,
       "enumValues": [
         "small",
@@ -6585,7 +6585,7 @@ export default function App() {
     },
     {
       "name": "shape",
-      "type": "import(\"../components\").ShapeType | undefined",
+      "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
         "round",
@@ -6607,7 +6607,7 @@ export default function App() {
     },
     {
       "name": "children",
-      "type": "React.ReactNode",
+      "type": "ReactNode",
       "required": false,
       "boolean": false,
       "descriptionZh": "",
@@ -13731,7 +13731,7 @@ export default function App() {
   "props": [
     {
       "name": "children",
-      "type": "import(\"react\").ReactNode",
+      "type": "ReactNode",
       "required": true,
       "boolean": false,
       "descriptionZh": "被火焰包裹的内容",
@@ -13747,7 +13747,7 @@ export default function App() {
     },
     {
       "name": "style",
-      "type": "import(\"react\").CSSProperties | undefined",
+      "type": "CSSProperties | undefined",
       "required": false,
       "boolean": false,
       "descriptionZh": "外层容器样式",
@@ -14219,7 +14219,7 @@ export default function App() {
     },
     {
       "name": "align",
-      "type": "import(\".pnpm/csstype@3.2.3/node_modules/csstype\").Property.AlignItems | undefined",
+      "type": "Property.AlignItems | undefined",
       "required": false,
       "boolean": false,
       "descriptionZh": "子项在网格单元格内的垂直对齐方式",
@@ -14227,7 +14227,7 @@ export default function App() {
     },
     {
       "name": "justify",
-      "type": "import(\".pnpm/csstype@3.2.3/node_modules/csstype\").Property.JustifyItems | undefined",
+      "type": "Property.JustifyItems | undefined",
       "required": false,
       "boolean": false,
       "descriptionZh": "子项在网格单元格内的水平对齐方式。",
@@ -14235,7 +14235,7 @@ export default function App() {
     },
     {
       "name": "flow",
-      "type": "import(\".pnpm/csstype@3.2.3/node_modules/csstype\").Property.GridAutoFlow | undefined",
+      "type": "Property.GridAutoFlow | undefined",
       "required": false,
       "boolean": false,
       "defaultExpression": "\"row\"",
@@ -15693,14 +15693,6 @@ export default function App() {
       "descriptionEn": "Shape"
     },
     {
-      "name": "inputType",
-      "type": "string | undefined",
-      "required": false,
-      "boolean": false,
-      "descriptionZh": "自定义样式类名前缀",
-      "descriptionEn": "Custom style class prefix"
-    },
-    {
       "name": "onSearch",
       "type": "((value: string) => void) | undefined",
       "required": false,
@@ -15731,14 +15723,6 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "内容变化时的回调",
       "descriptionEn": "Callback when the content changes"
-    },
-    {
-      "name": "controls",
-      "type": "React.ReactNode",
-      "required": false,
-      "boolean": false,
-      "descriptionZh": "输入框控制区域，供 InputNumber 等组件使用",
-      "descriptionEn": "Control area used by components such as InputNumber"
     }
   ],
   "events": [
@@ -15779,8 +15763,7 @@ export default function App() {
     "suffix",
     "prefix",
     "addonBefore",
-    "addonAfter",
-    "controls"
+    "addonAfter"
   ],
   "behavior": {
     "rules": [
@@ -25789,7 +25772,7 @@ export default function App() {
     },
     {
       "name": "style",
-      "type": "import(\"react\").CSSProperties | undefined",
+      "type": "CSSProperties | undefined",
       "required": false,
       "boolean": false,
       "descriptionZh": "外层容器样式",
@@ -33998,7 +33981,7 @@ export default function App() {
     },
     {
       "name": "size",
-      "type": "import(\"../components\").SizeType | undefined",
+      "type": "SizeType | undefined",
       "required": false,
       "enumValues": [
         "small",
@@ -34036,7 +34019,7 @@ export default function App() {
     },
     {
       "name": "shape",
-      "type": "import(\"../components\").ShapeType | undefined",
+      "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
         "round",
@@ -39554,7 +39537,7 @@ export default function Demo() {
     },
     {
       "name": "theme",
-      "type": "import(\"../components\").ThemeType | undefined",
+      "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
@@ -39583,7 +39566,7 @@ export default function Demo() {
     },
     {
       "name": "shape",
-      "type": "import(\"../components\").ShapeType | undefined",
+      "type": "ShapeType | undefined",
       "required": false,
       "enumValues": [
         "round",
@@ -39617,7 +39600,7 @@ export default function Demo() {
     },
     {
       "name": "icon",
-      "type": "import(\"../icon\").IconType[] | undefined",
+      "type": "IconType[] | undefined",
       "required": false,
       "boolean": false,
       "descriptionZh": "自定义前缀图标。",
@@ -39625,7 +39608,7 @@ export default function Demo() {
     },
     {
       "name": "arrowIcon",
-      "type": "import(\"../icon\").IconType[] | undefined",
+      "type": "IconType[] | undefined",
       "required": false,
       "boolean": false,
       "descriptionZh": "自定义下拉箭头。",
@@ -39641,7 +39624,7 @@ export default function Demo() {
     },
     {
       "name": "loadData",
-      "type": "import(\"./types\").CascaderLoadData | undefined",
+      "type": "CascaderLoadData | undefined",
       "required": false,
       "boolean": false,
       "descriptionZh": "异步加载子节点；返回子节点数组，或自行更新 `option.children`",
@@ -39685,7 +39668,7 @@ export default function Demo() {
     },
     {
       "name": "size",
-      "type": "import(\"../components\").SizeType | undefined",
+      "type": "SizeType | undefined",
       "required": false,
       "enumValues": [
         "small",
@@ -39730,7 +39713,7 @@ export default function Demo() {
     },
     {
       "name": "placement",
-      "type": "import(\"../components\").DropPlacementsType | undefined",
+      "type": "DropPlacementsType | undefined",
       "required": false,
       "enumValues": [
         "top",
@@ -42419,7 +42402,7 @@ export default function App() {
     },
     {
       "name": "titles",
-      "type": "[import(\"react\").ReactNode, import(\"react\").ReactNode] | undefined",
+      "type": "[ReactNode, ReactNode] | undefined",
       "required": false,
       "boolean": false,
       "descriptionZh": "两侧标题",

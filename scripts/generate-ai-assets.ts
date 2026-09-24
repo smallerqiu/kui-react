@@ -126,7 +126,13 @@ const components = exports.flatMap((exported) => {
       )
         ? union.map(literal)
         : undefined;
-    const typeText = checker.typeToString(type, declaration, ts.TypeFormatFlags.NoTruncation);
+    // Print in the property's declaring scope, not the outer component wrapper.
+    // Shared Props files can import aliases that are absent from the wrapper.
+    const typeText = checker.typeToString(
+      type,
+      decls[0] || declaration,
+      ts.TypeFormatFlags.NoTruncation | ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope,
+    );
     const comment = ts.displayPartsToString(prop.getDocumentationComment(checker));
     return [
       {

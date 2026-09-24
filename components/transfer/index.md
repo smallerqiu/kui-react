@@ -38,7 +38,7 @@
 | --- | --- | --- | --- |
 | dataSource | 数据源 | `TransferItem[]` | [] |
 | targetKeys | 目标项 | `TransferKey[]` | [] |
-| titles | 两侧标题 | `[import("react").ReactNode, import("react").ReactNode]` | Source, Target |
+| titles | 两侧标题 | `[ReactNode, ReactNode]` | Source, Target |
 | operations | 向右、向左按钮文案 | `[string, string]` | ['', ''] |
 | searchable | 是否可搜索 | `boolean` | false |
 | disabled | 是否禁用 | `boolean` | false |

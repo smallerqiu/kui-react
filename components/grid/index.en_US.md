@@ -69,9 +69,9 @@ You can manually resize the browser window to observe the effect.
 | xGap | Grid spacing (horizontal direction). Numeric type will automatically add px unit. | `ResponsiveValue<GridDimension>` | 0 |
 | yGap | Row spacing (vertical direction). Numeric type will automatically add px unit. | `ResponsiveValue<GridDimension>` | 0 |
 | itemMinWidth | Auto-fill mode. Set the minimum width of child items. Grid will automatically calculate the number of columns based on container width. | `string \| number` | - |
-| align | Vertical alignment of child items within grid cells | `import(".pnpm/csstype@3.2.3/node_modules/csstype").Property.AlignItems` | - |
-| justify | Horizontal alignment of child items within grid cells. | `import(".pnpm/csstype@3.2.3/node_modules/csstype").Property.JustifyItems` | - |
-| flow | Grid auto-placement mode, maps to `grid-auto-flow` | `import(".pnpm/csstype@3.2.3/node_modules/csstype").Property.GridAutoFlow` | row |
+| align | Vertical alignment of child items within grid cells | `Property.AlignItems` | - |
+| justify | Horizontal alignment of child items within grid cells. | `Property.JustifyItems` | - |
+| flow | Grid auto-placement mode, maps to `grid-auto-flow` | `Property.GridAutoFlow` | row |
 | debug | Debug mode. When enabled, red transparent background columns are displayed to facilitate developer layout alignment. | `boolean` | false |
 
 ## GridItem API

@@ -56,8 +56,6 @@
 | addonAfter | 输入框外部后置附件 | `React.ReactNode` | - |
 | theme | 主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | 输入框形状 | `"round" \| "default" \| "square" \| "circle"` | - |
-| inputType | 自定义样式类名前缀 | `string` | input |
-| controls | 输入框控制区域，供 InputNumber 等组件使用 | `React.ReactNode` | - |
 | disabled | 是否禁用 | boolean | false |
 | multiple | 是否允许原生多值输入 | boolean | false |
 | clearable | 有值且悬停时显示清除按钮 | `boolean` | true |

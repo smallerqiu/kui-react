@@ -34,6 +34,6 @@
 | shine | 波峰高光强度，建议范围 0–2 | `number` | `0.5` |
 | interval | 自动产生随机水波的间隔秒数，`0` 表示关闭 | `number` | `0` |
 | className | 外层容器类名 | `string` | - |
-| style | 外层容器样式 | `import("react").CSSProperties` | - |
+| style | 外层容器样式 | `CSSProperties` | - |
 
 组件会响应 `prefers-reduced-motion`，用户开启减少动态效果后不会创建水波动画。

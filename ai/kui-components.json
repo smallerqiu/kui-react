@@ -6847,7 +6847,7 @@
         },
         {
           "name": "right",
-          "type": "import(\".pnpm/csstype@3.2.3/node_modules/csstype\").Property.Right<string | number> | undefined",
+          "type": "Property.Right<string | number> | undefined",
           "required": false,
           "boolean": false,
           "descriptionZh": "组件距离右部的距离",
@@ -6855,7 +6855,7 @@
         },
         {
           "name": "bottom",
-          "type": "import(\".pnpm/csstype@3.2.3/node_modules/csstype\").Property.Bottom<string | number> | undefined",
+          "type": "Property.Bottom<string | number> | undefined",
           "required": false,
           "boolean": false,
           "descriptionZh": "组件距离底部的距离",
@@ -11756,7 +11756,7 @@
         },
         {
           "name": "value",
-          "type": "import(\"./types\").CheckCardValue | undefined",
+          "type": "CheckCardValue | undefined",
           "required": false,
           "boolean": false,
           "descriptionZh": "选项值",
@@ -11764,7 +11764,7 @@
         },
         {
           "name": "title",
-          "type": "React.ReactNode",
+          "type": "ReactNode",
           "required": false,
           "boolean": false,
           "descriptionZh": "标题",
@@ -11772,7 +11772,7 @@
         },
         {
           "name": "description",
-          "type": "React.ReactNode",
+          "type": "ReactNode",
           "required": false,
           "boolean": false,
           "descriptionZh": "描述",
@@ -11780,7 +11780,7 @@
         },
         {
           "name": "symbol",
-          "type": "import(\"../icon\").IconType[] | undefined",
+          "type": "IconType[] | undefined",
           "required": false,
           "boolean": false,
           "descriptionZh": "未选中图标",
@@ -11788,7 +11788,7 @@
         },
         {
           "name": "checkedSymbol",
-          "type": "import(\"../icon\").IconType[] | undefined",
+          "type": "IconType[] | undefined",
           "required": false,
           "boolean": false,
           "descriptionZh": "选中图标",
@@ -11832,7 +11832,7 @@
         },
         {
           "name": "theme",
-          "type": "import(\"./types\").CheckCardTheme | undefined",
+          "type": "CheckCardTheme | undefined",
           "required": false,
           "enumValues": [
             "fill",
@@ -11844,7 +11844,7 @@
         },
         {
           "name": "size",
-          "type": "import(\"../components\").SizeType | undefined",
+          "type": "SizeType | undefined",
           "required": false,
           "enumValues": [
             "small",
@@ -11857,7 +11857,7 @@
         },
         {
           "name": "shape",
-          "type": "import(\"../components\").ShapeType | undefined",
+          "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
             "round",
@@ -11871,7 +11871,7 @@
         },
         {
           "name": "onChange",
-          "type": "((event: import(\"./types\").CheckCardChangeEvent) => void) | undefined",
+          "type": "((event: CheckCardChangeEvent) => void) | undefined",
           "required": false,
           "boolean": false,
           "descriptionZh": "选中值变化回调",
@@ -11879,7 +11879,7 @@
         },
         {
           "name": "children",
-          "type": "React.ReactNode",
+          "type": "ReactNode",
           "required": false,
           "boolean": false,
           "descriptionZh": "",
@@ -12249,7 +12249,7 @@
       "events": [
         {
           "name": "onChange",
-          "type": "((event: import(\"./types\").CheckCardChangeEvent) => void) | undefined",
+          "type": "((event: CheckCardChangeEvent) => void) | undefined",
           "required": false,
           "boolean": false,
           "descriptionZh": "选中值变化回调",
@@ -12303,7 +12303,7 @@
         },
         {
           "name": "options",
-          "type": "import(\"./types\").CheckCardOption[] | undefined",
+          "type": "CheckCardOption[] | undefined",
           "required": false,
           "boolean": false,
           "descriptionZh": "选项",
@@ -12347,7 +12347,7 @@
         },
         {
           "name": "theme",
-          "type": "import(\"./types\").CheckCardTheme | undefined",
+          "type": "CheckCardTheme | undefined",
           "required": false,
           "enumValues": [
             "fill",
@@ -12359,7 +12359,7 @@
         },
         {
           "name": "size",
-          "type": "import(\"../components\").SizeType | undefined",
+          "type": "SizeType | undefined",
           "required": false,
           "enumValues": [
             "small",
@@ -12372,7 +12372,7 @@
         },
         {
           "name": "shape",
-          "type": "import(\"../components\").ShapeType | undefined",
+          "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
             "round",
@@ -12394,7 +12394,7 @@
         },
         {
           "name": "children",
-          "type": "React.ReactNode",
+          "type": "ReactNode",
           "required": false,
           "boolean": false,
           "descriptionZh": "",
@@ -21098,7 +21098,7 @@
       "props": [
         {
           "name": "children",
-          "type": "import(\"react\").ReactNode",
+          "type": "ReactNode",
           "required": true,
           "boolean": false,
           "descriptionZh": "被火焰包裹的内容",
@@ -21114,7 +21114,7 @@
         },
         {
           "name": "style",
-          "type": "import(\"react\").CSSProperties | undefined",
+          "type": "CSSProperties | undefined",
           "required": false,
           "boolean": false,
           "descriptionZh": "外层容器样式",
@@ -21847,7 +21847,7 @@
         },
         {
           "name": "align",
-          "type": "import(\".pnpm/csstype@3.2.3/node_modules/csstype\").Property.AlignItems | undefined",
+          "type": "Property.AlignItems | undefined",
           "required": false,
           "boolean": false,
           "descriptionZh": "子项在网格单元格内的垂直对齐方式",
@@ -21855,7 +21855,7 @@
         },
         {
           "name": "justify",
-          "type": "import(\".pnpm/csstype@3.2.3/node_modules/csstype\").Property.JustifyItems | undefined",
+          "type": "Property.JustifyItems | undefined",
           "required": false,
           "boolean": false,
           "descriptionZh": "子项在网格单元格内的水平对齐方式。",
@@ -21863,7 +21863,7 @@
         },
         {
           "name": "flow",
-          "type": "import(\".pnpm/csstype@3.2.3/node_modules/csstype\").Property.GridAutoFlow | undefined",
+          "type": "Property.GridAutoFlow | undefined",
           "required": false,
           "boolean": false,
           "defaultExpression": "\"row\"",
@@ -24298,14 +24298,6 @@
           "descriptionEn": "Shape"
         },
         {
-          "name": "inputType",
-          "type": "string | undefined",
-          "required": false,
-          "boolean": false,
-          "descriptionZh": "自定义样式类名前缀",
-          "descriptionEn": "Custom style class prefix"
-        },
-        {
           "name": "onSearch",
           "type": "((value: string) => void) | undefined",
           "required": false,
@@ -24336,14 +24328,6 @@
           "boolean": false,
           "descriptionZh": "内容变化时的回调",
           "descriptionEn": "Callback when the content changes"
-        },
-        {
-          "name": "controls",
-          "type": "React.ReactNode",
-          "required": false,
-          "boolean": false,
-          "descriptionZh": "输入框控制区域，供 InputNumber 等组件使用",
-          "descriptionEn": "Control area used by components such as InputNumber"
         }
       ],
       "nativeProps": [
@@ -24792,8 +24776,7 @@
         "suffix",
         "prefix",
         "addonBefore",
-        "addonAfter",
-        "controls"
+        "addonAfter"
       ],
       "behavior": {
         "rules": [
@@ -34627,7 +34610,7 @@
         },
         {
           "name": "style",
-          "type": "import(\"react\").CSSProperties | undefined",
+          "type": "CSSProperties | undefined",
           "required": false,
           "boolean": false,
           "descriptionZh": "外层容器样式",
@@ -46992,7 +46975,7 @@
         },
         {
           "name": "size",
-          "type": "import(\"../components\").SizeType | undefined",
+          "type": "SizeType | undefined",
           "required": false,
           "enumValues": [
             "small",
@@ -47030,7 +47013,7 @@
         },
         {
           "name": "shape",
-          "type": "import(\"../components\").ShapeType | undefined",
+          "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
             "round",
@@ -52082,7 +52065,7 @@
         },
         {
           "name": "theme",
-          "type": "import(\"../components\").ThemeType | undefined",
+          "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
@@ -52111,7 +52094,7 @@
         },
         {
           "name": "shape",
-          "type": "import(\"../components\").ShapeType | undefined",
+          "type": "ShapeType | undefined",
           "required": false,
           "enumValues": [
             "round",
@@ -52145,7 +52128,7 @@
         },
         {
           "name": "icon",
-          "type": "import(\"../icon\").IconType[] | undefined",
+          "type": "IconType[] | undefined",
           "required": false,
           "boolean": false,
           "descriptionZh": "自定义前缀图标。",
@@ -52153,7 +52136,7 @@
         },
         {
           "name": "arrowIcon",
-          "type": "import(\"../icon\").IconType[] | undefined",
+          "type": "IconType[] | undefined",
           "required": false,
           "boolean": false,
           "descriptionZh": "自定义下拉箭头。",
@@ -52169,7 +52152,7 @@
         },
         {
           "name": "loadData",
-          "type": "import(\"./types\").CascaderLoadData | undefined",
+          "type": "CascaderLoadData | undefined",
           "required": false,
           "boolean": false,
           "descriptionZh": "异步加载子节点；返回子节点数组，或自行更新 `option.children`",
@@ -52213,7 +52196,7 @@
         },
         {
           "name": "size",
-          "type": "import(\"../components\").SizeType | undefined",
+          "type": "SizeType | undefined",
           "required": false,
           "enumValues": [
             "small",
@@ -52258,7 +52241,7 @@
         },
         {
           "name": "placement",
-          "type": "import(\"../components\").DropPlacementsType | undefined",
+          "type": "DropPlacementsType | undefined",
           "required": false,
           "enumValues": [
             "top",
@@ -56077,7 +56060,7 @@
         },
         {
           "name": "titles",
-          "type": "[import(\"react\").ReactNode, import(\"react\").ReactNode] | undefined",
+          "type": "[ReactNode, ReactNode] | undefined",
           "required": false,
           "boolean": false,
           "descriptionZh": "两侧标题",

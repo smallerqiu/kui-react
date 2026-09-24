@@ -32,25 +32,25 @@ Present richer choices with a title, description, and optional symbol.
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
 | checked | checked state | `boolean` | - |
-| value | Option value inside a group | `import("./types").CheckCardValue` | - |
-| title | Title | `React.ReactNode` | - |
-| description | Description | `React.ReactNode` | - |
-| symbol | Unchecked symbol | `import("../icon").IconType[]` | - |
-| checkedSymbol | Checked symbol | `import("../icon").IconType[]` | - |
+| value | Option value inside a group | `CheckCardValue` | - |
+| title | Title | `ReactNode` | - |
+| description | Description | `ReactNode` | - |
+| symbol | Unchecked symbol | `IconType[]` | - |
+| checkedSymbol | Checked symbol | `IconType[]` | - |
 | showIndicator | Whether to show the indicator | `boolean` | true |
 | disabled | Whether disabled | `boolean` | false |
 | readOnly | Whether read-only | `boolean` | false |
 | theme | Theme | `"fill" \| "outline"` | outline |
 | size | Size | `"small" \| "medium" \| "large"` | medium |
 | shape | Shape | `"round" \| "default" \| "square" \| "circle"` | round |
-| onChange | State change callback | `((event: import("./types").CheckCardChangeEvent) => void)` | - |
+| onChange | State change callback | `((event: CheckCardChangeEvent) => void)` | - |
 
 ## CheckCardGroup API
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
 | value | value | `CheckCardValue` | - |
-| options | Options | `import("./types").CheckCardOption[]` | - |
+| options | Options | `CheckCardOption[]` | - |
 | disabled | Whether disabled | `boolean` | false |
 | readOnly | Whether read-only | `boolean` | false |
 | direction | Layout direction | `"horizontal" \| "vertical"` | horizontal |

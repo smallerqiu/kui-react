@@ -69,9 +69,9 @@ Layout 及其子组件（Header, Sider, Content, Footer）属于页面骨架级�
 | xGap | 水格间距（水平方向）。数字类型会自动补充 px 单位。 | `ResponsiveValue<GridDimension>` | 0 |
 | yGap | 行间距（垂直方向）。数字类型会自动补充 px 单位。 | `ResponsiveValue<GridDimension>` | 0 |
 | itemMinWidth | 自动填充模式。设置子项最小宽度，Grid 将根据容器宽度自动计算列数。 | `string \| number` | - |
-| align | 子项在网格单元格内的垂直对齐方式 | `import(".pnpm/csstype@3.2.3/node_modules/csstype").Property.AlignItems` | - |
-| justify | 子项在网格单元格内的水平对齐方式。 | `import(".pnpm/csstype@3.2.3/node_modules/csstype").Property.JustifyItems` | - |
-| flow | 网格自动排列方式，对应 `grid-auto-flow` | `import(".pnpm/csstype@3.2.3/node_modules/csstype").Property.GridAutoFlow` | row |
+| align | 子项在网格单元格内的垂直对齐方式 | `Property.AlignItems` | - |
+| justify | 子项在网格单元格内的水平对齐方式。 | `Property.JustifyItems` | - |
+| flow | 网格自动排列方式，对应 `grid-auto-flow` | `Property.GridAutoFlow` | row |
 | debug | 调试模式。开启后会显示红色透明背景列，方便开发者校对布局。 | `boolean` | false |
 
 ## GridItem API

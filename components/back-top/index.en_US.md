@@ -26,8 +26,8 @@ Button to return to the top of the page.
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
 | height | The BackTop component is displayed only when the scroll height reaches this value | `number` | 100 |
-| bottom | Distance from the bottom | `import(".pnpm/csstype@3.2.3/node_modules/csstype").Property.Bottom<string \| number>` | 50 |
-| right | Distance from the right | `import(".pnpm/csstype@3.2.3/node_modules/csstype").Property.Right<string \| number>` | 50 |
+| bottom | Distance from the bottom | `Property.Bottom<string \| number>` | 50 |
+| right | Distance from the right | `Property.Right<string \| number>` | 50 |
 | behavior | Scroll behavior | `"auto" \| "smooth" \| "instant"` | smooth |
 | onClick | Triggered when the button is clicked | `((event: MouseEvent<HTMLDivElement>) => void)` | - |
 | onVisibleChange | Triggered when visibility changes | `((visible: boolean) => void)` | - |

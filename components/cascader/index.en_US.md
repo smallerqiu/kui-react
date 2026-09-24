@@ -42,10 +42,10 @@ A cascading selection box.
 | bordered | Whether to display the border. | `boolean` | `true` |
 | shape | Component shape. | `"round" \| "default" \| "square" \| "circle"` | - |
 | showArrow | Whether to display the dropdown arrow. | `boolean` | `true` |
-| icon | Custom prefix icon. | `import("../icon").IconType[]` | - |
-| arrowIcon | Custom dropdown arrow. | `import("../icon").IconType[]` | - |
+| icon | Custom prefix icon. | `IconType[]` | - |
+| arrowIcon | Custom dropdown arrow. | `IconType[]` | - |
 | emptyText | Empty-state text. | `string` | - |
-| loadData | Loads children asynchronously; return them or update `option.children` | `import("./types").CascaderLoadData` | - |
+| loadData | Loads children asynchronously; return them or update `option.children` | `CascaderLoadData` | - |
 | placement | Popup placement. | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | `bottom-left` |
 | onChange | Called when a path is selected or cleared. | `((value: CascaderValue) => void)` | - |
 | onExpandChange | Called when the expanded path changes. | `((value: CascaderValue) => void)` | - |
