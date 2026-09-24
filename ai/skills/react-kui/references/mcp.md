@@ -1,6 +1,16 @@
 # React KUI MCP
 
-Start `pnpm exec react-kui-mcp` from the consuming project. Transport: stdio.
+Transport: stdio. Use an absolute Node executable path and the absolute installed
+`node_modules/react-kui/ai/mcp.mjs` path as its argument; this avoids depending
+on the client's working directory. Keep the full package and dependencies installed.
+Get the executable path with `node -p "process.execPath"`.
+
+For configuration examples, prerequisites and troubleshooting, read
+[AI.en-US.md](../../../../AI.en-US.md#mcp-server).
+The alternative `pnpm exec react-kui-mcp` requires pnpm on the client's PATH
+and an explicit working directory set to the consuming project.
+Verify initialization, tools/list, and a get_component_api query after connecting.
+Silent terminal startup only means the stdio process is waiting for input.
 
 - search_components({ query, offset?, limit? }): paginated component discovery, default 10/max 20.
 - recommend_components({ requirement }): candidate components.

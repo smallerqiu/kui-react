@@ -29,6 +29,40 @@ function rpc(requests: unknown[]) {
 }
 
 describe("React AI distribution", () => {
+  it("distinguishes render callbacks and the actual standalone panel close behavior", () => {
+    const description = (component: string, prop: string) => {
+      const target = metadata.components.find(
+        (entry: { name: string }) => entry.name === component,
+      );
+      return target.props.find((entry: { name: string }) => entry.name === prop).descriptionEn;
+    };
+    expect(description("VirtualList", "children")).toContain("index in the full data array");
+    expect(description("NoticePanel", "closable")).toContain("does not hide");
+    expect(description("MessagePanel", "closable")).toContain("Whether to show");
+    expect(description("Modal", "children")).toContain("replaces the entire");
+  });
+  it("has bilingual explanations rather than empty or generated placeholders for every prop", () => {
+    for (const component of metadata.components) {
+      for (const prop of component.props) {
+        for (const description of [prop.descriptionZh, prop.descriptionEn]) {
+          expect(description?.trim(), `${component.name}.${prop.name}`).toBeTruthy();
+          expect(description).not.toMatch(/^(Props for |Event emitted|Supported .* slot)/);
+        }
+      }
+    }
+  });
+  it("keeps parent descriptions separate from same-named child props", () => {
+    const components: Array<{
+      name: string;
+      props: Array<{ name: string; descriptionZh: string }>;
+    }> = metadata.components;
+    const description = (name: string) =>
+      components.find((c) => c.name === name)?.props.find((p) => p.name === "value")?.descriptionZh;
+    expect(description("Select")).toBeTruthy();
+    expect(description("Select")).not.toBe(description("Option"));
+    expect(description("Select")).not.toContain("必填");
+    expect(description("Option")).toContain("选项值");
+  });
   it("keeps type references portable across source and package layouts", () => {
     const asset: {
       components: Array<{ name: string; props: Array<{ name: string; type: string }> }>;

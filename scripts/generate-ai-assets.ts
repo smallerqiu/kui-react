@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import { syncDocumentation } from "./api-docs.ts";
+import { componentDocumentation } from "./component-documentation.ts";
 import path from "node:path";
 import ts from "typescript";
 
@@ -15,13 +16,19 @@ const source = program.getSourceFile(entry)!;
 const moduleSymbol = checker.getSymbolAtLocation(source)!;
 const exports = checker.getExportsOfModule(moduleSymbol);
 const behaviors = JSON.parse(fs.readFileSync(path.join(root, "ai/behaviors.json"), "utf8"));
+const descriptions = JSON.parse(
+  fs.readFileSync(path.join(root, "ai/descriptions.json"), "utf8"),
+) as Record<string, Record<string, { zh: string; en: string }>>;
 const read = (file: string) => (fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "");
-const tableDocs = (file: string) =>
+const tableDocs = (file: string, component: string) =>
   new Map(
-    [...read(file).matchAll(/^\|\s*`?([\w]+)`?\s*\|([^\n]+)/gm)].map((m) => [
-      m[1],
-      m[2].split(/(?<!\\)\|/)[0].trim(),
-    ]),
+    [
+      ...(
+        read(file) +
+        "\n" +
+        componentDocumentation(read(file), component, path.basename(path.dirname(file)))
+      ).matchAll(/^\|\s*`?([\w]+)`?\s*\|([^\n]+)/gm),
+    ].map((m) => [m[1], m[2].split(/(?<!\\)\|/)[0].trim()]),
   );
 const resolveSymbol = (s: ts.Symbol) =>
   s.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(s) : s;
@@ -83,8 +90,8 @@ const components = exports.flatMap((exported) => {
     name === "StatNumber" ? "stat-number" : relative.split(path.sep)[0],
   );
   const markdown = path.join(directory, "index.md");
-  const docZh = tableDocs(markdown);
-  const docEn = tableDocs(path.join(directory, "index.en_US.md"));
+  const docZh = tableDocs(markdown, name);
+  const docEn = tableDocs(path.join(directory, "index.en_US.md"), name);
   const defaults = defaultsFor(declaration);
   const nativeProps: string[] = [];
   const nativeValueTypes: Record<string, string> = {};
@@ -144,8 +151,8 @@ const components = exports.flatMap((exported) => {
           union.length > 0 &&
           union.every((t) => !!(t.flags & (ts.TypeFlags.Boolean | ts.TypeFlags.BooleanLiteral))),
         defaultExpression: defaults.get(prop.name),
-        descriptionZh: docZh.get(prop.name) || comment || "",
-        descriptionEn: docEn.get(prop.name) || comment || "",
+        descriptionZh: docZh.get(prop.name) || descriptions[name]?.[prop.name]?.zh || comment || "",
+        descriptionEn: docEn.get(prop.name) || descriptions[name]?.[prop.name]?.en || comment || "",
       },
     ];
   });
@@ -188,6 +195,13 @@ for (const name of Object.keys(behaviors))
 const runtimeExports = exports
   .filter((s) => !!(resolveSymbol(s).flags & ts.SymbolFlags.Value))
   .map((s) => s.name);
+for (const [component, fields] of Object.entries(descriptions)) {
+  const target = components.find((entry) => entry.name === component);
+  for (const [field, note] of Object.entries(fields)) {
+    if (!target?.props.some((prop) => prop.name === field) || !note.zh?.trim() || !note.en?.trim())
+      throw new Error(`Invalid description supplement: ${component}.${field}`);
+  }
+}
 if (process.argv.includes("--docs") || process.argv.includes("--check-docs")) {
   syncDocumentation(root, components, process.argv.includes("--check-docs"));
   process.exit(0);

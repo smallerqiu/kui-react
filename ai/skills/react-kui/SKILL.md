@@ -5,14 +5,44 @@ description: Build React 19.2+ applications with react-kui. Use when creating, r
 
 # React KUI
 
-Icon prop contract: Button.icon takes IconType[] data imported from kui-icons: import { Search } from 'kui-icons'; use <Button icon={Search} />. Never pass a JSX element (<Icon type={Search} />), a component function, or an icon-name string to icon. For custom rendered content, put <Icon type={Search} /> in Button children. Input prefix/suffix are renderable nodes and must not be confused with Button.icon.
+## Read installed-version resources
 
-1. Confirm the application uses React 19.2+. Use named component imports from `react-kui` and icon definitions from `kui-icons`.
-2. Import `react-kui/style/index.css` once at the application entry.
-3. Read installed-version metadata (`react-kui/metadata`) before choosing props or callback signatures. Prefer it over online documentation for another version.
-4. Use JSX/TSX and React state. Never translate Vue v-model, named slots or app.use registration literally. The image export is `KImage`.
-5. Input onChange receives a value, not a DOM event. Switch uses checked/onChange; Modal uses open/onOpenChange. A controlled Form model must be updated through onChange(nextModel).
-6. Query MCP APIs by section. Read example summaries before fetching source. Use the form/table/modal-editor templates for business flows; their requests are local mocks, not production endpoints.
-7. Run validate_kui_usage, read skipped checks, then run application typecheck, lint and relevant interaction tests. Static valid does not mean full type/runtime correctness.
+Run `pnpm exec react-kui-ai paths` to locate the installed Skill and metadata.
+`react-kui/metadata` is a package export, not a directory. It resolves with
+`node -p "require.resolve('react-kui/metadata')"`. The physical fallback is
+`node_modules/react-kui/ai/kui-components.json`.
 
-See `references/components.md` for versioned resources and `references/mcp.md` for tools and setup.
+Without MCP, query `pnpm exec react-kui-ai api Input --section props` and
+`api Input --section behavior`. Use `search`, `examples`, and `example`
+to fetch only relevant content; run `help` for exact arguments. Older releases
+may only support init: use the metadata file or MCP rather than inventing commands.
+Read [references/components.md](references/components.md) for resource boundaries;
+read [references/mcp.md](references/mcp.md) only when configuring or using MCP.
+
+## Contracts that change implementation
+
+- Import from `react-kui`, icons from `kui-icons`, and `react-kui/style/index.css` once.
+- Button.icon takes IconType[] data (for example Search), not JSX, h(Icon), a VNode
+  or an icon-name string. Input prefix/suffix are renderable content, unlike icon.
+- Use React 19.2+, JSX/TSX, className and React state/callbacks, not Vue bindings.
+- Input onChange receives a string and uses synchronized local state; do not
+  assume strict native controlled-input semantics. Modal uses open/onOpenChange.
+- A controlled Form model is updated through onChange(nextModel). Query callback
+  payloads instead of assuming all controls emit DOM events.
+- Utilities and type-only exports are not all listed in component metadata.
+  Check installed declarations before concluding an export is missing.
+
+## Migration and verification
+
+For React → Vue migration, read [references/react-to-vue.md](references/react-to-vue.md).
+The CLI exposes it with `migration react-to-vue`; use `migration vue-to-react`
+for the other direction. Follow only the guide matching the requested target.
+
+For Vue → React migration, read [references/vue-to-react.md](references/vue-to-react.md)
+before choosing target APIs. Query both installed versions. Preserve business
+behavior as well as layout; do not treat a successful typecheck as parity.
+
+Run `pnpm exec react-kui-ai validate <file>`, then application typecheck, lint and
+relevant interaction tests. Inspect complete/skipped limitations. This validator
+is partial and does not execute expressions. Templates are local mocks, not
+production backends; adapt them only within the user's task.

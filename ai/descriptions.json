@@ -1,0 +1,446 @@
+{
+  "Affix": {
+    "children": {
+      "zh": "需要随滚动固定在指定位置的内容。",
+      "en": "Content to pin at the configured position while scrolling."
+    }
+  },
+  "Alert": {
+    "children": {
+      "zh": "未提供有效 message 时展示的提示正文。",
+      "en": "Alert message content used when message is falsy."
+    }
+  },
+  "ListPanel": {
+    "children": {
+      "zh": "列表面板主体，位于工具栏之后、底部区域之前。",
+      "en": "Main list-panel content between its toolbar and footer."
+    }
+  },
+  "Avatar": {
+    "children": {
+      "zh": "头像内的文本或自定义内容，在图片和图标未显示时使用。",
+      "en": "Avatar text or custom content used when no image or icon is displayed."
+    }
+  },
+  "AvatarGroup": {
+    "children": {
+      "zh": "要组合展示的 Avatar 子节点；超出 maxCount 的部分由组处理。",
+      "en": "Avatar children to group; the group handles items exceeding maxCount."
+    }
+  },
+  "Badge": {
+    "children": {
+      "zh": "被徽标标记的内容；省略时可独立显示徽标。",
+      "en": "Content decorated by the badge; omit it for a standalone badge."
+    }
+  },
+  "ButtonGroup": {
+    "children": {
+      "zh": "组合展示的按钮内容，继承组提供的尺寸与形状。",
+      "en": "Grouped button content that inherits the group's size and shape."
+    }
+  },
+  "Card": {
+    "children": {
+      "zh": "卡片主体内容，与头部和封面分开。",
+      "en": "Card body content, separate from the header and cover."
+    }
+  },
+  "Checkbox": {
+    "children": {
+      "zh": "未设置 label 时的复选框标签内容。",
+      "en": "Checkbox label content used when label is null or undefined."
+    }
+  },
+  "CheckboxGroup": {
+    "children": {
+      "zh": "自定义 Checkbox 子节点，与组的选中值共享上下文。",
+      "en": "Custom Checkbox children sharing the group's selection context."
+    }
+  },
+  "CheckCard": {
+    "children": {
+      "zh": "选择卡标题和描述之后的自定义内容。",
+      "en": "Custom content following the check card's title and description."
+    }
+  },
+  "CheckCardGroup": {
+    "children": {
+      "zh": "未通过 options 生成选项时使用的 CheckCard 子节点。",
+      "en": "CheckCard children used when options is not supplied."
+    }
+  },
+  "Collapse": {
+    "children": {
+      "zh": "折叠面板子节点；Collapse 根据 panelKey 注入展开状态和切换处理。",
+      "en": "Panel children; Collapse injects expansion state and handlers using panelKey."
+    }
+  },
+  "CollapsePanel": {
+    "children": {
+      "zh": "面板展开区域的正文；显示与收起由 active 控制。",
+      "en": "Panel body whose visibility is controlled by active."
+    },
+    "active": {
+      "zh": "当前面板是否展开；在 Collapse 中通常由父组件根据 openKeys 注入。",
+      "en": "Whether the panel is expanded; normally injected by Collapse from openKeys."
+    },
+    "onExpand": {
+      "zh": "可操作标题被点击或键盘激活时回传 panelKey；Collapse 使用它切换展开状态。",
+      "en": "Receives panelKey when an enabled header is clicked or keyboard-activated; Collapse uses it to toggle expansion."
+    }
+  },
+  "Descriptions": {
+    "children": {
+      "zh": "要排版的 DescriptionsItem 子节点，使用其 label、span 和内容。",
+      "en": "DescriptionsItem children laid out using their label, span and content."
+    }
+  },
+  "DescriptionsItem": {
+    "children": {
+      "zh": "当前描述项的值或自定义内容，不是标签。",
+      "en": "The value or custom content of this description item, not its label."
+    }
+  },
+  "Drawer": {
+    "children": {
+      "zh": "抽屉正文区域内容。",
+      "en": "Content of the drawer body."
+    }
+  },
+  "Dropdown": {
+    "children": {
+      "zh": "下拉触发器；弹层内容请放在 overlay 中。",
+      "en": "Dropdown trigger; put popup content in overlay instead."
+    }
+  },
+  "DropdownButton": {
+    "children": {
+      "zh": "分裂式下拉按钮主按钮的内容；菜单使用 overlay。",
+      "en": "Content of the main split button; supply the menu through overlay."
+    }
+  },
+  "Divider": {
+    "children": {
+      "zh": "水平分割线中的标题内容；有效时优先于 text。",
+      "en": "Title content in a horizontal divider; when truthy it takes precedence over text."
+    }
+  },
+  "Empty": {
+    "children": {
+      "zh": "空状态底部区域，通常用于操作按钮。",
+      "en": "Footer content of the empty state, usually action buttons."
+    }
+  },
+  "FormItem": {
+    "children": {
+      "zh": "字段控件及辅助内容；支持的表单控件通过 prop 接入 Form 字段上下文。",
+      "en": "Field controls and supporting content; supported controls bind to the Form field through prop."
+    }
+  },
+  "Flex": {
+    "children": {
+      "zh": "参与 Flex 排列的子内容。",
+      "en": "Children arranged by the flex container."
+    }
+  },
+  "FeatureCard": {
+    "children": {
+      "zh": "功能卡片正文中的附加自定义内容。",
+      "en": "Additional custom content in the feature-card body."
+    }
+  },
+  "InputGroup": {
+    "children": {
+      "zh": "组合展示的输入框、按钮等内容，使用组的布局及外观上下文。",
+      "en": "Inputs, buttons or other content sharing the group's layout and appearance context."
+    }
+  },
+  "Content": {
+    "children": {
+      "zh": "布局主内容区域的内容。",
+      "en": "Content of the layout's main section."
+    },
+    "suffixCls": {
+      "zh": "布局实现使用的基础类名后缀，生成 k-<suffixCls>；普通样式扩展应使用 className。",
+      "en": "Base class suffix used by the layout implementation to form k-<suffixCls>; use className for ordinary styling extensions."
+    }
+  },
+  "Footer": {
+    "children": {
+      "zh": "布局底部区域的内容。",
+      "en": "Content of the layout footer."
+    },
+    "suffixCls": {
+      "zh": "布局实现使用的基础类名后缀，生成 k-<suffixCls>；普通样式扩展应使用 className。",
+      "en": "Base class suffix used by the layout implementation to form k-<suffixCls>; use className for ordinary styling extensions."
+    }
+  },
+  "Header": {
+    "children": {
+      "zh": "布局头部区域的内容。",
+      "en": "Content of the layout header."
+    },
+    "suffixCls": {
+      "zh": "布局实现使用的基础类名后缀，生成 k-<suffixCls>；普通样式扩展应使用 className。",
+      "en": "Base class suffix used by the layout implementation to form k-<suffixCls>; use className for ordinary styling extensions."
+    }
+  },
+  "Layout": {
+    "children": {
+      "zh": "布局子区域，如 Header、Content、Sider 和 Footer；嵌套布局也可作为内容。",
+      "en": "Layout sections such as Header, Content, Sider and Footer, including nested layouts."
+    },
+    "suffixCls": {
+      "zh": "布局实现使用的基础类名后缀，生成 k-<suffixCls>；普通样式扩展应使用 className。",
+      "en": "Base class suffix used by the layout implementation to form k-<suffixCls>; use className for ordinary styling extensions."
+    }
+  },
+  "Sider": {
+    "children": {
+      "zh": "侧栏内容，如导航菜单；宽度和折叠由 Sider 属性控制。",
+      "en": "Sidebar content such as navigation; Sider props control width and collapse."
+    },
+    "suffixCls": {
+      "zh": "布局实现使用的基础类名后缀，生成 k-<suffixCls>；普通样式扩展应使用 className。",
+      "en": "Base class suffix used by the layout implementation to form k-<suffixCls>; use className for ordinary styling extensions."
+    }
+  },
+  "Modal": {
+    "children": {
+      "zh": "标准弹窗正文；传入真值 content 时将替换整个标准内容区，包括头部、正文和页脚。",
+      "en": "Standard modal body; a truthy content prop replaces the entire standard content region, including header, body and footer."
+    },
+    "className": {
+      "zh": "追加到 k-modal 根容器的 CSS 类名。",
+      "en": "Additional CSS classes on the k-modal root container."
+    }
+  },
+  "ModalPanel": {
+    "children": {
+      "zh": "独立面板的标准正文；真值 content 会替换整个标准内容区。",
+      "en": "Standard body of the standalone panel; truthy content replaces the entire standard content region."
+    },
+    "className": {
+      "zh": "追加到 k-modal-panel 根容器的 CSS 类名。",
+      "en": "Additional CSS classes on the k-modal-panel root container."
+    }
+  },
+  "PageHeader": {
+    "children": {
+      "zh": "页面头部主体中的附加内容。",
+      "en": "Additional content in the page-header body."
+    }
+  },
+  "Poptip": {
+    "children": {
+      "zh": "气泡卡片的触发内容；卡片正文使用 content。",
+      "en": "Trigger content for the popover; supply its body through content."
+    }
+  },
+  "Popconfirm": {
+    "children": {
+      "zh": "确认气泡的触发内容，不是气泡正文。",
+      "en": "Trigger content for the confirmation popup, not its body."
+    }
+  },
+  "Radio": {
+    "children": {
+      "zh": "未设置 label 时的单选项标签内容。",
+      "en": "Radio label content used when label is null or undefined."
+    }
+  },
+  "RadioButton": {
+    "children": {
+      "zh": "未设置 label 时的按钮式单选标签，二者均无内容时回退到 value。",
+      "en": "Button-style radio label when label is null or undefined; falls back to value when both are absent."
+    }
+  },
+  "RadioGroup": {
+    "children": {
+      "zh": "自定义 Radio 或 RadioButton 子节点，共享组的值和禁用状态。",
+      "en": "Custom Radio or RadioButton children sharing the group value and disabled state."
+    }
+  },
+  "Select": {
+    "children": {
+      "zh": "以 Option 子节点声明的选项；使用 options 数据源时无需重复声明。",
+      "en": "Options declared as Option children; do not duplicate options already supplied through the options data source."
+    }
+  },
+  "ConfigProvider": {
+    "children": {
+      "zh": "接收 locale、尺寸、主题和形状配置的后代组件。",
+      "en": "Descendant components receiving locale, size, theme and shape configuration."
+    }
+  },
+  "Space": {
+    "children": {
+      "zh": "按配置的间距和方向排列的内容；compact 时组合相邻控件。",
+      "en": "Content arranged with the configured spacing and direction; compact combines adjacent controls."
+    }
+  },
+  "Spin": {
+    "children": {
+      "zh": "加载状态覆盖的内容；省略内容时作为独立加载指示器使用。",
+      "en": "Content covered by the loading state; omit it for a standalone loading indicator."
+    }
+  },
+  "Steps": {
+    "children": {
+      "zh": "步骤子节点；容器根据 current 等属性分配步骤序号与状态。",
+      "en": "Step children whose indices and statuses are assigned by the container using current and related props."
+    }
+  },
+  "Tooltip": {
+    "children": {
+      "zh": "提示的触发内容；提示文本使用 title。",
+      "en": "Tooltip trigger content; provide tooltip text through title."
+    }
+  },
+  "TabPanel": {
+    "children": {
+      "zh": "当前标签页的内容区域。",
+      "en": "Content of this tab pane."
+    }
+  },
+  "Tabs": {
+    "children": {
+      "zh": "TabPanel 子节点，用于生成页签导航和对应面板。",
+      "en": "TabPanel children used to build tab navigation and panes."
+    }
+  },
+  "Tag": {
+    "children": {
+      "zh": "标签正文，与关闭按钮独立。",
+      "en": "Tag body content, separate from the close button."
+    }
+  },
+  "Col": {
+    "children": {
+      "zh": "栅格列内部的内容。",
+      "en": "Content inside the grid column."
+    }
+  },
+  "Row": {
+    "children": {
+      "zh": "参与栅格行排列的 Col 等子节点。",
+      "en": "Col and other children arranged within the grid row."
+    }
+  },
+  "VirtualList": {
+    "children": {
+      "zh": "可见项渲染函数，接收数据项和它在完整 data 数组中的索引；不会渲染所有项。",
+      "en": "Renderer for visible items, receiving the item and its index in the full data array; not every item is rendered."
+    }
+  },
+  "Skeleton": {
+    "children": {
+      "zh": "骨架不再显示时展示的实际内容；加载期间展示骨架占位。",
+      "en": "Actual content displayed after the skeleton is hidden; loading displays the skeleton placeholder."
+    }
+  },
+  "SkeletonAvatar": {
+    "children": {
+      "zh": "骨架不再显示时展示的实际内容；加载期间展示骨架占位。",
+      "en": "Actual content displayed after the skeleton is hidden; loading displays the skeleton placeholder."
+    }
+  },
+  "SkeletonButton": {
+    "children": {
+      "zh": "骨架不再显示时展示的实际内容；加载期间展示骨架占位。",
+      "en": "Actual content displayed after the skeleton is hidden; loading displays the skeleton placeholder."
+    }
+  },
+  "SkeletonImage": {
+    "children": {
+      "zh": "骨架不再显示时展示的实际内容；加载期间展示骨架占位。",
+      "en": "Actual content displayed after the skeleton is hidden; loading displays the skeleton placeholder."
+    }
+  },
+  "SkeletonText": {
+    "children": {
+      "zh": "骨架不再显示时展示的实际内容；加载期间展示骨架占位。",
+      "en": "Actual content displayed after the skeleton is hidden; loading displays the skeleton placeholder."
+    }
+  },
+  "Typography": {
+    "children": {
+      "zh": "未使用 value 覆盖且尚未编辑时展示的排版内容；其文本也用于初始化编辑值。",
+      "en": "Typography content shown before editing when value is not supplied; its text also initializes the editable value."
+    }
+  },
+  "TypographyParagraph": {
+    "children": {
+      "zh": "未使用 value 覆盖且尚未编辑时展示的排版内容；其文本也用于初始化编辑值。",
+      "en": "Typography content shown before editing when value is not supplied; its text also initializes the editable value."
+    }
+  },
+  "TypographyText": {
+    "children": {
+      "zh": "未使用 value 覆盖且尚未编辑时展示的排版内容；其文本也用于初始化编辑值。",
+      "en": "Typography content shown before editing when value is not supplied; its text also initializes the editable value."
+    }
+  },
+  "TypographyTitle": {
+    "children": {
+      "zh": "未使用 value 覆盖且尚未编辑时展示的排版内容；其文本也用于初始化编辑值。",
+      "en": "Typography content shown before editing when value is not supplied; its text also initializes the editable value."
+    }
+  },
+  "MenuItem": {
+    "menuKey": {
+      "zh": "菜单身份标识的兼容回退值，仅在未设置 itemKey 时使用；新代码优先使用 itemKey。",
+      "en": "Compatibility fallback for item identity, used only when itemKey is absent; prefer itemKey in new code."
+    },
+    "className": {
+      "zh": "追加到菜单项 li 元素的 CSS 类名。",
+      "en": "Additional CSS classes on the menu item's li element."
+    },
+    "style": {
+      "zh": "菜单项 li 元素的内联样式；内联模式嵌套缩进可能覆盖 paddingLeft。",
+      "en": "Inline styles on the menu item's li element; nested inline-menu indentation may override paddingLeft."
+    }
+  },
+  "SubMenu": {
+    "menuKey": {
+      "zh": "菜单身份标识的兼容回退值，仅在未设置 itemKey 时使用；新代码优先使用 itemKey。",
+      "en": "Compatibility fallback for item identity, used only when itemKey is absent; prefer itemKey in new code."
+    }
+  },
+  "MessagePanel": {
+    "type": {
+      "zh": "消息语义类型，影响状态类名和默认图标；icon 可覆盖默认图标。",
+      "en": "Semantic message type controlling status classes and the default icon; icon can override that icon."
+    },
+    "closable": {
+      "zh": "是否显示关闭按钮；点击时调用 onClose，独立面板由调用方处理移除。",
+      "en": "Whether to show the close button; clicking calls onClose, and the caller handles removal of a standalone panel."
+    }
+  },
+  "NoticePanel": {
+    "type": {
+      "zh": "消息语义类型，影响状态类名和默认图标；icon 可覆盖默认图标。",
+      "en": "Semantic message type controlling status classes and the default icon; icon can override that icon."
+    },
+    "closable": {
+      "zh": "共享面板类型中的属性；当前 NoticePanel 始终显示关闭按钮，此属性不会隐藏它。",
+      "en": "A prop inherited from the shared panel type; NoticePanel currently always shows its close button, so this prop does not hide it."
+    }
+  },
+  "Option": {
+    "checked": {
+      "zh": "选项是否选中，控制选中样式；通常由 Select 根据选中值注入。",
+      "en": "Whether the option is selected, controlling selected styling; normally injected by Select from its selected value."
+    },
+    "active": {
+      "zh": "选项的活动高亮状态，与选中状态不同，通常由 Select 的键盘导航管理。",
+      "en": "Active highlight state, distinct from selection and normally managed by Select keyboard navigation."
+    },
+    "onMouseEnter": {
+      "zh": "鼠标进入可用选项时触发，接收 React 鼠标事件；禁用项不触发。",
+      "en": "Called with the React mouse event when the pointer enters an enabled option; disabled options do not trigger it."
+    }
+  }
+}

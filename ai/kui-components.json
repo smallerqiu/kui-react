@@ -150,8 +150,8 @@
           "type": "ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "需要随滚动固定在指定位置的内容。",
+          "descriptionEn": "Content to pin at the configured position while scrolling."
         },
         {
           "name": "offsetTop",
@@ -1344,7 +1344,10 @@
         "arrowContent"
       ],
       "behavior": {
-        "rules": []
+        "rules": [
+          "Use children for the trigger and overlay for the popup content. open/onOpenChange synchronizes visibility; query the callback detail type for dismissal reasons.",
+          "The shared Popup manages nested layers; do not implement an extra document-click closer that can close parent pickers during nested selections."
+        ]
       },
       "children": [],
       "examples": [
@@ -1515,8 +1518,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "未提供有效 message 时展示的提示正文。",
+          "descriptionEn": "Alert message content used when message is falsy."
         }
       ],
       "nativeProps": [
@@ -3134,8 +3137,8 @@
           "type": "ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "列表面板主体，位于工具栏之后、底部区域之前。",
+          "descriptionEn": "Main list-panel content between its toolbar and footer."
         }
       ],
       "nativeProps": [
@@ -5098,8 +5101,8 @@
           ],
           "boolean": false,
           "defaultExpression": "\"circle\"",
-          "descriptionZh": "统一子头像形状",
-          "descriptionEn": "Sets the shape of all child avatars"
+          "descriptionZh": "指定头像形状",
+          "descriptionEn": "Avatar shape"
         },
         {
           "name": "size",
@@ -5107,8 +5110,8 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "\"default\"",
-          "descriptionZh": "统一子头像尺寸，并按尺寸自动调整头像重叠距离",
-          "descriptionEn": "Sets child size and adjusts their overlap proportionally"
+          "descriptionZh": "设置头像大小",
+          "descriptionEn": "Avatar size"
         },
         {
           "name": "src",
@@ -5131,8 +5134,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "头像内的文本或自定义内容，在图片和图标未显示时使用。",
+          "descriptionEn": "Avatar text or custom content used when no image or icon is displayed."
         },
         {
           "name": "onError",
@@ -5592,8 +5595,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "要组合展示的 Avatar 子节点；超出 maxCount 的部分由组处理。",
+          "descriptionEn": "Avatar children to group; the group handles items exceeding maxCount."
         }
       ],
       "nativeProps": [
@@ -6007,8 +6010,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "节点内容",
-          "descriptionEn": "Breadcrumb item content"
+          "descriptionZh": "面包屑节点",
+          "descriptionEn": "Breadcrumb items"
         }
       ],
       "nativeProps": [
@@ -7402,8 +7405,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "被徽标标记的内容；省略时可独立显示徽标。",
+          "descriptionEn": "Content decorated by the badge; omit it for a standalone badge."
         }
       ],
       "nativeProps": [
@@ -8450,8 +8453,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "组合展示的按钮内容，继承组提供的尺寸与形状。",
+          "descriptionEn": "Grouped button content that inherits the group's size and shape."
         }
       ],
       "nativeProps": [
@@ -8970,8 +8973,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "卡片主体内容，与头部和封面分开。",
+          "descriptionEn": "Card body content, separate from the header and cover."
         }
       ],
       "nativeProps": [
@@ -10724,8 +10727,8 @@
           "type": "unknown",
           "required": false,
           "boolean": false,
-          "descriptionZh": "的当前选中值",
-          "descriptionEn": "selected values"
+          "descriptionZh": "结合使用时表示的值",
+          "descriptionEn": "Value represented in a group"
         },
         {
           "name": "label",
@@ -10761,8 +10764,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "是否禁用组件",
-          "descriptionEn": "Whether the component is disabled"
+          "descriptionZh": "是否禁用当前项",
+          "descriptionEn": "Whether the current item is disabled"
         },
         {
           "name": "readOnly",
@@ -10773,8 +10776,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "是否只读组件",
-          "descriptionEn": "Whether the component is read-only"
+          "descriptionZh": "是否只读当前项",
+          "descriptionEn": "Whether the current item is read-only"
         },
         {
           "name": "indeterminate",
@@ -10806,16 +10809,16 @@
           "type": "((e: ChangeEvent) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "在选项状态发生改变时触发，返回当前选中的项和状态",
-          "descriptionEn": "Triggered when the option state changes, returns the currently selected values"
+          "descriptionZh": "在选项状态发生改变时回调",
+          "descriptionEn": "Callback when the option state changes"
         },
         {
           "name": "children",
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "未设置 label 时的复选框标签内容。",
+          "descriptionEn": "Checkbox label content used when label is null or undefined."
         }
       ],
       "nativeProps": [
@@ -11184,8 +11187,8 @@
           "type": "((e: ChangeEvent) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "在选项状态发生改变时触发，返回当前选中的项和状态",
-          "descriptionEn": "Triggered when the option state changes, returns the currently selected values"
+          "descriptionZh": "在选项状态发生改变时回调",
+          "descriptionEn": "Callback when the option state changes"
         }
       ],
       "renderProps": [
@@ -11193,7 +11196,9 @@
         "children"
       ],
       "behavior": {
-        "rules": []
+        "rules": [
+          "Use checked for the checked state; value identifies an item in a CheckboxGroup. onChange receives an object with checked and optional value/label, not the Switch scalar callback."
+        ]
       },
       "children": [],
       "parent": "CheckboxGroup",
@@ -11326,8 +11331,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "自定义 Checkbox 子节点，与组的选中值共享上下文。",
+          "descriptionEn": "Custom Checkbox children sharing the group's selection context."
         }
       ],
       "nativeProps": [
@@ -11759,8 +11764,8 @@
           "type": "CheckCardValue | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "选项值",
-          "descriptionEn": "Option value"
+          "descriptionZh": "在 Group 中使用的选项值",
+          "descriptionEn": "Option value inside a group"
         },
         {
           "name": "title",
@@ -11815,8 +11820,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "是否禁用该选项",
-          "descriptionEn": "Whether this option is disabled"
+          "descriptionZh": "是否禁用",
+          "descriptionEn": "Whether disabled"
         },
         {
           "name": "readOnly",
@@ -11827,8 +11832,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "是否只读该选项",
-          "descriptionEn": "Whether this option is read-only"
+          "descriptionZh": "是否只读",
+          "descriptionEn": "Whether read-only"
         },
         {
           "name": "theme",
@@ -11839,8 +11844,8 @@
             "outline"
           ],
           "boolean": false,
-          "descriptionZh": "卡片主题",
-          "descriptionEn": "Card theme"
+          "descriptionZh": "主题",
+          "descriptionEn": "Theme"
         },
         {
           "name": "size",
@@ -11852,8 +11857,8 @@
             "large"
           ],
           "boolean": false,
-          "descriptionZh": "卡片尺寸",
-          "descriptionEn": "Card size"
+          "descriptionZh": "尺寸",
+          "descriptionEn": "Size"
         },
         {
           "name": "shape",
@@ -11866,24 +11871,24 @@
             "circle"
           ],
           "boolean": false,
-          "descriptionZh": "卡片形状",
-          "descriptionEn": "Card shape"
+          "descriptionZh": "形状",
+          "descriptionEn": "Shape"
         },
         {
           "name": "onChange",
           "type": "((event: CheckCardChangeEvent) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "选中值变化回调",
-          "descriptionEn": "Selected value callback"
+          "descriptionZh": "状态变化回调",
+          "descriptionEn": "State change callback"
         },
         {
           "name": "children",
           "type": "ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "选择卡标题和描述之后的自定义内容。",
+          "descriptionEn": "Custom content following the check card's title and description."
         }
       ],
       "nativeProps": [
@@ -12252,8 +12257,8 @@
           "type": "((event: CheckCardChangeEvent) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "选中值变化回调",
-          "descriptionEn": "Selected value callback"
+          "descriptionZh": "状态变化回调",
+          "descriptionEn": "State change callback"
         }
       ],
       "renderProps": [
@@ -12397,8 +12402,8 @@
           "type": "ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "未通过 options 生成选项时使用的 CheckCard 子节点。",
+          "descriptionEn": "CheckCard children used when options is not supplied."
         }
       ],
       "nativeProps": [
@@ -12894,8 +12899,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "折叠面板子节点；Collapse 根据 panelKey 注入展开状态和切换处理。",
+          "descriptionEn": "Panel children; Collapse injects expansion state and handlers using panelKey."
         }
       ],
       "nativeProps": [
@@ -13349,8 +13354,8 @@
           ],
           "boolean": true,
           "defaultExpression": "false",
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "当前面板是否展开；在 Collapse 中通常由父组件根据 openKeys 注入。",
+          "descriptionEn": "Whether the panel is expanded; normally injected by Collapse from openKeys."
         },
         {
           "name": "extra",
@@ -13373,16 +13378,16 @@
           "type": "((key: string | number) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "可操作标题被点击或键盘激活时回传 panelKey；Collapse 使用它切换展开状态。",
+          "descriptionEn": "Receives panelKey when an enabled header is clicked or keyboard-activated; Collapse uses it to toggle expansion."
         },
         {
           "name": "children",
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "面板展开区域的正文；显示与收起由 active 控制。",
+          "descriptionEn": "Panel body whose visibility is controlled by active."
         }
       ],
       "nativeProps": [
@@ -13750,8 +13755,8 @@
           "type": "((key: string | number) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "可操作标题被点击或键盘激活时回传 panelKey；Collapse 使用它切换展开状态。",
+          "descriptionEn": "Receives panelKey when an enabled header is clicked or keyboard-activated; Collapse uses it to toggle expansion."
         }
       ],
       "renderProps": [
@@ -15740,7 +15745,10 @@
         "footer"
       ],
       "behavior": {
-        "rules": []
+        "rules": [
+          "Use value/onChange for a single date or a range array when the selected mode is a range. startDate/endDate with onStartDateChange/onEndDateChange are an alternative binding channel, not the only API.",
+          "onChange receives (date, dateStr); output depends on valueType and mode. Handle clear/null values explicitly and avoid supplying conflicting binding channels."
+        ]
       },
       "children": [],
       "examples": [
@@ -16625,8 +16633,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "要排版的 DescriptionsItem 子节点，使用其 label、span 和内容。",
+          "descriptionEn": "DescriptionsItem children laid out using their label, span and content."
         }
       ],
       "nativeProps": [
@@ -17057,8 +17065,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "当前描述项的值或自定义内容，不是标签。",
+          "descriptionEn": "The value or custom content of this description item, not its label."
         }
       ],
       "nativeProps": [],
@@ -17300,8 +17308,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "抽屉正文区域内容。",
+          "descriptionEn": "Content of the drawer body."
         }
       ],
       "nativeProps": [],
@@ -17403,8 +17411,8 @@
           ],
           "boolean": true,
           "defaultExpression": "false",
-          "descriptionZh": "是否禁用",
-          "descriptionEn": "Whether disabled"
+          "descriptionZh": "是否允许触发下拉",
+          "descriptionEn": "Whether dropdown triggering is allowed"
         },
         {
           "name": "arrow",
@@ -17416,8 +17424,8 @@
           ],
           "boolean": true,
           "defaultExpression": "false",
-          "descriptionZh": "是否显示下拉箭头",
-          "descriptionEn": "Whether to show the dropdown arrow"
+          "descriptionZh": "是否显示箭头",
+          "descriptionEn": "Whether to display the arrow"
         },
         {
           "name": "open",
@@ -17489,8 +17497,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "下拉触发器；弹层内容请放在 overlay 中。",
+          "descriptionEn": "Dropdown trigger; put popup content in overlay instead."
         }
       ],
       "nativeProps": [
@@ -17869,7 +17877,9 @@
         "children"
       ],
       "behavior": {
-        "rules": []
+        "rules": [
+          "children is the trigger; overlay supplies popup content. Do not place the menu in children as a translation of the Vue overlay slot."
+        ]
       },
       "children": [],
       "examples": [
@@ -18031,8 +18041,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "分裂式下拉按钮主按钮的内容；菜单使用 overlay。",
+          "descriptionEn": "Content of the main split button; supply the menu through overlay."
         }
       ],
       "nativeProps": [
@@ -18507,8 +18517,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "水平分割线中的标题内容；有效时优先于 text。",
+          "descriptionEn": "Title content in a horizontal divider; when truthy it takes precedence over text."
         }
       ],
       "nativeProps": [
@@ -18932,8 +18942,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "空状态底部区域，通常用于操作按钮。",
+          "descriptionEn": "Footer content of the empty state, usually action buttons."
         }
       ],
       "nativeProps": [
@@ -19467,8 +19477,8 @@
           ],
           "boolean": true,
           "defaultExpression": "true",
-          "descriptionZh": "是否在标签后显示冒号；未设置时继承 Form 的配置",
-          "descriptionEn": "Whether to display a colon after the label; inherits the Form setting when unset"
+          "descriptionZh": "是否显示标签冒号",
+          "descriptionEn": "Whether to display a colon after labels"
         },
         {
           "name": "onSubmit",
@@ -20013,8 +20023,8 @@
           "type": "ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "字段控件及辅助内容；支持的表单控件通过 prop 接入 Form 字段上下文。",
+          "descriptionEn": "Field controls and supporting content; supported controls bind to the Form field through prop."
         }
       ],
       "nativeProps": [],
@@ -20145,8 +20155,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "参与 Flex 排列的子内容。",
+          "descriptionEn": "Children arranged by the flex container."
         }
       ],
       "nativeProps": [
@@ -20695,8 +20705,8 @@
           "type": "ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "功能卡片正文中的附加自定义内容。",
+          "descriptionEn": "Additional custom content in the feature-card body."
         }
       ],
       "nativeProps": [
@@ -23227,8 +23237,8 @@
           "type": "string[] | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "图片数据",
-          "descriptionEn": "Image data"
+          "descriptionZh": "预览图片列表",
+          "descriptionEn": "Preview image list"
         },
         {
           "name": "imgStyle",
@@ -24215,8 +24225,8 @@
             "large"
           ],
           "boolean": false,
-          "descriptionZh": "尺寸，可选值 `small`、`large`，默认不选",
-          "descriptionEn": "Size, optional values `small`, `large`, default not selected"
+          "descriptionZh": "子组件的间距,可选值 `small`、`large`，默认不选",
+          "descriptionEn": "Spacing of child components, optional values `small`, `large`, default not selected"
         },
         {
           "name": "value",
@@ -24281,7 +24291,7 @@
           ],
           "boolean": false,
           "descriptionZh": "主题",
-          "descriptionEn": "Theme"
+          "descriptionEn": "The theme of Input"
         },
         {
           "name": "shape",
@@ -24294,8 +24304,8 @@
             "circle"
           ],
           "boolean": false,
-          "descriptionZh": "形状",
-          "descriptionEn": "Shape"
+          "descriptionZh": "输入框形状",
+          "descriptionEn": "Input shape"
         },
         {
           "name": "onSearch",
@@ -24326,8 +24336,8 @@
           "type": "((value: string) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "内容变化时的回调",
-          "descriptionEn": "Callback when the content changes"
+          "descriptionZh": "输入框内容变化时的回调",
+          "descriptionEn": "Callback when the input box content changes"
         }
       ],
       "nativeProps": [
@@ -24768,8 +24778,8 @@
           "type": "((value: string) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "内容变化时的回调",
-          "descriptionEn": "Callback when the content changes"
+          "descriptionZh": "输入框内容变化时的回调",
+          "descriptionEn": "Callback when the input box content changes"
         }
       ],
       "renderProps": [
@@ -24889,8 +24899,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "组合展示的输入框、按钮等内容，使用组的布局及外观上下文。",
+          "descriptionEn": "Inputs, buttons or other content sharing the group's layout and appearance context."
         }
       ],
       "nativeProps": [
@@ -27657,8 +27667,8 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "\"layout-content\"",
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "布局实现使用的基础类名后缀，生成 k-<suffixCls>；普通样式扩展应使用 className。",
+          "descriptionEn": "Base class suffix used by the layout implementation to form k-<suffixCls>; use className for ordinary styling extensions."
         },
         {
           "name": "hasSider",
@@ -27677,8 +27687,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "布局主内容区域的内容。",
+          "descriptionEn": "Content of the layout's main section."
         }
       ],
       "nativeProps": [
@@ -28085,8 +28095,8 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "\"layout-footer\"",
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "布局实现使用的基础类名后缀，生成 k-<suffixCls>；普通样式扩展应使用 className。",
+          "descriptionEn": "Base class suffix used by the layout implementation to form k-<suffixCls>; use className for ordinary styling extensions."
         },
         {
           "name": "hasSider",
@@ -28105,8 +28115,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "布局底部区域的内容。",
+          "descriptionEn": "Content of the layout footer."
         }
       ],
       "nativeProps": [
@@ -28513,8 +28523,8 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "\"layout-header\"",
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "布局实现使用的基础类名后缀，生成 k-<suffixCls>；普通样式扩展应使用 className。",
+          "descriptionEn": "Base class suffix used by the layout implementation to form k-<suffixCls>; use className for ordinary styling extensions."
         },
         {
           "name": "hasSider",
@@ -28533,8 +28543,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "布局头部区域的内容。",
+          "descriptionEn": "Content of the layout header."
         }
       ],
       "nativeProps": [
@@ -28940,8 +28950,8 @@
           "type": "string | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "布局实现使用的基础类名后缀，生成 k-<suffixCls>；普通样式扩展应使用 className。",
+          "descriptionEn": "Base class suffix used by the layout implementation to form k-<suffixCls>; use className for ordinary styling extensions."
         },
         {
           "name": "hasSider",
@@ -28960,8 +28970,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "布局子区域，如 Header、Content、Sider 和 Footer；嵌套布局也可作为内容。",
+          "descriptionEn": "Layout sections such as Header, Content, Sider and Footer, including nested layouts."
         }
       ],
       "nativeProps": [
@@ -29372,8 +29382,8 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "\"layout-sider\"",
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "布局实现使用的基础类名后缀，生成 k-<suffixCls>；普通样式扩展应使用 className。",
+          "descriptionEn": "Base class suffix used by the layout implementation to form k-<suffixCls>; use className for ordinary styling extensions."
         },
         {
           "name": "width",
@@ -29422,8 +29432,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "侧栏内容，如导航菜单；宽度和折叠由 Sider 属性控制。",
+          "descriptionEn": "Sidebar content such as navigation; Sider props control width and collapse."
         }
       ],
       "nativeProps": [
@@ -30533,8 +30543,8 @@
           "type": "string | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "菜单身份标识的兼容回退值，仅在未设置 itemKey 时使用；新代码优先使用 itemKey。",
+          "descriptionEn": "Compatibility fallback for item identity, used only when itemKey is absent; prefer itemKey in new code."
         },
         {
           "name": "icon",
@@ -30587,16 +30597,16 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "\"\"",
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "追加到菜单项 li 元素的 CSS 类名。",
+          "descriptionEn": "Additional CSS classes on the menu item's li element."
         },
         {
           "name": "style",
           "type": "React.CSSProperties | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "菜单项 li 元素的内联样式；内联模式嵌套缩进可能覆盖 paddingLeft。",
+          "descriptionEn": "Inline styles on the menu item's li element; nested inline-menu indentation may override paddingLeft."
         }
       ],
       "nativeProps": [],
@@ -30617,7 +30627,9 @@
         "children"
       ],
       "behavior": {
-        "rules": []
+        "rules": [
+          "Use itemKey to identify the menu item. React key alone is not forwarded as itemKey."
+        ]
       },
       "children": [],
       "parent": "Menu",
@@ -30677,8 +30689,8 @@
           "type": "string | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "菜单身份标识的兼容回退值，仅在未设置 itemKey 时使用；新代码优先使用 itemKey。",
+          "descriptionEn": "Compatibility fallback for item identity, used only when itemKey is absent; prefer itemKey in new code."
         },
         {
           "name": "disabled",
@@ -31468,8 +31480,8 @@
             "loading"
           ],
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "消息语义类型，影响状态类名和默认图标；icon 可覆盖默认图标。",
+          "descriptionEn": "Semantic message type controlling status classes and the default icon; icon can override that icon."
         },
         {
           "name": "onClose",
@@ -31496,8 +31508,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "是否显示关闭按钮；点击时调用 onClose，独立面板由调用方处理移除。",
+          "descriptionEn": "Whether to show the close button; clicking calls onClose, and the caller handles removal of a standalone panel."
         },
         {
           "name": "grouping",
@@ -31566,8 +31578,8 @@
           "type": "string | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "追加到 k-modal 根容器的 CSS 类名。",
+          "descriptionEn": "Additional CSS classes on the k-modal root container."
         },
         {
           "name": "open",
@@ -31802,8 +31814,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "标准弹窗正文；传入真值 content 时将替换整个标准内容区，包括头部、正文和页脚。",
+          "descriptionEn": "Standard modal body; a truthy content prop replaces the entire standard content region, including header, body and footer."
         }
       ],
       "nativeProps": [],
@@ -31902,8 +31914,8 @@
           "type": "string | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "追加到 k-modal-panel 根容器的 CSS 类名。",
+          "descriptionEn": "Additional CSS classes on the k-modal-panel root container."
         },
         {
           "name": "title",
@@ -31926,8 +31938,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "独立面板的标准正文；真值 content 会替换整个标准内容区。",
+          "descriptionEn": "Standard body of the standalone panel; truthy content replaces the entire standard content region."
         },
         {
           "name": "onOpenChange",
@@ -32189,8 +32201,8 @@
             "loading"
           ],
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "消息语义类型，影响状态类名和默认图标；icon 可覆盖默认图标。",
+          "descriptionEn": "Semantic message type controlling status classes and the default icon; icon can override that icon."
         },
         {
           "name": "onClose",
@@ -32217,8 +32229,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "共享面板类型中的属性；当前 NoticePanel 始终显示关闭按钮，此属性不会隐藏它。",
+          "descriptionEn": "A prop inherited from the shared panel type; NoticePanel currently always shows its close button, so this prop does not hide it."
         },
         {
           "name": "grouping",
@@ -32887,8 +32899,8 @@
           "type": "ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "页面头部主体中的附加内容。",
+          "descriptionEn": "Additional content in the page-header body."
         }
       ],
       "nativeProps": [
@@ -33426,8 +33438,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "气泡卡片的触发内容；卡片正文使用 content。",
+          "descriptionEn": "Trigger content for the popover; supply its body through content."
         }
       ],
       "nativeProps": [],
@@ -33809,8 +33821,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "确认气泡的触发内容，不是气泡正文。",
+          "descriptionEn": "Trigger content for the confirmation popup, not its body."
         }
       ],
       "nativeProps": [],
@@ -35352,8 +35364,8 @@
           "type": "string | number | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "的当前选中值",
-          "descriptionEn": "selected value"
+          "descriptionZh": "组合使用时的值",
+          "descriptionEn": "Value when used in combination"
         },
         {
           "name": "label",
@@ -35398,16 +35410,16 @@
           "type": "((e: ChangeEvent) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "在选项状态发生改变时触发，返回当前选中的项",
-          "descriptionEn": "Triggered when option state changes, returns currently selected item"
+          "descriptionZh": "在选项状态发生改变时回调",
+          "descriptionEn": "Callback when option state changes"
         },
         {
           "name": "children",
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "未设置 label 时的单选项标签内容。",
+          "descriptionEn": "Radio label content used when label is null or undefined."
         },
         {
           "name": "disabled",
@@ -35418,8 +35430,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "是否禁用整个单选组",
-          "descriptionEn": "Disable the entire group"
+          "descriptionZh": "是否禁用当前项",
+          "descriptionEn": "Whether current item is disabled"
         },
         {
           "name": "readOnly",
@@ -35430,8 +35442,8 @@
             true
           ],
           "boolean": true,
-          "descriptionZh": "是否只读",
-          "descriptionEn": "Whether the group is read-only"
+          "descriptionZh": "是否只读当前项",
+          "descriptionEn": "Whether current item is read-only"
         }
       ],
       "nativeProps": [
@@ -35802,8 +35814,8 @@
           "type": "((e: ChangeEvent) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "在选项状态发生改变时触发，返回当前选中的项",
-          "descriptionEn": "Triggered when option state changes, returns currently selected item"
+          "descriptionZh": "在选项状态发生改变时回调",
+          "descriptionEn": "Callback when option state changes"
         }
       ],
       "renderProps": [
@@ -35877,8 +35889,8 @@
             "underlined"
           ],
           "boolean": false,
-          "descriptionZh": "`button` 的主题",
-          "descriptionEn": "Button theme"
+          "descriptionZh": "按钮外观",
+          "descriptionEn": "Button appearance"
         },
         {
           "name": "disabled",
@@ -35948,7 +35960,7 @@
             "circle"
           ],
           "boolean": false,
-          "descriptionZh": "`button` 的形状",
+          "descriptionZh": "按钮形状",
           "descriptionEn": "Button shape"
         },
         {
@@ -35964,8 +35976,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "未设置 label 时的按钮式单选标签，二者均无内容时回退到 value。",
+          "descriptionEn": "Button-style radio label when label is null or undefined; falls back to value when both are absent."
         }
       ],
       "nativeProps": [
@@ -36503,8 +36515,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "自定义 Radio 或 RadioButton 子节点，共享组的值和禁用状态。",
+          "descriptionEn": "Custom Radio or RadioButton children sharing the group value and disabled state."
         }
       ],
       "nativeProps": [
@@ -38488,8 +38500,8 @@
           ],
           "boolean": true,
           "defaultExpression": "false",
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "选项是否选中，控制选中样式；通常由 Select 根据选中值注入。",
+          "descriptionEn": "Whether the option is selected, controlling selected styling; normally injected by Select from its selected value."
         },
         {
           "name": "active",
@@ -38501,8 +38513,8 @@
           ],
           "boolean": true,
           "defaultExpression": "false",
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "选项的活动高亮状态，与选中状态不同，通常由 Select 的键盘导航管理。",
+          "descriptionEn": "Active highlight state, distinct from selection and normally managed by Select keyboard navigation."
         },
         {
           "name": "multiple",
@@ -38530,8 +38542,8 @@
           "type": "((e: React.MouseEvent) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "鼠标进入可用选项时触发，接收 React 鼠标事件；禁用项不触发。",
+          "descriptionEn": "Called with the React mouse event when the pointer enters an enabled option; disabled options do not trigger it."
         }
       ],
       "nativeProps": [
@@ -38908,8 +38920,8 @@
           "type": "((e: React.MouseEvent) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "鼠标进入可用选项时触发，接收 React 鼠标事件；禁用项不触发。",
+          "descriptionEn": "Called with the React mouse event when the pointer enters an enabled option; disabled options do not trigger it."
         }
       ],
       "renderProps": [
@@ -39026,8 +39038,8 @@
           "type": "SelectValue",
           "required": false,
           "boolean": false,
-          "descriptionZh": "选项值，默认根据此属性值进行筛选，必填",
-          "descriptionEn": "Option value, used for filtering by default, required"
+          "descriptionZh": "的选中值",
+          "descriptionEn": "selected value"
         },
         {
           "name": "open",
@@ -39317,8 +39329,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "以 Option 子节点声明的选项；使用 options 数据源时无需重复声明。",
+          "descriptionEn": "Options declared as Option children; do not duplicate options already supplied through the options data source."
         }
       ],
       "nativeProps": [
@@ -39727,7 +39739,8 @@
       ],
       "behavior": {
         "rules": [
-          "Use value and onChange, not v-model. Multiple selection requires an array; consult the onChange signature for the value and option data."
+          "Use value and onChange(value), not v-model. Multiple selection uses an array.",
+          "onSelect(option) supplies the selected option and selected flag; onChange does not supply an option as a second argument."
         ]
       },
       "children": [
@@ -39846,8 +39859,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "接收 locale、尺寸、主题和形状配置的后代组件。",
+          "descriptionEn": "Descendant components receiving locale, size, theme and shape configuration."
         }
       ],
       "nativeProps": [],
@@ -39908,8 +39921,8 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "500",
-          "descriptionZh": "延迟显示骨架，单位毫秒",
-          "descriptionEn": "Delay showing the skeleton, in milliseconds"
+          "descriptionZh": "延迟显示骨架，避免快速加载时闪烁，单位毫秒",
+          "descriptionEn": "Delay showing the skeleton to avoid flickering, in milliseconds"
         },
         {
           "name": "title",
@@ -39950,8 +39963,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "骨架不再显示时展示的实际内容；加载期间展示骨架占位。",
+          "descriptionEn": "Actual content displayed after the skeleton is hidden; loading displays the skeleton placeholder."
         }
       ],
       "nativeProps": [
@@ -40434,8 +40447,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "骨架不再显示时展示的实际内容；加载期间展示骨架占位。",
+          "descriptionEn": "Actual content displayed after the skeleton is hidden; loading displays the skeleton placeholder."
         }
       ],
       "nativeProps": [
@@ -40939,8 +40952,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "骨架不再显示时展示的实际内容；加载期间展示骨架占位。",
+          "descriptionEn": "Actual content displayed after the skeleton is hidden; loading displays the skeleton placeholder."
         }
       ],
       "nativeProps": [
@@ -41411,8 +41424,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "骨架不再显示时展示的实际内容；加载期间展示骨架占位。",
+          "descriptionEn": "Actual content displayed after the skeleton is hidden; loading displays the skeleton placeholder."
         }
       ],
       "nativeProps": [
@@ -41889,8 +41902,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "骨架不再显示时展示的实际内容；加载期间展示骨架占位。",
+          "descriptionEn": "Actual content displayed after the skeleton is hidden; loading displays the skeleton placeholder."
         }
       ],
       "nativeProps": [
@@ -43968,8 +43981,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "按配置的间距和方向排列的内容；compact 时组合相邻控件。",
+          "descriptionEn": "Content arranged with the configured spacing and direction; compact combines adjacent controls."
         }
       ],
       "nativeProps": [
@@ -44457,8 +44470,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "加载状态覆盖的内容；省略内容时作为独立加载指示器使用。",
+          "descriptionEn": "Content covered by the loading state; omit it for a standalone loading indicator."
         }
       ],
       "nativeProps": [
@@ -44987,8 +45000,8 @@
           ],
           "boolean": false,
           "defaultExpression": "\"process\"",
-          "descriptionZh": "单步状态",
-          "descriptionEn": "Step status"
+          "descriptionZh": "当前状态",
+          "descriptionEn": "Current status"
         },
         {
           "name": "items",
@@ -45011,8 +45024,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "步骤子节点；容器根据 current 等属性分配步骤序号与状态。",
+          "descriptionEn": "Step children whose indices and statuses are assigned by the container using current and related props."
         }
       ],
       "nativeProps": [
@@ -46883,8 +46896,8 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "[]",
-          "descriptionZh": "列定义；设置面板仅列出顶层无子列的列。",
-          "descriptionEn": "Column definitions; only top-level columns without children appear in the settings."
+          "descriptionZh": "表格列的配置描述，",
+          "descriptionEn": "Configuration description of table columns"
         },
         {
           "name": "selectedKeys",
@@ -46900,8 +46913,8 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "[]",
-          "descriptionZh": "不参与设置的列 key；重置时保留这些列的隐藏状态。",
-          "descriptionEn": "Column keys excluded from the settings; their hidden state is preserved on reset."
+          "descriptionZh": "禁用的key集合",
+          "descriptionEn": "Disabled key set"
         },
         {
           "name": "rowKey",
@@ -46983,8 +46996,8 @@
             "large"
           ],
           "boolean": false,
-          "descriptionZh": "默认触发按钮及勾选框的尺寸。",
-          "descriptionEn": "Size of the default trigger button and checkboxes."
+          "descriptionZh": "值为`small`时展示紧凑模式",
+          "descriptionEn": "Display compact mode when the value is `small`"
         },
         {
           "name": "striped",
@@ -47110,8 +47123,8 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "[]",
-          "descriptionZh": "隐藏列的 key 集合；在变更回调中更新，并将同一值传给 Table。",
-          "descriptionEn": "Hidden column keys. Update this value in the change callback and pass the same value to Table."
+          "descriptionZh": "隐藏的列 key 集合",
+          "descriptionEn": "Hidden column key collection"
         },
         {
           "name": "onSort",
@@ -47721,8 +47734,8 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "\"Column settings\"",
-          "descriptionZh": "列头显示文字",
-          "descriptionEn": "Header display text"
+          "descriptionZh": "弹层标题及默认触发按钮文案。",
+          "descriptionEn": "Popup title and default trigger button text."
         },
         {
           "name": "resetText",
@@ -47764,8 +47777,8 @@
           "type": "ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "嵌套表头子列",
-          "descriptionEn": "Nested header columns"
+          "descriptionZh": "自定义触发器内容。",
+          "descriptionEn": "Custom trigger content."
         }
       ],
       "nativeProps": [],
@@ -47996,8 +48009,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "提示的触发内容；提示文本使用 title。",
+          "descriptionEn": "Tooltip trigger content; provide tooltip text through title."
         }
       ],
       "nativeProps": [],
@@ -48409,8 +48422,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "当前标签页的内容区域。",
+          "descriptionEn": "Content of this tab pane."
         }
       ],
       "nativeProps": [
@@ -48946,8 +48959,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "TabPanel 子节点，用于生成页签导航和对应面板。",
+          "descriptionEn": "TabPanel children used to build tab navigation and panes."
         }
       ],
       "nativeProps": [
@@ -52812,8 +52825,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "标签正文，与关闭按钮独立。",
+          "descriptionEn": "Tag body content, separate from the close button."
         }
       ],
       "nativeProps": [
@@ -53334,8 +53347,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "栅格列内部的内容。",
+          "descriptionEn": "Content inside the grid column."
         }
       ],
       "nativeProps": [
@@ -53794,8 +53807,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "参与栅格行排列的 Col 等子节点。",
+          "descriptionEn": "Col and other children arranged within the grid row."
         }
       ],
       "nativeProps": [
@@ -55637,8 +55650,8 @@
           "type": "((item: T, index: number) => React.ReactNode) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "可见项渲染函数，接收数据项和它在完整 data 数组中的索引；不会渲染所有项。",
+          "descriptionEn": "Renderer for visible items, receiving the item and its index in the full data array; not every item is rendered."
         },
         {
           "name": "onScroll",
@@ -56781,8 +56794,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "未使用 value 覆盖且尚未编辑时展示的排版内容；其文本也用于初始化编辑值。",
+          "descriptionEn": "Typography content shown before editing when value is not supplied; its text also initializes the editable value."
         }
       ],
       "nativeProps": [
@@ -57377,8 +57390,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "未使用 value 覆盖且尚未编辑时展示的排版内容；其文本也用于初始化编辑值。",
+          "descriptionEn": "Typography content shown before editing when value is not supplied; its text also initializes the editable value."
         }
       ],
       "nativeProps": [
@@ -57973,8 +57986,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "未使用 value 覆盖且尚未编辑时展示的排版内容；其文本也用于初始化编辑值。",
+          "descriptionEn": "Typography content shown before editing when value is not supplied; its text also initializes the editable value."
         }
       ],
       "nativeProps": [
@@ -58569,8 +58582,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "",
-          "descriptionEn": ""
+          "descriptionZh": "未使用 value 覆盖且尚未编辑时展示的排版内容；其文本也用于初始化编辑值。",
+          "descriptionEn": "Typography content shown before editing when value is not supplied; its text also initializes the editable value."
         }
       ],
       "nativeProps": [
