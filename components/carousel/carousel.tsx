@@ -4,7 +4,9 @@ import { ArrowLeft, ArrowRight } from "kui-icons";
 import {
   Children,
   Fragment,
+  cloneElement,
   forwardRef,
+  isValidElement,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -13,6 +15,7 @@ import {
   useState,
   type CSSProperties,
   type HTMLAttributes,
+  type ReactNode,
 } from "react";
 import Icon from "../icon";
 import { CarouselContext } from "./carousel-context";
@@ -40,6 +43,15 @@ export interface CarouselProps extends Omit<
   onChange?: (index: number) => void;
 }
 
+function flattenItems(children: ReactNode, parents: string[] = []): ReactNode[] {
+  return Children.toArray(children).flatMap((child) => {
+    if (!isValidElement<{ children?: ReactNode }>(child)) return [child];
+    const keys = [...parents, String(child.key)];
+    if (child.type === Fragment) return flattenItems(child.props.children, keys);
+    return [cloneElement(child, { key: JSON.stringify(keys) })];
+  });
+}
+
 const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
   {
     value,
@@ -63,7 +75,7 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
   },
   ref,
 ) {
-  const items = Children.toArray(children);
+  const items = flattenItems(children);
   const [innerIndex, setInnerIndex] = useValue(value, (next) => next ?? 0);
   const looping = loop && items.length > 1;
   const initialIndex = Math.max(0, Math.min(items.length - 1, value ?? 0));
@@ -81,6 +93,7 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const transitioningRef = useRef(false);
+  const hasItems = items.length > 0;
   const current = Math.max(0, Math.min(items.length - 1, innerIndex));
   const navigationIndex = useRef(current);
   useLayoutEffect(() => {
@@ -102,7 +115,7 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(update);
     observer?.observe(element);
     return () => observer?.disconnect();
-  }, []);
+  }, [hasItems]);
 
   useLayoutEffect(() => {
     if (!width) return;
@@ -110,7 +123,15 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
     // enabling animation. A DOM commit alone does not flush browser styles.
     rootRef.current?.querySelector(".k-carousel-wrapper")?.getBoundingClientRect();
     setAnimate(true);
-  }, [width]);
+  }, [width, hasItems]);
+
+  const [positionRevision, setPositionRevision] = useState(0);
+  useLayoutEffect(() => {
+    if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+    transitionTimerRef.current = null;
+    transitioningRef.current = false;
+    setSettleDuration(null);
+  }, [positionRevision]);
 
   const [syncedPosition, setSyncedPosition] = useState({ value, count: items.length, looping });
   if (
@@ -125,8 +146,11 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
       value !== reportedIndex ||
       syncedPosition.count !== items.length ||
       syncedPosition.looping !== looping
-    )
+    ) {
       setPosition(looping ? next + 1 : next);
+      // Invalidate pending navigation only for a new position, not a parent echo.
+      setPositionRevision((revision) => revision + 1);
+    }
     setReportedIndex(null);
   }
 
@@ -134,20 +158,20 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
     (index: number) => {
       setSettleDuration(null);
       if (!items.length) return;
-      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
-      transitionTimerRef.current = null;
-      transitioningRef.current = false;
       const next = loop
         ? ((index % items.length) + items.length) % items.length
         : Math.max(0, Math.min(items.length - 1, index));
-      if (next === current) return;
+      if (next === navigationIndex.current) return;
+      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+      transitionTimerRef.current = null;
+      transitioningRef.current = false;
       navigationIndex.current = next;
       setInnerIndex(next);
       setReportedIndex(next);
       setPosition(looping ? next + 1 : next);
       onChange?.(next);
     },
-    [current, items.length, loop, looping, onChange, setInnerIndex],
+    [items.length, loop, looping, onChange, setInnerIndex],
   );
 
   const move = useCallback(
@@ -261,7 +285,6 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
     move,
     play,
   ]);
-  const hasItems = items.length > 0;
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;

@@ -38,6 +38,68 @@ const slides = [0, 1, 2].map((n) => (
   </CarouselItem>
 ));
 describe("Carousel swipe integration", () => {
+  it("supports slides wrapped in nested fragments", () => {
+    const onChange = vi.fn();
+    const view = render(
+      <Carousel onChange={onChange}>
+        <>{slides[0]}<>{slides.slice(1)}</></>
+      </Carousel>,
+    );
+    expect(view.getAllByRole("tab")).toHaveLength(3);
+    fireEvent.click(view.getByLabelText("Next slide"));
+    expect(onChange).toHaveBeenLastCalledWith(1);
+    const track = view.container.querySelector<HTMLElement>(".k-carousel-wrapper")!;
+    expect(track.style.width).toBe("1500px");
+    pointer(track, "pointerdown", 200);
+    pointer(window, "pointermove", 100);
+    pointer(window, "pointerup", 100);
+    expect(onChange).toHaveBeenLastCalledWith(2);
+  });
+
+  it("honors goTo after next in the same event", () => {
+    const ref = createRef<CarouselRef>();
+    const onChange = vi.fn();
+    const view = render(<Carousel ref={ref} onChange={onChange}>{slides}</Carousel>);
+    act(() => {
+      ref.current!.next();
+      ref.current!.goTo(0);
+    });
+    act(() => vi.advanceTimersByTime(600));
+    expect(view.getByLabelText("Go to slide 1").getAttribute("aria-selected")).toBe("true");
+    expect(view.container.querySelector<HTMLElement>(".k-carousel-wrapper")!.style.transform).toBe(
+      "translate3d(-300px, 0, 0)",
+    );
+    expect(onChange.mock.calls).toEqual([[1], [0]]);
+  });
+
+  it("measures asynchronously loaded slides and measures again after clearing them", () => {
+    const view = render(<Carousel>{[]}</Carousel>);
+    view.rerender(<Carousel>{slides}</Carousel>);
+    expect(view.container.querySelector<HTMLElement>(".k-carousel-wrapper")!.style.width).toBe(
+      "1500px",
+    );
+    view.rerender(<Carousel>{[]}</Carousel>);
+    view.rerender(<Carousel>{slides}</Carousel>);
+    const track = view.container.querySelector<HTMLElement>(".k-carousel-wrapper")!;
+    expect(track.style.width).toBe("1500px");
+    expect(track.style.transitionDuration).not.toBe("0s");
+    pointer(track, "pointerdown", 200);
+    pointer(window, "pointermove", 100);
+    expect(track.style.transform).toBe("translate3d(-400px, 0, 0)");
+    pointer(window, "pointerup", 100);
+  });
+
+  it("does not let an old transition overwrite an external value", () => {
+    const view = render(<Carousel value={0}>{slides}</Carousel>);
+    fireEvent.click(view.container.querySelector(".k-carousel-arrow-right")!);
+    view.rerender(<Carousel value={2}>{slides}</Carousel>);
+    act(() => vi.advanceTimersByTime(600));
+    expect(view.container.querySelector<HTMLElement>(".k-carousel-wrapper")!.style.transform).toBe(
+      "translate3d(-900px, 0, 0)",
+    );
+    expect(view.getByLabelText("Go to slide 3").getAttribute("aria-selected")).toBe("true");
+  });
+
   it.each([false, true])(
     "accepts repeated ref calls and reversals through loop boundaries (vertical=%s)",
     (vertical) => {

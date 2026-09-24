@@ -12,15 +12,15 @@ A set of rotating/carousel areas.
 
 ## Examples
 
-[Basic Usage](./demo/basic.tsx)
+[Basic Usage](./demo/basic.tsx?show=vertical)
 
 - The simplest usage. You can specify the initial value with `value`.
 
-[Vertical](./demo/vertical.tsx)
+[Vertical](./demo/vertical.tsx?show=vertical)
 
 - Enable vertical mode by setting `vertical`. In this mode, left and right arrows are hidden.
 
-[Autoplay](./demo/autoplay.tsx)
+[Autoplay](./demo/autoplay.tsx?show=vertical)
 
 - Enable timed autoplay by setting `autoplay`. Use `delay` to set the interval. The default is `3000` milliseconds.
 
