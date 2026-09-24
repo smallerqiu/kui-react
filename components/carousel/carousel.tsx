@@ -16,6 +16,7 @@ import {
 } from "react";
 import Icon from "../icon";
 import { CarouselContext } from "./carousel-context";
+import { bindCarouselDrag, readCarouselOffset, retargetCarousel } from "./drag";
 
 export interface CarouselRef {
   next: () => void;
@@ -34,6 +35,8 @@ export interface CarouselProps extends Omit<
   height?: number;
   vertical?: boolean;
   dots?: boolean;
+  swipeable?: boolean;
+  draggable?: boolean;
   onChange?: (index: number) => void;
 }
 
@@ -46,9 +49,13 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
     height = 256,
     vertical = false,
     dots = true,
+    swipeable = true,
+    draggable = true,
     onChange,
     onMouseEnter,
     onMouseLeave,
+    onPointerEnter,
+    onPointerLeave,
     className,
     style,
     children,
@@ -62,23 +69,48 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
   const initialIndex = Math.max(0, Math.min(items.length - 1, value ?? 0));
   const [position, setPosition] = useState(looping ? initialIndex + 1 : initialIndex);
   const [animate, setAnimate] = useState(false);
+  const [reportedIndex, setReportedIndex] = useState<number | null>(null);
   const [width, setWidth] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [settleDuration, setSettleDuration] = useState<number | null>(null);
+  const draggingRef = useRef(false);
+  const hoveredRef = useRef(false);
+  const dragCallbacks = useRef<Parameters<typeof bindCarouselDrag>[1] | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const transitioningRef = useRef(false);
   const current = Math.max(0, Math.min(items.length - 1, innerIndex));
+  const navigationIndex = useRef(current);
+  useLayoutEffect(() => {
+    navigationIndex.current = current;
+  }, [current]);
 
   useLayoutEffect(() => {
     const element = rootRef.current;
     if (!element) return;
-    const update = () => setWidth(element.offsetWidth);
+    let measuredWidth = -1;
+    const update = () => {
+      const next = element.offsetWidth;
+      if (next === measuredWidth) return;
+      measuredWidth = next;
+      setAnimate(false);
+      setWidth(next);
+    };
     update();
-    setAnimate(true);
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(update);
     observer?.observe(element);
     return () => observer?.disconnect();
   }, []);
+
+  useLayoutEffect(() => {
+    if (!width) return;
+    // Commit the measured starting position with transitions disabled before
+    // enabling animation. A DOM commit alone does not flush browser styles.
+    rootRef.current?.querySelector(".k-carousel-wrapper")?.getBoundingClientRect();
+    setAnimate(true);
+  }, [width]);
 
   const [syncedPosition, setSyncedPosition] = useState({ value, count: items.length, looping });
   if (
@@ -89,11 +121,18 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
     setSyncedPosition({ value, count: items.length, looping });
     const next = Math.max(0, Math.min(items.length - 1, innerIndex));
     if (next !== innerIndex) setInnerIndex(next);
-    setPosition(looping ? next + 1 : next);
+    if (
+      value !== reportedIndex ||
+      syncedPosition.count !== items.length ||
+      syncedPosition.looping !== looping
+    )
+      setPosition(looping ? next + 1 : next);
+    setReportedIndex(null);
   }
 
   const goTo = useCallback(
     (index: number) => {
+      setSettleDuration(null);
       if (!items.length) return;
       if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
       transitionTimerRef.current = null;
@@ -102,7 +141,9 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
         ? ((index % items.length) + items.length) % items.length
         : Math.max(0, Math.min(items.length - 1, index));
       if (next === current) return;
+      navigationIndex.current = next;
       setInnerIndex(next);
+      setReportedIndex(next);
       setPosition(looping ? next + 1 : next);
       onChange?.(next);
     },
@@ -111,26 +152,48 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
 
   const move = useCallback(
     (step: -1 | 1) => {
-      if (!items.length || transitioningRef.current) return;
+      if (!items.length || draggingRef.current) return;
+      const from = navigationIndex.current;
       const next = loop
-        ? (current + step + items.length) % items.length
-        : Math.max(0, Math.min(items.length - 1, current + step));
-      if (next === current) {
+        ? (from + step + items.length) % items.length
+        : Math.max(0, Math.min(items.length - 1, from + step));
+      if (next === from) {
         if (timerRef.current) clearInterval(timerRef.current);
         timerRef.current = null;
         return;
       }
+      const interrupted = transitioningRef.current;
+      const target =
+        interrupted && looping && rootRef.current
+          ? retargetCarousel(
+              rootRef.current,
+              vertical,
+              vertical ? height : width,
+              items.length,
+              next,
+              step,
+            )
+          : null;
+      if (interrupted) setSettleDuration(280);
+      setAnimate(true);
       transitioningRef.current = true;
+      navigationIndex.current = next;
       setInnerIndex(next);
-      setPosition((previous) => (looping ? previous + step : next));
+      setReportedIndex(next);
+      setPosition((previous) => target ?? (looping ? previous + step : next));
       onChange?.(next);
       if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
       transitionTimerRef.current = setTimeout(() => {
         transitioningRef.current = false;
         transitionTimerRef.current = null;
+        if (looping) {
+          setAnimate(false);
+          setPosition(next + 1);
+          requestAnimationFrame(() => setAnimate(true));
+        }
       }, 501);
     },
-    [current, items.length, loop, looping, onChange, setInnerIndex],
+    [items.length, loop, looping, onChange, setInnerIndex, vertical, height, width],
   );
 
   const stop = useCallback(() => {
@@ -139,13 +202,81 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
   }, []);
   const play = useCallback(() => {
     stop();
-    if (autoplay && items.length > 1) timerRef.current = setInterval(() => move(1), delay);
+    if (autoplay && items.length > 1 && !draggingRef.current && !hoveredRef.current)
+      timerRef.current = setInterval(() => move(1), delay);
   }, [autoplay, delay, items.length, move, stop]);
 
   useEffect(() => {
     play();
     return stop;
   }, [play, stop]);
+
+  useLayoutEffect(() => {
+    dragCallbacks.current = {
+      options: () => ({
+        swipeable,
+        draggable,
+        vertical,
+        size: vertical ? height : width,
+        count: items.length,
+        index: current,
+        loop,
+      }),
+      start: () => {
+        const offset = rootRef.current
+          ? readCarouselOffset(rootRef.current, vertical, position, vertical ? height : width)
+          : 0;
+        if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+        transitionTimerRef.current = null;
+        transitioningRef.current = false;
+        setPosition(looping ? current + 1 : current);
+        setSettleDuration(null);
+        draggingRef.current = true;
+        setIsDragging(true);
+        stop();
+        return offset;
+      },
+      offset: setDragOffset,
+      settle: setSettleDuration,
+      finish: (step) => {
+        draggingRef.current = false;
+        setIsDragging(false);
+        setAnimate(true);
+        if (step) move(step);
+        play();
+      },
+    };
+  }, [
+    swipeable,
+    draggable,
+    vertical,
+    height,
+    width,
+    items.length,
+    current,
+    position,
+    looping,
+    loop,
+    stop,
+    move,
+    play,
+  ]);
+  const hasItems = items.length > 0;
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const dispose = bindCarouselDrag(root, {
+      options: () => dragCallbacks.current!.options(),
+      start: () => dragCallbacks.current!.start(),
+      offset: (offset) => dragCallbacks.current!.offset(offset),
+      settle: (duration) => dragCallbacks.current!.settle?.(duration),
+      finish: (step) => dragCallbacks.current!.finish(step),
+    });
+    return () => {
+      dispose();
+      draggingRef.current = false;
+    };
+  }, [hasItems]);
 
   useEffect(
     () => () => {
@@ -173,22 +304,30 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
       ]
     : items;
   const wrapperStyle: CSSProperties = {
+    position: "relative",
     transform: vertical
-      ? `translate3d(0, -${position * height}px, 0)`
-      : `translate3d(-${position * width}px, 0, 0)`,
+      ? `translate3d(0, ${-position * height + dragOffset}px, 0)`
+      : `translate3d(${-position * width + dragOffset}px, 0, 0)`,
     width: vertical ? undefined : trackItems.length * width,
     height: vertical ? trackItems.length * height : height,
-    transitionDuration: animate ? undefined : "0s",
+    transitionDuration:
+      animate && !isDragging ? (settleDuration === null ? undefined : `${settleDuration}ms`) : "0s",
+    transitionTimingFunction:
+      settleDuration === null ? undefined : "cubic-bezier(0.22, 1, 0.36, 1)",
+    touchAction: swipeable && items.length > 1 ? (vertical ? "pan-x" : "pan-y") : undefined,
+    userSelect: isDragging ? "none" : undefined,
   };
 
   const handleTransitionEnd = (event: React.TransitionEvent<HTMLDivElement>) => {
+    if (draggingRef.current) return;
     if (event.target !== event.currentTarget || event.propertyName !== "transform") return;
+    setSettleDuration(null);
     if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
     transitionTimerRef.current = null;
     transitioningRef.current = false;
-    if (!looping || (position !== 0 && position !== items.length + 1)) return;
+    if (!looping || position === current + 1) return;
     setAnimate(false);
-    setPosition(position === 0 ? items.length : 1);
+    setPosition(current + 1);
     requestAnimationFrame(() => setAnimate(true));
   };
 
@@ -199,13 +338,21 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
         ref={rootRef}
         className={clsx("k-carousel", { "k-carousel-vertical": vertical }, className)}
         style={{ ...style, height }}
-        onMouseEnter={(event) => {
-          stop();
-          onMouseEnter?.(event);
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onPointerEnter={(event) => {
+          if (event.pointerType === "mouse") {
+            hoveredRef.current = true;
+            stop();
+          }
+          onPointerEnter?.(event);
         }}
-        onMouseLeave={(event) => {
-          play();
-          onMouseLeave?.(event);
+        onPointerLeave={(event) => {
+          if (event.pointerType === "mouse") {
+            hoveredRef.current = false;
+            play();
+          }
+          onPointerLeave?.(event);
         }}
       >
         <div
@@ -214,6 +361,29 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
           onTransitionEnd={handleTransitionEnd}
         >
           {trackItems}
+          {looping &&
+            [-1, 1].map((side) => (
+              <div
+                key={side}
+                aria-hidden="true"
+                inert
+                style={{
+                  position: "absolute",
+                  display: "flex",
+                  flexDirection: vertical ? "column" : "row",
+                  left: vertical ? 0 : (side < 0 ? -items.length : items.length + 2) * width,
+                  top: vertical ? (side < 0 ? -items.length : items.length + 2) * height : 0,
+                  width: vertical ? "100%" : items.length * width,
+                  pointerEvents: "none",
+                }}
+              >
+                {items.map((_, i) => (
+                  <Fragment key={i}>
+                    {items[(i + (side < 0 ? items.length - 1 : 1)) % items.length]}
+                  </Fragment>
+                ))}
+              </div>
+            ))}
         </div>
         {!vertical && items.length > 1 && (
           <>

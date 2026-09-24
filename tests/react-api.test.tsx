@@ -546,7 +546,7 @@ describe("React state initialization and synchronization", () => {
     expect(dots[1].classList.contains("k-carousel-dots-active")).toBe(true);
   });
 
-  it("ignores rapid arrow clicks until the current transition ends", () => {
+  it("accepts rapid arrow clicks before the current transition ends", () => {
     const onChange = vi.fn();
     render(
       <Carousel onChange={onChange}>
@@ -559,15 +559,15 @@ describe("React state initialization and synchronization", () => {
     const next = screen.getByRole("button", { name: "Next slide" });
     fireEvent.click(next);
     fireEvent.click(next);
-    expect(onChange).toHaveBeenCalledTimes(1);
-    expect(onChange).toHaveBeenLastCalledWith(1);
+    expect(onChange).toHaveBeenCalledTimes(2);
+    expect(onChange).toHaveBeenLastCalledWith(2);
 
     fireEvent.transitionEnd(document.querySelector(".k-carousel-wrapper")!, {
       propertyName: "transform",
     });
     fireEvent.click(next);
-    expect(onChange).toHaveBeenCalledTimes(2);
-    expect(onChange).toHaveBeenLastCalledWith(2);
+    expect(onChange).toHaveBeenCalledTimes(3);
+    expect(onChange).toHaveBeenLastCalledWith(0);
   });
 
   it("moves Kanban cards with the keyboard without mutating data", () => {

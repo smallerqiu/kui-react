@@ -9897,6 +9897,32 @@
           "descriptionEn": "Whether to show the dots at the bottom of the gallery"
         },
         {
+          "name": "swipeable",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "defaultExpression": "true",
+          "descriptionZh": "是否开启触摸跟手滑动",
+          "descriptionEn": "Enable touch swiping with pointer-following movement"
+        },
+        {
+          "name": "draggable",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "defaultExpression": "true",
+          "descriptionZh": "是否开启鼠标跟手拖拽",
+          "descriptionEn": "Enable mouse dragging with pointer-following movement"
+        },
+        {
           "name": "onChange",
           "type": "((index: number) => void) | undefined",
           "required": false,
@@ -9915,7 +9941,6 @@
         "contentEditable",
         "contextMenu",
         "dir",
-        "draggable",
         "enterKeyHint",
         "hidden",
         "id",
@@ -10287,7 +10312,7 @@
         {
           "id": "components/carousel/demo/basic.tsx",
           "title": "基本用法",
-          "source": "import { Carousel, CarouselItem } from \"react-kui\";\nconst itemStyle = {\n  color: \"#fff\",\n  background: \"var(--kui-color-primary)\",\n  justifyContent: \"center\",\n  alignItems: \"center\",\n  fontSize: 30,\n  fontWeight: 700,\n  display: \"flex\",\n} as const;\nexport default function App() {\n  return (\n    <Carousel value={2} loop autoplay height={300}>\n      {[1, 2, 3].map((value) => (\n        <CarouselItem key={value} style={itemStyle}>\n          {value}\n        </CarouselItem>\n      ))}\n    </Carousel>\n  );\n}"
+          "source": "import { Carousel, CarouselItem } from \"react-kui\";\nconst itemStyle = {\n  color: \"#fff\",\n  background: \"var(--kui-color-primary)\",\n  justifyContent: \"center\",\n  alignItems: \"center\",\n  fontSize: 30,\n  fontWeight: 700,\n  display: \"flex\",\n} as const;\nexport default function App() {\n  return (\n    <Carousel value={2} loop height={300}>\n      {[1, 2, 3].map((value) => (\n        <CarouselItem key={value} style={itemStyle}>\n          {value}\n        </CarouselItem>\n      ))}\n    </Carousel>\n  );\n}"
         },
         {
           "id": "components/carousel/demo/vertical.tsx",
@@ -10678,7 +10703,7 @@
         {
           "id": "components/carousel/demo/basic.tsx",
           "title": "基本用法",
-          "source": "import { Carousel, CarouselItem } from \"react-kui\";\nconst itemStyle = {\n  color: \"#fff\",\n  background: \"var(--kui-color-primary)\",\n  justifyContent: \"center\",\n  alignItems: \"center\",\n  fontSize: 30,\n  fontWeight: 700,\n  display: \"flex\",\n} as const;\nexport default function App() {\n  return (\n    <Carousel value={2} loop autoplay height={300}>\n      {[1, 2, 3].map((value) => (\n        <CarouselItem key={value} style={itemStyle}>\n          {value}\n        </CarouselItem>\n      ))}\n    </Carousel>\n  );\n}"
+          "source": "import { Carousel, CarouselItem } from \"react-kui\";\nconst itemStyle = {\n  color: \"#fff\",\n  background: \"var(--kui-color-primary)\",\n  justifyContent: \"center\",\n  alignItems: \"center\",\n  fontSize: 30,\n  fontWeight: 700,\n  display: \"flex\",\n} as const;\nexport default function App() {\n  return (\n    <Carousel value={2} loop height={300}>\n      {[1, 2, 3].map((value) => (\n        <CarouselItem key={value} style={itemStyle}>\n          {value}\n        </CarouselItem>\n      ))}\n    </Carousel>\n  );\n}"
         },
         {
           "id": "components/carousel/demo/vertical.tsx",

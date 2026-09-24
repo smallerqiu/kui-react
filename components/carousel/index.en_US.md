@@ -26,10 +26,23 @@ A set of rotating/carousel areas.
 
 ## API
 
+Touch swiping and mouse dragging are enabled by default; disable them independently
+with `swipeable` and `draggable`. Both horizontal and `vertical` modes follow the pointer.
+Movement below 5px is ignored. Short swipes within 300ms advance in the gesture direction;
+longer gestures advance when their own travel reaches half a slide or their release
+velocity reaches 0.5px/ms in the drag direction. Unfinished animation travel is not
+subtracted from the gesture distance. At most one adjacent slide is selected per gesture.
+Velocity also affects the decelerating settling animation.
+An ongoing animation can be grabbed again without waiting for it to finish.
+Horizontal carousels preserve vertical page scrolling;
+vertical carousels preserve horizontal scrolling. Inputs and buttons do not initiate dragging.
+
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
 | value | slide index, starting from 0 | `number` | - |
 | loop | Whether to enable loop | `boolean` | true |
+| swipeable | Enable touch swiping with pointer-following movement | `boolean` | true |
+| draggable | Enable mouse dragging with pointer-following movement | `boolean` | true |
 | vertical | Whether to display in vertical mode | `boolean` | false |
 | autoplay | Whether to auto-switch | `boolean` | false |
 | delay | The time interval for auto-switching, in milliseconds | `number` | 3000 |
