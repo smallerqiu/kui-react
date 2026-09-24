@@ -7836,8 +7836,8 @@
           "type": "IconType[] | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "按钮的图标",
-          "descriptionEn": "Button icon"
+          "descriptionZh": "从 kui-icons 导入的图标定义（如 Search），不是字符串或已渲染的 Icon 元素",
+          "descriptionEn": "Icon definition imported from kui-icons (e.g. Search), not a string or rendered Icon element"
         },
         {
           "name": "block",
@@ -8361,7 +8361,7 @@
       "behavior": {
         "rules": [
           "Use htmlType=submit/reset for form actions; type is visual intent, not native button type.",
-          "icon takes an icon definition imported from kui-icons."
+          "Button.icon takes IconType[] data imported from kui-icons: import { Search } from 'kui-icons'; use <Button icon={Search} />. Never pass a JSX element (<Icon type={Search} />), a component function, or an icon-name string to icon. For custom rendered content, put <Icon type={Search} /> in Button children. Input prefix/suffix are renderable nodes and must not be confused with Button.icon."
         ]
       },
       "children": [],

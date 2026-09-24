@@ -1,5 +1,7 @@
 # React KUI AI integration
 
+Icon prop contract: Button.icon takes IconType[] data imported from kui-icons: import { Search } from 'kui-icons'; use <Button icon={Search} />. Never pass a JSX element (<Icon type={Search} />), a component function, or an icon-name string to icon. For custom rendered content, put <Icon type={Search} /> in Button children. Input prefix/suffix are renderable nodes and must not be confused with Button.icon.
+
 For building React 19.2+ applications with `react-kui`. This is not a Vue plugin.
 
 Install `react-kui` and `kui-icons`, then run `pnpm exec react-kui-ai init`. It appends project guidance to AGENTS.md without overwriting existing content or duplicating its section. Install the optional Skill from `node_modules/react-kui/ai/skills/react-kui` using your client's Skill mechanism.

@@ -11,6 +11,7 @@ const instructions = `${marker}
 - Import components from \`react-kui\` and icons from \`kui-icons\`; import \`react-kui/style/index.css\` once.
 - Read the installed \`react-kui/metadata\` before using unfamiliar props, callbacks, or render props. Do not invent component APIs. Use React state and callbacks, never Vue v-model or slots.
 - Keep \`theme\`, \`size\`, and \`shape\` consistent and run typecheck/lint after edits.
+- Button.icon takes IconType[] data imported from kui-icons: import { Search } from 'kui-icons'; use <Button icon={Search} />. Never pass a JSX element (<Icon type={Search} />), a component function, or an icon-name string to icon. For custom rendered content, put <Icon type={Search} /> in Button children. Input prefix/suffix are renderable nodes and must not be confused with Button.icon.
 `;
 
 if (command === "init") {

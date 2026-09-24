@@ -1,5 +1,7 @@
 # Button
 
+The icon prop accepts icon data imported from `kui-icons`, not a string or rendered `Icon` element. Use `icon={Search}`, not `icon={<Icon type={Search} />}`. Custom JSX belongs in children.
+
 Buttons are used to initiate an immediate operation.
 
 ## When to Use
@@ -60,7 +62,7 @@ import { Button } from "react-kui";
 | size     | Button size,                                                                                         | [small,large]                              | -       |
 | shape    | When shape=circle, presents a circular button                                                        | boolean                                    | false   |
 | theme    | Button theme                                                                                         | [solid,fill,normal]                        | -       |
-| icon     | Button icon                                                                                          | string                                     | -       |
+| icon | Icon definition imported from kui-icons (e.g. Search), not a string or rendered Icon element | IconType[] | - |
 | loading  | Whether the button is in loading mode                                                                | boolean                                    | false   |
 | href     | The address to jump to when clicked. Specifying this property makes the button behave like an a link | string                                     | -       |
 | target   | Equivalent to the target attribute of an a link, takes effect when href exists                       | string                                     | -       |

@@ -29,6 +29,27 @@ function rpc(requests: unknown[]) {
 }
 
 describe("React AI distribution", () => {
+  it("distinguishes icon data from renderable content", () => {
+    for (const source of [
+      'import { Button, Icon } from "react-kui"; const x = <Button icon={<Icon />} />;',
+      'import { Button as Action } from "react-kui"; const x = <Action icon={<span />} />;',
+      'import * as K from "react-kui"; const x = <K.Button icon={<></>} />;',
+      '<Button icon="Search" />',
+    ])
+      expect(validate(source).valid, source).toBe(false);
+    for (const source of [
+      'import { Button } from "react-kui"; import { Search } from "kui-icons"; const x = <Button icon={Search} />;',
+      'import { Button, Icon } from "react-kui"; const x = <Button><Icon /></Button>;',
+      'import { Input, Icon } from "react-kui"; const x = <Input prefix={<Icon />} />;',
+      'import { Button } from "another-library"; const x = <Button icon={<span />} />;',
+    ])
+      expect(validate(source).valid, source).toBe(true);
+    const button = metadata.components.find((c: { name: string }) => c.name === "Button");
+    expect(button.behavior.rules.join(" ")).toContain("Never pass a JSX element");
+    expect(button.props.find((p: { name: string }) => p.name === "icon").descriptionEn).toContain(
+      "not a string",
+    );
+  });
   it("extracts the real React exports, callback types and enums", () => {
     expect(metadata.library).toBe("react-kui");
     expect(metadata.components.length).toBeGreaterThan(100);

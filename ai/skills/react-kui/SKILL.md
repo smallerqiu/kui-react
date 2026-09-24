@@ -5,6 +5,8 @@ description: Build React 19.2+ applications with react-kui. Use when creating, r
 
 # React KUI
 
+Icon prop contract: Button.icon takes IconType[] data imported from kui-icons: import { Search } from 'kui-icons'; use <Button icon={Search} />. Never pass a JSX element (<Icon type={Search} />), a component function, or an icon-name string to icon. For custom rendered content, put <Icon type={Search} /> in Button children. Input prefix/suffix are renderable nodes and must not be confused with Button.icon.
+
 1. Confirm the application uses React 19.2+. Use named component imports from `react-kui` and icon definitions from `kui-icons`.
 2. Import `react-kui/style/index.css` once at the application entry.
 3. Read installed-version metadata (`react-kui/metadata`) before choosing props or callback signatures. Prefer it over online documentation for another version.

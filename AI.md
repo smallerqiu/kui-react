@@ -1,5 +1,7 @@
 # React KUI AI 辅助开发
 
+图标属性注意：`Button.icon` 接收从 `kui-icons` 导入的 `IconType[]` 图标数据。例如 `import { Search } from 'kui-icons'` 后使用 `<Button icon={Search} />`，不要传 `<Icon type={Search} />`、组件函数或图标名称字符串。自定义 JSX 放在 Button 的 children 中；Input 的 prefix/suffix 接收渲染内容，与 Button.icon 不是同一种接口。
+
 用于帮助 AI **使用 react-kui 开发 React 应用**。支持 React 19.2+，npm 包名为 `react-kui`；不是 `kui-react`，也不是 Vue 插件。
 
 ## 接入

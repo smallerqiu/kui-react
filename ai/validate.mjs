@@ -125,6 +125,24 @@ export function validateUsage(source, metadata) {
             add("event", `${name} requires a callback`, attr);
           continue;
         }
+        // Icon-definition props are data, not React render props.
+        const expression =
+          attr.value?.type === "JSXExpressionContainer" ? attr.value.expression : attr.value;
+        if (
+          /\bIconType\[\]/.test(prop.type) &&
+          ["JSXElement", "JSXFragment", "StringLiteral"].includes(expression?.type)
+        ) {
+          add(
+            "value",
+            `${component.name}.${name} expects icon data from kui-icons (e.g. Search), not JSX or an icon-name string.`,
+            attr,
+            {
+              component: component.name,
+              prop: name,
+            },
+          );
+          continue;
+        }
         const value = literal(attr.value);
         if (!value.known) {
           skipped.add("expression types and callback signatures");
