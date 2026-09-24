@@ -186,17 +186,17 @@ describe("Carousel swipe integration", () => {
       expect(parseFloat(track.style.transitionDuration)).toBeGreaterThanOrEqual(140);
     },
   );
-  it("allows disabling default mouse dragging", () => {
+  it.each(["mouse", "touch"])("disables %s gestures with swipeable=false", (kind) => {
     const onChange = vi.fn();
     const { container } = render(
-      <Carousel draggable={false} onChange={onChange}>
+      <Carousel swipeable={false} onChange={onChange}>
         {slides}
       </Carousel>,
     );
     const track = container.querySelector<HTMLElement>(".k-carousel-wrapper")!;
-    pointer(track, "pointerdown", 200, 0, "mouse");
-    pointer(window, "pointermove", 100, 0, "mouse");
-    pointer(window, "pointerup", 100, 0, "mouse");
+    pointer(track, "pointerdown", 200, 0, kind);
+    pointer(window, "pointermove", 100, 0, kind);
+    pointer(window, "pointerup", 100, 0, kind);
     expect(onChange).not.toHaveBeenCalled();
   });
   it("keeps the looping clone transition when the parent synchronizes value", () => {

@@ -4,7 +4,30 @@ For building React 19.2+ applications with `react-kui`.
 
 Install `react-kui` and `kui-icons`, then run `pnpm exec react-kui-ai init`. It appends project guidance to AGENTS.md without overwriting existing content or duplicating its section. Install the optional Skill from `node_modules/react-kui/ai/skills/react-kui` using your client's Skill mechanism.
 
-Configure a stdio MCP service with command `pnpm` and args `["exec", "react-kui-mcp"]`, running from the consuming project's directory. Configuration locations vary by client.
+Confirm that the project has a version of `react-kui` that includes the MCP server. Find the absolute path to Node:
+
+```bash
+node -p "process.execPath"
+```
+
+For stdio MCP clients that support the `mcpServers` JSON format:
+
+```json
+{
+  "mcpServers": {
+    "react-kui": {
+      "command": "/absolute/path/to/node",
+      "args": ["/absolute/path/to/project/node_modules/react-kui/ai/mcp.mjs"]
+    }
+  }
+}
+```
+
+Replace `command` with the Node path returned above and the script argument with its absolute path in your project. Keep paths containing spaces as single strings. Windows paths can use forward slashes, such as `C:/Program Files/nodejs/node.exe`. This configuration does not depend on the client's working directory or require pnpm. If the client can find Node, `command` can also be `node`.
+
+Use `"command": "pnpm"` with `"args": ["exec", "react-kui-mcp"]` only when the client can find Node and pnpm and its working directory is explicitly set to the application directory where the package is installed.
+
+Configuration locations and formats vary by client. For clients without `mcpServers` support, enter the same command and arguments in their MCP settings. Reconnect after saving and confirm that `search_components` and `get_component_api` appear in the tool list. The server communicates over standard input/output and does not open a web page; waiting for input when launched in a terminal is normal.
 
 Use named imports and load `react-kui/style/index.css` once. Input onChange receives a value, not a DOM event. Switch uses checked/onChange; Modal uses open/onOpenChange. A Form model supplied by the application must be updated through onChange(nextModel); onSubmit receives { valid }. Button uses htmlType for submit/reset. The image export is KImage.
 

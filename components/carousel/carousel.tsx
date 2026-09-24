@@ -29,7 +29,7 @@ export interface CarouselRef {
 
 export interface CarouselProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
-  "onChange" | "defaultValue" | "defaultChecked"
+  "onChange" | "defaultValue" | "defaultChecked" | "draggable"
 > {
   value?: number;
   loop?: boolean;
@@ -39,7 +39,6 @@ export interface CarouselProps extends Omit<
   vertical?: boolean;
   dots?: boolean;
   swipeable?: boolean;
-  draggable?: boolean;
   onChange?: (index: number) => void;
 }
 
@@ -62,7 +61,6 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
     vertical = false,
     dots = true,
     swipeable = true,
-    draggable = true,
     onChange,
     onMouseEnter,
     onMouseLeave,
@@ -239,7 +237,6 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
     dragCallbacks.current = {
       options: () => ({
         swipeable,
-        draggable,
         vertical,
         size: vertical ? height : width,
         count: items.length,
@@ -272,7 +269,6 @@ const Carousel = forwardRef<CarouselRef, CarouselProps>(function Carousel(
     };
   }, [
     swipeable,
-    draggable,
     vertical,
     height,
     width,

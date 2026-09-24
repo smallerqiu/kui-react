@@ -11,20 +11,30 @@ pnpm exec react-kui-ai init
 
 初始化会追加项目 `AGENTS.md` 的 React KUI 使用约定，保留已有内容，重复执行不重复写入。Agent Skill 位于 `node_modules/react-kui/ai/skills/react-kui`，可按所用客户端的 Skill 安装方式接入。
 
-在支持 stdio MCP 的客户端中添加服务，并将工作目录设置为已安装 react-kui 的应用目录：
+先确认项目已安装提供 MCP 命令的 `react-kui` 版本，并在终端查询 Node 可执行文件的绝对路径：
+
+```bash
+node -p "process.execPath"
+```
+
+下面适用于支持 `mcpServers` JSON 格式的 stdio MCP 客户端：
 
 ```json
 {
   "mcpServers": {
     "react-kui": {
-      "command": "pnpm",
-      "args": ["exec", "react-kui-mcp"]
+      "command": "/absolute/path/to/node",
+      "args": ["/absolute/path/to/project/node_modules/react-kui/ai/mcp.mjs"]
     }
   }
 }
 ```
 
-不同客户端的配置位置不同；以上是服务启动参数，不要求编辑某个固定的全局配置文件。
+将 `command` 替换为查询到的 Node 路径，将 `args` 中的脚本路径替换为你项目中的绝对路径。路径含空格也保持为一个字符串；Windows 路径可使用正斜杠，例如 `C:/Program Files/nodejs/node.exe`。这种方式不依赖客户端的启动目录，也不要求使用 pnpm。如果客户端能找到 Node，也可以将 `command` 写成 `node`。
+
+只有在客户端能找到 Node 和 pnpm，且工作目录明确设为已安装该包的应用目录时，才使用 `"command": "pnpm"` 和 `"args": ["exec", "react-kui-mcp"]`。
+
+配置文件的位置和格式取决于客户端；不支持 `mcpServers` 格式的客户端，请在 MCP 设置中填写相同的启动命令和参数。保存后重新连接，确认工具列表包含 `search_components` 和 `get_component_api`。服务通过标准输入/输出通信，不会打开网页；在终端启动后等待输入是正常状态。
 
 ## React 的使用约定
 
