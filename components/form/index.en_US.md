@@ -66,23 +66,23 @@ function Demo() {
 
 ## Form API
 
-| Property   | Description                                                                                           | Type                                     | Default    |
-| ---------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------- | ---------- |
-| model      | Form data object; Form manages it internally when omitted                                             | Object                                   | -          |
-| rules      | Form validation rules                                                                                 | FormRules                                | -          |
-| name       | Form name, will be used as the id prefix for form fields                                              | string                                   | -          |
-| labelCol   | Label layout, same as the `<Col>` component, set span offset values, such as {span: 3, offset: 12}    | {span:number,offset:number}              | -          |
-| wrapperCol | Control layout, same as the `<Col>` component, set span offset values, such as {span: 15, offset: 12} | {span:number,offset:number}              | -          |
-| theme      | Child control theme                                                                                   | ThemeType                                | -          |
-| size       | Child control size                                                                                    | SizeType                                 | -          |
-| layout     | Form layout                                                                                           | horizontal \| vertical \| inline        | horizontal |
-| shape      | Child control shape                                                                                   | ShapeType                                | -          |
-| disabled   | Whether to disable the form                                                                           | boolean                                  | false      |
-| readOnly   | Whether the form and its child controls are read-only                                                 | boolean                                  | false      |
-| colon      | Whether to display a colon after labels                                                               | boolean                                  | true       |
-| onReset    | Called after resetting all field values and validation results                                        | () => void                               | -          |
-| onSubmit   | Called after submission validation completes                                                          | (result: { valid: boolean }) => void      | -          |
-| onChange   | Returns an immutably updated model when a field changes                                               | (model: Record<string, unknown>) => void | -          |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| model | Form data object; Form manages it internally when omitted | `Record<string, unknown>` | - |
+| rules | Form validation rules | `FormRules` | - |
+| name | Form name, will be used as the id prefix for form fields | `string` | - |
+| labelCol | Label layout, same as the `<Col>` component, set span offset values, such as {span: 3, offset: 12} | `ColProps` | - |
+| wrapperCol | Control layout, same as the `<Col>` component, set span offset values, such as {span: 15, offset: 12} | `ColProps` | - |
+| theme | Child control theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| size | Child control size | `"small" \| "medium" \| "large"` | - |
+| layout | Form layout | `"inline" \| "horizontal" \| "vertical"` | horizontal |
+| shape | Child control shape | `"round" \| "default" \| "square" \| "circle"` | - |
+| disabled | Whether to disable the form | `boolean` | false |
+| readOnly | Whether the form and its child controls are read-only | `boolean` | false |
+| colon | Whether to display a colon after labels | `boolean` | true |
+| onReset | Called after resetting all field values and validation results | `(() => void)` | - |
+| onSubmit | Called after submission validation completes | `((event: FormSubmitEvent) => void)` | - |
+| onChange | Returns an immutably updated model when a field changes | `((model: Record<string, unknown>) => void)` | - |
 
 ## Form Expose API
 
@@ -95,12 +95,12 @@ function Demo() {
 
 ## FormItem API
 
-| Property | Description                                                                      | Type       | Default |
-| -------- | -------------------------------------------------------------------------------- | ---------- | ------- |
-| prop     | Corresponds to the field in the form domain model. Required for form validation  | string     | -       |
-| label    | Label text                                                                       | ReactNode  | -       |
-| rules    | Form validation rules                                                            | FormRule[] | -       |
-| colon    | Whether to display a colon after the label; inherits the Form setting when unset | boolean    | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| prop | Corresponds to the field in the form domain model. Required for form validation | `string` | - |
+| label | Label text | `ReactNode` | - |
+| rules | Form validation rules | `FormRule \| FormRule[]` | - |
+| colon | Whether to display a colon after the label; inherits the Form setting when unset | `boolean` | - |
 
 ## rules API
 

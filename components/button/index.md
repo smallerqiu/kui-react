@@ -54,18 +54,18 @@ import { Button } from "kui-react";
 
 ## API
 
-| 属性     | 说明                                                  | 类型                                       | 默认值 |
-| -------- | ----------------------------------------------------- | ------------------------------------------ | ------ |
-| type     | 设置按钮类型                                          | `primary` \| `link`\| `dashed` \| `danger` | -      |
-| htmlType | 设置 button 原生的 type 值                            | string                                     | button |
-| disabled | 按钮失效状态 ˚                                        | boolean                                       | false  |
-| size     | 按钮尺寸,                                             | `small`\|`large`                           | -      |
-| shape    | 按钮的外观                                            | `circle` , `square`                        | -      |
-| theme    | 按钮主题                                              | `solid` \| `fill` \| `normal`              | -      |
-| icon | 从 kui-icons 导入的图标定义（如 Search），不是字符串或已渲染的 Icon 元素 | IconType[] | - |
-| loading  | 按钮是否进入加载模式                                  | boolean                                       | false  |
-| href     | 点击跳转的地址，指定此属性 button 的行为和 a 链接一致 | string                                     | -      |
-| target   | 相当于 a 链接的 target 属性，href 存在时生效          | string                                     | -      |
-| block    | 使组件宽度适应其父级宽度                              | boolean                                       | false  |
-| color    | 自定义按钮颜色                                        | string                                     | -      |
-| onClick  | 点击按钮时触发                                        | MouseEventHandler\<HTMLElement\>             | -      |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| type | 设置按钮类型 | `"link" \| "text" \| "default" \| "warning" \| "primary" \| "danger"` | - |
+| htmlType | 设置 button 原生的 type 值 | `"button" \| "reset" \| "submit"` | button |
+| disabled | 按钮失效状态 ˚ | `boolean` | false |
+| size | 按钮尺寸, | `"small" \| "medium" \| "large"` | - |
+| shape | 按钮的外观 | `"round" \| "default" \| "square" \| "circle"` | - |
+| theme | 按钮主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| icon | 从 kui-icons 导入的图标定义（如 Search），不是字符串或已渲染的 Icon 元素 | `IconType[]` | - |
+| loading | 按钮是否进入加载模式 | `boolean` | false |
+| href | 点击跳转的地址，指定此属性 button 的行为和 a 链接一致 | `string` | - |
+| target | 相当于 a 链接的 target 属性，href 存在时生效 | `string` | - |
+| block | 使组件宽度适应其父级宽度 | `boolean` | false |
+| color | 自定义按钮颜色 | `string` | - |
+| onClick | 点击按钮时触发 | `React.MouseEventHandler<HTMLElement>` | - |

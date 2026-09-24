@@ -44,55 +44,55 @@ Similar to the Select selection control, when the selectable data structure is a
 
 ## TreeSelect API
 
-| Property                | Description                                                               | Type                                  | Default       |
-| ----------------------- | ------------------------------------------------------------------------- | ------------------------------------- | ------------- |
-| value                   | selected value                                                            | TreeSelectValue                       | -             |
-| open                    | dropdown visibility                                                       | boolean                               | -             |
-| width                   | Component width                                                           | string, number                        | -             |
-| placement               | Dropdown placement                                                        | DropPlacementsType                    | bottom-left   |
-| maxTagCount             | Maximum visible tags in multiple mode; excess tags are shown in a Tooltip | number                                | -             |
-| filterable              | Whether search filtering is enabled                                       | boolean                               | false         |
-| block                   | Whether to fill the parent width                                          | boolean                               | false         |
-| options                 | Compatibility data source alias for `treeData`                            | TreeNode[]                            | []            |
-| arrowIcon               | Custom dropdown arrow icon                                                | IconType[]                            | -             |
-| placeholder             | Default text of selector                                                  | string                                | Please select |
-| disabled                | Whether current item is disabled                                          | boolean                               | false         |
-| readOnly                | Whether the component is read-only                                        | boolean                               | false         |
-| size                    | Component size, provides two sizes: `small`, `large`, default is normal   | string                                | -             |
-| emptyText               | Prompt displayed when no data                                             | string                                | 'No data yet' |
-| multiple                | Whether to display in multiple selection mode                             | boolean                               | false         |
-| loading                 | Asynchronous loading state                                                | boolean                               | false         |
-| virtual                 | Whether to enable virtual scrolling                                       | boolean                               | false         |
-| virtualHeight           | Virtual scrolling viewport height                                         | number                                | 260           |
-| itemHeight              | Virtual node height                                                       | number                                | 28            |
-| overscan                | Extra nodes rendered outside the viewport                                 | number                                | 5             |
-| clearable               | Whether options can be cleared                                            | boolean                               | true          |
-| bordered                | Whether to show border                                                    | boolean                               | true          |
-| showArrow               | Whether to show dropdown button                                           | boolean                               | true          |
-| theme                   | The theme of TreeSelect                                                   | string                                | fill          |
-| icon                    | Custom icon                                                               | string                                | -             |
-| shape                   | When shape='circle', displays rounded corners                             | string                                | -             |
-| treeLoadData            | Method to asynchronously load data                                        | (node: TreeNode) => Promise<unknown\> | -             |
-| treeData                | Array of nestable node properties, data to generate `tree`                | TreeNode[]                            | []            |
-| treeCheckable           | Whether to show checkbox                                                  | boolean                               | false         |
-| treeShowLine            | Whether to show connecting lines                                          | boolean                               | false         |
-| treeShowIcon            | Whether to show icons                                                     | boolean                               | true          |
-| treeExpandedKeys        | Specify expanded nodes                                                    | string[]                              | []            |
-| treeDefaultExpandedKeys | Initially expanded nodes in uncontrolled mode                             | string[]                              | []            |
-| treeSelectedKeys        | Controlled selected Tree nodes                                            | string[]                              | -             |
-| treeCheckedKeys         | Controlled checked Tree nodes                                             | string[]                              | -             |
-| treeCheckStrictly       | Whether parent and child checked states are independent                   | boolean                               | false         |
-| treeExpandedAll         | Whether all non-leaf nodes are expanded initially                         | boolean                               | false         |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| value | selected value | `TreeSelectValue` | - |
+| open | dropdown visibility | `boolean` | - |
+| width | Component width | `number` | - |
+| placement | Dropdown placement | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | bottom-left |
+| maxTagCount | Maximum visible tags in multiple mode; excess tags are shown in a Tooltip | `number` | - |
+| filterable | Whether search filtering is enabled | `boolean` | false |
+| block | Whether to fill the parent width | `boolean` | false |
+| options | Compatibility data source alias for `treeData` | `TreeNode[]` | [] |
+| arrowIcon | Custom dropdown arrow icon | `IconType[]` | - |
+| placeholder | Default text of selector | `string` | Please select |
+| disabled | Whether current item is disabled | `boolean` | false |
+| readOnly | Whether the component is read-only | `boolean` | false |
+| size | Component size, provides two sizes: `small`, `large`, default is normal | `"small" \| "medium" \| "large"` | - |
+| emptyText | Prompt displayed when no data | `string` | 'No data yet' |
+| multiple | Whether to display in multiple selection mode | `boolean` | false |
+| loading | Asynchronous loading state | `boolean` | false |
+| virtual | Whether to enable virtual scrolling | `boolean` | false |
+| virtualHeight | Virtual scrolling viewport height | `number` | 260 |
+| itemHeight | Virtual node height | `number` | 28 |
+| overscan | Extra nodes rendered outside the viewport | `number` | 5 |
+| clearable | Whether options can be cleared | `boolean` | true |
+| bordered | Whether to show border | `boolean` | true |
+| showArrow | Whether to show dropdown button | `boolean` | true |
+| theme | The theme of TreeSelect | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| icon | Custom icon | `IconType[]` | - |
+| shape | When shape='circle', displays rounded corners | `"round" \| "default" \| "square" \| "circle"` | - |
+| treeLoadData | Method to asynchronously load data | `((node: TreeNode) => Promise<unknown>)` | - |
+| treeData | Array of nestable node properties, data to generate `tree` | `TreeNode[]` | [] |
+| treeCheckable | Whether to show checkbox | `boolean` | false |
+| treeShowLine | Whether to show connecting lines | `boolean` | false |
+| treeShowIcon | Whether to show icons | `boolean` | true |
+| treeExpandedKeys | Specify expanded nodes | `string[]` | [] |
+| treeDefaultExpandedKeys | Initially expanded nodes in uncontrolled mode | `string[]` | [] |
+| treeSelectedKeys | Controlled selected Tree nodes | `string[]` | - |
+| treeCheckedKeys | Controlled checked Tree nodes | `string[]` | - |
+| treeCheckStrictly | Whether parent and child checked states are independent | `boolean` | false |
+| treeExpandedAll | Whether all non-leaf nodes are expanded initially | `boolean` | false |
 
 ## TreeSelect Events
 
-| Property                 | Description                                      | Callback Parameters                                       |
-| ------------------------ | ------------------------------------------------ | --------------------------------------------------------- |
-| onTreeSelect             | Triggered when tree node is clicked              | (value: string, label: string, selected: boolean) => void |
-| onSearch                 | Triggered during search                          | (e: InputEvent) => void                                   |
-| onChange                 | Triggered when the value changes                 | (value: string\|string[]) => void                         |
-| onTreeExpand             | Triggered when a tree node is expanded           | (result: TreeExpandEvent) => void                         |
-| onTreeExpandedKeysChange | Called when Tree expanded keys change            | (keys: string[]) => void                                  |
-| onTreeCheckedKeysChange  | Called when Tree checked keys change             | (keys: string[]) => void                                  |
-| onOpenChange             | Triggered when the dropdown expands or collapses | (open: boolean) => void                                   |
-| onClear                  | Triggered when cleared                           | () => void                                                |
+| Property | Description | Type |
+| --- | --- | --- |
+| onTreeSelect | Triggered when tree node is clicked | `((value: string, label: string, selected: boolean) => void)` |
+| onSearch | Triggered during search | `((event: ChangeEvent<HTMLInputElement>) => void)` |
+| onChange | Triggered when the value changes | `((value: TreeSelectValue) => void)` |
+| onTreeExpand | Triggered when a tree node is expanded | `((value: TreeExpandEvent) => void)` |
+| onTreeExpandedKeysChange | Called when Tree expanded keys change | `((keys: string[]) => void)` |
+| onTreeCheckedKeysChange | Called when Tree checked keys change | `((keys: string[]) => void)` |
+| onOpenChange | Triggered when the dropdown expands or collapses | `((open: boolean) => void)` |
+| onClear | Triggered when cleared | `(() => void)` |

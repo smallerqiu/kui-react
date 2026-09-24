@@ -27,18 +27,18 @@ Separate long lists using pagination, loading only one page at a time.
 
 ## API
 
-| Property     | Description                               | Type                                     | Default          |
-| ------------ | ----------------------------------------- | ---------------------------------------- | ---------------- |
-| page         | Current page number                       | number                                   | 1                |
-| disabled     | Disabled status                           | boolean                                  | false            |
-| total        | Total data count                          | number                                   | 0                |
-| pageSize     | number of items per page                  | number                                   | 10               |
-| showSizer    | Whether to show page size selector        | boolean                                  | false            |
-| showTotal    | Whether to show total count               | boolean                                  | true             |
-| showElevator | Whether to show page elevator             | boolean                                  | false            |
-| simple       | Whether to use simple pagination mode     | boolean                                  | false            |
-| shape        | Pagination shape                          | ShapeType                                | round            |
-| sizeData     | Custom page size data                     | number[]                                 | [10,15,20,30,40] |
-| size         | Size                                      | SizeType                                 | `medium`         |
-| theme        | Theme                                     | ThemeType                                | `fill`           |
-| onChange     | Called when the page or page size changes | (page: number, pageSize: number) => void | -                |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| page | Current page number | `number` | 1 |
+| disabled | Disabled status | `boolean` | false |
+| total | Total data count | `number` | 0 |
+| pageSize | number of items per page | `number` | 10 |
+| showSizer | Whether to show page size selector | `boolean` | false |
+| showTotal | Whether to show total count | `boolean` | true |
+| showElevator | Whether to show page elevator | `boolean` | false |
+| simple | Whether to use simple pagination mode | `boolean` | false |
+| shape | Pagination shape | `"round" \| "default" \| "square" \| "circle"` | round |
+| sizeData | Custom page size data | `number[]` | [10,15,20,30,40] |
+| size | Size | `"small" \| "medium" \| "large"` | `medium` |
+| theme | Theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | `fill` |
+| onChange | Called when the page or page size changes | `((page: number, pageSize: number) => void)` | - |

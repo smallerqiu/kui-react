@@ -28,24 +28,24 @@
 
 ## InputNumber API
 
-| 属性         | 说明                                                       | 类型                                 | 默认值    |
-| ------------ | ---------------------------------------------------------- | ------------------------------------ | --------- |
-| min          | 最小值                                                     | number                               | -Infinity |
-| max          | 最大值                                                     | number                               | Infinity  |
-| step         | 每次改变步数，可以为小数                                   | number \| string                     | 1         |
-| value        | InputNumber 的值                                       | number \| string                     | -         |
-| formatter    | 指定输入框展示值的格式                                     | (value: string \| number) => string  | -         |
-| parser       | 指定从 formatter 里转换回数字的方式，和 formatter 搭配使用 | (value: string) => string \| number  | -         |
-| size         | 输入框大小                                                 | SizeType                             | -         |
-| disabled     | 禁用                                                       | boolean                              | false     |
-| readOnly     | 是否只读                                                   | boolean                              | false     |
-| placeholder  | 输入提示                                                   | string                               | -         |
-| icon         | 输入框图标                                                 | IconType[]                           | -         |
-| precision    | 数值精度                                                   | number                               | -         |
-| shape        | 组件的外观                                                 | ShapeType                            | -         |
-| suffix       | 自定义后缀                                                 | ReactNode                            | -         |
-| prefix       | 前缀内容                                                   | ReactNode                            | -         |
-| controls     | 是否显示增减按钮                                           | boolean                              | true      |
-| keyboard     | 是否允许通过上下方向键调整数值                             | boolean                              | true      |
-| theme        | 组件呈现主题                                               | ThemeType                            | fill      |
-| onChange     | 变化回调，清空时返回 `undefined`                           | (value: number \| undefined) => void | -         |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| min | 最小值 | `number` | -Infinity |
+| max | 最大值 | `number` | Infinity |
+| step | 每次改变步数，可以为小数 | `string \| number` | 1 |
+| value | InputNumber 的值 | `string \| number` | - |
+| formatter | 指定输入框展示值的格式 | `((value: string \| number) => string)` | - |
+| parser | 指定从 formatter 里转换回数字的方式，和 formatter 搭配使用 | `((value: string) => string \| number)` | - |
+| size | 输入框大小 | `"small" \| "medium" \| "large"` | - |
+| disabled | 禁用 | `boolean` | false |
+| readOnly | 是否只读 | `boolean` | false |
+| placeholder | 输入提示 | `string` | - |
+| icon | 输入框图标 | `IconType[]` | - |
+| precision | 数值精度 | `number` | - |
+| shape | 组件的外观 | `"round" \| "default" \| "square" \| "circle"` | - |
+| suffix | 自定义后缀 | `React.ReactNode` | - |
+| prefix | 前缀内容 | `React.ReactNode` | - |
+| controls | 是否显示增减按钮 | `boolean` | true |
+| keyboard | 是否允许通过上下方向键调整数值 | `boolean` | true |
+| theme | 组件呈现主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| onChange | 变化回调，清空时返回 `undefined` | `((value: number \| undefined) => void)` | - |

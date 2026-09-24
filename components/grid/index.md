@@ -61,28 +61,28 @@ Layout 及其子组件（Header, Sider, Content, Footer）属于页面骨架级�
 
 ## Grid API
 
-| 属性         | 说明                                                              | 类型                      | 默认值 |
-| ------------ | ----------------------------------------------------------------- | ------------------------- | ------ |
-| cols         | 设置网格的列数。支持数字（平分）或字符串（如 1fr 2fr）            | number,string,Object      | 24     |
-| rows         | 设置网格的行数或高度。默认为 auto                                 | number,string,Object      | auto   |
-| autoRows     | 隐式网格行高。在 Bento 布局或瀑布流中用于设定基准高度。           | string                    | auto   |
-| xGap         | 水格间距（水平方向）。数字类型会自动补充 px 单位。                | number,string,Object      | 0      |
-| yGap         | 行间距（垂直方向）。数字类型会自动补充 px 单位。                  | number,string,Object      | 0      |
-| itemMinWidth | 自动填充模式。设置子项最小宽度，Grid 将根据容器宽度自动计算列数。 | number \| string          | -      |
-| align        | 子项在网格单元格内的垂直对齐方式                                  | string ( center, start..) | -      |
-| justify      | 子项在网格单元格内的水平对齐方式。                                | string ( center, start..) | -      |
-| flow         | 网格自动排列方式，对应 `grid-auto-flow`                           | string ( row, column, dense..) | row |
-| debug        | 调试模式。开启后会显示红色透明背景列，方便开发者校对布局。        | boolean                      | false  |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| cols | 设置网格的列数。支持数字（平分）或字符串（如 1fr 2fr） | `ResponsiveValue<GridDimension>` | 24 |
+| rows | 设置网格的行数或高度。默认为 auto | `ResponsiveValue<GridDimension>` | auto |
+| autoRows | 隐式网格行高。在 Bento 布局或瀑布流中用于设定基准高度。 | `string` | auto |
+| xGap | 水格间距（水平方向）。数字类型会自动补充 px 单位。 | `ResponsiveValue<GridDimension>` | 0 |
+| yGap | 行间距（垂直方向）。数字类型会自动补充 px 单位。 | `ResponsiveValue<GridDimension>` | 0 |
+| itemMinWidth | 自动填充模式。设置子项最小宽度，Grid 将根据容器宽度自动计算列数。 | `string \| number` | - |
+| align | 子项在网格单元格内的垂直对齐方式 | `import(".pnpm/csstype@3.2.3/node_modules/csstype").Property.AlignItems` | - |
+| justify | 子项在网格单元格内的水平对齐方式。 | `import(".pnpm/csstype@3.2.3/node_modules/csstype").Property.JustifyItems` | - |
+| flow | 网格自动排列方式，对应 `grid-auto-flow` | `import(".pnpm/csstype@3.2.3/node_modules/csstype").Property.GridAutoFlow` | row |
+| debug | 调试模式。开启后会显示红色透明背景列，方便开发者校对布局。 | `boolean` | false |
 
 ## GridItem API
 
-| 属性        | 说明                                                       | 类型             | 默认值 |
-| ----------- | ---------------------------------------------------------- | ---------------- | ------ |
-| span        | 占据的列数。设为 0 时会在该断点下彻底隐藏（display: none） | number \| Object | 1      |
-| rowSpan     | 占据的行数。配合容器的 autoRows 可实现非对称布局           | number \| Object | 1      |
-| columnStart | 显式指定起始列，支持响应式值                               | number \| Object | -      |
-| rowStart    | 显式指定起始行，支持响应式值                               | number \| Object | -      |
-| suffix      | 尾部固定。设为 true 时，该项将强制移动到当前行的末尾。     | boolean          | false  |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| span | 占据的列数。设为 0 时会在该断点下彻底隐藏（display: none） | `ResponsiveValue<number>` | 1 |
+| rowSpan | 占据的行数。配合容器的 autoRows 可实现非对称布局 | `ResponsiveValue<number>` | 1 |
+| columnStart | 显式指定起始列，支持响应式值 | `ResponsiveValue<number>` | - |
+| rowStart | 显式指定起始行，支持响应式值 | `ResponsiveValue<number>` | - |
+| suffix | 尾部固定。设为 true 时，该项将强制移动到当前行的末尾。 | `boolean` | false |
 
 ## Breakpoints
 

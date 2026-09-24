@@ -24,17 +24,17 @@ Displays the current page's position in the system hierarchy and allows navigati
 
 ## Breadcrumb API
 
-| Property  | Description      | Type      | Default |
-| --------- | ---------------- | --------- | ------- |
-| separator | Custom separator | ReactNode | `/`     |
-| children  | Breadcrumb items | ReactNode | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| separator | Custom separator | `React.ReactNode` | `/` |
+| children | Breadcrumb items | `React.ReactNode` | - |
 
 ## BreadcrumbItem API
 
-| Property | Description             | Type                  | Default |
-| -------- | ----------------------- | --------------------- | ------- |
-| href     | Link URL                | string                | -       |
-| target   | Link browsing context   | string                | -       |
-| rel      | Link relationship       | string                | -       |
-| icon     | Item icon               | IconType \| ReactNode | -       |
-| children | Breadcrumb item content | ReactNode             | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| href | Link URL | `string` | - |
+| target | Link browsing context | `string` | - |
+| rel | Link relationship | `string` | - |
+| icon | Item icon | `React.ReactNode \| IconType[]` | - |
+| children | Breadcrumb item content | `React.ReactNode` | - |

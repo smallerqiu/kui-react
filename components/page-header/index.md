@@ -18,10 +18,10 @@
 
 ## API
 
-| 属性        | 说明         | 类型      | 默认值 |
-| ----------- | ------------ | --------- | ------ |
-| title       | 标题         | ReactNode | -      |
-| description | 描述         | ReactNode | -      |
-| breadcrumb  | 面包屑区域   | ReactNode | -      |
-| back        | 返回按钮区域 | ReactNode | -      |
-| actions     | 操作区域     | ReactNode | -      |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| title | 标题 | `ReactNode` | - |
+| description | 描述 | `ReactNode` | - |
+| breadcrumb | 面包屑区域 | `ReactNode` | - |
+| back | 返回按钮区域 | `ReactNode` | - |
+| actions | 操作区域 | `ReactNode` | - |

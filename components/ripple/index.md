@@ -23,7 +23,7 @@
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | children | 被水波效果包裹的内容 | `ReactNode` | - |
-| trigger | 水波触发方式 | `'click' \| 'hover' \| 'none'` | `'click'` |
+| trigger | 水波触发方式 | `"none" \| "hover" \| "click"` | `'click'` |
 | amplitude | 波纹高度，建议范围 0–3 | `number` | `0.5` |
 | speed | 波纹传播速度倍率 | `number` | `0.65` |
 | wavelength | 波峰间距，单位 px | `number` | `80` |
@@ -34,6 +34,6 @@
 | shine | 波峰高光强度，建议范围 0–2 | `number` | `0.5` |
 | interval | 自动产生随机水波的间隔秒数，`0` 表示关闭 | `number` | `0` |
 | className | 外层容器类名 | `string` | - |
-| style | 外层容器样式 | `CSSProperties` | - |
+| style | 外层容器样式 | `import("react").CSSProperties` | - |
 
 组件会响应 `prefers-reduced-motion`，用户开启减少动态效果后不会创建水波动画。

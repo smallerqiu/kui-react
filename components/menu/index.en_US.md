@@ -69,25 +69,25 @@ The navigation menu is the soul of a website. Users rely on navigation to jump b
 
 ### MenuItem
 
-| Property | Description                            | Type                                   | Default |
-| -------- | -------------------------------------- | -------------------------------------- | ------- |
-| icon     | Item icon                              | IconType \| ReactNode                  | -       |
-| disabled | Whether disabled                       | boolean                                | false   |
-| onClick  | Called when the menu item is activated | React.MouseEventHandler<HTMLLIElement> | -       |
-| itemKey  | Unique identifier for item             | string                                 | -       |
-| title    | Menu item content                      | ReactNode                              | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| icon | Item icon | `React.ReactNode \| IconType[]` | - |
+| disabled | Whether disabled | `boolean` | false |
+| onClick | Called when the menu item is activated | `React.MouseEventHandler<HTMLLIElement>` | - |
+| itemKey | Unique identifier for item | `string` | - |
+| title | Menu item content | `React.ReactNode` | - |
 
 ### SubMenu
 
-| Property | Description                | Type      | Default |
-| -------- | -------------------------- | --------- | ------- |
-| icon     | Item icon                  | IconType  | -       |
-| disabled | Whether disabled           | boolean   | false   |
-| itemKey  | Unique identifier for item | string    | -       |
-| title    | Submenu item content       | ReactNode | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| icon | Item icon | `IconType[]` | - |
+| disabled | Whether disabled | `boolean` | false |
+| itemKey | Unique identifier for item | `string` | - |
+| title | Submenu item content | `React.ReactNode` | - |
 
 ### MenuGroup
 
-| Property | Description | Type      | Default |
-| -------- | ----------- | --------- | ------- |
-| title    | Group title | ReactNode | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| title | Group title | `React.ReactNode` | - |

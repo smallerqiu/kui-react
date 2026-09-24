@@ -18,17 +18,17 @@
 
 ## Splitter
 
-| Property      | Description                      | Type                       | Default    |
-| ------------- | -------------------------------- | -------------------------- | ---------- |
-| direction     | Layout direction                 | 'horizontal' \| 'vertical' | horizontal |
-| onResize      | Callback when panel size changes | (sizes: number[]) => void  | -          |
-| onResizeStart | Callback before dragging starts  | (sizes: number[]) => void  | -          |
-| onResizeEnd   | Callback when dragging ends      | (sizes: number[]) => void  | -          |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| direction | Layout direction | `"inline" \| "horizontal" \| "vertical"` | horizontal |
+| onResize | Callback when panel size changes | `((sizes: number[]) => void)` | - |
+| onResizeStart | Callback before dragging starts | `((sizes: number[]) => void)` | - |
+| onResizeEnd | Callback when dragging ends | `((sizes: number[]) => void)` | - |
 
 ## SplitterPanel
 
-| Attribute | Description                                                     | Type             | Default |
-| --------- | --------------------------------------------------------------- | ---------------- | ------- |
-| size      | Initial size; numbers are px, strings support px or percentages | number \| string | -       |
-| min       | Minimum size; numbers are px, strings support px or percentages | number \| string | 0       |
-| max       | Maximum size; numbers are px, strings support px or percentages | number \| string | -       |
+| Attribute | Description | Type | Default |
+| --- | --- | --- | --- |
+| size | Initial size; numbers are px, strings support px or percentages | `string \| number` | - |
+| min | Minimum size; numbers are px, strings support px or percentages | `string \| number` | 0 |
+| max | Maximum size; numbers are px, strings support px or percentages | `string \| number` | - |

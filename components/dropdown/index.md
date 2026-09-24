@@ -38,28 +38,28 @@
 
 ## Dropdown API
 
-| 属性         | 说明                     | 类型                                | 默认值        |
-| ------------ | ------------------------ | ----------------------------------- | ------------- |
-| open         | 显示状态                 | boolean                             | -             |
-| show         | 已废弃，请使用 `open`    | boolean                             | -             |
-| trigger      | 触发方式                 | `hover` \| `click` \| `contextmenu` | `hover`       |
-| placement    | 下拉层位置               | DropPlacementsType                  | `bottom-left` |
-| arrow        | 是否显示箭头             | boolean                             | false         |
-| target       | 外部触发元素的引用       | RefObject<HTMLElement>              | -             |
-| disabled     | 是否允许触发下拉         | boolean                             | false         |
-| onOpenChange | 打开或关闭Dropdown时触发 | (opened:boolean)=>void              | -             |
-| overlay      | 下拉层内容               | ReactNode                           | -             |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| open | 显示状态 | `boolean` | - |
+| show | 已废弃，请使用 `open` | `boolean` | - |
+| trigger | 触发方式 | `"hover" \| "click" \| "contextmenu"` | `hover` |
+| placement | 下拉层位置 | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | `bottom-left` |
+| arrow | 是否显示箭头 | `boolean` | false |
+| target | 外部触发元素的引用 | `React.RefObject<HTMLElement \| null>` | - |
+| disabled | 是否允许触发下拉 | `boolean` | false |
+| onOpenChange | 打开或关闭Dropdown时触发 | `((opened: boolean) => void)` | - |
+| overlay | 下拉层内容 | `React.ReactNode` | - |
 
 ## DropdownButton API
 
-| 属性      | 说明             | 类型                                           | 默认值       |
-| --------- | ---------------- | ---------------------------------------------- | ------------ |
-| size      | 按钮尺寸         | SizeType                                       | -            |
-| shape     | 按钮形状         | ShapeType                                      | -            |
-| disabled  | 是否禁用         | boolean                                        | false        |
-| icon      | 下拉触发按钮图标 | IconType                                       | Ellipsis     |
-| theme     | 按钮主题         | ThemeType                                      | -            |
-| arrow     | 是否显示下拉箭头 | boolean                                        | false        |
-| placement | 下拉层位置       | DropPlacementsType                             | bottom-right |
-| onClick   | 主按钮点击回调   | (event: MouseEvent<HTMLButtonElement>) => void | -            |
-| overlay   | 下拉层内容       | ReactNode                                      | -            |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| size | 按钮尺寸 | `"small" \| "medium" \| "large"` | - |
+| shape | 按钮形状 | `"round" \| "default" \| "square" \| "circle"` | - |
+| disabled | 是否禁用 | `boolean` | false |
+| icon | 下拉触发按钮图标 | `IconType[]` | Ellipsis |
+| theme | 按钮主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| arrow | 是否显示下拉箭头 | `boolean` | false |
+| placement | 下拉层位置 | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | bottom-right |
+| onClick | 主按钮点击回调 | `((e: React.MouseEvent<HTMLButtonElement>) => void)` | - |
+| overlay | 下拉层内容 | `React.ReactNode` | - |

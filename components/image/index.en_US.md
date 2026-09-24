@@ -48,6 +48,6 @@ Previewable images.
 
 ## ImageGroup API
 
-| Property | Description | Type     | Default |
-| -------- | ----------- | -------- | ------- |
-| data     | Image data  | string[] | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| data | Image data | `string[]` | - |

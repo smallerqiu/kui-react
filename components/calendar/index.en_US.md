@@ -20,22 +20,22 @@ Displays dates and schedule events by month.
 
 ## API
 
-| Property       | Description                                   | Type                       | Default |
-| -------------- | --------------------------------------------- | -------------------------- | ------- |
-| value          | date                               | string                     | -       |
-| events         | Schedule events                               | CalendarEventData[]        | []      |
-| firstDayOfWeek | First day of week, where 0 is Sunday          | number                     | locale  |
-| maxEvents      | Maximum events per date                       | number                     | 3       |
-| showToolbar    | Whether to show the toolbar                   | boolean                    | true    |
-| todayText      | Text of the "Today" button                    | string                     | locale  |
-| weekdays       | Custom labels ordered Sunday through Saturday | string[]                   | locale  |
-| onChange       | Called when the date changes                  | (date, cell) => void       | -       |
-| onMonthChange  | Called when the month changes                 | (value) => void            | -       |
-| onEventClick   | Called when an event is clicked               | (event, cell) => void      | -       |
-| title          | Custom title content                          | ReactNode                  | -       |
-| extra          | Extra content on the right of the toolbar     | ReactNode                  | -       |
-| dateCell       | Custom date cell renderer                     | (cell) => ReactNode        | -       |
-| event          | Custom event renderer                         | (event, cell) => ReactNode | -       |
-| more           | Custom "more" text renderer                   | (count, cell) => ReactNode | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| value | date | `string` | - |
+| events | Schedule events | `CalendarEventData[]` | [] |
+| firstDayOfWeek | First day of week, where 0 is Sunday | `number` | locale |
+| maxEvents | Maximum events per date | `number` | 3 |
+| showToolbar | Whether to show the toolbar | `boolean` | true |
+| todayText | Text of the "Today" button | `string` | locale |
+| weekdays | Custom labels ordered Sunday through Saturday | `string[]` | locale |
+| onChange | Called when the date changes | `((date: string, cell: CalendarDateCell) => void)` | - |
+| onMonthChange | Called when the month changes | `((value: { year: number; month: number; }) => void)` | - |
+| onEventClick | Called when an event is clicked | `((event: CalendarEventData, cell: CalendarDateCell) => void)` | - |
+| title | Custom title content | `React.ReactNode` | - |
+| extra | Extra content on the right of the toolbar | `React.ReactNode` | - |
+| dateCell | Custom date cell renderer | `((cell: CalendarDateCell) => React.ReactNode)` | - |
+| event | Custom event renderer | `((event: CalendarEventData, cell: CalendarDateCell) => React.ReactNode)` | - |
+| more | Custom "more" text renderer | `((count: number, cell: CalendarDateCell) => React.ReactNode)` | - |
 
 When a date cell is focused, use the arrow keys to move, `Home` or `End` to move within the current week, and `Enter` or Space to select. Selecting a date from an adjacent month also changes the displayed month.

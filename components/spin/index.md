@@ -22,9 +22,9 @@
 
 ## Spin API
 
-| 属性     | 说明                               | 类型                       | 默认值 |
-| -------- | ---------------------------------- | -------------------------- | ------ |
-| spinning | 是否处于加载状态                   | boolean                    | true   |
-| mode     | 加载动画类型                       | bounce\|flip\|rotate\|zoom | rotate |
-| delay    | 延迟显示加载效果的时间（防止闪烁） | number                     | 0      |
-| size     | 加载效果的尺寸                     | small\|medium\|large       | medium |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| spinning | 是否处于加载状态 | `boolean` | true |
+| mode | 加载动画类型 | `"flip" \| "zoom" \| "bounce" \| "rotate"` | rotate |
+| delay | 延迟显示加载效果的时间（防止闪烁） | `number` | 0 |
+| size | 加载效果的尺寸 | `"small" \| "medium" \| "large"` | medium |

@@ -18,10 +18,10 @@ Displays a page title, description, breadcrumb, and action area.
 
 ## API
 
-| Property    | Description      | Type      | Default |
-| ----------- | ---------------- | --------- | ------- |
-| title       | Title            | ReactNode | -       |
-| description | Description      | ReactNode | -       |
-| breadcrumb  | Breadcrumb area  | ReactNode | -       |
-| back        | Back button area | ReactNode | -       |
-| actions     | Action area      | ReactNode | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| title | Title | `ReactNode` | - |
+| description | Description | `ReactNode` | - |
+| breadcrumb | Breadcrumb area | `ReactNode` | - |
+| back | Back button area | `ReactNode` | - |
+| actions | Action area | `ReactNode` | - |

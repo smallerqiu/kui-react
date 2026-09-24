@@ -34,23 +34,23 @@ Provides consistent semantics and visual styles for headings, paragraphs, and in
 
 `Typography`, `TypographyText`, `TypographyParagraph`, and `TypographyTitle` share these properties.
 
-| Property     | Description               | Type                                       | Default |
-| ------------ | ------------------------- | ------------------------------------------ | ------- |
-| value        | text           | string                                     | -       |
-| tag          | Rendered HTML tag         | TypographyTag                              | span    |
-| type         | Semantic color            | TypographyType                             | -       |
-| strong       | Strong style              | boolean                                    | false   |
-| italic       | Italic style              | boolean                                    | false   |
-| underline    | Underline style           | boolean                                    | false   |
-| delete       | Deleted style             | boolean                                    | false   |
-| mark         | Mark style                | boolean                                    | false   |
-| code         | Inline code style         | boolean                                    | false   |
-| disabled     | Disabled state            | boolean                                    | false   |
-| copyable     | Allow copying             | boolean\|TypographyCopyableOptions         | false   |
-| editable     | Allow editing             | boolean\|TypographyEditableOptions         | false   |
-| ellipsis     | Ellipsis configuration    | boolean\|number\|TypographyEllipsisOptions | false   |
-| onCopy       | Called after copying      | (text: string) => void                     | -       |
-| onChange     | Called after editing      | (text: string) => void                     | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| value | text | `string` | - |
+| tag | Rendered HTML tag | `"div" \| "h1" \| "h2" \| "h3" \| "h4" \| "h5" \| "h6" \| "p" \| "span"` | span |
+| type | Semantic color | `"success" \| "warning" \| "danger" \| "secondary"` | - |
+| strong | Strong style | `boolean` | false |
+| italic | Italic style | `boolean` | false |
+| underline | Underline style | `boolean` | false |
+| delete | Deleted style | `boolean` | false |
+| mark | Mark style | `boolean` | false |
+| code | Inline code style | `boolean` | false |
+| disabled | Disabled state | `boolean` | false |
+| copyable | Allow copying | `boolean \| TypographyCopyableOptions` | false |
+| editable | Allow editing | `boolean \| TypographyEditableOptions` | false |
+| ellipsis | Ellipsis configuration | `number \| boolean \| TypographyEllipsisOptions` | false |
+| onCopy | Called after copying | `((text: string) => void)` | - |
+| onChange | Called after editing | `((text: string) => void)` | - |
 
 ### TypographyCopyableOptions
 

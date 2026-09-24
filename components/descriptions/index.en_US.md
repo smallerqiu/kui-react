@@ -34,15 +34,15 @@ Commonly seen in detail page information display.
 
 ## API
 
-| Property | Description                                                                     | Type                                              | Default    |
-| -------- | ------------------------------------------------------------------------------- | ------------------------------------------------- | ---------- |
-| bordered | Whether to show the border                                                      | boolean                                           | false      |
-| column   | Items per row; supports responsive configuration                                | number \| Partial\<Record\<Breakpoint, number\>\> | 3          |
-| extra    | The operation area of the description list, displayed in the upper right corner | string, ReactNode                                 | -          |
-| layout   | Description layout                                                              | horizontal \| vertical                            | horizontal |
-| size     | List size                                                                       | `'large'` \| `'medium'` \| `'small'`              | large      |
-| title    | The title of the description list, displayed at the very top                    | string, ReactNode                                 | -          |
-| shape    | Shape                                                                           | ShapeType                                         | round      |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| bordered | Whether to show the border | `boolean` | false |
+| column | Items per row; supports responsive configuration | `DescriptionsColumn` | 3 |
+| extra | The operation area of the description list, displayed in the upper right corner | `React.ReactNode` | - |
+| layout | Description layout | `"inline" \| "horizontal" \| "vertical"` | horizontal |
+| size | List size | `"small" \| "medium" \| "large"` | large |
+| title | The title of the description list, displayed at the very top | `React.ReactNode` | - |
+| shape | Shape | `"round" \| "default" \| "square" \| "circle"` | round |
 
 ## Item props
 

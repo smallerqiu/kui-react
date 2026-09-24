@@ -28,17 +28,17 @@ The difference from `Tooltip` is that users can operate on elements in the float
 
 ## API
 
-| Property     | Description                                                              | Type                                                                                                                                               | Default |
-| ------------ | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| trigger      | Trigger method, optional values: `hover` (hover) `click` (click)         | string                                                                                                                                             | click   |
-| title        | Displayed title                                                          | string                                                                                                                                             | -       |
-| content      | Displayed main content                                                   | ReactNode                                                                                                                                          | -       |
-| placement    | Position where the tooltip appears                                       | [`top`, `top-left`, `top-right`, `bottom`, `bottom-left`, `bottom-right`, `left`, `left-top`, `left-bottom`, `right`, `right-top`, `right-bottom`] | top     |
-| width        | Display width, defaults to content area size                             | string, number                                                                                                                                     | -       |
-| panelOnly    | Render only the popup itself, without trigger, positioning, or animation | boolean                                                                                                                                            | false   |
-| open         | visibility                                                               | boolean                                                                                                                                            | -       |
-| show         | Deprecated; use `open` instead                                           | boolean                                                                                                                                            | -       |
-| dark         | Use dark theme                                                           | boolean                                                                                                                                            | false   |
-| onClose      | Callback when closed                                                     | () => void                                                                                                                                         | -       |
-| onOpenChange | Called when visibility is requested to change                            | (open: boolean) => void                                                                                                                            | -       |
-| onShowChange | Deprecated; use `onOpenChange` instead                                   | (show: boolean) => void                                                                                                                            | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| trigger | Trigger method, optional values: `hover` (hover) `click` (click) | `"hover" \| "click" \| "focus"` | click |
+| title | Displayed title | `React.ReactNode` | - |
+| content | Displayed main content | `React.ReactNode` | - |
+| placement | Position where the tooltip appears | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right" \| "left" \| "left-bottom" \| "left-top" \| "right" \| "right-top" \| "right-bottom"` | top |
+| width | Display width, defaults to content area size | `string \| number` | - |
+| panelOnly | Render only the popup itself, without trigger, positioning, or animation | `boolean` | false |
+| open | visibility | `boolean` | - |
+| show | Deprecated; use `open` instead | `boolean` | - |
+| dark | Use dark theme | `boolean` | false |
+| onClose | Callback when closed | `(() => void)` | - |
+| onOpenChange | Called when visibility is requested to change | `((open: boolean) => void)` | - |
+| onShowChange | Deprecated; use `onOpenChange` instead | `((show: boolean) => void)` | - |

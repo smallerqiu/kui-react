@@ -61,28 +61,28 @@ You can manually resize the browser window to observe the effect.
 
 ## Grid API
 
-| Property     | Description                                                                                                                             | Type                     | Default |
-| ------------ | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ | ------- |
-| cols         | Set the number of grid columns. Supports numbers (equal division) or strings (e.g., 1fr 2fr)                                            | number, string, Object   | 24      |
-| rows         | Set the number of grid rows or height. Default is auto                                                                                  | number, string, Object   | auto    |
-| autoRows     | Implicit grid row height. Used in Bento layout or waterfall flow to set the base height.                                                | string                   | auto    |
-| xGap         | Grid spacing (horizontal direction). Numeric type will automatically add px unit.                                                       | number, string, Object   | 0       |
-| yGap         | Row spacing (vertical direction). Numeric type will automatically add px unit.                                                          | number, string, Object   | 0       |
-| itemMinWidth | Auto-fill mode. Set the minimum width of child items. Grid will automatically calculate the number of columns based on container width. | number \| string         | -       |
-| align        | Vertical alignment of child items within grid cells                                                                                     | string (center, start..) | -       |
-| justify      | Horizontal alignment of child items within grid cells.                                                                                  | string (center, start..) | -       |
-| flow         | Grid auto-placement mode, maps to `grid-auto-flow`                                                                                      | string (row, column, dense..) | row  |
-| debug        | Debug mode. When enabled, red transparent background columns are displayed to facilitate developer layout alignment.                    | boolean                     | false   |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| cols | Set the number of grid columns. Supports numbers (equal division) or strings (e.g., 1fr 2fr) | `ResponsiveValue<GridDimension>` | 24 |
+| rows | Set the number of grid rows or height. Default is auto | `ResponsiveValue<GridDimension>` | auto |
+| autoRows | Implicit grid row height. Used in Bento layout or waterfall flow to set the base height. | `string` | auto |
+| xGap | Grid spacing (horizontal direction). Numeric type will automatically add px unit. | `ResponsiveValue<GridDimension>` | 0 |
+| yGap | Row spacing (vertical direction). Numeric type will automatically add px unit. | `ResponsiveValue<GridDimension>` | 0 |
+| itemMinWidth | Auto-fill mode. Set the minimum width of child items. Grid will automatically calculate the number of columns based on container width. | `string \| number` | - |
+| align | Vertical alignment of child items within grid cells | `import(".pnpm/csstype@3.2.3/node_modules/csstype").Property.AlignItems` | - |
+| justify | Horizontal alignment of child items within grid cells. | `import(".pnpm/csstype@3.2.3/node_modules/csstype").Property.JustifyItems` | - |
+| flow | Grid auto-placement mode, maps to `grid-auto-flow` | `import(".pnpm/csstype@3.2.3/node_modules/csstype").Property.GridAutoFlow` | row |
+| debug | Debug mode. When enabled, red transparent background columns are displayed to facilitate developer layout alignment. | `boolean` | false |
 
 ## GridItem API
 
-| Property    | Description                                                                                                | Type             | Default |
-| ----------- | ---------------------------------------------------------------------------------------------------------- | ---------------- | ------- |
-| span        | Number of columns occupied. A value of 0 hides the item at that breakpoint                                | number \| Object | 1       |
-| rowSpan     | Number of rows occupied                                                                                   | number \| Object | 1       |
-| columnStart | Explicit starting column; supports responsive values                                                      | number \| Object | -       |
-| rowStart    | Explicit starting row; supports responsive values                                                         | number \| Object | -       |
-| suffix      | Forces the item to the end of the current row                                                             | boolean          | false   |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| span | Number of columns occupied. A value of 0 hides the item at that breakpoint | `ResponsiveValue<number>` | 1 |
+| rowSpan | Number of rows occupied | `ResponsiveValue<number>` | 1 |
+| columnStart | Explicit starting column; supports responsive values | `ResponsiveValue<number>` | - |
+| rowStart | Explicit starting row; supports responsive values | `ResponsiveValue<number>` | - |
+| suffix | Forces the item to the end of the current row | `boolean` | false |
 
 ## Breakpoints
 

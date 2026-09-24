@@ -22,15 +22,15 @@
 
 ## API
 
-| 属性          | 说明         | 类型                                      | 默认值  |
-| ------------- | ------------ | ----------------------------------------- | ------- |
-| summary       | 摘要内容     | ReactNode                                 | -       |
-| filters       | 筛选区域     | ReactNode                                 | -       |
-| actions       | 操作区域     | ReactNode                                 | -       |
-| selection     | 批量操作栏   | ReactNode \| (count: number) => ReactNode | -       |
-| footer        | 底部区域     | ReactNode                                 | -       |
-| bordered      | 是否显示边框 | boolean                                   | true    |
-| theme         | 主题         | `fill \| outline \| plain`                | outline |
-| shape         | 形状         | ShapeType                                 | round   |
-| size          | 尺寸         | SizeType                                  | medium  |
-| selectedCount | 已选数量     | number                                    | 0       |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| summary | 摘要内容 | `ReactNode` | - |
+| filters | 筛选区域 | `ReactNode` | - |
+| actions | 操作区域 | `ReactNode` | - |
+| selection | 批量操作栏 | `ReactNode \| ((count: number) => ReactNode)` | - |
+| footer | 底部区域 | `ReactNode` | - |
+| bordered | 是否显示边框 | `boolean` | true |
+| theme | 主题 | `"fill" \| "outline" \| "plain"` | outline |
+| shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | round |
+| size | 尺寸 | `"small" \| "medium" \| "large"` | medium |
+| selectedCount | 已选数量 | `number` | 0 |

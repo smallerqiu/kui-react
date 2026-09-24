@@ -27,8 +27,8 @@ Placeholder display for empty states.
 
 ## API
 
-| Property    | Description                                                                | Type            | Default |
-| ----------- | -------------------------------------------------------------------------- | --------------- | ------- |
-| description | Custom description content                                                 | [string, ReactNode ] | -       |
-| imageStyle  | Image style                                                                | Object          | -       |
-| image       | Set the display image. When a string, it represents a custom image address | [string, ReactNode ] | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| description | Custom description content | `React.ReactNode` | - |
+| imageStyle | Image style | `React.CSSProperties` | - |
+| image | Set the display image. When a string, it represents a custom image address | `React.ReactNode` | - |

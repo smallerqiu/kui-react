@@ -26,19 +26,19 @@ Can be used to replace the system default `title` prompt, providing a text expla
 
 Use trigger="manual" when visibility is managed by business state (such as Slider dragging). Pointer entry/exit no longer changes visibility automatically; ordinary tooltips keep the default hover behavior.
 
-| Property | Description                          | Type                | Default |
-| -------- | ------------------------------------ | ------------------- | ------- |
-| trigger  | Automatic hover or manual visibility | 'hover' \| 'manual' | hover   |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| trigger | Automatic hover or manual visibility | `"manual" \| "hover"` | hover |
 
-| Property     | Description                                                                                                                                                                                       | Type                    | Default |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- | ------- |
-| title        | Displayed title                                                                                                                                                                                   | ReactNode               | -       |
-| color        | Background color                                                                                                                                                                                  | string                  | -       |
-| placement    | Position where tooltip appears, optional values: `top`, `top-left`, `top-right`, `bottom`, `bottom-left`, `bottom-right`, `left`, `left-top`, `left-bottom`, `right`, `right-top`, `right-bottom` | string                  | top     |
-| width        | Display width, defaults to content area size                                                                                                                                                      | string                  | -       |
-| disabled     | Disabled status                                                                                                                                                                                   | boolean                 | false   |
-| panelOnly    | Render only the tooltip itself, without trigger, positioning, or animation                                                                                                                        | boolean                 | false   |
-| open         | visibility                                                                                                                                                                                        | boolean                 | -       |
-| show         | Deprecated; use `open` instead                                                                                                                                                                    | boolean                 | -       |
-| onOpenChange | Called when visibility is requested to change                                                                                                                                                     | (open: boolean) => void | -       |
-| onShowChange | Deprecated; use `onOpenChange` instead                                                                                                                                                            | (show: boolean) => void | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| title | Displayed title | `React.ReactNode` | - |
+| color | Background color | `string` | - |
+| placement | Position where tooltip appears, optional values: `top`, `top-left`, `top-right`, `bottom`, `bottom-left`, `bottom-right`, `left`, `left-top`, `left-bottom`, `right`, `right-top`, `right-bottom` | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right" \| "left" \| "left-bottom" \| "left-top" \| "right" \| "right-top" \| "right-bottom"` | top |
+| width | Display width, defaults to content area size | `string \| number` | - |
+| disabled | Disabled status | `boolean` | false |
+| panelOnly | Render only the tooltip itself, without trigger, positioning, or animation | `boolean` | false |
+| open | visibility | `boolean` | - |
+| show | Deprecated; use `open` instead | `boolean` | - |
+| onOpenChange | Called when visibility is requested to change | `((open: boolean) => void)` | - |
+| onShowChange | Deprecated; use `onOpenChange` instead | `((show: boolean) => void)` | - |

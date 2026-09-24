@@ -19,14 +19,14 @@ Use for counters, amounts, and metrics that change over time. For a complete met
 
 ## API
 
-| Property        | Description                                       | Type                  | Default   |
-| --------------- | ------------------------------------------------- | --------------------- | --------- |
-| value           | Numerical value                                   | number                | 0         |
-| duration        | Numerical dynamic display time (seconds)          | number                | 1.2       |
-| prefix          | Prefix content of numerical value                 | ReactNode             | -         |
-| suffix          | Suffix content of numerical value                 | ReactNode             | -         |
-| precision       | Numerical precision                               | number                | 0         |
-| type            | Numerical change type                             | 'rollup' \| 'countup' | 'countup' |
-| separator       | Separator                                         | string                | -         |
-| autoAnimate     | Trigger animation when target becomes visible     | boolean               | true      |
-| autoAnimateOnce | Run animation only once for auto-animate triggers | boolean               | true      |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| value | Numerical value | `number` | 0 |
+| duration | Numerical dynamic display time (seconds) | `number` | 1.2 |
+| prefix | Prefix content of numerical value | `ReactNode` | - |
+| suffix | Suffix content of numerical value | `ReactNode` | - |
+| precision | Numerical precision | `number` | 0 |
+| type | Numerical change type | `"rollup" \| "countup"` | 'countup' |
+| separator | Separator | `string` | - |
+| autoAnimate | Trigger animation when target becomes visible | `boolean` | true |
+| autoAnimateOnce | Run animation only once for auto-animate triggers | `boolean` | true |

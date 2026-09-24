@@ -26,19 +26,19 @@
 
 当显隐由业务状态管理（例如 Slider 拖动）时使用 trigger="manual"，鼠标移入/移出不再自动改变显隐；普通 Tooltip 仍默认使用 hover。
 
-| 属性    | 说明                       | 类型                | 默认值 |
-| ------- | -------------------------- | ------------------- | ------ |
-| trigger | 自动悬停触发或手动控制显隐 | 'hover' \| 'manual' | hover  |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| trigger | 自动悬停触发或手动控制显隐 | `"manual" \| "hover"` | hover |
 
-| 属性         | 说明                                                                                                                                                                       | 类型                    | 默认值 |
-| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- | ------ |
-| title        | 显示的标题                                                                                                                                                                 | ReactNode               | -      |
-| color        | 背景颜色                                                                                                                                                                   | string                  | -      |
-| placement    | 提示框出现的位置，可选值为`top`，`top-left`，`top-right`，`bottom`，`bottom-left`，`bottom-right`，`left`，`left-top`，`left-bottom`，`right`，`right-top`，`right-bottom` | string                  | top    |
-| width        | 展示的宽度,默认为内容区域的大小                                                                                                                                            | string                  | -      |
-| disabled     | 禁用状态                                                                                                                                                                   | boolean                 | false  |
-| panelOnly    | 只渲染浮层本身，不包含触发元素、定位与动画                                                                                                                                 | boolean                 | false  |
-| open         | 显示状态                                                                                                                                                                   | boolean                 | -      |
-| show         | 已废弃，请使用 `open`                                                                                                                                                      | boolean                 | -      |
-| onOpenChange | 显示状态变化时触发                                                                                                                                                         | (open: boolean) => void | -      |
-| onShowChange | 已废弃，请使用 `onOpenChange`                                                                                                                                              | (show: boolean) => void | -      |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| title | 显示的标题 | `React.ReactNode` | - |
+| color | 背景颜色 | `string` | - |
+| placement | 提示框出现的位置，可选值为`top`，`top-left`，`top-right`，`bottom`，`bottom-left`，`bottom-right`，`left`，`left-top`，`left-bottom`，`right`，`right-top`，`right-bottom` | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right" \| "left" \| "left-bottom" \| "left-top" \| "right" \| "right-top" \| "right-bottom"` | top |
+| width | 展示的宽度,默认为内容区域的大小 | `string \| number` | - |
+| disabled | 禁用状态 | `boolean` | false |
+| panelOnly | 只渲染浮层本身，不包含触发元素、定位与动画 | `boolean` | false |
+| open | 显示状态 | `boolean` | - |
+| show | 已废弃，请使用 `open` | `boolean` | - |
+| onOpenChange | 显示状态变化时触发 | `((open: boolean) => void)` | - |
+| onShowChange | 已废弃，请使用 `onOpenChange` | `((show: boolean) => void)` | - |

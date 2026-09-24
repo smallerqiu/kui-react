@@ -23,7 +23,7 @@ Full content refraction relies on the experimental HTML-in-Canvas API. It can cu
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
 | children | Content wrapped by the effect | `ReactNode` | - |
-| trigger | Ripple trigger | `'click' \| 'hover' \| 'none'` | `'click'` |
+| trigger | Ripple trigger | `"none" \| "hover" \| "click"` | `'click'` |
 | amplitude | Wave height, recommended range 0–3 | `number` | `0.5` |
 | speed | Wave propagation speed multiplier | `number` | `0.65` |
 | wavelength | Distance between wave crests in px | `number` | `80` |
@@ -34,6 +34,6 @@ Full content refraction relies on the experimental HTML-in-Canvas API. It can cu
 | shine | Crest highlight intensity, recommended range 0–2 | `number` | `0.5` |
 | interval | Seconds between ambient ripples; `0` disables them | `number` | `0` |
 | className | Wrapper class name | `string` | - |
-| style | Wrapper styles | `CSSProperties` | - |
+| style | Wrapper styles | `import("react").CSSProperties` | - |
 
 Ripple respects `prefers-reduced-motion` and disables wave animation when reduced motion is requested.

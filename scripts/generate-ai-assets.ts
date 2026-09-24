@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { syncDocumentation } from "./api-docs.ts";
 import path from "node:path";
 import ts from "typescript";
 
@@ -69,7 +70,9 @@ const components = exports.flatMap((exported) => {
   const symbol = resolveSymbol(exported);
   const declaration = getDeclaration(symbol);
   if (!declaration || !(symbol.flags & ts.SymbolFlags.Value)) return [];
-  const signature = checker.getTypeOfSymbolAtLocation(symbol, declaration).getCallSignatures()[0];
+  const componentType = checker.getTypeOfSymbolAtLocation(symbol, declaration);
+  const signature =
+    componentType.getCallSignatures()[0] || componentType.getConstructSignatures()[0];
   if (!signature?.parameters[0]) return [];
   const propsType = checker.getTypeOfSymbolAtLocation(signature.parameters[0], declaration);
   const ownFile = declaration.getSourceFile().fileName;
@@ -179,6 +182,10 @@ for (const name of Object.keys(behaviors))
 const runtimeExports = exports
   .filter((s) => !!(resolveSymbol(s).flags & ts.SymbolFlags.Value))
   .map((s) => s.name);
+if (process.argv.includes("--docs") || process.argv.includes("--check-docs")) {
+  syncDocumentation(root, components, process.argv.includes("--check-docs"));
+  process.exit(0);
+}
 const metadata = {
   exports: [...runtimeExports, "version", "components", "default"],
   library: "react-kui",

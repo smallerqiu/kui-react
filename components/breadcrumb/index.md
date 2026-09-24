@@ -24,17 +24,17 @@
 
 ## Breadcrumb API
 
-| 属性      | 说明         | 类型      | 默认值 |
-| --------- | ------------ | --------- | ------ |
-| separator | 自定义分隔符 | ReactNode | /      |
-| children  | 面包屑节点   | ReactNode | -      |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| separator | 自定义分隔符 | `React.ReactNode` | / |
+| children | 面包屑节点 | `React.ReactNode` | - |
 
 ## BreadcrumbItem API
 
-| 属性     | 说明         | 类型                  | 默认值 |
-| -------- | ------------ | --------------------- | ------ |
-| href     | 链接地址     | string                | -      |
-| target   | 链接打开方式 | string                | -      |
-| rel      | 链接关系属性 | string                | -      |
-| icon     | 节点图标     | IconType \| ReactNode | -      |
-| children | 节点内容     | ReactNode             | -      |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| href | 链接地址 | `string` | - |
+| target | 链接打开方式 | `string` | - |
+| rel | 链接关系属性 | `string` | - |
+| icon | 节点图标 | `React.ReactNode \| IconType[]` | - |
+| children | 节点内容 | `React.ReactNode` | - |

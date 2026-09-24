@@ -34,31 +34,31 @@ A cascading selection box.
 
 ## API
 
-| Property       | Description                                                                                                         | Type                      | Default           |
-| :------------- | :------------------------------------------------------------------------------------------------------------------ | :------------------------ | :---------------- |
-| value          | array of path values (e.g., `['zhejiang', 'hangzhou', 'xihu']`).                                                    | `(string \| number)[]`    | -                 |
-| open           | dropdown visibility.                                                                                                | `boolean`                 | -                 |
-| theme          | Component theme.                                                                                                    | `ThemeType`               | `fill`            |
-| bordered       | Whether to display the border.                                                                                      | `boolean`                 | `true`            |
-| shape          | Component shape.                                                                                                    | `ShapeType`               | -                 |
-| showArrow      | Whether to display the dropdown arrow.                                                                              | `boolean`                 | `true`            |
-| icon           | Custom prefix icon.                                                                                                 | `IconType[]`              | -                 |
-| arrowIcon      | Custom dropdown arrow.                                                                                              | `IconType[]`              | -                 |
-| emptyText      | Empty-state text.                                                                                                   | `string`                  | -                 |
-| loadData       | Loads children asynchronously; return them or update `option.children`                                              | `CascaderLoadData`        | -                 |
-| placement      | Popup placement.                                                                                                    | `DropPlacementsType`      | `bottom-left`     |
-| onChange       | Called when a path is selected or cleared.                                                                          | `(value) => void`         | -                 |
-| onExpandChange | Called when the expanded path changes.                                                                              | `(value) => void`         | -                 |
-| onOpenChange   | Called when dropdown visibility changes.                                                                            | `(open: boolean) => void` | -                 |
-| options        | Tree-structured data source for cascading options.                                                                  | `CascaderOption[]`        | `[]`              |
-| placeholder    | Fallback placeholder text displayed when no path is selected.                                                       | `string`                  | `"Please select"` |
-| disabled       | Whether to completely disable interaction for the entire component.                                                 | `boolean`                 | `false`           |
-| readOnly       | Whether the component is read-only.                                                                                 | `boolean`                 | `false`           |
-| clearable      | Whether to support clearing the selected path with one click.                                                       | `boolean`                 | `true`            |
-| size           | Size specification of the component. Options: `'large'` \| `'small'` \| `undefined`.                                | `string`                  | `undefined`       |
-| expandTrigger  | Interaction mode for expanding the next-level menu. Options: `'click'` or `'hover'`.                                | `'click' \| 'hover'`      | `'click'`         |
-| showAllLevels  | Whether to display the full selected ancestor path. If `false`, only the final leaf node is shown in the input box. | `boolean`                 | `true`            |
-| separator      | Separator between labels of different levels when `showAllLevels` is enabled.                                       | `string`                  | `" / "`           |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| value | array of path values (e.g., `['zhejiang', 'hangzhou', 'xihu']`). | `CascaderValue` | - |
+| open | dropdown visibility. | `boolean` | - |
+| theme | Component theme. | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | `fill` |
+| bordered | Whether to display the border. | `boolean` | `true` |
+| shape | Component shape. | `"round" \| "default" \| "square" \| "circle"` | - |
+| showArrow | Whether to display the dropdown arrow. | `boolean` | `true` |
+| icon | Custom prefix icon. | `import("../icon").IconType[]` | - |
+| arrowIcon | Custom dropdown arrow. | `import("../icon").IconType[]` | - |
+| emptyText | Empty-state text. | `string` | - |
+| loadData | Loads children asynchronously; return them or update `option.children` | `import("./types").CascaderLoadData` | - |
+| placement | Popup placement. | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | `bottom-left` |
+| onChange | Called when a path is selected or cleared. | `((value: CascaderValue) => void)` | - |
+| onExpandChange | Called when the expanded path changes. | `((value: CascaderValue) => void)` | - |
+| onOpenChange | Called when dropdown visibility changes. | `((open: boolean) => void)` | - |
+| options | Tree-structured data source for cascading options. | `CascaderOption[]` | `[]` |
+| placeholder | Fallback placeholder text displayed when no path is selected. | `string` | `"Please select"` |
+| disabled | Whether to completely disable interaction for the entire component. | `boolean` | `false` |
+| readOnly | Whether the component is read-only. | `boolean` | `false` |
+| clearable | Whether to support clearing the selected path with one click. | `boolean` | `true` |
+| size | Size specification of the component. Options: `'large'` \| `'small'` \| `undefined`. | `"small" \| "medium" \| "large"` | `undefined` |
+| expandTrigger | Interaction mode for expanding the next-level menu. Options: `'click'` or `'hover'`. | `"hover" \| "click"` | `'click'` |
+| showAllLevels | Whether to display the full selected ancestor path. If `false`, only the final leaf node is shown in the input box. | `boolean` | `true` |
+| separator | Separator between labels of different levels when `showAllLevels` is enabled. | `string` | `" / "` |
 
 ## CascaderOption
 

@@ -15,8 +15,8 @@
 
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| locale | 组件语言包 | Locale | 当前全局语言 |
-| getPopupContainer | 指定弹层挂载容器 | () => HTMLElement | document.body |
-| size | 兼容组件的默认尺寸 | SizeType | - |
-| theme | 兼容组件的默认主题 | ThemeType | - |
-| shape | 兼容组件的默认形状 | ShapeType | - |
+| locale | 组件语言包 | `Locale \| null` | 当前全局语言 |
+| getPopupContainer | 指定弹层挂载容器 | `(() => HTMLElement \| null \| undefined)` | document.body |
+| size | 兼容组件的默认尺寸 | `"small" \| "medium" \| "large"` | - |
+| theme | 兼容组件的默认主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| shape | 兼容组件的默认形状 | `"round" \| "default" \| "square" \| "circle"` | - |

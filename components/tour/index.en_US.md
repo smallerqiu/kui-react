@@ -22,13 +22,13 @@ Introduces real interface targets one step at a time without owning business sta
 
 ## Tour API
 
-| Property     | Description       | Type       | Default |
-| ------------ | ----------------- | ---------- | ------- |
-| open         | visibility        | boolean    | -       |
-| current      | step              | number     | -       |
-| steps        | Tour steps        | TourStep[] | -       |
-| mask         | Show mask         | boolean    | true    |
-| closable     | Show close action | boolean    | true    |
-| onChange     | Step change       | function   | -       |
-| onOpenChange | Visibility change | function   | -       |
-| onFinish     | Tour completed    | function   | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| open | visibility | `boolean` | - |
+| current | step | `number` | - |
+| steps | Tour steps | `TourStep[]` | - |
+| mask | Show mask | `boolean` | true |
+| closable | Show close action | `boolean` | true |
+| onChange | Step change | `((current: number) => void)` | - |
+| onOpenChange | Visibility change | `((open: boolean) => void)` | - |
+| onFinish | Tour completed | `(() => void)` | - |

@@ -31,15 +31,15 @@
 
 ## API
 
-| 属性             | 说明                               | 类型                                 | 默认值  |
-| ---------------- | ---------------------------------- | ------------------------------------ | ------- |
-| openKeys         | 模式下当前展开面板的 key           | (string \| number)[]                 | -       |
-| accordion        | 是否开启手风琴模式                 | boolean                              | false   |
-| sample           | 是否开启简洁模式                   | boolean                              | false   |
-| theme            | 主题                               | ThemeType                            | outline |
-| shape            | 形状                               | ShapeType                            | round   |
-| onChange         | 切换面板时触发，返回当前面板的 key | (key: string \| number) => void      | -       |
-| onOpenKeysChange | 展开项变化时触发，返回全部展开项   | (keys: (string \| number)[]) => void | -       |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| openKeys | 模式下当前展开面板的 key | `(string \| number)[]` | - |
+| accordion | 是否开启手风琴模式 | `boolean` | false |
+| sample | 是否开启简洁模式 | `boolean` | false |
+| theme | 主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | outline |
+| shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | round |
+| onChange | 切换面板时触发，返回当前面板的 key | `((key: string \| number) => void)` | - |
+| onOpenKeysChange | 展开项变化时触发，返回全部展开项 | `((keys: (string \| number)[]) => void)` | - |
 
 ## Panel
 

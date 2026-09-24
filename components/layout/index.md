@@ -34,7 +34,7 @@
 
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| hasSider | 是否包含侧边栏；未设置时自动检测 Sider | boolean | - |
+| hasSider | 是否包含侧边栏；未设置时自动检测 Sider | `boolean` | - |
 
 ## Layout.Sider API
 

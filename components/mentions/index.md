@@ -44,22 +44,22 @@
 
 ## Mentions API
 
-| 属性         | 说明                             | 类型                                | 默认值      |
-| ------------ | -------------------------------- | ----------------------------------- | ----------- |
-| value        | 文本                         | string                              | -           |
-| options      | 候选项                           | (string\|MentionOption)[]           | []          |
-| triggers     | 触发字符                         | string[]                            | ['@']       |
-| rows         | 文本域行数                       | number                              | 1           |
-| placement    | 下拉菜单优先位置                 | DropPlacementsType                  | bottom-left |
-| size         | 尺寸                             | small\|medium\|large                | medium      |
-| theme        | 主题                             | fill\|outline\|plain                | fill        |
-| shape        | 形状                             | circle\|square\|round\|default      | default     |
-| emptyText    | 空状态说明                       | string                              | 暂无数据    |
-| loading      | 是否显示加载状态                 | boolean                             | false       |
-| loadingText  | 加载状态文案                     | string                              | -           |
-| clearable    | 是否显示清除按钮                 | boolean                             | true        |
-| filterOption | 自定义过滤                       | function                            | -           |
-| onChange     | 文本变化                         | (value:string)=>void                | -           |
-| onSelect     | 选择提及                         | (option,trigger)=>void              | -           |
-| onSearch     | 远程搜索，参数为搜索词与触发字符 | (query:string,trigger:string)=>void | -           |
-| onClear      | 点击清除按钮                     | ()=>void                            | -           |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| value | 文本 | `string` | - |
+| options | 候选项 | `(string \| MentionOption)[]` | [] |
+| triggers | 触发字符 | `string[]` | ['@'] |
+| rows | 文本域行数 | `number` | 1 |
+| placement | 下拉菜单优先位置 | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | bottom-left |
+| size | 尺寸 | `"small" \| "medium" \| "large"` | medium |
+| theme | 主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | default |
+| emptyText | 空状态说明 | `string` | 暂无数据 |
+| loading | 是否显示加载状态 | `boolean` | false |
+| loadingText | 加载状态文案 | `string` | - |
+| clearable | 是否显示清除按钮 | `boolean` | true |
+| filterOption | 自定义过滤 | `((query: string, option: MentionOption) => boolean)` | - |
+| onChange | 文本变化 | `((value: string) => void)` | - |
+| onSelect | 选择提及 | `((option: MentionOption, trigger: string) => void)` | - |
+| onSearch | 远程搜索，参数为搜索词与触发字符 | `((query: string, trigger: string) => void)` | - |
+| onClear | 点击清除按钮 | `(() => void)` | - |

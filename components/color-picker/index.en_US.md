@@ -32,23 +32,23 @@ Freely output colors.
 
 ## API
 
-| Property      | Description                                                                           | Type                        | Default          |
-| ------------- | ------------------------------------------------------------------------------------- | --------------------------- | ---------------- |
-| value         | color value                                                                           | `string`                    | -                |
-| open          | popup visibility                                                                      | `boolean`                   | -                |
-| mode          | Color output mode: `hex`, `rgb`, or `hsl`                                             | `ColorMode`                 | `hex`            |
-| presets       | Custom color palette                                                                  | `string[]`                  | Built-in palette |
-| disabledAlpha | Whether alpha editing is disabled                                                     | `boolean`                   | `false`          |
-| disabled      | Whether the picker is disabled                                                        | `boolean`                   | `false`          |
-| readOnly      | Whether the picker is read-only                                                       | `boolean`                   | `false`          |
-| trigger       | Popup trigger mode                                                                    | `hover \| click`            | `click`          |
-| showText      | Whether to display the color text                                                     | `boolean`                   | `false`          |
-| size          | Picker size                                                                           | `SizeType`                  | -                |
-| theme         | Appearance theme: `outline`, `fill`, or `plain`; inherits from Form or ConfigProvider | `ThemeType`                 | `outline`        |
-| shape         | Shape: `round`, `circle`, or `square`; inherits from Form or ConfigProvider           | `ShapeType`                 | -                |
-| placement     | Popup placement                                                                       | `DropPlacementsType`        | `bottom-left`    |
-| children      | Custom trigger element                                                                | `ReactNode`                 | -                |
-| panelOnly     | Render only the color panel, without a trigger or portal                              | `boolean`                   | false            |
-| onUpdateMode  | Called when the color mode changes                                                    | `(mode: ColorMode) => void` | -                |
-| onChange      | Called when the color value changes                                                   | `(color: string) => void`   | -                |
-| onOpenChange  | Called when the popup opens or closes                                                 | `(open: boolean) => void`   | -                |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| value | color value | `string` | - |
+| open | popup visibility | `boolean` | - |
+| mode | Color output mode: `hex`, `rgb`, or `hsl` | `"hex" \| "rgb" \| "hsl"` | `hex` |
+| presets | Custom color palette | `string[]` | Built-in palette |
+| disabledAlpha | Whether alpha editing is disabled | `boolean` | `false` |
+| disabled | Whether the picker is disabled | `boolean` | `false` |
+| readOnly | Whether the picker is read-only | `boolean` | `false` |
+| trigger | Popup trigger mode | `"hover" \| "click"` | `click` |
+| showText | Whether to display the color text | `boolean` | `false` |
+| size | Picker size | `"small" \| "medium" \| "large"` | - |
+| theme | Appearance theme: `outline`, `fill`, or `plain`; inherits from Form or ConfigProvider | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | `outline` |
+| shape | Shape: `round`, `circle`, or `square`; inherits from Form or ConfigProvider | `"round" \| "default" \| "square" \| "circle"` | - |
+| placement | Popup placement | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | `bottom-left` |
+| children | Custom trigger element | `ReactNode` | - |
+| panelOnly | Render only the color panel, without a trigger or portal | `boolean` | false |
+| onUpdateMode | Called when the color mode changes | `((mode: ColorMode) => void)` | - |
+| onChange | Called when the color value changes | `((color: string) => void)` | - |
+| onOpenChange | Called when the popup opens or closes | `((open: boolean) => void)` | - |

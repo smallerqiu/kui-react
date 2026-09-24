@@ -34,21 +34,21 @@
 
 ## Card API
 
-| 属性     | 说明             | 类型                       | 默认值 |
-| -------- | ---------------- | -------------------------- | ------ |
-| title    | 卡片的标题       | ReactNode                  | -      |
-| icon     | 卡片标题的图标   | IconType[]                 | -      |
-| bordered | 卡片是否显示边框 | boolean                    | false  |
-| theme    | 外观主题         | default,fill,outline,plain | fill   |
-| shape    | 外框形状         | round,square,circle        | round  |
-| size     | 卡片尺寸         | small,medium,large         | medium |
-| extra    | 卡片标题扩展     | ReactNode                  | -      |
-| cover    | 卡片封面         | string,ReactNode           | -      |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| title | 卡片的标题 | `React.ReactNode` | - |
+| icon | 卡片标题的图标 | `IconType[]` | - |
+| bordered | 卡片是否显示边框 | `boolean` | false |
+| theme | 外观主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| shape | 外框形状 | `"round" \| "default" \| "square" \| "circle"` | round |
+| size | 卡片尺寸 | `"small" \| "medium" \| "large"` | medium |
+| extra | 卡片标题扩展 | `React.ReactNode` | - |
+| cover | 卡片封面 | `React.ReactNode` | - |
 
 ### CardMeta
 
-| 属性        | 说明 | 类型             | 默认值 |
-| ----------- | ---- | ---------------- | ------ |
-| avatar      | 头像 | string,ReactNode | -      |
-| title       | 标题 | ReactNode        | -      |
-| description | 描述 | ReactNode        | -      |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| avatar | 头像 | `React.ReactNode` | - |
+| title | 标题 | `React.ReactNode` | - |
+| description | 描述 | `React.ReactNode` | - |

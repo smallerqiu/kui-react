@@ -25,20 +25,20 @@ Rating component.
 
 ## Rate API
 
-| Property          | Description                                    | Type                    | Default |
-| ----------------- | ---------------------------------------------- | ----------------------- | ------- |
-| value             | Current value, used with `onChange` | number                  | -       |
-| allowClear        | Whether to allow clearing by clicking again    | boolean                 | true    |
-| allowHalf         | Whether to allow half selection                | boolean                 | false   |
-| showScore         | Whether to show score                          | boolean                 | false   |
-| character         | Custom character                               | string                  | -       |
-| count             | Total number of stars                          | number                  | 5       |
-| icon              | Custom display icon                            | Icon                    | -       |
-| size              | Icon size                                      | number                  | -       |
-| color             | Icon color                                     | string                  | -       |
-| disabled          | Read-only, cannot interact                     | boolean                 | false   |
-| readOnly          | Read-only with normal appearance               | boolean                 | false   |
-| tooltips          | Custom prompt information for each item        | string[]                | -       |
-| onChange          | Callback when selecting                        | (value: number) => void | -       |
-| symbolReverseFill | Symbol Inverted Fill Color                     | boolean                 | false   |
-| strokeWidth       | Symbol Border Unit                             | number                  | 1       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| value | Current value, used with `onChange` | `number` | - |
+| allowClear | Whether to allow clearing by clicking again | `boolean` | true |
+| allowHalf | Whether to allow half selection | `boolean` | false |
+| showScore | Whether to show score | `boolean` | false |
+| character | Custom character | `string \| ((index: number) => React.ReactNode)` | - |
+| count | Total number of stars | `number` | 5 |
+| icon | Custom display icon | `IconType[] \| ((index: number) => IconType[])` | - |
+| size | Icon size | `number \| SizeType` | - |
+| color | Icon color | `string` | - |
+| disabled | Read-only, cannot interact | `boolean` | false |
+| readOnly | Read-only with normal appearance | `boolean` | false |
+| tooltips | Custom prompt information for each item | `string[]` | - |
+| onChange | Callback when selecting | `((value: number) => void)` | - |
+| symbolReverseFill | Symbol Inverted Fill Color | `boolean` | false |
+| strokeWidth | Symbol Border Unit | `number` | 1 |

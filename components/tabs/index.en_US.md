@@ -51,25 +51,25 @@ Provide peer areas to accommodate and display large chunks of content, keeping t
 
 ## Tabs API
 
-| Property     | Description                                                     | Type                                      | Default             |
-| ------------ | --------------------------------------------------------------- | ----------------------------------------- | ------------------- |
-| value        | Currently active tab panel's key                                | string \| number                          | -                   |
-| variant      | Tab presentation                                                | `line` \| `card` \| `sample` \| `browser` | `line`              |
-| card         | Whether to use card style; retained for compatibility           | boolean                                   | false               |
-| sample       | Whether to use sample style; retained for compatibility         | boolean                                   | false               |
-| animated     | Whether to use animation to switch Tabs                         | boolean                                   | true                |
-| centered     | Whether to center the label                                     | boolean                                   | false               |
-| extra        | Extra content displayed on the right side of the tab bar        | ReactNode                                 | -                   |
-| onRemove     | Callback when tab is closed, returns the closed tab's key value | (key: string) => void                     | -                   |
-| onChange     | Callback when switching panels                                  | (key: string) => void                     | -                   |
-| onTabClick   | Callback when tab is clicked                                    | (key: string) => void                     | -                   |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| value | Currently active tab panel's key | `string \| number` | - |
+| variant | Tab presentation | `"line" \| "card" \| "sample" \| "browser"` | `line` |
+| card | Whether to use card style; retained for compatibility | `boolean` | false |
+| sample | Whether to use sample style; retained for compatibility | `boolean` | false |
+| animated | Whether to use animation to switch Tabs | `boolean` | true |
+| centered | Whether to center the label | `boolean` | false |
+| extra | Extra content displayed on the right side of the tab bar | `React.ReactNode` | - |
+| onRemove | Callback when tab is closed, returns the closed tab's key value | `((key: string) => void)` | - |
+| onChange | Callback when switching panels | `((key: string) => void)` | - |
+| onTabClick | Callback when tab is clicked | `((key: string) => void)` | - |
 
 ## Tabs.TabPanel API
 
-| Property | Description                     | Type             | Default |
-| -------- | ------------------------------- | ---------------- | ------- |
-| key      | Unique identifier of the panel  | string \| number | -       |
-| title    | Content displayed in tab header | ReactNode        | -       |
-| icon     | Icon displayed in tab header    | IconType         | -       |
-| disabled | Whether tab is disabled         | boolean          | false   |
-| closable | Whether tab shows close button  | boolean          | false   |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| key | Unique identifier of the panel | string \| number | - |
+| title | Content displayed in tab header | `React.ReactNode` | - |
+| icon | Icon displayed in tab header | `IconType[]` | - |
+| disabled | Whether tab is disabled | `boolean` | false |
+| closable | Whether tab shows close button | `boolean` | false |

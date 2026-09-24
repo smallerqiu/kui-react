@@ -38,6 +38,7 @@ React 19.2+ library. Package: react-kui. Import CSS once from react-kui/style/in
 - [Drawer](https://react.k-ui.cn/components/drawer)
 - [Dropdown](https://react.k-ui.cn/components/dropdown)
 - [DropdownButton](https://react.k-ui.cn/components/dropdown)
+- [Divider](https://react.k-ui.cn/components/divider)
 - [Empty](https://react.k-ui.cn/components/empty)
 - [Form](https://react.k-ui.cn/components/form)
 - [FormItem](https://react.k-ui.cn/components/form)
@@ -10756,6 +10757,130 @@ export default function App() {
         Multi-level Menu <Icon type={ChevronDown} />
       </Button>
     </Dropdown>
+  );
+}
+```
+
+# Divider
+
+{
+  "name": "Divider",
+  "import": "import { Divider } from \"react-kui\"",
+  "documentation": "https://react.k-ui.cn/components/divider",
+  "props": [
+    {
+      "name": "type",
+      "type": "DirectionType | undefined",
+      "required": false,
+      "enumValues": [
+        "inline",
+        "horizontal",
+        "vertical"
+      ],
+      "boolean": false,
+      "descriptionZh": "水平还是垂直类型: horizontal vertical",
+      "descriptionEn": "Horizontal or vertical type: horizontal vertical"
+    },
+    {
+      "name": "text",
+      "type": "string | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "分割线文字",
+      "descriptionEn": "Divider text"
+    },
+    {
+      "name": "dashed",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "是否虚线",
+      "descriptionEn": "Whether it is a dashed line"
+    },
+    {
+      "name": "orientation",
+      "type": "\"left\" | \"right\" | \"center\" | undefined",
+      "required": false,
+      "enumValues": [
+        "left",
+        "right",
+        "center"
+      ],
+      "boolean": false,
+      "descriptionZh": "分割线标题的位置：left right",
+      "descriptionEn": "The position of the divider title : left right"
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "",
+      "descriptionEn": ""
+    }
+  ],
+  "events": [],
+  "renderProps": [
+    "children"
+  ],
+  "behavior": {
+    "rules": []
+  },
+  "children": []
+}
+
+## 垂直分割线
+
+```tsx
+import { Divider } from "react-kui";
+export default function App() {
+  return (
+    <div>
+      Text
+      <Divider type="vertical" />
+      <a href="#">Link</a>
+      <Divider type="vertical" />
+      <a href="#">Link</a>
+    </div>
+  );
+}
+```
+## 水平分割线
+
+```tsx
+import { Divider } from "react-kui";
+export default function App() {
+  return (
+    <div>
+      <p>See the light through the mist!</p>
+      <Divider />
+      <p>See the light through the mist!</p>
+      <Divider>Text</Divider>
+      <p>See the light through the mist!</p>
+      <Divider dashed />
+      <p>See the light through the mist!</p>
+    </div>
+  );
+}
+```
+## 带文字的分割线
+
+```tsx
+import { Divider } from "react-kui";
+export default function App() {
+  return (
+    <div>
+      <p>See the light through the mist!</p>
+      <Divider orientation="left" text="Text" />
+      <p>See the light through the mist!</p>
+      <Divider>Text</Divider>
+      <p>See the light through the mist!</p>
+      <Divider orientation="right" text="Text" />
+    </div>
   );
 }
 ```

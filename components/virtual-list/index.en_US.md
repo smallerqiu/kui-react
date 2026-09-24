@@ -28,14 +28,14 @@ Only renders data near the viewport to optimize large-list rendering performance
 
 ## API
 
-| Property   | Description                                       | Type                                                   | Default |
-| ---------- | ------------------------------------------------- | ------------------------------------------------------ | ------- |
-| data       | List data                                         | T[]                                                    | []      |
-| height     | Viewport height                                   | number \| string                                       | 300     |
-| itemHeight | Fixed item height                                 | number                                                 | 32      |
-| overscan   | Extra items rendered above and below the viewport | number                                                 | 5       |
-| itemKey    | Unique field or key getter                        | string \| (item: T, index: number) => string \| number | -       |
-| onScroll   | Scroll callback                                   | (event: UIEvent) => void                               | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| data | List data | `T[]` | [] |
+| height | Viewport height | `string \| number` | 300 |
+| itemHeight | Fixed item height | `number` | 32 |
+| overscan | Extra items rendered above and below the viewport | `number` | 5 |
+| itemKey | Unique field or key getter | `string \| ((item: T, index: number) => VirtualListKey)` | - |
+| onScroll | Scroll callback | `React.UIEventHandler<HTMLDivElement>` | - |
 
 ## Methods
 

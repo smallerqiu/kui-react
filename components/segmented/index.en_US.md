@@ -26,16 +26,16 @@ Switch quickly between mutually exclusive options.
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
-| value | Selected value | string \| number | - |
-| options | Option data | SegmentedOption[] | [] |
-| disabled | Disable all options | boolean | false |
-| readOnly | Read-only state | boolean | false |
-| block | Fill the parent width | boolean | false |
-| direction | Layout direction | `horizontal \| vertical` | horizontal |
-| size | Size | SizeType | medium |
-| shape | Shape | ShapeType | round |
-| onChange | Triggered when selection changes | `(value: string \| number) => void` | - |
-| renderLabel | Custom option content | `(option, selected) => ReactNode` | - |
+| value | Selected value | `SegmentedValue` | - |
+| options | Option data | `SegmentedOption[]` | [] |
+| disabled | Disable all options | `boolean` | false |
+| readOnly | Read-only state | `boolean` | false |
+| block | Fill the parent width | `boolean` | false |
+| direction | Layout direction | `"horizontal" \| "vertical"` | horizontal |
+| size | Size | `"small" \| "medium" \| "large"` | medium |
+| shape | Shape | `"round" \| "default" \| "square" \| "circle"` | round |
+| onChange | Triggered when selection changes | `((value: SegmentedValue) => void)` | - |
+| renderLabel | Custom option content | `((option: SegmentedOption, selected: boolean) => React.ReactNode)` | - |
 
 ### SegmentedOption
 

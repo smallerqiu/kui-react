@@ -22,7 +22,7 @@
 
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| children | 被火焰包裹的内容 | `ReactNode` | - |
+| children | 被火焰包裹的内容 | `import("react").ReactNode` | - |
 | color | 火焰 RGB 颜色，每项范围 0–1 | `[number, number, number]` | `[0.31, 0.54, 1]` |
 | intensity | 火焰整体亮度，建议范围 0–3 | `number` | `0.5` |
 | height | 顶部火焰延伸高度，单位 px | `number` | `170` |
@@ -44,6 +44,6 @@
 | ember | 燃烧边缘余烬亮度 | `number` | `2` |
 | scorch | 内容边缘焦黑强度 | `number` | `0` |
 | className | 外层容器类名 | `string` | - |
-| style | 外层容器样式 | `CSSProperties` | - |
+| style | 外层容器样式 | `import("react").CSSProperties` | - |
 
 组件会响应 `prefers-reduced-motion`，用户开启减少动态效果后会停止火焰动画。

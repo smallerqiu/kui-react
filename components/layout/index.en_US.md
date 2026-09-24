@@ -34,7 +34,7 @@ Assists with page-level overall layout.
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
-| hasSider | Whether the layout contains a sider; detected automatically when omitted | boolean | - |
+| hasSider | Whether the layout contains a sider; detected automatically when omitted | `boolean` | - |
 
 ## Layout.Sider API
 

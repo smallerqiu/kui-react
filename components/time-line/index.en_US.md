@@ -25,17 +25,17 @@ When an operation takes a long time to complete, display the current progress an
 
 ## TimeLine API
 
-| Property | Description                                       | Type                                           | Default  |
-| -------- | ------------------------------------------------- | ---------------------------------------------- | -------- |
-| mode     | Relative position of the timeline and its content | `'left' \| 'right' \| 'center' \| 'alternate'` | `'left'` |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| mode | Relative position of the timeline and its content | `"left" \| "right" \| "center" \| "alternate"` | `'left'` |
 
 ## TimeLineItem API
 
-| Property | Description           | Type         | Default |
-| -------- | --------------------- | ------------ | ------- |
-| dot      | Custom timeline node  | `ReactNode`  | -       |
-| icon     | Timeline node icon    | `IconType[]` | -       |
-| color    | Timeline node color   | `string`     | -       |
-| time     | Time content          | `ReactNode`  | -       |
-| extra    | Auxiliary content     | `ReactNode`  | -       |
-| children | Timeline item content | `ReactNode`  | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| dot | Custom timeline node | `ReactNode` | - |
+| icon | Timeline node icon | `IconType[]` | - |
+| color | Timeline node color | `string` | - |
+| time | Time content | `ReactNode` | - |
+| extra | Auxiliary content | `ReactNode` | - |
+| children | Timeline item content | `ReactNode` | - |

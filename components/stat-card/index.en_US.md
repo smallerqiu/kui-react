@@ -22,20 +22,20 @@ Can be used in BI/Dashboard scenarios, business backend oriented, intuitive.
 
 ## API
 
-| Property       | Description                                              | Type                       | Default   |
-| -------------- | -------------------------------------------------------- | -------------------------- | --------- |
-| title          | Card title                                               | ReactNode                  | -         |
-| items          | Data to display                                          | StatNumberItem[]           | []        |
-| precision      | Numerical precision                                      | number                     | 0         |
-| statNumberType | Numerical change type                                    | `rollup`, `countup`        | 'countup' |
-| separator      | Separator                                                | string                     | -         |
-| reverse        | Whether to reverse number/number description arrangement | boolean                    | false     |
-| bordered       | Show border or not                                       | boolean                    | false     |
-| theme          | Theme                                                    | `fill \| outline \| plain` | fill      |
-| shape          | Shape                                                    | ShapeType                  | round     |
-| size           | Size                                                     | SizeType                   | medium    |
-| prefix         | Default prefix for all values                            | ReactNode                  | -         |
-| suffix         | Default suffix for all values                            | ReactNode                  | -         |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| title | Card title | `ReactNode` | - |
+| items | Data to display | `StatNumberItem[]` | [] |
+| precision | Numerical precision | `number` | 0 |
+| statNumberType | Numerical change type | `"rollup" \| "countup"` | 'countup' |
+| separator | Separator | `string` | - |
+| reverse | Whether to reverse number/number description arrangement | `boolean` | false |
+| bordered | Show border or not | `boolean` | false |
+| theme | Theme | `"fill" \| "outline" \| "plain"` | fill |
+| shape | Shape | `"round" \| "default" \| "square" \| "circle"` | round |
+| size | Size | `"small" \| "medium" \| "large"` | medium |
+| prefix | Default prefix for all values | `ReactNode` | - |
+| suffix | Default suffix for all values | `ReactNode` | - |
 
 ### items Options
 

@@ -20,24 +20,24 @@
 
 ## API
 
-| 属性           | 说明                                        | 类型                    | 默认值     |
-| -------------- | ------------------------------------------- | ----------------------- | ---------- |
-| icon           | 图标或自定义图标节点                        | IconType[] \| ReactNode | -          |
-| title          | 标题                                        | ReactNode               | -          |
-| desc           | 描述                                        | ReactNode               | -          |
-| extra          | 右侧扩展区域                                | ReactNode               | -          |
-| bordered       | 是否显示边框                                | boolean                 | false      |
-| theme          | 外观主题                                    | ThemeType               | fill       |
-| shape          | 卡片形状                                    | ShapeType               | round      |
-| size           | 卡片尺寸                                    | small\|medium\|large    | medium     |
-| direction      | 内容排列方向                                | horizontal\|vertical    | horizontal |
-| clickable      | 是否可交互；启用键盘及按钮语义              | boolean                 | false      |
-| disabled       | 是否禁用交互                                | boolean                 | false      |
-| color          | 图标强调色                                  | string                  | primary    |
-| iconBackground | 图标容器背景；未设置时根据 `color` 自动生成 | string                  | 自动       |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| icon | 图标或自定义图标节点 | `ReactNode \| IconType[]` | - |
+| title | 标题 | `ReactNode` | - |
+| desc | 描述 | `ReactNode` | - |
+| extra | 右侧扩展区域 | `ReactNode` | - |
+| bordered | 是否显示边框 | `boolean` | false |
+| theme | 外观主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| shape | 卡片形状 | `"round" \| "default" \| "square" \| "circle"` | round |
+| size | 卡片尺寸 | `"small" \| "medium" \| "large"` | medium |
+| direction | 内容排列方向 | `"horizontal" \| "vertical"` | horizontal |
+| clickable | 是否可交互；启用键盘及按钮语义 | `boolean` | false |
+| disabled | 是否禁用交互 | `boolean` | false |
+| color | 图标强调色 | `string` | primary |
+| iconBackground | 图标容器背景；未设置时根据 `color` 自动生成 | `string` | 自动 |
 
 ## Events
 
-| 事件名  | 说明       | 回调参数                    |
-| ------- | ---------- | --------------------------- |
+| 事件名 | 说明 | 类型 |
+| --- | --- | --- |
 | onClick | 点击时触发 | (event: MouseEvent) => void |

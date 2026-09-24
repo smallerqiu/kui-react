@@ -38,9 +38,9 @@ Displays an operation result or HTTP status page.
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
-| status | Result status | success,error,info,warning,403,404,500 | info |
-| title | Title | ReactNode | - |
-| subTitle | Subtitle | ReactNode | - |
-| icon | Custom icon or content | IconType[],ReactNode | - |
+| status | Result status | `"info" \| "success" \| "warning" \| "error" \| "403" \| "404" \| "500"` | info |
+| title | Title | `ReactNode` | - |
+| subTitle | Subtitle | `ReactNode` | - |
+| icon | Custom icon or content | `ReactNode \| IconType[]` | - |
 | children | Detail content | ReactNode | - |
-| extra | Action content | ReactNode | - |
+| extra | Action content | `ReactNode` | - |

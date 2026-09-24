@@ -26,16 +26,16 @@
 
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| value | 当前选中值 | string \| number | - |
-| options | 选项数据 | SegmentedOption[] | [] |
-| disabled | 是否禁用 | boolean | false |
-| readOnly | 是否只读 | boolean | false |
-| block | 是否撑满父容器 | boolean | false |
-| direction | 排列方向 | `horizontal \| vertical` | horizontal |
-| size | 尺寸 | SizeType | medium |
-| shape | 形状 | ShapeType | round |
-| onChange | 选中值改变时触发 | `(value: string \| number) => void` | - |
-| renderLabel | 自定义选项内容 | `(option, selected) => ReactNode` | - |
+| value | 当前选中值 | `SegmentedValue` | - |
+| options | 选项数据 | `SegmentedOption[]` | [] |
+| disabled | 是否禁用 | `boolean` | false |
+| readOnly | 是否只读 | `boolean` | false |
+| block | 是否撑满父容器 | `boolean` | false |
+| direction | 排列方向 | `"horizontal" \| "vertical"` | horizontal |
+| size | 尺寸 | `"small" \| "medium" \| "large"` | medium |
+| shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | round |
+| onChange | 选中值改变时触发 | `((value: SegmentedValue) => void)` | - |
+| renderLabel | 自定义选项内容 | `((option: SegmentedOption, selected: boolean) => React.ReactNode)` | - |
 
 ### SegmentedOption
 

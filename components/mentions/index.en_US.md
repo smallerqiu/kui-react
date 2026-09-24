@@ -44,22 +44,22 @@ Insert structured mentions into multiline text.
 
 ## Mentions API
 
-| Property     | Description                          | Type                                | Default     |
-| ------------ | ------------------------------------ | ----------------------------------- | ----------- |
-| value        | text                      | string                              | -           |
-| options      | Suggestions                          | (string\|MentionOption)[]           | []          |
-| triggers     | Trigger strings                      | string[]                            | ['@']       |
-| rows         | Textarea rows                        | number                              | 1           |
-| placement    | Preferred dropdown placement         | DropPlacementsType                  | bottom-left |
-| size         | Size                                 | small\|medium\|large                | medium      |
-| theme        | Theme                                | fill\|outline\|plain                | fill        |
-| shape        | Shape                                | circle\|square\|round\|default      | default     |
-| emptyText    | Empty-state text                     | string                              | No data     |
-| loading      | Whether to show loading              | boolean                             | false       |
-| loadingText  | Loading text                         | string                              | -           |
-| clearable    | Whether to show the clear button     | boolean                             | true        |
-| filterOption | Custom filter                        | function                            | -           |
-| onChange     | Text change                          | function                            | -           |
-| onSelect     | Mention selected                     | function                            | -           |
-| onSearch     | Remote search with query and trigger | (query:string,trigger:string)=>void | -           |
-| onClear      | Clear button clicked                 | function                            | -           |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| value | text | `string` | - |
+| options | Suggestions | `(string \| MentionOption)[]` | [] |
+| triggers | Trigger strings | `string[]` | ['@'] |
+| rows | Textarea rows | `number` | 1 |
+| placement | Preferred dropdown placement | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | bottom-left |
+| size | Size | `"small" \| "medium" \| "large"` | medium |
+| theme | Theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| shape | Shape | `"round" \| "default" \| "square" \| "circle"` | default |
+| emptyText | Empty-state text | `string` | No data |
+| loading | Whether to show loading | `boolean` | false |
+| loadingText | Loading text | `string` | - |
+| clearable | Whether to show the clear button | `boolean` | true |
+| filterOption | Custom filter | `((query: string, option: MentionOption) => boolean)` | - |
+| onChange | Text change | `((value: string) => void)` | - |
+| onSelect | Mention selected | `((option: MentionOption, trigger: string) => void)` | - |
+| onSearch | Remote search with query and trigger | `((query: string, trigger: string) => void)` | - |
+| onClear | Clear button clicked | `(() => void)` | - |

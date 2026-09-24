@@ -31,19 +31,19 @@ Switch selector.
 
 ### API
 
-| Property          | Description                                                     | Type                                         | Default |
-| ----------------- | --------------------------------------------------------------- | -------------------------------------------- | ------- |
-| checked           | switch state                                                    | boolean                                      | -       |
-| disabled          | Disable switch                                                  | boolean                                      | false   |
-| readOnly          | Make the switch read-only                                       | boolean                                      | false   |
-| loading           | Loading state; interaction is disabled while loading            | boolean                                      | false   |
-| type              | Theme color, can pass `success`, `warning`, `danger`, `primary` | string                                       | -       |
-| color             | Custom checked color; takes precedence over `type`              | string                                       | -       |
-| size              | Component size, when value is `small` displays small size       | string                                       | -       |
-| shape             | Shape                                                           | ShapeType                                    | round   |
-| checkedChildren   | Custom content for the checked state                            | ReactNode                                    | -       |
-| unCheckedChildren | Custom content for the unchecked state                          | ReactNode                                    | -       |
-| trueText          | Text displayed when `checked` is `true`                         | string                                       | -       |
-| falseText         | Text displayed when `checked` is `false`                        | string                                       | -       |
-| valueType         | Output value type                                               | 'string' \| 'number' \| 'boolean'            | boolean |
-| onChange          | Triggered on change; output type is determined by `valueType`   | (value: string \| number \| boolean) => void | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| checked | switch state | `boolean` | - |
+| disabled | Disable switch | `boolean` | false |
+| readOnly | Make the switch read-only | `boolean` | false |
+| loading | Loading state; interaction is disabled while loading | `boolean` | false |
+| type | Theme color, can pass `success`, `warning`, `danger`, `primary` | `string` | - |
+| color | Custom checked color; takes precedence over `type` | `string` | - |
+| size | Component size, when value is `small` displays small size | `"small" \| "medium" \| "large"` | - |
+| shape | Shape | `"round" \| "default" \| "square" \| "circle"` | round |
+| checkedChildren | Custom content for the checked state | `React.ReactNode` | - |
+| unCheckedChildren | Custom content for the unchecked state | `React.ReactNode` | - |
+| trueText | Text displayed when `checked` is `true` | `string` | - |
+| falseText | Text displayed when `checked` is `false` | `string` | - |
+| valueType | Output value type | `"string" \| "number" \| "boolean"` | boolean |
+| onChange | Triggered on change; output type is determined by `valueType` | `((value: boolean \| number \| string) => void)` | - |

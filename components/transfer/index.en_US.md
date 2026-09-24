@@ -34,22 +34,22 @@ Move and select items between two lists.
 
 ## API
 
-| Property       | Description                     | Type                                 | Default        |
-| -------------- | ------------------------------- | ------------------------------------ | -------------- |
-| dataSource     | Source data                     | TransferItem[]                       | []             |
-| targetKeys     | target items                    | (string\|number)[]                   | []             |
-| titles         | Titles for both lists           | [ReactNode, ReactNode]               | Source, Target |
-| operations     | Right and left operation labels | [string, string]                     | ['', '']       |
-| searchable     | Whether searchable              | boolean                              | false          |
-| disabled       | Whether disabled                | boolean                              | false          |
-| readOnly       | Whether read-only               | boolean                              | false          |
-| theme          | Appearance theme                | 'outline' \| 'fill'                  | outline        |
-| filterOption   | Custom filter                   | (keyword, item) => boolean           | -              |
-| item           | Custom list item renderer       | (item) => ReactNode                  | -              |
-| footer         | Custom list footer renderer     | (direction) => ReactNode             | -              |
-| onChange       | Emitted after moving items      | (event: TransferChangeEvent) => void | -              |
-| onSelectChange | Selection callback              | (sourceKeys, targetKeys) => void     | -              |
-| onSearch       | Search box callback             | (direction, value) => void           | -              |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| dataSource | Source data | `TransferItem[]` | [] |
+| targetKeys | target items | `TransferKey[]` | [] |
+| titles | Titles for both lists | `[import("react").ReactNode, import("react").ReactNode]` | Source, Target |
+| operations | Right and left operation labels | `[string, string]` | ['', ''] |
+| searchable | Whether searchable | `boolean` | false |
+| disabled | Whether disabled | `boolean` | false |
+| readOnly | Whether read-only | `boolean` | false |
+| theme | Appearance theme | `"fill" \| "outline"` | outline |
+| filterOption | Custom filter | `((keyword: string, item: TransferItem) => boolean)` | - |
+| item | Custom list item renderer | `((item: TransferItem) => React.ReactNode)` | - |
+| footer | Custom list footer renderer | `((direction: "left" \| "right") => React.ReactNode)` | - |
+| onChange | Emitted after moving items | `((event: TransferChangeEvent) => void)` | - |
+| onSelectChange | Selection callback | `((sourceKeys: TransferKey[], targetKeys: TransferKey[]) => void)` | - |
+| onSearch | Search box callback | `((direction: "left" \| "right", value: string) => void)` | - |
 
 ### TransferItem
 

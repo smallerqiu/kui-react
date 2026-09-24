@@ -31,19 +31,19 @@
 
 ## API
 
-| 属性              | 说明                                                      | 类型                                         | 默认值  |
-| ----------------- | --------------------------------------------------------- | -------------------------------------------- | ------- |
-| checked           | 开关状态                                                  | boolean                                      | -       |
-| disabled          | 禁用开关                                                  | boolean                                      | false   |
-| readOnly          | 只读开关                                                  | boolean                                      | false   |
-| loading           | 加载状态，加载时不可操作                                  | boolean                                      | false   |
-| type              | 主题颜色 可传入 `success`，`warning`，`danger`，`primary` | string                                       | -       |
-| color             | 自定义选中状态颜色，优先级高于 `type`                     | string                                       | -       |
-| size              | 组件尺寸，值为`small`展示小尺寸                           | string                                       | -       |
-| shape             | 形状                                                      | ShapeType                                    | round   |
-| checkedChildren   | 选中时的自定义内容                                        | ReactNode                                    | -       |
-| unCheckedChildren | 未选中时的自定义内容                                      | ReactNode                                    | -       |
-| trueText          | 当 `checked` 为 `true` 时显示的文字                       | string                                       | -       |
-| falseText         | 当 `checked` 为 `false` 时显示的文字                      | string                                       | -       |
-| valueType         | 输出值类型                                                | 'string' \| 'number' \| 'boolean'            | boolean |
-| onChange          | 状态改变时触发，返回值类型由 `valueType` 决定             | (value: string \| number \| boolean) => void | -       |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| checked | 开关状态 | `boolean` | - |
+| disabled | 禁用开关 | `boolean` | false |
+| readOnly | 只读开关 | `boolean` | false |
+| loading | 加载状态，加载时不可操作 | `boolean` | false |
+| type | 主题颜色 可传入 `success`，`warning`，`danger`，`primary` | `string` | - |
+| color | 自定义选中状态颜色，优先级高于 `type` | `string` | - |
+| size | 组件尺寸，值为`small`展示小尺寸 | `"small" \| "medium" \| "large"` | - |
+| shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | round |
+| checkedChildren | 选中时的自定义内容 | `React.ReactNode` | - |
+| unCheckedChildren | 未选中时的自定义内容 | `React.ReactNode` | - |
+| trueText | 当 `checked` 为 `true` 时显示的文字 | `string` | - |
+| falseText | 当 `checked` 为 `false` 时显示的文字 | `string` | - |
+| valueType | 输出值类型 | `"string" \| "number" \| "boolean"` | boolean |
+| onChange | 状态改变时触发，返回值类型由 `valueType` 决定 | `((value: boolean \| number \| string) => void)` | - |

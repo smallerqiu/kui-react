@@ -14,12 +14,12 @@ Presents feedback, supporting details, and follow-up actions.
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
-| kind | Feedback kind | positive,negative,caution,neutral | neutral |
-| heading | Heading | ReactNode | - |
-| description | Description | ReactNode | - |
-| symbol | Custom icon or content | IconType[],ReactNode | - |
-| compact | Compact layout | boolean | false |
-| actions | Action content | ReactNode | - |
-| theme | Appearance | outline,filled,borderless | outline |
-| shape | Shape | round,square | round |
+| kind | Feedback kind | `"positive" \| "negative" \| "caution" \| "neutral"` | neutral |
+| heading | Heading | `ReactNode` | - |
+| description | Description | `ReactNode` | - |
+| symbol | Custom icon or content | `ReactNode \| IconType[]` | - |
+| compact | Compact layout | `boolean` | false |
+| actions | Action content | `ReactNode` | - |
+| theme | Appearance | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | outline |
+| shape | Shape | `"round" \| "default" \| "square" \| "circle"` | round |
 | children | Detail content | ReactNode | - |

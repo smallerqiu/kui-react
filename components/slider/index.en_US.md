@@ -40,20 +40,20 @@ When users need to select within a numerical range/custom range, it can be conti
 
 ## Slider API
 
-| Property       | Description                                                                                       | Type                                | Default |
-| -------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------- | ------- |
-| value          | current value                                                                          | number, number[]                    | -       |
-| min            | Minimum value                                                                                     | number                              | 0       |
-| max            | Maximum value                                                                                     | number                              | 100     |
-| range          | Whether to support sliding on both sides simultaneously                                           | boolean                             | false   |
-| disabled       | Whether the slider is disabled                                                                    | boolean                             | false   |
-| readOnly       | Whether the slider is read-only                                                                   | boolean                             | false   |
-| step           | Step size, must be greater than 0 and divisible by (max - min)                                    | number                              | 1       |
-| tipFormatter   | Set Tooltip display format, defaults to current value                                             | (value: number) => string           | number  |
-| vertical       | Whether to set direction to vertical                                                              | boolean                             | false   |
-| marks          | Scale marks, key type must be number and value in closed interval [min, max]                      | Object                              | -       |
-| included       | Effective when marks is not empty object, true means inclusive relationship, false means parallel | boolean                             | true    |
-| tooltipVisible | When true, Tooltip will always display; otherwise never display, even when dragging and hovering  | boolean                             | false   |
-| reverse        | Sort in reverse order                                                                             | boolean                             | false   |
-| size           | The size of Slider                                                                                | string                              | -       |
-| onChange       | Triggered when Slider value changes, passes the changed value as parameter                        | (value: number \| number[]) => void | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| value | current value | `number \| number[]` | - |
+| min | Minimum value | `number` | 0 |
+| max | Maximum value | `number` | 100 |
+| range | Whether to support sliding on both sides simultaneously | `boolean` | false |
+| disabled | Whether the slider is disabled | `boolean` | false |
+| readOnly | Whether the slider is read-only | `boolean` | false |
+| step | Step size, must be greater than 0 and divisible by (max - min) | `number \| null` | 1 |
+| tipFormatter | Set Tooltip display format, defaults to current value | `((value: number) => string \| number)` | number |
+| vertical | Whether to set direction to vertical | `boolean` | false |
+| marks | Scale marks, key type must be number and value in closed interval [min, max] | `Record<number, string>` | - |
+| included | Effective when marks is not empty object, true means inclusive relationship, false means parallel | `boolean` | true |
+| tooltipVisible | When true, Tooltip will always display; otherwise never display, even when dragging and hovering | `boolean \| null` | false |
+| reverse | Sort in reverse order | `boolean` | false |
+| size | The size of Slider | `number \| "small"` | - |
+| onChange | Triggered when Slider value changes, passes the changed value as parameter | `((value: number \| number[]) => void)` | - |

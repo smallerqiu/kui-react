@@ -38,9 +38,9 @@
 
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| status | 结果状态 | success,error,info,warning,403,404,500 | info |
-| title | 标题 | ReactNode | - |
-| subTitle | 副标题 | ReactNode | - |
-| icon | 自定义图标或内容 | IconType[],ReactNode | - |
+| status | 结果状态 | `"info" \| "success" \| "warning" \| "error" \| "403" \| "404" \| "500"` | info |
+| title | 标题 | `ReactNode` | - |
+| subTitle | 副标题 | `ReactNode` | - |
+| icon | 自定义图标或内容 | `ReactNode \| IconType[]` | - |
 | children | 详情内容 | ReactNode | - |
-| extra | 操作区域 | ReactNode | - |
+| extra | 操作区域 | `ReactNode` | - |

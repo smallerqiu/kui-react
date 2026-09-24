@@ -34,23 +34,23 @@
 
 `Typography`、`TypographyText`、`TypographyParagraph` 和 `TypographyTitle` 共享以下属性。
 
-| 属性         | 说明             | 类型                                       | 默认值 |
-| ------------ | ---------------- | ------------------------------------------ | ------ |
-| value        | 文本         | string                                     | -      |
-| tag          | 渲染的 HTML 标签 | TypographyTag                              | span   |
-| type         | 语义颜色         | TypographyType                             | -      |
-| strong       | 加粗             | boolean                                    | false  |
-| italic       | 斜体             | boolean                                    | false  |
-| underline    | 下划线           | boolean                                    | false  |
-| delete       | 删除线           | boolean                                    | false  |
-| mark         | 标记样式         | boolean                                    | false  |
-| code         | 行内代码样式     | boolean                                    | false  |
-| disabled     | 禁用状态         | boolean                                    | false  |
-| copyable     | 允许复制         | boolean\|TypographyCopyableOptions         | false  |
-| editable     | 允许编辑         | boolean\|TypographyEditableOptions         | false  |
-| ellipsis     | 文本省略配置     | boolean\|number\|TypographyEllipsisOptions | false  |
-| onCopy       | 复制后触发       | (text: string) => void                     | -      |
-| onChange     | 编辑完成后触发   | (text: string) => void                     | -      |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| value | 文本 | `string` | - |
+| tag | 渲染的 HTML 标签 | `"div" \| "h1" \| "h2" \| "h3" \| "h4" \| "h5" \| "h6" \| "p" \| "span"` | span |
+| type | 语义颜色 | `"success" \| "warning" \| "danger" \| "secondary"` | - |
+| strong | 加粗 | `boolean` | false |
+| italic | 斜体 | `boolean` | false |
+| underline | 下划线 | `boolean` | false |
+| delete | 删除线 | `boolean` | false |
+| mark | 标记样式 | `boolean` | false |
+| code | 行内代码样式 | `boolean` | false |
+| disabled | 禁用状态 | `boolean` | false |
+| copyable | 允许复制 | `boolean \| TypographyCopyableOptions` | false |
+| editable | 允许编辑 | `boolean \| TypographyEditableOptions` | false |
+| ellipsis | 文本省略配置 | `number \| boolean \| TypographyEllipsisOptions` | false |
+| onCopy | 复制后触发 | `((text: string) => void)` | - |
+| onChange | 编辑完成后触发 | `((text: string) => void)` | - |
 
 ### TypographyCopyableOptions
 

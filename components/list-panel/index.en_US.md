@@ -22,15 +22,15 @@ Provides a consistent layout for filters, result summaries, list content, and pa
 
 ## API
 
-| Property      | Description              | Type                                      | Default |
-| ------------- | ------------------------ | ----------------------------------------- | ------- |
-| summary       | Summary content          | ReactNode                                 | -       |
-| filters       | Filter area              | ReactNode                                 | -       |
-| actions       | Action area              | ReactNode                                 | -       |
-| selection     | Bulk action toolbar      | ReactNode \| (count: number) => ReactNode | -       |
-| footer        | Footer area              | ReactNode                                 | -       |
-| bordered      | Whether to show a border | boolean                                   | true    |
-| theme         | Theme                    | `fill \| outline \| plain`                | outline |
-| shape         | Shape                    | ShapeType                                 | round   |
-| size          | Size                     | SizeType                                  | medium  |
-| selectedCount | Selected item count      | number                                    | 0       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| summary | Summary content | `ReactNode` | - |
+| filters | Filter area | `ReactNode` | - |
+| actions | Action area | `ReactNode` | - |
+| selection | Bulk action toolbar | `ReactNode \| ((count: number) => ReactNode)` | - |
+| footer | Footer area | `ReactNode` | - |
+| bordered | Whether to show a border | `boolean` | true |
+| theme | Theme | `"fill" \| "outline" \| "plain"` | outline |
+| shape | Shape | `"round" \| "default" \| "square" \| "circle"` | round |
+| size | Size | `"small" \| "medium" \| "large"` | medium |
+| selectedCount | Selected item count | `number` | 0 |

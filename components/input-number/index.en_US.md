@@ -28,24 +28,24 @@ When standard numerical values need to be obtained.
 
 ## InputNumber API
 
-| Property     | Description                                                                 | Type                                 | Default   |
-| ------------ | --------------------------------------------------------------------------- | ------------------------------------ | --------- |
-| min          | Minimum value                                                               | number                               | -Infinity |
-| max          | Maximum value                                                               | number                               | Infinity  |
-| step         | Step value for each change, can be a decimal                                | number \| string                     | 1         |
-| value        | InputNumber value                                                | number \| string                     | -         |
-| formatter    | Specifies the format of the value displayed in the input box                | (value: string \| number) => string  | -         |
-| parser       | Specifies how to convert back from formatter to number, used with formatter | (value: string) => string \| number  | -         |
-| size         | Input box size                                                              | SizeType                             | -         |
-| disabled     | Disabled                                                                    | boolean                              | false     |
-| readOnly     | Whether the input is read-only                                              | boolean                              | false     |
-| placeholder  | Input placeholder                                                           | string                               | -         |
-| icon         | Input icon                                                                  | IconType[]                           | -         |
-| precision    | Numerical precision                                                         | number                               | -         |
-| shape        | Component appearance                                                        | ShapeType                            | -         |
-| suffix       | Custom suffix                                                               | ReactNode                            | -         |
-| prefix       | Prefix content                                                              | ReactNode                            | -         |
-| controls     | Whether to show increase/decrease buttons                                   | boolean                              | true      |
-| keyboard     | Whether the value can be adjusted with the up/down arrow keys               | boolean                              | true      |
-| theme        | Component theme                                                             | ThemeType                            | fill      |
-| onChange     | Change callback; returns `undefined` when cleared                           | (value: number \| undefined) => void | -         |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| min | Minimum value | `number` | -Infinity |
+| max | Maximum value | `number` | Infinity |
+| step | Step value for each change, can be a decimal | `string \| number` | 1 |
+| value | InputNumber value | `string \| number` | - |
+| formatter | Specifies the format of the value displayed in the input box | `((value: string \| number) => string)` | - |
+| parser | Specifies how to convert back from formatter to number, used with formatter | `((value: string) => string \| number)` | - |
+| size | Input box size | `"small" \| "medium" \| "large"` | - |
+| disabled | Disabled | `boolean` | false |
+| readOnly | Whether the input is read-only | `boolean` | false |
+| placeholder | Input placeholder | `string` | - |
+| icon | Input icon | `IconType[]` | - |
+| precision | Numerical precision | `number` | - |
+| shape | Component appearance | `"round" \| "default" \| "square" \| "circle"` | - |
+| suffix | Custom suffix | `React.ReactNode` | - |
+| prefix | Prefix content | `React.ReactNode` | - |
+| controls | Whether to show increase/decrease buttons | `boolean` | true |
+| keyboard | Whether the value can be adjusted with the up/down arrow keys | `boolean` | true |
+| theme | Component theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| onChange | Change callback; returns `undefined` when cleared | `((value: number \| undefined) => void)` | - |

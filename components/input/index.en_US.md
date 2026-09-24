@@ -45,44 +45,44 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 
 ## Input API
 
-| Property            | Description                                                         | Type                    | Default |
-| ------------------- | ------------------------------------------------------------------- | ----------------------- | ------- |
-| value               | input value                                                         | string, number          | -       |
-| size                | Button size, optional values `small`, `large`, default not selected | string                  | -       |
-| icon                | Input box icon                                                      | string                  | -       |
-| suffix              | Inline suffix                                                       | string \| ReactNode     | -       |
-| prefix              | Inline prefix                                                       | string \| ReactNode     | -       |
-| addonBefore         | Addon before the input                                              | ReactNode               | -       |
-| addonAfter          | Addon after the input                                               | ReactNode               | -       |
-| theme               | The theme of Input                                                  | string                  | fill    |
-| shape               | Input shape                                                         | ShapeType               | -       |
-| inputType           | Custom style class prefix                                           | string                  | input   |
-| controls            | Control area used by components such as InputNumber                 | ReactNode               | -       |
-| disabled            | Whether the input is disabled                                       | boolean                 | false   |
-| multiple            | Whether native multiple input is enabled                            | boolean                 | false   |
-| clearable           | Show the clear button on hover when a value exists                  | boolean                 | true    |
-| visiblePasswordIcon | Whether to show the toggle button or control password visibility    | boolean                 | true    |
-| onSearch            | Search event callback                                               | (value: string) => void | -       |
-| onIconClick         | Callback for icon click event                                       | (e: Event) => void      | -       |
-| onClear             | Callback for pressing the clear button                              | () => void              | -       |
-| onChange            | Callback when the input box content changes                         | (value: string) => void | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| value | input value | `string \| number \| readonly string[]` | - |
+| size | Button size, optional values `small`, `large`, default not selected | `"small" \| "medium" \| "large"` | - |
+| icon | Input box icon | `IconType[]` | - |
+| suffix | Inline suffix | `React.ReactNode` | - |
+| prefix | Inline prefix | `React.ReactNode` | - |
+| addonBefore | Addon before the input | `React.ReactNode` | - |
+| addonAfter | Addon after the input | `React.ReactNode` | - |
+| theme | The theme of Input | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| shape | Input shape | `"round" \| "default" \| "square" \| "circle"` | - |
+| inputType | Custom style class prefix | `string` | input |
+| controls | Control area used by components such as InputNumber | `React.ReactNode` | - |
+| disabled | Whether the input is disabled | boolean | false |
+| multiple | Whether native multiple input is enabled | boolean | false |
+| clearable | Show the clear button on hover when a value exists | `boolean` | true |
+| visiblePasswordIcon | Whether to show the toggle button or control password visibility | `boolean` | true |
+| onSearch | Search event callback | `((value: string) => void)` | - |
+| onIconClick | Callback for icon click event | `((e: React.MouseEvent) => void)` | - |
+| onClear | Callback for pressing the clear button | `(() => void)` | - |
+| onChange | Callback when the input box content changes | `((value: string) => void)` | - |
 
 ## Input Group API
 
-| Property | Description                                                                         | Type    | Default |
-| -------- | ----------------------------------------------------------------------------------- | ------- | ------- |
-| block    | Whether to inherit the parent width                                                 | boolean | false   |
-| compact  | Whether to use compact mode                                                         | boolean | true    |
-| size     | Spacing of child components, optional values `small`, `large`, default not selected | string  | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| block | Whether to inherit the parent width | boolean | false |
+| compact | Whether to use compact mode | boolean | true |
+| size | Spacing of child components, optional values `small`, `large`, default not selected | `"small" \| "medium" \| "large"` | - |
 
 ## TextArea API
 
-| Property | Description                                                  | Type                    | Default |
-| -------- | ------------------------------------------------------------ | ----------------------- | ------- |
-| value    | input value                                                  | string, number          | -       |
-| size     | Size, optional values `small`, `large`, default not selected | string                  | -       |
-| theme    | Theme                                                        | ThemeType               | fill    |
-| shape    | Shape                                                        | ShapeType               | -       |
-| rows     | Default row count                                            | number                  | 2       |
-| disabled | Whether disabled                                             | boolean                 | false   |
-| onChange | Callback when the content changes                            | (value: string) => void | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| value | input value | `string \| number \| readonly string[]` | - |
+| size | Size, optional values `small`, `large`, default not selected | `"small" \| "medium" \| "large"` | - |
+| theme | Theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| shape | Shape | `"round" \| "default" \| "square" \| "circle"` | - |
+| rows | Default row count | number | 2 |
+| disabled | Whether disabled | boolean | false |
+| onChange | Callback when the content changes | `((value: string) => void)` | - |

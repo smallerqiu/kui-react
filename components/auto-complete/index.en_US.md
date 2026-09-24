@@ -32,24 +32,24 @@ Suggest options while keeping free-form input available.
 
 ## AutoComplete API
 
-| Property     | Description                                       | Type                                         | Default |
-| ------------ | ------------------------------------------------- | -------------------------------------------- | ------- |
-| value        | value                                             | string                                       | -       |
-| options      | Suggestions                                       | (string \| AutoCompleteOption)[]             | []      |
-| open         | open state                                        | boolean                                      | -       |
-| showOnEmpty  | Show suggestions for an empty focused input       | boolean                                      | false   |
-| clearable    | Show clear button on hover                        | boolean                                      | false   |
-| disabled     | Disabled                                          | boolean                                      | false   |
-| readOnly     | Read-only; prevents editing, clearing and opening | boolean                                      | false   |
-| placeholder  | Placeholder                                       | string                                       | -       |
-| loading      | Loading state                                     | boolean                                      | false   |
-| loadingText  | Loading text                                      | string                                       | Loading |
-| size         | Size                                              | 'small' \| 'medium' \| 'large'               | medium  |
-| theme        | Theme                                             | 'fill' \| 'outline' \| 'plain'               | fill    |
-| shape        | Shape                                             | 'circle' \| 'square' \| 'round' \| 'default' | default |
-| filterOption | Filter strategy                                   | boolean \| ((input, option) => boolean)      | true    |
-| onChange     | Value change                                      | (value: string) => void                      | -       |
-| onClear      | Clear callback                                    | () => void                                   | -       |
-| onSearch     | Search callback                                   | (value: string) => void                      | -       |
-| onSelect     | Option selection                                  | (value, option) => void                      | -       |
-| onOpenChange | Open state change                                 | (open: boolean) => void                      | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| value | value | `string` | - |
+| options | Suggestions | `(string \| AutoCompleteOption)[]` | [] |
+| open | open state | `boolean` | - |
+| showOnEmpty | Show suggestions for an empty focused input | `boolean` | false |
+| clearable | Show clear button on hover | `boolean` | false |
+| disabled | Disabled | boolean | false |
+| readOnly | Read-only; prevents editing, clearing and opening | boolean | false |
+| placeholder | Placeholder | string | - |
+| loading | Loading state | `boolean` | false |
+| loadingText | Loading text | `string` | Loading |
+| size | Size | `"small" \| "medium" \| "large"` | medium |
+| theme | Theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| shape | Shape | `"round" \| "default" \| "square" \| "circle"` | default |
+| filterOption | Filter strategy | `boolean \| ((input: string, option: AutoCompleteOption) => boolean)` | true |
+| onChange | Value change | `((value: string) => void)` | - |
+| onClear | Clear callback | `(() => void)` | - |
+| onSearch | Search callback | `((value: string) => void)` | - |
+| onSelect | Option selection | `((value: string, option: AutoCompleteOption) => void)` | - |
+| onOpenChange | Open state change | `((open: boolean) => void)` | - |

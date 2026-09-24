@@ -38,28 +38,28 @@ When there are too many operation commands on the page, this component can be us
 
 ## Dropdown API
 
-| Property     | Description                                  | Type                                | Default       |
-| ------------ | -------------------------------------------- | ----------------------------------- | ------------- |
-| open         | visibility                                   | boolean                             | -             |
-| show         | Deprecated; use `open` instead               | boolean                             | -             |
-| trigger      | Trigger method                               | `hover` \| `click` \| `contextmenu` | `hover`       |
-| placement    | Dropdown placement                           | DropPlacementsType                  | `bottom-left` |
-| arrow        | Whether to display the arrow                 | boolean                             | false         |
-| target       | Ref of an external trigger element           | RefObject<HTMLElement>              | -             |
-| disabled     | Whether dropdown triggering is allowed       | boolean                             | false         |
-| onOpenChange | Triggered when opening or closing a Dropdown | (opened:boolean)=>void              | -             |
-| overlay      | Dropdown overlay content                     | ReactNode                           | -             |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| open | visibility | `boolean` | - |
+| show | Deprecated; use `open` instead | `boolean` | - |
+| trigger | Trigger method | `"hover" \| "click" \| "contextmenu"` | `hover` |
+| placement | Dropdown placement | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | `bottom-left` |
+| arrow | Whether to display the arrow | `boolean` | false |
+| target | Ref of an external trigger element | `React.RefObject<HTMLElement \| null>` | - |
+| disabled | Whether dropdown triggering is allowed | `boolean` | false |
+| onOpenChange | Triggered when opening or closing a Dropdown | `((opened: boolean) => void)` | - |
+| overlay | Dropdown overlay content | `React.ReactNode` | - |
 
 ## DropdownButton API
 
-| Property  | Description                        | Type                                           | Default      |
-| --------- | ---------------------------------- | ---------------------------------------------- | ------------ |
-| size      | Button size                        | SizeType                                       | -            |
-| shape     | Button shape                       | ShapeType                                      | -            |
-| disabled  | Whether disabled                   | boolean                                        | false        |
-| icon      | Dropdown trigger icon              | IconType                                       | Ellipsis     |
-| theme     | Button theme                       | ThemeType                                      | -            |
-| arrow     | Whether to show the dropdown arrow | boolean                                        | false        |
-| placement | Dropdown placement                 | DropPlacementsType                             | bottom-right |
-| onClick   | Main button click callback         | (event: MouseEvent<HTMLButtonElement>) => void | -            |
-| overlay   | Dropdown overlay content           | ReactNode                                      | -            |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| size | Button size | `"small" \| "medium" \| "large"` | - |
+| shape | Button shape | `"round" \| "default" \| "square" \| "circle"` | - |
+| disabled | Whether disabled | `boolean` | false |
+| icon | Dropdown trigger icon | `IconType[]` | Ellipsis |
+| theme | Button theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| arrow | Whether to show the dropdown arrow | `boolean` | false |
+| placement | Dropdown placement | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | bottom-right |
+| onClick | Main button click callback | `((e: React.MouseEvent<HTMLButtonElement>) => void)` | - |
+| overlay | Dropdown overlay content | `React.ReactNode` | - |

@@ -38,6 +38,7 @@ React 19.2+ library. Package: react-kui. Import CSS once from react-kui/style/in
 - [Drawer](https://react.k-ui.cn/components/drawer)
 - [Dropdown](https://react.k-ui.cn/components/dropdown)
 - [DropdownButton](https://react.k-ui.cn/components/dropdown)
+- [Divider](https://react.k-ui.cn/components/divider)
 - [Empty](https://react.k-ui.cn/components/empty)
 - [Form](https://react.k-ui.cn/components/form)
 - [FormItem](https://react.k-ui.cn/components/form)

@@ -32,23 +32,23 @@
 
 ## API
 
-| 属性          | 说明                                                                             | 类型                        | 默认值        |
-| ------------- | -------------------------------------------------------------------------------- | --------------------------- | ------------- |
-| value         | 颜色值                                                                           | `string`                    | -             |
-| open          | 弹层显示状态                                                                     | `boolean`                   | -             |
-| mode          | 颜色展示类型，支持 `hex`、`rgb`、`hsl`                                           | `ColorMode`                 | `hex`         |
-| presets       | 自定义颜色盘                                                                     | `string[]`                  | 内置色盘      |
-| disabledAlpha | 是否禁用透明度                                                                   | `boolean`                   | `false`       |
-| disabled      | 是否禁用                                                                         | `boolean`                   | `false`       |
-| readOnly      | 是否只读                                                                         | `boolean`                   | `false`       |
-| trigger       | 弹层触发方式                                                                     | `hover \| click`            | `click`       |
-| showText      | 是否展示颜色文字                                                                 | `boolean`                   | `false`       |
-| size          | 颜色选择器尺寸                                                                   | `SizeType`                  | -             |
-| theme         | 外观主题，支持 `outline`、`fill`、`plain`，未设置时可继承 Form 或 ConfigProvider | `ThemeType`                 | `outline`     |
-| shape         | 形状，支持 `round`、`circle`、`square`，未设置时可继承 Form 或 ConfigProvider    | `ShapeType`                 | -             |
-| placement     | 弹层位置                                                                         | `DropPlacementsType`        | `bottom-left` |
-| children      | 自定义触发元素                                                                   | `ReactNode`                 | -             |
-| panelOnly     | 只渲染颜色面板，不包含触发元素与弹层                                             | `boolean`                   | false         |
-| onUpdateMode  | 颜色模式更新时触发                                                               | `(mode: ColorMode) => void` | -             |
-| onChange      | 颜色值改变时触发                                                                 | `(color: string) => void`   | -             |
-| onOpenChange  | 颜色选择器展开或收起时触发                                                       | `(open: boolean) => void`   | -             |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| value | 颜色值 | `string` | - |
+| open | 弹层显示状态 | `boolean` | - |
+| mode | 颜色展示类型，支持 `hex`、`rgb`、`hsl` | `"hex" \| "rgb" \| "hsl"` | `hex` |
+| presets | 自定义颜色盘 | `string[]` | 内置色盘 |
+| disabledAlpha | 是否禁用透明度 | `boolean` | `false` |
+| disabled | 是否禁用 | `boolean` | `false` |
+| readOnly | 是否只读 | `boolean` | `false` |
+| trigger | 弹层触发方式 | `"hover" \| "click"` | `click` |
+| showText | 是否展示颜色文字 | `boolean` | `false` |
+| size | 颜色选择器尺寸 | `"small" \| "medium" \| "large"` | - |
+| theme | 外观主题，支持 `outline`、`fill`、`plain`，未设置时可继承 Form 或 ConfigProvider | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | `outline` |
+| shape | 形状，支持 `round`、`circle`、`square`，未设置时可继承 Form 或 ConfigProvider | `"round" \| "default" \| "square" \| "circle"` | - |
+| placement | 弹层位置 | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | `bottom-left` |
+| children | 自定义触发元素 | `ReactNode` | - |
+| panelOnly | 只渲染颜色面板，不包含触发元素与弹层 | `boolean` | false |
+| onUpdateMode | 颜色模式更新时触发 | `((mode: ColorMode) => void)` | - |
+| onChange | 颜色值改变时触发 | `((color: string) => void)` | - |
+| onOpenChange | 颜色选择器展开或收起时触发 | `((open: boolean) => void)` | - |

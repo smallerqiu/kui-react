@@ -22,20 +22,20 @@
 
 ## API
 
-| 属性           | 说明                      | 类型                       | 默认值    |
-| -------------- | ------------------------- | -------------------------- | --------- |
-| title          | 卡片标题                  | ReactNode                  | -         |
-| items          | 展示的数据                | StatNumberItem[]           | []        |
-| precision      | 数值精度                  | number                     | 0         |
-| statNumberType | 数值变化类型              | `rollup, countup`          | 'countup' |
-| separator      | 分隔符                    | string                     | -         |
-| reverse        | 数值/数值描述是否反相排列 | boolean                    | false     |
-| bordered       | 是否显示边框              | boolean                    | false     |
-| theme          | 主题                      | `fill \| outline \| plain` | fill      |
-| shape          | 形状                      | ShapeType                  | round     |
-| size           | 尺寸                      | SizeType                   | medium    |
-| prefix         | 所有数值的默认前置内容    | ReactNode                  | -         |
-| suffix         | 所有数值的默认后置内容    | ReactNode                  | -         |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| title | 卡片标题 | `ReactNode` | - |
+| items | 展示的数据 | `StatNumberItem[]` | [] |
+| precision | 数值精度 | `number` | 0 |
+| statNumberType | 数值变化类型 | `"rollup" \| "countup"` | 'countup' |
+| separator | 分隔符 | `string` | - |
+| reverse | 数值/数值描述是否反相排列 | `boolean` | false |
+| bordered | 是否显示边框 | `boolean` | false |
+| theme | 主题 | `"fill" \| "outline" \| "plain"` | fill |
+| shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | round |
+| size | 尺寸 | `"small" \| "medium" \| "large"` | medium |
+| prefix | 所有数值的默认前置内容 | `ReactNode` | - |
+| suffix | 所有数值的默认后置内容 | `ReactNode` | - |
 
 ### items Options
 

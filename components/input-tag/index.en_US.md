@@ -32,22 +32,22 @@ Turns continuous input into an editable tag collection.
 
 ## InputTag API
 
-| Property        | Description                                        | Type                           | Default |
-| --------------- | -------------------------------------------------- | ------------------------------ | ------- |
-| value           | tags                                    | string[]                       | -       |
-| placeholder     | Placeholder                                        | string                         | -       |
-| disabled        | Disabled state                                     | boolean                        | false   |
-| readOnly        | Read-only while remaining focusable                | boolean                        | false   |
-| clearable       | Whether to show the clear button                   | boolean                        | true    |
-| block           | Fill the parent width                              | boolean                        | false   |
-| size            | Size                                               | small\|medium\|large           | medium  |
-| theme           | Theme                                              | fill\|outline\|plain           | fill    |
-| shape           | Shape                                              | circle\|square\|round\|default | default |
-| allowDuplicates | Allow duplicate tags                               | boolean                        | false   |
-| max             | Maximum tag count                                  | number                         | -       |
-| maxTagCount     | Maximum visible tags; the remainder is shown as +N | number                         | -       |
-| separators      | Commit keys                                        | string[]                       | [',']   |
-| onChange        | Tags change                                        | function                       | -       |
-| onAdd           | Tag added                                          | function                       | -       |
-| onRemove        | Tag removed                                        | function                       | -       |
-| onClear         | Tags cleared                                       | function                       | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| value | tags | `string[]` | - |
+| placeholder | Placeholder | `string` | - |
+| disabled | Disabled state | `boolean` | false |
+| readOnly | Read-only while remaining focusable | `boolean` | false |
+| clearable | Whether to show the clear button | `boolean` | true |
+| block | Fill the parent width | `boolean` | false |
+| size | Size | `"small" \| "medium" \| "large"` | medium |
+| theme | Theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| shape | Shape | `"round" \| "default" \| "square" \| "circle"` | default |
+| allowDuplicates | Allow duplicate tags | `boolean` | false |
+| max | Maximum tag count | `number` | - |
+| maxTagCount | Maximum visible tags; the remainder is shown as +N | `number` | - |
+| separators | Commit keys | `string[]` | [','] |
+| onChange | Tags change | `((value: string[]) => void)` | - |
+| onAdd | Tag added | `((value: string) => void)` | - |
+| onRemove | Tag removed | `((value: string, index: number) => void)` | - |
+| onClear | Tags cleared | `(() => void)` | - |

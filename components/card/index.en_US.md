@@ -34,21 +34,21 @@ The most basic card container, can carry text, lists, images, paragraphs, often 
 
 ## Card API
 
-| Property | Description                        | Type                       | Default |
-| -------- | ---------------------------------- | -------------------------- | ------- |
-| title    | Card title                         | ReactNode                  | -       |
-| icon     | Icon for the card title            | IconType[]                 | -       |
-| bordered | Whether the card displays a border | boolean                    | false   |
-| theme    | Surface theme                      | default,fill,outline,plain | fill    |
-| shape    | Surface shape                      | round,square,circle        | round   |
-| size     | Card size                          | small,medium,large         | medium  |
-| extra    | Card title extension               | ReactNode                  | -       |
-| cover    | Card cover                         | string,ReactNode           | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| title | Card title | `React.ReactNode` | - |
+| icon | Icon for the card title | `IconType[]` | - |
+| bordered | Whether the card displays a border | `boolean` | false |
+| theme | Surface theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| shape | Surface shape | `"round" \| "default" \| "square" \| "circle"` | round |
+| size | Card size | `"small" \| "medium" \| "large"` | medium |
+| extra | Card title extension | `React.ReactNode` | - |
+| cover | Card cover | `React.ReactNode` | - |
 
 ### CardMeta
 
-| Property    | Description | Type             | Default |
-| ----------- | ----------- | ---------------- | ------- |
-| avatar      | Avatar      | string,ReactNode | -       |
-| title       | Title       | ReactNode        | -       |
-| description | Description | ReactNode        | -       |
+| Property | Description | Type | Default |
+| --- | --- | --- | --- |
+| avatar | Avatar | `React.ReactNode` | - |
+| title | Title | `React.ReactNode` | - |
+| description | Description | `React.ReactNode` | - |

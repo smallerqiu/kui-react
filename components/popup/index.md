@@ -52,26 +52,26 @@ children 放触发器，overlay 放弹层内容，也可以通过渲染函数获
 
 ## Popup API
 
-| 属性                | 说明                                                             | 类型                                                   | 默认值      |
-| ------------------- | ---------------------------------------------------------------- | ------------------------------------------------------ | ----------- |
-| open                | 初始显示状态，后续属性变化会同步内部状态，配合 onOpenChange 同步 | boolean                                                | -           |
-| disabled            | 禁止交互打开并取消待执行的打开操作，不强制覆盖 open              | boolean                                                | false       |
-| placement           | 弹层方位，支持 12 个方向                                         | PlacementsType                                         | bottom-left |
-| trigger             | 触发方式；manual 仅由 open 或实例方法控制                        | PopupTrigger                                           | click       |
-| arrow               | 显示箭头                                                         | boolean                                                | false       |
-| offset              | 定位间距（像素）                                                 | number                                                 | 3           |
-| openDelay           | hover 打开延时（毫秒）                                           | number                                                 | 0           |
-| closeDelay          | hover / focus 关闭延时（毫秒）                                   | number                                                 | 300         |
-| closeOnOutsideClick | 外部点击关闭，包含嵌套 Popup 的内容边界                          | boolean                                                | true        |
-| closeOnEscape       | Escape 关闭最上层 Popup 并还原触发器焦点                         | boolean                                                | true        |
-| matchTriggerWidth   | 弹层最小宽度不小于触发器                                         | boolean                                                | false       |
-| getPopupContainer   | 挂载容器，默认使用 Config 配置或 body                            | () => HTMLElement                                      | -           |
-| destroyOnClose      | 退出动画结束后销毁内容；默认保留表单状态                         | boolean                                                | false       |
-| target              | 可选外部定位锚点；不自动绑定事件，配合 manual 和 open 使用       | PopupTarget                                            | -           |
-| overlay             | 弹层内容或返回内容的渲染函数                                     | PopupContent                                           | -           |
-| onOpenChange        | 请求改变显示状态，参数包含原因和原生事件                         | (open: boolean, detail: PopupOpenChangeDetail) => void | -           |
-| onAfterOpen         | 进入动画结束                                                     | () => void                                             | -           |
-| onAfterClose        | 退出动画结束                                                     | () => void                                             | -           |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| open | 初始显示状态，后续属性变化会同步内部状态，配合 onOpenChange 同步 | `boolean` | - |
+| disabled | 禁止交互打开并取消待执行的打开操作，不强制覆盖 open | `boolean` | false |
+| placement | 弹层方位，支持 12 个方向 | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right" \| "left" \| "left-bottom" \| "left-top" \| "right" \| "right-top" \| "right-bottom"` | bottom-left |
+| trigger | 触发方式；manual 仅由 open 或实例方法控制 | `"manual" \| "hover" \| "click" \| "focus" \| "contextmenu"` | click |
+| arrow | 显示箭头 | `boolean` | false |
+| offset | 定位间距（像素） | `number` | 3 |
+| openDelay | hover 打开延时（毫秒） | `number` | 0 |
+| closeDelay | hover / focus 关闭延时（毫秒） | `number` | 300 |
+| closeOnOutsideClick | 外部点击关闭，包含嵌套 Popup 的内容边界 | `boolean` | true |
+| closeOnEscape | Escape 关闭最上层 Popup 并还原触发器焦点 | `boolean` | true |
+| matchTriggerWidth | 弹层最小宽度不小于触发器 | `boolean` | false |
+| getPopupContainer | 挂载容器，默认使用 Config 配置或 body | `(() => HTMLElement \| null \| undefined)` | - |
+| destroyOnClose | 退出动画结束后销毁内容；默认保留表单状态 | `boolean` | false |
+| target | 可选外部定位锚点；不自动绑定事件，配合 manual 和 open 使用 | `React.RefObject<HTMLElement \| null>` | - |
+| overlay | 弹层内容或返回内容的渲染函数 | `React.ReactNode \| ((popup: PopupRef) => React.ReactNode)` | - |
+| onOpenChange | 请求改变显示状态，参数包含原因和原生事件 | `((open: boolean, detail: PopupOpenChangeDetail) => void)` | - |
+| onAfterOpen | 进入动画结束 | `(() => void)` | - |
+| onAfterClose | 退出动画结束 | `(() => void)` | - |
 
 children 放触发器，overlay 接收 ReactNode 或 (popup: PopupRef) => ReactNode。
 

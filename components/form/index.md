@@ -66,23 +66,23 @@ function Demo() {
 
 ## Form API
 
-| 属性       | 说明                                                            | 类型                                     | 默认值     |
-| ---------- | --------------------------------------------------------------- | ---------------------------------------- | ---------- |
-| model      | 表单数据对象；未传时由 Form 内部维护                            | Object                                   | -          |
-| rules      | 表单验证规则                                                    | FormRules                                | -          |
-| name       | 表单名称，会作为表单字段 id 前缀使用                            | string                                   | -          |
-| labelCol   | label 标签布局，同 `<Col>` 的 span、offset；inline 布局下不生效 | {span:number,offset:number}              | -          |
-| wrapperCol | 控件标签布局，同 `<Col>` 的 span、offset；inline 布局下不生效   | {span:number,offset:number}              | -          |
-| theme      | 子控件主题                                                      | ThemeType                                | -          |
-| size       | 子控件尺寸                                                      | SizeType                                 | -          |
-| layout     | 表单布局                                                        | horizontal \| vertical \| inline       | horizontal |
-| shape      | 子控件形状                                                      | ShapeType                                | -          |
-| disabled   | 是否禁用表单                                                    | boolean                                  | false      |
-| readOnly   | 是否将支持只读的子控件设为只读                                  | boolean                                  | false      |
-| colon      | 是否显示标签冒号                                                | boolean                                  | true       |
-| onReset    | 表单重置后的回调                                                | () => void                               | -          |
-| onSubmit   | 提交并完成校验后触发                                            | (result: { valid: boolean }) => void     | -          |
-| onChange   | 字段变化时返回不可变更新后的 model                              | (model: Record<string, unknown>) => void | -          |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| model | 表单数据对象；未传时由 Form 内部维护 | `Record<string, unknown>` | - |
+| rules | 表单验证规则 | `FormRules` | - |
+| name | 表单名称，会作为表单字段 id 前缀使用 | `string` | - |
+| labelCol | label 标签布局，同 `<Col>` 的 span、offset；inline 布局下不生效 | `ColProps` | - |
+| wrapperCol | 控件标签布局，同 `<Col>` 的 span、offset；inline 布局下不生效 | `ColProps` | - |
+| theme | 子控件主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| size | 子控件尺寸 | `"small" \| "medium" \| "large"` | - |
+| layout | 表单布局 | `"inline" \| "horizontal" \| "vertical"` | horizontal |
+| shape | 子控件形状 | `"round" \| "default" \| "square" \| "circle"` | - |
+| disabled | 是否禁用表单 | `boolean` | false |
+| readOnly | 是否将支持只读的子控件设为只读 | `boolean` | false |
+| colon | 是否显示标签冒号 | `boolean` | true |
+| onReset | 表单重置后的回调 | `(() => void)` | - |
+| onSubmit | 提交并完成校验后触发 | `((event: FormSubmitEvent) => void)` | - |
+| onChange | 字段变化时返回不可变更新后的 model | `((model: Record<string, unknown>) => void)` | - |
 
 ## Form Expose API
 
@@ -95,12 +95,12 @@ function Demo() {
 
 ## FormItem API
 
-| 属性  | 说明                                           | 类型       | 默认值 |
-| ----- | ---------------------------------------------- | ---------- | ------ |
-| prop  | 对应表单域 model 里的字段，表单验证必须字段    | string     | -      |
-| label | 标签文本                                       | ReactNode  | -      |
-| rules | 表单验证规则                                   | FormRule[] | -      |
-| colon | 是否在标签后显示冒号；未设置时继承 Form 的配置 | boolean    | -      |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| prop | 对应表单域 model 里的字段，表单验证必须字段 | `string` | - |
+| label | 标签文本 | `ReactNode` | - |
+| rules | 表单验证规则 | `FormRule \| FormRule[]` | - |
+| colon | 是否在标签后显示冒号；未设置时继承 Form 的配置 | `boolean` | - |
 
 ## rules API
 

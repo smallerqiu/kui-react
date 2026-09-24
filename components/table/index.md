@@ -105,53 +105,53 @@ const columns = [
 
 ## Table API
 
-| 属性                 | 说明                                                  | 类型                                                                       | 默认值   |
-| -------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------- | -------- |
-| bordered             | 是否显示边框                                          | boolean                                                                    | false    |
-| checkable            | 是否显示勾选框                                        | boolean                                                                    | false    |
-| selectedKeys         | 勾选的key集合                                         | (string \| number)[]                                                       | -        |
-| disabledKeys         | 禁用的key集合                                         | (string \| number)[]                                                       | -        |
-| size                 | 值为`small`时展示紧凑模式                             | string                                                                     | -        |
-| emptyText            | 没有数据时展示的提示                                  | string                                                                     | 暂无数据 |
-| loading              | 表格异步加载模式                                      | boolean                                                                    | false    |
-| data                 | 显示的结构化数据                                      | T[]                                                                        | []       |
-| columns              | 表格列的配置描述，                                    | Column[]                                                                   | []       |
-| header               | 自定义表头内容                                        | ReactNode                                                                  | -        |
-| footer               | 自定义表尾内容                                        | ReactNode                                                                  | -        |
-| rowKey               | 勾选时的依据                                          | string \| (record: T) => string \| number                                  | key      |
-| childrenColumnName   | 子节点字段名                                          | string                                                                     | children |
-| expandedKeys         | 展开行 key 集合                                       | (string \| number)[]                                                       | -        |
-| expandAllRows        | 初始化及属性变化时展开所有树节点（expandedKeys 优先） | boolean                                                                    | false    |
-| expandRowByClick     | 点击行时展开或收起                                    | boolean                                                                    | false    |
-| indentSize           | 每级树节点缩进距离                                    | number                                                                     | 20       |
-| scroll               | 表格滚动区域                                          | { x?: number \| string; y?: number \| string }                             | {}       |
-| striped              | 是否展示斑马条纹                                      | boolean                                                                    | false    |
-| virtual              | 是否启用虚拟滚动                                      | boolean                                                                    | false    |
-| itemHeight           | 虚拟滚动行高度                                        | number                                                                     | 44       |
-| overscan             | 虚拟滚动视口外预渲染行数                              | number                                                                     | 5        |
-| hiddenColumnKeys     | 隐藏的列 key 集合                                     | (string \| number)[]                                                       | []       |
-| shape                | 形状                                                  | ShapeType                                                                  | round    |
-| onRowClick           | 单击某一行时触发                                      | (record: T, index: number) => void                                         | -        |
-| onSort               | 点击排序时触发                                        | (state: SortState) => void                                                 | -        |
-| onSelect             | 点击复选框时触发                                      | (record: T, selected: boolean, selectedKeys: (string \| number)[]) => void | -        |
-| onSelectAll          | 点击Table头部复选框时触发                             | (selected: boolean, selectedKeys: (string \| number)[]) => void            | -        |
-| onSelectedKeysChange | 勾选 key 集合变化时触发                               | (selectedKeys: (string \| number)[]) => void                               | -        |
-| onExpand             | 展开状态变化时触发                                    | (expanded: boolean, record: T) => void                                     | -        |
-| onExpandedKeysChange | 展开 key 集合变化时触发                               | (expandedKeys: (string \| number)[]) => void                               | -        |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| bordered | 是否显示边框 | `boolean` | false |
+| checkable | 是否显示勾选框 | `boolean` | false |
+| selectedKeys | 勾选的key集合 | `TableKey[]` | - |
+| disabledKeys | 禁用的key集合 | `TableKey[]` | - |
+| size | 值为`small`时展示紧凑模式 | `"small" \| "medium" \| "large"` | - |
+| emptyText | 没有数据时展示的提示 | `string` | 暂无数据 |
+| loading | 表格异步加载模式 | `boolean` | false |
+| data | 显示的结构化数据 | `T[]` | [] |
+| columns | 表格列的配置描述， | `Column<T>[]` | [] |
+| header | 自定义表头内容 | `ReactNode` | - |
+| footer | 自定义表尾内容 | `ReactNode` | - |
+| rowKey | 勾选时的依据 | `string \| ((record: T) => TableKey)` | key |
+| childrenColumnName | 子节点字段名 | `string` | children |
+| expandedKeys | 展开行 key 集合 | `TableKey[]` | - |
+| expandAllRows | 初始化及属性变化时展开所有树节点（expandedKeys 优先） | `boolean` | false |
+| expandRowByClick | 点击行时展开或收起 | `boolean` | false |
+| indentSize | 每级树节点缩进距离 | `number` | 20 |
+| scroll | 表格滚动区域 | `{ x?: number \| string; y?: number \| string; }` | {} |
+| striped | 是否展示斑马条纹 | `boolean` | false |
+| virtual | 是否启用虚拟滚动 | `boolean` | false |
+| itemHeight | 虚拟滚动行高度 | `number` | 44 |
+| overscan | 虚拟滚动视口外预渲染行数 | `number` | 5 |
+| hiddenColumnKeys | 隐藏的列 key 集合 | `(string \| number)[]` | [] |
+| shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | round |
+| onRowClick | 单击某一行时触发 | `((record: T, index: number) => void)` | - |
+| onSort | 点击排序时触发 | `((state: SortState) => void)` | - |
+| onSelect | 点击复选框时触发 | `((record: T, selected: boolean, selectedKeys: TableKey[]) => void)` | - |
+| onSelectAll | 点击Table头部复选框时触发 | `((selected: boolean, selectedKeys: TableKey[]) => void)` | - |
+| onSelectedKeysChange | 勾选 key 集合变化时触发 | `((selectedKeys: TableKey[]) => void)` | - |
+| onExpand | 展开状态变化时触发 | `((expanded: boolean, record: T) => void)` | - |
+| onExpandedKeysChange | 展开 key 集合变化时触发 | `((expandedKeys: TableKey[]) => void)` | - |
 
 ## TableColumnSetting API
 
-| 属性                     | 说明                                                        | 类型                                 | 默认值            |
-| ------------------------ | ----------------------------------------------------------- | ------------------------------------ | ----------------- |
-| columns                  | 列定义；设置面板仅列出顶层无子列的列。                      | Column<T>[]                          | []                |
-| hiddenColumnKeys         | 隐藏列的 key 集合；在变更回调中更新，并将同一值传给 Table。 | (string \| number)[]                 | []                |
-| onHiddenColumnKeysChange | 切换列或点击重置时触发，返回新的隐藏列 key 集合。           | (keys: (string \| number)[]) => void | -                 |
-| disabledKeys             | 不参与设置的列 key；重置时保留这些列的隐藏状态。            | (string \| number)[]                 | []                |
-| title                    | 弹层标题及默认触发按钮文案。                                | string                               | 'Column settings' |
-| resetText                | 重置按钮文案；重置会显示所有可配置列。                      | string                               | 'Reset'           |
-| showReset                | 是否显示重置按钮。                                          | boolean                              | true              |
-| size                     | 默认触发按钮及勾选框的尺寸。                                | SizeType                             | -                 |
-| children                 | 自定义触发器内容。                                          | ReactNode                            | -                 |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| columns | 列定义；设置面板仅列出顶层无子列的列。 | `Column<T>[]` | [] |
+| hiddenColumnKeys | 隐藏列的 key 集合；在变更回调中更新，并将同一值传给 Table。 | `(string \| number)[]` | [] |
+| onHiddenColumnKeysChange | 切换列或点击重置时触发，返回新的隐藏列 key 集合。 | `((keys: (string \| number)[]) => void)` | - |
+| disabledKeys | 不参与设置的列 key；重置时保留这些列的隐藏状态。 | `(string \| number)[]` | [] |
+| title | 弹层标题及默认触发按钮文案。 | `string` | 'Column settings' |
+| resetText | 重置按钮文案；重置会显示所有可配置列。 | `string` | 'Reset' |
+| showReset | 是否显示重置按钮。 | `boolean` | true |
+| size | 默认触发按钮及勾选框的尺寸。 | `"small" \| "medium" \| "large"` | - |
+| children | 自定义触发器内容。 | `ReactNode` | - |
 
 ## Column API
 

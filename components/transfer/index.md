@@ -34,22 +34,22 @@
 
 ## API
 
-| 属性           | 说明               | 类型                                 | 默认值         |
-| -------------- | ------------------ | ------------------------------------ | -------------- |
-| dataSource     | 数据源             | TransferItem[]                       | []             |
-| targetKeys     | 目标项             | (string\|number)[]                   | []             |
-| titles         | 两侧标题           | [ReactNode, ReactNode]               | Source, Target |
-| operations     | 向右、向左按钮文案 | [string, string]                     | ['', '']       |
-| searchable     | 是否可搜索         | boolean                              | false          |
-| disabled       | 是否禁用           | boolean                              | false          |
-| readOnly       | 是否只读           | boolean                              | false          |
-| theme          | 外观主题           | 'outline' \| 'fill'                  | outline        |
-| filterOption   | 自定义筛选         | (keyword, item) => boolean           | -              |
-| item           | 自定义列表项渲染   | (item) => ReactNode                  | -              |
-| footer         | 自定义列表底部渲染 | (direction) => ReactNode             | -              |
-| onChange       | 数据移动时触发     | (event: TransferChangeEvent) => void | -              |
-| onSelectChange | 选择变化回调       | (sourceKeys, targetKeys) => void     | -              |
-| onSearch       | 搜索框内容变化回调 | (direction, value) => void           | -              |
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| dataSource | 数据源 | `TransferItem[]` | [] |
+| targetKeys | 目标项 | `TransferKey[]` | [] |
+| titles | 两侧标题 | `[import("react").ReactNode, import("react").ReactNode]` | Source, Target |
+| operations | 向右、向左按钮文案 | `[string, string]` | ['', ''] |
+| searchable | 是否可搜索 | `boolean` | false |
+| disabled | 是否禁用 | `boolean` | false |
+| readOnly | 是否只读 | `boolean` | false |
+| theme | 外观主题 | `"fill" \| "outline"` | outline |
+| filterOption | 自定义筛选 | `((keyword: string, item: TransferItem) => boolean)` | - |
+| item | 自定义列表项渲染 | `((item: TransferItem) => React.ReactNode)` | - |
+| footer | 自定义列表底部渲染 | `((direction: "left" \| "right") => React.ReactNode)` | - |
+| onChange | 数据移动时触发 | `((event: TransferChangeEvent) => void)` | - |
+| onSelectChange | 选择变化回调 | `((sourceKeys: TransferKey[], targetKeys: TransferKey[]) => void)` | - |
+| onSearch | 搜索框内容变化回调 | `((direction: "left" \| "right", value: string) => void)` | - |
 
 ### TransferItem
 
