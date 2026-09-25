@@ -47,7 +47,7 @@ function updateThemeColorStyle(value: string) {
   document.body.setAttribute("theme-type", "custom");
 }
 
-export default function AppHeader() {
+export default function AppHeader({ leading }: { leading?: ReactNode } = {}) {
   const navigate = useNavigate();
   const location = useLocation();
   const { lang, changeLang, t } = useDocs();
@@ -125,6 +125,7 @@ export default function AppHeader() {
   return (
     <Header className="header">
       <div className="header-inner">
+        {leading ?? (
         <div className="logo" onClick={() => navigate("/")}>
           <img src="/favicon.svg" className="face" />
           <span className="wrap-name">
@@ -132,6 +133,7 @@ export default function AppHeader() {
             <span className="ver">v {version}</span>
           </span>
         </div>
+        )}
         <Divider type="vertical" />
         <div className="search-component">
           <Select

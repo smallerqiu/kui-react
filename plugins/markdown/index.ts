@@ -4,6 +4,7 @@ import xml from "highlight.js/lib/languages/xml";
 import MarkdownIt, { type MarkdownIt as MarkdownItType } from "markdown-it";
 import anchor from "markdown-it-anchor";
 import path from "path";
+import { format, resolveConfig } from "prettier";
 import ts from "typescript";
 import { type Plugin } from "vite";
 
@@ -68,7 +69,7 @@ export default function vitePluginKuiMd(): Plugin {
     name: "vite-plugin-kui-md",
     enforce: "pre",
 
-    transform(code, id) {
+    async transform(code, id) {
       if (!id.endsWith(".md")) return null;
 
       const liveDemos: LiveDemo[] = [];
@@ -78,11 +79,7 @@ export default function vitePluginKuiMd(): Plugin {
         (_, title: string, src: string, query = "", descBlock = "") => {
           const absolutePath = path.resolve(path.dirname(id), src);
           const source = fs.readFileSync(absolutePath, "utf-8");
-          const highlightedSource = hljs.highlight(source, { language: "tsx" }).value;
           const javaScriptSource = toJavaScriptTsx(source);
-          const highlightedJavaScriptSource = hljs.highlight(javaScriptSource, {
-            language: "jsx",
-          }).value;
           const params = new URLSearchParams(query.replace(/^\?/, ""));
           const show = params.get("show");
           const useDemo = params.get("demo") !== "false";
@@ -98,15 +95,29 @@ export default function vitePluginKuiMd(): Plugin {
             useDemo,
             title,
             source,
-            highlightedSource,
+            highlightedSource: "",
             javaScriptSource,
-            highlightedJavaScriptSource,
+            highlightedJavaScriptSource: "",
             direction,
             description,
             localModules,
           });
           return `\n\n<!--KUI_LIVE_DEMO_${index}-->\n\n`;
         }
+      );
+
+      await Promise.all(
+        liveDemos.map(async (demo) => {
+          const options = await resolveConfig(path.resolve(path.dirname(id), demo.component));
+          [demo.source, demo.javaScriptSource] = await Promise.all([
+            format(demo.source, { ...options, parser: "typescript" }),
+            format(demo.javaScriptSource, { ...options, parser: "babel" }),
+          ]);
+          demo.highlightedSource = hljs.highlight(demo.source, { language: "tsx" }).value;
+          demo.highlightedJavaScriptSource = hljs.highlight(demo.javaScriptSource, {
+            language: "jsx",
+          }).value;
+        }),
       );
 
       const mainHtml = markdown.render(processedMarkdown);

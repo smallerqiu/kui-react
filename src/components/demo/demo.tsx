@@ -20,7 +20,7 @@ import {
 import * as ReactKUI from "react-kui";
 import { Badge, Button, message, RadioGroup, Tooltip, type BadgeStatusType } from "react-kui";
 import * as Share from "react-kui/utils/share";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import * as JSXRuntime from "react/jsx-runtime";
 import { transform } from "sucrase";
 import { useDocs } from "../../context";
@@ -42,6 +42,7 @@ export interface DemoProps {
   autoCompile?: boolean;
   modules?: Record<string, unknown>;
   children?: ReactNode;
+  onSourceChange?: (source: { ts: string; js: string; language: "ts" | "js" }) => void;
 }
 
 type BuildState = { state: BadgeStatusType; text: string };
@@ -91,8 +92,10 @@ export default function Demo({
   autoCompile = false,
   modules = emptyRuntimeModules,
   children,
+  onSourceChange,
 }: DemoProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useDocs();
   const [expanded, setExpanded] = useState(direction !== "vertical");
   const containerRef = useRef<HTMLElement>(null);
@@ -180,11 +183,12 @@ export default function Demo({
   const scheduleCompile = useCallback(
     (language: CodeLanguage, nextSource: string) => {
       draftSources.current[language] = nextSource;
+      onSourceChange?.({ ...draftSources.current, language });
       setBuildState({ state: "default", text: "text.building" });
       clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => compile(nextSource), 500);
     },
-    [compile],
+    [compile, onSourceChange],
   );
 
   const handleRenderError = useCallback((reason: Error) => {
@@ -226,6 +230,7 @@ export default function Demo({
     clearTimeout(timerRef.current);
     const originalSource = originalSources.current[codeLanguage];
     draftSources.current[codeLanguage] = originalSource;
+    onSourceChange?.({ ...draftSources.current, language: codeLanguage });
     codeJarRef.current?.updateCode(originalSource, false);
     compile(originalSource);
   };
@@ -234,6 +239,7 @@ export default function Demo({
     if (language === codeLanguage) return;
     clearTimeout(timerRef.current);
     setCodeLanguage(language);
+    onSourceChange?.({ ...draftSources.current, language });
     compile(draftSources.current[language]);
   };
 
@@ -261,7 +267,7 @@ export default function Demo({
         language: codeLanguage,
       }),
     );
-    navigate("/playground");
+    navigate("/playground", { state: { playgroundFrom: location.pathname + location.search + location.hash } });
   };
 
   return (

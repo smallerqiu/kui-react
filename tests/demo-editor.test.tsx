@@ -94,15 +94,14 @@ describe("Demo editor", () => {
   it("keeps the collapsed preview, toolbar, and editor draft mounted", () => {
     vi.useFakeTimers();
     const view = mountDemo();
-    const codeBox = view.container.querySelector<HTMLElement>(".k-code-box")!;
     const code = view.container.querySelector(".k-code")!;
-    expect(codeBox.style.height).toBe("80px");
+    expect(view.container.querySelector(".k-demo")?.classList.contains("k-demo-expanded")).toBe(false);
     expect(view.container.querySelector(".k-demo-vertical")).not.toBeNull();
     expect(view.getByText("可实时编辑")).not.toBeNull();
     expect(view.container.querySelector(".k-code-tools")).not.toBeNull();
     act(() => editors[0].update(draft));
     fireEvent.click(view.getByRole("button", { name: "展开代码" }));
-    expect(codeBox.style.height).toBe("");
+    expect(view.container.querySelector(".k-demo")?.classList.contains("k-demo-expanded")).toBe(true);
     fireEvent.click(view.getByRole("button", { name: "收起代码" }));
     expect(view.container.querySelector(".k-code")).toBe(code);
     expect(code.textContent).toBe(draft);
