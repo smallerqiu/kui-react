@@ -6,11 +6,12 @@ import javascript from "highlight.js/lib/languages/javascript";
 import typescript from "highlight.js/lib/languages/typescript";
 import xml from "highlight.js/lib/languages/xml";
 import * as Icons from "kui-icons";
-import { Copy, ListChevronsDownUp, ListChevronsUpDown, Play, Undo2 } from "kui-icons";
+import { Copy, Play, Undo2 } from "kui-icons";
 import * as React from "react";
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type ComponentType,
@@ -24,6 +25,7 @@ import * as JSXRuntime from "react/jsx-runtime";
 import { transform } from "sucrase";
 import { useDocs } from "../../context";
 import { CodePen, CodeSandbox, Stackblitz } from "./icons";
+import { observeDemoWidth } from "./responsive";
 import { openCodePen, openCodeSandbox, openStackBlitz } from "./utils";
 
 export interface DemoProps {
@@ -93,6 +95,14 @@ export default function Demo({
   const navigate = useNavigate();
   const { t } = useDocs();
   const [expanded, setExpanded] = useState(direction !== "vertical");
+  const containerRef = useRef<HTMLElement>(null);
+  const [narrow, setNarrow] = useState(false);
+  useLayoutEffect(() => {
+    if (containerRef.current) return observeDemoWidth(containerRef.current, setNarrow);
+  }, []);
+  const effectiveDirection = direction === "vertical" || narrow ? "vertical" : "horizontal";
+  const displayExpanded = effectiveDirection === "horizontal" || expanded;
+
   const [preview, setPreview] = useState<ReactNode>(children);
   const [previewKey, setPreviewKey] = useState(0);
   const [buildState, setBuildState] = useState<BuildState>({
@@ -202,6 +212,9 @@ export default function Demo({
     );
     jar.updateCode(draftSources.current[language], false);
     jar.onUpdate((code) => scheduleCompile(language, code));
+    Object.assign(editor.style, {
+      overflowY: "",
+    });
     codeJarRef.current = jar;
     return () => {
       jar.destroy();
@@ -252,15 +265,22 @@ export default function Demo({
   };
 
   return (
-    <section className={clsx("markdown-body", "k-demo-container", { "k-demo-expanded": expanded })}>
+    <section
+      ref={containerRef}
+      className={clsx("markdown-body", "k-demo-container", { "k-demo-expanded": displayExpanded })}
+    >
       <div className="k-desc">
         <div className="k-desc-content">
           <h3>{title}</h3>
           {descriptionHtml && <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />}
         </div>
       </div>
-      <div className={clsx("k-demo", `k-demo-${direction}`, { "k-demo-expanded": expanded })}>
-        <div className={`k-demo-view k-demo-view-${direction}`}>
+      <div
+        className={clsx("k-demo", `k-demo-${effectiveDirection}`, {
+          "k-demo-expanded": displayExpanded,
+        })}
+      >
+        <div className={`k-demo-view k-demo-view-${effectiveDirection}`}>
           <div className="k-content k-scroll">
             <DemoErrorBoundary key={previewKey} onError={handleRenderError}>
               {preview}
@@ -268,7 +288,7 @@ export default function Demo({
             {error && <pre className="k-demo-error">{error}</pre>}
           </div>
         </div>
-        <div className="k-code-box" style={{ height: expanded ? undefined : 80 }}>
+        <div className="k-code-box">
           <div className="k-code-tools" contentEditable={false}>
             <Badge
               status={buildState.state}
@@ -337,19 +357,17 @@ export default function Demo({
           </div>
           <div ref={codeRef} className="k-code k-scroll hljs" key={codeLanguage} />
         </div>
-        {direction !== "horizontal" && (
+        {effectiveDirection !== "horizontal" && (
           <div className="k-code-actions">
-            <Tooltip title={t(expanded ? "text.collapse_code" : "text.expand_code")}>
-              <Button
-                block
-                size="large"
-                type="text"
-                aria-label={t(expanded ? "text.collapse_code" : "text.expand_code")}
-                aria-expanded={expanded}
-                icon={expanded ? ListChevronsDownUp : ListChevronsUpDown}
-                onClick={() => setExpanded((value) => !value)}
-              />
-            </Tooltip>
+            <Button
+              theme="outline"
+              shape="circle"
+              aria-label={t(expanded ? "text.collapse_code" : "text.expand_code")}
+              aria-expanded={expanded}
+              onClick={() => setExpanded((value) => !value)}
+            >
+              View Source
+            </Button>
           </div>
         )}
       </div>

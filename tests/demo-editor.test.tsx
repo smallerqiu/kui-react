@@ -38,7 +38,7 @@ vi.mock("codejar", () => ({
 
 const source = "export default function App() { return <span>Original</span>; }";
 const draft = "export default function App() { return <span>Edited</span>; }";
-const mountDemo = () =>
+const mountDemo = (direction = "vertical") =>
   render(
     <MemoryRouter>
       <DocsContext.Provider
@@ -49,7 +49,7 @@ const mountDemo = () =>
           t: (key) => zh.text[key.replace("text.", "") as keyof typeof zh.text] || key,
         }}
       >
-        <Demo source={source} javaScriptSource={source} direction="vertical">
+        <Demo source={source} javaScriptSource={source} direction={direction}>
           <span>Original</span>
         </Demo>
       </DocsContext.Provider>
@@ -62,6 +62,35 @@ afterEach(() => {
 });
 
 describe("Demo editor", () => {
+  it("preserves the editor and draft when switching responsive layouts", () => {
+    vi.useFakeTimers();
+    let width = 1000;
+    const original = HTMLElement.prototype.getBoundingClientRect;
+    const measure = vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
+      return this.classList.contains("k-demo-container") ? { width } as DOMRect : original.call(this);
+    });
+    const view = mountDemo("horizontal");
+    const code = view.container.querySelector(".k-code");
+    act(() => editors[0].update(draft));
+    const resize = (next: number) => {
+      width = next;
+      fireEvent(window, new Event("resize"));
+    };
+    resize(700);
+    expect(view.container.querySelector(".k-demo-vertical")).not.toBeNull();
+    expect(view.container.querySelector(".k-code")).toBe(code);
+    expect(code?.textContent).toBe(draft);
+    fireEvent.click(view.getByRole("button", { name: "收起代码" }));
+    resize(820);
+    expect(view.container.querySelector(".k-demo-vertical")).not.toBeNull();
+    resize(900);
+    expect(view.container.querySelector(".k-demo-horizontal")).not.toBeNull();
+    expect(view.container.querySelector<HTMLElement>(".k-code-box")!.style.height).toBe("");
+    expect(editors).toHaveLength(1);
+    view.unmount();
+    measure.mockRestore();
+  });
+
   it("keeps the collapsed preview, toolbar, and editor draft mounted", () => {
     vi.useFakeTimers();
     const view = mountDemo();

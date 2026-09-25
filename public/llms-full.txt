@@ -1,4 +1,4 @@
-# React KUI 3.1.0
+# React KUI 3.1.1
 
 React 19.2+ library. Package: react-kui. Import CSS once from react-kui/style/index.css. Prefer installed-version metadata. Use JSX/TSX, not Vue templates or v-model.
 
@@ -23910,6 +23910,19 @@ export default function App() {
       "descriptionEn": "Whether to use simple pagination mode"
     },
     {
+      "name": "responsive",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "true",
+      "descriptionZh": "是否根据容器可用宽度自动调整分页布局",
+      "descriptionEn": "Adapt pagination to the available container width"
+    },
+    {
       "name": "disabled",
       "type": "boolean | undefined",
       "required": false,
@@ -24197,6 +24210,30 @@ export default function App() {
       />
       <Page page={3} simple disabled total={80} pageSize={10} />
     </Space>
+  );
+}
+```
+## 自适应分页
+
+```tsx
+import { Page } from "react-kui";
+
+export default function App() {
+  return (
+    <div
+      style={{
+        width: 720,
+        maxWidth: "100%",
+        minWidth: 180,
+        resize: "horizontal",
+        overflow: "auto",
+        padding: 16,
+        boxSizing: "border-box",
+        border: "1px solid var(--kui-color-border)",
+      }}
+    >
+      <Page total={10000} page={50} showSizer showElevator />
+    </div>
   );
 }
 ```

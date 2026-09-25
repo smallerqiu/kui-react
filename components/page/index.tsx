@@ -1,11 +1,12 @@
 import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { ChevronsLeft, ChevronsRight, ChevronUp, Ellipsis } from "kui-icons";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef, useLayoutEffect } from "react";
 import { ConfigContext } from "../config/config-context";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 import Icon from "../icon";
 import InputNumber from "../input-number";
+import { bindResponsivePage } from "./responsive";
 import zhCN from "../locale/zh-CN";
 import Select from "../select/select";
 
@@ -14,6 +15,7 @@ export interface PageProps extends Omit<
   "onChange" | "defaultValue" | "defaultChecked"
 > {
   simple?: boolean;
+  responsive?: boolean;
   disabled?: boolean;
   showSizer?: boolean;
   showTotal?: boolean;
@@ -30,6 +32,7 @@ export interface PageProps extends Omit<
 
 const Page: React.FC<PageProps> = ({
   simple = false,
+  responsive = true,
   disabled = false,
   showSizer = false,
   showTotal = true,
@@ -45,6 +48,11 @@ const Page: React.FC<PageProps> = ({
   className = "",
   ...rest
 }) => {
+  const rootRef = useRef<HTMLElement>(null);
+  useLayoutEffect(() => {
+    if (!rootRef.current || !responsive || simple) return;
+    return bindResponsivePage(rootRef.current);
+  }, [responsive, simple]);
   const inheritedAppearance = useConfigAppearance();
   const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
   const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
@@ -108,7 +116,7 @@ const Page: React.FC<PageProps> = ({
   };
 
   // Build middle page numbers
-  const renderPageItems = () => {
+  const renderPageItems = (compact = false) => {
     const groupCount = 7;
     const page = currentPage;
     const pCount = pageCount;
@@ -131,6 +139,14 @@ const Page: React.FC<PageProps> = ({
       for (let i = page - offset; i <= page + offset; i++) array.push(i);
     } else {
       for (let i = 2; i < pCount; i++) array.push(i);
+    }
+
+    if (compact && pCount > 5) {
+      array.length = 0;
+      const middle = Math.min(pCount - 1, Math.max(2, page));
+      array.push(middle);
+      showPrevMore = middle > 2;
+      showNextMore = middle < pCount - 1;
     }
 
     const items: React.ReactNode[] = array.map((p) => (
@@ -195,6 +211,7 @@ const Page: React.FC<PageProps> = ({
       "k-page-outline": theme === "outline",
       "k-page-disabled": disabled,
       "k-page-simple": simple,
+      "k-page-responsive": responsive && !simple,
       [`k-page-${shape}`]: shape,
     },
     className,
@@ -205,17 +222,10 @@ const Page: React.FC<PageProps> = ({
     label: `${s}${locale?.k?.page?.pageSize || " / page"}`,
   }));
 
-  return (
-    <nav className={classes} aria-label="Pagination" {...rest}>
-      {showTotal && !simple ? (
-        <div className="k-page-number">
-          <span>
-            {locale?.k?.page?.total} {total} {locale?.k?.page?.items}
-          </span>
-        </div>
-      ) : null}
-
-      <ul className="k-pager">
+  const renderPager = (layout: "full" | "compact" | "simple") => {
+    const pagerSimple = simple || layout === "simple";
+    return (
+      <ul className="k-pager" data-page-pager={layout} hidden={layout !== "full"}>
         {/* Prev */}
         <li
           className={clsx("k-pager-item k-pager-prev", {
@@ -232,7 +242,7 @@ const Page: React.FC<PageProps> = ({
         </li>
 
         {/* First page */}
-        {!simple && pageCount > 0 && (
+        {!pagerSimple && pageCount > 0 && (
           <li
             className={clsx("k-pager-item", { "k-pager-item-active": currentPage === 1 })}
             role="button"
@@ -247,10 +257,10 @@ const Page: React.FC<PageProps> = ({
         )}
 
         {/* Middle pages */}
-        {!simple && renderPageItems()}
+        {!pagerSimple && renderPageItems(layout === "compact")}
 
         {/* Last page */}
-        {!simple && pageCount > 1 && (
+        {!pagerSimple && pageCount > 1 && (
           <li
             className={clsx("k-pager-item", { "k-pager-item-active": currentPage === pageCount })}
             role="button"
@@ -264,7 +274,7 @@ const Page: React.FC<PageProps> = ({
           </li>
         )}
 
-        {simple && (
+        {pagerSimple && (
           <li className="k-page-simple-number" aria-current="page">
             {showElevator ? (
               <span className="k-page-simple-input">
@@ -303,6 +313,22 @@ const Page: React.FC<PageProps> = ({
           <Icon type={ChevronUp} />
         </li>
       </ul>
+    );
+  };
+
+  return (
+    <nav className={classes} aria-label="Pagination" {...rest} ref={rootRef}>
+      {showTotal && !simple ? (
+        <div className="k-page-number">
+          <span>
+            {locale?.k?.page?.total} {total} {locale?.k?.page?.items}
+          </span>
+        </div>
+      ) : null}
+
+      {renderPager("full")}
+      {responsive && !simple && renderPager("compact")}
+      {responsive && !simple && renderPager("simple")}
 
       {/* Page size sizer */}
       {!simple && showSizer && (
