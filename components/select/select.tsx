@@ -210,16 +210,21 @@ const Select: React.FC<SelectProps> = ({
     containerEl.scrollTop = targetScroll;
   };
 
-  const labelText = useMemo(() => {
-    if (!optionsData || optionsData.length === 0) {
-      return [];
-    }
-    const lookup = new Map<string | number, string | number>();
-    optionsData.forEach((item) => {
-      lookup.set(item.value, item.label);
-    });
-    return currentValue.map((val) => lookup.get(val) ?? val);
-  }, [optionsData, currentValue]);
+  const [selectedLabels, setSelectedLabels] = useState(new Map<string | number, string | number>());
+  // Search results are transient. Retain labels only for values that remain selected.
+  const lookup = new Map(
+    (loading && options ? options : optionsData).map((item) => [item.value, item.label]),
+  );
+  const nextLabels = new Map(
+    currentValue.map((val) => [val, lookup.get(val) ?? selectedLabels.get(val) ?? val]),
+  );
+  if (
+    nextLabels.size !== selectedLabels.size ||
+    [...nextLabels].some(([val, label]) => selectedLabels.get(val) !== label)
+  ) {
+    setSelectedLabels(nextLabels);
+  }
+  const labelText = currentValue.map((val) => nextLabels.get(val)!);
 
   const isChecked = (val: string | number) => {
     if (multiple) {
@@ -366,14 +371,13 @@ const Select: React.FC<SelectProps> = ({
   }
 
   useLayoutEffect(() => {
-    if (!visible) return;
-    if (queryInputMirrorRef.current && queryInputRef.current) {
+    if (queryInputVisible && queryInputMirrorRef.current && queryInputRef.current) {
       const availableWidth = Math.max((refSelection.current?.clientWidth || 0) - 40, 7);
       const contentWidth = Math.max(queryInputMirrorRef.current.offsetWidth + 2, 7);
       queryInputRef.current.style.width = `${Math.min(contentWidth, availableWidth)}px`;
     }
-    updatePosition();
-  }, [visible, queryKey, optionsData, loading, updatePosition]);
+    if (visible) updatePosition();
+  }, [visible, queryInputVisible, queryKey, optionsData, loading, updatePosition]);
 
   const moveActive = (direction: 1 | -1) => {
     const filtered = filterOptions();

@@ -14,6 +14,12 @@ Vite seems to cache builds—you can manually clear it:
 rm -rf node_modules/.vite
 ```
 
+### 3.1.2
+
+`2026-09-26`
+
+- `Select`: Preserve selected labels when remote search results are empty, loading, or omit selected options; dim the selected text when refocusing single-select remote search, matching local search; update the search input width immediately while typing.
+
 ### 3.1.1
 
 `2026-09-25`
