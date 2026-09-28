@@ -20,7 +20,7 @@ English · [简体中文](README.zh-CN.md)
 
 ![React KUI theme preview](.github/assets/demo.png)
 
-<p align="center"><code>pnpm add kui-vue</code></p>
+<p align="center"><code>pnpm add react-kui</code></p>
 
 ## Features
 
