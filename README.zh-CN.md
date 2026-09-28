@@ -18,7 +18,9 @@
 
 </div>
 
-![React KUI 主题预览](demo.png)
+![React KUI 主题预览](.github/assets/demo.png)
+
+<p align="center"><code>pnpm add kui-vue</code></p>
 
 ## 特性
 
