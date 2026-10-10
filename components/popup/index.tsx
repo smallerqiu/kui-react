@@ -347,6 +347,9 @@ const Popup = forwardRef<PopupRef, PopupProps>(function Popup(
       <span>{nodes}</span>
     );
   const original = candidate.props;
+  // A plain menu item has no popup of its own, so a wrapper popup must not make it
+  // report an expansion state (aria-expanded is only meaningful with aria-haspopup).
+  const hidesExpansionAria = original.role === "menuitem" && !original["aria-haspopup"];
   const triggerNode = target
     ? candidate
     : React.cloneElement(candidate, {
@@ -355,7 +358,7 @@ const Popup = forwardRef<PopupRef, PopupProps>(function Popup(
           selectionRef.current = node;
           setRef(original.ref, node);
         },
-        "aria-expanded": visible,
+        ...(hidesExpansionAria ? {} : { "aria-expanded": visible }),
         onTouchStart: (event: React.TouchEvent<HTMLElement>) => {
           original.onTouchStart?.(event);
           if (trigger === "hover") request(true, { reason: "hover", event: event.nativeEvent });

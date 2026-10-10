@@ -1,6 +1,7 @@
 import { useValue } from "../utils/use-value";
 import clsx from "clsx";
 import React, {
+  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -17,6 +18,9 @@ import SubMenu from "./sub-menu";
 import { getChildren } from "../utils/react-node";
 
 const overflowMenuKey = "__kui_menu_overflow__";
+
+// Shared empty array so "no visible open keys" keeps a stable identity.
+const EMPTY_KEYS: string[] = [];
 
 export interface MenuSelectEvent {
   key: string;
@@ -69,6 +73,9 @@ export const Menu: React.FC<MenuProps> = ({
   style,
   ...rest
 }) => {
+  // `inlineCollapsed` only collapses an inline menu; horizontal and vertical
+  // menus are popup based, so the flag must not change their presentation.
+  const collapsedInline = mode === "inline" && inlineCollapsed;
   const dropdownContext = useDropdownContext();
   const [internalSelectedKeys, setInternalSelectedKeys] = useValue(
     value,
@@ -80,10 +87,10 @@ export const Menu: React.FC<MenuProps> = ({
   );
   const [popupOpenKeys, setPopupOpenKeys] = useState<string[]>([]);
   const [collapseState, setCollapseState] = useState({
-    inlineCollapsed,
-    popupReady: inlineCollapsed,
+    inlineCollapsed: collapsedInline,
+    popupReady: collapsedInline,
   });
-  const [inlineOpenVisible, setInlineOpenVisible] = useState(!inlineCollapsed);
+  const [inlineOpenVisible, setInlineOpenVisible] = useState(!collapsedInline);
   const [inlineTransition, setInlineTransition] = useState(false);
   const collapseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const collapseFrame = useRef(0);
@@ -92,73 +99,80 @@ export const Menu: React.FC<MenuProps> = ({
   const overflowWidth = useRef(0);
   const [visibleCount, setVisibleCount] = useState(Number.POSITIVE_INFINITY);
 
-  // --- tempOpenKeys: save/restore openKeys during mode switch & collapse ---
+  // --- tempOpenKeys: save/restore openKeys while the inline menu is collapsed ---
   // Using useState so React tracks changes and the value is available during render.
   const [tempOpenKeys, setTempOpenKeys] = useState<string[]>(openKeys ?? []);
 
   // Render-time change detection (React "adjusting state when prop changes" pattern)
-  const [prevMode, setPrevMode] = useState(mode);
   const [prevInlineCollapsed, setPrevInlineCollapsed] = useState(inlineCollapsed);
 
   // Effect-time change detection (refs, only read/written inside effects)
-  const prevCollapsedEffectRef = useRef(inlineCollapsed);
+  const prevCollapsedEffectRef = useRef(collapsedInline);
 
-  // Sync collapseState when inlineCollapsed prop changes
-  if (collapseState.inlineCollapsed !== inlineCollapsed) {
-    setCollapseState({ inlineCollapsed, popupReady: false });
+  // Sync collapseState when the collapsed presentation changes
+  if (collapseState.inlineCollapsed !== collapsedInline) {
+    setCollapseState({ inlineCollapsed: collapsedInline, popupReady: false });
   }
 
-  // Mode switch: save/restore openKeys (adjusting state during render)
-  if (prevMode !== mode) {
-    setPrevMode(mode);
-    if (mode === "vertical") {
-      const current = internalOpenKeys;
-      if (current.length > 0) setTempOpenKeys([...current]);
-      setInternalOpenKeys([]);
-    } else if (!inlineCollapsed && tempOpenKeys.length > 0) {
-      setInternalOpenKeys([...tempOpenKeys]);
-    }
-  }
-
-  // inlineCollapsed: save/restore openKeys (adjusting state during render)
+  // Collapsing hides the inline expansion, expanding restores it. This memory is
+  // driven only by the `inlineCollapsed` prop while the menu is inline: switching
+  // `mode` never rewrites it, and a menu the user closed by hand stays closed.
   if (prevInlineCollapsed !== inlineCollapsed) {
     setPrevInlineCollapsed(inlineCollapsed);
-    setInlineTransition(true);
-    if (inlineCollapsed) {
-      const current = internalOpenKeys;
-      if (!inlineTransition) setTempOpenKeys([...current]);
-      setInternalOpenKeys([]);
-    } else if (tempOpenKeys.length > 0) {
-      setInternalOpenKeys([...tempOpenKeys]);
+    if (mode === "inline") {
+      setInlineTransition(true);
+      if (collapsedInline) {
+        if (!inlineTransition) setTempOpenKeys([...internalOpenKeys]);
+        setInternalOpenKeys([]);
+      } else if (tempOpenKeys.length > 0) {
+        setInternalOpenKeys([...tempOpenKeys]);
+      }
     }
+  }
+
+  // While the inline menu is collapsed the visible expansion is the transient popup
+  // path, so an external `openKeys` update cannot be applied to the hidden inline path —
+  // it restates the intended expansion, and that lives in the collapse memory until the
+  // menu widens again. Outside inline mode the prop drives popups directly (useValue).
+  const [prevOpenKeysProp, setPrevOpenKeysProp] = useState(openKeys);
+  if (openKeys !== prevOpenKeysProp) {
+    setPrevOpenKeysProp(openKeys);
+    // A collapsed popup's own `onOpenChange` comes back down as a prop update. That value
+    // is the transient hover path rather than a new expansion intent, so it must not
+    // overwrite the memory the menu restores when it widens again.
+    const popupEcho =
+      openKeys !== undefined &&
+      openKeys.length === popupOpenKeys.length &&
+      openKeys.every((key, index) => key === popupOpenKeys[index]);
+    if (collapsedInline && !popupEcho) setTempOpenKeys(openKeys ? [...openKeys] : []);
   }
 
   const currentSelectedKeys =
     value === undefined && selectedKeys !== undefined ? selectedKeys : internalSelectedKeys;
   const currentOpenKeys = internalOpenKeys;
   const popupInlineCollapsed =
-    inlineCollapsed &&
-    collapseState.inlineCollapsed === inlineCollapsed &&
+    collapsedInline &&
+    collapseState.inlineCollapsed === collapsedInline &&
     collapseState.popupReady;
   const visibleOpenKeys = popupInlineCollapsed
     ? popupOpenKeys
     : inlineOpenVisible
       ? currentOpenKeys
-      : [];
+      : EMPTY_KEYS;
 
   // Preserve the expanded path across collapsed presentation changes.
   // Keep the expanded path intact so it can be restored when inline mode returns.
   useEffect(() => {
-    const changed = prevCollapsedEffectRef.current !== inlineCollapsed;
-    prevCollapsedEffectRef.current = inlineCollapsed;
+    const changed = prevCollapsedEffectRef.current !== collapsedInline;
+    prevCollapsedEffectRef.current = collapsedInline;
 
     if (changed) {
       cancelAnimationFrame(collapseFrame.current);
       collapseFrame.current = requestAnimationFrame(() => {
-        setInlineOpenVisible(!inlineCollapsed);
-        if (inlineCollapsed) setPopupOpenKeys([]);
+        setInlineOpenVisible(!collapsedInline);
+        if (collapsedInline) setPopupOpenKeys([]);
       });
-      if (inlineCollapsed) {
+      if (collapsedInline) {
         collapseTimer.current = setTimeout(() => {
           setCollapseState((current) =>
             current.inlineCollapsed ? { ...current, popupReady: true } : current,
@@ -171,7 +185,9 @@ export const Menu: React.FC<MenuProps> = ({
           setInlineTransition(false);
           collapseTimer.current = null;
         }, 350);
-        if (openKeys !== undefined && tempOpenKeys.length > 0) {
+        // Mirror the render-time restore above: report the remembered path back
+        // only when the menu really returns to an expanded inline presentation.
+        if (openKeys !== undefined && mode === "inline" && tempOpenKeys.length > 0) {
           onOpenChange?.([...tempOpenKeys]);
         }
       }
@@ -182,40 +198,84 @@ export const Menu: React.FC<MenuProps> = ({
       if (collapseTimer.current) clearTimeout(collapseTimer.current);
       collapseTimer.current = null;
     };
-  }, [inlineCollapsed]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [collapsedInline]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const selectedKeysChange = (key: string, selected: boolean, keyPath: string[]) => {
-    keyPath = keyPath.filter((itemKey) => itemKey !== overflowMenuKey);
+  // Handlers keep a stable identity so consumers' memos and hover timers are not
+  // rebuilt on every render; the values they act on are read from this ref.
+  const latest = useRef({
+    mode,
+    collapsedInline,
+    value,
+    selectedKeys,
+    accordion,
+    currentSelectedKeys,
+    currentOpenKeys,
+    popupOpenKeys,
+    tempOpenKeys,
+    onSelect,
+    onOpenChange,
+    onChange,
+    // The setters keep their own identity across renders, so they are captured once
+    // here and merged back in below instead of being rewritten every commit.
+    setInternalSelectedKeys,
+    setInternalOpenKeys,
+    setPopupOpenKeys,
+    menuSelected: dropdownContext?.menuSelected,
+  });
+  useLayoutEffect(() => {
+    latest.current = {
+      ...latest.current,
+      mode,
+      collapsedInline,
+      value,
+      selectedKeys,
+      accordion,
+      currentSelectedKeys,
+      currentOpenKeys,
+      popupOpenKeys,
+      tempOpenKeys,
+      onSelect,
+      onOpenChange,
+      onChange,
+      menuSelected: dropdownContext?.menuSelected,
+    };
+    // No dependency list: mirroring the newest render into the ref after every
+    // commit is the whole point of this pattern.
+  });
+
+  const selectedKeysChange = useCallback((key: string, selected: boolean, rawKeyPath: string[]) => {
+    const state = latest.current;
+    const keyPath = rawKeyPath.filter((itemKey) => itemKey !== overflowMenuKey);
     const nextSelected = selected
       ? [...keyPath, key]
-      : currentSelectedKeys.filter((itemKey) => itemKey !== key);
+      : state.currentSelectedKeys.filter((itemKey) => itemKey !== key);
 
-    if (value !== undefined || selectedKeys === undefined) setInternalSelectedKeys(nextSelected);
-    onChange?.(nextSelected);
-    onSelect?.({ key, keyPath });
-
-    if (mode === "horizontal" || mode === "vertical" || inlineCollapsed) {
-      if (inlineCollapsed) {
-        setPopupOpenKeys([]);
-        onOpenChange?.([]);
-        dropdownContext?.menuSelected?.({ key, keyPath });
-        return;
-      }
-      const current = internalOpenKeys;
-      if (current.length > 0) {
-        setTempOpenKeys([...current]);
-      }
-      setInternalOpenKeys([]);
-      onOpenChange?.([]);
+    if (state.value !== undefined || state.selectedKeys === undefined) {
+      state.setInternalSelectedKeys(nextSelected);
     }
-    dropdownContext?.menuSelected?.({ key, keyPath });
-  };
+    state.onChange?.(nextSelected);
+    state.onSelect?.({ key, keyPath });
 
-  const openKeysChange = (key: string, opened: boolean, keyPath: string[]) => {
-    keyPath = keyPath.filter((itemKey) => itemKey !== overflowMenuKey);
-    const sourceOpenKeys = inlineCollapsed ? popupOpenKeys : currentOpenKeys;
+    // Selecting closes the popups that drove the click, and only an actually open
+    // popup is reported closed so `onOpenChange` listeners never see a spurious [].
+    if (state.collapsedInline) {
+      if (state.popupOpenKeys.length > 0) {
+        state.setPopupOpenKeys([]);
+        state.onOpenChange?.([]);
+      }
+    } else if (state.mode !== "inline" && state.currentOpenKeys.length > 0) {
+      state.setInternalOpenKeys([]);
+      state.onOpenChange?.([]);
+    }
+    state.menuSelected?.({ key, keyPath });
+  }, []);
+
+  const openKeysChange = useCallback((key: string, opened: boolean, rawKeyPath: string[]) => {
+    const state = latest.current;
+    const keyPath = rawKeyPath.filter((itemKey) => itemKey !== overflowMenuKey);
+    const sourceOpenKeys = state.collapsedInline ? state.popupOpenKeys : state.currentOpenKeys;
     let nextOpenKeys: string[];
-    if (accordion) {
+    if (state.accordion) {
       nextOpenKeys = opened ? [...keyPath, key] : keyPath;
     } else if (opened) {
       nextOpenKeys = sourceOpenKeys.includes(key) ? sourceOpenKeys : [...sourceOpenKeys, key];
@@ -223,32 +283,48 @@ export const Menu: React.FC<MenuProps> = ({
       nextOpenKeys = sourceOpenKeys.filter((itemKey) => itemKey !== key);
     }
 
-    if (inlineCollapsed) setPopupOpenKeys(nextOpenKeys);
-    else setInternalOpenKeys(nextOpenKeys);
-    onOpenChange?.(nextOpenKeys);
-  };
+    if (state.collapsedInline) state.setPopupOpenKeys(nextOpenKeys);
+    else state.setInternalOpenKeys(nextOpenKeys);
+    state.onOpenChange?.(nextOpenKeys);
+  }, []);
 
   const dropdown = dropdownContext != null;
-  const menuState: MenuContextProps = {
-    theme,
-    openKeys: visibleOpenKeys,
-    selectedKeys: currentSelectedKeys,
-    mode,
-    inlineCollapsed,
-    collapsedTooltip,
-    popupInlineCollapsed,
-    inlineTransition,
-    inlineOpenKeys: tempOpenKeys,
-    dropdown,
-    openKeysChange,
-    selectedKeysChange,
-  };
+  const menuState: MenuContextProps = useMemo(
+    () => ({
+      theme,
+      openKeys: visibleOpenKeys,
+      selectedKeys: currentSelectedKeys,
+      mode,
+      inlineCollapsed,
+      collapsedTooltip,
+      popupInlineCollapsed,
+      inlineTransition,
+      inlineOpenKeys: tempOpenKeys,
+      dropdown,
+      openKeysChange,
+      selectedKeysChange,
+    }),
+    [
+      theme,
+      visibleOpenKeys,
+      currentSelectedKeys,
+      mode,
+      inlineCollapsed,
+      collapsedTooltip,
+      popupInlineCollapsed,
+      inlineTransition,
+      tempOpenKeys,
+      dropdown,
+      openKeysChange,
+      selectedKeysChange,
+    ],
+  );
   const preCls = dropdown ? "dropdown-menu" : "menu";
   const cls = clsx(
     `k-${preCls}`,
     `k-${preCls}-${mode}`,
     { "k-scroll": dropdown },
-    inlineCollapsed && `k-${preCls}-inline-collapsed`,
+    collapsedInline && `k-${preCls}-inline-collapsed`,
     className,
   );
   const allChildren = useMemo(
@@ -261,9 +337,10 @@ export const Menu: React.FC<MenuProps> = ({
   const totalItems = allChildren.length;
 
   useLayoutEffect(() => {
-    if (mode !== "horizontal" || totalItems === 0) {
-      return;
-    }
+    // Outside horizontal mode `visibleCount` is ignored during render, and an empty
+    // menu has nothing to measure. Re-entering horizontal mode re-runs this effect
+    // and starts from a fresh full-width measurement, so no reset is needed here.
+    if (mode !== "horizontal" || totalItems === 0) return;
     itemWidths.current = [];
 
     let observer: ResizeObserver | undefined;
@@ -323,7 +400,8 @@ export const Menu: React.FC<MenuProps> = ({
   const count = horizontal ? visibleCount : totalItems;
   const visibleChildren = allChildren.slice(0, count);
   const overflowChildren = allChildren.slice(count);
-  const showOverflowMeasure = horizontal && !Number.isFinite(visibleCount);
+  // An empty menu has nothing to overflow, so it must not render the measure trigger.
+  const showOverflowMeasure = horizontal && totalItems > 0 && !Number.isFinite(visibleCount);
 
   return (
     <MenuContext.Provider value={menuState}>
@@ -333,7 +411,9 @@ export const Menu: React.FC<MenuProps> = ({
         className={cls}
         theme-mode={theme}
         style={style}
-        role="menu"
+        // A horizontal bar moves focus left/right between siblings (see menu-keyboard),
+        // which is the `menubar` contract; vertical and inline menus keep `menu`.
+        role={horizontal ? "menubar" : "menu"}
         aria-orientation={horizontal ? "horizontal" : "vertical"}
       >
         {visibleChildren}

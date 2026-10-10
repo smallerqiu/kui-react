@@ -17,7 +17,12 @@ import Icon from "../icon";
 import { getTransitionProp } from "../utils/transition";
 import { setPlacement } from "../utils/placement";
 import { SubMenuContext, useMenuContext, useSubMenuContext } from "./menu-context";
-import { handleMenuItemKeydown } from "./menu-keyboard";
+import {
+  firstMenuItemOf,
+  handleMenuItemKeydown,
+  handleSubMenuListKeydown,
+  handleSubMenuTitleKeydown,
+} from "./menu-keyboard";
 
 export interface SubMenuProps {
   itemKey?: string;
@@ -41,9 +46,19 @@ export const SubMenu: React.FC<SubMenuProps> = ({
   const subMenuContext = useSubMenuContext();
 
   const generatedKey = useId();
+  // The popup is teleported outside the menu, so trigger and list are linked by id.
+  // `useId` output may hold punctuation, so it is stripped before becoming an id.
+  const idSeed = generatedKey.replace(/[^a-zA-Z0-9_-]/g, "");
+  const triggerId = `k-menu-submenu-title-${idSeed}`;
+  const popupId = `k-menu-submenu-popup-${idSeed}`;
   const currentKey = itemKey ?? menuKey ?? generatedKey;
   const refSelection = useRef<HTMLDivElement | null>(null);
   const refPopper = useRef<HTMLDivElement | null>(null);
+  const refTitle = useRef<HTMLDivElement | null>(null);
+  const refList = useRef<HTMLUListElement | null>(null);
+  // Set when a keyboard action asks for the first item of this submenu's list. The list may
+  // not be mounted or positioned yet, so the effect below retries once it becomes ready.
+  const pendingFocusFirst = useRef(false);
   const topRef = useRef(0);
   const leftRef = useRef(0);
   const placementRef = useRef("bottom-left");
@@ -208,6 +223,57 @@ export const SubMenu: React.FC<SubMenuProps> = ({
     ? { className: `k-${preCls}-popup`, ...popperProps }
     : { className: `k-${preCls}-sub` };
 
+  const activateTitle = () => {
+    if (disabled) return;
+    if (menuContext?.mode === "inline" && !menuContext.inlineCollapsed) {
+      menuContext.openKeysChange?.(currentKey, !opened, subMenuContext?.keyPath || []);
+      return;
+    }
+    if (opened) {
+      menuContext?.openKeysChange?.(currentKey, false, subMenuContext?.keyPath || []);
+    } else {
+      showPopper();
+    }
+  };
+
+  // A horizontal menu bar is a `menubar`, so ArrowDown opens its submenu; inside a vertical
+  // or inline list the submenu branch key is ArrowRight (ArrowDown walks siblings there).
+  const isMenubarItem =
+    menuContext?.mode === "horizontal" && !(subMenuContext?.keyPath.length ?? 0);
+
+  const focusFirstItem = useCallback(() => {
+    const first = firstMenuItemOf(refList.current);
+    if (!first) return false;
+    first.focus({ preventScroll: true });
+    return true;
+  }, []);
+
+  const expandAndFocusFirst = () => {
+    if (!opened) {
+      pendingFocusFirst.current = true;
+      activateTitle();
+      return;
+    }
+    // Already open: the list is normally ready, otherwise wait for the effect below.
+    if ((popup && !popupPositioned) || !focusFirstItem()) pendingFocusFirst.current = true;
+  };
+
+  const closeAndRefocusTrigger = () => {
+    menuContext?.openKeysChange?.(currentKey, false, subMenuContext?.keyPath || []);
+    (refTitle.current ?? refSelection.current)?.focus({ preventScroll: true });
+  };
+
+  useEffect(() => {
+    if (!pendingFocusFirst.current) return;
+    if (!opened) {
+      pendingFocusFirst.current = false;
+      return;
+    }
+    if (popup && !popupPositioned) return;
+    pendingFocusFirst.current = false;
+    focusFirstItem();
+  }, [focusFirstItem, opened, popup, popupPositioned]);
+
   const childrenNode =
     popup && !rendered ? null : (
       <Teleport to="body" disabled={!popup}>
@@ -215,11 +281,19 @@ export const SubMenu: React.FC<SubMenuProps> = ({
           <div {...containerProps}>
             <div className={popup ? `k-${preCls}-sub` : undefined}>
               <ul
+                id={popupId}
+                ref={refList}
                 className={`k-menu k-menu-${popup ? "vertical" : menuContext?.mode}`}
                 role="menu"
-                aria-orientation={
-                  popup || menuContext?.mode !== "horizontal" ? "vertical" : "horizontal"
-                }
+                aria-labelledby={triggerId}
+                // A submenu list always stacks vertically — in horizontal mode it is
+                // necessarily a popup, so the old mode-derived "horizontal" branch was dead.
+                aria-orientation="vertical"
+                onKeyDown={(event) => {
+                  // Escape unwinds exactly one level: the innermost list handles it and
+                  // stops propagation, focus goes back to that level's trigger.
+                  handleSubMenuListKeydown(event, closeAndRefocusTrigger);
+                }}
               >
                 <SubMenuContext.Provider value={childSubMenuContext}>
                   {children}
@@ -253,7 +327,6 @@ export const SubMenu: React.FC<SubMenuProps> = ({
           },
         }
       : {
-          ref: refSelection as React.Ref<HTMLDivElement>,
           onMouseEnter: () => {
             if (!disabled) showPopper();
           },
@@ -261,19 +334,6 @@ export const SubMenu: React.FC<SubMenuProps> = ({
             if (!disabled) hideCurrentPopTimer();
           },
         };
-
-  const activateTitle = () => {
-    if (disabled) return;
-    if (menuContext?.mode === "inline" && !menuContext.inlineCollapsed) {
-      menuContext.openKeysChange?.(currentKey, !opened, subMenuContext?.keyPath || []);
-      return;
-    }
-    if (opened) {
-      menuContext?.openKeysChange?.(currentKey, false, subMenuContext?.keyPath || []);
-    } else {
-      showPopper();
-    }
-  };
 
   return (
     <li
@@ -283,22 +343,34 @@ export const SubMenu: React.FC<SubMenuProps> = ({
         [`k-${preCls}-opened`]: opened,
         [`k-${preCls}-disabled`]: disabled,
       })}
+      // The wrapper <li> carries no semantics of its own, so the title div is the menu item.
+      role="none"
     >
       <div
+        id={triggerId}
         className={`k-${preCls}-title`}
         style={titleStyle}
         {...popupTitleProps}
+        ref={(node) => {
+          refTitle.current = node;
+          refSelection.current = node;
+        }}
         role="menuitem"
         tabIndex={disabled ? -1 : 0}
         aria-disabled={disabled || undefined}
         aria-haspopup="menu"
         aria-expanded={opened}
+        aria-controls={opened ? popupId : undefined}
         onKeyDown={(event) => {
           if (event.key === "Escape" && opened) {
             event.preventDefault();
+            // Do not let the enclosing submenu list close as well.
+            event.stopPropagation();
             menuContext?.openKeysChange?.(currentKey, false, subMenuContext?.keyPath || []);
             return;
           }
+          if (handleSubMenuTitleKeydown(event, { isMenubarItem, opened }, { expandAndFocusFirst }))
+            return;
           handleMenuItemKeydown(event, activateTitle);
         }}
       >

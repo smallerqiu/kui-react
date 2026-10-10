@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { Fragment, useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { Menu, MenuItem } from "../components/menu";
+import { Menu, MenuDivider, MenuGroup, MenuItem, SubMenu } from "../components/menu";
 
 const items = [
   {
@@ -10,6 +10,7 @@ const items = [
     children: [{ key: "nested", title: "Nested", children: [{ key: "leaf", title: "Leaf" }] }],
   },
 ];
+const popupItems = [{ key: "root", title: "Root", children: [{ key: "leaf", title: "Leaf" }] }];
 afterEach(() => {
   vi.useRealTimers();
   vi.unstubAllGlobals();
@@ -167,6 +168,24 @@ describe("Menu inline collapse", () => {
       0,
     );
   });
+  it("keeps an external openKeys update made while collapsed as the remembered expansion", async () => {
+    vi.useFakeTimers();
+    const { rerender } = render(
+      <Menu mode="inline" openKeys={["root"]} items={items} inlineCollapsed />,
+    );
+    await act(() => vi.advanceTimersByTimeAsync(250));
+    rerender(<Menu mode="inline" openKeys={["root", "nested"]} items={items} inlineCollapsed />);
+    await act(() => vi.advanceTimersByTimeAsync(250));
+    // Nothing is expanded while collapsed: the popup path is transient hover state.
+    expect(document.querySelectorAll('.k-menu-submenu-title[aria-expanded="true"]')).toHaveLength(
+      0,
+    );
+    rerender(<Menu mode="inline" openKeys={["root", "nested"]} items={items} />);
+    await act(() => vi.advanceTimersByTimeAsync(400));
+    expect(document.querySelectorAll('.k-menu-submenu-title[aria-expanded="true"]')).toHaveLength(
+      2,
+    );
+  });
 });
 
 it("overflows individual Fragment children and restores them when space returns", async () => {
@@ -222,4 +241,201 @@ it("overflows individual Fragment children and restores them when space returns"
   width = 400;
   act(() => resize());
   expect(menu.querySelectorAll(":scope > .k-menu-item")).toHaveLength(3);
+});
+
+describe("Menu overflow measurement", () => {
+  it("renders no overflow trigger for a horizontal menu without items", () => {
+    const { container } = render(<Menu mode="horizontal" items={[]} />);
+    expect(container.querySelector("ul")?.childElementCount).toBe(0);
+    expect(container.querySelector(".k-menu-submenu")).toBeNull();
+  });
+});
+
+describe("Menu mode switching", () => {
+  it("never rewrites openKeys and stays silent when the mode changes", async () => {
+    const onOpenChange = vi.fn();
+    const props = { items: popupItems, openKeys: ["root"], onOpenChange };
+    const { rerender } = render(<Menu {...props} mode="inline" />);
+    expect(document.querySelectorAll('.k-menu-submenu-title[aria-expanded="true"]')).toHaveLength(
+      1,
+    );
+
+    rerender(<Menu {...props} mode="horizontal" />);
+    await waitFor(() => expect(document.querySelector(".k-menu-submenu-popup")).not.toBeNull());
+    expect(screen.queryByText("Leaf")).not.toBeNull();
+
+    rerender(<Menu {...props} mode="inline" />);
+    expect(document.querySelectorAll('.k-menu-submenu-title[aria-expanded="true"]')).toHaveLength(
+      1,
+    );
+    expect(onOpenChange).not.toHaveBeenCalled();
+  });
+
+  it("ignores inlineCollapsed outside inline mode", () => {
+    const { container } = render(<Menu mode="horizontal" items={items} inlineCollapsed />);
+    expect(container.querySelector("ul")?.className).toBe("k-menu k-menu-horizontal");
+  });
+
+  it("honors openKeys in vertical mode while inlineCollapsed is set", async () => {
+    render(<Menu mode="vertical" items={popupItems} openKeys={["root"]} inlineCollapsed />);
+    await waitFor(() => expect(document.querySelector(".k-menu-submenu-popup")).not.toBeNull());
+    expect(screen.queryByText("Leaf")).not.toBeNull();
+  });
+});
+
+describe("Menu selection and openKeys", () => {
+  it("does not report closing popups while none are open", () => {
+    const onOpenChange = vi.fn();
+    render(<Menu mode="vertical" items={[{ key: "a", title: "A" }]} onOpenChange={onOpenChange} />);
+    fireEvent.click(screen.getByText("A"));
+    expect(onOpenChange).not.toHaveBeenCalled();
+  });
+
+  it("reports closing the open popup when an item is selected", async () => {
+    const onOpenChange = vi.fn();
+    render(
+      <Menu mode="vertical" items={popupItems} openKeys={["root"]} onOpenChange={onOpenChange} />,
+    );
+    await waitFor(() => expect(screen.queryByText("Leaf")).not.toBeNull());
+    fireEvent.click(screen.getByText("Leaf"));
+    expect(onOpenChange).toHaveBeenCalledWith([]);
+  });
+});
+
+describe("Menu popup accessibility", () => {
+  it("links an open submenu trigger to its teleported popup", async () => {
+    render(<Menu mode="vertical" items={items} openKeys={["root"]} />);
+    await waitFor(() => expect(document.querySelector(".k-menu-submenu-popup")).not.toBeNull());
+    const title = document.querySelector<HTMLElement>(".k-menu-submenu-title")!;
+    const popupList = document.querySelector<HTMLElement>(".k-menu-submenu-popup ul")!;
+    expect(title.id).toBeTruthy();
+    expect(title.getAttribute("aria-controls")).toBe(popupList.id);
+    expect(popupList.getAttribute("aria-labelledby")).toBe(title.id);
+  });
+
+  it("leaves no dangling aria-controls on a closed submenu", () => {
+    render(<Menu mode="vertical" items={items} />);
+    const title = document.querySelector<HTMLElement>(".k-menu-submenu-title")!;
+    expect(title.getAttribute("aria-expanded")).toBe("false");
+    expect(title.hasAttribute("aria-controls")).toBe(false);
+  });
+
+  it("does not claim a plain menu item is expandable", () => {
+    render(
+      <Menu mode="inline">
+        <MenuItem itemKey="a">A</MenuItem>
+      </Menu>,
+    );
+    const item = screen.getByRole("menuitem");
+    expect(item.hasAttribute("aria-expanded")).toBe(false);
+    expect(item.hasAttribute("aria-haspopup")).toBe(false);
+  });
+
+  it("keeps grouped items linked to their parent submenu", () => {
+    const onSelect = vi.fn();
+    render(
+      <Menu mode="inline" openKeys={["root"]} onSelect={onSelect}>
+        <SubMenu itemKey="root" title="Root">
+          <MenuGroup title="Group">
+            <MenuItem itemKey="leaf">Leaf</MenuItem>
+            <MenuDivider />
+          </MenuGroup>
+        </SubMenu>
+      </Menu>,
+    );
+    fireEvent.click(screen.getByText("Leaf"));
+    expect(onSelect).toHaveBeenCalledWith({ key: "leaf", keyPath: ["root"] });
+    const leaf = screen.getByText("Leaf").closest("li") as HTMLElement;
+    expect(leaf.style.paddingLeft).toBe("32px");
+    expect(document.querySelector(".k-menu-submenu-selected")).not.toBeNull();
+    expect(document.querySelector(".k-menu-item-divider")).not.toBeNull();
+  });
+});
+
+describe("Menu roles and overflow observing", () => {
+  it("declares menubar semantics only for horizontal menus", async () => {
+    const { container, rerender } = render(
+      <Menu mode="horizontal" openKeys={["root"]} items={items} />,
+    );
+    await waitFor(() => expect(document.querySelector(".k-menu-submenu-popup ul")).not.toBeNull());
+
+    const root = container.querySelector("ul") as HTMLElement;
+    expect(root.getAttribute("role")).toBe("menubar");
+    expect(root.getAttribute("aria-orientation")).toBe("horizontal");
+
+    const trigger = document.querySelector(".k-menu-submenu-title") as HTMLElement;
+    expect(trigger.getAttribute("aria-haspopup")).toBe("menu");
+    // The wrapper <li> is out of the accessibility tree; only the title div is the menu item.
+    expect(trigger.parentElement?.getAttribute("role")).toBe("none");
+    // A horizontal menu's submenu always stacks vertically, so it must not inherit "horizontal".
+    expect(
+      document.querySelector(".k-menu-submenu-popup ul")?.getAttribute("aria-orientation"),
+    ).toBe("vertical");
+
+    rerender(<Menu mode="inline" openKeys={["root"]} items={items} />);
+    await waitFor(() => expect(document.querySelector(".k-menu-inline")).not.toBeNull());
+    const inlineRoot = document.querySelector(".k-menu-inline") as HTMLElement;
+    expect(inlineRoot.getAttribute("role")).toBe("menu");
+    expect(inlineRoot.getAttribute("aria-orientation")).toBe("vertical");
+  });
+
+  it("observes the container only while the menu is horizontal", async () => {
+    let observed = 0;
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        observe() {
+          observed += 1;
+        }
+        disconnect() {}
+      },
+    );
+
+    const { rerender } = render(<Menu mode="inline" openKeys={["root"]} items={items} />);
+    await waitFor(() => expect(observed).toBe(0));
+
+    rerender(<Menu mode="horizontal" openKeys={["root"]} items={items} />);
+    await waitFor(() => expect(observed).toBe(1));
+
+    rerender(<Menu mode="vertical" openKeys={["root"]} items={items} />);
+    await waitFor(() => expect(observed).toBe(1));
+  });
+});
+
+describe("Menu submenu keyboard", () => {
+  it("opens a menubar submenu with ArrowDown and lands focus on its first item", async () => {
+    render(<Menu mode="horizontal" items={popupItems} />);
+    const trigger = document.querySelector(".k-menu-submenu-title") as HTMLElement;
+    trigger.focus();
+
+    fireEvent.keyDown(trigger, { key: "ArrowDown" });
+    await waitFor(() => expect(trigger.getAttribute("aria-expanded")).toBe("true"));
+    await waitFor(() => expect(document.activeElement?.textContent).toBe("Leaf"));
+
+    fireEvent.keyDown(document.activeElement as HTMLElement, { key: "Escape" });
+    await waitFor(() => expect(trigger.getAttribute("aria-expanded")).toBe("false"));
+    expect(document.activeElement).toBe(trigger);
+  });
+
+  it("expands an inline submenu with ArrowRight and lands focus on its first child", async () => {
+    render(<Menu mode="inline" items={items} />);
+    const trigger = document.querySelector(".k-menu-submenu-title") as HTMLElement;
+    trigger.focus();
+
+    fireEvent.keyDown(trigger, { key: "ArrowRight" });
+    await waitFor(() => expect(trigger.getAttribute("aria-expanded")).toBe("true"));
+    await waitFor(() => expect(document.activeElement?.textContent).toContain("Nested"));
+  });
+
+  it("unwinds only the innermost level when Escape is pressed inside a nested list", async () => {
+    render(<Menu mode="inline" openKeys={["root", "nested"]} items={items} />);
+    const deepTrigger = document.querySelectorAll(".k-menu-submenu-title")[1] as HTMLElement;
+    deepTrigger.focus();
+
+    fireEvent.keyDown(deepTrigger, { key: "Escape" });
+    await waitFor(() => expect(deepTrigger.getAttribute("aria-expanded")).toBe("false"));
+    expect(
+      document.querySelectorAll(".k-menu-submenu-title")[0]?.getAttribute("aria-expanded"),
+    ).toBe("true");
+  });
 });

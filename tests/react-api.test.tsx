@@ -398,19 +398,24 @@ describe("React state initialization and synchronization", () => {
     );
   });
 
-  it("requests Menu expansion without mutating controlled open keys", () => {
+  it("reports Menu expansion without mutating the controlled open keys array", () => {
     const onOpenChange = vi.fn();
+    const openKeys: string[] = [];
     render(
       <Menu
         mode="inline"
-        openKeys={[]}
+        openKeys={openKeys}
         onOpenChange={onOpenChange}
         items={[{ key: "parent", title: "Parent", children: [{ key: "child", title: "Child" }] }]}
       />,
     );
     fireEvent.click(screen.getByText("Parent"));
     expect(onOpenChange).toHaveBeenCalledWith(["parent"]);
-    expect(document.querySelector(".k-menu-submenu-open")).toBeNull();
+    // The consumer's array is never written to; `openKeys` follows the library's
+    // value convention, so the menu stays interactive until the parent supplies
+    // a new array.
+    expect(openKeys).toEqual([]);
+    expect(document.querySelector(".k-menu-submenu-opened")).not.toBeNull();
   });
 
   it("keeps inline Menu content mounted through its collapse transition and selects items", async () => {
