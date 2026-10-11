@@ -46941,7 +46941,7 @@
           "type": "T[] | undefined",
           "required": false,
           "boolean": false,
-          "defaultExpression": "[]",
+          "defaultExpression": "EMPTY_DATA",
           "descriptionZh": "显示的结构化数据",
           "descriptionEn": "Structured data to be displayed"
         },
@@ -46950,7 +46950,7 @@
           "type": "Column<T>[] | undefined",
           "required": false,
           "boolean": false,
-          "defaultExpression": "[]",
+          "defaultExpression": "EMPTY_COLUMNS",
           "descriptionZh": "表格列的配置描述，",
           "descriptionEn": "Configuration description of table columns"
         },
@@ -46967,7 +46967,7 @@
           "type": "TableKey[] | undefined",
           "required": false,
           "boolean": false,
-          "defaultExpression": "[]",
+          "defaultExpression": "EMPTY_KEYS",
           "descriptionZh": "禁用的key集合",
           "descriptionEn": "Disabled key set"
         },
@@ -46977,8 +46977,8 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "\"key\"",
-          "descriptionZh": "勾选时的依据",
-          "descriptionEn": "Basis for selection"
+          "descriptionZh": "行的唯一标识，勾选与展开都以它为准；可传字段名，或传函数从记录中取值",
+          "descriptionEn": "Unique row identity used by selection and expansion; a field name or an accessor function reading the key from a record"
         },
         {
           "name": "childrenColumnName",
@@ -47007,8 +47007,8 @@
           ],
           "boolean": true,
           "defaultExpression": "false",
-          "descriptionZh": "初始化及属性变化时展开所有树节点（expandedKeys 优先）",
-          "descriptionEn": "Expand every tree node on initialization or when this prop changes (explicit expandedKeys takes precedence)"
+          "descriptionZh": "初始化时展开所有树节点；`data` 后续变化时只补新增的父行，用户手动展开或折叠过的行保持不变（expandedKeys 优先）",
+          "descriptionEn": "Expand every tree node on initialization; when `data` changes later only newly arrived parent rows are expanded, while rows the user expanded or collapsed by hand are kept (explicit expandedKeys takes precedence)"
         },
         {
           "name": "expandRowByClick",
@@ -47037,9 +47037,9 @@
           "type": "{ x?: number | string; y?: number | string; } | undefined",
           "required": false,
           "boolean": false,
-          "defaultExpression": "{}",
-          "descriptionZh": "表格滚动区域",
-          "descriptionEn": "Scrollable table area"
+          "defaultExpression": "EMPTY_SCROLL",
+          "descriptionZh": "滚动配置；`x` 为内容最小宽度，`y` 为表体的纵向滚动区域高度",
+          "descriptionEn": "Scroll configuration; `x` is the minimum content width and `y` is the vertical viewport height of the body"
         },
         {
           "name": "size",
@@ -47177,7 +47177,7 @@
           "type": "(string | number)[] | undefined",
           "required": false,
           "boolean": false,
-          "defaultExpression": "[]",
+          "defaultExpression": "EMPTY_KEYS",
           "descriptionZh": "隐藏的列 key 集合",
           "descriptionEn": "Hidden column key collection"
         },
@@ -47674,7 +47674,7 @@
         {
           "id": "components/table/demo/basic.tsx",
           "title": "基本用法",
-          "source": "import { ArrowDown, ArrowUp, Moon, Sun, Trash2 } from \"kui-icons\";\nimport { useState } from \"react\";\nimport { Button, Icon, message, modal, Space, Tag, Table, type Column } from \"react-kui\";\nimport { people, type Person } from \"./data\";\nexport default function App() {\n  const [data, setData] = useState([...people]);\n  const move = (index: number, offset: number) => {\n    const target = index + offset;\n    if (target < 0 || target >= data.length) return;\n    const next = [...data];\n    [next[index], next[target]] = [next[target], next[index]];\n    setData(next);\n  };\n  const columns: Column<Person>[] = [\n    { title: \"Name\", key: \"name\" },\n    { title: \"Age\", key: \"age\" },\n    {\n      title: \"Gender\",\n      key: \"gender\",\n      render: (v) => (\n        <Icon type={v === 1 ? Sun : Moon} color={v === 1 ? \"blue\" : \"#f50cff\"} size={15} />\n      ),\n    },\n    { title: \"Address\", key: \"address\" },\n    {\n      title: \"Tags\",\n      key: \"tags\",\n      render: (tags: string[]) => (\n        <Space>\n          {tags.map((tag) => (\n            <Tag key={tag} color={tag === \"Python\" ? \"green\" : \"blue\"}>\n              {tag}\n            </Tag>\n          ))}\n        </Space>\n      ),\n    },\n    {\n      title: \"Operate\",\n      key: \"action\",\n      render: (_, record, index) => (\n        <Space>\n          <Button\n            size=\"small\"\n            onClick={(e) => {\n              e.stopPropagation();\n              move(index, -1);\n            }}\n            icon={ArrowUp}\n          />\n          <Button\n            size=\"small\"\n            onClick={(e) => {\n              e.stopPropagation();\n              move(index, 1);\n            }}\n            icon={ArrowDown}\n          />\n          <Button\n            size=\"small\"\n            onClick={(e) => {\n              e.stopPropagation();\n              setData(data.filter((_, i) => i !== index));\n            }}\n            icon={Trash2}\n          />\n          <Button\n            size=\"small\"\n            onClick={(e) => {\n              e.stopPropagation();\n              modal.info({ title: \"Hi\", content: `My name is ${record.name}` });\n            }}\n          >\n            more\n          </Button>\n        </Space>\n      ),\n    },\n  ];\n  return (\n    <Table\n      data={data}\n      columns={columns}\n      onRowClick={(record) => message.info(\"Test row click: \" + record.name)}\n    />\n  );\n}"
+          "source": "import { ArrowDown, ArrowUp, Moon, Sun, Trash2 } from \"kui-icons\";\nimport { useState } from \"react\";\nimport { Button, Icon, message, modal, Space, Table, Tag, type Column } from \"react-kui\";\nimport { people, type Person } from \"./data\";\nexport default function App() {\n  const [data, setData] = useState([...people]);\n  const move = (index: number, offset: number) => {\n    const target = index + offset;\n    if (target < 0 || target >= data.length) return;\n    const next = [...data];\n    [next[index], next[target]] = [next[target], next[index]];\n    setData(next);\n  };\n  const columns: Column<Person>[] = [\n    { title: \"Name\", key: \"name\" },\n    { title: \"Age\", key: \"age\" },\n    {\n      title: \"Gender\",\n      key: \"gender\",\n      render: (v) => (\n        <Icon type={v === 1 ? Sun : Moon} color={v === 1 ? \"blue\" : \"#f50cff\"} size={15} />\n      ),\n    },\n    { title: \"Address\", key: \"address\" },\n    {\n      title: \"Tags\",\n      key: \"tags\",\n      render: (tags: string[]) => (\n        <Space>\n          {tags.map((tag) => (\n            <Tag key={tag} color={tag === \"Python\" ? \"green\" : \"blue\"}>\n              {tag}\n            </Tag>\n          ))}\n        </Space>\n      ),\n    },\n    {\n      title: \"Operate\",\n      key: \"action\",\n      width: 200,\n      render: (_, record, index) => (\n        <Space>\n          <Button\n            size=\"small\"\n            onClick={(e) => {\n              e.stopPropagation();\n              move(index, -1);\n            }}\n            icon={ArrowUp}\n          />\n          <Button\n            size=\"small\"\n            onClick={(e) => {\n              e.stopPropagation();\n              move(index, 1);\n            }}\n            icon={ArrowDown}\n          />\n          <Button\n            size=\"small\"\n            onClick={(e) => {\n              e.stopPropagation();\n              setData(data.filter((_, i) => i !== index));\n            }}\n            icon={Trash2}\n          />\n          <Button\n            size=\"small\"\n            onClick={(e) => {\n              e.stopPropagation();\n              modal.info({ title: \"Hi\", content: `My name is ${record.name}` });\n            }}\n          >\n            more\n          </Button>\n        </Space>\n      ),\n    },\n  ];\n  return (\n    <Table\n      data={data}\n      columns={columns}\n      onRowClick={(record) => message.info(\"Test row click: \" + record.name)}\n    />\n  );\n}"
         },
         {
           "id": "components/table/demo/tree.tsx",
@@ -47714,17 +47714,22 @@
         {
           "id": "components/table/demo/fixed-col-header.tsx",
           "title": "固定头/列",
-          "source": "import { Button, Table, type Column } from \"react-kui\";\nconst middle: Column[] = [];\nconst values: Record<string, string> = {};\nfor (let i = 0; i < 20; i++) {\n  middle.push({ title: `Col${i}`, key: `address${i}`, width: 150 });\n  values[`address${i}`] = \"Hubei Wuhan SoftBase No.128\";\n}\nconst data = Array.from({ length: 10 }, (_, i) => ({\n  key: i,\n  name: \"Han Mei\",\n  age: 28,\n  ...values,\n}));\nconst columns: Column[] = [\n  { title: \"Name\", key: \"name\", fixed: \"left\" },\n  { title: \"Age\", key: \"age\", fixed: \"left\" },\n  ...middle,\n  {\n    title: \"Operate\",\n    key: \"action\",\n    fixed: \"right\",\n    render: () => <Button size=\"small\">test</Button>,\n  },\n  {\n    title: \"Operate\",\n    key: \"action1\",\n    fixed: \"right\",\n    render: () => <Button size=\"small\">test2</Button>,\n  },\n];\nexport default function App() {\n  return <Table data={data} columns={columns} scroll={{ y: 300 }} />;\n}"
+          "source": "import { Button, Table, type Column } from \"react-kui\";\nconst middle: Column[] = [];\nconst values: Record<string, string> = {};\nfor (let i = 0; i < 20; i++) {\n  middle.push({ title: `Col${i}`, key: `address${i}`, width: 150 });\n  values[`address${i}`] = \"Hubei Wuhan SoftBase No.128\";\n}\nconst data = Array.from({ length: 10 }, (_, i) => ({\n  key: i,\n  name: \"Han Mei\",\n  age: 28,\n  ...values,\n}));\nconst columns: Column[] = [\n  { title: \"Name\", key: \"name\", fixed: \"left\" },\n  { title: \"Age\", key: \"age\", fixed: \"left\" },\n  ...middle,\n  // 分组父列上的 `fixed` 会继承给它的每个叶子列，整组一起固定\n  {\n    title: \"Operate\",\n    key: \"operate\",\n    fixed: \"right\",\n    children: [\n      {\n        title: \"Edit\",\n        key: \"action\",\n        render: () => <Button size=\"small\">test</Button>,\n      },\n      {\n        title: \"More\",\n        key: \"action1\",\n        render: () => <Button size=\"small\">test2</Button>,\n      },\n    ],\n  },\n];\nexport default function App() {\n  return <Table data={data} columns={columns} scroll={{ y: 300 }} />;\n}"
         },
         {
           "id": "components/table/demo/header-span.tsx",
           "title": "表头分组",
-          "source": "import { Table, type Column } from \"react-kui\";\nconst data = Array.from({ length: 10 }, (_, i) => ({\n  key: i,\n  name: \"John Brown\",\n  age: i + 1,\n  street: \"Lake Park\",\n  building: \"C\",\n  number: 2035,\n  companyAddress: \"Lake Street 42\",\n  companyName: \"SoftLake Co\",\n  gender: \"M\",\n}));\nconst columns: Column[] = [\n  { title: \"Name\", key: \"name\", width: 120, fixed: \"left\" },\n  {\n    title: \"Other\",\n    key: \"other\",\n    children: [\n      { title: \"Age\", key: \"age\", sorter: true },\n      {\n        title: \"Address\",\n        key: \"address\",\n        children: [\n          { title: \"Street\", key: \"street\" },\n          {\n            title: \"Block\",\n            key: \"block\",\n            children: [\n              { title: \"Building\", key: \"building\" },\n              { title: \"Door No.\", key: \"number\" },\n            ],\n          },\n        ],\n      },\n    ],\n  },\n  {\n    title: \"Company\",\n    key: \"company\",\n    children: [\n      { title: \"Company Address\", key: \"companyAddress\", width: 200 },\n      { title: \"Company Name\", key: \"companyName\", width: 200 },\n    ],\n  },\n  { title: \"Gender\", key: \"gender\", width: 100, fixed: \"right\" },\n];\nexport default function App() {\n  return <Table data={data} columns={columns} bordered scroll={{ y: 300 }} />;\n}"
+          "source": "import { Table, type Column } from \"react-kui\";\nconst data = Array.from({ length: 10 }, (_, i) => ({\n  key: i,\n  name: \"John Brown\",\n  age: i + 1,\n  street: \"Lake Park\",\n  building: \"C\",\n  number: 2035,\n  companyAddress: \"Lake Street 42\",\n  companyName: \"SoftLake Co\",\n  gender: \"M\",\n}));\nconst columns: Column[] = [\n  { title: \"Name\", key: \"name\", width: 120, fixed: \"left\" },\n  {\n    title: \"Other\",\n    key: \"other\",\n    children: [\n      { title: \"Age\", key: \"age\", width: 100, sorter: true },\n      {\n        title: \"Address\",\n        key: \"address\",\n        children: [\n          { title: \"Street\", key: \"street\", width: 140 },\n          {\n            title: \"Block\",\n            key: \"block\",\n            children: [\n              { title: \"Building\", key: \"building\", width: 120 },\n              { title: \"Door No.\", key: \"number\", width: 120 },\n            ],\n          },\n        ],\n      },\n    ],\n  },\n  {\n    title: \"Company\",\n    key: \"company\",\n    children: [\n      { title: \"Company Address\", key: \"companyAddress\", width: 200 },\n      { title: \"Company Name\", key: \"companyName\", width: 200 },\n    ],\n  },\n  { title: \"Gender\", key: \"gender\", width: 100, fixed: \"right\" },\n];\nexport default function App() {\n  // `scroll.x` 按叶子列宽度之和给（120+100+140+120+120+200+200+100 = 1_100）。\n  // 不给的话这些窄列会被挤到十几个像素，表头文字竖排换行，四层表头能长到 400 多 px，\n  // 比 `scroll.y` 的可视高度还高，等于把表体整个顶出可视区。\n  return <Table data={data} columns={columns} bordered scroll={{ x: 1_100, y: 300 }} />;\n}"
         },
         {
           "id": "components/table/demo/table-check.tsx",
           "title": "勾选",
           "source": "import { useState } from \"react\";\nimport { Space, Tag, Table, type Column } from \"react-kui\";\nimport { basicColumns, people, type Person } from \"./data\";\nconst columns: Column<Person>[] = [\n  ...basicColumns.map((column) =>\n    column.key === \"tags\"\n      ? {\n          ...column,\n          render: (tags: string[]) => (\n            <Space>\n              {tags.map((tag) => (\n                <Tag key={tag} color={tag === \"Python\" ? \"green\" : \"blue\"}>\n                  {tag}\n                </Tag>\n              ))}\n            </Space>\n          ),\n        }\n      : column\n  ),\n  {\n    title: \"Operate\",\n    key: \"action\",\n    render: () => (\n      <Space>\n        <a href=\"#\">Edit</a>\n        <a href=\"#\">Delete</a>\n      </Space>\n    ),\n  },\n];\nexport default function App() {\n  const [selectedKeys, setSelectedKeys] = useState<Array<string | number>>([]);\n  return (\n    <>\n      <code>selectedKeys: {selectedKeys.join(\", \")}</code>\n      <Table\n        data={people}\n        columns={columns}\n        checkable\n        selectedKeys={selectedKeys}\n        onSelectedKeysChange={setSelectedKeys}\n      />\n    </>\n  );\n}"
+        },
+        {
+          "id": "components/table/demo/nested-value.tsx",
+          "title": "嵌套取值",
+          "source": "import { Table, type Column } from \"react-kui\";\n\n/**\n * 嵌套数据不需要先拍平：列 `key`、`rowKey`、`childrenColumnName` 都可以写成 `a.b` 点路径。\n * 整名优先，所以字段名本身带点号时仍按整名取值；下钻途中缺字段只会渲染成空，不会抛错。\n */\ninterface Member {\n  meta: { uid: string };\n  profile: { name: string; city?: string };\n  tags?: string[];\n  rows?: { items: Member[] };\n}\n\nconst data: Member[] = [\n  {\n    meta: { uid: \"design\" },\n    profile: { name: \"Design Guild\", city: \"Hangzhou\" },\n    tags: [\"Studio\", \"Brand\"],\n    rows: {\n      items: [\n        { meta: { uid: \"ann\" }, profile: { name: \"Ann\", city: \"Hangzhou\" }, tags: [\"Studio\"] },\n        { meta: { uid: \"bob\" }, profile: { name: \"Bob\" } },\n      ],\n    },\n  },\n  {\n    meta: { uid: \"front-end\" },\n    profile: { name: \"Front-end Guild\", city: \"Shanghai\" },\n    tags: [\"Kui\"],\n    rows: {\n      items: [\n        {\n          meta: { uid: \"cara\" },\n          profile: { name: \"Cara\", city: \"Shanghai\" },\n          tags: [\"Kui\", \"Charts\"],\n        },\n      ],\n    },\n  },\n];\n\nconst columns: Column<Member>[] = [\n  { title: \"Name\", key: \"profile.name\", sorter: true },\n  { title: \"City\", key: \"profile.city\" },\n  { title: \"Primary tag\", key: \"tags.0\" },\n  { title: \"Secondary tag\", key: \"tags.1\" },\n];\n\nexport default function NestedValueDemo() {\n  return (\n    <Table\n      data={data}\n      columns={columns}\n      rowKey=\"meta.uid\"\n      childrenColumnName=\"rows.items\"\n      expandAllRows\n    />\n  );\n}"
         },
         {
           "id": "components/table/demo/control.tsx",
@@ -47734,12 +47739,12 @@
         {
           "id": "components/table/demo/virtual.tsx",
           "title": "虚拟滚动",
-          "source": "import { Table, type Column } from \"react-kui\";\n\nconst data = Array.from({ length: 10000 }, (_, index) => ({\n  key: index + 1,\n  name: `User ${index + 1}`,\n  email: `user${index + 1}@example.com`,\n  status: index % 3 === 0 ? \"Active\" : \"Pending\",\n}));\n\nconst columns: Column[] = [\n  { title: \"ID\", key: \"key\", width: 100 },\n  { title: \"Name\", key: \"name\" },\n  { title: \"Email\", key: \"email\", width: 200 },\n  { title: \"Email1\", key: \"email1\" },\n  { title: \"Email2\", key: \"email2\" },\n  { title: \"Email3\", key: \"email3\" },\n  { title: \"Email4\", key: \"email4\" },\n  { title: \"Email5\", key: \"email5\" },\n  { title: \"Status\", key: \"status\", width: 140, fixed: \"right\" },\n];\n\nexport default function VirtualDemo() {\n  return (\n    <Table\n      virtual\n      striped\n      data={data}\n      columns={columns}\n      scroll={{ x: 900, y: 360 }}\n      itemHeight={44}\n      overscan={6}\n    />\n  );\n}"
+          "source": "import { Table, type Column } from \"react-kui\";\n\nconst data = Array.from({ length: 10000 }, (_, index) => ({\n  key: index + 1,\n  name: `User ${index + 1}`,\n  email: `user${index + 1}@example.com`,\n  status: index % 3 === 0 ? \"Active\" : \"Pending\",\n}));\n\nconst columns: Column[] = [\n  { title: \"ID\", key: \"key\", width: 100 },\n  { title: \"Name\", key: \"name\", width: 200 },\n  { title: \"Email\", key: \"email\", width: 200 },\n  { title: \"Email1\", key: \"email1\", width: 100 },\n  { title: \"Email2\", key: \"email2\", width: 100 },\n  { title: \"Email3\", key: \"email3\", width: 100 },\n  { title: \"Email4\", key: \"email4\", width: 100 },\n  { title: \"Email5\", key: \"email5\", width: 100 },\n  { title: \"Status\", key: \"status\", width: 140, fixed: \"right\" },\n];\n\nexport default function VirtualDemo() {\n  return (\n    <Table\n      virtual\n      striped\n      data={data}\n      columns={columns}\n      scroll={{ x: 900, y: 360 }}\n      itemHeight={44}\n      overscan={6}\n    />\n  );\n}"
         },
         {
           "id": "components/table/demo/column-setting.tsx",
           "title": "列设置",
-          "source": "import { useState } from \"react\";\nimport { Space, Table, TableColumnSetting, type Column } from \"react-kui\";\n\nconst columns: Column[] = [\n  { title: \"姓名\", key: \"name\" },\n  { title: \"部门\", key: \"department\" },\n  { title: \"状态\", key: \"status\" },\n];\n\nconst data = [\n  { key: 1, name: \"林晓\", department: \"产品中心\", status: \"正常\" },\n  { key: 2, name: \"张三\", department: \"技术中心\", status: \"正常\" },\n  { key: 3, name: \"李四\", department: \"市场中心\", status: \"暂停\" },\n];\n\nexport default function ColumnSettingDemo() {\n  const [hiddenKeys, setHiddenKeys] = useState<(string | number)[]>([]);\n\n  return (\n    <Space vertical>\n      <TableColumnSetting\n        columns={columns}\n        hiddenColumnKeys={hiddenKeys}\n        onHiddenColumnKeysChange={setHiddenKeys}\n        disabledKeys={[\"name\"]}\n        title=\"显示列\"\n        resetText=\"重置\"\n      />\n      <Table data={data} columns={columns} hiddenColumnKeys={hiddenKeys} />\n    </Space>\n  );\n}"
+          "source": "import { useState } from \"react\";\nimport { Space, Table, TableColumnSetting, type Column } from \"react-kui\";\n\nconst columns: Column[] = [\n  { title: \"姓名\", key: \"name\" },\n  { title: \"部门\", key: \"department\" },\n  { title: \"状态\", key: \"status\" },\n];\n\nconst data = [\n  { key: 1, name: \"林晓\", department: \"产品中心\", status: \"正常\" },\n  { key: 2, name: \"张三\", department: \"技术中心\", status: \"正常\" },\n  { key: 3, name: \"李四\", department: \"市场中心\", status: \"暂停\" },\n];\n\nexport default function ColumnSettingDemo() {\n  const [hiddenKeys, setHiddenKeys] = useState<(string | number)[]>([]);\n\n  return (\n    <Space vertical>\n      <TableColumnSetting\n        columns={columns}\n        hiddenKeys={hiddenKeys}\n        onHiddenKeysChange={setHiddenKeys}\n        disabledKeys={[\"name\"]}\n        title=\"显示列\"\n        resetText=\"重置\"\n      />\n      <Table data={data} columns={columns} hiddenColumnKeys={hiddenKeys} />\n    </Space>\n  );\n}"
         }
       ]
     },
@@ -47754,20 +47759,20 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "[]",
-          "descriptionZh": "列定义；设置面板仅列出顶层无子列的列。",
-          "descriptionEn": "Column definitions; only top-level columns without children appear in the settings."
+          "descriptionZh": "列定义；设置面板递归列出所有叶子列，包含分组表头下的子列。",
+          "descriptionEn": "Column definitions; the settings list every leaf column recursively, including children of grouped headers."
         },
         {
-          "name": "hiddenColumnKeys",
+          "name": "hiddenKeys",
           "type": "(string | number)[] | undefined",
           "required": false,
           "boolean": false,
           "defaultExpression": "[]",
-          "descriptionZh": "隐藏列的 key 集合；在变更回调中更新，并将同一值传给 Table。",
-          "descriptionEn": "Hidden column keys. Update this value in the change callback and pass the same value to Table."
+          "descriptionZh": "隐藏列的 key 集合；在变更回调中更新，并把同一值传给 Table 的 `hiddenColumnKeys`。",
+          "descriptionEn": "Hidden column keys. Update this value in the change callback and pass the same value to Table's `hiddenColumnKeys`."
         },
         {
-          "name": "onHiddenColumnKeysChange",
+          "name": "onHiddenKeysChange",
           "type": "((keys: (string | number)[]) => void) | undefined",
           "required": false,
           "boolean": false,
@@ -47788,7 +47793,6 @@
           "type": "string | undefined",
           "required": false,
           "boolean": false,
-          "defaultExpression": "\"Column settings\"",
           "descriptionZh": "弹层标题及默认触发按钮文案。",
           "descriptionEn": "Popup title and default trigger button text."
         },
@@ -47797,7 +47801,6 @@
           "type": "string | undefined",
           "required": false,
           "boolean": false,
-          "defaultExpression": "\"Reset\"",
           "descriptionZh": "重置按钮文案；重置会显示所有可配置列。",
           "descriptionEn": "Reset button text. Reset shows all configurable columns."
         },
@@ -47840,7 +47843,7 @@
       "nativeValueTypes": {},
       "events": [
         {
-          "name": "onHiddenColumnKeysChange",
+          "name": "onHiddenKeysChange",
           "type": "((keys: (string | number)[]) => void) | undefined",
           "required": false,
           "boolean": false,
@@ -47859,7 +47862,7 @@
         {
           "id": "components/table/demo/basic.tsx",
           "title": "基本用法",
-          "source": "import { ArrowDown, ArrowUp, Moon, Sun, Trash2 } from \"kui-icons\";\nimport { useState } from \"react\";\nimport { Button, Icon, message, modal, Space, Tag, Table, type Column } from \"react-kui\";\nimport { people, type Person } from \"./data\";\nexport default function App() {\n  const [data, setData] = useState([...people]);\n  const move = (index: number, offset: number) => {\n    const target = index + offset;\n    if (target < 0 || target >= data.length) return;\n    const next = [...data];\n    [next[index], next[target]] = [next[target], next[index]];\n    setData(next);\n  };\n  const columns: Column<Person>[] = [\n    { title: \"Name\", key: \"name\" },\n    { title: \"Age\", key: \"age\" },\n    {\n      title: \"Gender\",\n      key: \"gender\",\n      render: (v) => (\n        <Icon type={v === 1 ? Sun : Moon} color={v === 1 ? \"blue\" : \"#f50cff\"} size={15} />\n      ),\n    },\n    { title: \"Address\", key: \"address\" },\n    {\n      title: \"Tags\",\n      key: \"tags\",\n      render: (tags: string[]) => (\n        <Space>\n          {tags.map((tag) => (\n            <Tag key={tag} color={tag === \"Python\" ? \"green\" : \"blue\"}>\n              {tag}\n            </Tag>\n          ))}\n        </Space>\n      ),\n    },\n    {\n      title: \"Operate\",\n      key: \"action\",\n      render: (_, record, index) => (\n        <Space>\n          <Button\n            size=\"small\"\n            onClick={(e) => {\n              e.stopPropagation();\n              move(index, -1);\n            }}\n            icon={ArrowUp}\n          />\n          <Button\n            size=\"small\"\n            onClick={(e) => {\n              e.stopPropagation();\n              move(index, 1);\n            }}\n            icon={ArrowDown}\n          />\n          <Button\n            size=\"small\"\n            onClick={(e) => {\n              e.stopPropagation();\n              setData(data.filter((_, i) => i !== index));\n            }}\n            icon={Trash2}\n          />\n          <Button\n            size=\"small\"\n            onClick={(e) => {\n              e.stopPropagation();\n              modal.info({ title: \"Hi\", content: `My name is ${record.name}` });\n            }}\n          >\n            more\n          </Button>\n        </Space>\n      ),\n    },\n  ];\n  return (\n    <Table\n      data={data}\n      columns={columns}\n      onRowClick={(record) => message.info(\"Test row click: \" + record.name)}\n    />\n  );\n}"
+          "source": "import { ArrowDown, ArrowUp, Moon, Sun, Trash2 } from \"kui-icons\";\nimport { useState } from \"react\";\nimport { Button, Icon, message, modal, Space, Table, Tag, type Column } from \"react-kui\";\nimport { people, type Person } from \"./data\";\nexport default function App() {\n  const [data, setData] = useState([...people]);\n  const move = (index: number, offset: number) => {\n    const target = index + offset;\n    if (target < 0 || target >= data.length) return;\n    const next = [...data];\n    [next[index], next[target]] = [next[target], next[index]];\n    setData(next);\n  };\n  const columns: Column<Person>[] = [\n    { title: \"Name\", key: \"name\" },\n    { title: \"Age\", key: \"age\" },\n    {\n      title: \"Gender\",\n      key: \"gender\",\n      render: (v) => (\n        <Icon type={v === 1 ? Sun : Moon} color={v === 1 ? \"blue\" : \"#f50cff\"} size={15} />\n      ),\n    },\n    { title: \"Address\", key: \"address\" },\n    {\n      title: \"Tags\",\n      key: \"tags\",\n      render: (tags: string[]) => (\n        <Space>\n          {tags.map((tag) => (\n            <Tag key={tag} color={tag === \"Python\" ? \"green\" : \"blue\"}>\n              {tag}\n            </Tag>\n          ))}\n        </Space>\n      ),\n    },\n    {\n      title: \"Operate\",\n      key: \"action\",\n      width: 200,\n      render: (_, record, index) => (\n        <Space>\n          <Button\n            size=\"small\"\n            onClick={(e) => {\n              e.stopPropagation();\n              move(index, -1);\n            }}\n            icon={ArrowUp}\n          />\n          <Button\n            size=\"small\"\n            onClick={(e) => {\n              e.stopPropagation();\n              move(index, 1);\n            }}\n            icon={ArrowDown}\n          />\n          <Button\n            size=\"small\"\n            onClick={(e) => {\n              e.stopPropagation();\n              setData(data.filter((_, i) => i !== index));\n            }}\n            icon={Trash2}\n          />\n          <Button\n            size=\"small\"\n            onClick={(e) => {\n              e.stopPropagation();\n              modal.info({ title: \"Hi\", content: `My name is ${record.name}` });\n            }}\n          >\n            more\n          </Button>\n        </Space>\n      ),\n    },\n  ];\n  return (\n    <Table\n      data={data}\n      columns={columns}\n      onRowClick={(record) => message.info(\"Test row click: \" + record.name)}\n    />\n  );\n}"
         },
         {
           "id": "components/table/demo/tree.tsx",
@@ -47899,17 +47902,22 @@
         {
           "id": "components/table/demo/fixed-col-header.tsx",
           "title": "固定头/列",
-          "source": "import { Button, Table, type Column } from \"react-kui\";\nconst middle: Column[] = [];\nconst values: Record<string, string> = {};\nfor (let i = 0; i < 20; i++) {\n  middle.push({ title: `Col${i}`, key: `address${i}`, width: 150 });\n  values[`address${i}`] = \"Hubei Wuhan SoftBase No.128\";\n}\nconst data = Array.from({ length: 10 }, (_, i) => ({\n  key: i,\n  name: \"Han Mei\",\n  age: 28,\n  ...values,\n}));\nconst columns: Column[] = [\n  { title: \"Name\", key: \"name\", fixed: \"left\" },\n  { title: \"Age\", key: \"age\", fixed: \"left\" },\n  ...middle,\n  {\n    title: \"Operate\",\n    key: \"action\",\n    fixed: \"right\",\n    render: () => <Button size=\"small\">test</Button>,\n  },\n  {\n    title: \"Operate\",\n    key: \"action1\",\n    fixed: \"right\",\n    render: () => <Button size=\"small\">test2</Button>,\n  },\n];\nexport default function App() {\n  return <Table data={data} columns={columns} scroll={{ y: 300 }} />;\n}"
+          "source": "import { Button, Table, type Column } from \"react-kui\";\nconst middle: Column[] = [];\nconst values: Record<string, string> = {};\nfor (let i = 0; i < 20; i++) {\n  middle.push({ title: `Col${i}`, key: `address${i}`, width: 150 });\n  values[`address${i}`] = \"Hubei Wuhan SoftBase No.128\";\n}\nconst data = Array.from({ length: 10 }, (_, i) => ({\n  key: i,\n  name: \"Han Mei\",\n  age: 28,\n  ...values,\n}));\nconst columns: Column[] = [\n  { title: \"Name\", key: \"name\", fixed: \"left\" },\n  { title: \"Age\", key: \"age\", fixed: \"left\" },\n  ...middle,\n  // 分组父列上的 `fixed` 会继承给它的每个叶子列，整组一起固定\n  {\n    title: \"Operate\",\n    key: \"operate\",\n    fixed: \"right\",\n    children: [\n      {\n        title: \"Edit\",\n        key: \"action\",\n        render: () => <Button size=\"small\">test</Button>,\n      },\n      {\n        title: \"More\",\n        key: \"action1\",\n        render: () => <Button size=\"small\">test2</Button>,\n      },\n    ],\n  },\n];\nexport default function App() {\n  return <Table data={data} columns={columns} scroll={{ y: 300 }} />;\n}"
         },
         {
           "id": "components/table/demo/header-span.tsx",
           "title": "表头分组",
-          "source": "import { Table, type Column } from \"react-kui\";\nconst data = Array.from({ length: 10 }, (_, i) => ({\n  key: i,\n  name: \"John Brown\",\n  age: i + 1,\n  street: \"Lake Park\",\n  building: \"C\",\n  number: 2035,\n  companyAddress: \"Lake Street 42\",\n  companyName: \"SoftLake Co\",\n  gender: \"M\",\n}));\nconst columns: Column[] = [\n  { title: \"Name\", key: \"name\", width: 120, fixed: \"left\" },\n  {\n    title: \"Other\",\n    key: \"other\",\n    children: [\n      { title: \"Age\", key: \"age\", sorter: true },\n      {\n        title: \"Address\",\n        key: \"address\",\n        children: [\n          { title: \"Street\", key: \"street\" },\n          {\n            title: \"Block\",\n            key: \"block\",\n            children: [\n              { title: \"Building\", key: \"building\" },\n              { title: \"Door No.\", key: \"number\" },\n            ],\n          },\n        ],\n      },\n    ],\n  },\n  {\n    title: \"Company\",\n    key: \"company\",\n    children: [\n      { title: \"Company Address\", key: \"companyAddress\", width: 200 },\n      { title: \"Company Name\", key: \"companyName\", width: 200 },\n    ],\n  },\n  { title: \"Gender\", key: \"gender\", width: 100, fixed: \"right\" },\n];\nexport default function App() {\n  return <Table data={data} columns={columns} bordered scroll={{ y: 300 }} />;\n}"
+          "source": "import { Table, type Column } from \"react-kui\";\nconst data = Array.from({ length: 10 }, (_, i) => ({\n  key: i,\n  name: \"John Brown\",\n  age: i + 1,\n  street: \"Lake Park\",\n  building: \"C\",\n  number: 2035,\n  companyAddress: \"Lake Street 42\",\n  companyName: \"SoftLake Co\",\n  gender: \"M\",\n}));\nconst columns: Column[] = [\n  { title: \"Name\", key: \"name\", width: 120, fixed: \"left\" },\n  {\n    title: \"Other\",\n    key: \"other\",\n    children: [\n      { title: \"Age\", key: \"age\", width: 100, sorter: true },\n      {\n        title: \"Address\",\n        key: \"address\",\n        children: [\n          { title: \"Street\", key: \"street\", width: 140 },\n          {\n            title: \"Block\",\n            key: \"block\",\n            children: [\n              { title: \"Building\", key: \"building\", width: 120 },\n              { title: \"Door No.\", key: \"number\", width: 120 },\n            ],\n          },\n        ],\n      },\n    ],\n  },\n  {\n    title: \"Company\",\n    key: \"company\",\n    children: [\n      { title: \"Company Address\", key: \"companyAddress\", width: 200 },\n      { title: \"Company Name\", key: \"companyName\", width: 200 },\n    ],\n  },\n  { title: \"Gender\", key: \"gender\", width: 100, fixed: \"right\" },\n];\nexport default function App() {\n  // `scroll.x` 按叶子列宽度之和给（120+100+140+120+120+200+200+100 = 1_100）。\n  // 不给的话这些窄列会被挤到十几个像素，表头文字竖排换行，四层表头能长到 400 多 px，\n  // 比 `scroll.y` 的可视高度还高，等于把表体整个顶出可视区。\n  return <Table data={data} columns={columns} bordered scroll={{ x: 1_100, y: 300 }} />;\n}"
         },
         {
           "id": "components/table/demo/table-check.tsx",
           "title": "勾选",
           "source": "import { useState } from \"react\";\nimport { Space, Tag, Table, type Column } from \"react-kui\";\nimport { basicColumns, people, type Person } from \"./data\";\nconst columns: Column<Person>[] = [\n  ...basicColumns.map((column) =>\n    column.key === \"tags\"\n      ? {\n          ...column,\n          render: (tags: string[]) => (\n            <Space>\n              {tags.map((tag) => (\n                <Tag key={tag} color={tag === \"Python\" ? \"green\" : \"blue\"}>\n                  {tag}\n                </Tag>\n              ))}\n            </Space>\n          ),\n        }\n      : column\n  ),\n  {\n    title: \"Operate\",\n    key: \"action\",\n    render: () => (\n      <Space>\n        <a href=\"#\">Edit</a>\n        <a href=\"#\">Delete</a>\n      </Space>\n    ),\n  },\n];\nexport default function App() {\n  const [selectedKeys, setSelectedKeys] = useState<Array<string | number>>([]);\n  return (\n    <>\n      <code>selectedKeys: {selectedKeys.join(\", \")}</code>\n      <Table\n        data={people}\n        columns={columns}\n        checkable\n        selectedKeys={selectedKeys}\n        onSelectedKeysChange={setSelectedKeys}\n      />\n    </>\n  );\n}"
+        },
+        {
+          "id": "components/table/demo/nested-value.tsx",
+          "title": "嵌套取值",
+          "source": "import { Table, type Column } from \"react-kui\";\n\n/**\n * 嵌套数据不需要先拍平：列 `key`、`rowKey`、`childrenColumnName` 都可以写成 `a.b` 点路径。\n * 整名优先，所以字段名本身带点号时仍按整名取值；下钻途中缺字段只会渲染成空，不会抛错。\n */\ninterface Member {\n  meta: { uid: string };\n  profile: { name: string; city?: string };\n  tags?: string[];\n  rows?: { items: Member[] };\n}\n\nconst data: Member[] = [\n  {\n    meta: { uid: \"design\" },\n    profile: { name: \"Design Guild\", city: \"Hangzhou\" },\n    tags: [\"Studio\", \"Brand\"],\n    rows: {\n      items: [\n        { meta: { uid: \"ann\" }, profile: { name: \"Ann\", city: \"Hangzhou\" }, tags: [\"Studio\"] },\n        { meta: { uid: \"bob\" }, profile: { name: \"Bob\" } },\n      ],\n    },\n  },\n  {\n    meta: { uid: \"front-end\" },\n    profile: { name: \"Front-end Guild\", city: \"Shanghai\" },\n    tags: [\"Kui\"],\n    rows: {\n      items: [\n        {\n          meta: { uid: \"cara\" },\n          profile: { name: \"Cara\", city: \"Shanghai\" },\n          tags: [\"Kui\", \"Charts\"],\n        },\n      ],\n    },\n  },\n];\n\nconst columns: Column<Member>[] = [\n  { title: \"Name\", key: \"profile.name\", sorter: true },\n  { title: \"City\", key: \"profile.city\" },\n  { title: \"Primary tag\", key: \"tags.0\" },\n  { title: \"Secondary tag\", key: \"tags.1\" },\n];\n\nexport default function NestedValueDemo() {\n  return (\n    <Table\n      data={data}\n      columns={columns}\n      rowKey=\"meta.uid\"\n      childrenColumnName=\"rows.items\"\n      expandAllRows\n    />\n  );\n}"
         },
         {
           "id": "components/table/demo/control.tsx",
@@ -47919,12 +47927,12 @@
         {
           "id": "components/table/demo/virtual.tsx",
           "title": "虚拟滚动",
-          "source": "import { Table, type Column } from \"react-kui\";\n\nconst data = Array.from({ length: 10000 }, (_, index) => ({\n  key: index + 1,\n  name: `User ${index + 1}`,\n  email: `user${index + 1}@example.com`,\n  status: index % 3 === 0 ? \"Active\" : \"Pending\",\n}));\n\nconst columns: Column[] = [\n  { title: \"ID\", key: \"key\", width: 100 },\n  { title: \"Name\", key: \"name\" },\n  { title: \"Email\", key: \"email\", width: 200 },\n  { title: \"Email1\", key: \"email1\" },\n  { title: \"Email2\", key: \"email2\" },\n  { title: \"Email3\", key: \"email3\" },\n  { title: \"Email4\", key: \"email4\" },\n  { title: \"Email5\", key: \"email5\" },\n  { title: \"Status\", key: \"status\", width: 140, fixed: \"right\" },\n];\n\nexport default function VirtualDemo() {\n  return (\n    <Table\n      virtual\n      striped\n      data={data}\n      columns={columns}\n      scroll={{ x: 900, y: 360 }}\n      itemHeight={44}\n      overscan={6}\n    />\n  );\n}"
+          "source": "import { Table, type Column } from \"react-kui\";\n\nconst data = Array.from({ length: 10000 }, (_, index) => ({\n  key: index + 1,\n  name: `User ${index + 1}`,\n  email: `user${index + 1}@example.com`,\n  status: index % 3 === 0 ? \"Active\" : \"Pending\",\n}));\n\nconst columns: Column[] = [\n  { title: \"ID\", key: \"key\", width: 100 },\n  { title: \"Name\", key: \"name\", width: 200 },\n  { title: \"Email\", key: \"email\", width: 200 },\n  { title: \"Email1\", key: \"email1\", width: 100 },\n  { title: \"Email2\", key: \"email2\", width: 100 },\n  { title: \"Email3\", key: \"email3\", width: 100 },\n  { title: \"Email4\", key: \"email4\", width: 100 },\n  { title: \"Email5\", key: \"email5\", width: 100 },\n  { title: \"Status\", key: \"status\", width: 140, fixed: \"right\" },\n];\n\nexport default function VirtualDemo() {\n  return (\n    <Table\n      virtual\n      striped\n      data={data}\n      columns={columns}\n      scroll={{ x: 900, y: 360 }}\n      itemHeight={44}\n      overscan={6}\n    />\n  );\n}"
         },
         {
           "id": "components/table/demo/column-setting.tsx",
           "title": "列设置",
-          "source": "import { useState } from \"react\";\nimport { Space, Table, TableColumnSetting, type Column } from \"react-kui\";\n\nconst columns: Column[] = [\n  { title: \"姓名\", key: \"name\" },\n  { title: \"部门\", key: \"department\" },\n  { title: \"状态\", key: \"status\" },\n];\n\nconst data = [\n  { key: 1, name: \"林晓\", department: \"产品中心\", status: \"正常\" },\n  { key: 2, name: \"张三\", department: \"技术中心\", status: \"正常\" },\n  { key: 3, name: \"李四\", department: \"市场中心\", status: \"暂停\" },\n];\n\nexport default function ColumnSettingDemo() {\n  const [hiddenKeys, setHiddenKeys] = useState<(string | number)[]>([]);\n\n  return (\n    <Space vertical>\n      <TableColumnSetting\n        columns={columns}\n        hiddenColumnKeys={hiddenKeys}\n        onHiddenColumnKeysChange={setHiddenKeys}\n        disabledKeys={[\"name\"]}\n        title=\"显示列\"\n        resetText=\"重置\"\n      />\n      <Table data={data} columns={columns} hiddenColumnKeys={hiddenKeys} />\n    </Space>\n  );\n}"
+          "source": "import { useState } from \"react\";\nimport { Space, Table, TableColumnSetting, type Column } from \"react-kui\";\n\nconst columns: Column[] = [\n  { title: \"姓名\", key: \"name\" },\n  { title: \"部门\", key: \"department\" },\n  { title: \"状态\", key: \"status\" },\n];\n\nconst data = [\n  { key: 1, name: \"林晓\", department: \"产品中心\", status: \"正常\" },\n  { key: 2, name: \"张三\", department: \"技术中心\", status: \"正常\" },\n  { key: 3, name: \"李四\", department: \"市场中心\", status: \"暂停\" },\n];\n\nexport default function ColumnSettingDemo() {\n  const [hiddenKeys, setHiddenKeys] = useState<(string | number)[]>([]);\n\n  return (\n    <Space vertical>\n      <TableColumnSetting\n        columns={columns}\n        hiddenKeys={hiddenKeys}\n        onHiddenKeysChange={setHiddenKeys}\n        disabledKeys={[\"name\"]}\n        title=\"显示列\"\n        resetText=\"重置\"\n      />\n      <Table data={data} columns={columns} hiddenColumnKeys={hiddenKeys} />\n    </Space>\n  );\n}"
         }
       ]
     },

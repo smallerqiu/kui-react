@@ -46,6 +46,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   children,
   className = "",
   id,
+  "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledby,
   "aria-describedby": ariaDescribedby,
   "aria-invalid": ariaInvalid,
@@ -136,6 +137,9 @@ const Checkbox: React.FC<CheckboxProps> = ({
           readOnly={currentReadOnly}
           aria-checked={indeterminate ? "mixed" : isChecked}
           aria-readonly={currentReadOnly || undefined}
+          // 无文本的勾选框（比如表格行首列、表头全选）只能靠 aria-label 拿到可访问名，
+          // 和 aria-labelledby 一样必须落在 input 上：留在 label 上辅助技术读不到控件名字。
+          aria-label={ariaLabel}
           aria-labelledby={ariaLabelledby}
           aria-describedby={ariaDescribedby}
           aria-invalid={ariaInvalid}

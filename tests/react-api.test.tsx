@@ -671,9 +671,13 @@ describe("React state initialization and synchronization", () => {
         onExpandedKeysChange={onExpandedKeysChange}
       />,
     );
+    // 展开按钮的可访问名归语言包管（见 tests/table-locale.test.tsx），这里按类名取，
+    // 免得默认语言一改就误伤行为用例。
+    const toggle = () =>
+      document.querySelector<HTMLButtonElement>(".k-table-tree-toggle") as HTMLElement;
 
     expect(screen.queryByText("Child row")).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: "Expand row" }));
+    fireEvent.click(toggle());
     expect(onExpand).toHaveBeenCalledWith(true, data[0]);
     expect(onExpandedKeysChange).toHaveBeenCalledWith(["parent"]);
     expect(screen.queryByText("Child row")).not.toBeNull();

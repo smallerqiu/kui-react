@@ -1,6 +1,6 @@
 import { ArrowDown, ArrowUp, Moon, Sun, Trash2 } from "kui-icons";
 import { useState } from "react";
-import { Button, Icon, message, modal, Space, Tag, Table, type Column } from "react-kui";
+import { Button, Icon, message, modal, Space, Table, Tag, type Column } from "react-kui";
 import { people, type Person } from "./data";
 export default function App() {
   const [data, setData] = useState([...people]);
@@ -38,6 +38,7 @@ export default function App() {
     {
       title: "Operate",
       key: "action",
+      width: 200,
       render: (_, record, index) => (
         <Space>
           <Button

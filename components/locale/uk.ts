@@ -50,6 +50,12 @@ export default {
     },
     table: {
       emptyText: "Немає даних",
+      columnSettings: "Налаштування стовпців",
+      resetColumns: "Скинути",
+      expandRow: "Розгорнути рядок",
+      collapseRow: "Згорнути рядок",
+      selectRow: "Вибрати рядок",
+      selectAllRows: "Вибрати всі",
     },
     upload: {
       successful: "успіх",

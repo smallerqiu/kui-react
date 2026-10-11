@@ -50,6 +50,12 @@ export default {
     },
     table: {
       emptyText: "Không có dữ liệu",
+      columnSettings: "Cài đặt cột",
+      resetColumns: "Đặt lại",
+      expandRow: "Mở rộng hàng",
+      collapseRow: "Thu gọn hàng",
+      selectRow: "Chọn hàng",
+      selectAllRows: "Chọn tất cả",
     },
     upload: {
       successful: "thành công",

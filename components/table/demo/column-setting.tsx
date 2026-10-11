@@ -20,8 +20,8 @@ export default function ColumnSettingDemo() {
     <Space vertical>
       <TableColumnSetting
         columns={columns}
-        hiddenColumnKeys={hiddenKeys}
-        onHiddenColumnKeysChange={setHiddenKeys}
+        hiddenKeys={hiddenKeys}
+        onHiddenKeysChange={setHiddenKeys}
         disabledKeys={["name"]}
         title="显示列"
         resetText="重置"

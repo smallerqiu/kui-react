@@ -15,17 +15,23 @@ const columns: Column[] = [
   { title: "Name", key: "name", fixed: "left" },
   { title: "Age", key: "age", fixed: "left" },
   ...middle,
+  // 分组父列上的 `fixed` 会继承给它的每个叶子列，整组一起固定
   {
     title: "Operate",
-    key: "action",
+    key: "operate",
     fixed: "right",
-    render: () => <Button size="small">test</Button>,
-  },
-  {
-    title: "Operate",
-    key: "action1",
-    fixed: "right",
-    render: () => <Button size="small">test2</Button>,
+    children: [
+      {
+        title: "Edit",
+        key: "action",
+        render: () => <Button size="small">test</Button>,
+      },
+      {
+        title: "More",
+        key: "action1",
+        render: () => <Button size="small">test2</Button>,
+      },
+    ],
   },
 ];
 export default function App() {

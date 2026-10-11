@@ -51,6 +51,12 @@ export default {
     },
     table: {
       emptyText: "Aucune donnée",
+      columnSettings: "Paramètres des colonnes",
+      resetColumns: "Réinitialiser",
+      expandRow: "Développer la ligne",
+      collapseRow: "Réduire la ligne",
+      selectRow: "Sélectionner la ligne",
+      selectAllRows: "Tout sélectionner",
     },
     upload: {
       successful: "Succès",

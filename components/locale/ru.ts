@@ -50,6 +50,12 @@ export default {
     },
     table: {
       emptyText: "Нет данных",
+      columnSettings: "Настройки столбцов",
+      resetColumns: "Сбросить",
+      expandRow: "Развернуть строку",
+      collapseRow: "Свернуть строку",
+      selectRow: "Выбрать строку",
+      selectAllRows: "Выбрать все",
     },
     upload: {
       successful: "успешно",

@@ -92,8 +92,11 @@ describe("unified state props", () => {
     const data = [{ key: "p", name: "Parent", children: [{ key: "c", name: "Child" }] }];
     const columns = [{ key: "name", title: "Name" }];
     const { rerender } = render(<Table data={data} columns={columns} expandAllRows />);
+    // 展开按钮的可访问名归语言包管（见 tests/table-locale.test.tsx），行为用例按类名取
+    const toggle = () =>
+      document.querySelector<HTMLButtonElement>(".k-table-tree-toggle") as HTMLElement;
     expect(screen.queryByText("Child")).not.toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: "Collapse row" }));
+    fireEvent.click(toggle());
     expect(screen.queryByText("Child")).toBeNull();
     rerender(<Table data={data} columns={columns} expandAllRows />);
     expect(screen.queryByText("Child")).toBeNull();

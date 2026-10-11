@@ -50,6 +50,12 @@ export default {
     },
     table: {
       emptyText: "noch keine Daten",
+      columnSettings: "Spalteneinstellungen",
+      resetColumns: "Zurücksetzen",
+      expandRow: "Zeile ausklappen",
+      collapseRow: "Zeile einklappen",
+      selectRow: "Zeile auswählen",
+      selectAllRows: "Alle auswählen",
     },
     upload: {
       successful: "Erfolg",

@@ -16,18 +16,18 @@ const columns: Column[] = [
     title: "Other",
     key: "other",
     children: [
-      { title: "Age", key: "age", sorter: true },
+      { title: "Age", key: "age", width: 100, sorter: true },
       {
         title: "Address",
         key: "address",
         children: [
-          { title: "Street", key: "street" },
+          { title: "Street", key: "street", width: 140 },
           {
             title: "Block",
             key: "block",
             children: [
-              { title: "Building", key: "building" },
-              { title: "Door No.", key: "number" },
+              { title: "Building", key: "building", width: 120 },
+              { title: "Door No.", key: "number", width: 120 },
             ],
           },
         ],
@@ -45,5 +45,8 @@ const columns: Column[] = [
   { title: "Gender", key: "gender", width: 100, fixed: "right" },
 ];
 export default function App() {
-  return <Table data={data} columns={columns} bordered scroll={{ y: 300 }} />;
+  // `scroll.x` 按叶子列宽度之和给（120+100+140+120+120+200+200+100 = 1_100）。
+  // 不给的话这些窄列会被挤到十几个像素，表头文字竖排换行，四层表头能长到 400 多 px，
+  // 比 `scroll.y` 的可视高度还高，等于把表体整个顶出可视区。
+  return <Table data={data} columns={columns} bordered scroll={{ x: 1_100, y: 300 }} />;
 }

@@ -1,17 +1,19 @@
-import { useState, type ReactNode } from "react";
+import { useContext, useState, type ReactNode } from "react";
 import { Button } from "../button";
 import { CheckboxGroup } from "../checkbox";
+import { ConfigContext } from "../config/config-context";
 import type { SizeType } from "../const/types";
+import zhCN from "../locale/zh-CN";
 import Poptip from "../poptip";
 import type { Column } from "./types";
 
 export interface TableColumnSettingProps<T = Record<string, unknown>> {
   /** 所有列定义 */
   columns?: Column<T>[];
-  /** 当前隐藏的列 key 集合 */
-  hiddenColumnKeys?: (string | number)[];
+  /** 当前隐藏的列 key 集合，与 Table 的 `hiddenColumnKeys` 使用同一份值 */
+  hiddenKeys?: (string | number)[];
   /** 隐藏列变化时触发 */
-  onHiddenColumnKeysChange?: (keys: (string | number)[]) => void;
+  onHiddenKeysChange?: (keys: (string | number)[]) => void;
   /** 禁用的列 key 集合 */
   disabledKeys?: (string | number)[];
   /** 标题文案 */
@@ -32,25 +34,36 @@ export interface TableColumnSettingProps<T = Record<string, unknown>> {
  */
 export function TableColumnSetting<T extends object = Record<string, unknown>>({
   columns = [],
-  hiddenColumnKeys = [],
-  onHiddenColumnKeysChange,
+  hiddenKeys = [],
+  onHiddenKeysChange,
   disabledKeys = [],
-  title = "Column settings",
-  resetText = "Reset",
+  title: titleProp,
+  resetText: resetTextProp,
   size,
   showReset = true,
   children,
 }: TableColumnSettingProps<T>) {
   const [open, setOpen] = useState(false);
 
-  // 构建可配置的列列表（不含分组列）
-  const leafColumns = columns.filter((col) => !col.children?.length);
+  // 与 kui-vue 同一条优先级：显式 props > locale.k.table > 英文兜底
+  const config = useContext(ConfigContext);
+  const locale = config?.locale || zhCN;
+  const title = titleProp || locale?.k?.table?.columnSettings || "Column settings";
+  const resetText = resetTextProp || locale?.k?.table?.resetColumns || "Reset";
+
+  // 构建可配置的列列表：递归收集叶子列，分组表头下的子列同样可以显隐（与 kui-vue 一致）
+  const leafColumns: Column<T>[] = [];
+  const collectLeaves = (items: Column<T>[]) =>
+    items.forEach((column) =>
+      column.children?.length ? collectLeaves(column.children) : leafColumns.push(column),
+    );
+  collectLeaves(columns);
   const configurableColumns = leafColumns.filter((col) => !disabledKeys.includes(col.key));
 
   // 当前可见的列 keys
   const visibleKeys = configurableColumns
     .map((col) => col.key)
-    .filter((key) => !hiddenColumnKeys.includes(key)) as (string | number)[];
+    .filter((key) => !hiddenKeys.includes(key)) as (string | number)[];
 
   // 构建 CheckboxGroup 的选项
   const options = configurableColumns.map((col) => ({
@@ -62,10 +75,10 @@ export function TableColumnSetting<T extends object = Record<string, unknown>>({
     const selected = new Set(values.map(String));
     const configurable = new Set(configurableColumns.map((col) => String(col.key)));
     const next = [
-      ...hiddenColumnKeys.filter((key) => !configurable.has(String(key))),
+      ...hiddenKeys.filter((key) => !configurable.has(String(key))),
       ...configurableColumns.map((col) => col.key).filter((key) => !selected.has(String(key))),
     ];
-    onHiddenColumnKeysChange?.(next);
+    onHiddenKeysChange?.(next);
   };
 
   const handleReset = () => {

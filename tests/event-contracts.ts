@@ -137,7 +137,7 @@ export type PublicEventContract = [
   Assert<TypedHandler<Components.SplitterProps["onResize"]>>,
   Assert<TypedHandler<Components.SplitterProps["onResizeEnd"]>>,
   Assert<TypedHandler<Components.SplitterProps["onResizeStart"]>>,
-  Assert<TypedHandler<Components.TableColumnSettingProps["onHiddenColumnKeysChange"]>>,
+  Assert<TypedHandler<Components.TableColumnSettingProps["onHiddenKeysChange"]>>,
   Assert<TypedHandler<Components.TableProps["onSort"]>>,
   Assert<TypedHandler<Components.TableProps["onRowClick"]>>,
   Assert<TypedHandler<Components.TableProps["onSelect"]>>,

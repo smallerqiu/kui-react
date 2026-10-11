@@ -50,6 +50,12 @@ export default {
     },
     table: {
       emptyText: "Nessun dato",
+      columnSettings: "Impostazioni colonne",
+      resetColumns: "Reimposta",
+      expandRow: "Espandi riga",
+      collapseRow: "Comprimi riga",
+      selectRow: "Seleziona riga",
+      selectAllRows: "Seleziona tutto",
     },
     upload: {
       successful: "successo",

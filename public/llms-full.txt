@@ -34162,7 +34162,7 @@ export default function App() {
       "type": "T[] | undefined",
       "required": false,
       "boolean": false,
-      "defaultExpression": "[]",
+      "defaultExpression": "EMPTY_DATA",
       "descriptionZh": "显示的结构化数据",
       "descriptionEn": "Structured data to be displayed"
     },
@@ -34171,7 +34171,7 @@ export default function App() {
       "type": "Column<T>[] | undefined",
       "required": false,
       "boolean": false,
-      "defaultExpression": "[]",
+      "defaultExpression": "EMPTY_COLUMNS",
       "descriptionZh": "表格列的配置描述，",
       "descriptionEn": "Configuration description of table columns"
     },
@@ -34188,7 +34188,7 @@ export default function App() {
       "type": "TableKey[] | undefined",
       "required": false,
       "boolean": false,
-      "defaultExpression": "[]",
+      "defaultExpression": "EMPTY_KEYS",
       "descriptionZh": "禁用的key集合",
       "descriptionEn": "Disabled key set"
     },
@@ -34198,8 +34198,8 @@ export default function App() {
       "required": false,
       "boolean": false,
       "defaultExpression": "\"key\"",
-      "descriptionZh": "勾选时的依据",
-      "descriptionEn": "Basis for selection"
+      "descriptionZh": "行的唯一标识，勾选与展开都以它为准；可传字段名，或传函数从记录中取值",
+      "descriptionEn": "Unique row identity used by selection and expansion; a field name or an accessor function reading the key from a record"
     },
     {
       "name": "childrenColumnName",
@@ -34228,8 +34228,8 @@ export default function App() {
       ],
       "boolean": true,
       "defaultExpression": "false",
-      "descriptionZh": "初始化及属性变化时展开所有树节点（expandedKeys 优先）",
-      "descriptionEn": "Expand every tree node on initialization or when this prop changes (explicit expandedKeys takes precedence)"
+      "descriptionZh": "初始化时展开所有树节点；`data` 后续变化时只补新增的父行，用户手动展开或折叠过的行保持不变（expandedKeys 优先）",
+      "descriptionEn": "Expand every tree node on initialization; when `data` changes later only newly arrived parent rows are expanded, while rows the user expanded or collapsed by hand are kept (explicit expandedKeys takes precedence)"
     },
     {
       "name": "expandRowByClick",
@@ -34258,9 +34258,9 @@ export default function App() {
       "type": "{ x?: number | string; y?: number | string; } | undefined",
       "required": false,
       "boolean": false,
-      "defaultExpression": "{}",
-      "descriptionZh": "表格滚动区域",
-      "descriptionEn": "Scrollable table area"
+      "defaultExpression": "EMPTY_SCROLL",
+      "descriptionZh": "滚动配置；`x` 为内容最小宽度，`y` 为表体的纵向滚动区域高度",
+      "descriptionEn": "Scroll configuration; `x` is the minimum content width and `y` is the vertical viewport height of the body"
     },
     {
       "name": "size",
@@ -34398,7 +34398,7 @@ export default function App() {
       "type": "(string | number)[] | undefined",
       "required": false,
       "boolean": false,
-      "defaultExpression": "[]",
+      "defaultExpression": "EMPTY_KEYS",
       "descriptionZh": "隐藏的列 key 集合",
       "descriptionEn": "Hidden column key collection"
     },
@@ -34537,7 +34537,7 @@ export default function App() {
 ```tsx
 import { ArrowDown, ArrowUp, Moon, Sun, Trash2 } from "kui-icons";
 import { useState } from "react";
-import { Button, Icon, message, modal, Space, Tag, Table, type Column } from "react-kui";
+import { Button, Icon, message, modal, Space, Table, Tag, type Column } from "react-kui";
 import { people, type Person } from "./data";
 export default function App() {
   const [data, setData] = useState([...people]);
@@ -34575,6 +34575,7 @@ export default function App() {
     {
       title: "Operate",
       key: "action",
+      width: 200,
       render: (_, record, index) => (
         <Space>
           <Button
@@ -34996,17 +34997,23 @@ const columns: Column[] = [
   { title: "Name", key: "name", fixed: "left" },
   { title: "Age", key: "age", fixed: "left" },
   ...middle,
+  // 分组父列上的 `fixed` 会继承给它的每个叶子列，整组一起固定
   {
     title: "Operate",
-    key: "action",
+    key: "operate",
     fixed: "right",
-    render: () => <Button size="small">test</Button>,
-  },
-  {
-    title: "Operate",
-    key: "action1",
-    fixed: "right",
-    render: () => <Button size="small">test2</Button>,
+    children: [
+      {
+        title: "Edit",
+        key: "action",
+        render: () => <Button size="small">test</Button>,
+      },
+      {
+        title: "More",
+        key: "action1",
+        render: () => <Button size="small">test2</Button>,
+      },
+    ],
   },
 ];
 export default function App() {
@@ -35034,18 +35041,18 @@ const columns: Column[] = [
     title: "Other",
     key: "other",
     children: [
-      { title: "Age", key: "age", sorter: true },
+      { title: "Age", key: "age", width: 100, sorter: true },
       {
         title: "Address",
         key: "address",
         children: [
-          { title: "Street", key: "street" },
+          { title: "Street", key: "street", width: 140 },
           {
             title: "Block",
             key: "block",
             children: [
-              { title: "Building", key: "building" },
-              { title: "Door No.", key: "number" },
+              { title: "Building", key: "building", width: 120 },
+              { title: "Door No.", key: "number", width: 120 },
             ],
           },
         ],
@@ -35063,7 +35070,10 @@ const columns: Column[] = [
   { title: "Gender", key: "gender", width: 100, fixed: "right" },
 ];
 export default function App() {
-  return <Table data={data} columns={columns} bordered scroll={{ y: 300 }} />;
+  // `scroll.x` 按叶子列宽度之和给（120+100+140+120+120+200+200+100 = 1_100）。
+  // 不给的话这些窄列会被挤到十几个像素，表头文字竖排换行，四层表头能长到 400 多 px，
+  // 比 `scroll.y` 的可视高度还高，等于把表体整个顶出可视区。
+  return <Table data={data} columns={columns} bordered scroll={{ x: 1_100, y: 300 }} />;
 }
 ```
 ## 勾选
@@ -35113,6 +35123,69 @@ export default function App() {
         onSelectedKeysChange={setSelectedKeys}
       />
     </>
+  );
+}
+```
+## 嵌套取值
+
+```tsx
+import { Table, type Column } from "react-kui";
+
+/**
+ * 嵌套数据不需要先拍平：列 `key`、`rowKey`、`childrenColumnName` 都可以写成 `a.b` 点路径。
+ * 整名优先，所以字段名本身带点号时仍按整名取值；下钻途中缺字段只会渲染成空，不会抛错。
+ */
+interface Member {
+  meta: { uid: string };
+  profile: { name: string; city?: string };
+  tags?: string[];
+  rows?: { items: Member[] };
+}
+
+const data: Member[] = [
+  {
+    meta: { uid: "design" },
+    profile: { name: "Design Guild", city: "Hangzhou" },
+    tags: ["Studio", "Brand"],
+    rows: {
+      items: [
+        { meta: { uid: "ann" }, profile: { name: "Ann", city: "Hangzhou" }, tags: ["Studio"] },
+        { meta: { uid: "bob" }, profile: { name: "Bob" } },
+      ],
+    },
+  },
+  {
+    meta: { uid: "front-end" },
+    profile: { name: "Front-end Guild", city: "Shanghai" },
+    tags: ["Kui"],
+    rows: {
+      items: [
+        {
+          meta: { uid: "cara" },
+          profile: { name: "Cara", city: "Shanghai" },
+          tags: ["Kui", "Charts"],
+        },
+      ],
+    },
+  },
+];
+
+const columns: Column<Member>[] = [
+  { title: "Name", key: "profile.name", sorter: true },
+  { title: "City", key: "profile.city" },
+  { title: "Primary tag", key: "tags.0" },
+  { title: "Secondary tag", key: "tags.1" },
+];
+
+export default function NestedValueDemo() {
+  return (
+    <Table
+      data={data}
+      columns={columns}
+      rowKey="meta.uid"
+      childrenColumnName="rows.items"
+      expandAllRows
+    />
   );
 }
 ```
@@ -35212,13 +35285,13 @@ const data = Array.from({ length: 10000 }, (_, index) => ({
 
 const columns: Column[] = [
   { title: "ID", key: "key", width: 100 },
-  { title: "Name", key: "name" },
+  { title: "Name", key: "name", width: 200 },
   { title: "Email", key: "email", width: 200 },
-  { title: "Email1", key: "email1" },
-  { title: "Email2", key: "email2" },
-  { title: "Email3", key: "email3" },
-  { title: "Email4", key: "email4" },
-  { title: "Email5", key: "email5" },
+  { title: "Email1", key: "email1", width: 100 },
+  { title: "Email2", key: "email2", width: 100 },
+  { title: "Email3", key: "email3", width: 100 },
+  { title: "Email4", key: "email4", width: 100 },
+  { title: "Email5", key: "email5", width: 100 },
   { title: "Status", key: "status", width: 140, fixed: "right" },
 ];
 
@@ -35261,8 +35334,8 @@ export default function ColumnSettingDemo() {
     <Space vertical>
       <TableColumnSetting
         columns={columns}
-        hiddenColumnKeys={hiddenKeys}
-        onHiddenColumnKeysChange={setHiddenKeys}
+        hiddenKeys={hiddenKeys}
+        onHiddenKeysChange={setHiddenKeys}
         disabledKeys={["name"]}
         title="显示列"
         resetText="重置"
@@ -35286,20 +35359,20 @@ export default function ColumnSettingDemo() {
       "required": false,
       "boolean": false,
       "defaultExpression": "[]",
-      "descriptionZh": "列定义；设置面板仅列出顶层无子列的列。",
-      "descriptionEn": "Column definitions; only top-level columns without children appear in the settings."
+      "descriptionZh": "列定义；设置面板递归列出所有叶子列，包含分组表头下的子列。",
+      "descriptionEn": "Column definitions; the settings list every leaf column recursively, including children of grouped headers."
     },
     {
-      "name": "hiddenColumnKeys",
+      "name": "hiddenKeys",
       "type": "(string | number)[] | undefined",
       "required": false,
       "boolean": false,
       "defaultExpression": "[]",
-      "descriptionZh": "隐藏列的 key 集合；在变更回调中更新，并将同一值传给 Table。",
-      "descriptionEn": "Hidden column keys. Update this value in the change callback and pass the same value to Table."
+      "descriptionZh": "隐藏列的 key 集合；在变更回调中更新，并把同一值传给 Table 的 `hiddenColumnKeys`。",
+      "descriptionEn": "Hidden column keys. Update this value in the change callback and pass the same value to Table's `hiddenColumnKeys`."
     },
     {
-      "name": "onHiddenColumnKeysChange",
+      "name": "onHiddenKeysChange",
       "type": "((keys: (string | number)[]) => void) | undefined",
       "required": false,
       "boolean": false,
@@ -35320,7 +35393,6 @@ export default function ColumnSettingDemo() {
       "type": "string | undefined",
       "required": false,
       "boolean": false,
-      "defaultExpression": "\"Column settings\"",
       "descriptionZh": "弹层标题及默认触发按钮文案。",
       "descriptionEn": "Popup title and default trigger button text."
     },
@@ -35329,7 +35401,6 @@ export default function ColumnSettingDemo() {
       "type": "string | undefined",
       "required": false,
       "boolean": false,
-      "defaultExpression": "\"Reset\"",
       "descriptionZh": "重置按钮文案；重置会显示所有可配置列。",
       "descriptionEn": "Reset button text. Reset shows all configurable columns."
     },
@@ -35370,7 +35441,7 @@ export default function ColumnSettingDemo() {
   ],
   "events": [
     {
-      "name": "onHiddenColumnKeysChange",
+      "name": "onHiddenKeysChange",
       "type": "((keys: (string | number)[]) => void) | undefined",
       "required": false,
       "boolean": false,
@@ -35392,7 +35463,7 @@ export default function ColumnSettingDemo() {
 ```tsx
 import { ArrowDown, ArrowUp, Moon, Sun, Trash2 } from "kui-icons";
 import { useState } from "react";
-import { Button, Icon, message, modal, Space, Tag, Table, type Column } from "react-kui";
+import { Button, Icon, message, modal, Space, Table, Tag, type Column } from "react-kui";
 import { people, type Person } from "./data";
 export default function App() {
   const [data, setData] = useState([...people]);
@@ -35430,6 +35501,7 @@ export default function App() {
     {
       title: "Operate",
       key: "action",
+      width: 200,
       render: (_, record, index) => (
         <Space>
           <Button
@@ -35851,17 +35923,23 @@ const columns: Column[] = [
   { title: "Name", key: "name", fixed: "left" },
   { title: "Age", key: "age", fixed: "left" },
   ...middle,
+  // 分组父列上的 `fixed` 会继承给它的每个叶子列，整组一起固定
   {
     title: "Operate",
-    key: "action",
+    key: "operate",
     fixed: "right",
-    render: () => <Button size="small">test</Button>,
-  },
-  {
-    title: "Operate",
-    key: "action1",
-    fixed: "right",
-    render: () => <Button size="small">test2</Button>,
+    children: [
+      {
+        title: "Edit",
+        key: "action",
+        render: () => <Button size="small">test</Button>,
+      },
+      {
+        title: "More",
+        key: "action1",
+        render: () => <Button size="small">test2</Button>,
+      },
+    ],
   },
 ];
 export default function App() {
@@ -35889,18 +35967,18 @@ const columns: Column[] = [
     title: "Other",
     key: "other",
     children: [
-      { title: "Age", key: "age", sorter: true },
+      { title: "Age", key: "age", width: 100, sorter: true },
       {
         title: "Address",
         key: "address",
         children: [
-          { title: "Street", key: "street" },
+          { title: "Street", key: "street", width: 140 },
           {
             title: "Block",
             key: "block",
             children: [
-              { title: "Building", key: "building" },
-              { title: "Door No.", key: "number" },
+              { title: "Building", key: "building", width: 120 },
+              { title: "Door No.", key: "number", width: 120 },
             ],
           },
         ],
@@ -35918,7 +35996,10 @@ const columns: Column[] = [
   { title: "Gender", key: "gender", width: 100, fixed: "right" },
 ];
 export default function App() {
-  return <Table data={data} columns={columns} bordered scroll={{ y: 300 }} />;
+  // `scroll.x` 按叶子列宽度之和给（120+100+140+120+120+200+200+100 = 1_100）。
+  // 不给的话这些窄列会被挤到十几个像素，表头文字竖排换行，四层表头能长到 400 多 px，
+  // 比 `scroll.y` 的可视高度还高，等于把表体整个顶出可视区。
+  return <Table data={data} columns={columns} bordered scroll={{ x: 1_100, y: 300 }} />;
 }
 ```
 ## 勾选
@@ -35968,6 +36049,69 @@ export default function App() {
         onSelectedKeysChange={setSelectedKeys}
       />
     </>
+  );
+}
+```
+## 嵌套取值
+
+```tsx
+import { Table, type Column } from "react-kui";
+
+/**
+ * 嵌套数据不需要先拍平：列 `key`、`rowKey`、`childrenColumnName` 都可以写成 `a.b` 点路径。
+ * 整名优先，所以字段名本身带点号时仍按整名取值；下钻途中缺字段只会渲染成空，不会抛错。
+ */
+interface Member {
+  meta: { uid: string };
+  profile: { name: string; city?: string };
+  tags?: string[];
+  rows?: { items: Member[] };
+}
+
+const data: Member[] = [
+  {
+    meta: { uid: "design" },
+    profile: { name: "Design Guild", city: "Hangzhou" },
+    tags: ["Studio", "Brand"],
+    rows: {
+      items: [
+        { meta: { uid: "ann" }, profile: { name: "Ann", city: "Hangzhou" }, tags: ["Studio"] },
+        { meta: { uid: "bob" }, profile: { name: "Bob" } },
+      ],
+    },
+  },
+  {
+    meta: { uid: "front-end" },
+    profile: { name: "Front-end Guild", city: "Shanghai" },
+    tags: ["Kui"],
+    rows: {
+      items: [
+        {
+          meta: { uid: "cara" },
+          profile: { name: "Cara", city: "Shanghai" },
+          tags: ["Kui", "Charts"],
+        },
+      ],
+    },
+  },
+];
+
+const columns: Column<Member>[] = [
+  { title: "Name", key: "profile.name", sorter: true },
+  { title: "City", key: "profile.city" },
+  { title: "Primary tag", key: "tags.0" },
+  { title: "Secondary tag", key: "tags.1" },
+];
+
+export default function NestedValueDemo() {
+  return (
+    <Table
+      data={data}
+      columns={columns}
+      rowKey="meta.uid"
+      childrenColumnName="rows.items"
+      expandAllRows
+    />
   );
 }
 ```
@@ -36067,13 +36211,13 @@ const data = Array.from({ length: 10000 }, (_, index) => ({
 
 const columns: Column[] = [
   { title: "ID", key: "key", width: 100 },
-  { title: "Name", key: "name" },
+  { title: "Name", key: "name", width: 200 },
   { title: "Email", key: "email", width: 200 },
-  { title: "Email1", key: "email1" },
-  { title: "Email2", key: "email2" },
-  { title: "Email3", key: "email3" },
-  { title: "Email4", key: "email4" },
-  { title: "Email5", key: "email5" },
+  { title: "Email1", key: "email1", width: 100 },
+  { title: "Email2", key: "email2", width: 100 },
+  { title: "Email3", key: "email3", width: 100 },
+  { title: "Email4", key: "email4", width: 100 },
+  { title: "Email5", key: "email5", width: 100 },
   { title: "Status", key: "status", width: 140, fixed: "right" },
 ];
 
@@ -36116,8 +36260,8 @@ export default function ColumnSettingDemo() {
     <Space vertical>
       <TableColumnSetting
         columns={columns}
-        hiddenColumnKeys={hiddenKeys}
-        onHiddenColumnKeysChange={setHiddenKeys}
+        hiddenKeys={hiddenKeys}
+        onHiddenKeysChange={setHiddenKeys}
         disabledKeys={["name"]}
         title="显示列"
         resetText="重置"
