@@ -211,14 +211,18 @@ export const SubMenu: React.FC<SubMenuProps> = ({
     },
   };
 
+  // 展开/收起走 Menu 自己的 `k-menu-slide`，不能借 Collapse 的 `k-collapse-slide`：那个类带着
+  // `animation: k-motion-scale-y-in`（scaleY 0→1，见 `components/collapse/styles/index.less`），
+  // 会叠在同一个元素的高度过渡上——盒子按 height 先撑开，内容还被压成 0，看上去就是
+  // "外层先展开、里面的再伸缩下来"。
+  // `timeout` 必须等于 `styles/index.less` 里的 `@menu-submenu-duration`（200ms）：它是
+  // react-transition-group 摘掉 `-enter-active` 的时机，比 CSS 长会多留一段固定高度 +
+  // `overflow: hidden`，比 CSS 短会把过渡掐断。
   const transitionProps = popup
     ? { name: `k-${preCls}-popup` }
     : restoreNested
       ? { name: "k-menu-restore", timeout: 0 }
-      : {
-          ...getTransitionProp("k-collapse-slide"),
-          timeout: { appear: 300, enter: 300, exit: 200 },
-        };
+      : { ...getTransitionProp("k-menu-slide"), timeout: 200 };
   const containerProps = popup
     ? { className: `k-${preCls}-popup`, ...popperProps }
     : { className: `k-${preCls}-sub` };
