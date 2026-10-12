@@ -14,6 +14,25 @@ Vite seems to cache builds—you can manually clear it:
 rm -rf node_modules/.vite
 ```
 
+### 3.2.0
+
+`2026-10-12`
+
+- `Menu`: Added arrow-key / Enter / Esc navigation; `Escape` closes only the current level.
+- `Menu`: Popup lists are linked to their trigger through `aria-controls` / `aria-labelledby`, and a `horizontal` root declares `role="menubar"`.
+- `Menu`: Added the group and divider example, plus the usage rules for `MenuGroup` / `MenuDivider`, `mode` and `openKeys`.
+- `Menu`: Fixed the vertical sub-menu animation where the outer panel opened first and the content followed.
+- `Table`: Fixed missing header borders, sticky-row gaps, incomplete rounded corners and the blank block in the bottom-right corner when grouped headers are combined with fixed columns, `scroll.y` and `bordered`.
+- `Table`: Grouped headers are rendered as per-column cells with `aria-labelledby` relations; fixed-column widths and sticky offsets now match the Vue build.
+- `Table`: `rowKey` falls back to a stable key when the configured value is missing; `dataIndex` supports `a.b.c` nested paths.
+- `Table`: Fixed `expandAllRows` re-expanding parents for asynchronous data and the virtual window start exceeding the row count.
+- `Table`: Header sort buttons carry the missing accessibility semantics; built-in empty and filter strings now come from the locale bundle.
+- Unified scrollbar styling so horizontal and vertical bars match; the dark-theme hover thumb no longer blends into the background.
+- `Ripple`: Fixed wrapped content that could not be clicked and produced no ripple in Chrome 155.
+- `Ripple`: Added the Chrome 156 `content="drawable"` attribute while Edge and earlier Chromium keep the previous path.
+- `Ripple`: The WebGL overlay now brightens crests and darkens troughs, so it stays visible over light and dark pages.
+- `FlameWrap`: Fixed wrapped content that could not be clicked in Chrome 155, and added the Chrome 156 `content="drawable"` attribute.
+
 ### 3.1.2
 
 `2026-09-26`
