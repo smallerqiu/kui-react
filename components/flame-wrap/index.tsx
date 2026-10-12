@@ -7,6 +7,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   createFlameWrap,
+  htmlInCanvasMarkup,
   supportsHtmlInCanvas,
   type FlameWrapInstance,
   type FlameWrapProps,
@@ -26,6 +27,9 @@ export function FlameWrap({ children, className, style, ...options }: FlameWrapP
 
   const supported = useSyncExternalStore(emptySubscribe, supportsHtmlInCanvas, () => false);
   const native = supported && !failed && nativeReady;
+  // Chrome 156 renamed the experimental canvas attribute, so the markup is
+  // chosen from what this browser advertises instead of being hardcoded.
+  const markup = htmlInCanvasMarkup();
 
   const reach = Math.round(Math.max(options.height ?? 170, 24) * 1.5) + 40;
   const glow = Math.round(Math.max(options.spread ?? 8, 8) * 3) + 16;
@@ -74,8 +78,7 @@ export function FlameWrap({ children, className, style, ...options }: FlameWrapP
     >
       <canvas
         ref={sourceRef}
-        // @ts-expect-error experimental html-in-canvas attribute
-        layoutsubtree="true"
+        {...markup.canvas}
         suppressHydrationWarning
         style={
           native
@@ -86,6 +89,7 @@ export function FlameWrap({ children, className, style, ...options }: FlameWrapP
         {native ? (
           <div
             ref={contentRef}
+            {...markup.element}
             style={{
               position: "relative",
               width: "100%",
