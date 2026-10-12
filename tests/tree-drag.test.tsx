@@ -53,18 +53,42 @@ describe("Tree drag and drop", () => {
     const data: TreeNode[] = [
       { key: "parent", title: "Parent", children: [{ key: "child", title: "Child" }] },
     ];
-    const { container } = render(<Tree data={data} draggable expandedKeys={["parent"]} />);
+    const onDrop = vi.fn();
+    const { container } = render(
+      <Tree data={data} draggable expandedKeys={["parent"]} onDrop={onDrop} />,
+    );
     const parent = container.querySelector<HTMLElement>("[data-tree-key='parent'] .k-tree-title")!;
     const child = container.querySelector<HTMLElement>("[data-tree-key='child'] .k-tree-title")!;
     rect(child);
     const transfer = dataTransfer();
 
     fireEvent.dragStart(parent, { dataTransfer: transfer });
-    fireEvent.dragOver(child, { clientY: 12, dataTransfer: transfer });
+    // 拖动一开始就被拖节点会收起，后代那一行停在离开动画里、class 不再更新，
+    // 所以这里断言的是 `dragover` 有没有被 `preventDefault`（`fireEvent` 返回
+    // `!defaultPrevented`）。放行 = false，浏览器就会在这个后代上画出指示线，
+    // 而松手时 `moveRawNode` 又静默拒绝。
+    expect(fireEvent.dragOver(child, { clientY: 12, dataTransfer: transfer })).toBe(true);
+    fireEvent.drop(child, { clientY: 12, dataTransfer: transfer });
+    expect(onDrop).not.toHaveBeenCalled();
+  });
 
+  it("still accepts a sibling as a valid drop target", () => {
+    const data: TreeNode[] = [
+      { key: "drag", title: "Drag" },
+      { key: "target", title: "Target" },
+    ];
+    const { container } = render(<Tree data={data} draggable />);
+    const titles = container.querySelectorAll<HTMLElement>(".k-tree-title");
+    rect(titles[1]);
+    const transfer = dataTransfer();
+
+    fireEvent.dragStart(titles[0], { dataTransfer: transfer });
+
+    // 正控：守卫不能顺手把合法的放置目标也拒了。
+    expect(fireEvent.dragOver(titles[1], { clientY: 12, dataTransfer: transfer })).toBe(false);
     expect(
-      container.querySelector("[data-tree-key='child']")?.classList.contains("k-tree-item-drop"),
-    ).toBe(false);
+      container.querySelector("[data-tree-key='target']")?.classList.contains("k-tree-item-drop"),
+    ).toBe(true);
   });
 
   it("turns an explicit leaf into an expandable parent when dropping inside", () => {

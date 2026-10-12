@@ -53,7 +53,6 @@ Tree supports focus management and Arrow, Home, End, Enter, and Space keyboard i
 | draggable | Whether it can be dragged | `boolean` | false |
 | showLine | Whether to show connecting lines | `boolean` | false |
 | showIcon | Whether to show icons | `boolean` | true |
-| extra | Extension element | ReactNode(node) | - |
 | showExtra | Whether to show extension elements by default | `boolean` | false |
 | checkStrictly | In checkable state, node selection is completely controlled (parent-child node selection state no longer related) | `boolean` | false |
 | checkedKeys | Tree nodes with checked checkboxes | `string[]` | [] |
@@ -65,10 +64,10 @@ Tree supports focus management and Arrow, Home, End, Enter, and Space keyboard i
 | renderExtra | Custom node extra-content renderer | `((node: TreeNode) => ReactNode)` | - |
 | multiple | Whether to support multiple selection | `boolean` | false |
 | loading | Asynchronous loading state | `boolean` | false |
-| loadData | Method to asynchronously load data | `((node: TreeNode) => Promise<unknown>)` | - |
+| loadData | Method to asynchronously load data; a successfully loaded node is not requested again | `((node: TreeNode) => Promise<unknown>)` | - |
 | onLoadError | Called when asynchronous loading fails | `((error: unknown, node: TreeNode) => void)` | - |
 | fieldNames | Custom node field names | `TreeFieldNames` | - |
-| directory | Does not display as a directory tree | `boolean` | false |
+| directory | Whether to display a directory tree | `boolean` | false |
 | virtual | Whether to enable virtual scrolling | `boolean` | false |
 | height | Virtual scrolling viewport height | `string \| number` | 300 |
 | itemHeight | Virtual node height | `number` | 28 |

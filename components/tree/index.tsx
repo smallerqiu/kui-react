@@ -5,6 +5,7 @@ import {
   forwardRef,
   useCallback,
   useImperativeHandle,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -177,6 +178,7 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
   const [innerExpanded, setInnerExpanded] = useValue(expandedKeys, (next): string[] => next ?? []);
   const [innerChecked, setInnerChecked] = useValue(checkedKeys, (next): string[] => next ?? []);
   const [loadingKeys, setLoadingKeys] = useState(new Set<string>());
+  const [loadedKeys, setLoadedKeys] = useState(new Set<string>());
   const [dropKey, setDropKey] = useState<string>();
   const [dropPosition, setDropPosition] = useState<TreeDropPosition>("inside");
   const [focusedKey, setFocusedKey] = useState<string>();
@@ -188,6 +190,13 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
   const selected = innerSelected;
   const expanded = innerExpanded;
   const checked = innerChecked;
+  // `expand` 是 async：await 期间可能已经有别的节点完成展开，或者受控的
+  // `expandedKeys` 从外部变了。异步分支写回时要拿最新已提交的值，而不是点击
+  // 那一刻的闭包快照。用 layout effect 同步（渲染期直接写 ref 违反 ref 约定）。
+  const expandedRef = useRef(expanded);
+  useLayoutEffect(() => {
+    expandedRef.current = expanded;
+  });
   const normalizedData = useMemo(() => {
     // loadData may mutate nodes in place; version invalidates the normalized snapshot.
     void version;
@@ -198,20 +207,36 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
       disabled: fieldNames?.disabled ?? "disabled",
       isLeaf: fieldNames?.isLeaf ?? "isLeaf",
     };
-    const normalize = (nodes: TreeNodeData[]): TreeNode[] =>
-      nodes.map((raw) => {
+    const normalize = (nodes: TreeNodeData[], path = "kui-tree"): TreeNode[] =>
+      nodes.map((raw, index) => {
         const children = raw[names.children];
+        // 缺 `key` 的节点按所在**路径**合成兜底 key（`kui-tree-0`、`kui-tree-0-1`）。
+        // 直接留空串会让所有缺 key 的节点共用同一个键：React 报 duplicate key，
+        // `byKey`/`expandedKeys`/`checkedKeys` 也全撞在一起，展开或勾选一个节点
+        // 会连带命中其它节点。用路径而不是渲染下标，折叠或过滤时同一个节点的键才不动。
+        const key = String(raw[names.key] ?? "") || `${path}-${index}`;
+        const list = Array.isArray(children)
+          ? normalize(children as TreeNodeData[], key)
+          : undefined;
         return {
           ...raw,
-          key: String(raw[names.key] ?? ""),
+          key,
           title: raw[names.title] as TreeNode["title"],
           disabled: disabled || Boolean(raw[names.disabled]),
-          isLeaf: raw[names.isLeaf] === undefined ? undefined : Boolean(raw[names.isLeaf]),
-          children: Array.isArray(children) ? normalize(children as TreeNodeData[]) : undefined,
+          // 异步加载过却仍然没有子节点：当作叶子（与 vue 版同语义），否则这个节点会
+          // 永远挂着一个空展开。但 `isLeaf: false` 是文档里写明的“强制作为父节点”，
+          // 不能因为一次空结果就被推翻——`react-api` 的既有用例正是钉这条契约的。
+          isLeaf:
+            raw[names.isLeaf] === false
+              ? false
+              : raw[names.isLeaf] === true || (loadedKeys.has(key) && !list?.length)
+                ? true
+                : undefined,
+          children: list,
         };
       });
     return normalize(data);
-  }, [data, disabled, fieldNames, version]);
+  }, [data, disabled, fieldNames, loadedKeys, version]);
   const flat = useMemo(() => {
     void version;
     return buildTree({
@@ -236,10 +261,14 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
   const expand = async (node: TreeNode) => {
     if (node.disabled || node.isLeaf || loadingKeys.has(node.key)) return;
     const nextExpanded = !expanded.includes(node.key);
-    if (nextExpanded && loadData && !node.children?.length) {
+    // `loadedKeys` 让同一个节点只请求一次（vue 版的文档就是这么写的：
+    // “成功后同一节点不会重复加载”）。之前只按“当前有没有 children”判断，
+    // 于是加载回来是空的、或者 data 是在别处异步替换的，每次展开都再发一次请求。
+    if (nextExpanded && loadData && !loadedKeys.has(node.key) && !node.children?.length) {
       setLoadingKeys((current) => new Set(current).add(node.key));
       try {
         await loadData(findRaw(normalizedData, node.key) ?? node);
+        setLoadedKeys((current) => new Set(current).add(node.key));
         setVersion((value) => value + 1);
       } catch (error) {
         onLoadError?.(error, node);
@@ -252,9 +281,12 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
         });
       }
     }
+    const current = expandedRef.current;
     const keys = nextExpanded
-      ? [...expanded, node.key]
-      : expanded.filter((key) => key !== node.key);
+      ? current.includes(node.key)
+        ? current
+        : [...current, node.key]
+      : current.filter((key) => key !== node.key);
     commitExpanded(keys);
     onExpand?.({ key: node.key, expanded: nextExpanded, node });
   };
@@ -510,6 +542,11 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
           <Button
             size="small"
             type="text"
+            // 树用 roving tabindex：整棵树只有一个 `treeitem` 能被 Tab 命中，方向键在
+            // 节点间移动。箭头是原生 `<button>`，留着它每个非叶子节点都多一个 Tab
+            // 停靠点，焦点走进去后方向键也回不到树上。展开动作交给 `treeitem` 的
+            // ArrowLeft/ArrowRight，这里只保留点击。
+            tabIndex={-1}
             loading={loadingKeys.has(node.key)}
             disabled={node.disabled}
             icon={
@@ -618,7 +655,10 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
           itemHeight={itemHeight}
           overscan={overscan}
           itemKey="key"
-          className="k-tree-node-list"
+          // `k-tree-virtual-list` 那条规则负责把 `.k-tree-item` 拉成整行高、
+          // 去掉 `margin-bottom`；漏了它，虚拟滚动里每行只有 24px 内容加 4px 外边距，
+          // hover/选中背景条带不满 `itemHeight`，和 vue 版对不上。
+          className="k-tree-node-list k-tree-virtual-list"
         >
           {(node) => renderNode(node)}
         </VirtualList>

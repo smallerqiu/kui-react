@@ -53,7 +53,6 @@ Tree 支持焦点管理以及上下、左右、Home、End、Enter 和 Space 键�
 | draggable | 是否可以拖拽 | `boolean` | false |
 | showLine | 是否展示连接线 | `boolean` | false |
 | showIcon | 是否展示图标 | `boolean` | true |
-| extra | 扩展元素 | ReactNode(node) | - |
 | showExtra | 是否默认展示扩展元素 | `boolean` | false |
 | checkStrictly | checkable 状态下节点选择完全受控（父子节点选中状态不再关联） | `boolean` | false |
 | checkedKeys | 选中复选框的树节点 | `string[]` | [] |
@@ -65,10 +64,10 @@ Tree 支持焦点管理以及上下、左右、Home、End、Enter 和 Space 键�
 | renderExtra | 自定义节点扩展区域 | `((node: TreeNode) => ReactNode)` | - |
 | multiple | 是否支持多选 | `boolean` | false |
 | loading | 异步加载状态 | `boolean` | false |
-| loadData | 异步加载数据的方法 | `((node: TreeNode) => Promise<unknown>)` | - |
+| loadData | 异步加载数据的方法；成功后同一节点不会重复加载 | `((node: TreeNode) => Promise<unknown>)` | - |
 | onLoadError | 异步加载失败时触发 | `((error: unknown, node: TreeNode) => void)` | - |
 | fieldNames | 自定义节点字段名称 | `TreeFieldNames` | - |
-| directory | 是不显示为目录树 | `boolean` | false |
+| directory | 是否显示为目录树 | `boolean` | false |
 | virtual | 是否启用虚拟滚动 | `boolean` | false |
 | height | 虚拟滚动视口高度 | `string \| number` | 300 |
 | itemHeight | 虚拟滚动节点高度 | `number` | 28 |
