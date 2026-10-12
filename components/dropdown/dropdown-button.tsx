@@ -3,7 +3,13 @@ import { Ellipsis } from "kui-icons";
 import React, { useRef } from "react";
 import Button from "../button/button";
 import ButtonGroup from "../button/button-group";
-import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
+import type {
+  DropPlacementsType,
+  ShapeType,
+  SizeType,
+  ThemeType,
+  TriggerType,
+} from "../const/types";
 import { type IconType } from "../icon";
 import Dropdown from "./dropdown";
 import TriggerButton from "./trigger";
@@ -18,7 +24,10 @@ export interface DropdownButtonProps extends Omit<
   icon?: IconType[];
   theme?: ThemeType;
   arrow?: boolean;
+  trigger?: TriggerType;
   placement?: DropPlacementsType;
+  /** 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内的表单状态，代价是每个打开过的实例留一份隐藏 DOM。 */
+  destroyOnClose?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   overlay?: React.ReactNode;
   children?: React.ReactNode;
@@ -31,7 +40,9 @@ const DropdownButton: React.FC<DropdownButtonProps> = ({
   icon,
   theme: themeProp,
   arrow = false,
+  trigger,
   placement = "bottom-right",
+  destroyOnClose = true,
   onClick,
   overlay,
   children,
@@ -62,7 +73,9 @@ const DropdownButton: React.FC<DropdownButtonProps> = ({
   return (
     <Dropdown
       arrow={arrow}
+      trigger={trigger}
       placement={placement}
+      destroyOnClose={destroyOnClose}
       target={refTrigger}
       disabled={disabled}
       overlay={overlay}

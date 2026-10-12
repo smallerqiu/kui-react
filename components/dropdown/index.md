@@ -44,6 +44,7 @@
 | show | 已废弃，请使用 `open` | `boolean` | - |
 | trigger | 触发方式 | `"hover" \| "click" \| "contextmenu"` | `hover` |
 | placement | 下拉层位置 | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | `bottom-left` |
+| destroyOnClose | 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM | `boolean` | true |
 | arrow | 是否显示箭头 | `boolean` | false |
 | target | 外部触发元素的引用 | `React.RefObject<HTMLElement \| null>` | - |
 | disabled | 是否允许触发下拉 | `boolean` | false |
@@ -60,6 +61,8 @@
 | icon | 下拉触发按钮图标 | `IconType[]` | Ellipsis |
 | theme | 按钮主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
 | arrow | 是否显示下拉箭头 | `boolean` | false |
+| trigger | 触发方式 | `"hover" \| "click" \| "contextmenu"` | hover |
 | placement | 下拉层位置 | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | bottom-right |
+| destroyOnClose | 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM | `boolean` | true |
 | onClick | 主按钮点击回调 | `((e: React.MouseEvent<HTMLButtonElement>) => void)` | - |
 | overlay | 下拉层内容 | `React.ReactNode` | - |
