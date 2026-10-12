@@ -4,7 +4,7 @@ import type { HTMLAttributes, ReactNode } from "react";
 import { hasRenderableContent } from "../utils/react-node";
 import StatNumber from "./stat-number";
 import { statItemKey } from "./utils/stat-item-key";
-import type { ShapeType, SizeType } from "../const/types";
+import type { SizeType, SurfaceShapeType } from "../const/types";
 
 export interface StatNumberItem {
   key?: string | number;
@@ -33,7 +33,7 @@ export interface StatCardProps extends Omit<
   reverse?: boolean;
   bordered?: boolean;
   theme?: "fill" | "outline" | "plain";
-  shape?: ShapeType;
+  shape?: SurfaceShapeType;
   size?: SizeType;
   prefix?: ReactNode;
   suffix?: ReactNode;

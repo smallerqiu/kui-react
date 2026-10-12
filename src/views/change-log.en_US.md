@@ -35,6 +35,7 @@ rm -rf node_modules/.vite
 - `StatCard`: `title` / `desc` / `trend` and the `StatNumber` `prefix` / `suffix` no longer render an empty placeholder when given `false` or an empty string, while `0` still shows.
 - `StatCard`: Fixed `items[].key` colliding with an item's array index, which moved a number animation onto the wrong entry.
 - `StatNumber`: The `countup` mode now honours the system's reduced-motion preference and jumps straight to the target value.
+- `StatCard`: `shape` is narrowed to `square` / `round` to match the Vue build — a card is a clipped surface where `circle` would cut off content, so an inherited `circle` falls back to `round`.
 
 ### 3.1.2
 

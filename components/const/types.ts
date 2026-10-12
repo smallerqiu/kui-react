@@ -20,6 +20,16 @@ export type DropPlacementsType =
 export type ValueType = "string" | "number" | "boolean";
 export type SizeType = "small" | "medium" | "large";
 export type ShapeType = "circle" | "square" | "round" | "default";
+/**
+ * Shapes a surface (card / panel / stat card) can actually draw.
+ *
+ * `ShapeType` is the global vocabulary and keeps `circle` for controls that mean it
+ * (Avatar, Badge). A surface rounds its corners instead: a circle would clip the
+ * content, so `circle` — inherited from ConfigProvider or passed by an older caller —
+ * is normalised to `round`, and `default` keeps the inherited card radius. Same subset
+ * as the Vue build.
+ */
+export type SurfaceShapeType = "square" | "round";
 export type BooleanType = boolean | undefined;
 
 export type ButtonType = "primary" | "danger" | "warning" | "default" | "text" | "link";

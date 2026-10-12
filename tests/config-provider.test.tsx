@@ -12,6 +12,7 @@ import DatePicker from "../components/date-picker";
 import Cascader from "../components/cascader";
 import Tag from "../components/tag";
 import Card from "../components/card";
+import StatCard from "../components/stat-card/stat-card";
 import Table from "../components/table";
 import Collapse from "../components/collapse/collapse";
 import Descriptions from "../components/descriptions/descriptions";
@@ -145,6 +146,21 @@ describe("ConfigProvider appearance", () => {
     for (const component of ["table", "descriptions", "collapse"]) {
       expectClasses(container, `.k-${component}`, [`k-${component}-round`]);
     }
+  });
+
+  it("normalizes circle to round for the stat card surface", () => {
+    // A card has content to clip, so `circle` is not a shape it can draw — the same
+    // rule the Vue build applies, and the reason `StatCard.shape` only accepts
+    // `square` / `round` while `ConfigProvider` still speaks the full `ShapeType`.
+    const { container } = render(
+      <ConfigProvider shape="circle">
+        <StatCard className="stat-card" items={[{ value: 1, duration: 0, autoAnimate: false }]} />
+      </ConfigProvider>,
+    );
+    expectClasses(container, ".stat-card", ["k-stat-card-round"]);
+    expect(container.querySelector(".stat-card")!.classList.contains("k-stat-card-circle")).toBe(
+      false,
+    );
   });
 
   it("retains component defaults when no provider sets appearance", () => {

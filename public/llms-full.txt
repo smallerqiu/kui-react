@@ -31687,17 +31687,15 @@ export default function App() {
     },
     {
       "name": "shape",
-      "type": "ShapeType | undefined",
+      "type": "SurfaceShapeType | undefined",
       "required": false,
       "enumValues": [
         "round",
-        "default",
-        "square",
-        "circle"
+        "square"
       ],
       "boolean": false,
-      "descriptionZh": "形状",
-      "descriptionEn": "Shape"
+      "descriptionZh": "卡片形状，只支持 `square` / `round`；圆形会裁掉内容，继承到 `circle` 时按 `round` 处理",
+      "descriptionEn": "Card shape; only `square` / `round` apply — a circle would clip the content, so an inherited `circle` falls back to `round`"
     },
     {
       "name": "size",

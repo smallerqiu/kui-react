@@ -32,7 +32,7 @@ Can be used in BI/Dashboard scenarios, business backend oriented, intuitive.
 | reverse | Whether to reverse number/number description arrangement | `boolean` | false |
 | bordered | Show border or not | `boolean` | false |
 | theme | Theme | `"fill" \| "outline" \| "plain"` | fill |
-| shape | Shape | `"round" \| "default" \| "square" \| "circle"` | round |
+| shape | Card shape; only `square` / `round` apply — a circle would clip the content, so an inherited `circle` falls back to `round` | `"round" \| "square"` | round |
 | size | Size | `"small" \| "medium" \| "large"` | medium |
 | prefix | Default prefix for all values | `ReactNode` | - |
 | suffix | Default suffix for all values | `ReactNode` | - |
