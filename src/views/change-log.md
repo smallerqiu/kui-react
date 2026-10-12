@@ -36,6 +36,14 @@ rm -rf node_modules/.vite
 - `StatCard` 修复 `items[].key` 与数组下标撞 key、数字动画状态串到别的数据项的问题。
 - `StatNumber` 的 `countup` 模式同样遵循系统的"减少动态效果"偏好，命中时直接显示目标值。
 - `StatCard` 的 `shape` 收窄为 `square` / `round`，与 Vue 版一致；卡片是切角的表面，`circle` 会裁掉内容，继承到 `circle` 时按 `round` 处理。
+- `Table` 未设 `width` 的列按 150 取宽度基准，整表用叶子列合计（含选择列 50）设 `min-width`；容器变窄时改为横向滚动，不再把列压瘪、表头文字竖排换行。
+- `Table` 修复窗口卡在临界宽度时固定列阴影与横向滚动条反复抖动：中性态的阴影盒不再凭空撑出一段可滚距离，只在真的还能往那一侧滚时才生成阴影。
+- `Tree` 异步 `loadData` 对同一节点只请求一次；虚拟滚动补回 `k-tree-virtual-list`，hover 与选中背景恢复满行高。
+- `Tree` 缺 `key` 的节点按树路径合成稳定兜底 key，展开与勾选状态不再串台。
+- `Tree` 展开箭头按钮不再参与 Tab（`tabIndex={-1}`），整棵树仍只有一个 `treeitem` 走 roving tabindex，方向键不会把焦点丢在箭头上。
+- `Tree` 子节点列表的 DOM 层级与 Vue 版对齐，并清理 LESS 中五条无人引用的规则。
+- `DropdownButton` 修复右侧"三点"按钮点不开菜单：点击、右键与方向键都能驱动开合，触发按钮带 `aria-haspopup="menu"` 和 `aria-expanded`，并可用 `trigger` 指定 `hover` / `click` / `contextmenu`。
+- 弹层组件新增公开的 `destroyOnClose`（`Select`、`Cascader`、`TreeSelect`、`AutoComplete`、`Mentions`、`DatePicker`、`ColorPicker`、`Dropdown`、`DropdownButton`、`Tooltip`、`Poptip`、`Popconfirm`），默认 `true`，即关闭动画结束后销毁面板。此前这条行为在 React 版由各组件写死、用户无法覆盖；设为 `false` 可保留面板内未提交的表单状态，代价是每个打开过的实例留一份隐藏 DOM。
 
 ### 3.1.2
 

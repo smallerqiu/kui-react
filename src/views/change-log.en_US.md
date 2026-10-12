@@ -36,6 +36,14 @@ rm -rf node_modules/.vite
 - `StatCard`: Fixed `items[].key` colliding with an item's array index, which moved a number animation onto the wrong entry.
 - `StatNumber`: The `countup` mode now honours the system's reduced-motion preference and jumps straight to the target value.
 - `StatCard`: `shape` is narrowed to `square` / `round` to match the Vue build — a card is a clipped surface where `circle` would cut off content, so an inherited `circle` falls back to `round`.
+- `Table`: Columns without `width` now use 150 as their sizing baseline and the table takes a `min-width` from the summed leaf columns (50 for the selection column), so a narrowing container scrolls horizontally instead of crushing columns and wrapping header text vertically.
+- `Table`: Fixed the flicker where a fixed-column shadow and the horizontal scrollbar kept triggering each other at a borderline window width — the neutral shadow box no longer invents scrollable distance, and a shadow is only drawn while that side can still scroll.
+- `Tree`: Asynchronous `loadData` now requests a given node once; virtual scrolling restores the `k-tree-virtual-list` class so hover and selected rows fill the full row height.
+- `Tree`: Nodes without a `key` get a stable fallback key derived from their path in the tree, so expansion and check state no longer cross between nodes.
+- `Tree`: The expand-arrow button is removed from the tab order (`tabIndex={-1}`) so the tree keeps a single roving-tabindex `treeitem` and arrow keys no longer strand focus on an arrow.
+- `Tree`: The child-list DOM nesting now matches the Vue build, and five unreferenced rules were removed from the LESS.
+- `DropdownButton`: Fixed the split button's ellipsis trigger not opening the menu — click, right-click and the arrow keys all drive it now, the trigger carries `aria-haspopup="menu"` and `aria-expanded`, and `trigger` selects `hover` / `click` / `contextmenu`.
+- Popup components gained a public `destroyOnClose` (`Select`, `Cascader`, `TreeSelect`, `AutoComplete`, `Mentions`, `DatePicker`, `ColorPicker`, `Dropdown`, `DropdownButton`, `Tooltip`, `Poptip`, `Popconfirm`), defaulting to `true` so the panel is destroyed once the exit animation ends. Previously each component hard-coded this and consumers could not override it; set it to `false` to keep unsubmitted form state inside the panel at the cost of one hidden DOM node per opened instance.
 
 ### 3.1.2
 

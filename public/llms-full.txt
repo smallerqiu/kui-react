@@ -2197,6 +2197,18 @@ export default function App() {
       "descriptionEn": "Filter strategy"
     },
     {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
+    },
+    {
       "name": "onChange",
       "type": "((value: string) => void) | undefined",
       "required": false,
@@ -7228,6 +7240,18 @@ export default function App() {
       "descriptionEn": "Popup placement"
     },
     {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
+    },
+    {
       "name": "trigger",
       "type": "\"hover\" | \"click\" | undefined",
       "required": false,
@@ -7578,6 +7602,18 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "弹层触发方式",
       "descriptionEn": "Popup trigger mode"
+    },
+    {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
     },
     {
       "name": "onOpenChange",
@@ -8121,6 +8157,18 @@ export default function App() {
       "descriptionEn": "Direction displayed when pulled down"
     },
     {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
+    },
+    {
       "name": "header",
       "type": "ReactNode | ((api: { emit: (value: DatePickerInput | DatePickerInput[]) => void; }) => ReactNode)",
       "required": false,
@@ -8536,6 +8584,18 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "下拉展示的方位",
       "descriptionEn": "Direction displayed when pulled down"
+    },
+    {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
     },
     {
       "name": "onOpenChange",
@@ -10055,6 +10115,19 @@ export default function App() {
       "descriptionEn": "Dropdown placement"
     },
     {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "true",
+      "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
+    },
+    {
       "name": "target",
       "type": "React.RefObject<HTMLElement | null> | undefined",
       "required": false,
@@ -10459,6 +10532,19 @@ export default function App() {
       "descriptionEn": "Whether to show the dropdown arrow"
     },
     {
+      "name": "trigger",
+      "type": "TriggerType | undefined",
+      "required": false,
+      "enumValues": [
+        "hover",
+        "click",
+        "contextmenu"
+      ],
+      "boolean": false,
+      "descriptionZh": "触发方式",
+      "descriptionEn": "Trigger mode"
+    },
+    {
       "name": "placement",
       "type": "DropPlacementsType | undefined",
       "required": false,
@@ -10474,6 +10560,19 @@ export default function App() {
       "defaultExpression": "\"bottom-right\"",
       "descriptionZh": "下拉层位置",
       "descriptionEn": "Dropdown placement"
+    },
+    {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "true",
+      "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
     },
     {
       "name": "onClick",
@@ -21969,6 +22068,18 @@ export default function App() {
       "descriptionEn": "Preferred dropdown placement"
     },
     {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
+    },
+    {
       "name": "size",
       "type": "SizeType | undefined",
       "required": false,
@@ -24723,6 +24834,19 @@ export default function App() {
       "descriptionEn": "Position where the tooltip appears"
     },
     {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "true",
+      "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
+    },
+    {
       "name": "panelOnly",
       "type": "boolean | undefined",
       "required": false,
@@ -24991,6 +25115,18 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "触发方式，可选值为 `hover`（悬停）`click`（点击）",
       "descriptionEn": "Trigger method, optional values: `hover` (hover) `click` (click)"
+    },
+    {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
     },
     {
       "name": "onOpenChange",
@@ -25314,6 +25450,19 @@ export default function App() {
       "descriptionEn": "Position where the tooltip appears, optional values: `top`, `top-left`, `top-right`, `bottom`, `bottom-left`, `bottom-right`, `left`, `left-top`, `left-bottom`, `right`, `right-top`, `right-bottom`"
     },
     {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "true",
+      "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
+    },
+    {
       "name": "panelOnly",
       "type": "boolean | undefined",
       "required": false,
@@ -25528,6 +25677,18 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "提示框出现的位置，可选值为`top`，`top-left`，`top-right`，`bottom`，`bottom-left`，`bottom-right`，`left`，`left-top`，`left-bottom`，`right`，`right-top`，`right-bottom`",
       "descriptionEn": "Position where the tooltip appears, optional values: `top`, `top-left`, `top-right`, `bottom`, `bottom-left`, `bottom-right`, `left`, `left-top`, `left-bottom`, `right`, `right-top`, `right-bottom`"
+    },
+    {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
     },
     {
       "name": "onOpenChange",
@@ -28795,6 +28956,18 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "下拉框弹出位置",
       "descriptionEn": "Dropdown placement"
+    },
+    {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
     },
     {
       "name": "width",
@@ -36375,6 +36548,19 @@ export default function ColumnSettingDemo() {
       "descriptionEn": "Position where tooltip appears, optional values: `top`, `top-left`, `top-right`, `bottom`, `bottom-left`, `bottom-right`, `left`, `left-top`, `left-bottom`, `right`, `right-top`, `right-bottom`"
     },
     {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "true",
+      "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
+    },
+    {
       "name": "panelOnly",
       "type": "boolean | undefined",
       "required": false,
@@ -36614,6 +36800,18 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "自动悬停触发或手动控制显隐",
       "descriptionEn": "Automatic hover or manual visibility"
+    },
+    {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
     },
     {
       "name": "onOpenChange",
@@ -38153,8 +38351,8 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "descriptionZh": "是不显示为目录树",
-      "descriptionEn": "Does not display as a directory tree"
+      "descriptionZh": "是否显示为目录树",
+      "descriptionEn": "Whether to display a directory tree"
     },
     {
       "name": "disabled",
@@ -38451,8 +38649,8 @@ export default function App() {
       "type": "((node: TreeNode) => Promise<unknown>) | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "异步加载数据的方法",
-      "descriptionEn": "Method to asynchronously load data"
+      "descriptionZh": "异步加载数据的方法；成功后同一节点不会重复加载",
+      "descriptionEn": "Method to asynchronously load data; a successfully loaded node is not requested again"
     }
   ],
   "events": [
@@ -39135,6 +39333,18 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "下拉框弹出位置",
       "descriptionEn": "Dropdown placement"
+    },
+    {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
     },
     {
       "name": "width",
@@ -40151,6 +40361,18 @@ export default function Demo() {
       "boolean": false,
       "descriptionZh": "弹层位置。",
       "descriptionEn": "Popup placement."
+    },
+    {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
     },
     {
       "name": "onChange",
