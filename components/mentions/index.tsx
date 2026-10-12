@@ -24,6 +24,8 @@ export interface MentionsProps extends Omit<
   triggers?: string[];
   rows?: number;
   placement?: DropPlacementsType;
+  /** 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内的表单状态，代价是每个打开过的实例留一份隐藏 DOM。 */
+  destroyOnClose?: boolean;
   size?: SizeType;
   shape?: ShapeType;
   theme?: ThemeType;
@@ -95,6 +97,7 @@ const Mentions: React.FC<MentionsProps> = ({
   triggers = ["@"],
   rows = 1,
   placement = "bottom-left",
+  destroyOnClose = true,
   size: sizeProp,
   shape: shapeProp,
   theme: themeProp,
@@ -321,7 +324,7 @@ const Mentions: React.FC<MentionsProps> = ({
           offset={4}
           getAnchorPosition={getAnchorPosition}
           style={{ minWidth: popupWidth }}
-          destroyOnClose
+          destroyOnClose={destroyOnClose}
           outsideEvent="mousedown"
           onOpenChange={(next) => {
             if (!next) setQuery(null);

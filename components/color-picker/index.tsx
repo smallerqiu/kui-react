@@ -30,6 +30,8 @@ export interface ColorPickerProps extends Omit<
   disabledAlpha?: boolean;
   showText?: boolean;
   placement?: DropPlacementsType;
+  /** 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内的表单状态，代价是每个打开过的实例留一份隐藏 DOM。 */
+  destroyOnClose?: boolean;
   trigger?: "hover" | "click";
   size?: SizeType;
   theme?: ThemeType;
@@ -52,6 +54,7 @@ function ColorPicker({
   disabledAlpha = false,
   showText = false,
   placement = "bottom-left",
+  destroyOnClose = true,
   trigger = "click",
   size: sizeProp,
   theme: themeProp,
@@ -306,7 +309,7 @@ function ColorPicker({
       prefixCls="k-color-picker-dropdown"
       transitionName="k-color-picker"
       transitionDuration={200}
-      destroyOnClose
+      destroyOnClose={destroyOnClose}
       outsideEvent="mousedown"
       onOpenChange={setVisible}
       overlay={dropdownContent}

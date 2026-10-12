@@ -47,6 +47,7 @@ Freely output colors.
 | theme | Appearance theme: `outline`, `fill`, or `plain`; inherits from Form or ConfigProvider | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | `outline` |
 | shape | Shape: `round`, `circle`, or `square`; inherits from Form or ConfigProvider | `"round" \| "default" \| "square" \| "circle"` | - |
 | placement | Popup placement | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | `bottom-left` |
+| destroyOnClose | Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance | `boolean` | true |
 | children | Custom trigger element | `ReactNode` | - |
 | panelOnly | Render only the color panel, without a trigger or portal | `boolean` | false |
 | onUpdateMode | Called when the color mode changes | `((mode: ColorMode) => void)` | - |

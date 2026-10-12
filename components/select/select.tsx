@@ -46,6 +46,8 @@ export interface SelectProps extends Omit<
   placeholder?: string;
   size?: SizeType;
   placement?: DropPlacementsType;
+  /** 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内的表单状态，代价是每个打开过的实例留一份隐藏 DOM。 */
+  destroyOnClose?: boolean;
   width?: number;
   maxTagCount?: number;
   value?: SelectValue;
@@ -84,6 +86,7 @@ const Select: React.FC<SelectProps> = ({
   placeholder,
   size: sizeProp,
   placement = "bottom-left",
+  destroyOnClose = true,
   width,
   maxTagCount,
   value,
@@ -552,7 +555,7 @@ const Select: React.FC<SelectProps> = ({
         prefixCls="k-select-dropdown"
         transitionName="k-select"
         matchTriggerWidth={extendWidth}
-        destroyOnClose
+        destroyOnClose={destroyOnClose}
         onOpenChange={(next) => {
           if (!next) closeDropdown();
         }}

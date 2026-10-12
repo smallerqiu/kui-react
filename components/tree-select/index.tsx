@@ -31,6 +31,8 @@ export interface TreeSelectProps extends Omit<
   placeholder?: string;
   size?: SizeType;
   placement?: DropPlacementsType;
+  /** 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内的表单状态，代价是每个打开过的实例留一份隐藏 DOM。 */
+  destroyOnClose?: boolean;
   width?: number;
   maxTagCount?: number;
   value?: TreeSelectValue;
@@ -92,6 +94,7 @@ function TreeSelect({
   placeholder,
   size: sizeProp,
   placement = "bottom-left",
+  destroyOnClose = true,
   width,
   maxTagCount,
   value,
@@ -307,7 +310,7 @@ function TreeSelect({
       prefixCls="k-tree-select-dropdown"
       transitionName="k-tree-select"
       matchTriggerWidth
-      destroyOnClose
+      destroyOnClose={destroyOnClose}
       outsideEvent="mousedown"
       onOpenChange={(next) => {
         setInnerOpen(next);

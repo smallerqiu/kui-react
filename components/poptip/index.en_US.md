@@ -34,6 +34,7 @@ The difference from `Tooltip` is that users can operate on elements in the float
 | title | Displayed title | `React.ReactNode` | - |
 | content | Displayed main content | `React.ReactNode` | - |
 | placement | Position where the tooltip appears | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right" \| "left" \| "left-bottom" \| "left-top" \| "right" \| "right-top" \| "right-bottom"` | top |
+| destroyOnClose | Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance | `boolean` | true |
 | width | Display width, defaults to content area size | `string \| number` | - |
 | panelOnly | Render only the popup itself, without trigger, positioning, or animation | `boolean` | false |
 | open | visibility | `boolean` | - |

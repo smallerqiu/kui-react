@@ -51,6 +51,7 @@
 | triggers | 触发字符 | `string[]` | ['@'] |
 | rows | 文本域行数 | `number` | 1 |
 | placement | 下拉菜单优先位置 | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | bottom-left |
+| destroyOnClose | 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM | `boolean` | true |
 | size | 尺寸 | `"small" \| "medium" \| "large"` | medium |
 | theme | 主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | default |

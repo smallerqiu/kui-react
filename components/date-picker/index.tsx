@@ -84,6 +84,8 @@ export interface DatePickerProps extends Omit<
   shape?: ShapeType;
   bordered?: boolean;
   placement?: DropPlacementsType;
+  /** 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内的表单状态，代价是每个打开过的实例留一份隐藏 DOM。 */
+  destroyOnClose?: boolean;
   header?:
     | ReactNode
     | ((api: { emit: (value: DatePickerInput | DatePickerInput[]) => void }) => ReactNode);
@@ -142,6 +144,7 @@ function DatePicker({
   shape: shapeProp,
   bordered = true,
   placement = "bottom-left",
+  destroyOnClose = true,
   header,
   footer,
   onChange,
@@ -646,7 +649,7 @@ function DatePicker({
       placement={placement}
       prefixCls="k-datepicker-overlay"
       transitionName="k-date-picker"
-      destroyOnClose
+      destroyOnClose={destroyOnClose}
       outsideEvent="mousedown"
       onOpenChange={(next) => {
         if (!next) closePopup();

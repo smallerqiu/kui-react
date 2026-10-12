@@ -16,6 +16,8 @@ export interface PopconfirmProps {
   okText?: string;
   cancelText?: string;
   placement?: PlacementsType;
+  /** 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内的表单状态，代价是每个打开过的实例留一份隐藏 DOM。 */
+  destroyOnClose?: boolean;
   /** 只渲染浮层本身，不包含触发元素、定位与动画，与 kui-vue 一致 */
   panelOnly?: boolean;
   onCancel?: () => void;
@@ -42,6 +44,7 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   okText,
   cancelText,
   placement = "top",
+  destroyOnClose = true,
   panelOnly = false,
   onCancel,
   onOk,
@@ -58,7 +61,7 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
       placement={placement}
       panelOnly={panelOnly}
       arrow
-      destroyOnClose
+      destroyOnClose={destroyOnClose}
       respectDefaultPrevented={false}
       prefixCls="k-popconfirm"
       className={dark ? "k-popconfirm-dark" : undefined}

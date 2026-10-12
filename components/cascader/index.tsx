@@ -48,6 +48,7 @@ function Cascader({
   showAllLevels = true,
   separator = " / ",
   placement = "bottom-left",
+  destroyOnClose = true,
   onChange,
   onExpandChange,
   onOpenChange,
@@ -362,7 +363,7 @@ function Cascader({
           transitionName="k-cascader"
           transitionDuration={250}
           matchTriggerWidth
-          destroyOnClose
+          destroyOnClose={destroyOnClose}
           outsideEvent="mousedown"
           onOpenChange={setOpen}
           overlay={

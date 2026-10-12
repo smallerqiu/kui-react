@@ -50,6 +50,7 @@ Dropdown selector.
 | value | selected value | `SelectValue` | - |
 | open | dropdown visibility | `boolean` | - |
 | placement | Dropdown placement | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | bottom-left |
+| destroyOnClose | Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance | `boolean` | true |
 | block | Whether to fill the parent width | `boolean` | false |
 | filterable | Whether search filtering is enabled | `boolean` | false |
 | allowCreate | Allow creating a unique option from input in multiple mode | `boolean` | false |

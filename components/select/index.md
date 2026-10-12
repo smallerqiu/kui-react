@@ -50,6 +50,7 @@
 | value | 的选中值 | `SelectValue` | - |
 | open | 下拉框显示状态 | `boolean` | - |
 | placement | 下拉框弹出位置 | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | bottom-left |
+| destroyOnClose | 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM | `boolean` | true |
 | block | 是否撑满父容器宽度 | `boolean` | false |
 | filterable | 是否允许搜索过滤 | `boolean` | false |
 | allowCreate | 多选时是否允许输入并创建新选项 | `boolean` | false |

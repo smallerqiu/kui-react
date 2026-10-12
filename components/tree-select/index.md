@@ -50,6 +50,7 @@
 | open | 下拉框显示状态 | `boolean` | - |
 | width | 组件宽度 | `number` | - |
 | placement | 下拉框弹出位置 | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | bottom-left |
+| destroyOnClose | 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM | `boolean` | true |
 | maxTagCount | 多选时最多展示的标签数量，超出部分通过 Tooltip 展示 | `number` | - |
 | filterable | 是否允许搜索过滤 | `boolean` | false |
 | block | 是否撑满父容器宽度 | `boolean` | false |

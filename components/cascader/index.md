@@ -47,6 +47,7 @@
 | emptyText | 空数据提示。 | `string` | - |
 | loadData | 异步加载子节点；返回子节点数组，或自行更新 `option.children` | `CascaderLoadData` | - |
 | placement | 弹层位置。 | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | `bottom-left` |
+| destroyOnClose | 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM | `boolean` | true |
 | onChange | 选择或清空路径时触发。 | `((value: CascaderValue) => void)` | - |
 | onExpandChange | 展开的级联路径变化时触发。 | `((value: CascaderValue) => void)` | - |
 | onOpenChange | 下拉框显示状态变化时触发。 | `((open: boolean) => void)` | - |

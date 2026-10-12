@@ -47,6 +47,7 @@
 | theme | 外观主题，支持 `outline`、`fill`、`plain`，未设置时可继承 Form 或 ConfigProvider | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | `outline` |
 | shape | 形状，支持 `round`、`circle`、`square`，未设置时可继承 Form 或 ConfigProvider | `"round" \| "default" \| "square" \| "circle"` | - |
 | placement | 弹层位置 | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | `bottom-left` |
+| destroyOnClose | 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM | `boolean` | true |
 | children | 自定义触发元素 | `ReactNode` | - |
 | panelOnly | 只渲染颜色面板，不包含触发元素与弹层 | `boolean` | false |
 | onUpdateMode | 颜色模式更新时触发 | `((mode: ColorMode) => void)` | - |

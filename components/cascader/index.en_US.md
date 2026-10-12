@@ -47,6 +47,7 @@ A cascading selection box.
 | emptyText | Empty-state text. | `string` | - |
 | loadData | Loads children asynchronously; return them or update `option.children` | `CascaderLoadData` | - |
 | placement | Popup placement. | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | `bottom-left` |
+| destroyOnClose | Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance | `boolean` | true |
 | onChange | Called when a path is selected or cleared. | `((value: CascaderValue) => void)` | - |
 | onExpandChange | Called when the expanded path changes. | `((value: CascaderValue) => void)` | - |
 | onOpenChange | Called when dropdown visibility changes. | `((open: boolean) => void)` | - |

@@ -13,6 +13,8 @@ export interface TooltipProps {
   disabled?: boolean;
   width?: number | string;
   placement?: PlacementsType;
+  /** 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内的表单状态，代价是每个打开过的实例留一份隐藏 DOM。 */
+  destroyOnClose?: boolean;
   /** 只渲染浮层本身，不包含触发元素、定位与动画，与 kui-vue 一致 */
   panelOnly?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -36,6 +38,7 @@ const Tooltip: React.FC<TooltipProps> = ({
   disabled = false,
   width,
   placement = "top",
+  destroyOnClose = true,
   panelOnly = false,
   onOpenChange,
   onShowChange,
@@ -56,7 +59,7 @@ const Tooltip: React.FC<TooltipProps> = ({
       panelOnly={panelOnly}
       prefixCls="k-tooltip"
       arrow
-      destroyOnClose
+      destroyOnClose={destroyOnClose}
       hideWhenDetached
       closeOnOutsideClick={false}
       className={[

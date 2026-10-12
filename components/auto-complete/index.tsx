@@ -39,6 +39,8 @@ export interface AutoCompleteProps extends Omit<
   shape?: ShapeType;
   theme?: ThemeType;
   filterOption?: boolean | ((input: string, option: AutoCompleteOption) => boolean);
+  /** 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内的表单状态，代价是每个打开过的实例留一份隐藏 DOM。 */
+  destroyOnClose?: boolean;
   onChange?: (value: string) => void;
   onClear?: () => void;
   onSearch?: (value: string) => void;
@@ -60,6 +62,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   shape: shapeProp,
   theme: themeProp,
   filterOption = true,
+  destroyOnClose = true,
   onChange,
   onClear,
   onSearch,
@@ -296,7 +299,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
           transitionName="k-select"
           offset={6}
           matchTriggerWidth
-          destroyOnClose
+          destroyOnClose={destroyOnClose}
           onOpenChange={setOpen}
           overlay={
             <div
