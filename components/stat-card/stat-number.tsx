@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import type { HTMLAttributes, ReactNode } from "react";
+import { hasRenderableContent } from "../utils/react-node";
 import CountUp from "./countup";
 
 export interface StatNumberProps extends Omit<
@@ -32,7 +33,7 @@ export default function StatNumber({
 }: StatNumberProps) {
   return (
     <div {...rest} className={clsx("k-stat-number", className)}>
-      {prefix != null && <span className="k-stat-number-prefix">{prefix}</span>}
+      {hasRenderableContent(prefix) && <span className="k-stat-number-prefix">{prefix}</span>}
       <CountUp
         value={value ?? 0}
         separator={separator}
@@ -42,7 +43,7 @@ export default function StatNumber({
         autoAnimate={autoAnimate}
         autoAnimateOnce={autoAnimateOnce}
       />
-      {suffix != null && <span className="k-stat-number-suffix">{suffix}</span>}
+      {hasRenderableContent(suffix) && <span className="k-stat-number-suffix">{suffix}</span>}
     </div>
   );
 }

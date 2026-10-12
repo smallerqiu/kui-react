@@ -24,7 +24,7 @@ Can be used in BI/Dashboard scenarios, business backend oriented, intuitive.
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
-| title | Card title | `ReactNode` | - |
+| title | Card title; empty content such as `false` or an empty string renders no title row | `ReactNode` | - |
 | items | Data to display | `StatNumberItem[]` | [] |
 | precision | Numerical precision | `number` | 0 |
 | statNumberType | Numerical change type | `"rollup" \| "countup"` | 'countup' |

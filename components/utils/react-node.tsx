@@ -32,6 +32,22 @@ export function getChildren(children?: React.ReactNode): React.ReactNode[] {
   return result;
 }
 
+/**
+ * Whether an optional content prop deserves its wrapper element.
+ *
+ * `null` and `undefined` are the documented way to omit a slot, but callers also
+ * pass `false` (a conditional like `isAdmin && <Icon />`) or an empty string, and
+ * the framework renders `false` as nothing while still mounting the wrapper —
+ * which keeps its padding, border and flex gap in the layout with nothing inside
+ * it. Numbers count as content, including `0`.
+ */
+export function hasRenderableContent(value: unknown): boolean {
+  if (value == null || value === false || value === true) return false;
+  if (typeof value === "string") return value.trim() !== "";
+  if (Array.isArray(value)) return value.some(hasRenderableContent);
+  return true;
+}
+
 let scrollbarWidth: number | null = null;
 
 const getScrollbarWidth = () => {

@@ -32,6 +32,9 @@ rm -rf node_modules/.vite
 - `Ripple`: Added the Chrome 156 `content="drawable"` attribute while Edge and earlier Chromium keep the previous path.
 - `Ripple`: The WebGL overlay now brightens crests and darkens troughs, so it stays visible over light and dark pages.
 - `FlameWrap`: Fixed wrapped content that could not be clicked in Chrome 155, and added the Chrome 156 `content="drawable"` attribute.
+- `StatCard`: `title` / `desc` / `trend` and the `StatNumber` `prefix` / `suffix` no longer render an empty placeholder when given `false` or an empty string, while `0` still shows.
+- `StatCard`: Fixed `items[].key` colliding with an item's array index, which moved a number animation onto the wrong entry.
+- `StatNumber`: The `countup` mode now honours the system's reduced-motion preference and jumps straight to the target value.
 
 ### 3.1.2
 

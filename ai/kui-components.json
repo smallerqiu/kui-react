@@ -42378,8 +42378,8 @@
           "type": "ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "卡片标题",
-          "descriptionEn": "Card title"
+          "descriptionZh": "卡片标题；传 `false`、空字符串等空内容时不渲染标题行",
+          "descriptionEn": "Card title; empty content such as `false` or an empty string renders no title row"
         },
         {
           "name": "precision",

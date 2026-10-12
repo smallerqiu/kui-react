@@ -40,7 +40,13 @@ export default function CountUpNumber({
   useEffect(() => {
     if (!elementRef.current) return;
     const observeVisibility = autoAnimate && typeof IntersectionObserver !== "undefined";
-    const safeDuration = Number.isFinite(duration) ? Math.max(0, duration) : 0;
+    // The digit-roll plugin already refuses to move when the user asked for less
+    // motion; the counting path has to make the same call, otherwise the default
+    // `type` still animates for those visitors.
+    const reducedMotion =
+      typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const safeDuration =
+      reducedMotion || !Number.isFinite(duration) ? 0 : Math.max(0, duration);
     const safePrecision = Number.isFinite(precision)
       ? Math.min(100, Math.max(0, Math.floor(precision)))
       : 0;

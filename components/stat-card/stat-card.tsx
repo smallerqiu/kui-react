@@ -1,7 +1,9 @@
 import { useConfigAppearance, normalizeSurfaceShape } from "../config/use-config-appearance";
 import clsx from "clsx";
 import type { HTMLAttributes, ReactNode } from "react";
+import { hasRenderableContent } from "../utils/react-node";
 import StatNumber from "./stat-number";
+import { statItemKey } from "./utils/stat-item-key";
 import type { ShapeType, SizeType } from "../const/types";
 
 export interface StatNumberItem {
@@ -71,11 +73,11 @@ export default function StatCard({
         className,
       )}
     >
-      {title != null && <div className="k-stat-card-title">{title}</div>}
+      {hasRenderableContent(title) && <div className="k-stat-card-title">{title}</div>}
       <div className="k-stat-card-items">
         {items.map((item, index) => (
           <div
-            key={`${typeof (item.key ?? index)}:${String(item.key ?? index)}`}
+            key={statItemKey(item, index)}
             className={clsx("k-stat-card-item", { "k-stat-card-item-reverse": reverse })}
           >
             <div className="k-stat-card-item-value">
@@ -91,8 +93,10 @@ export default function StatCard({
                 suffix={item.suffix ?? suffix}
               />
             </div>
-            {item.desc != null && <div className="k-stat-card-item-desc">{item.desc}</div>}
-            {item.trend != null && item.trend !== false && (
+            {hasRenderableContent(item.desc) && (
+              <div className="k-stat-card-item-desc">{item.desc}</div>
+            )}
+            {hasRenderableContent(item.trend) && (
               <div
                 className={clsx(
                   "k-stat-card-item-trend",

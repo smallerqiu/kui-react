@@ -24,7 +24,7 @@
 
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| title | 卡片标题 | `ReactNode` | - |
+| title | 卡片标题；传 `false`、空字符串等空内容时不渲染标题行 | `ReactNode` | - |
 | items | 展示的数据 | `StatNumberItem[]` | [] |
 | precision | 数值精度 | `number` | 0 |
 | statNumberType | 数值变化类型 | `"rollup" \| "countup"` | 'countup' |
