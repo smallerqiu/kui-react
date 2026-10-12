@@ -17,6 +17,7 @@ import {
 
 import {
   createRipple,
+  htmlInCanvasMarkup,
   supportsHtmlInCanvas,
   type RippleInstance,
   type RippleOptions,
@@ -43,8 +44,11 @@ export function Ripple({ children, className, style, ...options }: RippleProps) 
 
   const supported = useSyncExternalStore(emptySubscribe, supportsHtmlInCanvas, () => false);
   const native = supported && !failed && nativeReady;
+  // Chrome 156 renamed the experimental canvas attribute, so the markup is
+  // chosen from what this browser advertises instead of being hardcoded.
+  const markup = htmlInCanvasMarkup();
 
-  // A layoutsubtree canvas does not contribute the size of its descendants to
+  // An HTML-in-Canvas host does not contribute the size of its descendants to
   // the surrounding document. Measure the regular DOM first, then preserve and
   // update that height after moving the subtree into the canvas.
   useLayoutEffect(() => {
@@ -95,8 +99,7 @@ export function Ripple({ children, className, style, ...options }: RippleProps) 
     >
       <canvas
         ref={sourceRef}
-        // @ts-expect-error experimental html-in-canvas attribute
-        layoutsubtree="true"
+        {...markup.canvas}
         suppressHydrationWarning
         style={
           native
@@ -107,6 +110,7 @@ export function Ripple({ children, className, style, ...options }: RippleProps) 
         {native ? (
           <div
             ref={contentRef}
+            {...markup.element}
             style={{
               position: "relative",
               width: "100%",

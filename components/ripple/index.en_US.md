@@ -2,11 +2,10 @@
 
 Adds WebGL-rendered water ripples and refraction over live DOM content.
 
-> This component is adapted from [Canvas UI Ripple](https://github.com/DavidHDev/canvas-ui/tree/main/src/lib/Ripple) by David Haz ([DavidHDev](https://github.com/DavidHDev)). The original project is licensed under MIT + Commons Clause.
 
 ## Browser support
 
-Full content refraction relies on the experimental HTML-in-Canvas API. It can currently be tested in Chrome Canary 149+ with `chrome://flags/#canvas-draw-element` enabled. Production usage requires the HTML-in-Canvas Origin Trial. Other browsers automatically fall back to a WebGL ripple overlay while keeping the content visible and interactive.
+Full content refraction relies on the experimental HTML-in-Canvas API. It can currently be tested in Chrome Canary 149+ with `chrome://flags/#canvas-draw-element` enabled. Production usage requires the HTML-in-Canvas Origin Trial. The API has changed shape between versions: from Chrome 155, drawing the content into the canvas no longer keeps it clickable unless the element geometry is registered as well, while earlier Chromium and Edge only need the matrix returned by the draw call; from Chrome 156 the `layoutsubtree` attribute becomes `content="drawable"`, the drawn element declares itself with `drawable`, and the 2D draw returns no matrix because the browser synchronizes the position itself. The component branches on the attributes and methods the browser actually exposes, so content and interaction work under all three experimental shapes. Without the API it falls back to a WebGL ripple overlay that brightens each crest and darkens each trough, which stays visible over light and dark pages alike while keeping the content visible and interactive.
 
 ## Examples
 
