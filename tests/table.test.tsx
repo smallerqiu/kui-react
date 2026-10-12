@@ -217,6 +217,31 @@ describe("Table Vue parity", () => {
     expect(headers[4].style.right).toBe("0px");
   });
 
+  // 真机回归：没写宽度的普通列在 `<col>` 上是 `auto`，窗口一窄就被一路压到表头一个字一行。
+  // `<col>` 继续留 `auto`（宽容器里照旧平摊多余空间），但表格的内容最小宽度要按每列的基准之和兜底，
+  // 于是窄容器先出横向滚动条。显式 `scroll.x` 仍然以调用方给的为准。
+  it("floors the table's minimum width at each column's basis so a narrow container scrolls", () => {
+    const columns: Column<Row>[] = [
+      { key: "name", title: "Name", width: 120 },
+      { key: "age", title: "Age" },
+      { key: "action", title: "Operate", fixed: "right" },
+    ];
+    const { container } = render(<Table data={data} columns={columns} checkable />);
+    const table = container.querySelector<HTMLTableElement>(".k-table-body table")!;
+    // 120 + 150（没写宽度的普通列按下限计入）+ 150（没写宽度的固定列）+ 勾选列 50
+    expect(table.style.minWidth).toBe("470px");
+    expect([...container.querySelectorAll<HTMLTableColElement>("col")].map((col) => col.style.width)).toEqual([
+      "50px",
+      "120px",
+      "auto",
+      "150px",
+    ]);
+
+    const scrolled = render(<Table data={data} columns={columns} checkable scroll={{ x: 900 }} />);
+    const scrolledTable = scrolled.container.querySelector<HTMLTableElement>(".k-table-body table")!;
+    expect(scrolledTable.style.minWidth).toBe("900px");
+  });
+
   it("makes a grouped parent column's fixed cover its whole leaf range", () => {
     const columns: Column<Row>[] = [
       {
