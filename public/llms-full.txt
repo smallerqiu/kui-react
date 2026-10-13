@@ -9620,8 +9620,8 @@ export default function App() {
       ],
       "boolean": true,
       "defaultExpression": "true",
-      "descriptionZh": "点击蒙层是否允许关闭",
-      "descriptionEn": "Whether clicking the mask allows closing"
+      "descriptionZh": "是否点击遮罩关闭抽屉（只管遮罩，Esc 由 `escKey` 控制）",
+      "descriptionEn": "Whether clicking the mask closes the drawer (mask only; Esc is gated by `escKey`)"
     },
     {
       "name": "target",
@@ -9670,6 +9670,19 @@ export default function App() {
       "defaultExpression": "true",
       "descriptionZh": "是否支持按 Esc 关闭",
       "descriptionEn": "Whether to support closing with Esc key"
+    },
+    {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "true",
+      "descriptionZh": "关闭后是否销毁抽屉内容。默认销毁（重开时重新挂载）；设为 false 可保留抽屉内已填写的表单状态，代价是打开过的抽屉留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy drawer content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened drawer"
     },
     {
       "name": "onOk",
@@ -9831,13 +9844,7 @@ export default function App() {
 
 ```tsx
 import { useState } from "react";
-import {
-  Button,
-  Drawer,
-  Segmented,
-  Space,
-  type DrawerPlacementsType,
-} from "react-kui";
+import { Button, Drawer, Segmented, Space, type DrawerPlacementsType } from "react-kui";
 const placements: DrawerPlacementsType[] = ["left", "top", "right", "bottom"];
 export default function App() {
   const [open, setOpen] = useState(false),
@@ -9976,7 +9983,7 @@ export default function App() {
 
 ```tsx
 import { useRef, useState } from "react";
-import { Button, Segmented, Space, Drawer, type DrawerPlacementsType } from "react-kui";
+import { Button, Drawer, Segmented, Space, type DrawerPlacementsType } from "react-kui";
 const options = ["left", "top", "right", "bottom"].map((value) => ({ label: value, value }));
 export default function App() {
   const [open, setOpen] = useState(false),
@@ -22703,8 +22710,8 @@ export default function App() {
       "type": "React.ReactNode",
       "required": false,
       "boolean": false,
-      "descriptionZh": "对话框标题",
-      "descriptionEn": "Dialog title"
+      "descriptionZh": "对话框标题，字符串之外可给任意节点",
+      "descriptionEn": "Dialog title, accepts nodes as well as text"
     },
     {
       "name": "okText",
@@ -22763,8 +22770,8 @@ export default function App() {
       ],
       "boolean": true,
       "defaultExpression": "false",
-      "descriptionZh": "是否点击遮罩关闭弹窗",
-      "descriptionEn": "Whether clicking the mask closes the modal"
+      "descriptionZh": "是否点击遮罩关闭弹窗（只管遮罩，Esc 由 `escKey` 控制）",
+      "descriptionEn": "Whether clicking the mask closes the modal (mask only; Esc is gated by `escKey`)"
     },
     {
       "name": "maximized",
@@ -22837,8 +22844,8 @@ export default function App() {
       "required": false,
       "boolean": false,
       "defaultExpression": "true",
-      "descriptionZh": "当`footer=false`时不展示底部按钮",
-      "descriptionEn": "When `footer=false`, the bottom button is not displayed."
+      "descriptionZh": "当`footer=false`时不展示底部按钮，给节点时用它替换整个底部",
+      "descriptionEn": "When `footer=false` the footer is hidden; pass a node to replace the whole footer."
     },
     {
       "name": "escKey",
@@ -22867,6 +22874,19 @@ export default function App() {
       "descriptionEn": "Render only the modal panel, without mask, animation, or global events"
     },
     {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "true",
+      "descriptionZh": "关闭后是否销毁窗口内容。默认销毁（重开时重新挂载）；设为 false 可保留窗口内已填写的表单状态，代价是打开过的窗口留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy dialog content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened dialog"
+    },
+    {
       "name": "onClose",
       "type": "(() => void) | undefined",
       "required": false,
@@ -22879,8 +22899,8 @@ export default function App() {
       "type": "(() => void) | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "点击确定的回调",
-      "descriptionEn": "Callback when OK is clicked"
+      "descriptionZh": "点击确定的回调；返回 Promise 时关闭时机交给组件：resolve 后关窗，reject 只停 loading 并保持窗口打开",
+      "descriptionEn": "Callback when OK is clicked; returning a Promise hands the closing timing to the component — resolve closes it, reject only stops loading and keeps it open"
     },
     {
       "name": "onCancel",
@@ -22911,8 +22931,8 @@ export default function App() {
       "type": "React.ReactNode",
       "required": false,
       "boolean": false,
-      "descriptionZh": "对话框内容",
-      "descriptionEn": "Dialog content"
+      "descriptionZh": "对话框内容，字符串之外可给任意节点",
+      "descriptionEn": "Dialog content, accepts nodes as well as text"
     },
     {
       "name": "children",
@@ -22937,8 +22957,8 @@ export default function App() {
       "type": "(() => void) | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "点击确定的回调",
-      "descriptionEn": "Callback when OK is clicked"
+      "descriptionZh": "点击确定的回调；返回 Promise 时关闭时机交给组件：resolve 后关窗，reject 只停 loading 并保持窗口打开",
+      "descriptionEn": "Callback when OK is clicked; returning a Promise hands the closing timing to the component — resolve closes it, reject only stops loading and keeps it open"
     },
     {
       "name": "onCancel",
@@ -23380,16 +23400,16 @@ export default function App() {
       "type": "React.ReactNode",
       "required": false,
       "boolean": false,
-      "descriptionZh": "对话框标题",
-      "descriptionEn": "Dialog title"
+      "descriptionZh": "对话框标题，字符串之外可给任意节点",
+      "descriptionEn": "Dialog title, accepts nodes as well as text"
     },
     {
       "name": "content",
       "type": "React.ReactNode",
       "required": false,
       "boolean": false,
-      "descriptionZh": "对话框内容",
-      "descriptionEn": "Dialog content"
+      "descriptionZh": "对话框内容，字符串之外可给任意节点",
+      "descriptionEn": "Dialog content, accepts nodes as well as text"
     },
     {
       "name": "children",
@@ -23398,6 +23418,18 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "独立面板的标准正文；真值 content 会替换整个标准内容区。",
       "descriptionEn": "Standard body of the standalone panel; truthy content replaces the entire standard content region."
+    },
+    {
+      "name": "destroyOnClose",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "关闭后是否销毁窗口内容。默认销毁（重开时重新挂载）；设为 false 可保留窗口内已填写的表单状态，代价是打开过的窗口留一份隐藏 DOM",
+      "descriptionEn": "Whether to destroy dialog content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened dialog"
     },
     {
       "name": "onOpenChange",
@@ -23440,8 +23472,8 @@ export default function App() {
       "type": "React.ReactNode",
       "required": false,
       "boolean": false,
-      "descriptionZh": "当`footer=false`时不展示底部按钮",
-      "descriptionEn": "When `footer=false`, the bottom button is not displayed."
+      "descriptionZh": "当`footer=false`时不展示底部按钮，给节点时用它替换整个底部",
+      "descriptionEn": "When `footer=false` the footer is hidden; pass a node to replace the whole footer."
     },
     {
       "name": "width",
@@ -23516,8 +23548,8 @@ export default function App() {
       "type": "(() => void) | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "点击确定的回调",
-      "descriptionEn": "Callback when OK is clicked"
+      "descriptionZh": "点击确定的回调；返回 Promise 时关闭时机交给组件：resolve 后关窗，reject 只停 loading 并保持窗口打开",
+      "descriptionEn": "Callback when OK is clicked; returning a Promise hands the closing timing to the component — resolve closes it, reject only stops loading and keeps it open"
     },
     {
       "name": "onCancel",
@@ -23558,8 +23590,8 @@ export default function App() {
       "type": "(() => void) | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "点击确定的回调",
-      "descriptionEn": "Callback when OK is clicked"
+      "descriptionZh": "点击确定的回调；返回 Promise 时关闭时机交给组件：resolve 后关窗，reject 只停 loading 并保持窗口打开",
+      "descriptionEn": "Callback when OK is clicked; returning a Promise hands the closing timing to the component — resolve closes it, reject only stops loading and keeps it open"
     },
     {
       "name": "onCancel",

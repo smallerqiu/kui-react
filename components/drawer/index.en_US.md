@@ -32,7 +32,8 @@ A floating panel that slides in from the edge of the screen.
 | --- | --- | --- | --- |
 | open | drawer visibility | `boolean` | - |
 | escKey | Whether to support closing with Esc key | `boolean` | true |
-| maskClosable | Whether clicking the mask allows closing | `boolean` | true |
+| destroyOnClose | Whether to destroy drawer content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened drawer | `boolean` | true |
+| maskClosable | Whether clicking the mask closes the drawer (mask only; Esc is gated by `escKey`) | `boolean` | true |
 | title | Drawer title. When null or false, the title is not displayed | `React.ReactNode` | - |
 | width | Drawer width, used when `placement` is `left` or `right`, supports percentage | `string \| number` | 520 |
 | height | Drawer height, used when `placement` is `top` or `bottom`, supports percentage | `string \| number` | 520 |
@@ -48,3 +49,14 @@ A floating panel that slides in from the edge of the screen.
 | onClose | Callback when the drawer closes | `(() => void)` | - |
 | onCancel | Callback when Cancel is clicked | `(() => void)` | - |
 | onOpenChange | Callback for opening or closing the drawer | `((opened: boolean) => void)` | - |
+
+### onCancel vs onClose
+
+Closing splits into two channels that never fire together:
+
+- The footer **Cancel** button emits `onCancel` only. The drawer still closes, but `onClose` does not run.
+- Mask click, Esc and the top-right close button emit `onClose` only.
+
+Listen to both if you need one "it closed" hook; keep them separate if you need to tell an explicit cancel apart from every other way of closing.
+`onOk` never closes the drawer — it only sits on the OK button, so close it yourself inside that callback when you need to.
+Keep the open state in sync through `onOpenChange` alone: all four ways of closing — cancel, mask, Esc, the close icon — fire `onOpenChange(false)`, while `onCancel` / `onClose` only tell you which channel closed it. So the controlled pattern is `open={open}` with `onOpenChange={setOpen}`, not a `setOpen(false)` in each of `onCancel` and `onClose`.

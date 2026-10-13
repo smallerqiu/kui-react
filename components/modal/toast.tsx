@@ -5,6 +5,7 @@ import { Button } from "../button";
 import { ConfigContext } from "../config/config-context";
 import Icon, { type IconType } from "../icon";
 import zhCN from "../locale/zh-CN";
+import { isPromiseLike } from "../utils/promise";
 import Modal from "./modal";
 
 export type ToastType = "info" | "success" | "error" | "warning" | "confirm";
@@ -15,10 +16,16 @@ export interface ToastProps {
   content?: React.ReactNode;
   color?: string;
   icon?: IconType[];
-  onOk?: () => void | Promise<unknown>;
+  onOk?: () => void | PromiseLike<unknown>;
   onCancel?: () => void;
   onDestroy?: () => void;
   type?: ToastType;
+  /**
+   * 受控开关。命令式 API（modal.show 返回的实例）要靠它把 show/hide 的时机拿回来，
+   * 所以 Toast 不再自己决定开合；默认打开，跟 vue 那边 instance.show() 的行为一致。
+   */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 const icons = {
@@ -40,10 +47,11 @@ export default function Toast({
   onCancel,
   onDestroy,
   type = "info",
+  open = true,
+  onOpenChange,
 }: ToastProps) {
   const { locale } = useContext(ConfigContext);
   const messages = (locale ?? zhCN)?.k?.common;
-  const [open, setOpen] = useState(true);
   const [loading, setLoading] = useState(false);
   const destroyRequestedRef = useRef(false);
 
@@ -54,21 +62,25 @@ export default function Toast({
   };
 
   const handleClose = () => {
-    setOpen(false);
+    onOpenChange?.(false);
   };
 
-  const ok = async () => {
-    try {
-      const result = onOk?.();
-      if (result && typeof (result as Promise<unknown>).then === "function") {
-        setLoading(true);
-        await result;
-      }
-    } catch {
-      setLoading(false);
-    } finally {
+  const ok = () => {
+    const result = onOk?.();
+    if (!isPromiseLike(result)) {
       handleClose();
+      return;
     }
+    // onOk 返 Promise 时由这层接管：成功才关窗，失败只停 loading、窗口留着让用户改完再试。
+    // （以前这里是 catch 完照样关窗，请求失败了窗口却消失，等于把错误吞了。）
+    setLoading(true);
+    Promise.resolve(result).then(
+      () => {
+        setLoading(false);
+        handleClose();
+      },
+      () => setLoading(false),
+    );
   };
 
   const cancel = () => {
@@ -101,7 +113,7 @@ export default function Toast({
       onClose={handleClose}
       onAfterClose={requestDestroy}
       onOpenChange={(opened) => {
-        if (!opened) setOpen(false);
+        if (!opened) onOpenChange?.(false);
       }}
     />
   );

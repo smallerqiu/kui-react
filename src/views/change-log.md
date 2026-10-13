@@ -36,14 +36,25 @@ rm -rf node_modules/.vite
 - `StatCard` 修复 `items[].key` 与数组下标撞 key、数字动画状态串到别的数据项的问题。
 - `StatNumber` 的 `countup` 模式同样遵循系统的"减少动态效果"偏好，命中时直接显示目标值。
 - `StatCard` 的 `shape` 收窄为 `square` / `round`，与 Vue 版一致；卡片是切角的表面，`circle` 会裁掉内容，继承到 `circle` 时按 `round` 处理。
-- `Table` 未设 `width` 的列按 150 取宽度基准，整表用叶子列合计（含选择列 50）设 `min-width`；容器变窄时改为横向滚动，不再把列压瘪、表头文字竖排换行。
-- `Table` 修复窗口卡在临界宽度时固定列阴影与横向滚动条反复抖动：中性态的阴影盒不再凭空撑出一段可滚距离，只在真的还能往那一侧滚时才生成阴影。
+- `Table` 未设 `width` 的列按 150 作为宽度基准，整表按各列宽度合计设最小宽度；容器变窄时改为横向滚动，不再把列压瘪、让表头文字竖排换行。
+- `Table` 修复窗口宽度卡在临界值时，固定列阴影和横向滚动条来回闪现的问题：只有真的还能往那一侧滚动，才会出现阴影。
 - `Tree` 异步 `loadData` 对同一节点只请求一次；虚拟滚动补回 `k-tree-virtual-list`，hover 与选中背景恢复满行高。
 - `Tree` 缺 `key` 的节点按树路径合成稳定兜底 key，展开与勾选状态不再串台。
 - `Tree` 展开箭头按钮不再参与 Tab（`tabIndex={-1}`），整棵树仍只有一个 `treeitem` 走 roving tabindex，方向键不会把焦点丢在箭头上。
 - `Tree` 子节点列表的 DOM 层级与 Vue 版对齐，并清理 LESS 中五条无人引用的规则。
 - `DropdownButton` 修复右侧"三点"按钮点不开菜单：点击、右键与方向键都能驱动开合，触发按钮带 `aria-haspopup="menu"` 和 `aria-expanded`，并可用 `trigger` 指定 `hover` / `click` / `contextmenu`。
-- 弹层组件新增公开的 `destroyOnClose`（`Select`、`Cascader`、`TreeSelect`、`AutoComplete`、`Mentions`、`DatePicker`、`ColorPicker`、`Dropdown`、`DropdownButton`、`Tooltip`、`Poptip`、`Popconfirm`），默认 `true`，即关闭动画结束后销毁面板。此前这条行为在 React 版由各组件写死、用户无法覆盖；设为 `false` 可保留面板内未提交的表单状态，代价是每个打开过的实例留一份隐藏 DOM。
+- 弹层组件开放 `destroyOnClose`（`Select`、`Cascader`、`TreeSelect`、`AutoComplete`、`Mentions`、`DatePicker`、`ColorPicker`、`Dropdown`、`DropdownButton`、`Tooltip`、`Poptip`、`Popconfirm`），默认 `true`，即关闭后销毁面板内容。之前这个行为固定、无法覆盖；现在设为 `false` 就能留住面板里没提交完的表单，代价是每个打开过的实例留一份隐藏内容。
+- `Modal` 打开期间页面不再跟着滚动，`Tab` 在窗口里循环，不会跳到后面的内容上；窗口关闭或组件销毁后页面滚动自动恢复。
+- `Modal` / `Drawer` 叠着开时，`Escape` 只关最上面那一层；下拉菜单开在窗口之上时，第一下 `Escape` 先收下拉，不会把整个窗口一起关掉。
+- `Modal` / `Drawer` / `ModalPanel` 支持 `destroyOnClose`（默认 `true`）：关闭后销毁面板内容，下次打开是干净的。设为 `false` 可以留住填了一半的表单，代价是页面里留一份隐藏内容。常开面板（`panelOnly`）不受这个开关影响。
+- 关闭 `Modal` / `Drawer` 时，窗口里打开着的下拉、级联、子菜单等浮层会一起收起，不会在窗口关掉后孤零零地留在页面上。
+- 确认弹窗的 `onOk` 返回 Promise 时，关闭时机交给组件：保存成功才关窗，失败只结束按钮的 loading 状态并把窗口留着，用户改完可以直接重试。
+- 关闭动画还没播完就重新打开时，窗口不会再过一会儿自己消失。
+- `Modal` 修复 `centered` 设置了却不居中、`width` 传字符串时单位丢失（`Drawer` 的 `width` / `height` 同样）、没传 `title` 却多出一条空标题栏的问题。
+- 命令式弹窗（`modal.confirm()` 等）的 `title` / `content` 不再限字符串，可以传任意节点；弹窗实例统一提供 `show` / `hide` / `destroy`，并沿用调用处 `ConfigProvider` 的主题、语言和弹层挂载设置。
+- `Modal` / `Drawer` 文档订正了真实默认值（`maskClosable`：弹窗 `false`、抽屉 `true`，且只管点击遮罩，`Esc` 由 `escKey` 控制），并说明 `onCancel` 与 `onClose` 是分开的两路：点底部「取消」只触发 `onCancel`，点遮罩、按 `Esc`、点右上角只触发 `onClose`。受控用法要同步开合状态，只挂 `onOpenChange` 就够，不用在两个回调里各写一次。
+- `Modal` 内容区贴边的控件（如 `Input`）聚焦时，那圈焦点高亮不再被裁掉一半；内容宽度、位置与页脚间距都没有变化。
+- `Tooltip` 气泡补回 1px 描边，深色背景上也能看清边界。
 
 ### 3.1.2
 

@@ -41,10 +41,11 @@ Modal dialog box.
 | draggable | Whether the modal can be dragged, not available in confirm mode | `boolean` | false |
 | centered | Whether the window can be centered, not available in confirm mode | `boolean` | false |
 | maximized | Whether the modal can be maximized, not available in confirm mode | `boolean` | false |
-| maskClosable | Whether clicking the mask closes the modal | `boolean` | false |
+| maskClosable | Whether clicking the mask closes the modal (mask only; Esc is gated by `escKey`) | `boolean` | false |
 | escKey | Whether to support closing with Esc key | `boolean` | true |
 | panelOnly | Render only the modal panel, without mask, animation, or global events | `boolean` | false |
-| footer | When `footer=false`, the bottom button is not displayed. | `React.ReactNode` | true |
+| destroyOnClose | Whether to destroy dialog content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened dialog | `boolean` | true |
+| footer | When `footer=false` the footer is hidden; pass a node to replace the whole footer. | `React.ReactNode` | true |
 | loading | When set to `true`, the confirm button will be in a loading state | `boolean` | false |
 | top | Distance from the top of the window | `number` | 100 |
 | showClose | Whether to display the close button | `boolean` | true |
@@ -54,6 +55,17 @@ Modal dialog box.
 | onClose | Callback when window closes | `(() => void)` | - |
 | onAfterClose | Callback after the close animation finishes | `(() => void)` | - |
 | onOpenChange | Callback for opening or closing a window | `((opened: boolean) => void)` | - |
+
+### onCancel vs onClose
+
+Closing splits into two channels that never fire together:
+
+- The footer **Cancel** button emits `onCancel` only. The dialog still closes, but `onClose` does not run.
+- Mask click, Esc and the top-right close button emit `onClose` only.
+
+Listen to both if you need one "it closed" hook; keep them separate if you need to tell an explicit cancel apart from every other way of closing.
+`onOk` never closes the dialog — it only sits on the OK button, so close it yourself inside that callback when you need to.
+Keep the open state in sync through `onOpenChange` alone: all four ways of closing — cancel, mask, Esc, the close icon — fire `onOpenChange(false)`, while `onCancel` / `onClose` only tell you which channel closed it. So the controlled pattern is `open={open}` with `onOpenChange={setOpen}`, not a `setOpen(false)` in each of `onCancel` and `onClose`.
 
 ## Modal.method()
 
@@ -82,12 +94,12 @@ Parameter options is an object, specific description as follows:
 
 | Property   | Description                                                                                                                                                   | Type       | Default |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------- |
-| title      | Dialog title                                                                                                                                                  | string     | -       |
-| content    | Dialog content                                                                                                                                                | string     | -       |
+| title      | Dialog title, accepts nodes as well as text                                                                                             | React.ReactNode | -       |
+| content    | Dialog content, accepts nodes as well as text                                                                                   | React.ReactNode | -       |
 | okText     | OK button text                                                                                                                                                | string     | OK      |
 | cancelText | Cancel button text                                                                                                                                            | string     | Cancel  |
 | icon       | Modal icon, available when type is toast, default optional values are success, warning, error, info, can also be customized, refer to /components/icon values | string     | -       |
 | color      | Modal icon color, available when type is toast                                                                                                                | string     | -       |
 | type       | Modal type for `modal.show`: `info`, `success`, `warning`, `error`, or `confirm`                                                                              | ToastType  | info    |
-| onOk       | Callback when OK is clicked                                                                                                                                   | () => void | -       |
+| onOk       | Callback when OK is clicked; returning a Promise hands the closing timing to the component — resolve closes it, reject only stops loading and keeps it open  | () => void \| PromiseLike | -       |
 | onCancel   | Callback when Cancel is clicked                                                                                                                               | () => void | -       |

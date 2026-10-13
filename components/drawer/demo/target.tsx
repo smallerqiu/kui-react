@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Button, Segmented, Space, Drawer, type DrawerPlacementsType } from "react-kui";
+import { Button, Drawer, Segmented, Space, type DrawerPlacementsType } from "react-kui";
 const options = ["left", "top", "right", "bottom"].map((value) => ({ label: value, value }));
 export default function App() {
   const [open, setOpen] = useState(false),

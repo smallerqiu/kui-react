@@ -17292,8 +17292,8 @@
           ],
           "boolean": true,
           "defaultExpression": "true",
-          "descriptionZh": "点击蒙层是否允许关闭",
-          "descriptionEn": "Whether clicking the mask allows closing"
+          "descriptionZh": "是否点击遮罩关闭抽屉（只管遮罩，Esc 由 `escKey` 控制）",
+          "descriptionEn": "Whether clicking the mask closes the drawer (mask only; Esc is gated by `escKey`)"
         },
         {
           "name": "target",
@@ -17342,6 +17342,19 @@
           "defaultExpression": "true",
           "descriptionZh": "是否支持按 Esc 关闭",
           "descriptionEn": "Whether to support closing with Esc key"
+        },
+        {
+          "name": "destroyOnClose",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "defaultExpression": "true",
+          "descriptionZh": "关闭后是否销毁抽屉内容。默认销毁（重开时重新挂载）；设为 false 可保留抽屉内已填写的表单状态，代价是打开过的抽屉留一份隐藏 DOM",
+          "descriptionEn": "Whether to destroy drawer content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened drawer"
         },
         {
           "name": "onOk",
@@ -17440,7 +17453,7 @@
         {
           "id": "components/drawer/demo/custom.tsx",
           "title": "自定义",
-          "source": "import { useState } from \"react\";\nimport {\n  Button,\n  Drawer,\n  Segmented,\n  Space,\n  type DrawerPlacementsType,\n} from \"react-kui\";\nconst placements: DrawerPlacementsType[] = [\"left\", \"top\", \"right\", \"bottom\"];\nexport default function App() {\n  const [open, setOpen] = useState(false),\n    [placement, setPlacement] = useState<DrawerPlacementsType>(\"left\");\n  return (\n    <div>\n      <Space wrap>\n        <Segmented\n          value={placement}\n          options={placements.map((value) => ({ label: value, value }))}\n          onChange={(v) => setPlacement(v as DrawerPlacementsType)}\n        />\n        <Button onClick={() => setOpen(true)}>Open</Button>\n      </Space>\n      <Drawer\n        open={open}\n        height={300}\n        placement={placement}\n        title=\"What's your name?\"\n        cancelText=\"Cancel\"\n        okText=\"Ok\"\n        onClose={() => setOpen(false)}\n        onCancel={() => setOpen(false)}\n        onOk={() => setOpen(false)}\n      >\n        My name is Qiu.\n      </Drawer>\n    </div>\n  );\n}"
+          "source": "import { useState } from \"react\";\nimport { Button, Drawer, Segmented, Space, type DrawerPlacementsType } from \"react-kui\";\nconst placements: DrawerPlacementsType[] = [\"left\", \"top\", \"right\", \"bottom\"];\nexport default function App() {\n  const [open, setOpen] = useState(false),\n    [placement, setPlacement] = useState<DrawerPlacementsType>(\"left\");\n  return (\n    <div>\n      <Space wrap>\n        <Segmented\n          value={placement}\n          options={placements.map((value) => ({ label: value, value }))}\n          onChange={(v) => setPlacement(v as DrawerPlacementsType)}\n        />\n        <Button onClick={() => setOpen(true)}>Open</Button>\n      </Space>\n      <Drawer\n        open={open}\n        height={300}\n        placement={placement}\n        title=\"What's your name?\"\n        cancelText=\"Cancel\"\n        okText=\"Ok\"\n        onClose={() => setOpen(false)}\n        onCancel={() => setOpen(false)}\n        onOk={() => setOpen(false)}\n      >\n        My name is Qiu.\n      </Drawer>\n    </div>\n  );\n}"
         },
         {
           "id": "components/drawer/demo/with-form.tsx",
@@ -17450,7 +17463,7 @@
         {
           "id": "components/drawer/demo/target.tsx",
           "title": "植入目标元素",
-          "source": "import { useRef, useState } from \"react\";\nimport { Button, Segmented, Space, Drawer, type DrawerPlacementsType } from \"react-kui\";\nconst options = [\"left\", \"top\", \"right\", \"bottom\"].map((value) => ({ label: value, value }));\nexport default function App() {\n  const [open, setOpen] = useState(false),\n    [placement, setPlacement] = useState<DrawerPlacementsType>(\"left\"),\n    ref = useRef<HTMLDivElement>(null);\n  return (\n    <>\n      <Space wrap>\n        <Segmented\n          value={placement}\n          options={options}\n          onChange={(v) => setPlacement(v as DrawerPlacementsType)}\n        />\n        <Button onClick={() => setOpen((v) => !v)}>Open</Button>\n      </Space>\n      <br />\n      <br />\n      <div\n        ref={ref}\n        style={{\n          height: 300,\n          overflow: \"hidden\",\n          borderRadius: 8,\n          background: \"rgba(130, 130, 130, 0.18)\",\n          display: \"flex\",\n          alignItems: \"center\",\n          justifyContent: \"center\",\n        }}\n      >\n        <p style={{ color: \"#999\" }}>Drawer inside with target.</p>\n      </div>\n      <Drawer\n        open={open}\n        width=\"50%\"\n        height=\"50%\"\n        footer={false}\n        placement={placement}\n        target={ref}\n        onClose={() => setOpen(false)}\n      >\n        <p>something ...</p>\n        <p>something ...</p>\n        <p>something ...</p>\n      </Drawer>\n    </>\n  );\n}"
+          "source": "import { useRef, useState } from \"react\";\nimport { Button, Drawer, Segmented, Space, type DrawerPlacementsType } from \"react-kui\";\nconst options = [\"left\", \"top\", \"right\", \"bottom\"].map((value) => ({ label: value, value }));\nexport default function App() {\n  const [open, setOpen] = useState(false),\n    [placement, setPlacement] = useState<DrawerPlacementsType>(\"left\"),\n    ref = useRef<HTMLDivElement>(null);\n  return (\n    <>\n      <Space wrap>\n        <Segmented\n          value={placement}\n          options={options}\n          onChange={(v) => setPlacement(v as DrawerPlacementsType)}\n        />\n        <Button onClick={() => setOpen((v) => !v)}>Open</Button>\n      </Space>\n      <br />\n      <br />\n      <div\n        ref={ref}\n        style={{\n          height: 300,\n          overflow: \"hidden\",\n          borderRadius: 8,\n          background: \"rgba(130, 130, 130, 0.18)\",\n          display: \"flex\",\n          alignItems: \"center\",\n          justifyContent: \"center\",\n        }}\n      >\n        <p style={{ color: \"#999\" }}>Drawer inside with target.</p>\n      </div>\n      <Drawer\n        open={open}\n        width=\"50%\"\n        height=\"50%\"\n        footer={false}\n        placement={placement}\n        target={ref}\n        onClose={() => setOpen(false)}\n      >\n        <p>something ...</p>\n        <p>something ...</p>\n        <p>something ...</p>\n      </Drawer>\n    </>\n  );\n}"
         }
       ]
     },
@@ -31746,8 +31759,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "对话框标题",
-          "descriptionEn": "Dialog title"
+          "descriptionZh": "对话框标题，字符串之外可给任意节点",
+          "descriptionEn": "Dialog title, accepts nodes as well as text"
         },
         {
           "name": "okText",
@@ -31806,8 +31819,8 @@
           ],
           "boolean": true,
           "defaultExpression": "false",
-          "descriptionZh": "是否点击遮罩关闭弹窗",
-          "descriptionEn": "Whether clicking the mask closes the modal"
+          "descriptionZh": "是否点击遮罩关闭弹窗（只管遮罩，Esc 由 `escKey` 控制）",
+          "descriptionEn": "Whether clicking the mask closes the modal (mask only; Esc is gated by `escKey`)"
         },
         {
           "name": "maximized",
@@ -31880,8 +31893,8 @@
           "required": false,
           "boolean": false,
           "defaultExpression": "true",
-          "descriptionZh": "当`footer=false`时不展示底部按钮",
-          "descriptionEn": "When `footer=false`, the bottom button is not displayed."
+          "descriptionZh": "当`footer=false`时不展示底部按钮，给节点时用它替换整个底部",
+          "descriptionEn": "When `footer=false` the footer is hidden; pass a node to replace the whole footer."
         },
         {
           "name": "escKey",
@@ -31910,6 +31923,19 @@
           "descriptionEn": "Render only the modal panel, without mask, animation, or global events"
         },
         {
+          "name": "destroyOnClose",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "defaultExpression": "true",
+          "descriptionZh": "关闭后是否销毁窗口内容。默认销毁（重开时重新挂载）；设为 false 可保留窗口内已填写的表单状态，代价是打开过的窗口留一份隐藏 DOM",
+          "descriptionEn": "Whether to destroy dialog content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened dialog"
+        },
+        {
           "name": "onClose",
           "type": "(() => void) | undefined",
           "required": false,
@@ -31922,8 +31948,8 @@
           "type": "(() => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "点击确定的回调",
-          "descriptionEn": "Callback when OK is clicked"
+          "descriptionZh": "点击确定的回调；返回 Promise 时关闭时机交给组件：resolve 后关窗，reject 只停 loading 并保持窗口打开",
+          "descriptionEn": "Callback when OK is clicked; returning a Promise hands the closing timing to the component — resolve closes it, reject only stops loading and keeps it open"
         },
         {
           "name": "onCancel",
@@ -31954,8 +31980,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "对话框内容",
-          "descriptionEn": "Dialog content"
+          "descriptionZh": "对话框内容，字符串之外可给任意节点",
+          "descriptionEn": "Dialog content, accepts nodes as well as text"
         },
         {
           "name": "children",
@@ -31982,8 +32008,8 @@
           "type": "(() => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "点击确定的回调",
-          "descriptionEn": "Callback when OK is clicked"
+          "descriptionZh": "点击确定的回调；返回 Promise 时关闭时机交给组件：resolve 后关窗，reject 只停 loading 并保持窗口打开",
+          "descriptionEn": "Callback when OK is clicked; returning a Promise hands the closing timing to the component — resolve closes it, reject only stops loading and keeps it open"
         },
         {
           "name": "onCancel",
@@ -32070,16 +32096,16 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "对话框标题",
-          "descriptionEn": "Dialog title"
+          "descriptionZh": "对话框标题，字符串之外可给任意节点",
+          "descriptionEn": "Dialog title, accepts nodes as well as text"
         },
         {
           "name": "content",
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "对话框内容",
-          "descriptionEn": "Dialog content"
+          "descriptionZh": "对话框内容，字符串之外可给任意节点",
+          "descriptionEn": "Dialog content, accepts nodes as well as text"
         },
         {
           "name": "children",
@@ -32088,6 +32114,18 @@
           "boolean": false,
           "descriptionZh": "独立面板的标准正文；真值 content 会替换整个标准内容区。",
           "descriptionEn": "Standard body of the standalone panel; truthy content replaces the entire standard content region."
+        },
+        {
+          "name": "destroyOnClose",
+          "type": "boolean | undefined",
+          "required": false,
+          "enumValues": [
+            false,
+            true
+          ],
+          "boolean": true,
+          "descriptionZh": "关闭后是否销毁窗口内容。默认销毁（重开时重新挂载）；设为 false 可保留窗口内已填写的表单状态，代价是打开过的窗口留一份隐藏 DOM",
+          "descriptionEn": "Whether to destroy dialog content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened dialog"
         },
         {
           "name": "onOpenChange",
@@ -32130,8 +32168,8 @@
           "type": "React.ReactNode",
           "required": false,
           "boolean": false,
-          "descriptionZh": "当`footer=false`时不展示底部按钮",
-          "descriptionEn": "When `footer=false`, the bottom button is not displayed."
+          "descriptionZh": "当`footer=false`时不展示底部按钮，给节点时用它替换整个底部",
+          "descriptionEn": "When `footer=false` the footer is hidden; pass a node to replace the whole footer."
         },
         {
           "name": "width",
@@ -32206,8 +32244,8 @@
           "type": "(() => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "点击确定的回调",
-          "descriptionEn": "Callback when OK is clicked"
+          "descriptionZh": "点击确定的回调；返回 Promise 时关闭时机交给组件：resolve 后关窗，reject 只停 loading 并保持窗口打开",
+          "descriptionEn": "Callback when OK is clicked; returning a Promise hands the closing timing to the component — resolve closes it, reject only stops loading and keeps it open"
         },
         {
           "name": "onCancel",
@@ -32250,8 +32288,8 @@
           "type": "(() => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "点击确定的回调",
-          "descriptionEn": "Callback when OK is clicked"
+          "descriptionZh": "点击确定的回调；返回 Promise 时关闭时机交给组件：resolve 后关窗，reject 只停 loading 并保持窗口打开",
+          "descriptionEn": "Callback when OK is clicked; returning a Promise hands the closing timing to the component — resolve closes it, reject only stops loading and keeps it open"
         },
         {
           "name": "onCancel",

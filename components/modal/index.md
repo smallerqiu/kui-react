@@ -41,10 +41,11 @@
 | draggable | 弹框是否可拖动, confirm 模式不可用 | `boolean` | false |
 | centered | 窗口是否可以居中 , confirm 模式不可用 | `boolean` | false |
 | maximized | 弹框是否可以最大化显示 , confirm 模式不可用 | `boolean` | false |
-| maskClosable | 是否点击遮罩关闭弹窗 | `boolean` | false |
+| maskClosable | 是否点击遮罩关闭弹窗（只管遮罩，Esc 由 `escKey` 控制） | `boolean` | false |
 | escKey | 是否支持按 Esc 关闭 | `boolean` | true |
 | panelOnly | 只渲染弹窗面板本身，不包含遮罩、动画与全局事件 | `boolean` | false |
-| footer | 当`footer=false`时不展示底部按钮 | `React.ReactNode` | true |
+| destroyOnClose | 关闭后是否销毁窗口内容。默认销毁（重开时重新挂载）；设为 false 可保留窗口内已填写的表单状态，代价是打开过的窗口留一份隐藏 DOM | `boolean` | true |
+| footer | 当`footer=false`时不展示底部按钮，给节点时用它替换整个底部 | `React.ReactNode` | true |
 | loading | 为`true`时此时确定按钮为加载状态 | `boolean` | false |
 | top | 窗口距离顶部的距离 | `number` | 100 |
 | showClose | 是否展示关闭按钮 | `boolean` | true |
@@ -54,6 +55,17 @@
 | onClose | 窗口关闭的回调 | `(() => void)` | - |
 | onAfterClose | 关闭动画结束后的回调 | `(() => void)` | - |
 | onOpenChange | 打开或者窗口关闭的回调 | `((opened: boolean) => void)` | - |
+
+### onCancel 与 onClose 的分工
+
+关闭这个动作分成两条互不重叠的通道，挂了其中一个，另一个不会跟着响：
+
+- 底部「取消」按钮：只触发 `onCancel`，窗口照样收起，但不走 `onClose`。
+- 点遮罩、按 Esc、点右上角关闭按钮：只触发 `onClose`。
+
+想在任何关闭方式下都收到通知，就两个回调都挂；要区分「用户明确取消」和「其他方式关闭」，各挂各的。
+`onOk` 不负责关闭，它只挂在确定按钮上，需要关窗请自己在回调里收。
+同步开合状态请只挂 `onOpenChange`：取消、遮罩、Esc、右上角这四种关法都会发一次 `onOpenChange(false)`，`onCancel` / `onClose` 只告诉你这次是哪条通道关的，不承担状态同步。所以受控写法是 `open={open}` 配 `onOpenChange={setOpen}`，而不是在 `onCancel` 和 `onClose` 里各 `setOpen(false)` 一次。
 
 ## Modal.method()
 
@@ -82,12 +94,12 @@ useEffect(() => () => modal.destroyAll(), [location.pathname]);
 
 | 属性       | 说明                                                                                                                       | 类型       | 默认值 |
 | ---------- | -------------------------------------------------------------------------------------------------------------------------- | ---------- | ------ |
-| title      | 对话框标题                                                                                                                 | string     | -      |
-| content    | 对话框内容                                                                                                                 | string     | -      |
+| title      | 对话框标题，字符串之外可给任意节点                                                                                          | React.ReactNode | -      |
+| content    | 对话框内容，字符串之外可给任意节点                                                                                          | React.ReactNode | -      |
 | okText     | 确定按钮文字                                                                                                               | string     | 确定   |
 | cancelText | 取消按钮文字                                                                                                               | string     | 取消   |
 | icon       | 弹框的图标，type 为 toast 可用 ，默认可选值为 success，warning, error, info, 也可以自定义，参照 [Icon](/components/icon)值 | string     | -      |
 | color      | 弹框的图标的颜色，type 为 toast 可用                                                                                       | string     | -      |
 | type       | `modal.show` 的弹框类型，可选 `info`、`success`、`warning`、`error`、`confirm`                                             | ToastType  | info   |
-| onOk       | 点击确定的回调                                                                                                             | () => void | -      |
+| onOk       | 点击确定的回调；返回 Promise 时关闭时机交给组件：resolve 后关窗，reject 只停 loading 并保持窗口打开                       | () => void \| PromiseLike | -      |
 | onCancel   | 点击取消的回调                                                                                                             | () => void | -      |
