@@ -20,10 +20,13 @@ describe("Tour Vue parity", () => {
     expect(document.querySelector(".k-tour-arrow")).not.toBeNull();
     expect(document.querySelector(".k-tour-focus")).not.toBeNull();
     expect(screen.getByRole("button", { name: "Close" }).querySelector(".k-icon")).not.toBeNull();
-    expect(document.head.textContent).toContain("overflow: hidden");
+    // 滚动锁改用引用计数版实现：class + 内联 overflow-y，而不是往 head 注入 <style>。
+    expect(document.body.classList.contains("k-scroll-locked")).toBe(true);
+    expect(document.body.style.overflowY).toBe("hidden");
 
     rerender(<Tour open={false} steps={steps} />);
-    await waitFor(() => expect(document.head.textContent).not.toContain("overflow: hidden"));
+    await waitFor(() => expect(document.body.classList.contains("k-scroll-locked")).toBe(false));
+    expect(document.body.style.overflowY).toBe("");
     target.remove();
   });
 });

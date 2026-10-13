@@ -11,6 +11,7 @@ import React, {
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import type { PlacementsType } from "../const/types";
+import { usePopupHost } from "../config/popup-host";
 import { setPlacement } from "../utils/placement";
 import { createFrameScheduler, isEventOutside } from "../utils/popup";
 import { getChildren, setRef } from "../utils/react-node";
@@ -217,6 +218,9 @@ const Popup = forwardRef<PopupRef, PopupProps>(function Popup(
     );
   }, [getTriggerElement, matchTriggerWidth, offset, panelOnly, placement, getAnchorPosition]);
   const requestFromEvent = useEffectEvent(request);
+  // 挂在 Modal / Drawer 里的浮层要跟着宿主一起关：面板是 teleported 到 body 的，
+  // 窗口摘掉了它不会自己走（Vue 侧同一处是 usePopupHost）。
+  usePopupHost(() => requestFromEvent(false, { reason: "host" }));
   const closeLater = () => {
     clearTimer();
     timer.current = setTimeout(

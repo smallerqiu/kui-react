@@ -48,47 +48,74 @@ export function hasRenderableContent(value: unknown): boolean {
   return true;
 }
 
-let scrollbarWidth: number | null = null;
+// 两个仓库这段实现逐字符相同（vue 在 utils/vnode.tsx，react 在 utils/react-node.tsx）：
+// 弹层可以叠着开，锁必须引用计数，否则先关的那一层会把还开着的层的滚动锁一起解掉。
+interface ScrollLockState {
+  count: number;
+  overflow: string;
+  overflowY: string;
+  width: string;
+  paddingRight: string;
+  scrollbarWidth: string;
+  hadLockClass: boolean;
+}
 
-const getScrollbarWidth = () => {
-  if (scrollbarWidth !== null) {
-    return scrollbarWidth;
-  }
+const scrollLocks = new Map<HTMLElement, ScrollLockState>();
 
-  const outer = document.createElement("div");
-  outer.style.visibility = "hidden";
-  outer.style.overflow = "scroll";
-  document.body.appendChild(outer);
-
-  const inner = document.createElement("div");
-  outer.appendChild(inner);
-
-  scrollbarWidth = outer.offsetWidth - outer.clientWidth;
-
-  outer.parentNode?.removeChild(outer);
-
-  return scrollbarWidth;
-};
-
-const injectedStyles = new Map<string, HTMLStyleElement>();
 export const toggleContainerScroll = (target: HTMLElement | null, lock: boolean) => {
-  if (!target || target != document.body) return;
-  if (lock) {
-    if (injectedStyles.has("body")) return;
-    const scrollbarWidth = getScrollbarWidth();
-    const styleElement = document.createElement("style");
-    styleElement.type = "text/css";
-    const styleContent = `html body { overflow: hidden !important; width: calc(100vw - ${scrollbarWidth}px); }`;
-    styleElement.appendChild(document.createTextNode(styleContent));
-    document.head.appendChild(styleElement);
+  if (!target || typeof window === "undefined") return;
 
-    injectedStyles.set("body", styleElement);
-  } else {
-    // 移除对应的样式
-    const styleElement = injectedStyles.get("body");
-    if (styleElement && styleElement.parentNode) {
-      styleElement.parentNode.removeChild(styleElement);
-      injectedStyles.delete("body");
+  if (lock) {
+    const current = scrollLocks.get(target);
+    if (current) {
+      current.count += 1;
+      return;
     }
+
+    const state: ScrollLockState = {
+      count: 1,
+      overflow: target.style.overflow,
+      overflowY: target.style.overflowY,
+      width: target.style.width,
+      paddingRight: target.style.paddingRight,
+      scrollbarWidth: target.style.getPropertyValue("--kui-scrollbar-width"),
+      hadLockClass: target.classList.contains("k-scroll-locked"),
+    };
+    const computedPadding = Number.parseFloat(window.getComputedStyle(target).paddingRight) || 0;
+    const scrollbarWidth =
+      target === document.body
+        ? Math.max(0, window.innerWidth - document.documentElement.clientWidth)
+        : Math.max(0, target.offsetWidth - target.clientWidth);
+
+    target.classList.add("k-scroll-locked");
+    target.style.setProperty("--kui-scrollbar-width", `${scrollbarWidth}px`);
+    if (target === document.body) {
+      target.style.overflowY = "hidden";
+      // target.style.width = `calc(100% - ${scrollbarWidth}px)`;
+    } else {
+      target.style.overflow = "hidden";
+      if (scrollbarWidth > 0) {
+        target.style.paddingRight = `${computedPadding + scrollbarWidth}px`;
+      }
+    }
+    scrollLocks.set(target, state);
+    return;
   }
+
+  const state = scrollLocks.get(target);
+  if (!state) return;
+  state.count -= 1;
+  if (state.count > 0) return;
+
+  target.style.overflow = state.overflow;
+  target.style.overflowY = state.overflowY;
+  target.style.width = state.width;
+  target.style.paddingRight = state.paddingRight;
+  if (state.scrollbarWidth) {
+    target.style.setProperty("--kui-scrollbar-width", state.scrollbarWidth);
+  } else {
+    target.style.removeProperty("--kui-scrollbar-width");
+  }
+  if (!state.hadLockClass) target.classList.remove("k-scroll-locked");
+  scrollLocks.delete(target);
 };

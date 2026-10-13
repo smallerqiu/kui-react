@@ -11,6 +11,7 @@ import React, {
 } from "react";
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
+import { usePopupHost } from "../config/popup-host";
 import { useDropdownContext } from "../dropdown/dropdown-context";
 import type { IconType } from "../icon";
 import Icon from "../icon";
@@ -101,6 +102,14 @@ export const SubMenu: React.FC<SubMenuProps> = ({
   );
   // Controlled opening must also instantiate a popup that has never been hovered.
   if (opened && popup && !rendered) setRendered(true);
+
+  // 宿主窗口（Modal / Drawer）关掉时子菜单要跟着收：面板是 teleported 到 body 的，
+  // 窗口摘了它还飘在页面上。只在真开着时才回调，免得给折叠态菜单白写一次 openKeys
+  // （Vue 侧 usePopupHost 同一处也是这个守卫）。
+  usePopupHost(() => {
+    if (!opened) return;
+    menuContext?.openKeysChange?.(currentKey, false, subMenuContext?.keyPath || []);
+  });
 
   const clearCurrentPopTimer = useCallback(() => {
     if (popTimer.current) clearTimeout(popTimer.current);
