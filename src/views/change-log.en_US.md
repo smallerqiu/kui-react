@@ -20,7 +20,6 @@ rm -rf node_modules/.vite
 
 - `Menu`: Added arrow-key / Enter / Esc navigation; `Escape` closes only the current level.
 - `Menu`: Popup lists are linked to their trigger through `aria-controls` / `aria-labelledby`, and a `horizontal` root declares `role="menubar"`.
-- `Menu`: Added the group and divider example, plus the usage rules for `MenuGroup` / `MenuDivider`, `mode` and `openKeys`.
 - `Menu`: Fixed the vertical sub-menu animation where the outer panel opened first and the content followed.
 - `Table`: Fixed missing header borders, sticky-row gaps, incomplete rounded corners and the blank block in the bottom-right corner when grouped headers are combined with fixed columns, `scroll.y` and `bordered`.
 - `Table`: Grouped headers are rendered as per-column cells with `aria-labelledby` relations; fixed-column widths and sticky offsets now match the Vue build.
@@ -38,10 +37,9 @@ rm -rf node_modules/.vite
 - `StatCard`: `shape` is narrowed to `square` / `round` to match the Vue build — a card is a clipped surface where `circle` would cut off content, so an inherited `circle` falls back to `round`.
 - `Table`: Columns without `width` now use 150 as their sizing baseline and the table takes a minimum width from the total of its columns (50 for the selection column), so a narrowing container scrolls horizontally instead of crushing columns and stacking header text vertically.
 - `Table`: Fixed the flicker at a borderline window width where a fixed-column shadow and the horizontal scrollbar kept triggering each other — a shadow is now drawn only while that side can still scroll.
-- `Tree`: Asynchronous `loadData` now requests a given node once; virtual scrolling restores the `k-tree-virtual-list` class so hover and selected rows fill the full row height.
+- `Tree`: Asynchronous `loadData` now requests a given node once; virtual scrolling no longer breaks the row height, so hover and selected rows fill it again.
 - `Tree`: Nodes without a `key` get a stable fallback key derived from their path in the tree, so expansion and check state no longer cross between nodes.
 - `Tree`: The expand-arrow button is removed from the tab order (`tabIndex={-1}`) so the tree keeps a single roving-tabindex `treeitem` and arrow keys no longer strand focus on an arrow.
-- `Tree`: The child-list DOM nesting now matches the Vue build, and five unreferenced rules were removed from the LESS.
 - `DropdownButton`: Fixed the split button's ellipsis trigger not opening the menu — click, right-click and the arrow keys all drive it now, the trigger carries `aria-haspopup="menu"` and `aria-expanded`, and `trigger` selects `hover` / `click` / `contextmenu`.
 - Popup components accept `destroyOnClose` (`Select`, `Cascader`, `TreeSelect`, `AutoComplete`, `Mentions`, `DatePicker`, `ColorPicker`, `Dropdown`, `DropdownButton`, `Tooltip`, `Poptip`, `Popconfirm`), defaulting to `true` so the panel content is discarded once the popup closes. This behaviour used to be fixed and could not be overridden; set it to `false` to keep unsubmitted form state inside the panel, at the cost of one hidden block per opened instance.
 - `Modal` now keeps the page from scrolling while it is open and cycles `Tab` inside the dialog instead of jumping to the content behind it; page scrolling is restored as soon as the window closes or is destroyed.
@@ -52,7 +50,6 @@ rm -rf node_modules/.vite
 - Reopening a window before its close animation finishes no longer makes it disappear on its own a moment later.
 - `Modal`: fixed `centered` having no effect, unit loss when `width` is passed as a string (same for `Drawer` `width` / `height`), and an empty title bar rendered when no `title` was passed. `ModalPanel` now takes the same arguments as the Vue build (always open, no mask).
 - Imperative dialogs (`modal.confirm()` and friends) accept any node for `title` / `content` instead of strings only, every instance exposes `show` / `hide` / `destroy`, and they inherit the theme, locale and popup container of the surrounding `ConfigProvider`.
-- `Modal` / `Drawer` docs now list the real defaults (`maskClosable`: `false` for dialogs and `true` for drawers, mask clicks only — `Esc` is gated by `escKey`) and explain that `onCancel` and `onClose` are two separate channels: the footer Cancel button fires only `onCancel`, while the mask, `Esc` and the close icon fire only `onClose`. To sync controlled state, listening to `onOpenChange` alone is enough — no need to update the value in both callbacks.
 - Controls placed against the edge of a `Modal` body no longer have half of their focus outline clipped; content width, position and the footer gap are unchanged.
 - `Tooltip` bubbles and their arrow indicator got their 1px border back, so the edge stays readable on dark backgrounds.
 
