@@ -11,20 +11,10 @@ export default function App() {
     [drawer, setDrawer] = useState(false);
   return (
     <>
-      <Modal
-        open={modal}
-        title="涉密核心资产审批"
-        onClose={() => setModal(false)}
-        onCancel={() => setModal(false)}
-      >
+      <Modal open={modal} title="涉密核心资产审批" onOpenChange={setModal}>
         <Watermark content={content}>{body}</Watermark>
       </Modal>
-      <Drawer
-        open={drawer}
-        title="涉密核心资产审批"
-        onClose={() => setDrawer(false)}
-        onCancel={() => setDrawer(false)}
-      >
+      <Drawer open={drawer} title="涉密核心资产审批" onOpenChange={setDrawer}>
         <Watermark content={content}>{body}</Watermark>
       </Drawer>
       <Space>

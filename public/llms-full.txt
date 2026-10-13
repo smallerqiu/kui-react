@@ -9805,14 +9805,16 @@ export default function App() {
         <Button onClick={() => setShow3((v) => !v)}>Click mask can't close</Button>
         <Button onClick={() => setShow4((v) => !v)}>No mask</Button>
       </Space>
-      <Drawer open={show} footer={false} onClose={() => setShow(false)}>
+      {/* 开合状态只从 `onOpenChange` 回写：点「取消」不走 `onClose`，
+          只挂 `onClose` 的话取消关掉的那次状态还停在 true，再点按钮就打不开了。 */}
+      <Drawer open={show} footer={false} onOpenChange={setShow}>
         <Body />
       </Drawer>
       <Drawer
         open={show2}
         width="30%"
         title="Width 30%"
-        onClose={() => setShow2(false)}
+        onOpenChange={setShow2}
         onOk={() => setShow2(false)}
       >
         <Body />
@@ -9821,7 +9823,7 @@ export default function App() {
         open={show3}
         title="Click mask to close"
         maskClosable={false}
-        onClose={() => setShow3(false)}
+        onOpenChange={setShow3}
         onOk={() => setShow3(false)}
       >
         <Body />
@@ -9830,7 +9832,7 @@ export default function App() {
         open={show4}
         title="No mask"
         mask={false}
-        onClose={() => setShow4(false)}
+        onOpenChange={setShow4}
         onOk={submit}
         loading={loading}
       >
@@ -9866,8 +9868,7 @@ export default function App() {
         title="What's your name?"
         cancelText="Cancel"
         okText="Ok"
-        onClose={() => setOpen(false)}
-        onCancel={() => setOpen(false)}
+        onOpenChange={setOpen}
         onOk={() => setOpen(false)}
       >
         My name is Qiu.
@@ -9924,10 +9925,11 @@ export default function App() {
         <Button onClick={() => setShow1(true)}>Drawer with forms</Button>
         <Button onClick={() => setShow2(true)}>Custom</Button>
       </Space>
+      {/* 开合状态只从 `onOpenChange` 回写；`onCancel` 留给"顺手清一下表单"这类副作用。 */}
       <Drawer
         open={show1}
         title="Forms valid"
-        onClose={() => setShow1(false)}
+        onOpenChange={setShow1}
         onOk={submit}
         onCancel={() => ref.current?.reset()}
       >
@@ -9964,7 +9966,7 @@ export default function App() {
       <Drawer
         open={show2}
         title="I am custom title"
-        onClose={() => setShow2(false)}
+        onOpenChange={setShow2}
         footer={
           <Space>
             <Button onClick={() => setShow2(false)}>Cancel</Button>
@@ -10022,7 +10024,7 @@ export default function App() {
         footer={false}
         placement={placement}
         target={ref}
-        onClose={() => setOpen(false)}
+        onOpenChange={setOpen}
       >
         <p>something ...</p>
         <p>something ...</p>
@@ -12049,9 +12051,11 @@ export default function App() {
       setVisible(false);
     }
   };
-  const cancel = () => {
-    ref.current?.reset();
-    setVisible(false);
+  // 开合状态只从 `onOpenChange` 回写（点「取消」不走 `onClose`）；
+  // 顺带在关掉那一刻清一次表单，X、Esc、取消三条路都覆盖到。
+  const changeOpen = (next: boolean) => {
+    setVisible(next);
+    if (!next) ref.current?.reset();
   };
   return (
     <div style={{ maxWidth: 512 }}>
@@ -12089,8 +12093,7 @@ export default function App() {
         open={visible}
         title="New User"
         width={450}
-        onClose={cancel}
-        onCancel={cancel}
+        onOpenChange={changeOpen}
         onOk={() => ref.current?.submit()}
       >
         <Form
@@ -13086,9 +13089,11 @@ export default function App() {
       setVisible(false);
     }
   };
-  const cancel = () => {
-    ref.current?.reset();
-    setVisible(false);
+  // 开合状态只从 `onOpenChange` 回写（点「取消」不走 `onClose`）；
+  // 顺带在关掉那一刻清一次表单，X、Esc、取消三条路都覆盖到。
+  const changeOpen = (next: boolean) => {
+    setVisible(next);
+    if (!next) ref.current?.reset();
   };
   return (
     <div style={{ maxWidth: 512 }}>
@@ -13126,8 +13131,7 @@ export default function App() {
         open={visible}
         title="New User"
         width={450}
-        onClose={cancel}
-        onCancel={cancel}
+        onOpenChange={changeOpen}
         onOk={() => ref.current?.submit()}
       >
         <Form
@@ -23018,11 +23022,12 @@ export default function App() {
       <Button onClick={() => setOverlayVisible(true)} type="primary">
         Click the overlay to close
       </Button>
+      {/* 开合状态只从 `onOpenChange` 回写：点「取消」不走 `onClose`，
+          只挂 `onClose` 的话取消关掉的那次状态还停在 true，再点按钮就打不开了。 */}
       <Modal
         title="Basic Modal"
         open={visible}
-        onClose={() => setVisible(false)}
-        onCancel={() => setVisible(false)}
+        onOpenChange={setVisible}
         onOk={() => setVisible(false)}
       >
         <p>This is the content of a basic modal.</p>
@@ -23032,8 +23037,7 @@ export default function App() {
         title="Basic Modal"
         open={overlayVisible}
         maskClosable
-        onClose={() => setOverlayVisible(false)}
-        onCancel={() => setOverlayVisible(false)}
+        onOpenChange={setOverlayVisible}
         onOk={() => setOverlayVisible(false)}
       >
         <p>This is the content of a basic modal.</p>
@@ -23057,7 +23061,6 @@ export default function App() {
   const close = () => {
     setOpen(null);
     setLoading(false);
-    if (timer.current) clearTimeout(timer.current);
   };
   const submit = () => {
     setLoading(true);
@@ -23066,11 +23069,15 @@ export default function App() {
       setOpen(null);
     }, 2000);
   };
+  // 开合状态只从 `onOpenChange` 回写：点「取消」不走 `onClose`，
+  // 只挂 `onClose` 的话取消关掉的那次状态还停在原地，再点按钮就打不开了。
+  const openChange = (id: number) => (next: boolean) => (next ? setOpen(id) : close());
+  // 组件卸载时把还没跑完的异步保存停掉。
   useEffect(
     () => () => {
       if (timer.current) clearTimeout(timer.current);
     },
-    []
+    [],
   );
   return (
     <Space vertical>
@@ -23096,8 +23103,7 @@ export default function App() {
         title="Width 300px"
         open={open === 1}
         width={300}
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(1)}
         onOk={close}
       >
         <p>content</p>
@@ -23106,8 +23112,7 @@ export default function App() {
         title="Width 50%"
         open={open === 5}
         width="50%"
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(5)}
         onOk={close}
       >
         <p>content</p>
@@ -23116,8 +23121,7 @@ export default function App() {
         title="calc(100% - 800px)"
         open={open === 6}
         width="calc(100% - 800px)"
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(6)}
         onOk={close}
       >
         <p>content</p>
@@ -23125,7 +23129,7 @@ export default function App() {
       <Modal
         title="Custom footer"
         open={open === 2}
-        onClose={close}
+        onOpenChange={openChange(2)}
         footer={
           <Button icon={Save} onClick={close} type="primary">
             Save
@@ -23139,8 +23143,7 @@ export default function App() {
         open={open === 3}
         okText="Ok"
         cancelText="Cancel"
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(3)}
         onOk={close}
       >
         <p>Yes, I'm fine!</p>
@@ -23149,8 +23152,7 @@ export default function App() {
         title="Submit forms"
         open={open === 4}
         loading={loading}
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(4)}
         onOk={submit}
       >
         <p>
@@ -23173,6 +23175,9 @@ the people loved them so much;`;
 export default function App() {
   const [open, setOpen] = useState<number | null>(null);
   const close = () => setOpen(null);
+  // 受控值只从 `onOpenChange` 这一条通道回写：点「取消」不会走 `onClose`，
+  // 只挂 `onClose` 的话取消关掉的那次状态还停在原地，再点按钮就打不开了。
+  const openChange = (id: number) => (next: boolean) => setOpen(next ? id : null);
   return (
     <Space vertical>
       <Button onClick={() => setOpen(1)} type="primary">
@@ -23198,28 +23203,19 @@ export default function App() {
         open={open === 1}
         width="50%"
         draggable
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(1)}
         onOk={close}
       >
         {text}
       </Modal>
-      <Modal
-        title="Centered"
-        open={open === 2}
-        centered
-        onClose={close}
-        onCancel={close}
-        onOk={close}
-      >
+      <Modal title="Centered" open={open === 2} centered onOpenChange={openChange(2)} onOk={close}>
         {text}
       </Modal>
       <Modal
         title="Top 200px"
         open={open === 3}
         top={200}
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(3)}
         onOk={close}
       >
         {text}
@@ -23228,8 +23224,7 @@ export default function App() {
         title="Maximized"
         open={open === 4}
         maximized
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(4)}
         onOk={close}
       >
         {text}
@@ -23239,8 +23234,7 @@ export default function App() {
         open={open === 5}
         mask={false}
         maskClosable={false}
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(5)}
         onOk={close}
       >
         {text}
@@ -23249,8 +23243,7 @@ export default function App() {
         title="No footer"
         open={open === 6}
         footer={false}
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(6)}
         onOk={close}
       >
         {text}
@@ -23631,11 +23624,12 @@ export default function App() {
       <Button onClick={() => setOverlayVisible(true)} type="primary">
         Click the overlay to close
       </Button>
+      {/* 开合状态只从 `onOpenChange` 回写：点「取消」不走 `onClose`，
+          只挂 `onClose` 的话取消关掉的那次状态还停在 true，再点按钮就打不开了。 */}
       <Modal
         title="Basic Modal"
         open={visible}
-        onClose={() => setVisible(false)}
-        onCancel={() => setVisible(false)}
+        onOpenChange={setVisible}
         onOk={() => setVisible(false)}
       >
         <p>This is the content of a basic modal.</p>
@@ -23645,8 +23639,7 @@ export default function App() {
         title="Basic Modal"
         open={overlayVisible}
         maskClosable
-        onClose={() => setOverlayVisible(false)}
-        onCancel={() => setOverlayVisible(false)}
+        onOpenChange={setOverlayVisible}
         onOk={() => setOverlayVisible(false)}
       >
         <p>This is the content of a basic modal.</p>
@@ -23670,7 +23663,6 @@ export default function App() {
   const close = () => {
     setOpen(null);
     setLoading(false);
-    if (timer.current) clearTimeout(timer.current);
   };
   const submit = () => {
     setLoading(true);
@@ -23679,11 +23671,15 @@ export default function App() {
       setOpen(null);
     }, 2000);
   };
+  // 开合状态只从 `onOpenChange` 回写：点「取消」不走 `onClose`，
+  // 只挂 `onClose` 的话取消关掉的那次状态还停在原地，再点按钮就打不开了。
+  const openChange = (id: number) => (next: boolean) => (next ? setOpen(id) : close());
+  // 组件卸载时把还没跑完的异步保存停掉。
   useEffect(
     () => () => {
       if (timer.current) clearTimeout(timer.current);
     },
-    []
+    [],
   );
   return (
     <Space vertical>
@@ -23709,8 +23705,7 @@ export default function App() {
         title="Width 300px"
         open={open === 1}
         width={300}
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(1)}
         onOk={close}
       >
         <p>content</p>
@@ -23719,8 +23714,7 @@ export default function App() {
         title="Width 50%"
         open={open === 5}
         width="50%"
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(5)}
         onOk={close}
       >
         <p>content</p>
@@ -23729,8 +23723,7 @@ export default function App() {
         title="calc(100% - 800px)"
         open={open === 6}
         width="calc(100% - 800px)"
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(6)}
         onOk={close}
       >
         <p>content</p>
@@ -23738,7 +23731,7 @@ export default function App() {
       <Modal
         title="Custom footer"
         open={open === 2}
-        onClose={close}
+        onOpenChange={openChange(2)}
         footer={
           <Button icon={Save} onClick={close} type="primary">
             Save
@@ -23752,8 +23745,7 @@ export default function App() {
         open={open === 3}
         okText="Ok"
         cancelText="Cancel"
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(3)}
         onOk={close}
       >
         <p>Yes, I'm fine!</p>
@@ -23762,8 +23754,7 @@ export default function App() {
         title="Submit forms"
         open={open === 4}
         loading={loading}
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(4)}
         onOk={submit}
       >
         <p>
@@ -23786,6 +23777,9 @@ the people loved them so much;`;
 export default function App() {
   const [open, setOpen] = useState<number | null>(null);
   const close = () => setOpen(null);
+  // 受控值只从 `onOpenChange` 这一条通道回写：点「取消」不会走 `onClose`，
+  // 只挂 `onClose` 的话取消关掉的那次状态还停在原地，再点按钮就打不开了。
+  const openChange = (id: number) => (next: boolean) => setOpen(next ? id : null);
   return (
     <Space vertical>
       <Button onClick={() => setOpen(1)} type="primary">
@@ -23811,28 +23805,19 @@ export default function App() {
         open={open === 1}
         width="50%"
         draggable
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(1)}
         onOk={close}
       >
         {text}
       </Modal>
-      <Modal
-        title="Centered"
-        open={open === 2}
-        centered
-        onClose={close}
-        onCancel={close}
-        onOk={close}
-      >
+      <Modal title="Centered" open={open === 2} centered onOpenChange={openChange(2)} onOk={close}>
         {text}
       </Modal>
       <Modal
         title="Top 200px"
         open={open === 3}
         top={200}
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(3)}
         onOk={close}
       >
         {text}
@@ -23841,8 +23826,7 @@ export default function App() {
         title="Maximized"
         open={open === 4}
         maximized
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(4)}
         onOk={close}
       >
         {text}
@@ -23852,8 +23836,7 @@ export default function App() {
         open={open === 5}
         mask={false}
         maskClosable={false}
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(5)}
         onOk={close}
       >
         {text}
@@ -23862,8 +23845,7 @@ export default function App() {
         title="No footer"
         open={open === 6}
         footer={false}
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(6)}
         onOk={close}
       >
         {text}
@@ -42853,20 +42835,10 @@ export default function App() {
     [drawer, setDrawer] = useState(false);
   return (
     <>
-      <Modal
-        open={modal}
-        title="涉密核心资产审批"
-        onClose={() => setModal(false)}
-        onCancel={() => setModal(false)}
-      >
+      <Modal open={modal} title="涉密核心资产审批" onOpenChange={setModal}>
         <Watermark content={content}>{body}</Watermark>
       </Modal>
-      <Drawer
-        open={drawer}
-        title="涉密核心资产审批"
-        onClose={() => setDrawer(false)}
-        onCancel={() => setDrawer(false)}
-      >
+      <Drawer open={drawer} title="涉密核心资产审批" onOpenChange={setDrawer}>
         <Watermark content={content}>{body}</Watermark>
       </Drawer>
       <Space>

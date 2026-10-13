@@ -21,8 +21,7 @@ export default function App() {
         title="What's your name?"
         cancelText="Cancel"
         okText="Ok"
-        onClose={() => setOpen(false)}
-        onCancel={() => setOpen(false)}
+        onOpenChange={setOpen}
         onOk={() => setOpen(false)}
       >
         My name is Qiu.

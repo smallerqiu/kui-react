@@ -38,9 +38,11 @@ export default function App() {
       setVisible(false);
     }
   };
-  const cancel = () => {
-    ref.current?.reset();
-    setVisible(false);
+  // 开合状态只从 `onOpenChange` 回写（点「取消」不走 `onClose`）；
+  // 顺带在关掉那一刻清一次表单，X、Esc、取消三条路都覆盖到。
+  const changeOpen = (next: boolean) => {
+    setVisible(next);
+    if (!next) ref.current?.reset();
   };
   return (
     <div style={{ maxWidth: 512 }}>
@@ -78,8 +80,7 @@ export default function App() {
         open={visible}
         title="New User"
         width={450}
-        onClose={cancel}
-        onCancel={cancel}
+        onOpenChange={changeOpen}
         onOk={() => ref.current?.submit()}
       >
         <Form

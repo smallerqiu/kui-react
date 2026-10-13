@@ -38,7 +38,7 @@ export default function App() {
         footer={false}
         placement={placement}
         target={ref}
-        onClose={() => setOpen(false)}
+        onOpenChange={setOpen}
       >
         <p>something ...</p>
         <p>something ...</p>

@@ -43,10 +43,11 @@ export default function App() {
         <Button onClick={() => setShow1(true)}>Drawer with forms</Button>
         <Button onClick={() => setShow2(true)}>Custom</Button>
       </Space>
+      {/* 开合状态只从 `onOpenChange` 回写；`onCancel` 留给"顺手清一下表单"这类副作用。 */}
       <Drawer
         open={show1}
         title="Forms valid"
-        onClose={() => setShow1(false)}
+        onOpenChange={setShow1}
         onOk={submit}
         onCancel={() => ref.current?.reset()}
       >
@@ -83,7 +84,7 @@ export default function App() {
       <Drawer
         open={show2}
         title="I am custom title"
-        onClose={() => setShow2(false)}
+        onOpenChange={setShow2}
         footer={
           <Space>
             <Button onClick={() => setShow2(false)}>Cancel</Button>

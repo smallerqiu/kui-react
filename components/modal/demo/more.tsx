@@ -7,6 +7,9 @@ the people loved them so much;`;
 export default function App() {
   const [open, setOpen] = useState<number | null>(null);
   const close = () => setOpen(null);
+  // 受控值只从 `onOpenChange` 这一条通道回写：点「取消」不会走 `onClose`，
+  // 只挂 `onClose` 的话取消关掉的那次状态还停在原地，再点按钮就打不开了。
+  const openChange = (id: number) => (next: boolean) => setOpen(next ? id : null);
   return (
     <Space vertical>
       <Button onClick={() => setOpen(1)} type="primary">
@@ -32,28 +35,19 @@ export default function App() {
         open={open === 1}
         width="50%"
         draggable
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(1)}
         onOk={close}
       >
         {text}
       </Modal>
-      <Modal
-        title="Centered"
-        open={open === 2}
-        centered
-        onClose={close}
-        onCancel={close}
-        onOk={close}
-      >
+      <Modal title="Centered" open={open === 2} centered onOpenChange={openChange(2)} onOk={close}>
         {text}
       </Modal>
       <Modal
         title="Top 200px"
         open={open === 3}
         top={200}
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(3)}
         onOk={close}
       >
         {text}
@@ -62,8 +56,7 @@ export default function App() {
         title="Maximized"
         open={open === 4}
         maximized
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(4)}
         onOk={close}
       >
         {text}
@@ -73,8 +66,7 @@ export default function App() {
         open={open === 5}
         mask={false}
         maskClosable={false}
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(5)}
         onOk={close}
       >
         {text}
@@ -83,8 +75,7 @@ export default function App() {
         title="No footer"
         open={open === 6}
         footer={false}
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(6)}
         onOk={close}
       >
         {text}

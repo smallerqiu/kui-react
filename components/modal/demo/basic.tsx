@@ -12,11 +12,12 @@ export default function App() {
       <Button onClick={() => setOverlayVisible(true)} type="primary">
         Click the overlay to close
       </Button>
+      {/* 开合状态只从 `onOpenChange` 回写：点「取消」不走 `onClose`，
+          只挂 `onClose` 的话取消关掉的那次状态还停在 true，再点按钮就打不开了。 */}
       <Modal
         title="Basic Modal"
         open={visible}
-        onClose={() => setVisible(false)}
-        onCancel={() => setVisible(false)}
+        onOpenChange={setVisible}
         onOk={() => setVisible(false)}
       >
         <p>This is the content of a basic modal.</p>
@@ -26,8 +27,7 @@ export default function App() {
         title="Basic Modal"
         open={overlayVisible}
         maskClosable
-        onClose={() => setOverlayVisible(false)}
-        onCancel={() => setOverlayVisible(false)}
+        onOpenChange={setOverlayVisible}
         onOk={() => setOverlayVisible(false)}
       >
         <p>This is the content of a basic modal.</p>

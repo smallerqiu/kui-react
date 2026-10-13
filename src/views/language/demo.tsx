@@ -102,8 +102,7 @@ export default function LanguageDemo() {
               <Modal
                 open={visible}
                 title="Locale preview"
-                onClose={() => setVisible(false)}
-                onCancel={() => setVisible(false)}
+                onOpenChange={setVisible}
                 onOk={() => setVisible(false)}
               >
                 The buttons and other built-in text follow the current locale.

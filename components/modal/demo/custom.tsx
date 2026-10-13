@@ -9,7 +9,6 @@ export default function App() {
   const close = () => {
     setOpen(null);
     setLoading(false);
-    if (timer.current) clearTimeout(timer.current);
   };
   const submit = () => {
     setLoading(true);
@@ -18,11 +17,15 @@ export default function App() {
       setOpen(null);
     }, 2000);
   };
+  // 开合状态只从 `onOpenChange` 回写：点「取消」不走 `onClose`，
+  // 只挂 `onClose` 的话取消关掉的那次状态还停在原地，再点按钮就打不开了。
+  const openChange = (id: number) => (next: boolean) => (next ? setOpen(id) : close());
+  // 组件卸载时把还没跑完的异步保存停掉。
   useEffect(
     () => () => {
       if (timer.current) clearTimeout(timer.current);
     },
-    []
+    [],
   );
   return (
     <Space vertical>
@@ -48,8 +51,7 @@ export default function App() {
         title="Width 300px"
         open={open === 1}
         width={300}
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(1)}
         onOk={close}
       >
         <p>content</p>
@@ -58,8 +60,7 @@ export default function App() {
         title="Width 50%"
         open={open === 5}
         width="50%"
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(5)}
         onOk={close}
       >
         <p>content</p>
@@ -68,8 +69,7 @@ export default function App() {
         title="calc(100% - 800px)"
         open={open === 6}
         width="calc(100% - 800px)"
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(6)}
         onOk={close}
       >
         <p>content</p>
@@ -77,7 +77,7 @@ export default function App() {
       <Modal
         title="Custom footer"
         open={open === 2}
-        onClose={close}
+        onOpenChange={openChange(2)}
         footer={
           <Button icon={Save} onClick={close} type="primary">
             Save
@@ -91,8 +91,7 @@ export default function App() {
         open={open === 3}
         okText="Ok"
         cancelText="Cancel"
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(3)}
         onOk={close}
       >
         <p>Yes, I'm fine!</p>
@@ -101,8 +100,7 @@ export default function App() {
         title="Submit forms"
         open={open === 4}
         loading={loading}
-        onClose={close}
-        onCancel={close}
+        onOpenChange={openChange(4)}
         onOk={submit}
       >
         <p>

@@ -28,14 +28,16 @@ export default function App() {
         <Button onClick={() => setShow3((v) => !v)}>Click mask can't close</Button>
         <Button onClick={() => setShow4((v) => !v)}>No mask</Button>
       </Space>
-      <Drawer open={show} footer={false} onClose={() => setShow(false)}>
+      {/* 开合状态只从 `onOpenChange` 回写：点「取消」不走 `onClose`，
+          只挂 `onClose` 的话取消关掉的那次状态还停在 true，再点按钮就打不开了。 */}
+      <Drawer open={show} footer={false} onOpenChange={setShow}>
         <Body />
       </Drawer>
       <Drawer
         open={show2}
         width="30%"
         title="Width 30%"
-        onClose={() => setShow2(false)}
+        onOpenChange={setShow2}
         onOk={() => setShow2(false)}
       >
         <Body />
@@ -44,7 +46,7 @@ export default function App() {
         open={show3}
         title="Click mask to close"
         maskClosable={false}
-        onClose={() => setShow3(false)}
+        onOpenChange={setShow3}
         onOk={() => setShow3(false)}
       >
         <Body />
@@ -53,7 +55,7 @@ export default function App() {
         open={show4}
         title="No mask"
         mask={false}
-        onClose={() => setShow4(false)}
+        onOpenChange={setShow4}
         onOk={submit}
         loading={loading}
       >
