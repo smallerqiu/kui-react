@@ -1,4 +1,3 @@
-import { useValue } from "../utils/use-value";
 import clsx from "clsx";
 import { X } from "kui-icons";
 import React, {
@@ -14,9 +13,13 @@ import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import { Button } from "../button";
 import { ConfigContext } from "../config/config-context";
+import { PopupHostContext, usePopupHostScope } from "../config/popup-host";
 import type { DrawerPlacementsType } from "../const/types";
 import zhCN from "../locale/zh-CN";
+import { toCssLength } from "../utils/css";
+import { pushOverlay, type OverlayHandle } from "../utils/overlay-stack";
 import { toggleContainerScroll } from "../utils/react-node";
+import { useValue } from "../utils/use-value";
 
 export type DrawerTarget =
   HTMLElement | RefObject<HTMLElement | null> | (() => HTMLElement | null | undefined);
@@ -36,6 +39,7 @@ export interface DrawerProps {
   mask?: boolean;
   loading?: boolean;
   escKey?: boolean;
+  destroyOnClose?: boolean;
   onOk?: () => void;
   onCancel?: () => void;
   onClose?: () => void;
@@ -71,6 +75,7 @@ const Drawer: React.FC<DrawerProps> = ({
   mask = true,
   loading = false,
   escKey = true,
+  destroyOnClose = true,
   onOk,
   onCancel,
   onClose,
@@ -79,6 +84,8 @@ const Drawer: React.FC<DrawerProps> = ({
 }) => {
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
+  // 抽屉里 teleported 出去的浮层登记在这里，关抽屉时一起收掉（和 Modal 同一个作用域机制）。
+  const { register: registerHostedPopup, closeAll: closeHostedPopups } = usePopupHostScope();
   const [innerOpen, setInnerOpen] = useValue(open, (next) => next ?? false);
   const currentOpen = innerOpen;
 
@@ -87,6 +94,8 @@ const Drawer: React.FC<DrawerProps> = ({
   const [targetEl, setTargetEl] = useState<HTMLElement | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
+  const overlayRef = useRef<OverlayHandle | null>(null);
+  const hideTimerRef = useRef<NodeJS.Timeout | null>(null);
   const setWrapRef = useCallback(
     (node: HTMLDivElement | null) => {
       wrapRef.current = node;
@@ -110,19 +119,40 @@ const Drawer: React.FC<DrawerProps> = ({
     return () => cancelAnimationFrame(frame);
   }, [currentOpen, resolveTarget]);
 
-  const toggle = useCallback((value: boolean) => {
-    if (value) {
-      previousFocus.current = document.activeElement as HTMLElement | null;
-      setRendered(true);
-      setTimeout(() => {
-        setVisible(true);
-        wrapRef.current?.focus();
-      }, 0);
-    } else {
-      setVisible(false);
-      previousFocus.current?.focus();
-    }
+  // 退场倒计时：300ms 后摘掉 DOM，默认关一次就销毁面板内容，重开时重新挂载。
+  // 期间重开必须把它取消掉，否则面板刚亮起来就被上一次关闭摘走。
+  const cancelHide = useCallback(() => {
+    if (hideTimerRef.current === null) return;
+    clearTimeout(hideTimerRef.current);
+    hideTimerRef.current = null;
   }, []);
+
+  const toggle = useCallback(
+    (value: boolean) => {
+      if (value) {
+        cancelHide();
+        previousFocus.current = document.activeElement as HTMLElement | null;
+        setRendered(true);
+        setTimeout(() => {
+          setVisible(true);
+          wrapRef.current?.focus();
+        }, 0);
+      } else {
+        // 先把抽屉里的浮层收掉，再动焦点：下拉挂在 body 上，抽屉关了它还亮着。
+        closeHostedPopups();
+        setVisible(false);
+        previousFocus.current?.focus();
+        cancelHide();
+        hideTimerRef.current = setTimeout(() => {
+          hideTimerRef.current = null;
+          if (destroyOnClose) setRendered(false);
+        }, 300);
+      }
+    },
+    [cancelHide, closeHostedPopups, destroyOnClose],
+  );
+
+  useEffect(() => cancelHide, [cancelHide]);
 
   const requestOpen = useCallback(
     (next: boolean) => {
@@ -137,11 +167,25 @@ const Drawer: React.FC<DrawerProps> = ({
     onClose?.();
   }, [onClose, requestOpen]);
 
+  // 进遮罩层队列：叠在 Drawer 上的 Modal 开着时，Escape 归 Modal。
+  useEffect(() => {
+    if (!rendered || !visible) return;
+    const handle = pushOverlay();
+    overlayRef.current = handle;
+    return () => {
+      handle.release();
+      if (overlayRef.current === handle) overlayRef.current = null;
+    };
+  }, [rendered, visible]);
+
   const escToClose = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
+      if (e.key !== "Escape" || e.defaultPrevented) return;
+      if (!visible) return;
+      if (!overlayRef.current?.isTop()) return;
+      close();
     },
-    [close],
+    [close, visible],
   );
 
   useEffect(() => {
@@ -200,10 +244,10 @@ const Drawer: React.FC<DrawerProps> = ({
 
   const drawerStyle: React.CSSProperties = {};
   if (placement === "left" || placement === "right") {
-    drawerStyle.width = typeof width === "number" ? `${width}px` : width;
+    drawerStyle.width = toCssLength(width);
   }
   if (placement === "top" || placement === "bottom") {
-    drawerStyle.height = typeof height === "number" ? `${height}px` : height;
+    drawerStyle.height = toCssLength(height);
   }
 
   const classes = clsx("k-drawer", `k-drawer-${placement}`, {
@@ -216,8 +260,16 @@ const Drawer: React.FC<DrawerProps> = ({
 
   const drawerEl = (
     <div className={classes}>
+      {/* unmountOnExit 跟着 destroyOnClose：关掉后是留一份隐藏 DOM（Vue 侧的 v-show）还是直接摘掉，
+          两个仓库得是同一个开关说了算，否则 destroyOnClose=false 保不住抽屉里填过的表单状态。 */}
       {mask && (
-        <Transition name="k-drawer-fade" show={visible} timeout={400} appear>
+        <Transition
+          name="k-drawer-fade"
+          show={visible}
+          timeout={400}
+          appear
+          unmountOnExit={destroyOnClose}
+        >
           <div
             className={clsx("k-drawer-mask", { "k-drawer-mask-to-body": isBody })}
             onClick={maskClosable ? close : undefined}
@@ -225,7 +277,13 @@ const Drawer: React.FC<DrawerProps> = ({
         </Transition>
       )}
       <div ref={setWrapRef} className="k-drawer-wrap" tabIndex={-1}>
-        <Transition show={visible} name={`k-drawer-${placement}`} timeout={200} appear>
+        <Transition
+          show={visible}
+          name={`k-drawer-${placement}`}
+          timeout={200}
+          appear
+          unmountOnExit={destroyOnClose}
+        >
           <div className="k-drawer-box" style={drawerStyle}>
             <div className="k-drawer-content">
               <div className="k-drawer-header">
@@ -241,7 +299,12 @@ const Drawer: React.FC<DrawerProps> = ({
     </div>
   );
 
-  return <Teleport to={targetEl}>{drawerEl}</Teleport>;
+  // Provider 不落 DOM，只给这棵树圈出浮层作用域。
+  return (
+    <Teleport to={targetEl}>
+      <PopupHostContext.Provider value={registerHostedPopup}>{drawerEl}</PopupHostContext.Provider>
+    </Teleport>
+  );
 };
 
 export default Drawer;

@@ -6,8 +6,13 @@ import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import { Button } from "../button";
 import { ConfigContext } from "../config/config-context";
+import { PopupHostContext, usePopupHostScope } from "../config/popup-host";
 import { getMousePoint } from "../config/context";
 import zhCN from "../locale/zh-CN";
+import { toCssLength } from "../utils/css";
+import { createFocusTrap } from "../utils/focus";
+import { pushOverlay, type OverlayHandle } from "../utils/overlay-stack";
+import { toggleContainerScroll } from "../utils/react-node";
 
 export interface ModalProps {
   className?: string;
@@ -27,6 +32,7 @@ export interface ModalProps {
   footer?: boolean | React.ReactNode;
   escKey?: boolean;
   panelOnly?: boolean;
+  destroyOnClose?: boolean;
   onClose?: () => void;
   onOk?: () => void;
   onCancel?: () => void;
@@ -54,6 +60,7 @@ const Modal: React.FC<ModalProps> = ({
   footer = true,
   escKey = true,
   panelOnly = false,
+  destroyOnClose = true,
   onClose,
   onOk,
   onCancel,
@@ -64,13 +71,15 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   const config = useContext(ConfigContext);
   const locale = config?.locale || zhCN;
+  // 窗口内 teleported 出去的浮层（下拉、气泡、子菜单）登记在这里，关窗时一起收掉。
+  const { register: registerHostedPopup, closeAll: closeHostedPopups } = usePopupHostScope();
   const [innerOpen, setInnerOpen] = useValue(open, (next) => next ?? false);
   const currentOpen = innerOpen;
 
   // Vue's v-show equivalent: always rendered but controlled by visibility
-  const [visible, setVisible] = useState(false);
-  const [showInner, setShowInner] = useState(false);
-  const [rendered, setRendered] = useState(false);
+  const [visible, setVisible] = useState(panelOnly);
+  const [showInner, setShowInner] = useState(panelOnly);
+  const [rendered, setRendered] = useState(panelOnly);
   const [leftPos, setLeftPos] = useState(0);
   const [topPos, setTopPos] = useState(top);
   const [isMousePressed, setIsMousePressed] = useState(false);
@@ -79,13 +88,35 @@ const Modal: React.FC<ModalProps> = ({
   const refModal = useRef<HTMLDivElement>(null);
   const refWrap = useRef<HTMLDivElement>(null);
   const refHeader = useRef<HTMLDivElement>(null);
-  const previousActiveRef = useRef<HTMLElement | null>(null);
   const hideTimerRef = useRef<NodeJS.Timeout | null>(null);
+  // 焦点陷阱是命令式的 DOM 对象，不能在建的时候读 ref（react-hooks/refs 禁止渲染期取 ref 值），
+  // 所以放进 ref、在 effect/事件里创建与使用；handleKeyDown 是个稳定的转发壳。
+  const focusTrapRef = useRef<ReturnType<typeof createFocusTrap> | null>(null);
+  const handleModalKeydown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
+    focusTrapRef.current?.handleKeydown(event.nativeEvent);
+  }, []);
+  const scrollLockedRef = useRef(false);
+  const overlayRef = useRef<OverlayHandle | null>(null);
+  const updateScrollLock = useCallback(
+    (lock: boolean) => {
+      if (panelOnly || scrollLockedRef.current === lock) return;
+      toggleContainerScroll(typeof document === "undefined" ? null : document.body, lock);
+      scrollLockedRef.current = lock;
+    },
+    [panelOnly],
+  );
 
   const getOffset = (el: HTMLElement) => ({
     left: el.offsetLeft,
     top: el.offsetTop,
   });
+
+  // 退场倒计时（toggle 里）：期间重开必须把它取消掉，否则窗口刚亮起来就被上一次关闭摘走。
+  const cancelHide = useCallback(() => {
+    if (hideTimerRef.current === null) return;
+    clearTimeout(hideTimerRef.current);
+    hideTimerRef.current = null;
+  }, []);
 
   const updateOrigin = useCallback(() => {
     if (refModal.current) {
@@ -98,21 +129,21 @@ const Modal: React.FC<ModalProps> = ({
   // Core toggle logic - mirrors Vue's toggle function
   const toggle = useCallback(
     (value: boolean) => {
+      // 打开请求一律先取消上一次关闭留下的退场倒计时，否则窗口刚亮起来就被摘掉。
+      if (value) cancelHide();
+
       if (!rendered && value) {
         setRendered(true);
         return;
       }
 
       if (value) {
-        if (document.activeElement instanceof HTMLElement) {
-          previousActiveRef.current = document.activeElement;
-        }
+        updateScrollLock(true);
         // Reset position when opening
         setLeftPos(0);
         setTopPos(top);
         setVisible(true);
         setShowInner(true);
-        refWrap.current?.focus();
         setTimeout(() => {
           if (draggable && refModal.current) {
             setLeftPos((document.body.offsetWidth - refModal.current.offsetWidth) / 2);
@@ -121,14 +152,32 @@ const Modal: React.FC<ModalProps> = ({
         }, 100);
       } else {
         // Closing: immediate hide mask, delayed hide content
+        // 先把窗口里的浮层收掉：下拉是 teleported 到 body 的，窗口走了它们不会自己消失。
+        closeHostedPopups();
+        focusTrapRef.current?.deactivate();
+        updateScrollLock(false);
         setVisible(false);
-        if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+        cancelHide();
         hideTimerRef.current = setTimeout(() => {
+          hideTimerRef.current = null;
           setShowInner(false);
+          // 退场动画跑完再摘 DOM：默认关一次就销毁面板内容，重开时重新挂载。
+          // panelOnly 是宿主浮层里的面板，摘掉等于把别人的内容一起清了，所以不销毁。
+          if (destroyOnClose && !panelOnly) setRendered(false);
         }, 300);
       }
     },
-    [draggable, updateOrigin, rendered, top],
+    [
+      cancelHide,
+      closeHostedPopups,
+      draggable,
+      updateOrigin,
+      rendered,
+      top,
+      updateScrollLock,
+      destroyOnClose,
+      panelOnly,
+    ],
   );
 
   const requestOpen = useCallback(
@@ -156,9 +205,33 @@ const Modal: React.FC<ModalProps> = ({
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+      cancelHide();
+      // 还锁着就被卸载的话要把锁解掉，否则页面再也滚不动了。
+      if (scrollLockedRef.current) {
+        toggleContainerScroll(document.body, false);
+        scrollLockedRef.current = false;
+      }
+      focusTrapRef.current?.deactivate();
     };
-  }, []);
+  }, [cancelHide]);
+
+  // 面板挂上之后再抓焦点：陷阱要等 refModal 有节点才建，activate 内部只排一个微任务。
+  useEffect(() => {
+    if (panelOnly || !rendered || !visible) return;
+    if (!focusTrapRef.current) focusTrapRef.current = createFocusTrap(() => refModal.current);
+    focusTrapRef.current.activate();
+  }, [panelOnly, rendered, visible]);
+
+  // 进遮罩层队列：叠着开时 Escape 只该关掉最上面那一层。
+  useEffect(() => {
+    if (panelOnly || !rendered || !visible) return;
+    const handle = pushOverlay();
+    overlayRef.current = handle;
+    return () => {
+      handle.release();
+      if (overlayRef.current === handle) overlayRef.current = null;
+    };
+  }, [panelOnly, rendered, visible]);
 
   const close = useCallback(() => {
     requestOpen(false);
@@ -167,9 +240,13 @@ const Modal: React.FC<ModalProps> = ({
 
   const escToClose = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
+      if (e.key !== "Escape" || e.defaultPrevented) return;
+      // 已经关着的窗口不该响应 Escape，也不该在被别的层压在下面时抢走这次按键。
+      if (!visible) return;
+      if (!overlayRef.current?.isTop()) return;
+      close();
     },
-    [close],
+    [close, visible],
   );
 
   useEffect(() => {
@@ -186,8 +263,6 @@ const Modal: React.FC<ModalProps> = ({
     onCancel?.();
   };
   const afterClose = () => {
-    previousActiveRef.current?.focus();
-    previousActiveRef.current = null;
     onAfterClose?.();
   };
 
@@ -265,27 +340,14 @@ const Modal: React.FC<ModalProps> = ({
         {showClose && (
           <Button icon={X} size="small" onClick={close} className="k-modal-close" type="text" />
         )}
-        {title !== undefined && (
+        {/* title 不给就不该有 header：空标题也会撑出一条带边框的横条 */}
+        {title != null && (
           <div className="k-modal-header" ref={refHeader}>
             <div className="k-modal-header-inner">{title}</div>
           </div>
         )}
         <div className="k-modal-body">{children}</div>
-        {footer !== false && <div className="k-modal-footer">{footerContent}</div>}
-      </div>
-    );
-  }
-
-  // panelOnly mode
-  if (panelOnly) {
-    return (
-      <div
-        className={clsx("k-modal", "k-modal-panel", className)}
-        style={{ width: typeof width === "number" ? `${width}px` : width }}
-      >
-        <div className="k-modal-wrap">
-          <div className="k-modal-inner">{contentNode}</div>
-        </div>
+        {footer && <div className="k-modal-footer">{footerContent}</div>}
       </div>
     );
   }
@@ -293,24 +355,29 @@ const Modal: React.FC<ModalProps> = ({
   const modalStyle: React.CSSProperties | null = maximized
     ? null
     : {
-        width: typeof width === "number" ? `${width}px` : width,
-        top: `${topPos}px`,
-        left: draggable ? `${leftPos}px` : undefined,
+        width: toCssLength(width),
+        // 居中靠 `.k-modal-centered .k-modal-inner { top: 0 }`，这里再写内联 top 就把它压掉了
+        // （内联样式优先级高于任何类选择器）；left 只有拖动时才有意义。
+        top: centered ? undefined : `${topPos}px`,
+        left: draggable && !centered ? `${leftPos}px` : undefined,
       };
 
   const classes = clsx("k-modal", className, {
     "k-modal-draggable": draggable,
     "k-modal-maximized": maximized,
     "k-modal-centered": centered,
-    "k-modal-has-footer": footer !== false && footer != null,
+    "k-modal-has-footer": Boolean(footer),
+    "k-modal-panel": panelOnly,
   });
 
   if (!rendered) return null;
 
   const modalEl = (
     <div className={classes}>
+      {/* unmountOnExit 跟着 destroyOnClose：关掉后是留一份隐藏 DOM（Vue 侧的 v-show）还是直接摘掉，
+          两个仓库得是同一个开关说了算，否则 destroyOnClose=false 保不住面板里填过的表单状态。 */}
       {mask && (
-        <Transition show={visible} name="k-modal-fade" timeout={400}>
+        <Transition show={visible} name="k-modal-fade" timeout={400} unmountOnExit={destroyOnClose}>
           <div className="k-modal-mask" />
         </Transition>
       )}
@@ -320,11 +387,24 @@ const Modal: React.FC<ModalProps> = ({
         className="k-modal-wrap"
         tabIndex={-1}
         role="dialog"
+        aria-modal={!panelOnly && mask ? true : undefined}
         style={{ display: showInner ? undefined : "none" }}
         onClick={clickMaskToClose}
       >
-        <Transition show={visible} name="k-modal-zoom" timeout={250} onAfterLeave={afterClose}>
-          <div ref={refModal} className="k-modal-inner" style={modalStyle || undefined}>
+        <Transition
+          show={visible}
+          name="k-modal-zoom"
+          timeout={250}
+          unmountOnExit={destroyOnClose}
+          onAfterLeave={afterClose}
+        >
+          <div
+            ref={refModal}
+            className="k-modal-inner"
+            tabIndex={-1}
+            style={modalStyle || undefined}
+            onKeyDown={handleModalKeydown}
+          >
             {contentNode}
             <div tabIndex={0} />
           </div>
@@ -333,7 +413,12 @@ const Modal: React.FC<ModalProps> = ({
     </div>
   );
 
-  return <Teleport to="body">{modalEl}</Teleport>;
+  // panelOnly 是宿主浮层里的面板，不该被搬去 body（Vue 里同样是这条分支）
+  // Provider 不落 DOM，只给这棵树圈出浮层作用域。
+  const hosted = (
+    <PopupHostContext.Provider value={registerHostedPopup}>{modalEl}</PopupHostContext.Provider>
+  );
+  return panelOnly ? hosted : <Teleport to="body">{hosted}</Teleport>;
 };
 
 export default Modal;
@@ -344,5 +429,6 @@ export type ModalPanelProps = Omit<
 >;
 
 export function ModalPanel(props: ModalPanelProps) {
-  return <Modal {...props} panelOnly />;
+  // 与 Vue 的 ModalPanel 同参：面板态常开、不带遮罩
+  return <Modal {...props} open mask={false} panelOnly />;
 }

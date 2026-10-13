@@ -793,7 +793,8 @@ describe("React state initialization and synchronization", () => {
       </>,
     );
     await waitFor(() =>
-      expect(document.activeElement).toBe(document.querySelector(".k-modal-wrap")),
+      // 焦点陷阱把焦点交给面板里的第一个可聚焦元素，而不是停在 wrap 上（与 Vue 版一致）
+      expect(document.activeElement?.closest(".k-modal-inner")).not.toBeNull(),
     );
     expect(screen.getByText("Custom footer")).not.toBeNull();
     fireEvent.keyDown(document, { key: "Escape" });
