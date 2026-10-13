@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Space, Modal } from "react-kui";
+import { Button, Modal, Space } from "react-kui";
 
 const text = `A long time ago, In a beautiful kingdom,
 there lived a young king and queen,
@@ -7,8 +7,6 @@ the people loved them so much;`;
 export default function App() {
   const [open, setOpen] = useState<number | null>(null);
   const close = () => setOpen(null);
-  // 受控值只从 `onOpenChange` 这一条通道回写：点「取消」不会走 `onClose`，
-  // 只挂 `onClose` 的话取消关掉的那次状态还停在原地，再点按钮就打不开了。
   const openChange = (id: number) => (next: boolean) => setOpen(next ? id : null);
   return (
     <Space vertical>

@@ -1,6 +1,6 @@
 import { Save } from "kui-icons";
 import { useEffect, useRef, useState } from "react";
-import { Button, Input, Space, Modal } from "react-kui";
+import { Button, Input, Modal, Space } from "react-kui";
 
 export default function App() {
   const [open, setOpen] = useState<number | null>(null);
@@ -17,8 +17,6 @@ export default function App() {
       setOpen(null);
     }, 2000);
   };
-  // 开合状态只从 `onOpenChange` 回写：点「取消」不走 `onClose`，
-  // 只挂 `onClose` 的话取消关掉的那次状态还停在原地，再点按钮就打不开了。
   const openChange = (id: number) => (next: boolean) => (next ? setOpen(id) : close());
   // 组件卸载时把还没跑完的异步保存停掉。
   useEffect(

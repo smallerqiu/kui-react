@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Space, Drawer } from "react-kui";
+import { Button, Drawer, Space } from "react-kui";
 const Body = () => (
   <>
     <p>something ...</p>
@@ -28,8 +28,6 @@ export default function App() {
         <Button onClick={() => setShow3((v) => !v)}>Click mask can't close</Button>
         <Button onClick={() => setShow4((v) => !v)}>No mask</Button>
       </Space>
-      {/* 开合状态只从 `onOpenChange` 回写：点「取消」不走 `onClose`，
-          只挂 `onClose` 的话取消关掉的那次状态还停在 true，再点按钮就打不开了。 */}
       <Drawer open={show} footer={false} onOpenChange={setShow}>
         <Body />
       </Drawer>
