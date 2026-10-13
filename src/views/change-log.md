@@ -54,7 +54,7 @@ rm -rf node_modules/.vite
 - 命令式弹窗（`modal.confirm()` 等）的 `title` / `content` 不再限字符串，可以传任意节点；弹窗实例统一提供 `show` / `hide` / `destroy`，并沿用调用处 `ConfigProvider` 的主题、语言和弹层挂载设置。
 - `Modal` / `Drawer` 文档订正了真实默认值（`maskClosable`：弹窗 `false`、抽屉 `true`，且只管点击遮罩，`Esc` 由 `escKey` 控制），并说明 `onCancel` 与 `onClose` 是分开的两路：点底部「取消」只触发 `onCancel`，点遮罩、按 `Esc`、点右上角只触发 `onClose`。受控用法要同步开合状态，只挂 `onOpenChange` 就够，不用在两个回调里各写一次。
 - `Modal` 内容区贴边的控件（如 `Input`）聚焦时，那圈焦点高亮不再被裁掉一半；内容宽度、位置与页脚间距都没有变化。
-- `Tooltip` 气泡补回 1px 描边，深色背景上也能看清边界。
+- `Tooltip` 气泡和箭头指示器补回 1px 描边，深色背景上也能看清边界。
 
 ### 3.1.2
 
