@@ -52,6 +52,7 @@ rm -rf node_modules/.vite
 - Imperative dialogs (`modal.confirm()` and friends) accept any node for `title` / `content` instead of strings only, every instance exposes `show` / `hide` / `destroy`, and they inherit the theme, locale and popup container of the surrounding `ConfigProvider`.
 - Controls placed against the edge of a `Modal` body no longer have half of their focus outline clipped; content width, position and the footer gap are unchanged.
 - `Tooltip` bubbles and their arrow indicator got their 1px border back, so the edge stays readable on dark backgrounds.
+- `Table`: Added `ellipsis` to clip cell content that overflows the column width. Set it on a column to affect that column only, or on `Table` to cover every column at once (including `render` and slot content); a column keeps its full text with `ellipsis: false`. One line by default, `rows` clips to several. The hover tip is on by default and only appears when the cell really is clipped; `tooltip` replaces its text or turns it off with `false`.
 
 ### 3.1.2
 

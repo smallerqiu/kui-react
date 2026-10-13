@@ -9,12 +9,27 @@ export interface SortState {
   order: null | "desc" | "asc";
 }
 
+export interface TableEllipsisOptions {
+  /** 截断到第几行，默认 `1`（单行不换行） */
+  rows?: number;
+  /**
+   * 悬停提示。默认用被截断的那段文本；传字符串或节点换成指定内容；`false` 关掉提示。
+   * 只有真的被截断才会弹，没截断的格子不会多出气泡。
+   */
+  tooltip?: boolean | ReactNode;
+}
+
 export interface Column<T = Record<string, unknown>> {
   key: string;
   title: ReactNode;
   width?: number;
   fixed?: "left" | "right";
   sorter?: boolean | ((state: SortState) => void);
+  /**
+   * 内容超出列宽时显示省略号。`true` 单行、数字或 `rows` 是多行，`tooltip` 定制悬停提示。
+   * 表格级 `ellipsis` 打开时，这一列写 `false` 可以单独关掉。
+   */
+  ellipsis?: boolean | number | TableEllipsisOptions;
   render?(value: unknown, record: T, rowIndex: number, column: Column<T>): ReactNode;
   renderHeader?(column: Column<T>, index: number): ReactNode;
   colSpan?: number | ((record: T, index: number) => number);
@@ -28,6 +43,11 @@ export interface TableProps<T = Record<string, unknown>> extends Omit<
 > {
   data?: T[];
   columns?: Column<T>[];
+  /**
+   * 给所有列打开省略号，省得一列列写 `ellipsis`。
+   * `true` 单行、数字或 `rows` 是多行，`tooltip` 定制悬停提示；某一列想留完整内容就在那列写 `ellipsis: false`。
+   */
+  ellipsis?: boolean | number | TableEllipsisOptions;
   selectedKeys?: TableKey[];
   disabledKeys?: TableKey[];
   rowKey?: string | ((record: T) => TableKey);

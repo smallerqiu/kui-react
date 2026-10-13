@@ -108,6 +108,10 @@ const columns = [
 
 - Use `TableColumnSetting` to show or hide columns dynamically; give its `hiddenKeys` and Table's `hiddenColumnKeys` the same value.
 
+[Ellipsis](./demo/ellipsis.tsx?show=vertical)
+
+- A cell whose content is wider than the column is cut with an ellipsis: set `ellipsis` on the column, or on the Table to cover every column at once (content from `render` included) and opt a column back out with `ellipsis: false`. One line by default, `rows` for several; the hover tip is on by default and only shows when the cell really got clipped.
+
 - All Table texts come from the `k.table` locale keys: `emptyText` for the empty state, `columnSettings`/`resetColumns` for the column panel, `expandRow`/`collapseRow` for the tree toggle's accessible name and `selectRow`/`selectAllRows` for the row and header checkboxes. An explicit `emptyText`, `title` or `resetText` prop takes precedence over the locale.
 
 - Fixed columns need a definite width: a fixed column without `width` falls back to 150, and the selection column is 50. Any column that declares `width` — fixed or not — gets that exact value on its `<col>`; only width-less non-fixed columns use `auto` to absorb the remaining width. Writing `auto` for a column that declared a width would squeeze it to 0 px under `table-layout: fixed`, which also destroys the horizontal scroll range and makes the fixed columns look inert. The `<col>` width, the sticky offset of the next fixed cell and the selection cell width all derive from that single basis.
@@ -133,6 +137,7 @@ const columns = [
 | loading | Table asynchronous loading mode | `boolean` | false |
 | data | Structured data to be displayed | `T[]` | [] |
 | columns | Configuration description of table columns | `Column<T>[]` | [] |
+| ellipsis | Turn on the ellipsis for every column at once, so you do not have to write `ellipsis` on each one; `true` is a single line, a number or `rows` clamps to several lines, and `tooltip` customizes the hover tip. A column that must show its full content opts out with `ellipsis: false`. | `number \| boolean \| TableEllipsisOptions` | - |
 | header | Custom table header content | `ReactNode` | - |
 | footer | Custom table footer content | `ReactNode` | - |
 | rowKey | Unique row identity used by selection and expansion; a field name or an accessor function reading the key from a record | `string \| ((record: T) => TableKey)` | key |
@@ -178,9 +183,17 @@ const columns = [
 | key          | Corresponding column field name                | string                                                                        | -       |
 | fixed        | Column fixed direction                         | `'left' \| 'right'`                                                           | -       |
 | sorter       | Sorting, when `true`, local sorting is enabled | boolean \| (state: SortState) => void                                         | -       |
+| ellipsis     | Cell content overflows into an ellipsis        | boolean \| number \| TableEllipsisOptions                                     | -       |
 | width        | Column width                                   | number                                                                        | -       |
 | rowSpan      | Row span, or a function returning it           | number \| (record: T, index: number) => number                                | -       |
 | colSpan      | Column span, or a function returning it        | number \| (record: T, index: number) => number                                | -       |
 | render       | Custom cell rendering                          | (value: unknown, record: T, rowIndex: number, column: Column<T>) => ReactNode | -       |
 | renderHeader | Custom header rendering                        | (column: Column<T>, index: number) => ReactNode                               | -       |
 | children     | Nested header columns                          | Column<T>[]                                                                   | -       |
+
+## TableEllipsisOptions
+
+| Property | Description                                                                              | Type                 | Default |
+| -------- | ---------------------------------------------------------------------------------------- | -------------------- | ------- |
+| rows     | How many lines to keep before the ellipsis                                                | number               | 1       |
+| tooltip  | Hover tip; omitted or `true` uses the clipped text, a value replaces it, `false` turns it off | boolean \| ReactNode | -       |

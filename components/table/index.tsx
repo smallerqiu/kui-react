@@ -22,6 +22,7 @@ import Empty from "../empty";
 import Icon from "../icon";
 import zhCN from "../locale/zh-CN";
 import Spin from "../spin";
+import Tooltip from "../tooltip";
 import { getVirtualRange } from "../virtual-list/range";
 import type { Column, SortState, TableKey, TableProps } from "./types";
 import {
@@ -32,10 +33,18 @@ import {
   getRecordValue,
   inheritColumnFixed,
   mergeExpandAllRows,
+  resolveCellEllipsis,
   resolveRowKey,
 } from "./utils";
 
-export type { Column, SortState, TableKey, TableProps, TableTreeRow } from "./types";
+export type {
+  Column,
+  SortState,
+  TableEllipsisOptions,
+  TableKey,
+  TableProps,
+  TableTreeRow,
+} from "./types";
 export { TableColumnSetting } from "./column-setting";
 export type { TableColumnSettingProps } from "./column-setting";
 interface MatrixCell {
@@ -107,6 +116,65 @@ const measureScrollbarWidth = (): number => {
   return width;
 };
 
+/**
+ * 单元格省略号。`rows` 是截断行数，`tooltip` 决定悬停提示：省略或 `true` 用被截断的那段文本，
+ * 传内容则换成指定的提示，`false` 关掉。
+ *
+ * 提示只在**真的被截断**时才弹——判定放在 hover 那一刻量 `scrollWidth` / `scrollHeight`，
+ * 于是既不用给每格挂观察器，也不会给没截断的格子凭空多出一个气泡。
+ * `Tooltip` 在关闭时不产出任何 DOM，所以整表开启时每格挂一份也不吃亏。
+ */
+const EllipsisCell = ({
+  rows,
+  tooltip,
+  className,
+  children,
+}: {
+  rows: number;
+  tooltip?: boolean | ReactNode;
+  className?: string;
+  children?: ReactNode;
+}) => {
+  const innerRef = useRef<HTMLSpanElement>(null);
+  const [tip, setTip] = useState<ReactNode | null>(null);
+  const multiRows = rows > 1;
+  const enter = () => {
+    const element = innerRef.current;
+    if (!element || tooltip === false) return;
+    // 留 1px 余量：浏览器把小数宽度取整后，没截断的格子也可能差出 1。
+    const clipped = multiRows
+      ? element.scrollHeight > element.clientHeight + 1
+      : element.scrollWidth > element.clientWidth + 1;
+    if (!clipped) return;
+    if (tooltip === undefined || tooltip === true) {
+      setTip(element.textContent?.replace(/\s+/g, " ").trim() || null);
+      return;
+    }
+    setTip(tooltip);
+  };
+  const node = (
+    <span
+      ref={innerRef}
+      className={clsx(
+        "k-table-cell-ellipsis",
+        multiRows && "k-table-cell-ellipsis-rows",
+        className,
+      )}
+      style={multiRows ? { WebkitLineClamp: rows } : undefined}
+      onMouseEnter={enter}
+      onMouseLeave={() => setTip(null)}
+    >
+      {children}
+    </span>
+  );
+  if (tooltip === false) return node;
+  return (
+    <Tooltip trigger="manual" open={Boolean(tip)} title={tip}>
+      {node}
+    </Tooltip>
+  );
+};
+
 interface RowExpansionOptions {
   /** 当前数据里所有父行的 key，由调用方 memo 好后传进来 */
   parentKeys: Set<TableKey>;
@@ -157,6 +225,7 @@ function useRowExpansion({ parentKeys, expandedKeys, expandAllRows }: RowExpansi
 export default function Table<T extends object = Record<string, unknown>>({
   data = EMPTY_DATA,
   columns = EMPTY_COLUMNS,
+  ellipsis: tableEllipsis,
   selectedKeys,
   disabledKeys = EMPTY_KEYS,
   rowKey = "key",
@@ -231,6 +300,15 @@ export default function Table<T extends object = Record<string, unknown>>({
       (checkable ? SELECTION_COLUMN_WIDTH : 0),
     [leaves, checkable],
   );
+  // 省略号按叶子列归一一次：列上写了 `ellipsis` 就以列为准，否则跟着表格级 `ellipsis` 走。
+  // 放在这里而不是单元格里面，免得每渲染一格就归一一次、再新建一个对象。
+  const cellEllipsis = useMemo(() => {
+    const map = new Map<string, { rows: number; tooltip?: ReactNode | false } | null>();
+    leaves.forEach((column) =>
+      map.set(column.key, resolveCellEllipsis(column.ellipsis, tableEllipsis)),
+    );
+    return map;
+  }, [leaves, tableEllipsis]);
   const splitHeader = scroll.y != null;
   const virtualEnabled = virtual && splitHeader;
   const rawId = useId();
@@ -761,6 +839,7 @@ export default function Table<T extends object = Record<string, unknown>>({
             const value = getRecordValue(record, column.key);
             const content =
               column.render?.(value, record, rowIndex, column) ?? (value as ReactNode);
+            const ellipsis = cellEllipsis.get(column.key);
             return (
               <td
                 key={column.key}
@@ -792,8 +871,22 @@ export default function Table<T extends object = Record<string, unknown>>({
                     ) : (
                       <span className="k-table-tree-indent" />
                     )}
-                    <span className="k-table-tree-content">{content}</span>
+                    {ellipsis ? (
+                      <EllipsisCell
+                        rows={ellipsis.rows}
+                        tooltip={ellipsis.tooltip}
+                        className="k-table-tree-content"
+                      >
+                        {content}
+                      </EllipsisCell>
+                    ) : (
+                      <span className="k-table-tree-content">{content}</span>
+                    )}
                   </div>
+                ) : ellipsis ? (
+                  <EllipsisCell rows={ellipsis.rows} tooltip={ellipsis.tooltip}>
+                    {content}
+                  </EllipsisCell>
                 ) : (
                   content
                 )}
