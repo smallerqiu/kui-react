@@ -173,10 +173,13 @@ function DatePicker({
       parse(item, fmt, valueType),
     );
   }, [value, startDate, endDate, isRange, fmt, valueType]);
-  const initial = useMemo(
+  // 区间值一律长成 `[起, 止]`，缺的那一头留 null，而不是整段丢掉：
+  // 面板草稿和输入框文本必须同源，否则只受控单边时框里显示着 endDate、
+  // 面板却是空的，下一次点日历会按"第一次点击 = 起点"把已有的 endDate 覆盖掉。
+  const initial: (Dayjs | null)[] = useMemo(
     () =>
-      isRange && parsedSource.some((item) => !item)
-        ? []
+      isRange
+        ? [parsedSource[0] ?? null, parsedSource[1] ?? null]
         : parsedSource.filter((item): item is Dayjs => !!item),
     [isRange, parsedSource],
   );
@@ -208,12 +211,15 @@ function DatePicker({
   const [draftState, setDraftState] = useState({ signature: syncSignature, value: initial });
   const draft = draftState.signature === syncSignature ? draftState.value : values;
   const setDraft = useCallback(
-    (next: Dayjs[]) => setDraftState({ signature: syncSignature, value: next }),
+    (next: (Dayjs | null)[]) => setDraftState({ signature: syncSignature, value: next }),
     [syncSignature],
   );
   const [hoverDate, setHoverDate] = useState<Dayjs | null>(null);
   const [timeEditSide, setTimeEditSide] = useState<"start" | "end">("start");
-  const formattedValues = (isRange ? parsedSource : values).map((item) => item?.format(fmt) ?? "");
+  // 文本回退的唯一来源是"当前这份值"——受控时由 props 派生，非受控时是最近一次提交的结果。
+  // 原来区间模式恒取 parsedSource（props 那份），于是非受控提交过新值后删空再失焦，
+  // 文本会弹回 props 里的原始值，和内部已提交的那份漂移。
+  const formattedValues = values.map((item) => item?.format(fmt) ?? "");
   const [textState, setTextState] = useState({
     signature: syncSignature,
     value: formattedValues,
@@ -248,7 +254,7 @@ function DatePicker({
     // 手输只填一个框留下的是文本有值、草稿没动，两种都得回滚；按长度判会把后者漏掉。
     if (isRange && !(draft[0] && draft[1])) {
       setDraft(values);
-      setTexts(values.map((item) => item.format(fmt)));
+      setTexts(formattedValues);
     }
     setOpen(false);
   };
@@ -267,15 +273,26 @@ function DatePicker({
     if (disabled || readOnly) return;
     if (next.some(isValueDisabled)) return;
     if (isRange && next.length === 2 && next[1].isBefore(next[0])) next = [next[1], next[0]];
-    if (!rangeControlled) setInner(next);
-    setDraft(rangeControlled ? values : next);
-    setTexts(rangeControlled ? formattedValues : next.map((item) => item.format(fmt)));
-    const result = next.map(output);
-    const strings = next.map((item) => item.format(fmt));
-    onChange?.(isRange ? result : (result[0] ?? null), isRange ? strings : (strings[0] ?? ""));
-    if (isRange) {
-      onStartDateChange?.(result[0] ?? null);
-      onEndDateChange?.(result[1] ?? null);
+    // 区间的内部值固定是 `[起, 止]` 两格：清空得到 `[null, null]` 而不是 `[]`，
+    // 只有一头时另一格留 null——文本和面板草稿同源才谈得上"下一次点选补空位"。
+    const pair = isRange ? [next[0] ?? null, next[1] ?? null] : next;
+    // 值没变就不要再通知：重复点已经选中的日期、重复点已经对准的时/分/秒，
+    // 原来都会原样再发一次 onChange（区间还带 onStartDateChange/onEndDateChange）。
+    // 父级在 onChange 里发请求的话，这一趟是白跑的。
+    const unchanged =
+      pair.length === values.length &&
+      pair.every((item, index) => (item?.valueOf() ?? null) === (values[index]?.valueOf() ?? null));
+    if (!rangeControlled) setInner(pair);
+    setDraft(rangeControlled ? values : pair);
+    setTexts(rangeControlled ? formattedValues : pair.map((item) => item?.format(fmt) ?? ""));
+    if (!unchanged) {
+      const result = next.map(output);
+      const strings = next.map((item) => item.format(fmt));
+      onChange?.(isRange ? result : (result[0] ?? null), isRange ? strings : (strings[0] ?? ""));
+      if (isRange) {
+        onStartDateChange?.(result[0] ?? null);
+        onEndDateChange?.(result[1] ?? null);
+      }
     }
     if (closePanel) setOpen(false);
   };
@@ -283,15 +300,29 @@ function DatePicker({
     if (disabled || readOnly) return;
     if (disabledDate(date.toDate()) || (hasTime && disabledTime(date.toDate()))) return;
     if (isRange) {
-      if (draft.length !== 1) {
-        const start = date.startOf("day");
-        setDraft([start]);
-        setTexts([start.format(fmt), ""]);
-      } else {
-        const start = date.isBefore(draft[0]) ? date.startOf("day") : draft[0];
-        const end = (date.isBefore(draft[0]) ? draft[0] : date).endOf("day");
-        commit([start, end], mode !== "dateTimeRange");
+      const [start, end] = draft;
+      // 只有一头已定时（父级单边受控也长这样）这一枪是去补空着的那一头，已有的那头不动。
+      // 原来按 `draft.length !== 1` 判"是不是重新开始"，单边受控时草稿是空的、
+      // 框里却显示着 endDate，于是下一次点选会当成第一次点击、把 endDate 覆盖掉。
+      const fill = start && !end ? "end" : !start && end ? "start" : null;
+      if (!fill) {
+        const s = date.startOf("day");
+        setDraft([s, null]);
+        setTexts([s.format(fmt), ""]);
+        return;
       }
+      const kept = (fill === "end" ? start : end) as Dayjs;
+      const before = date.isBefore(kept);
+      // 已有的那头留在自己那一格时保留父级给的时刻；被挪到另一格才补 00:00:00 / 23:59:59。
+      const pair: [Dayjs, Dayjs] =
+        fill === "end"
+          ? before
+            ? [date.startOf("day"), kept.endOf("day")]
+            : [kept, date.endOf("day")]
+          : before
+            ? [date.startOf("day"), kept]
+            : [kept.startOf("day"), date.endOf("day")];
+      commit(pair, mode !== "dateTimeRange");
     } else {
       if (mode === "dateTime") {
         const old = draft[0] ?? dayjs();
@@ -321,7 +352,7 @@ function DatePicker({
       const nextDraft = draft.slice();
       nextDraft[index] = parsed;
       setPanelDate(parsed);
-      if (!isRange || (nextDraft[0] && nextDraft[1])) commit(nextDraft);
+      if (!isRange || (nextDraft[0] && nextDraft[1])) commit(nextDraft as Dayjs[]);
     } else if (!text && !isRange) commit([]);
   };
   const acceptInput = (index: number) => {
@@ -441,7 +472,7 @@ function DatePicker({
       </div>
       <div className="k-picker-date-grid" role="grid" onMouseLeave={() => setHoverDate(null)}>
         {calendar.map((date) => {
-          const selected = draft.some((item) => item.isSame(date, "day"));
+          const selected = draft.some((item) => !!item && item.isSame(date, "day"));
           const rangeEnd = draft[1] ?? hoverDate;
           const inRange = !!(
             isRange &&
