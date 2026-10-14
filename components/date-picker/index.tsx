@@ -385,6 +385,24 @@ function DatePicker({
   }, [panelDate, localeInfo]);
   const nav = (amount: number, unit: "month" | "year") =>
     setPanelDate((current) => current.add(amount, unit));
+  // 切进年 / 月面板的那两个标签原来只有 onClick。格子做得再可达也没用——
+  // 键盘用户根本进不了年/月面板，所以这里一并补成能 Tab 到、Enter/空格能按的按钮。
+  const switchLabel = (target: "year" | "month", label: ReactNode, className?: string) => (
+    <span
+      className={className}
+      role="button"
+      tabIndex={0}
+      onClick={() => setView(target)}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          setView(target);
+        }
+      }}
+    >
+      {label}
+    </span>
+  );
   const headerNode = (
     <div className="k-picker-header">
       <Button icon={ChevronsLeft} type="text" onClick={() => nav(-10, "year")} />
@@ -392,23 +410,28 @@ function DatePicker({
         <Button icon={ChevronLeft} type="text" onClick={() => nav(-1, "month")} />
       )}
       <span className="k-picker-header-label">
-        {isYearFirst && (
-          <span onClick={() => setView("year")}>
-            {panelDate.year()}
-            {locale?.k?.datePicker?.year}
-          </span>
-        )}
-        {mode !== "year" && (
-          <span className="k-picker-header-month-btn" onClick={() => setView("month")}>
-            {panelDate.locale(localeName).format("MMM")}
-          </span>
-        )}
-        {!isYearFirst && (
-          <span onClick={() => setView("year")}>
-            {panelDate.year()}
-            {locale?.k?.datePicker?.year}
-          </span>
-        )}
+        {isYearFirst &&
+          switchLabel(
+            "year",
+            <>
+              {panelDate.year()}
+              {locale?.k?.datePicker?.year}
+            </>,
+          )}
+        {mode !== "year" &&
+          switchLabel(
+            "month",
+            panelDate.locale(localeName).format("MMM"),
+            "k-picker-header-month-btn",
+          )}
+        {!isYearFirst &&
+          switchLabel(
+            "year",
+            <>
+              {panelDate.year()}
+              {locale?.k?.datePicker?.year}
+            </>,
+          )}
       </span>
       {mode !== "year" && (
         <Button icon={ChevronRight} type="text" onClick={() => nav(1, "month")} />
@@ -416,47 +439,109 @@ function DatePicker({
       <Button icon={ChevronsRight} type="text" onClick={() => nav(10, "year")} />
     </div>
   );
+  // 年 / 月格子只在"这一枪就是落值"时（mode="year" / "month"）才认 disabledDate：
+  // 浏览态把格子拦死，用户连"翻到那年看看有没有能选的"都做不到，
+  // 而翻过去以后日期格那道 disabledDate 本来就兜着。
+  // 判据是"这一整格里一天都挑不出来"，不是"格子对准的那一天被禁"——
+  // disabledDate 只禁了 3 月 5 号时，3 月这格照样得点得进去。
+  // 返回 null 表示整格禁用，返回一个日子表示这一格能落值；
+  // 优先用当前浏览位置的那一天（和没改之前一致），那天被禁时往后找第一个能选的，
+  // 这样"格子看着能点、点了没反应"不再出现。
+  const unitPick = (base: Dayjs, unit: "year" | "month"): Dayjs | null => {
+    if (!disabledDate(base.toDate())) return base;
+    const first = base.startOf(unit).hour(base.hour()).minute(base.minute()).second(base.second());
+    const end = base.endOf(unit);
+    for (let day = first; day.isBefore(end); day = day.add(1, "day")) {
+      if (!disabledDate(day.toDate())) return day;
+    }
+    return null;
+  };
+  // 平移整年 / 整月不用自己钳位：dayjs 的 `.year()` 和 `.month()` 都会钳
+  // （2024-02-29 的 `.year(2027)` 是 2027-02-28，不会溢出成 3 月 1 日），
+  // 格子就落在浏览位置的那一天上。
   const yearPanel = (
     <div className="k-picker-body">
-      <div className="k-picker-year-body">
-        {Array.from({ length: 12 }, (_, index) => yearStart + index).map((year) => (
-          <div
-            key={year}
-            className={clsx("k-picker-year-item", {
-              "k-picker-year-selected": panelDate.year() === year,
-            })}
-            onClick={() => {
-              const date = panelDate.year(year);
-              setPanelDate(date);
-              if (mode === "year") choose(date);
-              else setView("month");
-            }}
-          >
-            {year}
-          </div>
-        ))}
+      <div className="k-picker-year-body" role="grid">
+        {Array.from({ length: 12 }, (_, index) => yearStart + index).map((year) => {
+          const browsing = panelDate.year(year);
+          const selects = mode === "year";
+          const candidate = selects ? unitPick(browsing, "year") : browsing;
+          const off = selects && !candidate;
+          // 选中态取当前值，不取浏览位置：原来高亮跟着 panelDate，
+          // 已有值时翻几年，选中样式就跑到别的年份上去了。
+          const selected = draft.some((item) => !!item && item.year() === year);
+          const pick = () => {
+            if (off || !candidate) return;
+            setPanelDate(browsing);
+            if (selects) choose(candidate);
+            else setView("month");
+          };
+          return (
+            <div
+              key={year}
+              className={clsx("k-picker-year-item", {
+                "k-picker-year-selected": selected,
+                "k-picker-year-disabled": off,
+              })}
+              role="gridcell"
+              tabIndex={off ? -1 : 0}
+              aria-selected={selected || undefined}
+              aria-disabled={off || undefined}
+              onClick={pick}
+              onKeyDown={(event) => {
+                if (!off && (event.key === "Enter" || event.key === " ")) {
+                  event.preventDefault();
+                  pick();
+                }
+              }}
+            >
+              {year}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
   const monthPanel = (
     <div className="k-picker-body">
-      <div className="k-picker-month-body">
-        {months.map((label, month) => (
-          <div
-            key={label}
-            className={clsx("k-picker-month-item", {
-              "k-picker-month-selected": panelDate.month() === month,
-            })}
-            onClick={() => {
-              const date = panelDate.month(month);
-              setPanelDate(date);
-              if (mode === "month") choose(date);
-              else setView("date");
-            }}
-          >
-            {label}
-          </div>
-        ))}
+      <div className="k-picker-month-body" role="grid">
+        {months.map((label, month) => {
+          const browsing = panelDate.month(month);
+          const selects = mode === "month";
+          const candidate = selects ? unitPick(browsing, "month") : browsing;
+          const off = selects && !candidate;
+          const selected = draft.some(
+            (item) => !!item && item.year() === panelDate.year() && item.month() === month,
+          );
+          const pick = () => {
+            if (off || !candidate) return;
+            setPanelDate(browsing);
+            if (selects) choose(candidate);
+            else setView("date");
+          };
+          return (
+            <div
+              key={label}
+              className={clsx("k-picker-month-item", {
+                "k-picker-month-selected": selected,
+                "k-picker-month-disabled": off,
+              })}
+              role="gridcell"
+              tabIndex={off ? -1 : 0}
+              aria-selected={selected || undefined}
+              aria-disabled={off || undefined}
+              onClick={pick}
+              onKeyDown={(event) => {
+                if (!off && (event.key === "Enter" || event.key === " ")) {
+                  event.preventDefault();
+                  pick();
+                }
+              }}
+            >
+              {label}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
