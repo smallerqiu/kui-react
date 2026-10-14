@@ -55,3 +55,21 @@ it.each([false, true])(
     expect(label()).not.toContain("Updated");
   },
 );
+
+// 保留标签的缓存在 render 期间写回 state，React 会重试本组件直到比较不再成立。
+// 用 `!==` 比较时 NaN 永远"和上次不同"，重试到上限直接抛 Too many re-renders，
+// 整棵子树交给错误边界；`Number(rawId)` 解析失败就能把 NaN 送进 value 或 label。
+it.each([false, true])("renders a NaN selection instead of looping (multiple=%s)", (multiple) => {
+  const value = multiple ? [Number.NaN, 0] : Number.NaN;
+  const { container } = render(
+    <Select multiple={multiple} value={value} options={[{ value: 0, label: "Zero" }]} />,
+  );
+  const label = container.querySelector(multiple ? ".k-select-labels" : ".k-select-label")!;
+  expect(label.textContent).toContain("NaN");
+  if (multiple) expect(label.textContent).toContain("Zero");
+});
+
+it("renders a NaN option label instead of looping", () => {
+  const { container } = render(<Select value={1} options={[{ value: 1, label: Number.NaN }]} />);
+  expect(container.querySelector(".k-select-label")?.textContent).toContain("NaN");
+});

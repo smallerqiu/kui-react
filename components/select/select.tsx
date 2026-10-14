@@ -39,6 +39,15 @@ const normalizeValue = (value: SelectValue): SelectPrimitive[] => {
   return typeof value === "string" || typeof value === "number" ? [value] : [];
 };
 
+// `Object.is` rather than `!==`: two NaN labels are the same retained label, and treating them as
+// different would make the render-phase sync below never settle.
+const isSameLabelMap = (
+  next: Map<SelectPrimitive, SelectPrimitive>,
+  previous: Map<SelectPrimitive, SelectPrimitive>,
+) =>
+  next.size === previous.size &&
+  [...next].every(([val, label]) => previous.has(val) && Object.is(previous.get(val), label));
+
 export interface SelectProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
   "onChange" | "onSelect" | "defaultValue" | "defaultChecked"
@@ -213,7 +222,9 @@ const Select: React.FC<SelectProps> = ({
     containerEl.scrollTop = targetScroll;
   };
 
-  const [selectedLabels, setSelectedLabels] = useState(new Map<string | number, string | number>());
+  const [selectedLabels, setSelectedLabels] = useState(
+    () => new Map<SelectPrimitive, SelectPrimitive>(),
+  );
   // Search results are transient. Retain labels only for values that remain selected.
   const lookup = new Map(
     (loading && options ? options : optionsData).map((item) => [item.value, item.label]),
@@ -221,10 +232,10 @@ const Select: React.FC<SelectProps> = ({
   const nextLabels = new Map(
     currentValue.map((val) => [val, lookup.get(val) ?? selectedLabels.get(val) ?? val]),
   );
-  if (
-    nextLabels.size !== selectedLabels.size ||
-    [...nextLabels].some(([val, label]) => selectedLabels.get(val) !== label)
-  ) {
+  // This sync runs during render, so React retries the component until the guard stops firing:
+  // compare entries with `Object.is`, because `NaN !== NaN` would re-queue forever and React
+  // throws "Too many re-renders". A `NaN` value or label is reachable via `Number(rawId)`.
+  if (!isSameLabelMap(nextLabels, selectedLabels)) {
     setSelectedLabels(nextLabels);
   }
   const labelText = currentValue.map((val) => nextLabels.get(val)!);
