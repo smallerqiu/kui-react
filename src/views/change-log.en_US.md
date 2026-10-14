@@ -58,6 +58,9 @@ rm -rf node_modules/.vite
 - `Drawer`'s `title` no longer defaults to "Title" — omit it and there is no title text. The header still makes room for the close button and only disappears when `closable: false` is set with no title.
 - `DatePicker`: Closing the panel with `Escape` after picking only one end of a range no longer leaves the half date in the box; it now falls back to the last committed range, the same as clicking outside.
 - `DatePicker`: Typing a date into only the end box no longer shows a value that `onChange` never received. A range with one end missing is not a selection, and closing the panel clears it.
+- `DatePicker`: Rejected manual input no longer snaps the box back to the date passed in first; it falls back to the current value, which for uncontrolled pickers is the last committed result.
+- `DatePicker`: When a range controls only one end (`startDate` or `endDate`), the next pick no longer overwrites the end the parent provided; the panel keeps it and only fills the empty end.
+- `DatePicker`: Picking the already selected date, or submitting the same value again, no longer fires a redundant `onChange`.
 
 ### 3.1.2
 
