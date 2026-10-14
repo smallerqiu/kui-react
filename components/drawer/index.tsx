@@ -62,7 +62,7 @@ const ensurePositioningContext = (element: HTMLElement) => {
 
 const Drawer: React.FC<DrawerProps> = ({
   open,
-  title = "Title",
+  title,
   width = 520,
   height = 520,
   okText,
@@ -211,9 +211,11 @@ const Drawer: React.FC<DrawerProps> = ({
     if (rendered && targetEl) return ensurePositioningContext(targetEl);
   }, [rendered, targetEl]);
 
+  // 与 Modal 同一条口径：先把开合状态同步出去（onOpenChange），再通知这次动作
+  // （onCancel/onClose），受控的父组件在语义回调里读到的已经是结算后的开合值。
   const cancel = () => {
-    onCancel?.();
     requestOpen(false);
+    onCancel?.();
   };
 
   const ok = () => onOk?.();
@@ -286,10 +288,14 @@ const Drawer: React.FC<DrawerProps> = ({
         >
           <div className="k-drawer-box" style={drawerStyle}>
             <div className="k-drawer-content">
-              <div className="k-drawer-header">
-                {closeNode}
-                <div className="k-drawer-header-inner">{title}</div>
-              </div>
+              {/* 与 Modal 同一条口径：没有标题内容就不该有 header，空标题也会撑出一条带边框的
+                  横条。Drawer 的右上角关闭按钮住在 header 里，所以还要给 `closable` 留位置。 */}
+              {(title != null || closable) && (
+                <div className="k-drawer-header">
+                  {closeNode}
+                  <div className="k-drawer-header-inner">{title}</div>
+                </div>
+              )}
               <div className="k-drawer-body">{children}</div>
               {footerNode}
             </div>

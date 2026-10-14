@@ -34,7 +34,7 @@ A floating panel that slides in from the edge of the screen.
 | escKey | Whether to support closing with Esc key | `boolean` | true |
 | destroyOnClose | Whether to destroy drawer content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened drawer | `boolean` | true |
 | maskClosable | Whether clicking the mask closes the drawer (mask only; Esc is gated by `escKey`) | `boolean` | true |
-| title | Drawer title. When null or false, the title is not displayed | `React.ReactNode` | - |
+| title | Drawer title. With none there is no title text (no built-in default); the header bar stays for the top-right close button and is only dropped when `closable` is off too | `React.ReactNode` | - |
 | width | Drawer width, used when `placement` is `left` or `right`, supports percentage | `string \| number` | 520 |
 | height | Drawer height, used when `placement` is `top` or `bottom`, supports percentage | `string \| number` | 520 |
 | placement | The display direction of the drawer. Provides 4 display methods: `left`, `top`, `right`, `bottom` | `"top" \| "bottom" \| "left" \| "right"` | right |
@@ -60,3 +60,4 @@ Closing splits into two channels that never fire together:
 Listen to both if you need one "it closed" hook; keep them separate if you need to tell an explicit cancel apart from every other way of closing.
 `onOk` never closes the drawer — it only sits on the OK button, so close it yourself inside that callback when you need to.
 Keep the open state in sync through `onOpenChange` alone: all four ways of closing — cancel, mask, Esc, the close icon — fire `onOpenChange(false)`, while `onCancel` / `onClose` only tell you which channel closed it. So the controlled pattern is `open={open}` with `onOpenChange={setOpen}`, not a `setOpen(false)` in each of `onCancel` and `onClose`.
+The order is unified across all four (Modal / Drawer × React / Vue): `onOpenChange(false)` lands first and settles the open state, then `onCancel` / `onClose` say which channel closed it. So the open value you read inside those callbacks is already settled, and there is no need to call `setOpen(false)` there.

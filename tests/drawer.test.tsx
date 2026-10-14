@@ -50,3 +50,38 @@ describe("Drawer target", () => {
     expect(target.style.position).toBe("");
   });
 });
+
+/**
+ * 标题栏的有无是个谓词：不再拿写死的 "Title" 兜底（那是英文常量，也过不了国际化）。
+ * Drawer 的右上角关闭按钮住在 header 里，所以只有"既没标题又不 closable"才整条不收。
+ * 两个仓库断言同一件事，见 kui-vue/tests/drawer.test.ts。
+ */
+describe("Drawer header", () => {
+  it("shows the title text", async () => {
+    render(
+      <Drawer open title="标题">
+        内容
+      </Drawer>,
+    );
+    await waitFor(() => expect(document.querySelector(".k-drawer-header")).not.toBeNull());
+    expect(document.querySelector(".k-drawer-header-inner")?.textContent).toBe("标题");
+  });
+
+  it("keeps the bar for the close button when no title is given", async () => {
+    render(<Drawer open>内容</Drawer>);
+    await waitFor(() => expect(document.querySelector(".k-drawer-header")).not.toBeNull());
+    // 以前这里会印出默认的 "Title"；现在标题文本是空的，X 还在。
+    expect(document.querySelector(".k-drawer-header-inner")?.textContent).toBe("");
+    expect(document.querySelector(".k-drawer-close")).not.toBeNull();
+  });
+
+  it("drops the header when there is neither a title nor a close button", async () => {
+    render(
+      <Drawer open closable={false}>
+        内容
+      </Drawer>,
+    );
+    await waitFor(() => expect(document.querySelector(".k-drawer-body")).not.toBeNull());
+    expect(document.querySelector(".k-drawer-header")).toBeNull();
+  });
+});

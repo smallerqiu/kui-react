@@ -34,7 +34,7 @@ Modal dialog box.
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
 | open | dialog visibility | `boolean` | - |
-| title | Dialog title | `React.ReactNode` | - |
+| title | Dialog title, accepts any node as well as text; with none the header is not rendered (no empty bordered strip left behind) | `React.ReactNode` | - |
 | width | Dialog width | `string \| number` | 520 |
 | okText | OK button text | `string` | OK |
 | cancelText | Cancel button text | `string` | Cancel |
@@ -66,6 +66,7 @@ Closing splits into two channels that never fire together:
 Listen to both if you need one "it closed" hook; keep them separate if you need to tell an explicit cancel apart from every other way of closing.
 `onOk` never closes the dialog — it only sits on the OK button, so close it yourself inside that callback when you need to.
 Keep the open state in sync through `onOpenChange` alone: all four ways of closing — cancel, mask, Esc, the close icon — fire `onOpenChange(false)`, while `onCancel` / `onClose` only tell you which channel closed it. So the controlled pattern is `open={open}` with `onOpenChange={setOpen}`, not a `setOpen(false)` in each of `onCancel` and `onClose`.
+The order is unified across all four (Modal / Drawer × React / Vue): `onOpenChange(false)` lands first and settles the open state, then `onCancel` / `onClose` say which channel closed it. So the open value you read inside those callbacks is already settled, and there is no need to call `setOpen(false)` there.
 
 ## Modal.method()
 

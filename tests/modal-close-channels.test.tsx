@@ -23,12 +23,12 @@ type CloseProps = {
   children?: ReactNode;
 };
 
-type Channels = { cancel: number; close: number; openChanges: boolean[] };
+type Channels = { cancel: number; close: number; openChanges: boolean[]; log: string[] };
 
 const views: RenderResult[] = [];
 
 const harness = (Target: ComponentType<CloseProps>): Channels => {
-  const channels: Channels = { cancel: 0, close: 0, openChanges: [] };
+  const channels: Channels = { cancel: 0, close: 0, openChanges: [], log: [] };
   function Host() {
     const [open, setOpen] = useState(true);
     return (
@@ -38,12 +38,15 @@ const harness = (Target: ComponentType<CloseProps>): Channels => {
         maskClosable
         onCancel={() => {
           channels.cancel += 1;
+          channels.log.push("cancel");
         }}
         onClose={() => {
           channels.close += 1;
+          channels.log.push("close");
         }}
         onOpenChange={(next) => {
           channels.openChanges.push(next);
+          channels.log.push(`open:${next}`);
           setOpen(next);
         }}
       >
@@ -90,6 +93,9 @@ describe.each(targets)("%s close channels", (_name, Target, root, maskSelector) 
       );
       expect(channels.openChanges.filter((next) => next === false)).toHaveLength(1);
       expect(channels.openChanges.at(-1)).toBe(false);
+      // 四处（react/vue × Modal/Drawer）统一的顺序：先结开合状态，再发语义回调。
+      // 反过来的话 onCancel/onClose 里读到 open 还是 true，宿主只能自己再补一次 setOpen。
+      expect(channels.log).toEqual(["open:false", channel]);
 
       // 只靠 onOpenChange 同步受控值就能真的关掉窗口
       await waitFor(() => expect(document.querySelector(root)).toBeNull());
