@@ -56,6 +56,8 @@ rm -rf node_modules/.vite
 - `Select` no longer crashes when the selected value or an option label is `NaN`. React used to re-render it up to the limit and throw "Too many re-renders", leaving the page to the error boundary; it now displays like any other number.
 - `Modal` / `Drawer` close in one consistent callback order: `onOpenChange(false)` settles the open state first, then `onCancel` / `onClose` say which channel closed it. The state read inside those callbacks is already settled, so there is no need to close it again yourself.
 - `Drawer`'s `title` no longer defaults to "Title" — omit it and there is no title text. The header still makes room for the close button and only disappears when `closable: false` is set with no title.
+- `DatePicker`: Closing the panel with `Escape` after picking only one end of a range no longer leaves the half date in the box; it now falls back to the last committed range, the same as clicking outside.
+- `DatePicker`: Typing a date into only the end box no longer shows a value that `onChange` never received. A range with one end missing is not a selection, and closing the panel clears it.
 
 ### 3.1.2
 
