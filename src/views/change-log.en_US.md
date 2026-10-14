@@ -61,6 +61,7 @@ rm -rf node_modules/.vite
 - `DatePicker`: Rejected manual input no longer snaps the box back to the date passed in first; it falls back to the current value, which for uncontrolled pickers is the last committed result.
 - `DatePicker`: When a range controls only one end (`startDate` or `endDate`), the next pick no longer overwrites the end the parent provided; the panel keeps it and only fills the empty end.
 - `DatePicker`: Picking the already selected date, or submitting the same value again, no longer fires a redundant `onChange`.
+- `DatePicker`: Picking a time in the time columns while only one end of the range is chosen no longer emits that half range; the time stays in the box until the other end is filled in.
 
 ### 3.1.2
 
