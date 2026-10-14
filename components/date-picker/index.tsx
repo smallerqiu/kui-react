@@ -559,7 +559,12 @@ function DatePicker({
                     if (mode === "dateTimeRange") next[rangeIndex] = candidate;
                     else next[0] = candidate;
                     setPanelDate(candidate);
-                    commit(next);
+                    // 和手输同一条口径：区间还缺另一头时只把时间挪进草稿和文本，
+                    // 不把半截区间当成结果发给 onChange——另一头还没选，草稿里是个洞。
+                    if (isRange && !(next[0] && next[1])) {
+                      setDraft(next);
+                      setTexts(next.map((item) => item?.format(fmt) ?? ""));
+                    } else commit(next as Dayjs[]);
                     centerTimeItem(timeColRefs.current[unit], number, "smooth");
                   }}
                 >

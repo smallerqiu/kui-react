@@ -278,4 +278,38 @@ describe("DatePicker", () => {
     fireEvent.click(container.querySelector(".k-picker-day-selected")!);
     expect(onChange).toHaveBeenCalledTimes(1);
   });
+
+  // "首尾凑齐才算选上"要覆盖时间列这条路：dateTimeRange 只点到起点时，
+  // 时间格子改的是草稿里的那一格，另一头还空着——半截区间不该发给 onChange，
+  // 但这个时间得留在草稿和输入框里，不然选了等于没选。
+  it("keeps a half range out of onChange when the time is picked before the second end", async () => {
+    const originalScrollTo = HTMLElement.prototype.scrollTo;
+    HTMLElement.prototype.scrollTo = vi.fn();
+    try {
+      const onChange = vi.fn();
+      const { container } = render(<DatePicker mode="dateTimeRange" open onChange={onChange} />);
+      await waitFor(() =>
+        expect(
+          document.body.querySelector(".k-picker-day:not(.k-picker-day-disabled)"),
+        ).not.toBeNull(),
+      );
+      fireEvent.click(document.body.querySelector(".k-picker-day:not(.k-picker-day-disabled)")!);
+      expect(onChange).not.toHaveBeenCalled();
+
+      fireEvent.click(document.body.querySelector<HTMLElement>(".k-picker-footer-time")!);
+      await waitFor(() => expect(document.body.querySelector(".k-picker-time-item")).not.toBeNull());
+      fireEvent.click(document.body.querySelectorAll<HTMLElement>(".k-picker-time-item")[5]);
+
+      expect(
+        onChange,
+        "时间列也是区间的一条通道，缺另一头时不能把半截区间当结果发出去",
+      ).not.toHaveBeenCalled();
+      expect(container.querySelectorAll<HTMLElement>(".k-datepicker-input")[0].value).toMatch(
+        / 05:00:00$/,
+      );
+      expect(container.querySelectorAll<HTMLElement>(".k-datepicker-input")[1].value).toBe("");
+    } finally {
+      HTMLElement.prototype.scrollTo = originalScrollTo;
+    }
+  });
 });
