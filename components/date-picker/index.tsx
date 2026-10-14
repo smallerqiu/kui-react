@@ -279,9 +279,11 @@ function DatePicker({
     // 值没变就不要再通知：重复点已经选中的日期、重复点已经对准的时/分/秒，
     // 原来都会原样再发一次 onChange（区间还带 onStartDateChange/onEndDateChange）。
     // 父级在 onChange 里发请求的话，这一趟是白跑的。
+    // 比的是显示出来的文本，不是毫秒时间戳：日历格子每渲染一拨就重算一个 Dayjs，
+    // 同一天可能带着不同的时分秒落进来，比时间戳会把"同一天"误判成变了。
     const unchanged =
-      pair.length === values.length &&
-      pair.every((item, index) => (item?.valueOf() ?? null) === (values[index]?.valueOf() ?? null));
+      next.map((item) => item.format(fmt)).join("\u0000") ===
+      values.map((item) => item?.format(fmt) ?? "").join("\u0000");
     if (!rangeControlled) setInner(pair);
     setDraft(rangeControlled ? values : pair);
     setTexts(rangeControlled ? formattedValues : pair.map((item) => item?.format(fmt) ?? ""));
