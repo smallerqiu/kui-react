@@ -1,13 +1,13 @@
 # Internationalization
 
-KUI React provides locale configuration through React Context and uses Simplified Chinese by default. Pass a locale to `ConfigProvider` to switch languages:
+KUI React provides locale configuration through React Context. Built-in component text is English by default; register another locale through the `locale` property of `ConfigProvider`:
 
 ```tsx
 import { ConfigProvider } from "react-kui";
-import en from "react-kui/locale/en";
+import zhCN from "react-kui/locale/zh-CN";
 
 export default function App() {
-  return <ConfigProvider locale={en}>{/* application */}</ConfigProvider>;
+  return <ConfigProvider locale={zhCN}>{/* application */}</ConfigProvider>;
 }
 ```
 
@@ -31,7 +31,7 @@ Currently, KUI has the following languages built-in:
 - Traditional Chinese (zh-TW)
 - German (de)
 - Greek (el)
-- English (en)
+- English (en, default)
 - French (fr)
 - Italian (it)
 - Japanese (ja)

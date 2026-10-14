@@ -1,13 +1,13 @@
 # 多语言
 
-KUI React 通过 React Context 提供多语言能力，默认使用简体中文。使用 `ConfigProvider` 的 `locale` 属性即可切换语言：
+KUI React 通过 React Context 提供多语言能力，组件内置文案默认使用英语。想让组件显示简体中文，用 `ConfigProvider` 的 `locale` 属性注册对应的语言包：
 
 ```tsx
 import { ConfigProvider } from "react-kui";
-import en from "react-kui/locale/en";
+import zhCN from "react-kui/locale/zh-CN";
 
 export default function App() {
-  return <ConfigProvider locale={en}>{/* 应用内容 */}</ConfigProvider>;
+  return <ConfigProvider locale={zhCN}>{/* 应用内容 */}</ConfigProvider>;
 }
 ```
 
@@ -31,7 +31,7 @@ export default function App() {
 - 繁体中文(zh-TW)
 - 德语(de)
 - 希腊语(el)
-- 英语(en)
+- 英语(en，默认)
 - 法语(fr)
 - 意大利语(it)
 - 日语(ja)

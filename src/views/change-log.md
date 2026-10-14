@@ -65,6 +65,7 @@ rm -rf node_modules/.vite
 - `DatePicker` 修复年 / 月面板不认 `disabledDate`：一整年或一整月里一天都选不出来时，那一格置灰、点不进去，`Tab` 也会跳过它；格里还能选出一天的，照常能点。
 - `DatePicker` 年 / 月面板的高亮改为跟着当前值走：翻年、翻月只改浏览位置，选中样式不再跑到正看着的那一格上。
 - `DatePicker` 年 / 月格子可以用键盘选了：`Tab` 到格子按 `Enter` 或空格即可，头部的年份、月份标签同样能用键盘切面板。
+- **不兼容变更**：组件内置文案的默认语言从简体中文改为英语。没有挂 `ConfigProvider` 时，`DatePicker`、`Select`、`Table`、`Modal`、`Page` 等组件的内置文案现在显示英文；需要简体中文请在应用根部挂 `ConfigProvider` 并传入 `locale`（`import zhCN from "react-kui/locale/zh-CN"`）。
 
 ### 3.1.2
 

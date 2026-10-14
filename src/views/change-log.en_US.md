@@ -65,6 +65,7 @@ rm -rf node_modules/.vite
 - `DatePicker`: The year and month panels now honour `disabledDate` — a year or month with no pickable day at all is greyed out, refuses clicks, and is skipped by `Tab`, while one that still has a pickable day remains clickable.
 - `DatePicker`: The year and month highlight now follows the current value instead of wherever you happen to be browsing.
 - `DatePicker`: Year and month cells can be picked with the keyboard (`Tab` to a cell, then `Enter` or Space), and the year / month labels in the header switch panels with the same keys.
+- **Breaking change**: Built-in component text now defaults to English instead of Simplified Chinese. Without a `ConfigProvider`, strings in `DatePicker`, `Select`, `Table`, `Modal`, `Page` and friends render in English; pass a Chinese locale (`import zhCN from "react-kui/locale/zh-CN"`) at the application root to keep Simplified Chinese.
 
 ### 3.1.2
 
