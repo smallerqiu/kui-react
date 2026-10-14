@@ -48,7 +48,7 @@ A floating panel that slides in from the edge of the screen.
 | onOk | Callback when OK is clicked | `(() => void)` | - |
 | onClose | Callback when the drawer closes | `(() => void)` | - |
 | onCancel | Callback when Cancel is clicked | `(() => void)` | - |
-| onOpenChange | Callback for opening or closing the drawer | `((opened: boolean) => void)` | - |
+| onOpenChange | Fires when the drawer closes; opening is your own `open` flip, so it is never echoed back | `((opened: boolean) => void)` | - |
 
 ### onCancel vs onClose
 
@@ -61,3 +61,4 @@ Listen to both if you need one "it closed" hook; keep them separate if you need 
 `onOk` never closes the drawer — it only sits on the OK button, so close it yourself inside that callback when you need to.
 Keep the open state in sync through `onOpenChange` alone: all four ways of closing — cancel, mask, Esc, the close icon — fire `onOpenChange(false)`, while `onCancel` / `onClose` only tell you which channel closed it. So the controlled pattern is `open={open}` with `onOpenChange={setOpen}`, not a `setOpen(false)` in each of `onCancel` and `onClose`.
 The order is unified across all four (Modal / Drawer × React / Vue): `onOpenChange(false)` lands first and settles the open state, then `onCancel` / `onClose` say which channel closed it. So the open value you read inside those callbacks is already settled, and there is no need to call `setOpen(false)` there.
+Only closing is announced: flipping `open` to true never fires `onOpenChange(true)` — opening was your own decision to begin with. Watch your own `open` if you need to react to it.

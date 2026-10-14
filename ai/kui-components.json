@@ -17384,8 +17384,8 @@
           "type": "((opened: boolean) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "打开或抽屉关闭的回调",
-          "descriptionEn": "Callback for opening or closing the drawer"
+          "descriptionZh": "抽屉关闭时的回调；打开是调用方自己翻 `open`，不会再回传一次",
+          "descriptionEn": "Fires when the drawer closes; opening is your own `open` flip, so it is never echoed back"
         },
         {
           "name": "children",
@@ -17428,8 +17428,8 @@
           "type": "((opened: boolean) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "打开或抽屉关闭的回调",
-          "descriptionEn": "Callback for opening or closing the drawer"
+          "descriptionZh": "抽屉关闭时的回调；打开是调用方自己翻 `open`，不会再回传一次",
+          "descriptionEn": "Fires when the drawer closes; opening is your own `open` flip, so it is never echoed back"
         }
       ],
       "renderProps": [
@@ -31963,8 +31963,8 @@
           "type": "((opened: boolean) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "打开或者窗口关闭的回调",
-          "descriptionEn": "Callback for opening or closing a window"
+          "descriptionZh": "窗口关闭时的回调；打开是调用方自己翻 `open`，不会再回传一次",
+          "descriptionEn": "Fires when the window closes; opening is your own `open` flip, so it is never echoed back"
         },
         {
           "name": "onAfterClose",
@@ -32023,8 +32023,8 @@
           "type": "((opened: boolean) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "打开或者窗口关闭的回调",
-          "descriptionEn": "Callback for opening or closing a window"
+          "descriptionZh": "窗口关闭时的回调；打开是调用方自己翻 `open`，不会再回传一次",
+          "descriptionEn": "Fires when the window closes; opening is your own `open` flip, so it is never echoed back"
         },
         {
           "name": "onAfterClose",
@@ -32131,8 +32131,8 @@
           "type": "((opened: boolean) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "打开或者窗口关闭的回调",
-          "descriptionEn": "Callback for opening or closing a window"
+          "descriptionZh": "窗口关闭时的回调；打开是调用方自己翻 `open`，不会再回传一次",
+          "descriptionEn": "Fires when the window closes; opening is your own `open` flip, so it is never echoed back"
         },
         {
           "name": "onAfterClose",
@@ -32263,8 +32263,8 @@
           "type": "((opened: boolean) => void) | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "打开或者窗口关闭的回调",
-          "descriptionEn": "Callback for opening or closing a window"
+          "descriptionZh": "窗口关闭时的回调；打开是调用方自己翻 `open`，不会再回传一次",
+          "descriptionEn": "Fires when the window closes; opening is your own `open` flip, so it is never echoed back"
         },
         {
           "name": "onAfterClose",

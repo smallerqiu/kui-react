@@ -54,7 +54,7 @@
 | onCancel | 点击取消的回调 | `(() => void)` | - |
 | onClose | 窗口关闭的回调 | `(() => void)` | - |
 | onAfterClose | 关闭动画结束后的回调 | `(() => void)` | - |
-| onOpenChange | 打开或者窗口关闭的回调 | `((opened: boolean) => void)` | - |
+| onOpenChange | 窗口关闭时的回调；打开是调用方自己翻 `open`，不会再回传一次 | `((opened: boolean) => void)` | - |
 
 ### onCancel 与 onClose 的分工
 
@@ -67,6 +67,7 @@
 `onOk` 不负责关闭，它只挂在确定按钮上，需要关窗请自己在回调里收。
 同步开合状态请只挂 `onOpenChange`：取消、遮罩、Esc、右上角这四种关法都会发一次 `onOpenChange(false)`，`onCancel` / `onClose` 只告诉你这次是哪条通道关的，不承担状态同步。所以受控写法是 `open={open}` 配 `onOpenChange={setOpen}`，而不是在 `onCancel` 和 `onClose` 里各 `setOpen(false)` 一次。
 四处（Modal / Drawer × React / Vue）统一的顺序：先 `onOpenChange(false)` 把开合状态结掉，再 `onCancel` / `onClose` 说这次是哪条通道关的。所以在 `onCancel`、`onClose` 里读到的开合值已经是结算后的，不用自己在回调里再补一次 `setOpen(false)`。
+通知只在关闭时发：`open` 从 false 翻到 true 不会有 `onOpenChange(true)`，四处都是这个口径——打开本来就是调用方自己的决定。想在打开时做点什么，watch 自己那份 `open`。
 
 ## Modal.method()
 

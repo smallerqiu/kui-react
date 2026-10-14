@@ -95,11 +95,54 @@ describe.each(targets)("%s close channels", (_name, Target, root, maskSelector) 
       expect(channels.openChanges.at(-1)).toBe(false);
       // 四处（react/vue × Modal/Drawer）统一的顺序：先结开合状态，再发语义回调。
       // 反过来的话 onCancel/onClose 里读到 open 还是 true，宿主只能自己再补一次 setOpen。
+      // 打开方向一个字都不发（见下面那组用例），所以整段日志就只有这两条。
       expect(channels.log).toEqual(["open:false", channel]);
 
       // 只靠 onOpenChange 同步受控值就能真的关掉窗口
       await waitFor(() => expect(document.querySelector(root)).toBeNull());
     });
+  });
+});
+
+/**
+ * 打开方向不回写：能走到"打开"的只有宿主把 `open` 翻成 true 这一条路（挂载时就是 true 也算），
+ * 再发一次 `onOpenChange(true)` 是把宿主刚写过的值喂回去。vue 侧同口径——`modelValue` 翻 true
+ * 时既不回写 `update:modelValue` 也不发 `openChange(true)`，见 kui-vue 的同名文件。
+ */
+describe.each(targets)("%s opening echoes nothing", (_name, Target, root) => {
+  it.each([
+    ["already open at mount", true],
+    ["opened later by the host", false],
+  ])("%s", async (_label, openAtMount) => {
+    const log: string[] = [];
+    function Host() {
+      const [open, setOpen] = useState(openAtMount);
+      return (
+        <div>
+          <button onClick={() => setOpen(true)}>打开</button>
+          <Target
+            open={open}
+            title="标题"
+            onOpenChange={(next) => {
+              log.push(`open:${next}`);
+              setOpen(next);
+            }}
+          >
+            内容
+          </Target>
+        </div>
+      );
+    }
+    views.push(render(<Host />));
+    await settle();
+
+    if (!openAtMount) {
+      fireEvent.click(document.querySelector("button")!);
+      await settle();
+    }
+
+    expect(document.querySelector(root), "面板确实打开了").not.toBeNull();
+    expect(log, "打开既不回写开合状态，也不通知").toEqual([]);
   });
 });
 
