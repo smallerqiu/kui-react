@@ -170,6 +170,19 @@ describe("DatePicker", () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
+  it("rejects disabled times in time mode", () => {
+    const onChange = vi.fn();
+    const { container } = render(
+      <DatePicker
+        mode="time"
+        disabledTime={(date) => date.getHours() === 10}
+        onChange={onChange}
+      />,
+    );
+    fireEvent.change(container.querySelector("input")!, { target: { value: "10:00:00" } });
+    expect(onChange, "`mode=\"time\"` 也是带时间的档，disabledTime 得生效").not.toHaveBeenCalled();
+  });
+
   it("rejects disabled values from extension content", () => {
     const onChange = vi.fn();
     const disabledDate = (date: Date) => date.getFullYear() === 2027;

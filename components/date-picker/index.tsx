@@ -243,7 +243,10 @@ function DatePicker({
     [onOpenChange, setVisibleState, panelOnly],
   );
   const closePopup = () => {
-    if (isRange && draft.length === 1) {
+    // 首尾没凑齐就关闭，说明这次区间选了一半，丢掉草稿回到上次提交的值。
+    // 判据只能是"首尾是否都在"，不能是数组长度：日历点一下留下的是长度 1 的草稿，
+    // 手输只填一个框留下的是文本有值、草稿没动，两种都得回滚；按长度判会把后者漏掉。
+    if (isRange && !(draft[0] && draft[1])) {
       setDraft(values);
       setTexts(values.map((item) => item.format(fmt)));
     }
@@ -704,7 +707,9 @@ function DatePicker({
         onKeyDown={(event) => {
           if (event.key === "Escape" && visible) {
             event.stopPropagation();
-            setOpen(false);
+            // 和点外面同一条关闭路径：半截区间要在关闭时清掉草稿，
+            // 这里直接 setOpen(false) 会让 Esc 关完下次打开还留着上一次的半成品。
+            closePopup();
           } else if ((event.key === "Enter" || event.key === " ") && !visible) {
             event.preventDefault();
             setOpen(true);
