@@ -207,4 +207,75 @@ describe("DatePicker", () => {
     });
     expect(onChange).toHaveBeenCalled();
   });
+
+  // 受控值口径（规则 A）：区间输入框回退的唯一来源是"当前这份值"——
+  // 非受控时就是最近一次提交的结果，而不是 props 里那个原始值。
+  // 历史上区间的文本恒取 props 那份，于是提交过新值再输错、失焦，
+  // 两个框一起被清成初始状态，和内部已提交的值漂移。
+  it("reverts a mistyped range box to the committed range instead of the initial props", async () => {
+    const onChange = vi.fn();
+    const { container } = render(<DatePicker mode="dateRange" open onChange={onChange} />);
+    await waitFor(() =>
+      expect(
+        document.body.querySelector(".k-picker-day:not(.k-picker-day-disabled)"),
+      ).not.toBeNull(),
+    );
+    const days = () =>
+      Array.from(
+        document.body.querySelectorAll<HTMLElement>(".k-picker-day:not(.k-picker-day-disabled)"),
+      );
+    // 格子按时间顺序排，头一个是最早的、最后一个是最新的，两点即凑齐一段。
+    fireEvent.click(days()[0]);
+    fireEvent.click(days().at(-1)!);
+    const committed = onChange.mock.calls.at(-1)?.[1] as string[];
+    expect(committed[0]).not.toBe("");
+    expect(committed[1]).not.toBe("");
+
+    const inputs = container.querySelectorAll<HTMLInputElement>(".k-datepicker-input");
+    fireEvent.change(inputs[0], { target: { value: "not-a-date" } });
+    fireEvent.blur(inputs[0]);
+
+    expect(inputs[0].value).toBe(committed[0]);
+    expect(inputs[1].value).toBe(committed[1]);
+  });
+
+  // 规则 A 的另一半：范围只受控单边时，面板要认已有那头。
+  // 历史上草稿按"有没有空位"整段作废（文本却还显示着那一个值），
+  // 于是下一次点选被当成"第一次点击 = 起点"，把父级给的那一头覆盖掉。
+  it.each([
+    ["startDate", "2026-08-01"],
+    ["endDate", "2026-08-05"],
+  ])(
+    "keeps the %s already given by the parent when the other end is picked",
+    async (prop, date) => {
+      const onChange = vi.fn();
+      const controlled = { [prop]: date } as { startDate?: string; endDate?: string };
+      render(<DatePicker mode="dateRange" open onChange={onChange} {...controlled} />);
+      await waitFor(() =>
+        expect(
+          document.body.querySelector(".k-picker-day:not(.k-picker-day-disabled)"),
+        ).not.toBeNull(),
+      );
+      fireEvent.click(document.body.querySelector(".k-picker-day:not(.k-picker-day-disabled)")!);
+
+      expect(onChange).toHaveBeenCalledTimes(1);
+      const strings = onChange.mock.calls[0]?.[1] as string[];
+      // 已有的那一头还在结果里，另一头由这次点选补上，两头都得有值。
+      expect(strings).toContain(date);
+      expect(strings.filter(Boolean)).toHaveLength(2);
+    },
+  );
+
+  // 规则 C：值没变就不要重复通知。react 的 commit 和 vue 的 emitValue 同一条口径，
+  // 父级在 onChange 里发请求，重复点已经选中的日期不该再跑一趟。
+  it("does not re-emit when the already selected date is picked again", () => {
+    const onChange = vi.fn();
+    const { container } = render(<DatePicker panelOnly onChange={onChange} />);
+    const day = container.querySelector<HTMLElement>(".k-picker-day:not(.k-picker-day-disabled)")!;
+    fireEvent.click(day);
+    expect(onChange).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(container.querySelector(".k-picker-day-selected")!);
+    expect(onChange).toHaveBeenCalledTimes(1);
+  });
 });
