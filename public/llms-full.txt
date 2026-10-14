@@ -9535,9 +9535,8 @@ export default function App() {
       "type": "React.ReactNode",
       "required": false,
       "boolean": false,
-      "defaultExpression": "\"Title\"",
-      "descriptionZh": "抽屉标题,为null或false时不显示标题",
-      "descriptionEn": "Drawer title. When null or false, the title is not displayed"
+      "descriptionZh": "抽屉标题，不写就没有标题文本（不再有默认标题）；标题栏仍留给右上角关闭按钮，`closable: false` 且没有标题才整条不收",
+      "descriptionEn": "Drawer title. With none there is no title text (no built-in default); the header bar stays for the top-right close button and is only dropped when `closable` is off too"
     },
     {
       "name": "width",
