@@ -297,7 +297,9 @@ describe("DatePicker", () => {
       expect(onChange).not.toHaveBeenCalled();
 
       fireEvent.click(document.body.querySelector<HTMLElement>(".k-picker-footer-time")!);
-      await waitFor(() => expect(document.body.querySelector(".k-picker-time-item")).not.toBeNull());
+      await waitFor(() =>
+        expect(document.body.querySelector(".k-picker-time-item")).not.toBeNull(),
+      );
       fireEvent.click(document.body.querySelectorAll<HTMLElement>(".k-picker-time-item")[5]);
 
       expect(
@@ -311,5 +313,142 @@ describe("DatePicker", () => {
     } finally {
       HTMLElement.prototype.scrollTo = originalScrollTo;
     }
+  });
+
+  // 年 / 月面板（②）：格子只在 mode 就是选这一年 / 这一月时才认 disabledDate，
+  // 判据是"整格里一天都挑不出来"。浏览态不拦——拦死了用户连"翻过去看看"都做不到。
+  it("refuses a fully disabled year and lands on an open day inside a partly disabled one", () => {
+    const onChange = vi.fn();
+    const { container } = render(
+      <DatePicker
+        panelOnly
+        mode="year"
+        value="2026-01-01"
+        format="YYYY-MM-DD"
+        disabledDate={(date) =>
+          date.getFullYear() === 2027 ||
+          (date.getFullYear() === 2028 && date.getMonth() === 0 && date.getDate() === 1)
+        }
+        onChange={onChange}
+      />,
+    );
+    const cells = Array.from(container.querySelectorAll<HTMLElement>(".k-picker-year-item"));
+    const cellOf = (year: number) => cells.find((cell) => cell.textContent === String(year))!;
+    const blocked = cellOf(2027);
+
+    expect(blocked.className).toContain("k-picker-year-disabled");
+    expect(blocked.getAttribute("aria-disabled")).toBe("true");
+    expect(blocked.getAttribute("tabindex")).toBe("-1");
+    fireEvent.click(blocked);
+    fireEvent.keyDown(blocked, { key: "Enter" });
+    expect(onChange, "整年被禁时点击和键盘都不该落值").not.toHaveBeenCalled();
+
+    // 格子能点就得真落值：浏览位置那天恰好被禁时，落到这一格里往后第一个能选的日子，
+    // 而不是"看着能点、点了没反应"。
+    fireEvent.click(cellOf(2028));
+    expect(onChange.mock.calls.at(-1)?.[1]).toBe("2028-01-02");
+
+    expect(cellOf(2029).getAttribute("role")).toBe("gridcell");
+    expect(cellOf(2029).getAttribute("tabindex")).toBe("0");
+    fireEvent.keyDown(cellOf(2029), { key: " " });
+    expect(onChange.mock.calls.at(-1)?.[1]).toBe("2029-01-01");
+  });
+
+  it("refuses a fully disabled month and lands on an open day inside a partly disabled one", () => {
+    const onChange = vi.fn();
+    const { container } = render(
+      <DatePicker
+        panelOnly
+        mode="month"
+        value="2026-05-10"
+        format="YYYY-MM-DD"
+        disabledDate={(date) =>
+          (date.getFullYear() === 2026 && date.getMonth() === 1) ||
+          (date.getFullYear() === 2026 && date.getMonth() === 2 && date.getDate() === 10)
+        }
+        onChange={onChange}
+      />,
+    );
+    // 月格子按 localeData 的顺序排，12 格恒定，下标 1 就是二月（标签文案跟语言走，不断言）。
+    const cells = Array.from(container.querySelectorAll<HTMLElement>(".k-picker-month-item"));
+    const blocked = cells[1];
+
+    expect(blocked.className).toContain("k-picker-month-disabled");
+    expect(blocked.getAttribute("aria-disabled")).toBe("true");
+    expect(blocked.getAttribute("tabindex")).toBe("-1");
+    fireEvent.click(blocked);
+    fireEvent.keyDown(blocked, { key: " " });
+    expect(onChange, "整月被禁时点击和键盘都不该落值").not.toHaveBeenCalled();
+
+    // 没被禁的那一格保留浏览位置（10 号），别自作主张改成 1 号。
+    fireEvent.click(cells[3]);
+    expect(onChange.mock.calls.at(-1)?.[1]).toBe("2026-04-10");
+    // 3 月只有 10 号被禁：格子可选，值落进这一格里第一个能选的日子。
+    fireEvent.click(cells[2]);
+    expect(onChange.mock.calls.at(-1)?.[1]).toBe("2026-03-01");
+  });
+
+  it("keeps Feb 29 inside February when the year panel jumps a whole year", () => {
+    const onChange = vi.fn();
+    const { container } = render(
+      <DatePicker
+        panelOnly
+        mode="year"
+        value="2024-02-29"
+        format="YYYY-MM-DD"
+        onChange={onChange}
+      />,
+    );
+    const cells = Array.from(container.querySelectorAll<HTMLElement>(".k-picker-year-item"));
+
+    // 2027 年没有 2 月 29 日：钳到 2 月 28 日，而不是让 dayjs 溢出成 3 月 1 日。
+    fireEvent.click(cells.find((cell) => cell.textContent === "2027")!);
+    expect(onChange.mock.calls.at(-1)?.[1]).toBe("2027-02-28");
+  });
+
+  it("opens the year and month panels from the keyboard", () => {
+    const { container } = render(<DatePicker panelOnly value="2026-08-21" />);
+    const labels = () =>
+      Array.from(container.querySelectorAll<HTMLElement>(".k-picker-header-label span"));
+    const yearLabel = () => labels().find((label) => /^\d{4}/.test(label.textContent ?? ""))!;
+    const monthLabel = () => container.querySelector<HTMLElement>(".k-picker-header-month-btn")!;
+
+    expect(yearLabel().getAttribute("tabindex")).toBe("0");
+    fireEvent.keyDown(yearLabel(), { key: "Enter" });
+    expect(container.querySelector(".k-picker-year-body")).not.toBeNull();
+    fireEvent.keyDown(monthLabel(), { key: " " });
+    expect(container.querySelector(".k-picker-month-body")).not.toBeNull();
+  });
+
+  it("keeps the year and month highlight on the value, not the browsing position", () => {
+    const { container } = render(<DatePicker panelOnly mode="month" value="2026-08" />);
+    const monthCells = () =>
+      Array.from(container.querySelectorAll<HTMLElement>(".k-picker-month-item"));
+    const yearCells = () =>
+      Array.from(container.querySelectorAll<HTMLElement>(".k-picker-year-item"));
+    const yearLabel = () =>
+      Array.from(container.querySelectorAll<HTMLElement>(".k-picker-header-label span")).find(
+        (label) => /^\d{4}/.test(label.textContent ?? ""),
+      )!;
+
+    expect(monthCells()[7].className).toContain("k-picker-month-selected");
+    expect(monthCells()[7].getAttribute("aria-selected")).toBe("true");
+
+    // 翻到 7 月：浏览位置变了，选中态得留在值所在的那个 8 月。
+    fireEvent.click(container.querySelectorAll<HTMLElement>(".k-picker-header button")[1]);
+    expect(monthCells()[6].className, "翻月不该把选中态带到浏览位置上").not.toContain(
+      "k-picker-month-selected",
+    );
+    expect(monthCells()[7].className).toContain("k-picker-month-selected");
+
+    // 月面板里点年份只是翻浏览位置，翻到 2027 再回年面板，选中格还得是 2026。
+    fireEvent.click(yearLabel());
+    fireEvent.click(yearCells().find((cell) => cell.textContent === "2027")!);
+    fireEvent.click(yearLabel());
+    expect(
+      yearCells()
+        .filter((cell) => cell.className.includes("k-picker-year-selected"))
+        .map((cell) => cell.textContent),
+    ).toEqual(["2026"]);
   });
 });
