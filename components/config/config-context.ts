@@ -1,8 +1,16 @@
 import { createContext } from "react";
-import zhCN from "../locale/zh-CN";
+import enUS from "../locale/en";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 
-export type Locale = typeof zhCN & Record<string, unknown>;
+/** 语言包的形状契约就是 `en` 这一份：其余语言都得把 `k.*` 这些键填全。 */
+export type Locale = typeof enUS & Record<string, unknown>;
+
+/**
+ * 没有 ConfigProvider 兜底时用的语言。
+ * 库里以前是 16 处各自写死 `|| zhCN`，而文档写的是"默认英语"（dayjs 的中文语言包也从没注册过，
+ * 月份和星期本来就是英文），代码跟文档正好相反。默认值收到这一个出处，以后改默认只改这里。
+ */
+export const DEFAULT_LOCALE: Locale = enUS;
 
 export interface ConfigContextValue {
   locale: Locale | null;

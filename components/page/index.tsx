@@ -2,12 +2,11 @@ import { useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { ChevronsLeft, ChevronsRight, ChevronUp, Ellipsis } from "kui-icons";
 import React, { useContext, useState, useRef, useLayoutEffect } from "react";
-import { ConfigContext } from "../config/config-context";
+import { ConfigContext, DEFAULT_LOCALE } from "../config/config-context";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 import Icon from "../icon";
 import InputNumber from "../input-number";
 import { bindResponsivePage } from "./responsive";
-import zhCN from "../locale/zh-CN";
 import Select from "../select/select";
 
 export interface PageProps extends Omit<
@@ -58,7 +57,7 @@ const Page: React.FC<PageProps> = ({
   const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
   const size = sizeProp ?? inheritedAppearance.size;
   const config = useContext(ConfigContext);
-  const locale = config?.locale || zhCN;
+  const locale = config?.locale || DEFAULT_LOCALE;
 
   const normalizePageSize = (value: number) => (Number.isFinite(value) && value > 0 ? value : 10);
   const calcPageCount = (tot: number, ps: number) =>

@@ -295,13 +295,14 @@ describe("React state initialization and synchronization", () => {
   });
 
   it("uses mode-specific and range DatePicker placeholders", () => {
+    // 没有 ConfigProvider 时吃库级默认，也就是英文。
     const { rerender } = render(<DatePicker mode="year" />);
-    expect(screen.getByPlaceholderText(zhCN.k.datePicker.selectYear)).not.toBeNull();
+    expect(screen.getByPlaceholderText(enUS.k.datePicker.selectYear)).not.toBeNull();
     rerender(<DatePicker mode="time" />);
-    expect(screen.getByPlaceholderText(zhCN.k.datePicker.selectTime)).not.toBeNull();
+    expect(screen.getByPlaceholderText(enUS.k.datePicker.selectTime)).not.toBeNull();
     rerender(<DatePicker mode="dateRange" />);
-    expect(screen.getByPlaceholderText(zhCN.k.datePicker.startDate)).not.toBeNull();
-    expect(screen.getByPlaceholderText(zhCN.k.datePicker.endDate)).not.toBeNull();
+    expect(screen.getByPlaceholderText(enUS.k.datePicker.startDate)).not.toBeNull();
+    expect(screen.getByPlaceholderText(enUS.k.datePicker.endDate)).not.toBeNull();
   });
 
   it("renders DatePicker mode panels and respects disabled dates", () => {
@@ -389,7 +390,7 @@ describe("React state initialization and synchronization", () => {
     unmount();
 
     render(<Calendar value="2020-01-15" onChange={onChange} />);
-    fireEvent.click(screen.getByRole("button", { name: zhCN.k.datePicker.today }));
+    fireEvent.click(screen.getByRole("button", { name: enUS.k.datePicker.today }));
     const now = new Date();
     const expected = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
     expect(onChange).toHaveBeenLastCalledWith(
@@ -831,7 +832,7 @@ describe("React state initialization and synchronization", () => {
   it("destroys global modals after confirming or pressing Escape", async () => {
     modal.success({ title: "Success modal", content: "Saved" });
     await waitFor(() => expect(screen.getByText("Success modal")).not.toBeNull());
-    fireEvent.click(screen.getByRole("button", { name: /OK|确定/ }));
+    fireEvent.click(screen.getByRole("button", { name: enUS.k.common.ok }));
     expect(screen.getByText("Success modal")).not.toBeNull();
     await waitFor(() => expect(screen.queryByText("Success modal")).toBeNull());
 
@@ -1013,7 +1014,7 @@ describe("React state initialization and synchronization", () => {
       </Popconfirm>,
     );
     expect(document.querySelector(".k-popconfirm-arrow")).not.toBeNull();
-    fireEvent.click(await screen.findByRole("button", { name: zhCN.k.common.cancel }));
+    fireEvent.click(await screen.findByRole("button", { name: enUS.k.common.cancel }));
     expect(onCancel).toHaveBeenCalledOnce();
     expect(onOpenChange).toHaveBeenCalledWith(false);
     await waitFor(() => expect(screen.queryByText("Delete item?")).toBeNull());

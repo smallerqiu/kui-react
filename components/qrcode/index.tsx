@@ -14,9 +14,8 @@ import {
   type ReactNode,
 } from "react";
 import { Button } from "../button";
-import { ConfigContext } from "../config/config-context";
+import { ConfigContext, DEFAULT_LOCALE } from "../config/config-context";
 import type { QRCodeErrorLevel, QRCodeStatus, ShapeType, ThemeType } from "../const/types";
-import zhCN from "../locale/zh-CN";
 import Spin from "../spin";
 
 export interface QRCodeRef {
@@ -110,7 +109,7 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
   const safeSize = positive(size, 160);
   const safeMargin = Number.isFinite(margin) ? Math.max(0, Math.floor(margin)) : 0;
   const { locale } = useContext(ConfigContext);
-  const messages = (locale ?? zhCN)?.k?.qrcode;
+  const messages = (locale ?? DEFAULT_LOCALE)?.k?.qrcode;
 
   const draw = useCallback(async () => {
     const canvas = canvasRef.current;

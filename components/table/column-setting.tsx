@@ -1,9 +1,8 @@
 import { useContext, useState, type ReactNode } from "react";
 import { Button } from "../button";
 import { CheckboxGroup } from "../checkbox";
-import { ConfigContext } from "../config/config-context";
+import { ConfigContext, DEFAULT_LOCALE } from "../config/config-context";
 import type { SizeType } from "../const/types";
-import zhCN from "../locale/zh-CN";
 import Poptip from "../poptip";
 import type { Column } from "./types";
 
@@ -47,7 +46,7 @@ export function TableColumnSetting<T extends object = Record<string, unknown>>({
 
   // 与 kui-vue 同一条优先级：显式 props > locale.k.table > 英文兜底
   const config = useContext(ConfigContext);
-  const locale = config?.locale || zhCN;
+  const locale = config?.locale || DEFAULT_LOCALE;
   const title = titleProp || locale?.k?.table?.columnSettings || "Column settings";
   const resetText = resetTextProp || locale?.k?.table?.resetColumns || "Reset";
 

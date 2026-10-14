@@ -4,8 +4,7 @@ import type { PlacementsType } from "../const/types";
 import { CircleQuestionMark } from "kui-icons";
 import Button from "../button/button";
 import Icon from "../icon";
-import { ConfigContext } from "../config/config-context";
-import zhCN from "../locale/zh-CN";
+import { ConfigContext, DEFAULT_LOCALE } from "../config/config-context";
 export interface PopconfirmProps {
   dark?: boolean;
   open?: boolean;
@@ -53,7 +52,7 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   children,
 }) => {
   const config = React.useContext(ConfigContext);
-  const locale = config.locale || zhCN;
+  const locale = config.locale || DEFAULT_LOCALE;
   return (
     <Popup
       open={open ?? show}

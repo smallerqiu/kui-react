@@ -10,10 +10,9 @@ import {
   useState,
   type HTMLAttributes,
 } from "react";
-import { ConfigContext } from "../config/config-context";
+import { ConfigContext, DEFAULT_LOCALE } from "../config/config-context";
 import type { UploadStatusType } from "../const/types";
 import type { IconType } from "../icon";
-import zhCN from "../locale/zh-CN";
 import FileList from "./file-list";
 import Selector from "./selector";
 
@@ -170,7 +169,7 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
   ref,
 ) {
   const { locale } = useContext(ConfigContext);
-  const messages = locale ?? zhCN;
+  const messages = locale ?? DEFAULT_LOCALE;
   const [files, setFiles] = useState<UploadFile[]>(fileList ?? []);
   const filesRef = useRef(files);
   filesRef.current = files;

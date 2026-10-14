@@ -47,17 +47,18 @@ describe("Imperative modal config inheritance", () => {
 
   it("gives the dialog the locale registered by ConfigProvider", async () => {
     render(
-      <ConfigProvider locale={enUS}>
+      <ConfigProvider locale={zhCN}>
         <span />
       </ConfigProvider>,
     );
     await openInfo("Localized");
-    expect(okLabel()).toBe("Ok");
+    expect(okLabel()).toBe("确定");
   });
 
-  it("keeps the Chinese defaults when no ConfigProvider is mounted", async () => {
+  it("falls back to the English defaults when no ConfigProvider is mounted", async () => {
+    // 库级默认是 en：文档一直写"默认英语"，而以前每个组件自己写死 `|| zhCN`，两头对不上。
     await openInfo("No provider");
-    expect(okLabel()).toBe("确定");
+    expect(okLabel()).toBe("Ok");
   });
 
   it("re-renders an open dialog when the provider config changes", async () => {
@@ -106,13 +107,14 @@ describe("Imperative modal config inheritance", () => {
 
   it("stops inheriting once the provider unmounts", async () => {
     const view = render(
-      <ConfigProvider locale={enUS}>
+      <ConfigProvider locale={zhCN}>
         <span />
       </ConfigProvider>,
     );
     view.unmount();
     await openInfo("After unmount");
-    expect(okLabel()).toBe("确定");
+    // 登记的中文配置随 Provider 一起失效，回到库级默认（英文），而不是停在"确定"。
+    expect(okLabel()).toBe("Ok");
   });
 
   it("only registers the outermost provider", async () => {

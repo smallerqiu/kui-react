@@ -13,11 +13,10 @@ import React, {
   useState,
 } from "react";
 import Popup from "../popup";
-import { ConfigContext } from "../config/config-context";
+import { ConfigContext, DEFAULT_LOCALE } from "../config/config-context";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 import Icon from "../icon";
 import { Input } from "../input";
-import zhCN from "../locale/zh-CN";
 
 export interface AutoCompleteOption {
   value: string;
@@ -82,7 +81,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   const size = sizeProp ?? inheritedAppearance.size;
   const shape = shapeProp ?? inheritedAppearance.shape;
   const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
-  const locale = useContext(ConfigContext)?.locale || zhCN;
+  const locale = useContext(ConfigContext)?.locale || DEFAULT_LOCALE;
   const listboxId = `k-auto-complete-listbox-${useId().replace(/:/g, "")}`;
   const normalized = useMemo(
     () => options.map((item) => (typeof item === "string" ? { value: item, label: item } : item)),

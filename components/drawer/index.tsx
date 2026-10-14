@@ -12,10 +12,9 @@ import React, {
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import { Button } from "../button";
-import { ConfigContext } from "../config/config-context";
+import { ConfigContext, DEFAULT_LOCALE } from "../config/config-context";
 import { PopupHostContext, usePopupHostScope } from "../config/popup-host";
 import type { DrawerPlacementsType } from "../const/types";
-import zhCN from "../locale/zh-CN";
 import { toCssLength } from "../utils/css";
 import { pushOverlay, type OverlayHandle } from "../utils/overlay-stack";
 import { toggleContainerScroll } from "../utils/react-node";
@@ -83,7 +82,7 @@ const Drawer: React.FC<DrawerProps> = ({
   children,
 }) => {
   const config = useContext(ConfigContext);
-  const locale = config?.locale || zhCN;
+  const locale = config?.locale || DEFAULT_LOCALE;
   // 抽屉里 teleported 出去的浮层登记在这里，关抽屉时一起收掉（和 Modal 同一个作用域机制）。
   const { register: registerHostedPopup, closeAll: closeHostedPopups } = usePopupHostScope();
   const [innerOpen, setInnerOpen] = useValue(open, (next) => next ?? false);

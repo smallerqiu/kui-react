@@ -3,8 +3,7 @@ import { ChevronLeft, ChevronRight } from "kui-icons";
 import React, { useContext, useMemo, useState } from "react";
 import { Button, ButtonGroup } from "../button";
 import clsx from "clsx";
-import { ConfigContext } from "../config/config-context";
-import zhCN from "../locale/zh-CN";
+import { ConfigContext, DEFAULT_LOCALE } from "../config/config-context";
 
 export interface CalendarEventData {
   key: string | number;
@@ -74,8 +73,8 @@ export default function Calendar({
   ...rest
 }: CalendarProps) {
   const config = useContext(ConfigContext);
-  const locale = config.locale || zhCN;
-  const localeName = locale.name || "zh-cn";
+  const locale = config.locale || DEFAULT_LOCALE;
+  const localeName = locale.name || "en";
   const initial = parseDate(value) || new Date();
   const [innerValue, setInnerValue] = useValue(value, (next) => next);
   const [view, setView] = useState({ year: initial.getFullYear(), month: initial.getMonth() });

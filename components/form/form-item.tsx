@@ -12,9 +12,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { ConfigContext } from "../config/config-context";
+import { ConfigContext, DEFAULT_LOCALE } from "../config/config-context";
 import Transition from "../base/transition";
-import zhCN from "../locale/zh-CN";
 import { Col, Row } from "../row-col";
 import type { FormItemHandle } from "./form";
 import { FormContext } from "./form-context";
@@ -76,7 +75,7 @@ export default function FormItem({
 }: FormItemProps) {
   const form = useContext(FormContext);
   const { locale } = useContext(ConfigContext);
-  const messages = (locale ?? zhCN)?.k?.form;
+  const messages = (locale ?? DEFAULT_LOCALE)?.k?.form;
   const [valid, setValid] = useState(true);
   const [message, setMessage] = useState<string>();
   const generatedId = `form_${useId().replace(/:/g, "")}`;

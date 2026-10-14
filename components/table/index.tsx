@@ -17,10 +17,9 @@ import {
 } from "react";
 import { flushSync } from "react-dom";
 import { Checkbox, type ChangeEvent } from "../checkbox";
-import { ConfigContext } from "../config/config-context";
+import { ConfigContext, DEFAULT_LOCALE } from "../config/config-context";
 import Empty from "../empty";
 import Icon from "../icon";
-import zhCN from "../locale/zh-CN";
 import Spin from "../spin";
 import Tooltip from "../tooltip";
 import { getVirtualRange } from "../virtual-list/range";
@@ -260,7 +259,7 @@ export default function Table<T extends object = Record<string, unknown>>({
 }: TableProps<T>) {
   const inheritedAppearance = useConfigAppearance();
   const config = useContext(ConfigContext);
-  const locale = config?.locale || zhCN;
+  const locale = config?.locale || DEFAULT_LOCALE;
   const tableLocale = locale?.k?.table;
   const size = sizeProp ?? inheritedAppearance.size;
   const shape = normalizeSurfaceShape(shapeProp ?? inheritedAppearance.shape ?? "round");

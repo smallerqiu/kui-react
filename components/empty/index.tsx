@@ -1,9 +1,8 @@
 import clsx from "clsx";
 import { Inbox } from "kui-icons";
 import React, { useContext } from "react";
-import { ConfigContext } from "../config/config-context";
+import { ConfigContext, DEFAULT_LOCALE } from "../config/config-context";
 import Icon from "../icon";
-import zhCN from "../locale/zh-CN";
 
 export interface EmptyProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -24,7 +23,7 @@ const Empty: React.FC<EmptyProps> = ({
   ...rest
 }) => {
   const config = useContext(ConfigContext);
-  const locale = config?.locale || zhCN;
+  const locale = config?.locale || DEFAULT_LOCALE;
 
   const renderImage = () => {
     if (!image) {

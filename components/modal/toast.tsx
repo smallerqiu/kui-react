@@ -2,9 +2,8 @@ import { CircleAlert, CircleCheck, CircleQuestionMark, CircleX, Info } from "kui
 import clsx from "clsx";
 import { useContext, useRef, useState } from "react";
 import { Button } from "../button";
-import { ConfigContext } from "../config/config-context";
+import { ConfigContext, DEFAULT_LOCALE } from "../config/config-context";
 import Icon, { type IconType } from "../icon";
-import zhCN from "../locale/zh-CN";
 import { isPromiseLike } from "../utils/promise";
 import Modal from "./modal";
 
@@ -51,7 +50,7 @@ export default function Toast({
   onOpenChange,
 }: ToastProps) {
   const { locale } = useContext(ConfigContext);
-  const messages = (locale ?? zhCN)?.k?.common;
+  const messages = (locale ?? DEFAULT_LOCALE)?.k?.common;
   const [loading, setLoading] = useState(false);
   const destroyRequestedRef = useRef(false);
 

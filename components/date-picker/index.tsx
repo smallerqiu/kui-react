@@ -29,10 +29,9 @@ import {
 } from "react";
 import Popup from "../popup";
 import { Button } from "../button";
-import { ConfigContext } from "../config/config-context";
+import { ConfigContext, DEFAULT_LOCALE } from "../config/config-context";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
-import zhCN from "../locale/zh-CN";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(localeData);
@@ -162,8 +161,8 @@ function DatePicker({
   const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
   const shape = shapeProp ?? inheritedAppearance.shape;
   const config = useContext(ConfigContext);
-  const locale = config?.locale || zhCN;
-  const localeName = locale?.name || "zh-cn";
+  const locale = config?.locale || DEFAULT_LOCALE;
+  const localeName = locale?.name || "en";
   const fmt = format || defaultFormat(mode);
   const isRange = mode.endsWith("Range");
   const hasTime = mode === "time" || mode.includes("Time");

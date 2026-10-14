@@ -5,10 +5,9 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from "rea
 import Teleport from "../base/teleport";
 import Transition from "../base/transition";
 import { Button } from "../button";
-import { ConfigContext } from "../config/config-context";
+import { ConfigContext, DEFAULT_LOCALE } from "../config/config-context";
 import { PopupHostContext, usePopupHostScope } from "../config/popup-host";
 import { getMousePoint } from "../config/context";
-import zhCN from "../locale/zh-CN";
 import { toCssLength } from "../utils/css";
 import { createFocusTrap } from "../utils/focus";
 import { pushOverlay, type OverlayHandle } from "../utils/overlay-stack";
@@ -70,7 +69,7 @@ const Modal: React.FC<ModalProps> = ({
   children,
 }) => {
   const config = useContext(ConfigContext);
-  const locale = config?.locale || zhCN;
+  const locale = config?.locale || DEFAULT_LOCALE;
   // 窗口内 teleported 出去的浮层（下拉、气泡、子菜单）登记在这里，关窗时一起收掉。
   const { register: registerHostedPopup, closeAll: closeHostedPopups } = usePopupHostScope();
   const [innerOpen, setInnerOpen] = useValue(open, (next) => next ?? false);

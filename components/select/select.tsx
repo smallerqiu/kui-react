@@ -14,10 +14,9 @@ import React, {
   useState,
 } from "react";
 import Popup, { type PopupRef } from "../popup";
-import { ConfigContext } from "../config/config-context";
+import { ConfigContext, DEFAULT_LOCALE } from "../config/config-context";
 import Empty from "../empty";
 import Icon, { type IconType } from "../icon";
-import zhCN from "../locale/zh-CN";
 import { isEmpty } from "../utils/number";
 import { getChildren } from "../utils/react-node";
 import Option, { type OptionSelectEvent } from "./option";
@@ -136,7 +135,7 @@ const Select: React.FC<SelectProps> = ({
   const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
   const shape = shapeProp ?? inheritedAppearance.shape;
   const config = useContext(ConfigContext);
-  const locale = config?.locale || zhCN;
+  const locale = config?.locale || DEFAULT_LOCALE;
 
   const [innerVisible, setInnerVisible] = useValue(openProp, (next) => next ?? false);
   const visible = innerVisible;

@@ -33,7 +33,7 @@ describe("Table locale", () => {
       header: container.querySelector("thead input[type=checkbox]")?.getAttribute("aria-label"),
     });
 
-    // 语言包默认就是 zh-CN，表格里不该再留着写死的英文
+    // Provider 给了 zh-CN，表格里就不该再留着写死的英文
     expect(labels()).toEqual({ toggle: "展开行", row: "选择该行", header: "全选" });
 
     rerender(
@@ -54,8 +54,9 @@ describe("Table locale", () => {
     const { container } = render(<Table data={rows} columns={treeColumns} rowKey="id" checkable />);
     const input = container.querySelector("tbody input[type=checkbox]") as HTMLInputElement;
 
-    // 可访问名必须挂在控件本身，挂在 label 上辅助技术读不到
-    expect(input.getAttribute("aria-label")).toBe("选择该行");
+    // 可访问名必须挂在控件本身，挂在 label 上辅助技术读不到。
+    // 这里没挂 Provider，所以读的是库级默认（英文）。
+    expect(input.getAttribute("aria-label")).toBe("Select row");
     expect(input.closest("label")?.getAttribute("aria-label")).toBeNull();
   });
 
