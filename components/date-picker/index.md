@@ -15,6 +15,8 @@
 - 选择或手动输入日期，通过 `value` 和 `onChange` 控制日期值
 - 手输的内容认不出来、或被 `disabledDate` / `disabledTime` 挡住时，输入框退回当前这份值；未受控时退回的是最近一次提交的结果，不会弹回初始传进来的值。
 - 重复点已经选中的日期、重复提交同一个值，不会再触发一次 `onChange`。
+- `mode="year"` / `mode="month"` 直接进年 / 月面板（`panelOnly` 的常驻面板也一样），格子也能用键盘选：Tab 到格子按 `Enter` 或空格，头部的年份、月份标签同样按这两个键切面板。
+- 年 / 月面板的高亮跟着当前值走：翻年、翻月只改浏览位置，不会把选中样式挪到正在看的那一格。
 
 [输出类型](./demo/value-type.tsx)
 
@@ -30,6 +32,9 @@
 [不可选择日期和时间](./demo/disabled-date.tsx)
 
 - 可用 `disabledDate` 和 `disabledTime` 分别禁止选择部分日期和时间；两者对点选、手输和预设都生效，`disabledTime` 在 `time` / `dateTime` / `dateTimeRange` 三种档下都参与判断。
+- 年 / 月面板同样吃 `disabledDate`：一整年或一整月里一天都选不出来时，那一格置灰、点不进去，Tab 也会跳过它。
+- 格里还能选出一天时，那一格照常能点：值落在浏览位置那一天，那一天被禁就往后找这一格里第一个能选的日子。
+- 翻到某一年 / 某一月只是浏览、不算选值，所以不受 `disabledDate` 拦。
 
 [禁用和不可编辑](./demo/disabled.tsx)
 

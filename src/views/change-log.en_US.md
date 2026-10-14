@@ -62,6 +62,9 @@ rm -rf node_modules/.vite
 - `DatePicker`: When a range controls only one end (`startDate` or `endDate`), the next pick no longer overwrites the end the parent provided; the panel keeps it and only fills the empty end.
 - `DatePicker`: Picking the already selected date, or submitting the same value again, no longer fires a redundant `onChange`.
 - `DatePicker`: Picking a time in the time columns while only one end of the range is chosen no longer emits that half range; the time stays in the box until the other end is filled in.
+- `DatePicker`: The year and month panels now honour `disabledDate` — a year or month with no pickable day at all is greyed out, refuses clicks, and is skipped by `Tab`, while one that still has a pickable day remains clickable.
+- `DatePicker`: The year and month highlight now follows the current value instead of wherever you happen to be browsing.
+- `DatePicker`: Year and month cells can be picked with the keyboard (`Tab` to a cell, then `Enter` or Space), and the year / month labels in the header switch panels with the same keys.
 
 ### 3.1.2
 

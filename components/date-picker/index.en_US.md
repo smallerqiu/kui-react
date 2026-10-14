@@ -15,6 +15,8 @@ When the user needs to input a date, they can click the standard input box to po
 - Select or manually enter a date. Use `value` and `onChange` to control the date value.
 - When typed text is invalid, or is blocked by `disabledDate` / `disabledTime`, the box falls back to the current value: uncontrolled pickers fall back to the last committed result rather than to the value passed in first.
 - Picking the already selected date, or submitting the same value again, does not emit another `onChange`.
+- `mode="year"` / `mode="month"` open the year / month panel right away (a `panelOnly` picker included), and those cells work with the keyboard too: Tab to a cell and press `Enter` or Space; the year and month labels in the header switch panels with the same keys.
+- The year / month highlight follows the current value: browsing to another year or month only moves what you are looking at, never the selected style.
 
 [Output Type](./demo/value-type.tsx)
 
@@ -30,6 +32,9 @@ When the user needs to input a date, they can click the standard input box to po
 [Disabled Dates and Times](./demo/disabled-date.tsx)
 
 - Use `disabledDate` and `disabledTime` to block specific dates and times; both apply to clicking, typing and presets, and `disabledTime` counts in the `time`, `dateTime` and `dateTimeRange` modes.
+- `disabledDate` counts in the year / month panels as well: when not a single day inside a whole year or month can be picked, that cell is greyed out, refuses clicks, and Tab skips it.
+- A cell that still has a pickable day stays clickable: the value lands on the day you are browsing, or on the first pickable day inside that year / month when the browsed day itself is blocked.
+- Browsing to a year / month is only navigation, not a selection, so `disabledDate` never blocks it.
 
 [Disabled and Non-editable](./demo/disabled.tsx)
 
