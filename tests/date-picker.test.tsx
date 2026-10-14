@@ -304,10 +304,10 @@ describe("DatePicker", () => {
         onChange,
         "时间列也是区间的一条通道，缺另一头时不能把半截区间当结果发出去",
       ).not.toHaveBeenCalled();
-      expect(container.querySelectorAll<HTMLElement>(".k-datepicker-input")[0].value).toMatch(
+      expect(container.querySelectorAll<HTMLInputElement>(".k-datepicker-input")[0].value).toMatch(
         / 05:00:00$/,
       );
-      expect(container.querySelectorAll<HTMLElement>(".k-datepicker-input")[1].value).toBe("");
+      expect(container.querySelectorAll<HTMLInputElement>(".k-datepicker-input")[1].value).toBe("");
     } finally {
       HTMLElement.prototype.scrollTo = originalScrollTo;
     }
