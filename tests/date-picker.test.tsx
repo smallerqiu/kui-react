@@ -180,7 +180,7 @@ describe("DatePicker", () => {
       />,
     );
     fireEvent.change(container.querySelector("input")!, { target: { value: "10:00:00" } });
-    expect(onChange, "`mode=\"time\"` 也是带时间的档，disabledTime 得生效").not.toHaveBeenCalled();
+    expect(onChange, '`mode="time"` 也是带时间的档，disabledTime 得生效').not.toHaveBeenCalled();
   });
 
   it("rejects disabled values from extension content", () => {

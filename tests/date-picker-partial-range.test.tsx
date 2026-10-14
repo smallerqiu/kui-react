@@ -12,6 +12,13 @@ import { DatePicker } from "../components";
 
 const views: RenderResult[] = [];
 
+// 面板挂在 body 上，同名节点可能同时存在好几份（关到一半的那个还在），
+// 要查就查最后打开的那一份。
+const latestPanel = () => {
+  const panels = document.body.querySelectorAll<HTMLElement>(".k-datepicker-overlay");
+  return panels[panels.length - 1] ?? null;
+};
+
 const closes = [
   ["Escape", (root: HTMLElement) => fireEvent.keyDown(root, { key: "Escape" })],
   ["a click outside", () => fireEvent.mouseDown(document.body)],
@@ -25,7 +32,9 @@ describe.each(closes)("%s closes a half range", (_label, close) => {
     views.push(view);
     const root = view.container.querySelector<HTMLElement>(".k-datepicker")!;
     await waitFor(() =>
-      expect(document.body.querySelector(".k-picker-day:not(.k-picker-day-disabled)")).not.toBeNull(),
+      expect(
+        document.body.querySelector(".k-picker-day:not(.k-picker-day-disabled)"),
+      ).not.toBeNull(),
     );
 
     fireEvent.click(document.body.querySelector(".k-picker-day:not(.k-picker-day-disabled)")!);
@@ -34,6 +43,11 @@ describe.each(closes)("%s closes a half range", (_label, close) => {
     const inputs = view.container.querySelectorAll<HTMLInputElement>(".k-datepicker-input");
     expect(inputs[0].value).toBe("2026-08-01");
     expect(inputs[1].value).toBe("2026-08-05");
+
+    // 重开面板亮着的应该是已提交的那一头尾，而不是上次没提交的半截。
+    fireEvent.keyDown(root, { key: "Enter" });
+    await waitFor(() => expect(latestPanel()?.querySelector(".k-picker-day")).not.toBeNull());
+    expect(latestPanel()!.querySelectorAll(".k-picker-day-selected")).toHaveLength(2);
   });
 
   it("discards a date typed into only the end box", async () => {
