@@ -64,7 +64,7 @@ Component tokens fall back to semantic tokens, so you can customize the overall 
 
 ## Appearance and Shape
 
-Common controls use three shapes: `round`, `circle`, and `square`. When `shape` is omitted, it defaults to `round`; the legacy `default` value is still supported. The base appearance variants for `theme` are `default`, `fill`, `outline`, and `plain`, where `plain` is equivalent to `bordered=false` for input-like components.
+Common controls use three shapes: `round`, `circle`, and `square`. When `shape` is omitted, it defaults to `round`; the legacy `default` value is still supported. The base appearance variants for `theme` are `default`, `fill`, `outline`, and `plain`, where `plain` means no border *and* no surface - a different ask from `bordered=false`, which only removes the border. The two can be combined.
 
 If you need to switch the entire interface (including popup containers) to square, you can set `shape-mode="square"` on the root node. This uniformly overrides the border-radius tokens for controls, cards, and popups; the component's own `shape` is still used for local overrides. Elements that are inherently circular, such as slider handles and status dots, remain circular.
 

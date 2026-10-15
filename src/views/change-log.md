@@ -66,6 +66,8 @@ rm -rf node_modules/.vite
 - `DatePicker` 年 / 月面板的高亮改为跟着当前值走：翻年、翻月只改浏览位置，选中样式不再跑到正看着的那一格上。
 - `DatePicker` 年 / 月格子可以用键盘选了：`Tab` 到格子按 `Enter` 或空格即可，头部的年份、月份标签同样能用键盘切面板。
 - **不兼容变更**：组件内置文案的默认语言从简体中文改为英语。没有挂 `ConfigProvider` 时，`DatePicker`、`Select`、`Table`、`Modal`、`Page` 等组件的内置文案现在显示英文；需要简体中文请在应用根部挂 `ConfigProvider` 并传入 `locale`（`import zhCN from "react-kui/locale/zh-CN"`）。
+- `DatePicker` / `Select` / `Cascader` / `TreeSelect` 的 `theme="plain"` 与 `bordered={false}` 各管各的：`plain` 是无边框也没有底色，`bordered={false}` 只去掉边框，两者可以同时使用；控件禁用时 `plain` 照样显示禁用态。
+- `Select` / `Cascader` / `TreeSelect` 去掉边框后，鼠标悬停不再突然描出一圈主色边框和光晕。
 
 ### 3.1.2
 
