@@ -1,5 +1,5 @@
 import { useValue } from "../utils/use-value";
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { resolveTheme, useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { ChevronDown, ChevronRight, CircleAlert, CircleX, Loading } from "kui-icons";
@@ -59,10 +59,7 @@ function Cascader({
   ...rest
 }: CascaderProps) {
   const inheritedAppearance = useConfigAppearance();
-  // `default` means "listen to the component", and a control's own default is `fill`, so writing
-  // `theme="default"` has to reach the same class as never writing `theme` at all.
-  const themeValue = themeProp ?? inheritedAppearance.theme ?? "fill";
-  const theme = themeValue === "default" ? "fill" : themeValue;
+  const theme = resolveTheme(themeProp ?? inheritedAppearance.theme, "fill");
   const shape = shapeProp ?? inheritedAppearance.shape;
   const size = sizeProp ?? inheritedAppearance.size;
   const options = optionsProp ?? EMPTY_OPTIONS;

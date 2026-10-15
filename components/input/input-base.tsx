@@ -1,5 +1,5 @@
 import { useValue } from "../utils/use-value";
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { resolveTheme, useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { CircleX, Eye, EyeOff, Search } from "kui-icons";
 import React, { useContext, useImperativeHandle, useRef, useState } from "react";
@@ -76,7 +76,7 @@ const InputBase = React.forwardRef<InputRef, InputBaseProps>(
   ) => {
     const inheritedAppearance = useConfigAppearance();
     const size = sizeProp ?? inheritedAppearance.size;
-    const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+    const theme = resolveTheme(themeProp ?? inheritedAppearance.theme, "fill");
     const shape = shapeProp ?? inheritedAppearance.shape;
     const parentSize = useContext(SizeContext);
     const currentSize = sizeProp ?? parentSize ?? size;
@@ -216,7 +216,7 @@ const InputBase = React.forwardRef<InputRef, InputBaseProps>(
         [`k-${inputType}-has-clear`]: clearableShow,
         [`k-${inputType}-sm`]: currentSize === "small",
         [`k-${inputType}-lg`]: currentSize === "large",
-        [`k-${inputType}-${theme}`]: theme && theme !== "outline",
+        [`k-${inputType}-${theme}`]: true,
         [`k-${inputType}-circle`]: shape === "circle",
         [`k-${inputType}-square`]: shape === "square",
       },

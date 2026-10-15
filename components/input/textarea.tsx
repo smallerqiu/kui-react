@@ -1,5 +1,5 @@
 import { useValue } from "../utils/use-value";
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { resolveTheme, useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import React from "react";
@@ -33,7 +33,7 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
     ref,
   ) => {
     const inheritedAppearance = useConfigAppearance();
-    const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+    const theme = resolveTheme(themeProp ?? inheritedAppearance.theme, "fill");
     const shape = shapeProp ?? inheritedAppearance.shape;
     const size = sizeProp ?? inheritedAppearance.size;
     const [innerValue, setInnerValue] = useValue(value, (next) => next ?? "");
@@ -46,9 +46,7 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
     const classes = clsx(
       "k-textarea",
       {
-        "k-textarea-fill": theme === "fill",
-        "k-textarea-outline": theme === "outline",
-        "k-textarea-plain": theme === "plain",
+        [`k-textarea-${theme}`]: true,
         "k-textarea-sm": size === "small",
         "k-textarea-square": shape === "square",
         "k-textarea-circle": shape === "circle",

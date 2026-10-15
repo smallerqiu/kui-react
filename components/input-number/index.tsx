@@ -1,5 +1,5 @@
 import { useValue } from "../utils/use-value";
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { resolveTheme, useConfigAppearance } from "../config/use-config-appearance";
 import Big from "big.js";
 import { createFormFieldComponent } from "../form/field-context";
 import { ChevronDown, ChevronUp } from "kui-icons";
@@ -61,7 +61,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
   ...rest
 }) => {
   const inheritedAppearance = useConfigAppearance();
-  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const theme = resolveTheme(themeProp ?? inheritedAppearance.theme, "fill");
   const shape = shapeProp ?? inheritedAppearance.shape;
   const size = sizeProp ?? inheritedAppearance.size;
   const parentSize = useContext(SizeContext);

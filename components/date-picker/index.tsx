@@ -1,5 +1,5 @@
 import { useValue } from "../utils/use-value";
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { resolveTheme, useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import dayjs, { type Dayjs, type UnitType } from "dayjs";
@@ -158,10 +158,7 @@ function DatePicker({
 }: DatePickerProps) {
   const inheritedAppearance = useConfigAppearance();
   const size = sizeProp ?? inheritedAppearance.size;
-  // `default` means "listen to the component", and a control's own default is `fill`, so writing
-  // `theme="default"` has to reach the same class as never writing `theme` at all.
-  const themeValue = themeProp ?? inheritedAppearance.theme ?? "fill";
-  const theme = themeValue === "default" ? "fill" : themeValue;
+  const theme = resolveTheme(themeProp ?? inheritedAppearance.theme, "fill");
   const shape = shapeProp ?? inheritedAppearance.shape;
   const config = useContext(ConfigContext);
   const locale = config?.locale || DEFAULT_LOCALE;
