@@ -45,7 +45,7 @@ Suggest options while keeping free-form input available.
 | loading | Loading state | `boolean` | false |
 | loadingText | Loading text | `string` | Loading |
 | size | Size | `"small" \| "medium" \| "large"` | medium |
-| theme | Theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | Theme, painted on the inner input box; supports the same tiers as Input | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | Shape | `"round" \| "default" \| "square" \| "circle"` | default |
 | filterOption | Filter strategy | `boolean \| ((input: string, option: AutoCompleteOption) => boolean)` | true |
 | destroyOnClose | Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance | `boolean` | true |

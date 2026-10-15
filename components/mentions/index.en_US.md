@@ -53,7 +53,7 @@ Insert structured mentions into multiline text.
 | placement | Preferred dropdown placement | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | bottom-left |
 | destroyOnClose | Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance | `boolean` | true |
 | size | Size | `"small" \| "medium" \| "large"` | medium |
-| theme | Theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | Theme, painted on the inner text area; supports the same tiers as TextArea | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | Shape | `"round" \| "default" \| "square" \| "circle"` | default |
 | emptyText | Empty-state text | `string` | No data |
 | loading | Whether to show loading | `boolean` | false |

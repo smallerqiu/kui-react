@@ -45,7 +45,7 @@
 | loading | 是否正在加载 | `boolean` | false |
 | loadingText | 加载提示文字 | `string` | 加载中 |
 | size | 尺寸 | `"small" \| "medium" \| "large"` | medium |
-| theme | 主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | 主题，画在内部输入框上，可用档位与 Input 一致 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | default |
 | filterOption | 是否过滤或自定义过滤 | `boolean \| ((input: string, option: AutoCompleteOption) => boolean)` | true |
 | destroyOnClose | 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM | `boolean` | true |

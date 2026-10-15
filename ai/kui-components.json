@@ -3654,8 +3654,8 @@
             "underlined"
           ],
           "boolean": false,
-          "descriptionZh": "主题",
-          "descriptionEn": "Theme"
+          "descriptionZh": "主题，画在内部输入框上，可用档位与 Input 一致",
+          "descriptionEn": "Theme, painted on the inner input box; supports the same tiers as Input"
         },
         {
           "name": "filterOption",
@@ -31034,8 +31034,8 @@
             "underlined"
           ],
           "boolean": false,
-          "descriptionZh": "主题",
-          "descriptionEn": "Theme"
+          "descriptionZh": "主题，画在内部文本域上，可用档位与 TextArea 一致",
+          "descriptionEn": "Theme, painted on the inner text area; supports the same tiers as TextArea"
         },
         {
           "name": "emptyText",
