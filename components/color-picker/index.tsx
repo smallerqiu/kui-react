@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import Popup, { type PopupRef } from "../popup";
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { resolveTheme, useConfigAppearance } from "../config/use-config-appearance";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 import { createFormFieldComponent } from "../form/field-context";
 import { useValue } from "../utils/use-value";
@@ -71,7 +71,9 @@ function ColorPicker({
 }: ColorPickerProps) {
   const inheritedAppearance = useConfigAppearance();
   const size = sizeProp ?? inheritedAppearance.size;
-  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  // 3b-乙2b: the tier class goes on the trigger box, so `default` has to be resolved before it
+  // reaches the class list — it means "the control's own default", not a preset nobody paints.
+  const theme = resolveTheme(themeProp ?? inheritedAppearance.theme, "fill");
   const shape = shapeProp ?? inheritedAppearance.shape;
   const [innerColor, setInnerColor] = useValue(value, (next) => next ?? "#000000ff");
   const [innerMode, setInnerMode] = useState<ColorMode>(modeProp ?? "hex");
@@ -171,7 +173,7 @@ function ColorPicker({
           "k-color-picker-readonly": readOnly,
           "k-color-picker-sm": size === "small",
           "k-color-picker-lg": size === "large",
-          [`k-color-picker-${theme}`]: theme !== "outline",
+          [`k-color-picker-${theme}`]: true,
           [`k-color-picker-${shape}`]: shape,
         },
         className,

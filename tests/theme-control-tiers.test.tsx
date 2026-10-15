@@ -11,6 +11,7 @@ import type { ReactElement } from "react";
 import { describe, expect, it } from "vitest";
 import {
   Cascader,
+  ColorPicker,
   DatePicker,
   Input,
   InputNumber,
@@ -77,6 +78,8 @@ const CASES: {
   // element the paint lands on is not (`tests/theme-variants.test.ts` reads the compiled rules).
   { name: "k-input-tag", tag: "DIV", node: (props) => <InputTag {...props} /> },
   { name: "k-input-otp", tag: "DIV", node: (props) => <InputOTP {...props} /> },
+  // 3b-乙2b: the color picker's box is its root too, and its "open" state is a sibling class.
+  { name: "k-color-picker", tag: "DIV", node: (props) => <ColorPicker {...props} /> },
 ];
 
 const root = (container: HTMLElement, name: string) => container.querySelector("." + name);

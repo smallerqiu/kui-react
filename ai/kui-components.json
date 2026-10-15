@@ -13961,8 +13961,8 @@
             "underlined"
           ],
           "boolean": false,
-          "descriptionZh": "外观主题，支持 `outline`、`fill`、`plain`，未设置时可继承 Form 或 ConfigProvider",
-          "descriptionEn": "Appearance theme: `outline`, `fill`, or `plain`; inherits from Form or ConfigProvider"
+          "descriptionZh": "主题，未设置时可继承 Form 或 ConfigProvider",
+          "descriptionEn": "Theme; inherits from Form or ConfigProvider when unset"
         },
         {
           "name": "shape",
@@ -14585,8 +14585,8 @@
             "underlined"
           ],
           "boolean": false,
-          "descriptionZh": "外观主题，支持 `outline`、`fill`、`plain`，未设置时可继承 Form 或 ConfigProvider",
-          "descriptionEn": "Appearance theme: `outline`, `fill`, or `plain`; inherits from Form or ConfigProvider"
+          "descriptionZh": "主题，未设置时可继承 Form 或 ConfigProvider",
+          "descriptionEn": "Theme; inherits from Form or ConfigProvider when unset"
         },
         {
           "name": "shape",
