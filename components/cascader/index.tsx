@@ -59,7 +59,10 @@ function Cascader({
   ...rest
 }: CascaderProps) {
   const inheritedAppearance = useConfigAppearance();
-  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  // `default` means "listen to the component", and a control's own default is `fill`, so writing
+  // `theme="default"` has to reach the same class as never writing `theme` at all.
+  const themeValue = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const theme = themeValue === "default" ? "fill" : themeValue;
   const shape = shapeProp ?? inheritedAppearance.shape;
   const size = sizeProp ?? inheritedAppearance.size;
   const options = optionsProp ?? EMPTY_OPTIONS;
@@ -290,7 +293,7 @@ function Cascader({
       "k-cascader-readonly": readOnly,
       "k-cascader-opened": visible,
       "k-cascader-borderless": !bordered,
-      [`k-cascader-${theme}`]: theme !== "default",
+      [`k-cascader-${theme}`]: true,
       "k-cascader-circle": shape === "circle",
       "k-cascader-square": shape === "square",
       "k-cascader-lg": size === "large",

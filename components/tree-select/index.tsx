@@ -142,7 +142,10 @@ function TreeSelect({
 }: TreeSelectProps) {
   const inheritedAppearance = useConfigAppearance();
   const size = sizeProp ?? inheritedAppearance.size;
-  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  // `default` means "listen to the component", and a control's own default is `fill`, so writing
+  // `theme="default"` has to reach the same class as never writing `theme` at all.
+  const themeValue = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const theme = themeValue === "default" ? "fill" : themeValue;
   const shape = shapeProp ?? inheritedAppearance.shape;
   const config = useContext(ConfigContext);
   const locale = config?.locale || DEFAULT_LOCALE;
@@ -251,7 +254,7 @@ function TreeSelect({
       "k-tree-select-block": block,
       "k-tree-select-opened": visible,
       "k-tree-select-borderless": !bordered,
-      [`k-tree-select-${theme}`]: theme !== "default",
+      [`k-tree-select-${theme}`]: true,
       "k-tree-select-lg": size === "large",
       "k-tree-select-sm": size === "small",
       "k-tree-select-has-icon": icon,

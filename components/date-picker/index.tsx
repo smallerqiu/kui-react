@@ -158,7 +158,10 @@ function DatePicker({
 }: DatePickerProps) {
   const inheritedAppearance = useConfigAppearance();
   const size = sizeProp ?? inheritedAppearance.size;
-  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  // `default` means "listen to the component", and a control's own default is `fill`, so writing
+  // `theme="default"` has to reach the same class as never writing `theme` at all.
+  const themeValue = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const theme = themeValue === "default" ? "fill" : themeValue;
   const shape = shapeProp ?? inheritedAppearance.shape;
   const config = useContext(ConfigContext);
   const locale = config?.locale || DEFAULT_LOCALE;
@@ -804,7 +807,7 @@ function DatePicker({
     {
       "k-datepicker-opened": visible,
       "k-datepicker-borderless": !bordered,
-      [`k-datepicker-${theme}`]: theme !== "default",
+      [`k-datepicker-${theme}`]: true,
       "k-datepicker-sm": size === "small",
       "k-datepicker-lg": size === "large",
       "k-datepicker-disabled": disabled,
