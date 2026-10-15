@@ -1,6 +1,6 @@
 import { renderSelectionTags } from "../utils/selection-tags";
 import { useValue } from "../utils/use-value";
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { resolveTheme, useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { CircleX } from "kui-icons";
@@ -56,7 +56,7 @@ const InputTag: React.FC<InputTagProps> = ({
   const inheritedAppearance = useConfigAppearance();
   const size = sizeProp ?? inheritedAppearance.size ?? "medium";
   const shape = shapeProp ?? inheritedAppearance.shape;
-  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const theme = resolveTheme(themeProp ?? inheritedAppearance.theme, "fill");
   const [inner, setInner] = useValue(value, (next) => next ?? []);
   const [draft, setDraft] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -131,7 +131,7 @@ const InputTag: React.FC<InputTagProps> = ({
           "k-input-tag-block": block,
           "k-input-tag-lg": size === "large",
           [`k-input-tag-${shape}`]: shape,
-          [`k-input-tag-${theme}`]: theme,
+          [`k-input-tag-${theme}`]: true,
         },
         className,
       )}

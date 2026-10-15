@@ -9,7 +9,17 @@
 import { render } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { describe, expect, it } from "vitest";
-import { Cascader, DatePicker, Input, InputNumber, Select, TextArea, TreeSelect } from "react-kui";
+import {
+  Cascader,
+  DatePicker,
+  Input,
+  InputNumber,
+  InputOTP,
+  InputTag,
+  Select,
+  TextArea,
+  TreeSelect,
+} from "react-kui";
 
 const TIERS = ["fill", "outline", "plain", "solid", "dashed", "underlined"] as const;
 
@@ -62,6 +72,11 @@ const CASES: {
     attribute: "data-multiple",
     node: (props) => <InputNumber {...props} />,
   },
+  // 3b-乙2: these two carry the tier on their own root. A tag box paints it on that wrapper, an OTP
+  // group paints it on every cell inside, so the emission contract is the same even though the
+  // element the paint lands on is not (`tests/theme-variants.test.ts` reads the compiled rules).
+  { name: "k-input-tag", tag: "DIV", node: (props) => <InputTag {...props} /> },
+  { name: "k-input-otp", tag: "DIV", node: (props) => <InputOTP {...props} /> },
 ];
 
 const root = (container: HTMLElement, name: string) => container.querySelector("." + name);
@@ -87,6 +102,16 @@ describe("every theme tier reaches the control root", () => {
         rootClasses(container, name).filter((cls) => cls.startsWith(`${name}-`));
       expect(tiers(render(node({ theme: "default" })).container)).toEqual(
         tiers(render(node({})).container),
+      );
+      // Two renders that both land on a dead class agree with each other just as well, so the tier
+      // `default` resolves to is named here: the control's own `fill`, never a `k-*-default` no LESS
+      // can answer (`.kui-theme-value()` has no `default` arm on purpose).
+      const emitted = tiers(render(node({ theme: "default" })).container);
+      expect(emitted, `${label} ships a tier class nothing paints`).not.toContain(
+        `${name}-default`,
+      );
+      expect(emitted, `${label} default does not land on its own fill tier`).toContain(
+        `${name}-fill`,
       );
     });
 
