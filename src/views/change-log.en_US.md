@@ -68,6 +68,8 @@ rm -rf node_modules/.vite
 - **Breaking change**: Built-in component text now defaults to English instead of Simplified Chinese. Without a `ConfigProvider`, strings in `DatePicker`, `Select`, `Table`, `Modal`, `Page` and friends render in English; pass a Chinese locale (`import zhCN from "react-kui/locale/zh-CN"`) at the application root to keep Simplified Chinese.
 - `DatePicker` / `Select` / `Cascader` / `TreeSelect`: `theme="plain"` and `bordered={false}` now mean separate things — `plain` drops both the border and the surface, `bordered={false}` drops only the border, and the two can be combined; a disabled control under `plain` still reads as disabled.
 - `Select` / `Cascader` / `TreeSelect`: a control with its border removed no longer grows a primary-colored border and a glow when the pointer moves over it.
+- `Select` / `Cascader` / `TreeSelect` / `DatePicker`: `theme` now supports `outline`, `solid`, `dashed` and `underlined` — a 1px outlined box, a primary-filled block whose text and icons invert, a dashed frame, and a single bottom rule that turns primary on focus.
+- `Cascader`: a `theme="fill"` field no longer grows a border when you hover it.
 
 ### 3.1.2
 

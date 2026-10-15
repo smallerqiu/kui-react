@@ -804,12 +804,11 @@ function DatePicker({
     {
       "k-datepicker-opened": visible,
       "k-datepicker-borderless": !bordered,
-      "k-datepicker-plain": theme === "plain",
+      [`k-datepicker-${theme}`]: theme !== "default",
       "k-datepicker-sm": size === "small",
       "k-datepicker-lg": size === "large",
       "k-datepicker-disabled": disabled,
       "k-datepicker-readonly": readOnly,
-      "k-datepicker-fill": theme === "fill",
       "k-datepicker-circle": shape === "circle",
       "k-datepicker-square": shape === "square",
     },
