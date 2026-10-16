@@ -1,5 +1,5 @@
 import { useValue } from "../utils/use-value";
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { resolvePaintedTheme, useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { Check } from "kui-icons";
@@ -32,6 +32,14 @@ export interface CheckboxProps extends Omit<
   children?: React.ReactNode;
 }
 
+// The two looks a check box has: a shallow filled square and a bordered one. `fill` is also what the
+// component reaches when nothing is written, so `theme="default"` resolves here rather than shipping
+// `k-checkbox-default`, a class no LESS rule can answer. The four tiers left out — `plain` (a box with
+// no edge is not a check box), `solid` / `dashed` (containers and drop zones) and `underlined` (only
+// means something on a field you type into) — land on `fill` too, the same ruling `Tag` follows with
+// five tiers instead of two (theme 口径 §五.1).
+const PAINTED_THEMES = ["fill", "outline"] as const;
+
 const Checkbox: React.FC<CheckboxProps> = ({
   checked,
   valueType = "boolean",
@@ -55,7 +63,6 @@ const Checkbox: React.FC<CheckboxProps> = ({
   ...rest
 }) => {
   const inheritedAppearance = useConfigAppearance();
-  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
   const size = sizeProp ?? inheritedAppearance.size;
   const group = useContext(CheckboxGroupContext);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -67,7 +74,11 @@ const Checkbox: React.FC<CheckboxProps> = ({
   const isChecked = isGroup ? groupChecked : localChecked;
   const currentDisabled = disabled || (isGroup && group.disabled);
   const currentReadOnly = readOnly || Boolean(isGroup && group.readOnly);
-  const currentTheme = themeProp ?? group?.theme ?? theme;
+  // Guarded after every inheritance step, so a group or a `ConfigProvider` that hands down
+  // `solid` lands on `fill` exactly like the same value written on this check box.
+  const currentTheme =
+    resolvePaintedTheme(themeProp ?? group?.theme ?? inheritedAppearance.theme, PAINTED_THEMES) ??
+    "fill";
   const currentSize = sizeProp ?? group?.size ?? size;
 
   const emitValue = (newChecked: boolean) => {
@@ -99,7 +110,8 @@ const Checkbox: React.FC<CheckboxProps> = ({
   const rootClasses = clsx(
     "k-checkbox",
     {
-      "k-checkbox-fill": currentTheme === "fill",
+      // Always exactly one tier: `currentTheme` resolves to a painted value or to `fill`.
+      [`k-checkbox-${currentTheme}`]: true,
       "k-checkbox-disabled": currentDisabled,
       "k-checkbox-readonly": currentReadOnly,
       "k-checkbox-checked": isChecked && !indeterminate,

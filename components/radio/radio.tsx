@@ -1,5 +1,5 @@
 import { useValue } from "../utils/use-value";
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { resolvePaintedTheme, useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import React, { useContext } from "react";
@@ -21,6 +21,11 @@ export interface RadioProps extends Omit<
   disabled?: boolean;
   readOnly?: boolean;
 }
+
+// The same two looks as `Checkbox` — a shallow filled dot and a bordered one — and the same guard:
+// `default` resolves to the component's own `fill`, the other four tiers have no meaning on a round
+// dot you cannot type into, and a `k-radio-<tier>` no LESS paints is the bug this file exists to end.
+const PAINTED_THEMES = ["fill", "outline"] as const;
 
 const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
   (
@@ -46,7 +51,6 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
     ref,
   ) => {
     const inheritedAppearance = useConfigAppearance();
-    const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
     const size = sizeProp ?? inheritedAppearance.size;
     const group = useContext(RadioGroupContext);
     const isGroup = !!group;
@@ -56,7 +60,11 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
     const isChecked = isGroup ? groupChecked : localChecked;
     const currentDisabled = disabled || (isGroup && group.disabled);
     const currentReadOnly = readOnly || Boolean(isGroup && group.readOnly);
-    const currentTheme = themeProp ?? group?.theme ?? theme;
+    // Guarded after every inheritance step, so a group or a `ConfigProvider` that hands down
+    // `solid` lands on `fill` exactly like the same value written on this radio.
+    const currentTheme =
+      resolvePaintedTheme(themeProp ?? group?.theme ?? inheritedAppearance.theme, PAINTED_THEMES) ??
+      "fill";
     const currentSize = sizeProp ?? group?.size ?? size;
 
     const emitValue = (newChecked: boolean) => {
@@ -81,7 +89,8 @@ const Radio = React.forwardRef<HTMLLabelElement, RadioProps>(
     const classes = clsx(
       "k-radio",
       {
-        "k-radio-fill": currentTheme === "fill",
+        // Always exactly one tier: `currentTheme` resolves to a painted value or to `fill`.
+        [`k-radio-${currentTheme}`]: true,
         "k-radio-disabled": currentDisabled,
         "k-radio-readonly": currentReadOnly,
         "k-radio-checked": isChecked,
