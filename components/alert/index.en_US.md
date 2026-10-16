@@ -41,8 +41,14 @@ To unmount the entire component after closing, update the parent state in `onAft
 | showIcon | Whether to show the icon | `boolean` | false |
 | closable | Whether to show the close button | `boolean` | false |
 | bordered | Whether to display the border | `boolean` | false |
-| theme | Theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| theme | Surface theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | Shape | `"round" \| "default" \| "square" \| "circle"` | - |
 | onClose | Triggered when the close button is clicked | `((e: React.MouseEvent<HTMLElement>) => void)` | - |
 | onAfterClose | Triggered after the exit animation | `(() => void)` | - |
 | icon | Custom icon | `IconType[]` | - |
+
+## Theme
+
+`theme` supports five looks — `fill`, `outline`, `plain`, `solid`, `dashed` — and is `fill` when you write nothing. `underlined` belongs to a control you type into, so an alert falls back to `fill`.
+
+The `type` picks the colour and `theme` picks how far it goes: `fill` is that colour's pale plate, `solid` fills the box with the same colour at full strength and inverts its text, its mark and its close button, so an error and a success stay two different colours instead of both turning primary. `outline` and `plain` carry no plate and take the library's border colour; `dashed` only turns the outer frame into a dashed line. `bordered` is a separate ask — it moves the alert's own tint onto the frame.

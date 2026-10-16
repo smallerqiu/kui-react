@@ -1,4 +1,4 @@
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { resolvePaintedTheme, useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { CircleAlert, CircleCheck, CircleX, Info, X } from "kui-icons";
 import React, { useRef, useState } from "react";
@@ -25,6 +25,13 @@ export interface AlertProps extends Omit<
   children?: React.ReactNode;
 }
 
+// An alert paints a whole box, so it answers the five surface tiers and never `underlined`. Its own look
+// is the tinted plate `fill`, so a tier it does not draw falls back to `fill` — the same DOM as writing
+// no `theme` at all. The stylesheet used to answer only `outline` and `plain` (and spelled them with a
+// `-theme-` infix no other surface used), which left `theme="fill"` — the documented default — shipping
+// `k-alert-theme-fill` as a class nothing painted.
+const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
+
 const Alert: React.FC<AlertProps> = ({
   type = "warning",
   closable = false,
@@ -42,7 +49,8 @@ const Alert: React.FC<AlertProps> = ({
   ...rest
 }) => {
   const inheritedAppearance = useConfigAppearance();
-  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const theme =
+    resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? "fill";
   const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
   const [closed, setClosed] = useState(false);
   const closing = useRef(false);
@@ -82,7 +90,7 @@ const Alert: React.FC<AlertProps> = ({
       "k-alert-has-icon": showIcon,
       "k-alert-has-close": closable,
       "k-alert-bordered": bordered,
-      [`k-alert-theme-${theme}`]: theme,
+      [`k-alert-${theme}`]: theme,
       [`k-alert-shape-${shape}`]: shape,
       "k-alert-has-description": description,
     },

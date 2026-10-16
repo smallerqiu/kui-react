@@ -10,13 +10,18 @@
 // way but their own look is `outline`, not `fill`, and `FeedbackPanel` used to spell its tier class
 // `k-feedback-panel-theme-<tier>` while also shipping `k-feedback-panel-solid` / `-dashed` as classes no
 // rule answered.
-// 3c-丙c adds the last surface of this family, `CheckCard`, which typed its tier as a private
+// 3c-丙c adds the last card of this family, `CheckCard`, which typed its tier as a private
 // `"outline" | "fill"` union while a `ConfigProvider` could still hand it any of the six.
+// 3c-丁a adds `Alert`, the one surface whose plate is not a neutral token: the tint comes from `type`,
+// so `fill` paints that tint and `solid` paints the same colour at full strength rather than the library
+// primary — an error block and a success block have to stay two different blocks. Its stylesheet used to
+// answer only `outline` and `plain`, spelled `k-alert-theme-<tier>` behind an infix no other surface has.
 // The style half — what each tier actually draws — is in tests/theme-variants.test.ts and the pixels in
 // scripts/check-theme.ts.
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import {
+  Alert,
   Card,
   CheckCard,
   CheckCardGroup,
@@ -86,6 +91,15 @@ const SURFACES = [
     render: (props: Record<string, unknown>) => (
       <CheckCard title="选项" description="描述" {...props} />
     ),
+  },
+  // 3c-丁a: an alert tints its own plate from `type`, and its stylesheet answered only `outline` and
+  // `plain` — spelled `k-alert-theme-<tier>`, the one infix left in the library — so the documented
+  // default `theme="fill"` shipped a class nothing painted, and `solid` / `dashed` shipped two more.
+  {
+    name: "Alert",
+    prefix: "k-alert",
+    fallback: "fill",
+    render: (props: Record<string, unknown>) => <Alert type="info" message="提示" {...props} />,
   },
 ] as const;
 
@@ -318,10 +332,7 @@ describe("a check card takes its tier from whoever asks for it", () => {
       [...container.querySelectorAll<HTMLElement>(".k-check-card")].map((element) =>
         tierClasses(card, Array.from(element.classList)),
       ),
-    ).toEqual([
-      [`${card.prefix}-outline`],
-      [`${card.prefix}-outline`],
-    ]);
+    ).toEqual([[`${card.prefix}-outline`], [`${card.prefix}-outline`]]);
     expect(
       tierClasses(card, Array.from(container.querySelector(".k-check-card-group")!.classList)),
     ).toEqual([]);
@@ -341,7 +352,9 @@ describe("a check card takes its tier from whoever asks for it", () => {
   // The checked marks are the state this component exists to show, so `solid` has to keep them legible
   // instead of painting them the plate's own colour; both classes share the root to do it.
   it("keeps the checked state beside a solid tier", () => {
-    const { container } = render(<CheckCard theme="solid" checked title="选项" description="描述" />);
+    const { container } = render(
+      <CheckCard theme="solid" checked title="选项" description="描述" />,
+    );
     const classes = Array.from(container.querySelector(".k-check-card")!.classList);
     expect(classes).toContain(`${card.prefix}-solid`);
     expect(classes).toContain("is-checked");
@@ -352,12 +365,71 @@ describe("a check card takes its tier from whoever asks for it", () => {
 
   it("lands beside the size and shape flags of a card", () => {
     const classes = Array.from(
-      render(<CheckCard theme="dashed" size="small" shape="square" title="选项" />).container
-        .querySelector(".k-check-card")!
-        .classList,
+      render(
+        <CheckCard theme="dashed" size="small" shape="square" title="选项" />,
+      ).container.querySelector(".k-check-card")!.classList,
     );
     expect(classes).toContain(`${card.prefix}-dashed`);
     expect(classes).toContain(`${card.prefix}-small`);
     expect(classes).toContain(`${card.prefix}-square`);
+  });
+});
+
+// 3c-丁a: `Alert` spelled its tier class `k-alert-theme-<tier>` while every other surface answered
+// `<prefix>-<tier>`, which is how `solid` and `dashed` went unpainted for as long as the shared style
+// contract and the pixel checks only read the one spelling. The infix is gone, so an alert now resolves
+// like the rest of the family: five painted tiers, and `underlined` landing on `fill` — the tinted plate
+// the component ships with.
+const alert = SURFACES.find((surface) => surface.name === "Alert")!;
+const alertClasses = (props: Record<string, unknown>) =>
+  Array.from(
+    render(<Alert type="info" message="提示" {...props} />).container.querySelector(".k-alert")!
+      .classList,
+  );
+
+describe("an alert names its tier like every other surface", () => {
+  for (const tier of TIERS)
+    it(`theme="${tier}" never emits the -theme- infix`, () => {
+      const classes = alertClasses({ theme: tier });
+      expect(classes.some((cls) => cls.includes("-theme-"))).toBe(false);
+      expect(tierClasses(alert, classes)).toEqual([
+        `k-alert-${tier === "underlined" ? alert.fallback : tier}`,
+      ]);
+    });
+
+  // `bordered` is the frame flag and `shape` is the corner, so both keep their own class beside the tier.
+  it("lands beside the bordered flag and the shape", () => {
+    const classes = alertClasses({ theme: "outline", bordered: true, shape: "square" });
+    expect(classes).toContain("k-alert-outline");
+    expect(classes).toContain("k-alert-bordered");
+    expect(classes).toContain("k-alert-shape-square");
+  });
+});
+
+// `type` is the alert's message and the plate is drawn from it, so no tier may drop the type class — and
+// `solid` in particular has to keep four parts of its own legible on a saturated plate.
+describe("a solid alert keeps its type and everything it paints", () => {
+  for (const type of ["info", "success", "warning", "error"] as const)
+    it(`theme="solid" keeps type="${type}"`, () => {
+      const classes = Array.from(
+        render(<Alert type={type} message="提示" theme="solid" />).container.querySelector(
+          ".k-alert",
+        )!.classList,
+      );
+      expect(classes).toContain(`k-alert-${type}`);
+      expect(tierClasses(alert, classes)).toEqual(["k-alert-solid"]);
+    });
+
+  it("keeps the mark, the message, the description and the close button", () => {
+    const { container } = render(
+      <Alert type="warning" theme="solid" message="标题" description="描述" closable showIcon />,
+    );
+    expect(container.querySelector(".k-alert-message")?.textContent).toBe("标题");
+    expect(container.querySelector(".k-alert-description")?.textContent).toBe("描述");
+    expect(container.querySelector(".k-alert-icon")).toBeTruthy();
+    expect(container.querySelector(".k-alert-close")).toBeTruthy();
+    expect(Array.from(container.querySelector(".k-alert")!.classList)).toContain(
+      "k-alert-has-description",
+    );
   });
 });

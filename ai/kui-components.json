@@ -1479,8 +1479,8 @@
             "underlined"
           ],
           "boolean": false,
-          "descriptionZh": "主题",
-          "descriptionEn": "Theme"
+          "descriptionZh": "外观主题",
+          "descriptionEn": "Surface theme"
         },
         {
           "name": "shape",
