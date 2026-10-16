@@ -1,4 +1,4 @@
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { resolvePaintedTheme, useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { X } from "kui-icons";
 import React, { useRef, useState } from "react";
@@ -24,6 +24,13 @@ export interface TagProps extends Omit<
   children?: React.ReactNode;
 }
 
+// The tiers `tag/styles/index.less` paints. `underlined` is absent because an underline is the whole
+// affordance of a field you type into and a chip has nothing to underline (theme 口径 §五.1), and
+// `default` is absent because it means "listen to the component" — which here is `fill`, the tier a tag
+// reaches when no `theme` is written. Anything outside this set resolves to `fill` instead of shipping
+// a class no rule answers, the way `k-tag-default` and `k-tag-outline` used to.
+const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
+
 const Tag: React.FC<TagProps> = ({
   closeable = false,
   compact = false,
@@ -42,7 +49,8 @@ const Tag: React.FC<TagProps> = ({
   const inheritedAppearance = useConfigAppearance();
   const shape = shapeProp ?? inheritedAppearance.shape;
   const size = sizeProp ?? inheritedAppearance.size ?? "small";
-  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const theme =
+    resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? "fill";
   const [visible, setVisible] = useState(true);
   const closing = useRef(false);
 
@@ -68,7 +76,8 @@ const Tag: React.FC<TagProps> = ({
       "k-tag-has-color": isCustomColor,
       "k-tag-closeable": closeable,
       "k-tag-compact": compact,
-      [`k-tag-${theme}`]: !!theme,
+      // Always exactly one tier: `theme` resolves to a painted value or to `fill`.
+      [`k-tag-${theme}`]: true,
     },
     className,
   );
