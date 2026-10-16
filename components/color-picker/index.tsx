@@ -71,8 +71,9 @@ function ColorPicker({
 }: ColorPickerProps) {
   const inheritedAppearance = useConfigAppearance();
   const size = sizeProp ?? inheritedAppearance.size;
-  // 3b-乙2b: the tier class goes on the trigger box, so `default` has to be resolved before it
-  // reaches the class list — it means "the control's own default", not a preset nobody paints.
+  // 3b-乙2b: the tier class goes on the trigger box, so the value has to be resolved before it
+  // reaches the class list — a control with no `theme` written means its own default tier, not a
+  // preset nobody paints.
   const theme = resolveTheme(themeProp ?? inheritedAppearance.theme, "fill");
   const shape = shapeProp ?? inheritedAppearance.shape;
   const [innerColor, setInnerColor] = useValue(value, (next) => next ?? "#000000ff");

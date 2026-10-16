@@ -1,29 +1,30 @@
 // 3c-乙a: `Tag` is the opposite case to `Button` (tests/theme-action-tiers) — its own default look *is*
 // a tier class, `fill`, so a tag carries exactly one tier whatever it is handed. The source used to emit
-// `k-tag-${theme}` for any value it received, so `theme="default"` shipped `k-tag-default` and
-// `theme="outline" / "solid" / "dashed"` shipped classes that no LESS rule answered: a chip inside
-// `<Select multiple theme="solid">` was unthemed twice over, and the tier the control forwarded to its
-// chips had nowhere to land. Now the five tiers the stylesheet paints all reach the root, and anything
-// else — `default`, and `underlined`, which only means something on a box you type into (theme 口径
-// §五.1) — lands on `fill`. The style half is in tests/theme-variants.test.ts and scripts/check-theme.ts.
+// `k-tag-${theme}` for any value it received, so `theme="outline" / "solid" / "dashed"` shipped classes
+// that no LESS rule answered: a chip inside `<Select multiple theme="solid">` was unthemed twice over,
+// and the tier the control forwarded to its chips had nowhere to land. Now the five tiers the
+// stylesheet paints all reach the root, and anything it cannot paint — `underlined`, which only means
+// something on a box you type into (theme 口径 §五.1) — lands on `fill`. The style half is in
+// tests/theme-variants.test.ts and scripts/check-theme.ts.
 import { render } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { describe, expect, it } from "vitest";
 import ConfigProvider from "../components/config";
 import { Checkbox, CheckboxGroup, Radio, RadioButton, RadioGroup, Select, Tag } from "react-kui";
 
-// The seven values `theme` is typed as, and the five `tag/styles/index.less` paints.
-const TIERS = ["default", "fill", "outline", "plain", "solid", "dashed", "underlined"] as const;
+// The six values `theme` is typed as, and the five `tag/styles/index.less` paints.
+const TIERS = ["fill", "outline", "plain", "solid", "dashed", "underlined"] as const;
 const PAINTED = ["fill", "outline", "plain", "solid", "dashed"] as const;
-const UNSUPPORTED = ["default", "underlined"] as const;
+const UNSUPPORTED = ["underlined"] as const;
 
 const PRESETS = ["red", "blue"] as const;
 
 const tagClasses = (node: ReactElement) =>
   Array.from(render(node).container.querySelector(".k-tag")?.classList ?? []);
 
-// Only the seven tier spellings count: `k-tag-sm`, `k-tag-circle` and `k-tag-compact` are size, shape
-// and density, and `k-tag-red` is a colour that shares the prefix.
+// Only the six tier spellings count: `k-tag-sm`, `k-tag-circle` and `k-tag-compact` are size, shape
+// and density, `k-tag-red` is a colour that shares the prefix, and `k-tag-default` is a colour too —
+// which is the same collision `Button` had with `type="default"`.
 const tierClasses = (classes: string[]) =>
   classes.filter((cls) => TIERS.some((tier) => cls === `k-tag-${tier}`));
 
@@ -38,9 +39,9 @@ describe("a tag always carries exactly one painted tier", () => {
 
   for (const tier of UNSUPPORTED) {
     it(`theme="${tier}" lands on the tier a tag reaches with no theme at all`, () => {
-      // Unlike Button, a tag has a default tier to answer with: `default` means "listen to the
-      // component", and the component's answer is `fill`. `k-tag-default` was the dead class this
-      // guard exists to end, and `k-tag-underlined` has no rule because a chip has no caret.
+      // Unlike Button, a tag has a default tier to answer with, and that answer is `fill`.
+      // `k-tag-underlined` has no rule because a chip has no caret, so the guard resolves it to the
+      // tier the stylesheet does paint.
       expect(tagClasses(<Tag theme={tier}>Tag</Tag>)).toEqual(tagClasses(<Tag>Tag</Tag>));
       expect(tierClasses(tagClasses(<Tag theme={tier}>Tag</Tag>))).toEqual(["k-tag-fill"]);
     });
@@ -176,12 +177,10 @@ describe("a multiple control hands its tier to the chips it renders", () => {
 // and a bordered one — and their default is `fill`, so they take the same guard as `Tag` with a shorter
 // painted list (`components/checkbox/checkbox.tsx`, `components/radio/radio.tsx`). The bug this half
 // locks is the one the source used to have: `theme="outline"` shipped no class at all, so the box fell
-// back to the base border with no way for `--kui-theme-outline-border` to reach it, and
-// `theme="default"` — which means "listen to the component" — shipped nothing either and landed on that
-// same base border instead of on `fill`. The style half is `tests/theme-variants.test.ts` and
-// `scripts/check-theme.ts`.
+// back to the base border with no way for `--kui-theme-outline-border` to reach it. The style half is
+// `tests/theme-variants.test.ts` and `scripts/check-theme.ts`.
 const MARK_PAINTED = ["fill", "outline"] as const;
-const MARK_UNPAINTED = ["default", "plain", "solid", "dashed", "underlined"] as const;
+const MARK_UNPAINTED = ["plain", "solid", "dashed", "underlined"] as const;
 
 const MARKS: {
   name: string;
@@ -221,10 +220,9 @@ describe("a check box and a radio carry one of the two tiers they paint", () => 
 
     for (const tier of MARK_UNPAINTED) {
       it(`${name} lands on fill for theme="${tier}"`, () => {
-        // The dead `k-checkbox-default` used to be the whole story: written `default` shipped nothing
-        // and the box read as the bordered base, so it looked like a different tier than no `theme` at
-        // all. Both halves named, because two renders that both land on a class no LESS paints still
-        // agree with each other.
+        // A tier the box cannot paint has to land on the look a bare box already has, so both halves
+        // are named: two renders that both land on a class no LESS paints would still agree with each
+        // other, and only the explicit `-fill` says the guard resolved it.
         const classes = markClasses(node({ theme: tier }), name);
         expect(ordered(classes), `theme="${tier}" is not the look of a bare ${name}`).toEqual(
           ordered(markClasses(node({}), name)),
@@ -348,10 +346,10 @@ describe("an inherited tier goes through the mark guard too", () => {
 
 // The button-style radio group's own layout class is the one place a tier reaches something other than a
 // box: the joined-button spacing only exists for the filled look, and it has to follow the value the
-// buttons are actually painted with. `default` is not that value — a button's own look is the bordered
-// one, which is what the base spacing already draws — so this condition stays a literal `fill`
-// comparison while still reading the inherited value (`vue` used to read `props.theme`, so a provider
-// that asked for `fill` painted filled buttons inside un-joined spacing).
+// buttons are actually painted with. A button written with no `theme` is not that value — its own look
+// is the bordered one, which is what the base spacing already draws — so this condition stays a literal
+// `fill` comparison while still reading the inherited value (`vue` used to read `props.theme`, so a
+// provider that asked for `fill` painted filled buttons inside un-joined spacing).
 describe("the button-style radio group joins its buttons for the filled tier only", () => {
   const buttonGroup = (props: Record<string, unknown>) =>
     Array.from(
@@ -367,10 +365,13 @@ describe("the button-style radio group joins its buttons for the filled tier onl
     expect(buttonGroup({ theme: "fill" })).toContain("k-radio-group-fill");
   });
 
-  for (const tier of ["default", "outline"] as const)
-    it(`theme="${tier}" keeps the base spacing`, () => {
-      expect(buttonGroup({ theme: tier })).not.toContain("k-radio-group-fill");
-    });
+  it("a group written with no theme keeps the base spacing", () => {
+    expect(buttonGroup({})).not.toContain("k-radio-group-fill");
+  });
+
+  it('theme="outline" keeps the base spacing', () => {
+    expect(buttonGroup({ theme: "outline" })).not.toContain("k-radio-group-fill");
+  });
 
   it('a provider that asks for "fill" still joins them', () => {
     expect(

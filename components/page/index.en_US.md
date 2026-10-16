@@ -45,5 +45,5 @@ Separate long lists using pagination, loading only one page at a time.
 | shape | Pagination shape | `"round" \| "default" \| "square" \| "circle"` | round |
 | sizeData | Custom page size data | `number[]` | [10,15,20,30,40] |
 | size | Size | `"small" \| "medium" \| "large"` | `medium` |
-| theme | Theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | `fill` |
+| theme | Theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | `fill` |
 | onChange | Called when the page or page size changes | `((page: number, pageSize: number) => void)` | - |

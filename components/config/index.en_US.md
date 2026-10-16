@@ -18,5 +18,5 @@ Provides locale, popup-container, and component appearance configuration to desc
 | locale | Component locale | `Locale \| null` | global locale |
 | getPopupContainer | Returns the popup mount container | `(() => HTMLElement \| null \| undefined)` | document.body |
 | size | Default size for compatible components | `"small" \| "medium" \| "large"` | - |
-| theme | Default theme for compatible components | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| theme | Default theme for compatible components | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
 | shape | Default shape for compatible components | `"round" \| "default" \| "square" \| "circle"` | - |

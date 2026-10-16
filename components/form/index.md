@@ -73,7 +73,7 @@ function Demo() {
 | name | 表单名称，会作为表单字段 id 前缀使用 | `string` | - |
 | labelCol | label 标签布局，同 `<Col>` 的 span、offset；inline 布局下不生效 | `ColProps` | - |
 | wrapperCol | 控件标签布局，同 `<Col>` 的 span、offset；inline 布局下不生效 | `ColProps` | - |
-| theme | 子控件主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| theme | 子控件主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
 | size | 子控件尺寸 | `"small" \| "medium" \| "large"` | - |
 | layout | 表单布局 | `"inline" \| "horizontal" \| "vertical"` | horizontal |
 | shape | 子控件形状 | `"round" \| "default" \| "square" \| "circle"` | - |

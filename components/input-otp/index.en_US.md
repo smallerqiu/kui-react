@@ -50,7 +50,7 @@ Input for verification codes, one-time passwords, and other fixed-length values.
 | readOnly | Whether read-only | `boolean` | false |
 | autoFocus | Whether to focus automatically | `boolean` | false |
 | size | Size | `"small" \| "medium" \| "large"` | - |
-| theme | Theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | Theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | Shape | `"round" \| "default" \| "square" \| "circle"` | - |
 | onChange | Value change callback | `((value: string) => void)` | - |
 | onComplete | Completion callback | `((value: string) => void)` | - |

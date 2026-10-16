@@ -41,7 +41,7 @@
 | clearable | 是否显示一键清空按钮 | `boolean` | true |
 | block | 是否撑满父容器宽度 | `boolean` | false |
 | size | 尺寸 | `"small" \| "medium" \| "large"` | medium |
-| theme | 主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | 主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | default |
 | allowDuplicates | 允许重复 | `boolean` | false |
 | max | 最大标签数 | `number` | - |

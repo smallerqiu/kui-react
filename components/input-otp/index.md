@@ -50,7 +50,7 @@
 | readOnly | 是否只读 | `boolean` | false |
 | autoFocus | 是否自动聚焦 | `boolean` | false |
 | size | 尺寸 | `"small" \| "medium" \| "large"` | - |
-| theme | 主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | 主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | - |
 | onChange | 值变化回调 | `((value: string) => void)` | - |
 | onComplete | 输入完成回调 | `((value: string) => void)` | - |

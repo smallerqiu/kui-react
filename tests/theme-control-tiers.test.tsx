@@ -1,8 +1,8 @@
-// 3b: these controls have always typed `theme` as seven values, but the source emitted a class for
-// two of them (`fill`, `plain`) — `theme="outline"` reached the DOM as nothing at all, and LESS had
-// no rule to paint either, so the preset was invisible twice over. Every supported tier now reaches
-// the root as `k-<component>-<tier>`, and `theme="default"` lands on the component's own default
-// (`fill`) instead of reaching no tier class and rendering the bordered base look.
+// 3b: these controls have always typed `theme` as more values than they emitted — the source emitted a
+// class for two of them (`fill`, `plain`), so `theme="outline"` reached the DOM as nothing at all and
+// LESS had no rule to paint either, which made the preset invisible twice over. Every tier the type
+// allows now reaches the root as `k-<component>-<tier>`, and a control written with no `theme` lands on
+// its own default (`fill`) instead of the bordered base a class-less root used to render.
 // The input family is the same contract on the three elements a tier class can land on: the bare
 // `<input>`, the wrapper that replaces it once anything decorates the field, and `<textarea>`.
 // The style half is in tests/theme-variants.test.ts.
@@ -99,25 +99,17 @@ describe("every theme tier reaches the control root", () => {
       });
     }
 
-    it(`${label} lands on its own default tier for theme="default"`, () => {
-      // "Listen to the component" for a control means `fill`, so writing `theme="default"` has to
-      // reach the same classes as never writing `theme` — not the bordered base a class-less root
-      // would have rendered.
+    it(`${label} lands on its own default tier with no theme written`, () => {
+      // Writing no `theme` is the only spelling of "listen to the component", and for a control that
+      // means `fill` — not the bordered base a class-less root used to render. The tier is named here
+      // rather than compared between two renders, because two renders that both land on a class no
+      // LESS paints still agree with each other.
       const tiers = (container: HTMLElement) =>
         rootClasses(container, name).filter((cls) => cls.startsWith(`${name}-`));
-      expect(tiers(render(node({ theme: "default" })).container)).toEqual(
+      expect(
         tiers(render(node({})).container),
-      );
-      // Two renders that both land on a dead class agree with each other just as well, so the tier
-      // `default` resolves to is named here: the control's own `fill`, never a `k-*-default` no LESS
-      // can answer (`.kui-theme-value()` has no `default` arm on purpose).
-      const emitted = tiers(render(node({ theme: "default" })).container);
-      expect(emitted, `${label} ships a tier class nothing paints`).not.toContain(
-        `${name}-default`,
-      );
-      expect(emitted, `${label} default does not land on its own fill tier`).toContain(
-        `${name}-fill`,
-      );
+        `${label} has no default tier of its own`,
+      ).toContain(`${name}-fill`);
     });
 
     // The tier has to reach the element the LESS block targets, so which of the box shapes is being
@@ -165,18 +157,18 @@ describe("the tier reaches the control these components delegate to", () => {
       });
     }
 
-    it(`${name} forwards the resolved tier for theme="default"`, () => {
-      // "Listen to the component" is answered by the inner control, so `default` must arrive there as
-      // its own `fill` and never as a `k-*-default` that no LESS rule can answer.
-      const { container } = render(node({ theme: "default" }));
+    it(`${name} leaves its own root unthemed when nothing is written`, () => {
+      // The inner control answers "listen to the component" with its own `fill`; the wrapper, which
+      // has no surface of its own, must not start shipping a tier class no stylesheet can answer.
+      const { container } = render(node({}));
       expect(
         container.querySelector("." + host + "-fill"),
-        `${name} default does not land on the fill tier`,
+        `${name} leaves the inner control with no tier`,
       ).toBeTruthy();
       expect(
-        container.querySelector(`.${host}-default, .${name}-default`),
-        `${name} forwards a tier class nothing paints`,
-      ).toBeNull();
+        classes(container).filter((cls) => TIERS.some((tier) => cls === `${name}-${tier}`)),
+        `${name} emits a tier class of its own`,
+      ).toEqual([]);
     });
   }
 });

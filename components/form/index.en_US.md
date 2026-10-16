@@ -73,7 +73,7 @@ function Demo() {
 | name | Form name, will be used as the id prefix for form fields | `string` | - |
 | labelCol | Label layout, same as the `<Col>` component, set span offset values, such as {span: 3, offset: 12} | `ColProps` | - |
 | wrapperCol | Control layout, same as the `<Col>` component, set span offset values, such as {span: 15, offset: 12} | `ColProps` | - |
-| theme | Child control theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| theme | Child control theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
 | size | Child control size | `"small" \| "medium" \| "large"` | - |
 | layout | Form layout | `"inline" \| "horizontal" \| "vertical"` | horizontal |
 | shape | Child control shape | `"round" \| "default" \| "square" \| "circle"` | - |

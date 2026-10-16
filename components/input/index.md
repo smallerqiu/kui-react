@@ -54,7 +54,7 @@
 | prefix | 输入框内部前缀 | `React.ReactNode` | - |
 | addonBefore | 输入框外部前置附件 | `React.ReactNode` | - |
 | addonAfter | 输入框外部后置附件 | `React.ReactNode` | - |
-| theme | 主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | 主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | 输入框形状 | `"round" \| "default" \| "square" \| "circle"` | - |
 | disabled | 是否禁用 | boolean | false |
 | multiple | 是否允许原生多值输入 | boolean | false |
@@ -79,7 +79,7 @@
 | --- | --- | --- | --- |
 | value | 输入值 | `string \| number \| readonly string[]` | - |
 | size | 尺寸，可选值 `small`、`large`，默认不选 | `"small" \| "medium" \| "large"` | - |
-| theme | 主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | 主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | - |
 | rows | 默认行数 | number | 2 |
 | disabled | 是否禁用 | boolean | false |

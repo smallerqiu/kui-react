@@ -45,5 +45,5 @@
 | shape | 分页器形状 | `"round" \| "default" \| "square" \| "circle"` | round |
 | sizeData | 自定义页码组数据 | `number[]` | [10,15,20,30,40] |
 | size | 尺寸 | `"small" \| "medium" \| "large"` | `medium` |
-| theme | 主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | `fill` |
+| theme | 主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | `fill` |
 | onChange | 页码、每页条数改变时的回调 | `((page: number, pageSize: number) => void)` | - |

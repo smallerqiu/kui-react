@@ -47,5 +47,5 @@ When standard numerical values need to be obtained.
 | prefix | Prefix content | `React.ReactNode` | - |
 | controls | Whether to show increase/decrease buttons | `boolean` | true |
 | keyboard | Whether the value can be adjusted with the up/down arrow keys | `boolean` | true |
-| theme | Component theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | Component theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | onChange | Change callback; returns `undefined` when cleared | `((value: number \| undefined) => void)` | - |

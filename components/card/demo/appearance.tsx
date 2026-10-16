@@ -2,7 +2,7 @@ import type { ShapeType, ThemeType } from "react-kui";
 import { Card, Space } from "react-kui";
 
 const shapes: ShapeType[] = ["round", "square", "circle"];
-const themes: ThemeType[] = ["default", "fill", "outline", "plain"];
+const themes: ThemeType[] = ["fill", "outline", "plain"];
 
 export default function Demo() {
   return (

@@ -41,7 +41,7 @@ To unmount the entire component after closing, update the parent state in `onAft
 | showIcon | Whether to show the icon | `boolean` | false |
 | closable | Whether to show the close button | `boolean` | false |
 | bordered | Whether to display the border | `boolean` | false |
-| theme | Theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| theme | Theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
 | shape | Shape | `"round" \| "default" \| "square" \| "circle"` | - |
 | onClose | Triggered when the close button is clicked | `((e: React.MouseEvent<HTMLElement>) => void)` | - |
 | onAfterClose | Triggered after the exit animation | `(() => void)` | - |

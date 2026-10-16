@@ -27,15 +27,11 @@ const dates = [
     { label: "Circle", value: "circle" },
     { label: "Square", value: "square" },
   ],
-  themes = [
-    { label: "Default", value: "default" },
-    { label: "Fill", value: "fill" },
-    { label: "Outline", value: "outline" },
-  ];
+  themes = [{ label: "Fill", value: "fill" }, { label: "Outline", value: "outline" }];
 export default function App() {
   const [size, setSize] = useState<SizeType>("medium"),
     [shape, setShape] = useState<ShapeType>("round"),
-    [theme, setTheme] = useState<ThemeType>("default"),
+    [theme, setTheme] = useState<ThemeType>("fill"),
     [direction, setDirection] = useState<DirectionType>("horizontal"),
     [type, setType] = useState<RadioType>("button"),
     [value, setValue] = useState(0);

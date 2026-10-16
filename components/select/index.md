@@ -70,7 +70,7 @@
 | extendWidth | 下拉框的宽度是否与input一致 | `boolean` | true |
 | showArrow | 是否显示下拉按钮 | `boolean` | true |
 | options | options 数据，如果设置则不需要手动构造 Option 节点 | `SelectOption[]` | [] |
-| theme | 主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | 主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | icon | 自定义图标 | `IconType[]` | - |
 | shape | shape='circle' 时呈现圆角 | `"round" \| "default" \| "square" \| "circle"` | - |
 | virtual | 是否开启虚拟滚动，用于高效渲染大量选项 | `boolean` | false |

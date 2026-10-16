@@ -33,9 +33,9 @@
 
 ## 主题
 
-`theme` 只有 `fill`（浅底填充圆点）和 `outline`（描边圆点）两种外观；不写或写 `default` 都是 `fill`，其余档位同样按 `fill` 呈现。`outline` 的描边跟随 `--kui-theme-outline-border`，未设置时依次退回 `--kui-control-border`、`--kui-color-border`。
+`theme` 只有 `fill`（浅底填充圆点）和 `outline`（描边圆点）两种外观；不写 `theme` 时就是 `fill`，其余档位同样按 `fill` 呈现。`outline` 的描边跟随 `--kui-theme-outline-border`，未设置时依次退回 `--kui-control-border`、`--kui-color-border`。
 
-单选框组会把自身的 `theme` 传给组内每一项；`type="button"` 的按钮组只有 `fill` 一档改用分隔线拼接的布局，`outline` 与 `default` 保持按钮自身相邻边框的排布。
+单选框组会把自身的 `theme` 传给组内每一项；`type="button"` 的按钮组只有 `fill` 一档改用分隔线拼接的布局，其余档位保持按钮自身相邻边框的排布。
 
 ## Radio API
 
@@ -59,7 +59,7 @@
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | icon | 从 `kui-icons` 导入的图标定义 | `IconType[]` | - |
-| theme | 按钮外观 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| theme | 按钮外观 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
 | size | 按钮尺寸 | `"small" \| "medium" \| "large"` | - |
 | shape | 按钮形状 | `"round" \| "default" \| "square" \| "circle"` | - |
 
@@ -73,7 +73,7 @@
 | size | 按钮尺寸 | `"small" \| "medium" \| "large"` | - |
 | direction | 布局方向 | `"inline" \| "horizontal" \| "vertical"` | horizontal |
 | shape | `button` 的形状 | `"round" \| "default" \| "square" \| "circle"` | - |
-| theme | `button` 的主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| theme | `button` 的主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
 | onChange | 在选项状态发生改变时触发，返回当前选中的项 | `((value: T) => void)` | - |
 | options | 可以指定子项 `radio` | `RadioOption[]` | - |
 | type | 使用按钮样式的单选项 | `"button" \| "radio"` | radio |

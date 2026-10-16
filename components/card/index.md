@@ -39,7 +39,7 @@
 | title | 卡片的标题 | `React.ReactNode` | - |
 | icon | 卡片标题的图标 | `IconType[]` | - |
 | bordered | 卡片是否显示边框 | `boolean` | false |
-| theme | 外观主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | 外观主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | 外框形状 | `"round" \| "default" \| "square" \| "circle"` | round |
 | size | 卡片尺寸 | `"small" \| "medium" \| "large"` | medium |
 | extra | 卡片标题扩展 | `React.ReactNode` | - |

@@ -70,7 +70,7 @@ Similar to the Select selection control, when the selectable data structure is a
 | clearable | Whether options can be cleared | `boolean` | true |
 | bordered | Whether to show border | `boolean` | true |
 | showArrow | Whether to show dropdown button | `boolean` | true |
-| theme | The theme of TreeSelect | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | The theme of TreeSelect | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | icon | Custom icon | `IconType[]` | - |
 | shape | When shape='circle', displays rounded corners | `"round" \| "default" \| "square" \| "circle"` | - |
 | treeLoadData | Method to asynchronously load data | `((node: TreeNode) => Promise<unknown>)` | - |

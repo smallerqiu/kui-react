@@ -33,9 +33,9 @@ Radio button.
 
 ## Theme
 
-A radio has two looks: `fill` (a shallow filled dot) and `outline` (a bordered one). Leaving `theme` unset or writing `default` gives `fill`, and every other value falls back to `fill` too. The `outline` edge follows `--kui-theme-outline-border`, then `--kui-control-border`, then `--kui-color-border`.
+A radio has two looks: `fill` (a shallow filled dot) and `outline` (a bordered one). Leaving `theme` unset gives `fill`, and every value a radio does not paint falls back to `fill` too. The `outline` edge follows `--kui-theme-outline-border`, then `--kui-control-border`, then `--kui-color-border`.
 
-A `RadioGroup` passes its own `theme` down to every option it renders. In the `type="button"` style only `fill` switches to the joined layout with one divider between buttons; `outline` and `default` keep the buttons' own adjacent borders.
+A `RadioGroup` passes its own `theme` down to every option it renders. In the `type="button"` style only `fill` switches to the joined layout with one divider between buttons; every other tier keeps the buttons' own adjacent borders.
 
 ## Radio API
 
@@ -59,7 +59,7 @@ In addition to Radio props, RadioButton supports:
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
 | icon | Icon definition imported from `kui-icons` | `IconType[]` | - |
-| theme | Button appearance | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| theme | Button appearance | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
 | size | Button size | `"small" \| "medium" \| "large"` | - |
 | shape | Button shape | `"round" \| "default" \| "square" \| "circle"` | - |
 
@@ -73,7 +73,7 @@ In addition to Radio props, RadioButton supports:
 | size | Button size | `"small" \| "medium" \| "large"` | - |
 | direction | Layout direction | `"inline" \| "horizontal" \| "vertical"` | horizontal |
 | shape | Button shape | `"round" \| "default" \| "square" \| "circle"` | - |
-| theme | Button theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| theme | Button theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
 | onChange | Triggered when option state changes, returns currently selected item | `((value: T) => void)` | - |
 | options | Can specify child `radio` items | `RadioOption[]` | - |
 | type | Use radio or button-style items | `"button" \| "radio"` | radio |

@@ -41,7 +41,7 @@ Turns continuous input into an editable tag collection.
 | clearable | Whether to show the clear button | `boolean` | true |
 | block | Fill the parent width | `boolean` | false |
 | size | Size | `"small" \| "medium" \| "large"` | medium |
-| theme | Theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | Theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | Shape | `"round" \| "default" \| "square" \| "circle"` | default |
 | allowDuplicates | Allow duplicate tags | `boolean` | false |
 | max | Maximum tag count | `number` | - |

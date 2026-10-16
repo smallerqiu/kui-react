@@ -989,7 +989,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -2178,7 +2177,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -4077,15 +4075,14 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
         "underlined"
       ],
       "boolean": false,
-      "descriptionZh": "按钮主题，可用 `fill` / `outline` / `plain` / `solid` / `dashed`；`default` 就是按钮自身外观，`underlined` 按 `default` 处理",
-      "descriptionEn": "Button theme; `fill` / `outline` / `plain` / `solid` / `dashed` are drawn, `default` is the button's own look and `underlined` is handled as `default`"
+      "descriptionZh": "按钮主题，可用 `fill` / `outline` / `plain` / `solid` / `dashed`；不写 `theme` 就是按钮自身的外观，`underlined` 是给可输入的控件用的，按钮不会画下划线",
+      "descriptionEn": "Button theme; `fill` / `outline` / `plain` / `solid` / `dashed` are drawn. Leaving `theme` unset keeps the button's own look, and `underlined` belongs to controls you type into, so a button never draws an underline"
     },
     {
       "name": "shape",
@@ -4890,7 +4887,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -5093,7 +5089,7 @@ import type { ShapeType, ThemeType } from "react-kui";
 import { Card, Space } from "react-kui";
 
 const shapes: ShapeType[] = ["round", "square", "circle"];
-const themes: ThemeType[] = ["default", "fill", "outline", "plain"];
+const themes: ThemeType[] = ["fill", "outline", "plain"];
 
 export default function Demo() {
   return (
@@ -5273,7 +5269,7 @@ import type { ShapeType, ThemeType } from "react-kui";
 import { Card, Space } from "react-kui";
 
 const shapes: ShapeType[] = ["round", "square", "circle"];
-const themes: ThemeType[] = ["default", "fill", "outline", "plain"];
+const themes: ThemeType[] = ["fill", "outline", "plain"];
 
 export default function Demo() {
   return (
@@ -5665,7 +5661,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -5963,7 +5958,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -6822,7 +6816,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -7283,7 +7276,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -7663,7 +7655,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -8104,7 +8095,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -8669,7 +8659,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -10513,15 +10502,14 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
         "underlined"
       ],
       "boolean": false,
-      "descriptionZh": "按钮主题，可用 `fill` / `outline` / `plain` / `solid` / `dashed`；`default` 就是按钮自身外观，`underlined` 按 `default` 处理",
-      "descriptionEn": "Button theme; `fill` / `outline` / `plain` / `solid` / `dashed` are drawn, `default` is the button's own look and `underlined` is handled as `default`"
+      "descriptionZh": "按钮主题，可用 `fill` / `outline` / `plain` / `solid` / `dashed`；不写 `theme` 就是按钮自身的外观，`underlined` 是给可输入的控件用的，按钮不会画下划线",
+      "descriptionEn": "Button theme; `fill` / `outline` / `plain` / `solid` / `dashed` are drawn. Leaving `theme` unset keeps the button's own look, and `underlined` belongs to controls you type into, so a button never draws an underline"
     },
     {
       "name": "arrow",
@@ -11217,7 +11205,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -13638,7 +13625,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -14190,7 +14176,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -15345,7 +15330,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -15797,7 +15781,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -16306,7 +16289,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -16728,7 +16710,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -17295,7 +17276,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -17615,7 +17595,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -17943,7 +17922,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -22120,7 +22098,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -24310,7 +24287,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -26445,7 +26421,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -26816,7 +26791,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -27064,15 +27038,11 @@ const dates = [
     { label: "Circle", value: "circle" },
     { label: "Square", value: "square" },
   ],
-  themes = [
-    { label: "Default", value: "default" },
-    { label: "Fill", value: "fill" },
-    { label: "Outline", value: "outline" },
-  ];
+  themes = [{ label: "Fill", value: "fill" }, { label: "Outline", value: "outline" }];
 export default function App() {
   const [size, setSize] = useState<SizeType>("medium"),
     [shape, setShape] = useState<ShapeType>("round"),
-    [theme, setTheme] = useState<ThemeType>("default"),
+    [theme, setTheme] = useState<ThemeType>("fill"),
     [direction, setDirection] = useState<DirectionType>("horizontal"),
     [type, setType] = useState<RadioType>("button"),
     [value, setValue] = useState(0);
@@ -27135,7 +27105,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -27417,15 +27386,11 @@ const dates = [
     { label: "Circle", value: "circle" },
     { label: "Square", value: "square" },
   ],
-  themes = [
-    { label: "Default", value: "default" },
-    { label: "Fill", value: "fill" },
-    { label: "Outline", value: "outline" },
-  ];
+  themes = [{ label: "Fill", value: "fill" }, { label: "Outline", value: "outline" }];
 export default function App() {
   const [size, setSize] = useState<SizeType>("medium"),
     [shape, setShape] = useState<ShapeType>("round"),
-    [theme, setTheme] = useState<ThemeType>("default"),
+    [theme, setTheme] = useState<ThemeType>("fill"),
     [direction, setDirection] = useState<DirectionType>("horizontal"),
     [type, setType] = useState<RadioType>("button"),
     [value, setValue] = useState(0);
@@ -27530,7 +27495,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -27777,15 +27741,11 @@ const dates = [
     { label: "Circle", value: "circle" },
     { label: "Square", value: "square" },
   ],
-  themes = [
-    { label: "Default", value: "default" },
-    { label: "Fill", value: "fill" },
-    { label: "Outline", value: "outline" },
-  ];
+  themes = [{ label: "Fill", value: "fill" }, { label: "Outline", value: "outline" }];
 export default function App() {
   const [size, setSize] = useState<SizeType>("medium"),
     [shape, setShape] = useState<ShapeType>("round"),
-    [theme, setTheme] = useState<ThemeType>("default"),
+    [theme, setTheme] = useState<ThemeType>("fill"),
     [direction, setDirection] = useState<DirectionType>("horizontal"),
     [type, setType] = useState<RadioType>("button"),
     [value, setValue] = useState(0);
@@ -29150,7 +29110,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -29733,7 +29692,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -39651,7 +39609,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -40323,7 +40280,6 @@ export default function Demo() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",
@@ -40918,7 +40874,6 @@ export default function App() {
       "enumValues": [
         "dashed",
         "solid",
-        "default",
         "fill",
         "outline",
         "plain",

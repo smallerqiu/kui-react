@@ -47,5 +47,5 @@
 | prefix | 前缀内容 | `React.ReactNode` | - |
 | controls | 是否显示增减按钮 | `boolean` | true |
 | keyboard | 是否允许通过上下方向键调整数值 | `boolean` | true |
-| theme | 组件呈现主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | 组件呈现主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | onChange | 变化回调，清空时返回 `undefined` | `((value: number \| undefined) => void)` | - |

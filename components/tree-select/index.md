@@ -70,7 +70,7 @@
 | clearable | 是否可以清空选项 | `boolean` | true |
 | bordered | 是否显示边框 | `boolean` | true |
 | showArrow | 是否显示下拉按钮 | `boolean` | true |
-| theme | 主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | 主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | icon | 自定义图标 | `IconType[]` | - |
 | shape | shape='circle' 时呈现圆角 | `"round" \| "default" \| "square" \| "circle"` | - |
 | treeLoadData | 异步加载数据的方法 | `((node: TreeNode) => Promise<unknown>)` | - |
