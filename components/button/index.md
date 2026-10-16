@@ -61,7 +61,7 @@ import { Button } from "kui-react";
 | disabled | 按钮失效状态 ˚ | `boolean` | false |
 | size | 按钮尺寸, | `"small" \| "medium" \| "large"` | - |
 | shape | 按钮的外观 | `"round" \| "default" \| "square" \| "circle"` | - |
-| theme | 按钮主题 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| theme | 按钮主题，可用 `fill` / `outline` / `plain` / `solid` / `dashed`；`default` 就是按钮自身外观，`underlined` 按 `default` 处理 | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
 | icon | 从 kui-icons 导入的图标定义（如 Search），不是字符串或已渲染的 Icon 元素 | `IconType[]` | - |
 | loading | 按钮是否进入加载模式 | `boolean` | false |
 | href | 点击跳转的地址，指定此属性 button 的行为和 a 链接一致 | `string` | - |

@@ -59,7 +59,7 @@ When there are too many operation commands on the page, this component can be us
 | shape | Button shape | `"round" \| "default" \| "square" \| "circle"` | - |
 | disabled | Whether disabled | `boolean` | false |
 | icon | Dropdown trigger icon | `IconType[]` | Ellipsis |
-| theme | Button theme | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| theme | Button theme; `fill` / `outline` / `plain` / `solid` / `dashed` are drawn, `default` is the button's own look and `underlined` is handled as `default` | `"dashed" \| "solid" \| "default" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
 | arrow | Whether to show the dropdown arrow | `boolean` | false |
 | trigger | Trigger mode | `"hover" \| "click" \| "contextmenu"` | hover |
 | placement | Dropdown placement | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right"` | bottom-right |

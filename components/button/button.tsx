@@ -1,4 +1,4 @@
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { resolvePaintedTheme, useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { Loading } from "kui-icons";
 import React, { useContext } from "react";
@@ -8,6 +8,11 @@ import { colors } from "../const/var";
 import Icon, { type IconType } from "../icon";
 import { getChildren } from "../utils/react-node";
 import { ButtonGroupContext } from "./button-group-context";
+
+// The tiers `button/styles/index.less` actually paints. `default` is absent on purpose: Button's own
+// default look is the type-driven base, and `k-btn-default` already means `type="default"`.
+// `underlined` is absent too — an underline is a surface tier, and a button has nothing to underline.
+const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
 
 export interface ButtonProps extends Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -52,7 +57,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
   ) => {
     const inheritedAppearance = useConfigAppearance();
     const size = sizeProp ?? inheritedAppearance.size;
-    const theme = themeProp ?? inheritedAppearance.theme;
+    const theme = resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES);
     const shape = shapeProp ?? inheritedAppearance.shape;
     const buttonGroup = useContext(ButtonGroupContext);
     const parentSize = useContext(SizeContext);
@@ -87,7 +92,6 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
       "k-btn",
       {
         [`k-btn-${type}`]: type && !color,
-        "k-btn-outline": theme === "outline",
         "k-btn-sm": computedSize === "small",
         "k-btn-block": block,
         "k-btn-loading": loading,
