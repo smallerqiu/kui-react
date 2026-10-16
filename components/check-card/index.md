@@ -42,7 +42,7 @@
 | showIndicator | 是否显示选中标记 | `boolean` | true |
 | disabled | 是否禁用 | `boolean` | false |
 | readOnly | 是否只读 | `boolean` | false |
-| theme | 主题 | `"fill" \| "outline"` | outline |
+| theme | 主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | outline |
 | size | 尺寸 | `"small" \| "medium" \| "large"` | medium |
 | shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | round |
 | onChange | 状态变化回调 | `((event: CheckCardChangeEvent) => void)` | - |
@@ -56,7 +56,7 @@
 | disabled | 是否禁用 | `boolean` | false |
 | readOnly | 是否只读 | `boolean` | false |
 | direction | 排列方向 | `"horizontal" \| "vertical"` | horizontal |
-| theme | 卡片主题 | `"fill" \| "outline"` | outline |
+| theme | 卡片主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | outline |
 | size | 卡片尺寸 | `"small" \| "medium" \| "large"` | medium |
 | shape | 卡片形状 | `"round" \| "default" \| "square" \| "circle"` | round |
 | onChange | 选中值变化回调 | `((value: CheckCardValue) => void)` | - |
@@ -72,3 +72,9 @@
 | checkedSymbol | 选中图标       | IconType[]       | -      |
 | disabled      | 是否禁用该选项 | boolean          | false  |
 | readOnly      | 是否只读该选项 | boolean          | false  |
+
+## 主题
+
+`theme` 支持 `fill`、`outline`、`plain`、`solid`、`dashed` 五种外观，不写 `theme` 时就是 `outline`；`underlined` 是给可输入的控件用的，选择卡片会按 `outline` 呈现。
+
+`solid` 用主色铺满整张卡片，标题、描述、左侧图标和右上角的选中标记一起反白：选中时圆点转成浅色、勾用主色，禁用时仍保持禁用样式。`dashed` 只把外框换成虚线，内部图标与文字不动。`CheckCardGroup` 上的 `theme` 会传给组内每一张卡片，卡片自己写了的 `theme` 更优先。

@@ -40,7 +40,7 @@ Present richer choices with a title, description, and optional symbol.
 | showIndicator | Whether to show the indicator | `boolean` | true |
 | disabled | Whether disabled | `boolean` | false |
 | readOnly | Whether read-only | `boolean` | false |
-| theme | Theme | `"fill" \| "outline"` | outline |
+| theme | Theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | outline |
 | size | Size | `"small" \| "medium" \| "large"` | medium |
 | shape | Shape | `"round" \| "default" \| "square" \| "circle"` | round |
 | onChange | State change callback | `((event: CheckCardChangeEvent) => void)` | - |
@@ -54,7 +54,7 @@ Present richer choices with a title, description, and optional symbol.
 | disabled | Whether disabled | `boolean` | false |
 | readOnly | Whether read-only | `boolean` | false |
 | direction | Layout direction | `"horizontal" \| "vertical"` | horizontal |
-| theme | Card theme | `"fill" \| "outline"` | outline |
+| theme | Card theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | outline |
 | size | Card size | `"small" \| "medium" \| "large"` | medium |
 | shape | Card shape | `"round" \| "default" \| "square" \| "circle"` | round |
 | onChange | Selected value callback | `((value: CheckCardValue) => void)` | - |
@@ -70,3 +70,9 @@ Present richer choices with a title, description, and optional symbol.
 | checkedSymbol | Checked symbol                   | IconType[]       | -       |
 | disabled      | Whether this option is disabled  | boolean          | false   |
 | readOnly      | Whether this option is read-only | boolean          | false   |
+
+## Theme
+
+`theme` supports five looks — `fill`, `outline`, `plain`, `solid`, `dashed` — and is `outline` when you write nothing. `underlined` belongs to a control you type into, so a check card falls back to `outline`.
+
+`solid` fills the whole card with the primary colour and inverts its title, description, leading icon and corner tick: the selected disc turns light with the mark drawn in the plate colour, and a disabled card stays disabled. `dashed` only turns the frame into a dashed line and leaves the icon and the text alone. A `theme` on `CheckCardGroup` reaches every card inside it, and a tier written on the card wins.

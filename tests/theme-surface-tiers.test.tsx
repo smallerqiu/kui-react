@@ -10,12 +10,16 @@
 // way but their own look is `outline`, not `fill`, and `FeedbackPanel` used to spell its tier class
 // `k-feedback-panel-theme-<tier>` while also shipping `k-feedback-panel-solid` / `-dashed` as classes no
 // rule answered.
+// 3c-丙c adds the last surface of this family, `CheckCard`, which typed its tier as a private
+// `"outline" | "fill"` union while a `ConfigProvider` could still hand it any of the six.
 // The style half — what each tier actually draws — is in tests/theme-variants.test.ts and the pixels in
 // scripts/check-theme.ts.
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import {
   Card,
+  CheckCard,
+  CheckCardGroup,
   Collapse,
   CollapsePanel,
   ConfigProvider,
@@ -72,6 +76,15 @@ const SURFACES = [
       <FeedbackPanel heading="标题" description="描述" {...props}>
         详情
       </FeedbackPanel>
+    ),
+  },
+  // 3c-丙c: a check card resolves the same way, and its own look is the outlined frame too.
+  {
+    name: "CheckCard",
+    prefix: "k-check-card",
+    fallback: "outline",
+    render: (props: Record<string, unknown>) => (
+      <CheckCard title="选项" description="描述" {...props} />
     ),
   },
 ] as const;
@@ -271,5 +284,80 @@ describe("a tier lands beside the flags of a Collapse", () => {
     expect(classes).toContain("k-collapse-solid");
     expect(classes).toContain("k-collapse-sample");
     expect(classes).toContain("k-collapse-square");
+  });
+});
+
+// 3c-丙c: a check card can be handed its tier three ways — written on the card, forwarded by the group
+// that owns the choice, or inherited from the provider — and only the card paints a surface. The group
+// therefore passes what it was given straight through the card's guard instead of resolving a tier of
+// its own: `k-check-card-group` has no LESS block to fall back to.
+describe("a check card takes its tier from whoever asks for it", () => {
+  const card = SURFACES.find((surface) => surface.name === "CheckCard")!;
+  const options = [
+    { value: "a", title: "选项一" },
+    { value: "b", title: "选项二" },
+  ];
+
+  const tiersInside = (node: React.ReactElement) =>
+    [...render(node).container.querySelectorAll<HTMLElement>(".k-check-card")].map((element) =>
+      tierClasses(card, Array.from(element.classList)),
+    );
+
+  it("a group forwards its tier to every card it renders", () => {
+    expect(tiersInside(<CheckCardGroup theme="solid" options={options} />)).toEqual([
+      [`${card.prefix}-solid`],
+      [`${card.prefix}-solid`],
+    ]);
+  });
+
+  // The group paints nothing, so an unsupported tier has to be answered by the card's own fallback —
+  // and the group root must not grow a tier class of its own on the way.
+  it("a group hands an unpainted tier down to the card's fallback", () => {
+    const { container } = render(<CheckCardGroup theme="underlined" options={options} />);
+    expect(
+      [...container.querySelectorAll<HTMLElement>(".k-check-card")].map((element) =>
+        tierClasses(card, Array.from(element.classList)),
+      ),
+    ).toEqual([
+      [`${card.prefix}-outline`],
+      [`${card.prefix}-outline`],
+    ]);
+    expect(
+      tierClasses(card, Array.from(container.querySelector(".k-check-card-group")!.classList)),
+    ).toEqual([]);
+  });
+
+  // Written on the card is the stronger spelling: the group's value only fills in what the card left out.
+  it("a theme written on the card beats the group", () => {
+    expect(
+      tiersInside(
+        <CheckCardGroup theme="fill" value="a">
+          <CheckCard value="a" theme="solid" title="选项一" />
+        </CheckCardGroup>,
+      ),
+    ).toEqual([[`${card.prefix}-solid`]]);
+  });
+
+  // The checked marks are the state this component exists to show, so `solid` has to keep them legible
+  // instead of painting them the plate's own colour; both classes share the root to do it.
+  it("keeps the checked state beside a solid tier", () => {
+    const { container } = render(<CheckCard theme="solid" checked title="选项" description="描述" />);
+    const classes = Array.from(container.querySelector(".k-check-card")!.classList);
+    expect(classes).toContain(`${card.prefix}-solid`);
+    expect(classes).toContain("is-checked");
+    expect(container.querySelector(".k-check-card-indicator")).toBeTruthy();
+    expect(container.querySelector(".k-check-card-title")?.textContent).toBe("选项");
+    expect(container.querySelector(".k-check-card-description")?.textContent).toBe("描述");
+  });
+
+  it("lands beside the size and shape flags of a card", () => {
+    const classes = Array.from(
+      render(<CheckCard theme="dashed" size="small" shape="square" title="选项" />).container
+        .querySelector(".k-check-card")!
+        .classList,
+    );
+    expect(classes).toContain(`${card.prefix}-dashed`);
+    expect(classes).toContain(`${card.prefix}-small`);
+    expect(classes).toContain(`${card.prefix}-square`);
   });
 });

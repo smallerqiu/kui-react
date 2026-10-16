@@ -5,7 +5,6 @@ export type {
   CheckCardGroupProps,
   CheckCardOption,
   CheckCardProps,
-  CheckCardTheme,
   CheckCardValue,
 } from "./types";
 export { CheckCard, CheckCardGroup };

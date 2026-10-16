@@ -1,5 +1,5 @@
 import { useValue } from "../utils/use-value";
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { resolvePaintedTheme, useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { Check } from "kui-icons";
@@ -7,6 +7,13 @@ import React, { useContext, useEffect, useRef } from "react";
 import Icon from "../icon";
 import { CheckCardGroupContext } from "./context";
 import type { CheckCardProps } from "./types";
+
+// A check card paints a whole box, so it answers the five surface tiers and never `underlined` —
+// "keep only the bottom border" on a card deletes three of its sides. Its own look is the outlined
+// frame the base block used to hand-copy, so an unsupported tier falls back to `outline` rather than
+// shipping `k-check-card-<tier>` with nothing behind it. The group forwards its value untouched: it
+// paints no surface, so the guard belongs to the cards that do.
+const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
 
 const CheckCard = React.forwardRef<HTMLDivElement, CheckCardProps>(
   (
@@ -31,7 +38,6 @@ const CheckCard = React.forwardRef<HTMLDivElement, CheckCardProps>(
     forwardedRef,
   ) => {
     const inheritedAppearance = useConfigAppearance();
-    const theme = themeProp ?? inheritedAppearance.theme ?? "outline";
     const size = sizeProp ?? inheritedAppearance.size ?? "medium";
     const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
     const group = useContext(CheckCardGroupContext);
@@ -41,7 +47,11 @@ const CheckCard = React.forwardRef<HTMLDivElement, CheckCardProps>(
     const isChecked = grouped ? group.value === value : localChecked;
     const isDisabled = disabled || !!group?.disabled;
     const isReadOnly = readOnly || !!group?.readOnly;
-    const currentTheme = themeProp ?? group?.theme ?? theme;
+    const currentTheme =
+      resolvePaintedTheme(
+        themeProp ?? group?.theme ?? inheritedAppearance.theme,
+        PAINTED_THEMES,
+      ) ?? "outline";
     const currentSize = sizeProp ?? group?.size ?? size;
     const currentShape = shapeProp ?? group?.shape ?? shape;
 

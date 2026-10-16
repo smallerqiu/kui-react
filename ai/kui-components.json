@@ -11855,11 +11855,15 @@
         },
         {
           "name": "theme",
-          "type": "CheckCardTheme | undefined",
+          "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
+            "dashed",
+            "solid",
             "fill",
-            "outline"
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "主题",
@@ -12370,11 +12374,15 @@
         },
         {
           "name": "theme",
-          "type": "CheckCardTheme | undefined",
+          "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
+            "dashed",
+            "solid",
             "fill",
-            "outline"
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "卡片主题",
