@@ -1,5 +1,9 @@
 import { useValue } from "../utils/use-value";
-import { useConfigAppearance, normalizeSurfaceShape } from "../config/use-config-appearance";
+import {
+  resolvePaintedTheme,
+  useConfigAppearance,
+  normalizeSurfaceShape,
+} from "../config/use-config-appearance";
 import clsx from "clsx";
 import React, { useState } from "react";
 import { getChildren } from "../utils/react-node";
@@ -20,6 +24,12 @@ export interface CollapseProps extends Omit<
   children?: React.ReactNode;
 }
 
+// A collapse paints a whole box, so it answers the four surface tiers plus `fill` and never
+// `underlined` — "keep only the bottom border" on a panel deletes three sides of its frame. Its own
+// default is `outline`, so an unsupported tier falls back to that instead of shipping
+// `k-collapse-<tier>` with no LESS block behind it.
+const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
+
 const Collapse: React.FC<CollapseProps> = ({
   openKeys,
   accordion = false,
@@ -33,7 +43,8 @@ const Collapse: React.FC<CollapseProps> = ({
   ...rest
 }) => {
   const inheritedAppearance = useConfigAppearance();
-  const theme = themeProp ?? inheritedAppearance.theme ?? "outline";
+  const theme =
+    resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? "outline";
   const shape = normalizeSurfaceShape(shapeProp ?? inheritedAppearance.shape ?? "round");
   const [innerActiveKeys, setInnerActiveKeys] = useValue(
     openKeys,

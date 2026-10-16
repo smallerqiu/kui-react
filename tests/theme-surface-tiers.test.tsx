@@ -6,11 +6,23 @@
 // none of them paint — "keep only the bottom border" on a box deletes three of its four sides, which is
 // not an appearance preset (theme 口径 §五.1), and `StatCard` used to type three tiers while `Card` and
 // `FeatureCard` typed all six and shipped `k-card-solid` as a class no rule answered.
+// 3c-丙b adds the two panels of the same family, `Collapse` and `FeedbackPanel`. They resolve the same
+// way but their own look is `outline`, not `fill`, and `FeedbackPanel` used to spell its tier class
+// `k-feedback-panel-theme-<tier>` while also shipping `k-feedback-panel-solid` / `-dashed` as classes no
+// rule answered.
 // The style half — what each tier actually draws — is in tests/theme-variants.test.ts and the pixels in
 // scripts/check-theme.ts.
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { Card, ConfigProvider, FeatureCard, StatCard } from "react-kui";
+import {
+  Card,
+  Collapse,
+  CollapsePanel,
+  ConfigProvider,
+  FeatureCard,
+  FeedbackPanel,
+  StatCard,
+} from "react-kui";
 
 // The six values `theme` is typed as, and the five these components paint.
 const TIERS = ["fill", "outline", "plain", "solid", "dashed", "underlined"] as const;
@@ -21,17 +33,46 @@ const SURFACES = [
   {
     name: "Card",
     prefix: "k-card",
+    // Each component's own default tier is the fallback an unsupported tier lands on.
+    fallback: "fill",
     render: (props: Record<string, unknown>) => <Card {...props} />,
   },
   {
     name: "FeatureCard",
     prefix: "k-feature-card",
+    fallback: "fill",
     render: (props: Record<string, unknown>) => <FeatureCard title="标题" {...props} />,
   },
   {
     name: "StatCard",
     prefix: "k-stat-card",
+    fallback: "fill",
     render: (props: Record<string, unknown>) => <StatCard title="统计" {...props} />,
+  },
+  {
+    name: "Collapse",
+    prefix: "k-collapse",
+    fallback: "outline",
+    render: (props: Record<string, unknown>) => (
+      <Collapse {...props}>
+        <CollapsePanel key="one" title="面板一">
+          内容一
+        </CollapsePanel>
+        <CollapsePanel key="two" title="面板二">
+          内容二
+        </CollapsePanel>
+      </Collapse>
+    ),
+  },
+  {
+    name: "FeedbackPanel",
+    prefix: "k-feedback-panel",
+    fallback: "outline",
+    render: (props: Record<string, unknown>) => (
+      <FeedbackPanel heading="标题" description="描述" {...props}>
+        详情
+      </FeedbackPanel>
+    ),
   },
 ] as const;
 
@@ -62,7 +103,7 @@ for (const surface of SURFACES) {
       it(`theme="${tier}" lands on the tier a ${surface.name} with no theme gets`, () => {
         expect(rootClasses(surface, { theme: tier })).toEqual(rootClasses(surface, {}));
         expect(tierClasses(surface, rootClasses(surface, { theme: tier }))).toEqual([
-          `${surface.prefix}-fill`,
+          `${surface.prefix}-${surface.fallback}`,
         ]);
       });
     }
@@ -82,9 +123,9 @@ for (const surface of SURFACES) {
       );
 
     for (const tier of UNSUPPORTED)
-      it(`ConfigProvider theme="${tier}" lands on ${surface.prefix}-fill`, () => {
+      it(`ConfigProvider theme="${tier}" lands on ${surface.prefix}-${surface.fallback}`, () => {
         expect(withProvider({ theme: tier })).toEqual(withProvider({}));
-        expect(withProvider({ theme: tier })).toEqual([`${surface.prefix}-fill`]);
+        expect(withProvider({ theme: tier })).toEqual([`${surface.prefix}-${surface.fallback}`]);
       });
 
     it(`a painted tier still comes down from the provider`, () => {
@@ -148,5 +189,87 @@ describe("a solid surface keeps its content and its other classes", () => {
     // `trendStatus="default"` is the muted trend the solid tier has to invert; a semantic trend keeps
     // its own colour, which is what the `:not()` chain in `.k-stat-card-solid` is for.
     expect(container.querySelector(".k-stat-card-item-trend-default")).toBeTruthy();
+  });
+
+  it("keeps every panel of a Collapse", () => {
+    const { container } = render(
+      <Collapse theme="solid" openKeys={["two"]}>
+        <CollapsePanel key="one" title="面板一">
+          内容一
+        </CollapsePanel>
+        <CollapsePanel key="two" title="面板二" extra={<span>更多</span>}>
+          内容二
+        </CollapsePanel>
+      </Collapse>,
+    );
+    expect(container.querySelectorAll(".k-collapse-item")).toHaveLength(2);
+    expect(
+      Array.from(container.querySelectorAll(".k-collapse-header .k-collapse-title")).map(
+        (node) => node.textContent,
+      ),
+    ).toEqual(["面板一", "面板二"]);
+    expect(container.querySelector(".k-collapse-item-active")).toBeTruthy();
+    expect(container.querySelector(".k-collapse-extra")?.textContent).toBe("更多");
+    expect(container.querySelector(".k-collapse-content-box")?.textContent).toBe("内容二");
+  });
+
+  it("keeps the mark, the heading, the details and the actions of a FeedbackPanel", () => {
+    const { container } = render(
+      <FeedbackPanel
+        kind="caution"
+        theme="solid"
+        heading="标题"
+        description="描述"
+        actions={<button type="button">重试</button>}
+      >
+        详情
+      </FeedbackPanel>,
+    );
+    expect(container.querySelector(".k-feedback-panel-mark-inner")).toBeTruthy();
+    expect(container.querySelector(".k-feedback-panel-heading")?.textContent).toBe("标题");
+    expect(container.querySelector(".k-feedback-panel-description")?.textContent).toBe("描述");
+    expect(container.querySelector(".k-feedback-panel-details")?.textContent).toBe("详情");
+    expect(container.querySelector(".k-feedback-panel-actions")?.textContent).toBe("重试");
+    // The kind is the panel's message, not its surface, so it survives the tier — it is what the 4px
+    // stripe and the mark chip are coloured from.
+    expect(container.querySelector(".k-feedback-panel-caution")).toBeTruthy();
+  });
+});
+
+// 3c-丙b: `FeedbackPanel` used to spell its tier class `k-feedback-panel-theme-<tier>`. The infix is
+// gone so every surface in the library answers `<prefix>-<tier>`, which is the spelling the shared
+// style contract and the pixel checks read — a second spelling would let a tier go unpainted again.
+describe("a feedback panel names its tier like every other surface", () => {
+  const panel = SURFACES.find((surface) => surface.name === "FeedbackPanel")!;
+  for (const tier of TIERS)
+    it(`theme="${tier}" never emits the -theme- infix`, () => {
+      const classes = Array.from(
+        render(<FeedbackPanel theme={tier} />).container.querySelector(".k-feedback-panel")!
+          .classList,
+      );
+      expect(classes.some((cls) => cls.includes("-theme-"))).toBe(false);
+      expect(tierClasses(panel, classes)).toEqual([
+        `k-feedback-panel-${tier === "underlined" ? panel.fallback : tier}`,
+      ]);
+    });
+});
+
+// A tier class shares the root with the component's own flags, and `Collapse` has one that changes the
+// whole shape of the box: `sample` is the documented frame-less spelling, so the tier has to land
+// beside it without deciding the frame for it.
+describe("a tier lands beside the flags of a Collapse", () => {
+  it("keeps sample and shape alongside theme", () => {
+    const classes = Array.from(
+      render(
+        <Collapse theme="solid" sample shape="square">
+          <CollapsePanel key="one" title="面板">
+            内容
+          </CollapsePanel>
+        </Collapse>,
+      ).container.querySelector(".k-collapse")!.classList,
+    );
+    expect(classes).toContain("k-collapse-solid");
+    expect(classes).toContain("k-collapse-sample");
+    expect(classes).toContain("k-collapse-square");
   });
 });

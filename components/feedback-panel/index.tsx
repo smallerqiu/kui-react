@@ -1,4 +1,8 @@
-import { useConfigAppearance, normalizeSurfaceShape } from "../config/use-config-appearance";
+import {
+  resolvePaintedTheme,
+  useConfigAppearance,
+  normalizeSurfaceShape,
+} from "../config/use-config-appearance";
 import clsx from "clsx";
 import { CircleCheck, CircleX, Info, TriangleAlert } from "kui-icons";
 import { isValidElement, type HTMLAttributes, type ReactNode } from "react";
@@ -18,6 +22,13 @@ export interface FeedbackPanelProps extends Omit<
   theme?: ThemeType;
   shape?: ShapeType;
 }
+
+// A feedback panel paints a whole box, so it answers the four surface tiers plus `fill` and never
+// `underlined`. Its own default is `outline`, which is what the fallback means. The tier class used to
+// be spelled `k-feedback-panel-theme-<tier>` — every other component in the library puts the tier
+// straight after its prefix, and the extra word is why those two blocks were the only theme rules no
+// other file could point at.
+const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
 
 const symbols: Record<FeedbackPanelKind, IconType[]> = {
   positive: CircleCheck,
@@ -40,7 +51,8 @@ export default function FeedbackPanel({
   ...rest
 }: FeedbackPanelProps) {
   const inheritedAppearance = useConfigAppearance();
-  const theme = themeProp ?? inheritedAppearance.theme ?? "outline";
+  const theme =
+    resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? "outline";
   const shape = normalizeSurfaceShape(shapeProp ?? inheritedAppearance.shape ?? "round");
   const symbolNode =
     symbol == null || Array.isArray(symbol) ? (
@@ -55,7 +67,7 @@ export default function FeedbackPanel({
       className={clsx(
         "k-feedback-panel",
         `k-feedback-panel-${kind}`,
-        `k-feedback-panel-theme-${theme}`,
+        `k-feedback-panel-${theme}`,
         `k-feedback-panel-shape-${shape}`,
         { "k-feedback-panel-compact": compact },
         className,
