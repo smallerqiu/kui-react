@@ -31,7 +31,7 @@
 | separator | 分隔符 | `string` | - |
 | reverse | 数值/数值描述是否反相排列 | `boolean` | false |
 | bordered | 是否显示边框 | `boolean` | false |
-| theme | 主题 | `"fill" \| "outline" \| "plain"` | fill |
+| theme | 主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | 卡片形状，只支持 `square` / `round`；圆形会裁掉内容，继承到 `circle` 时按 `round` 处理 | `"round" \| "square"` | round |
 | size | 尺寸 | `"small" \| "medium" \| "large"` | medium |
 | prefix | 所有数值的默认前置内容 | `ReactNode` | - |
@@ -55,3 +55,9 @@
 | autoAnimateOnce | 自动动画触发器仅运行一次动画   | boolean                                   | true    |
 
 独立数值展示、格式化和动画设置请参阅 [StatNumber](/components/stat-number)。
+
+## 主题
+
+`theme` 支持 `fill`、`outline`、`plain`、`solid`、`dashed` 五种外观，不写 `theme` 时就是 `fill`；`underlined` 是给可输入的控件用的，卡片会按 `fill` 呈现。
+
+`solid` 用主色铺满整张卡片，标题、数值和描述一起反白，只有带 `success` / `danger` / `warning` 状态的趋势保留自己的颜色；`bordered` 与 `theme="outline"` 是同一种描边。

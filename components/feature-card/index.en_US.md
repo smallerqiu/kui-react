@@ -41,3 +41,9 @@ Displays a product capability or feature highlight.
 | Event   | Description          | Callback                    |
 | ------- | -------------------- | --------------------------- |
 | onClick | Emitted when clicked | (event: MouseEvent) => void |
+
+## Theme
+
+`theme` supports five looks — `fill`, `outline`, `plain`, `solid`, `dashed` — and is `fill` when you write nothing. `underlined` belongs to a control you type into, so a card falls back to `fill`.
+
+`solid` fills the whole card with the primary colour, inverts its title and description, and turns the icon container into a translucent inverted chip; `bordered` draws the same edge as `theme="outline"`.

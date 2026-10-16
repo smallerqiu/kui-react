@@ -52,3 +52,9 @@
 | avatar | 头像 | `React.ReactNode` | - |
 | title | 标题 | `React.ReactNode` | - |
 | description | 描述 | `React.ReactNode` | - |
+
+## 主题
+
+`theme` 支持 `fill`、`outline`、`plain`、`solid`、`dashed` 五种外观，不写 `theme` 时就是 `fill`；`underlined` 是给可输入的控件用的，卡片会按 `fill` 呈现。
+
+`solid` 用主色铺满整张卡片，标题、正文和头部那条分割线一起反白；`bordered` 与 `theme="outline"` 是同一种描边。

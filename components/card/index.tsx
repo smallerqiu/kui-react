@@ -1,4 +1,4 @@
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { resolvePaintedTheme, useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import React from "react";
 import { Avatar } from "../avatar";
@@ -20,6 +20,13 @@ export interface CardProps extends Omit<
   children?: React.ReactNode;
 }
 
+// A card paints a whole box, so the tiers it can answer are the four surface tiers plus `fill`.
+// `underlined` is absent — "keep only the bottom border" on a card deletes three sides of the frame,
+// which is not an appearance preset (see `.kui-theme-value` in `styles/less-css-var.less`). A tier
+// outside this list must not reach the class list: `k-card-<tier>` with no LESS block is the
+// "class ships, nothing paints" bug, and a card's own default is `fill`, so the guard falls back.
+const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
+
 const Card: React.FC<CardProps> = ({
   bordered = false,
   theme: themeProp,
@@ -34,7 +41,8 @@ const Card: React.FC<CardProps> = ({
   ...rest
 }) => {
   const inheritedAppearance = useConfigAppearance();
-  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const theme =
+    resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? "fill";
   const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
   const size = sizeProp ?? inheritedAppearance.size ?? "medium";
   const iconNode = icon ? <Icon type={icon} className="k-card-title-icon" /> : null;

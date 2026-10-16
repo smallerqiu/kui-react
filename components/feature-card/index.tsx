@@ -1,4 +1,8 @@
-import { useConfigAppearance, normalizeSurfaceShape } from "../config/use-config-appearance";
+import {
+  normalizeSurfaceShape,
+  resolvePaintedTheme,
+  useConfigAppearance,
+} from "../config/use-config-appearance";
 import clsx from "clsx";
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import type { ShapeType, ThemeType } from "../const/types";
@@ -24,6 +28,11 @@ export interface FeatureCardProps extends Omit<
   children?: ReactNode;
 }
 
+// Same surface contract as `Card`: four box tiers plus `fill`, and never `underlined` — a feature
+// card is a surface, not a field you type into. Anything outside this set resolves to the card's own
+// default so it cannot ship a `k-feature-card-<tier>` class no stylesheet answers.
+const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
+
 export default function FeatureCard({
   icon,
   title,
@@ -44,7 +53,8 @@ export default function FeatureCard({
   ...rest
 }: FeatureCardProps) {
   const inheritedAppearance = useConfigAppearance();
-  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const theme =
+    resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? "fill";
   const shape = normalizeSurfaceShape(shapeProp ?? inheritedAppearance.shape ?? "round");
   const size = sizeProp ?? inheritedAppearance.size ?? "medium";
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {

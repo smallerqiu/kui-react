@@ -31,7 +31,7 @@ Can be used in BI/Dashboard scenarios, business backend oriented, intuitive.
 | separator | Separator | `string` | - |
 | reverse | Whether to reverse number/number description arrangement | `boolean` | false |
 | bordered | Show border or not | `boolean` | false |
-| theme | Theme | `"fill" \| "outline" \| "plain"` | fill |
+| theme | Theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | Card shape; only `square` / `round` apply — a circle would clip the content, so an inherited `circle` falls back to `round` | `"round" \| "square"` | round |
 | size | Size | `"small" \| "medium" \| "large"` | medium |
 | prefix | Default prefix for all values | `ReactNode` | - |
@@ -55,3 +55,9 @@ Can be used in BI/Dashboard scenarios, business backend oriented, intuitive.
 | autoAnimateOnce | Run animation only once for auto-animate triggers | boolean                                   | true    |
 
 For standalone animated values, formatting, and animation controls, see [StatNumber](/components/stat-number-en).
+
+## Theme
+
+`theme` supports five looks — `fill`, `outline`, `plain`, `solid`, `dashed` — and is `fill` when you write nothing. `underlined` belongs to a control you type into, so a card falls back to `fill`.
+
+`solid` fills the whole card with the primary colour and inverts its title, values and descriptions; only a trend marked `success` / `danger` / `warning` keeps its own colour. `bordered` draws the same edge as `theme="outline"`.
