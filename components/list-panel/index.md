@@ -30,7 +30,13 @@
 | selection | 批量操作栏 | `ReactNode \| ((count: number) => ReactNode)` | - |
 | footer | 底部区域 | `ReactNode` | - |
 | bordered | 是否显示边框 | `boolean` | true |
-| theme | 主题 | `"fill" \| "outline" \| "plain"` | outline |
+| theme | 外观主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | outline |
 | shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | round |
 | size | 尺寸 | `"small" \| "medium" \| "large"` | medium |
 | selectedCount | 已选数量 | `number` | 0 |
+
+## 主题
+
+`theme` 支持 `outline`、`fill`、`plain`、`solid`、`dashed` 五种外观，不写 `theme` 时就是 `outline`；`underlined` 是给可输入的控件用的，列表面板会按 `outline` 呈现。
+
+面板自己不另起一块底，这一档画在它身下那张卡片上，所以五种外观改的是整个面板的铺底与外框，`bordered={false}` 只去掉外框、不换档。`solid` 用主色铺满面板，面板里两处自己带颜色的内容跟着反白：结果摘要换成铺底上的浅色文字，批量操作栏那一格从灰底换成主色上的一层浅白。其余内容是你自己放进去的节点，跟着面板的字色走。

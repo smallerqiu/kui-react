@@ -24,6 +24,12 @@
 // 3c-丁d also adds `Transfer`, the pair of panels: it typed two tiers, react read no provider or form
 // value at all, and vue threw one away behind a hand-written gate, so three tiers were unreachable and a
 // fourth was invisible twice over. Its own look is the outlined frame, so an unsupported tier lands there.
+// 3c-丁d adds the one surface that paints through another component: `ListPanel` typed a private three
+// tier union while handing whatever it got to the `Card` underneath, which answers all five — so a
+// `ConfigProvider theme="solid"` already plated the panel in the primary while its own summary line stayed
+// dark and its selection strip stayed a grey plate nobody asked for. The union is gone, and because the
+// panel is the caller of that card it resolves the tier itself: an unsupported one lands on the outlined
+// card the panel was built to look like, not on the card's own `fill`.
 // The style half — what each tier actually draws — is in tests/theme-variants.test.ts and the pixels in
 // scripts/check-theme.ts.
 import { fireEvent, render } from "@testing-library/react";
@@ -41,6 +47,7 @@ import {
   // React spells the image component `KImage`; the label it carries below stays `Image`.
   KImage,
   Kanban,
+  ListPanel,
   Page,
   QRCode,
   StatCard,
@@ -183,6 +190,17 @@ const SURFACES = [
     render: (props: Record<string, unknown>) => (
       <Transfer dataSource={TRANSFER_DATA} targetKeys={TRANSFER_SPLIT} {...props} />
     ),
+  },
+  // 3c-丁d: a list panel is a card with a toolbar over a list, so the plate it hands out is the card's and
+  // its tier class is spelled `k-card-<tier>` — the panel adds no tier class of its own to the same
+  // element. It typed `"fill" | "outline" | "plain"` privately while the card beneath it answered five,
+  // and its own look is the outlined card, so the guard it now runs falls back there rather than to the
+  // card's `fill`.
+  {
+    name: "ListPanel",
+    prefix: "k-card",
+    fallback: "outline",
+    render: (props: Record<string, unknown>) => <ListPanel summary="12 条" {...props} />,
   },
 ] as const;
 
@@ -702,5 +720,63 @@ describe("a transfer names its tier once and plates both panels", () => {
     expect(footers).toHaveLength(2);
     expect(footers[0].parentElement?.classList.contains("k-transfer-list")).toBe(true);
     expect(footers[0].textContent).toBe("清空");
+  });
+});
+
+// 3c-丁d: a list panel paints through the card it renders, so its tier class is the card's spelling and
+// the panel's own two lines — the summary count and the selection strip — are the only parts its stylesheet
+// can reach. Both name a dark token of their own, so neither inherits the plate's ink and `solid` has to
+// hand them one; every other line inside the panel is the caller's own node and follows the card.
+const listPanel = SURFACES.find((surface) => surface.name === "ListPanel")!;
+const panelRoot = (props: Record<string, unknown> = {}) =>
+  Array.from(
+    render(<ListPanel summary="12 条" {...props} />).container.querySelector(".k-list-panel")!
+      .classList,
+  );
+
+describe("a list panel takes its tier from the card it renders", () => {
+  for (const tier of TIERS)
+    it(`theme="${tier}" arrives as the card's class on the panel's own element`, () => {
+      const classes = panelRoot({ theme: tier });
+      expect(classes).toContain("k-list-panel");
+      expect(
+        tierClasses(listPanel, classes),
+      ).toEqual([`k-card-${tier === "underlined" ? listPanel.fallback : tier}`]);
+      // A `.k-list-panel-<tier>` would be a class no rule answers: the panel has no plate of its own, and
+      // one would plate the card twice on the way.
+      expect(classes.filter((cls) => cls.startsWith("k-list-panel-"))).toEqual([]);
+    });
+
+  // The tier only means something if the parts the panel draws are there for it to invert.
+  it("renders the two lines a solid plate inverts", () => {
+    const { container } = render(
+      <ListPanel theme="solid" summary="12 条" selectedCount={3} selection={(count) => `已选 ${count}`}>
+        内容
+      </ListPanel>,
+    );
+    expect(container.querySelector(".k-list-panel-toolbar-selection")).toBeTruthy();
+    expect(container.querySelector(".k-list-panel-selection")?.textContent).toBe("已选 3");
+    // The strip replaces the filters / summary row rather than sitting under it, so a solid panel has one
+    // toolbar to plate, and the summary line is the other thing the sheet reaches.
+    expect(container.querySelector(".k-list-panel-summary")).toBeNull();
+    expect(container.querySelector(".k-list-panel-content")?.textContent).toBe("内容");
+    expect(
+      render(<ListPanel theme="solid" summary="12 条" />).container.querySelector(
+        ".k-list-panel-summary",
+      )?.textContent,
+    ).toBe("12 条");
+  });
+
+  // The frame flag and the tier share one element: the sheet reads `.k-list-panel.k-card-solid`, an
+  // element-level conjunction, and `bordered={false}` only takes the card's own border class away — a
+  // panel with no frame still has a tier, and its toolbar lines still invert under `solid`.
+  it("lands beside the card's frame, shape and size classes", () => {
+    expect(panelRoot({ theme: "solid" })).toEqual(
+      expect.arrayContaining(["k-list-panel", "k-card-solid", "k-card-bordered"]),
+    );
+    const borderless = panelRoot({ theme: "solid", bordered: false });
+    expect(borderless).toContain("k-list-panel-borderless");
+    expect(borderless).not.toContain("k-card-bordered");
+    expect(tierClasses(listPanel, borderless)).toEqual(["k-card-solid"]);
   });
 });

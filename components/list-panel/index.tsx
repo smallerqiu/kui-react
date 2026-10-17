@@ -1,8 +1,11 @@
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { resolvePaintedTheme, useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import type { HTMLAttributes, ReactNode } from "react";
 import Card from "../card";
-import type { ShapeType, SizeType } from "../const/types";
+import type { ShapeType, SizeType, ThemeType } from "../const/types";
+
+// The five tiers the card this panel renders actually paints.
+const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
 
 export interface ListPanelProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
@@ -10,7 +13,11 @@ export interface ListPanelProps extends Omit<
 > {
   summary?: ReactNode;
   bordered?: boolean;
-  theme?: "fill" | "outline" | "plain";
+  // The panel draws no plate of its own — the card it renders paints the tier — so it answers every tier
+  // the card can. It still resolves them here: the panel is the caller of that card and the one that decides
+  // which appearance it asks for, and its own look is the outlined card, so a tier the card cannot paint
+  // lands on `outline` rather than on the card's own `fill`.
+  theme?: ThemeType;
   shape?: ShapeType;
   size?: SizeType;
   selectedCount?: number;
@@ -36,7 +43,8 @@ export default function ListPanel({
   ...rest
 }: ListPanelProps) {
   const inheritedAppearance = useConfigAppearance();
-  const theme = themeProp ?? inheritedAppearance.theme ?? "outline";
+  const theme =
+    resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? "outline";
   const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
   const size = sizeProp ?? inheritedAppearance.size ?? "medium";
   const hasNode = (node: ReactNode) => node !== null && node !== undefined && node !== false;
