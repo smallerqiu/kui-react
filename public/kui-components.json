@@ -56444,11 +56444,15 @@
         },
         {
           "name": "theme",
-          "type": "\"fill\" | \"outline\" | undefined",
+          "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
+            "dashed",
+            "solid",
             "fill",
-            "outline"
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
           "descriptionZh": "外观主题",
@@ -56914,7 +56918,7 @@
         {
           "id": "components/transfer/demo/theme.tsx",
           "title": "主题",
-          "source": "import { useState } from \"react\";\nimport { Transfer } from \"react-kui\";\nconst items = [\"Design\", \"Development\", \"Testing\", \"Deployment\"].map((title, key) => ({\n  key: key + 1,\n  title,\n}));\nexport default function App() {\n  const [outline, setOutline] = useState<(string | number)[]>([4]);\n  const [fill, setFill] = useState<(string | number)[]>([4]);\n  return (\n    <div style={{ display: \"grid\", gap: 24 }}>\n      <Transfer\n        targetKeys={outline}\n        onChange={(event) => setOutline(event.targetKeys)}\n        searchable\n        theme=\"outline\"\n        dataSource={items}\n      />\n      <Transfer\n        targetKeys={fill}\n        onChange={(event) => setFill(event.targetKeys)}\n        searchable\n        theme=\"fill\"\n        dataSource={items}\n      />\n    </div>\n  );\n}"
+          "source": "import { useState } from \"react\";\nimport { RadioGroup, Space, Transfer } from \"react-kui\";\nconst items = [\"Design\", \"Development\", \"Testing\", \"Deployment\"].map((title, key) => ({\n  key: key + 1,\n  title,\n}));\nexport default function App() {\n  // The panels offer the five tiers they paint; `underlined` is a control tier and lands back on `outline`.\n  const [theme, setTheme] = useState<\"fill\" | \"outline\" | \"plain\" | \"solid\" | \"dashed\">(\"outline\");\n  const [targetKeys, setTargetKeys] = useState<(string | number)[]>([4]);\n  return (\n    <Space vertical block>\n      <RadioGroup\n        type=\"button\"\n        options={[\n          { label: \"Outline\", value: \"outline\" },\n          { label: \"Fill\", value: \"fill\" },\n          { label: \"Plain\", value: \"plain\" },\n          { label: \"Solid\", value: \"solid\" },\n          { label: \"Dashed\", value: \"dashed\" },\n        ]}\n        value={theme}\n        onChange={(value) => setTheme(value as typeof theme)}\n      />\n      <Transfer\n        targetKeys={targetKeys}\n        onChange={(event) => setTargetKeys(event.targetKeys)}\n        searchable\n        theme={theme}\n        dataSource={items}\n      />\n    </Space>\n  );\n}"
         },
         {
           "id": "components/transfer/demo/disabled.tsx",

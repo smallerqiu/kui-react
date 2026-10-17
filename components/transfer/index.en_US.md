@@ -14,7 +14,7 @@ Move and select items between two lists.
 
 [Theme](./demo/theme.tsx?show=vertical)
 
-- Supports `outline` and `fill`; the search input follows the Transfer theme.
+- Supports `outline`, `fill`, `plain`, `solid` and `dashed`; under `solid` the search input keeps a light plate.
 
 [Disabled](./demo/disabled.tsx?show=vertical)
 
@@ -43,7 +43,7 @@ Move and select items between two lists.
 | searchable | Whether searchable | `boolean` | false |
 | disabled | Whether disabled | `boolean` | false |
 | readOnly | Whether read-only | `boolean` | false |
-| theme | Appearance theme | `"fill" \| "outline"` | outline |
+| theme | Appearance theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | outline |
 | filterOption | Custom filter | `((keyword: string, item: TransferItem) => boolean)` | - |
 | item | Custom list item renderer | `((item: TransferItem) => React.ReactNode)` | - |
 | footer | Custom list footer renderer | `((direction: "left" \| "right") => React.ReactNode)` | - |
@@ -59,3 +59,9 @@ Move and select items between two lists.
 | title       | Item title        | string           | -       |
 | description | Item description  | string           | -       |
 | disabled    | Disable this item | boolean          | false   |
+
+## Theme
+
+`theme` supports five looks — `outline`, `fill`, `plain`, `solid`, `dashed` — and is `outline` when you write nothing. `underlined` belongs to a control you type into, so a transfer falls back to `outline`.
+
+The tier paints the two panels rather than the whole transfer: `fill` puts a pale plate under each panel, `outline` draws the library's border colour around it, `plain` leaves it without a plate or a frame, and `dashed` turns that frame into a dashed line. `solid` fills both panels with the primary colour and inverts the panel title, the per-item description and the footer, the selected row included; once the panel is disabled those lines fall back to the library's disabled ink. The two buttons between the panels are a button's own look, so no tier touches them. The search box inside a panel follows the tier, except under `solid`, which keeps it on a pale plate — a primary edge on a primary panel is nothing to look at.

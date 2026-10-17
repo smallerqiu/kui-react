@@ -7,6 +7,15 @@ import { Button } from "../button";
 import Checkbox from "../checkbox";
 import Empty from "../empty";
 import Input from "../input";
+import { resolvePaintedTheme, useConfigAppearance } from "../config/use-config-appearance";
+import type { ThemeType } from "../const/types";
+
+// A transfer owns no plate of its own — the two lists are its surfaces — so it answers the four surface
+// tiers plus `fill`, and never `underlined`: "keep only the bottom border" on a box deletes three of its
+// four sides, which is not an appearance preset. A tier outside this list must not reach the class list —
+// `k-transfer-<tier>` with no LESS block behind it is the "class ships, nothing paints" bug — and this
+// component's own look *is* a tier class, the outlined frame, so the guard falls back to `outline`.
+const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
 
 export type TransferKey = string | number;
 
@@ -35,7 +44,7 @@ export interface TransferProps extends Omit<
   searchable?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
-  theme?: "outline" | "fill";
+  theme?: ThemeType;
   filterOption?: (keyword: string, item: TransferItem) => boolean;
   item?: (item: TransferItem) => React.ReactNode;
   footer?: (direction: "left" | "right") => React.ReactNode;
@@ -54,7 +63,7 @@ function Transfer({
   searchable = false,
   disabled = false,
   readOnly = false,
-  theme = "outline",
+  theme: themeProp,
   filterOption,
   item: renderItem,
   footer,
@@ -64,6 +73,13 @@ function Transfer({
   className,
   ...rest
 }: TransferProps) {
+  const inheritedAppearance = useConfigAppearance();
+  const theme =
+    resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? "outline";
+  // A search box inside a solid list keeps a light plate: `solid` on the box would paint primary on the
+  // primary it already sits on, which is nothing to look at — the same reason a solid board hints in its
+  // plate's own ink. Every other tier hands the box what the lists drew.
+  const inputTheme = theme === "solid" ? "fill" : theme;
   const [innerTargets, setInnerTargets] = useValue(targetKeys, (next): TransferKey[] => next ?? []);
   const [sourceSelected, setSourceSelected] = useState<TransferKey[]>([]);
   const [targetSelected, setTargetSelected] = useState<TransferKey[]>([]);
@@ -215,7 +231,7 @@ function Transfer({
             <Input
               value={direction === "left" ? queries[0] : queries[1]}
               disabled={disabled}
-              theme={theme}
+              theme={inputTheme}
               clearable
               icon={Search}
               placeholder="Search"

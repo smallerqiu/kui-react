@@ -43210,11 +43210,15 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "\"fill\" | \"outline\" | undefined",
+      "type": "ThemeType | undefined",
       "required": false,
       "enumValues": [
+        "dashed",
+        "solid",
         "fill",
-        "outline"
+        "outline",
+        "plain",
+        "underlined"
       ],
       "boolean": false,
       "descriptionZh": "外观主题",
@@ -43355,31 +43359,37 @@ export default function App() {
 
 ```tsx
 import { useState } from "react";
-import { Transfer } from "react-kui";
+import { RadioGroup, Space, Transfer } from "react-kui";
 const items = ["Design", "Development", "Testing", "Deployment"].map((title, key) => ({
   key: key + 1,
   title,
 }));
 export default function App() {
-  const [outline, setOutline] = useState<(string | number)[]>([4]);
-  const [fill, setFill] = useState<(string | number)[]>([4]);
+  // The panels offer the five tiers they paint; `underlined` is a control tier and lands back on `outline`.
+  const [theme, setTheme] = useState<"fill" | "outline" | "plain" | "solid" | "dashed">("outline");
+  const [targetKeys, setTargetKeys] = useState<(string | number)[]>([4]);
   return (
-    <div style={{ display: "grid", gap: 24 }}>
-      <Transfer
-        targetKeys={outline}
-        onChange={(event) => setOutline(event.targetKeys)}
-        searchable
-        theme="outline"
-        dataSource={items}
+    <Space vertical block>
+      <RadioGroup
+        type="button"
+        options={[
+          { label: "Outline", value: "outline" },
+          { label: "Fill", value: "fill" },
+          { label: "Plain", value: "plain" },
+          { label: "Solid", value: "solid" },
+          { label: "Dashed", value: "dashed" },
+        ]}
+        value={theme}
+        onChange={(value) => setTheme(value as typeof theme)}
       />
       <Transfer
-        targetKeys={fill}
-        onChange={(event) => setFill(event.targetKeys)}
+        targetKeys={targetKeys}
+        onChange={(event) => setTargetKeys(event.targetKeys)}
         searchable
-        theme="fill"
+        theme={theme}
         dataSource={items}
       />
-    </div>
+    </Space>
   );
 }
 ```

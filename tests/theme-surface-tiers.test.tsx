@@ -21,6 +21,9 @@
 // 3c-丁d adds `Kanban`, the board whose columns are the surfaces: it typed two tiers and painted those
 // two, so a tier outside its own two could still arrive from `ConfigProvider` as a class no rule answered,
 // and the drop hint — the one state a column has — sat below the tier plates and never drew.
+// 3c-丁d also adds `Transfer`, the pair of panels: it typed two tiers, react read no provider or form
+// value at all, and vue threw one away behind a hand-written gate, so three tiers were unreachable and a
+// fourth was invisible twice over. Its own look is the outlined frame, so an unsupported tier lands there.
 // The style half — what each tier actually draws — is in tests/theme-variants.test.ts and the pixels in
 // scripts/check-theme.ts.
 import { fireEvent, render } from "@testing-library/react";
@@ -41,6 +44,7 @@ import {
   Page,
   QRCode,
   StatCard,
+  Transfer,
 } from "react-kui";
 
 // `QRCode` paints into a canvas the moment it mounts, and jsdom hands back no 2d context; these cases
@@ -60,6 +64,14 @@ const BOARD_COLUMNS = [
   { key: "doing", title: "Doing", color: "#3a95ff" },
 ];
 const BOARD_TASKS = [{ id: 1, status: "todo", title: "Define requirements" }];
+
+// A transfer renders one panel per side of the split, so the cases hand it the smallest data set that puts
+// a row on both sides at once — the tier plates the two panels, so an empty one would hide half of it.
+const TRANSFER_DATA = [
+  { key: "a", title: "选项一", description: "描述一" },
+  { key: "b", title: "选项二", description: "描述二" },
+];
+const TRANSFER_SPLIT = ["b"];
 
 const SURFACES = [
   {
@@ -159,6 +171,18 @@ const SURFACES = [
     prefix: "k-kanban",
     fallback: "fill",
     render: (props: Record<string, unknown>) => <Kanban columns={BOARD_COLUMNS} {...props} />,
+  },
+  // 3c-丁d: a transfer is the two panels you move rows between. It typed `"outline" | "fill"` privately,
+  // react never read a provider or a form at all, and vue dropped any other tier behind a hand-written
+  // gate — so `plain` / `solid` / `dashed` were unreachable while the stylesheet painted the two it could
+  // reach by hand-copying their chains. Its own look is the outlined frame, so the guard falls back there.
+  {
+    name: "Transfer",
+    prefix: "k-transfer",
+    fallback: "outline",
+    render: (props: Record<string, unknown>) => (
+      <Transfer dataSource={TRANSFER_DATA} targetKeys={TRANSFER_SPLIT} {...props} />
+    ),
   },
 ] as const;
 
@@ -584,5 +608,99 @@ describe("a board names its tier once and drops on its columns", () => {
     expect(columns[1].classList.contains("k-kanban-column-drag-over")).toBe(true);
     fireEvent.dragLeave(columns[1], { relatedTarget: null });
     expect(columns[1].classList.contains("k-kanban-column-drag-over")).toBe(false);
+  });
+});
+
+// 3c-丁d: a transfer names its tier on the root and paints it on both panels, so the DOM contract is one
+// tier class beside two lists — and the search box inside a panel is the one control the component hands
+// its tier to, which `solid` has to refuse: a primary box on a primary plate is nothing to look at, the
+// same reason a solid board hints in its plate's own ink.
+const transfer = SURFACES.find((surface) => surface.name === "Transfer")!;
+const panels = (props: Record<string, unknown> = {}) =>
+  render(<Transfer dataSource={TRANSFER_DATA} targetKeys={TRANSFER_SPLIT} {...props} />).container;
+
+describe("a transfer names its tier once and plates both panels", () => {
+  for (const tier of TIERS)
+    it(`theme="${tier}" puts exactly one tier class on the transfer`, () => {
+      expect(
+        tierClasses(
+          transfer,
+          Array.from(panels({ theme: tier }).querySelector(".k-transfer")!.classList),
+        ),
+      ).toEqual([`k-transfer-${tier === "underlined" ? transfer.fallback : tier}`]);
+    });
+
+  // A tier that reached nothing but the root would be invisible, so the parts it colours are the ones a
+  // caller can see: both panels, each with its title, its count, its rows and the row's muted line.
+  it("renders two panels with the parts a solid plate inverts", () => {
+    const lists = Array.from(panels({ theme: "solid" }).querySelectorAll(".k-transfer-list"));
+    expect(lists).toHaveLength(2);
+    expect(
+      lists.map((list) => list.querySelector(".k-transfer-header .k-checkbox")?.textContent),
+    ).toEqual(["Source", "Target"]);
+    expect(
+      lists.map((list) => list.querySelector(".k-transfer-header > span")?.textContent),
+    ).toEqual(["0/1", "0/1"]);
+    expect(
+      lists.map((list) => list.querySelector(".k-transfer-item-content")?.textContent),
+    ).toEqual(["选项一描述一", "选项二描述二"]);
+    expect(lists[0].querySelector(".k-transfer-item-content small")?.textContent).toBe("描述一");
+    // The two buttons between the panels are the operation, not the surface, so they keep their own look.
+    expect(panels({ theme: "solid" }).querySelectorAll(".k-transfer-operations .k-btn")).toHaveLength(
+      2,
+    );
+  });
+
+  // The class belongs on the panel the tier paints, and the split belongs on the root: a tier class that
+  // landed on the panels instead would plate each twice and out-specify the arm.
+  it("keeps the tier class on the root, not on the panels", () => {
+    const { container } = render(
+      <Transfer dataSource={TRANSFER_DATA} targetKeys={TRANSFER_SPLIT} theme="solid" searchable />,
+    );
+    expect(Array.from(container.querySelector(".k-transfer-list")!.classList)).toEqual([
+      "k-transfer-list",
+    ]);
+    expect(container.querySelector(".k-transfer-item")?.classList.contains("is-selected")).toBe(
+      false,
+    );
+  });
+
+  // `searchable` is the flag that puts an input inside a panel, and the tier is handed straight to it —
+  // except under `solid`, where the box keeps a light plate so it stays a box the eye can find.
+  for (const tier of PAINTED)
+    it(`theme="${tier}" hands its search box the ${
+      tier === "solid" ? "fill" : tier
+    } plate`, () => {
+      const input = panels({ theme: tier, searchable: true }).querySelector(
+        ".k-transfer-search .k-input",
+      );
+      expect(input?.classList.contains(`k-input-${tier === "solid" ? "fill" : tier}`)).toBe(true);
+    });
+
+  // Disabled is a state of the whole transfer, so it shares the root with the tier class rather than
+  // replacing it — the stylesheet needs both to step the plate's ink down.
+  it("lands beside the disabled and readonly flags", () => {
+    const classes = Array.from(
+      panels({ theme: "solid", disabled: true }).querySelector(".k-transfer")!.classList,
+    );
+    expect(classes).toContain("k-transfer-solid");
+    expect(classes).toContain("is-disabled");
+    expect(
+      Array.from(
+        panels({ theme: "dashed", readOnly: true }).querySelector(".k-transfer")!.classList,
+      ),
+    ).toEqual(expect.arrayContaining(["k-transfer-dashed", "is-readonly"]));
+  });
+
+  // `footer` is the one slot that puts content on the plate below the rows, and the tier inverts its line
+  // and its text, so the slot has to stay inside the panel it belongs to.
+  it("keeps a footer inside the panel it plates", () => {
+    const footers = panels({
+      theme: "solid",
+      footer: () => <button type="button">清空</button>,
+    }).querySelectorAll(".k-transfer-footer");
+    expect(footers).toHaveLength(2);
+    expect(footers[0].parentElement?.classList.contains("k-transfer-list")).toBe(true);
+    expect(footers[0].textContent).toBe("清空");
   });
 });
