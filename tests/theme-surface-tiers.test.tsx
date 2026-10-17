@@ -19,7 +19,7 @@
 // The style half — what each tier actually draws — is in tests/theme-variants.test.ts and the pixels in
 // scripts/check-theme.ts.
 import { render } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   Alert,
   Card,
@@ -30,8 +30,16 @@ import {
   ConfigProvider,
   FeatureCard,
   FeedbackPanel,
+  // React spells the image component `KImage`; the label it carries below stays `Image`.
+  KImage,
+  QRCode,
   StatCard,
 } from "react-kui";
+
+// `QRCode` paints into a canvas the moment it mounts, and jsdom hands back no 2d context; these cases
+// only read the class list, so the encoder is stubbed instead of left to throw inside the component's
+// own `try`.
+vi.mock("qrcode", () => ({ toCanvas: vi.fn(async () => {}) }));
 
 // The six values `theme` is typed as, and the five these components paint.
 const TIERS = ["fill", "outline", "plain", "solid", "dashed", "underlined"] as const;
@@ -100,6 +108,23 @@ const SURFACES = [
     prefix: "k-alert",
     fallback: "fill",
     render: (props: Record<string, unknown>) => <Alert type="info" message="提示" {...props} />,
+  },
+  // 3c-丁b: an image is a frame around a picture and a code is a frame around a canvas, so both paint
+  // the whole ring — and both used to type six tiers while their stylesheets drew three. `outline` on an
+  // image set a colour on an edge that `base.less` gives no width, so it painted nothing, and `plain` on
+  // a code deleted the 12px ring the caller never asked to lose. An image's own look is `plain`, a code's
+  // is the outlined frame.
+  {
+    name: "Image",
+    prefix: "k-image",
+    fallback: "plain",
+    render: (props: Record<string, unknown>) => <KImage src="pic.png" {...props} />,
+  },
+  {
+    name: "QRCode",
+    prefix: "k-qrcode",
+    fallback: "outline",
+    render: (props: Record<string, unknown>) => <QRCode value="https://example.com" {...props} />,
   },
 ] as const;
 

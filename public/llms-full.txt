@@ -15344,8 +15344,8 @@ export default function App() {
         "underlined"
       ],
       "boolean": false,
-      "descriptionZh": "主题",
-      "descriptionEn": "Theme"
+      "descriptionZh": "外观主题",
+      "descriptionEn": "Appearance theme"
     },
     {
       "name": "shape",
@@ -26405,8 +26405,8 @@ export default function App() {
       ],
       "boolean": true,
       "defaultExpression": "true",
-      "descriptionZh": "是否保留外边框和内边距容器。",
-      "descriptionEn": "Whether to keep the outer border and padding container."
+      "descriptionZh": "是否保留外边框和它托住的 12px 内边距。只想去掉表面（不留底色、边框透明）请写 `theme=\"plain\"`，内边距会保留。",
+      "descriptionEn": "Whether to keep the outer frame and the 12px padding it holds. To only drop the surface — no plate, a transparent frame — write `theme=\"plain\"` instead, which keeps the padding."
     },
     {
       "name": "shape",

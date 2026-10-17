@@ -41,7 +41,7 @@
 | showPanel   | 默认是否展示扩展面板       | boolean                 | false  |
 | onClose     | 关闭触发事件               | () => void              | -      |
 | onSwitch    | 多图切换触发事件           | (index: number) => void | -      |
-| theme       | 主题                       | ThemeType               | -      |
+| theme       | 外观主题                   | ThemeType               | plain  |
 | shape       | 形状                       | ShapeType               | -      |
 | tools       | 自定义工具栏按钮           | ReactNode               | -      |
 | panel       | 自定义扩展面板             | ReactNode               | -      |
@@ -51,3 +51,7 @@
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | data | 图片数据 | `string[]` | - |
+
+## 主题
+
+`theme` 支持 `fill`、`outline`、`plain`、`solid`、`dashed` 五种外观，不写 `theme` 时就是 `plain`：不带边框也不铺底色，画面顶到边缘。`outline` 在画面外圈一条库的边框色，`dashed` 把这一圈换成虚线；`fill` 在画面下面铺一层浅底，`solid` 用主色铺满，并把加载中、加载失败的占位和 `children` 里的文字一起反白。`underlined` 是给可输入的控件用的，图片会按 `plain` 呈现。

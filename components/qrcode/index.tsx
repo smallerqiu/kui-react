@@ -1,4 +1,4 @@
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { resolvePaintedTheme, useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import Color from "color";
 import { toCanvas, type QRCodeRenderersOptions } from "qrcode";
@@ -45,6 +45,12 @@ export interface QRCodeProps extends Omit<
   scannedContent?: ReactNode;
   onRefresh?: () => void;
 }
+
+// A code's surface is the frame and the ring around the canvas, so it answers the five surface tiers and
+// never `underlined`. Its own look is the outlined frame — `outline` is what the stylesheet's base rule
+// draws — so a tier it cannot paint lands back on `outline`, the same DOM as a `QRCode` with no `theme`
+// written.
+const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
 
 const positive = (value: number, fallback: number) =>
   Number.isFinite(value) && value > 0 ? value : fallback;
@@ -101,7 +107,8 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
 ) {
   const inheritedAppearance = useConfigAppearance();
   const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
-  const theme = themeProp ?? inheritedAppearance.theme ?? "outline";
+  const theme =
+    resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? "outline";
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const drawIdRef = useRef(0);
   const drawnRef = useRef(false);
@@ -237,7 +244,7 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(function QRCode(
         "k-qrcode",
         `k-qrcode-${shape}`,
         `k-qrcode-${theme}`,
-        { "k-qrcode-plain": !bordered },
+        { "k-qrcode-borderless": !bordered },
         className,
       )}
       style={{ ...style, width: safeSize, height: safeSize }}

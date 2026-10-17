@@ -1,4 +1,4 @@
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { resolvePaintedTheme, useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { Image as ImageIcon, Loading } from "kui-icons";
 import {
@@ -47,6 +47,12 @@ export interface ImageProps extends Omit<
   shape?: ShapeType;
 }
 
+// An image is a framed plate, so it answers the five surface tiers and never `underlined`: keeping only
+// the bottom edge of a frame around a picture is not an appearance preset (see `.kui-theme-value` in
+// `styles/less-css-var.less`). Its own look is `plain` — no frame, no plate — so a tier it cannot paint
+// lands there, on the same DOM as an `Image` with no `theme` written.
+const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
+
 const KImage = forwardRef<ImageRef, ImageProps>(function KImage(
   {
     alt,
@@ -74,7 +80,8 @@ const KImage = forwardRef<ImageRef, ImageProps>(function KImage(
   ref,
 ) {
   const inheritedAppearance = useConfigAppearance();
-  const theme = themeProp ?? inheritedAppearance.theme ?? "plain";
+  const theme =
+    resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? "plain";
   const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
   const group = useContext(ImageGroupContext);
   const previewRef = useRef<ImagePreviewInstance | null>(null);
