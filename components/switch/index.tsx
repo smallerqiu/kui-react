@@ -1,5 +1,5 @@
 import { useValue } from "../utils/use-value";
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { useFormAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { Loading } from "kui-icons";
@@ -48,7 +48,7 @@ const Switch: React.FC<SwitchProps> = ({
   onClick,
   ...rest
 }) => {
-  const inheritedAppearance = useConfigAppearance();
+  const inheritedAppearance = useFormAppearance();
   const size = sizeProp ?? inheritedAppearance.size;
   const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
   const [innerChecked, setInnerChecked] = useValue(checked, (next) => next ?? false);

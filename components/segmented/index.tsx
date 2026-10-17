@@ -1,5 +1,5 @@
 import { useValue } from "../utils/use-value";
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { useFormAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -45,7 +45,7 @@ const Segmented = ({
   onKeyDown,
   ...rest
 }: SegmentedProps) => {
-  const inheritedAppearance = useConfigAppearance();
+  const inheritedAppearance = useFormAppearance();
   const size = sizeProp ?? inheritedAppearance.size ?? "medium";
   const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
   const rootRef = useRef<HTMLDivElement>(null);

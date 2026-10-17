@@ -1,6 +1,6 @@
 import { renderSelectionTags } from "../utils/selection-tags";
 import { useValue } from "../utils/use-value";
-import { resolveTheme, useConfigAppearance } from "../config/use-config-appearance";
+import { resolveTheme, useFormAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { ChevronDown, CircleX, LoaderCircle } from "kui-icons";
@@ -140,7 +140,7 @@ function TreeSelect({
   style,
   ...rest
 }: TreeSelectProps) {
-  const inheritedAppearance = useConfigAppearance();
+  const inheritedAppearance = useFormAppearance();
   const size = sizeProp ?? inheritedAppearance.size;
   const theme = resolveTheme(themeProp ?? inheritedAppearance.theme, "fill");
   const shape = shapeProp ?? inheritedAppearance.shape;

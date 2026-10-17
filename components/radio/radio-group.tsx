@@ -1,5 +1,5 @@
 import { useValue } from "../utils/use-value";
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { useFormAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import React, { useId, useMemo, useRef } from "react";
@@ -53,7 +53,7 @@ const RadioGroup = <T extends RadioValue = string | number>({
   onKeyDown,
   ...rest
 }: RadioGroupProps<T>) => {
-  const inheritedAppearance = useConfigAppearance();
+  const inheritedAppearance = useFormAppearance();
   const size = sizeProp ?? inheritedAppearance.size;
   const theme = themeProp ?? inheritedAppearance.theme;
   const shape = shapeProp ?? inheritedAppearance.shape;

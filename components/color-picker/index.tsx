@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import Popup, { type PopupRef } from "../popup";
-import { resolveTheme, useConfigAppearance } from "../config/use-config-appearance";
+import { resolveTheme, useFormAppearance } from "../config/use-config-appearance";
 import type { DropPlacementsType, ShapeType, SizeType, ThemeType } from "../const/types";
 import { createFormFieldComponent } from "../form/field-context";
 import { useValue } from "../utils/use-value";
@@ -69,7 +69,7 @@ function ColorPicker({
   panelOnly = false,
   ...rest
 }: ColorPickerProps) {
-  const inheritedAppearance = useConfigAppearance();
+  const inheritedAppearance = useFormAppearance();
   const size = sizeProp ?? inheritedAppearance.size;
   // 3b-乙2b: the tier class goes on the trigger box, so the value has to be resolved before it
   // reaches the class list — a control with no `theme` written means its own default tier, not a

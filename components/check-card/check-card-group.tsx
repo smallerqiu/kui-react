@@ -1,5 +1,5 @@
 import { useValue } from "../utils/use-value";
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { useFormAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import React, { useCallback, useMemo } from "react";
@@ -25,7 +25,7 @@ const CheckCardGroup = React.forwardRef<HTMLDivElement, CheckCardGroupProps>(
     },
     ref,
   ) => {
-    const inheritedAppearance = useConfigAppearance();
+    const inheritedAppearance = useFormAppearance();
     const theme = themeProp ?? inheritedAppearance.theme ?? "outline";
     const size = sizeProp ?? inheritedAppearance.size ?? "medium";
     const shape = shapeProp ?? inheritedAppearance.shape ?? "round";

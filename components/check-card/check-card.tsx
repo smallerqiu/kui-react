@@ -1,5 +1,5 @@
 import { useValue } from "../utils/use-value";
-import { resolvePaintedTheme, useConfigAppearance } from "../config/use-config-appearance";
+import { resolvePaintedTheme, useFormAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { Check } from "kui-icons";
@@ -37,7 +37,7 @@ const CheckCard = React.forwardRef<HTMLDivElement, CheckCardProps>(
     },
     forwardedRef,
   ) => {
-    const inheritedAppearance = useConfigAppearance();
+    const inheritedAppearance = useFormAppearance();
     const size = sizeProp ?? inheritedAppearance.size ?? "medium";
     const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
     const group = useContext(CheckCardGroupContext);

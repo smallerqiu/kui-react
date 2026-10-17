@@ -87,7 +87,12 @@ describe("ConfigProvider appearance", () => {
     );
   });
 
-  it("keeps Form overrides above global defaults, including items without a field prop", () => {
+  // Form's `size`, `shape` and `theme` are documented as the appearance of its *child controls*, so they stop
+  // there. A Button or Card sitting in the same form is not one of them and keeps following the provider —
+  // the split vue has always made with two hooks (`useFormAppearance` for controls, `useConfigAppearance`
+  // for everything else); react read Form from a single hook every component called, so `<Form size="small">`
+  // also shrank the panels and buttons around its fields.
+  it("keeps Form overrides above global defaults for its controls, and only for its controls", () => {
     const { container } = render(
       <ConfigProvider size="small" shape="square" theme="outline">
         <Form size="large" shape="circle" theme="fill" model={{ name: "" }}>
@@ -98,6 +103,7 @@ describe("ConfigProvider appearance", () => {
             <Input className="unbound" />
           </FormItem>
           <Button className="form-button">Submit</Button>
+          <Card className="form-card">Not a control</Card>
           <Input className="local" size="small" shape="square" theme="plain" />
         </Form>
       </ConfigProvider>,
@@ -105,7 +111,12 @@ describe("ConfigProvider appearance", () => {
     for (const selector of [".bound", ".unbound"]) {
       expectClasses(container, selector, ["k-input-lg", "k-input-circle", "k-input-fill"]);
     }
-    expectClasses(container, ".form-button", ["k-btn-lg", "k-btn-circle", "k-btn-fill"]);
+    expectClasses(container, ".form-button", ["k-btn-sm", "k-btn-square", "k-btn-outline"]);
+    expectClasses(container, ".form-card", ["k-card-small", "k-card-square", "k-card-outline"]);
+    for (const selector of [".form-button", ".form-card"]) {
+      const { className } = container.querySelector(selector)!;
+      expect(className).not.toMatch(/-(lg|large|circle|round|fill)\b/);
+    }
     expectClasses(container, ".local", ["k-input-sm", "k-input-square", "k-input-plain"]);
   });
 

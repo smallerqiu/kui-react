@@ -1,5 +1,5 @@
 import { useValue } from "../utils/use-value";
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { useFormAppearance } from "../config/use-config-appearance";
 import React, { useContext } from "react";
 import { createFormFieldComponent } from "../form/field-context";
 import { Button } from "../button";
@@ -44,7 +44,7 @@ const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
     },
     ref,
   ) => {
-    const inheritedAppearance = useConfigAppearance();
+    const inheritedAppearance = useFormAppearance();
     const theme = themeProp ?? inheritedAppearance.theme;
     const size = sizeProp ?? inheritedAppearance.size;
     const shape = shapeProp ?? inheritedAppearance.shape;

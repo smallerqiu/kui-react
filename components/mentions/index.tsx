@@ -1,5 +1,5 @@
 import { useValue } from "../utils/use-value";
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { useFormAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { CircleX, Loading } from "kui-icons";
@@ -115,7 +115,7 @@ const Mentions: React.FC<MentionsProps> = ({
   readOnly,
   ...rest
 }) => {
-  const inheritedAppearance = useConfigAppearance();
+  const inheritedAppearance = useFormAppearance();
   const size = sizeProp ?? inheritedAppearance.size;
   const shape = shapeProp ?? inheritedAppearance.shape;
   const theme = themeProp ?? inheritedAppearance.theme ?? "fill";

@@ -1,4 +1,4 @@
-import { resolveTheme, useConfigAppearance } from "../config/use-config-appearance";
+import { resolveTheme, useFormAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import React, { useContext } from "react";
 import { SizeContext } from "../config/size-context";
@@ -26,7 +26,7 @@ const InputGroup: React.FC<InputGroupProps> = ({
   style,
   ...rest
 }) => {
-  const inheritedAppearance = useConfigAppearance();
+  const inheritedAppearance = useFormAppearance();
   const theme = resolveTheme(themeProp ?? inheritedAppearance.theme, "fill");
   const size = sizeProp ?? inheritedAppearance.size;
   const parentSize = useContext(SizeContext);

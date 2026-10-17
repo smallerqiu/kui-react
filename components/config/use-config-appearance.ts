@@ -4,7 +4,23 @@ import { FormContext } from "../form/form-context";
 import type { ShapeType, ThemeType } from "../const/types";
 
 // Resolve inherited values separately so component props and defaults retain their priority.
+/**
+ * What a `ConfigProvider` says about everything under it. Form is deliberately absent: `Form`'s `size`,
+ * `shape` and `theme` are documented as the appearance of its *child controls*, and a Card, Table or Alert
+ * sitting inside a form is not one — inheriting there meant `<Form size="small">` shrank every panel around it.
+ * Controls call `useFormAppearance` instead, which keeps the same three keys and layers Form on top.
+ */
 export function useConfigAppearance() {
+  const config = useContext(ConfigContext);
+  return {
+    size: config.size,
+    shape: config.shape,
+    theme: config.theme,
+  };
+}
+
+/** For the controls a `Form` wraps: what the form says, then what the provider says. */
+export function useFormAppearance() {
   const config = useContext(ConfigContext);
   const form = useContext(FormContext);
   return {

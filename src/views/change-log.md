@@ -113,7 +113,8 @@ rm -rf node_modules/.vite
 - `Transfer` 用 `theme="solid"` 时，两侧的搜索框换成浅底填充，不会在主色上再叠一层主色；禁用整个穿梭框或其中一行时，列表文字、条目描述和底部都回到禁用色。
 - `ListPanel` 的 `theme` 补齐 `solid` / `dashed` 两档：此前只认 `fill` / `outline` / `plain`。`solid` 用主色铺满整块面板，`dashed` 是虚线描边；外观落在面板身下那张卡片上，`bordered={false}` 只去掉外框、不改这一档。
 - `ListPanel` 用 `theme="solid"` 时，结果摘要那一行换成主色上的浅色文字，批量操作栏那一格也从灰底改成主色上的一层浅白，不再是一行暗字和一块外来的灰底；面板里的其它内容跟着面板字色走，不受影响。
-- 列表面板上写 `theme="underlined"` 按面板自己的 `outline` 呈现，不再落到卡片的 `fill`；`ConfigProvider` / `Form` 传下来的这一档同样如此。
+- 列表面板上写 `theme="underlined"` 按面板自己的 `outline` 呈现，不再落到卡片的 `fill`；`ConfigProvider` 传下来的这一档同样如此。
+- `Form` 的 `size` / `shape` / `theme` 只管表单里的控件：写在 `Form` 上的外观不再传给同一个表单里的 `Card`、`Collapse`、`FeedbackPanel`、`Alert`、`Table`、`Page`、`Tag`、`Button` 这些不是控件的区块，它们继续从 `ConfigProvider` 继承。此前 `<Form size="small">` 会顺手把表单里的卡片、面板、分页条一起缩小，`<Form theme="solid">` 会把它们一起铺成主色。要让整块页面跟着变外观，请把外观写在 `ConfigProvider` 上或直接写在组件上。
 
 ### 3.1.2
 

@@ -7,7 +7,7 @@ import { Button } from "../button";
 import Checkbox from "../checkbox";
 import Empty from "../empty";
 import Input from "../input";
-import { resolvePaintedTheme, useConfigAppearance } from "../config/use-config-appearance";
+import { resolvePaintedTheme, useFormAppearance } from "../config/use-config-appearance";
 import type { ThemeType } from "../const/types";
 
 // A transfer owns no plate of its own — the two lists are its surfaces — so it answers the four surface
@@ -73,7 +73,7 @@ function Transfer({
   className,
   ...rest
 }: TransferProps) {
-  const inheritedAppearance = useConfigAppearance();
+  const inheritedAppearance = useFormAppearance();
   const theme =
     resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? "outline";
   // A search box inside a solid list keeps a light plate: `solid` on the box would paint primary on the
