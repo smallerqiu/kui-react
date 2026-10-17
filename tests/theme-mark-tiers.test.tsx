@@ -10,7 +10,7 @@ import { render } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { describe, expect, it } from "vitest";
 import ConfigProvider from "../components/config";
-import type { SurfaceThemeType, ThemeType } from "react-kui";
+import type { MarkThemeType, SizeType, SurfaceThemeType, ThemeType } from "react-kui";
 import { Checkbox, CheckboxGroup, Radio, RadioButton, RadioGroup, Select, Tag } from "react-kui";
 
 // The six values `theme` is typed as, and the five `tag/styles/index.less` paints.
@@ -318,7 +318,101 @@ describe("a group hands its tier to the boxes it renders", () => {
   }
 });
 
-// The same hand-off, one step further down: a group built from `options` does not write a `theme` prop
+// The vue half of this precedence had the wrong shape (issue #158, "an item that wrote its own appearance
+// keeps it against the group"): a vue group hands its tier down by *writing it on the child's vnode*, and
+// that build decides "explicit" by `hasOwnProperty`, so a group could override a box the author had already
+// written. This build reads `props ?? group ?? provider` inside the item, so the item's own value has always
+// won — these cases pin the side of the pair that has to stay true, and they are what a "tidy" refactor that
+// resolves the tier in the group and writes it to every child would break.
+describe("an item that wrote its own appearance keeps it against the group", () => {
+  // The two builds keep their own shape here: a vue group writes the appearance onto the child's vnode,
+  // while this one puts it in the context and lets the item read `props ?? group ?? provider`. Either way
+  // what the item states wins, so the same table runs on both sides.
+  const written = (props: {
+    group: "checkbox" | "radio";
+    groupProps?: { theme?: MarkThemeType };
+    itemProps: { theme?: MarkThemeType; size?: SizeType };
+  }) => {
+    const tree =
+      props.group === "checkbox" ? (
+        <CheckboxGroup theme={props.groupProps?.theme}>
+          <Checkbox value="a" label="A" theme={props.itemProps.theme} size={props.itemProps.size} />
+        </CheckboxGroup>
+      ) : (
+        <RadioGroup value="a" theme={props.groupProps?.theme}>
+          <Radio value="a" label="A" theme={props.itemProps.theme} size={props.itemProps.size} />
+        </RadioGroup>
+      );
+    return Array.from(render(tree).container.querySelectorAll(".k-" + props.group)).map((node) =>
+      Array.from(node.classList),
+    );
+  };
+
+  for (const group of ["checkbox", "radio"] as const) {
+    const name = `k-${group}`;
+    for (const groupProps of [{}, { theme: "fill" }] as { theme?: MarkThemeType }[])
+      it(`${name} written outline keeps outline against a ${
+        groupProps.theme ?? "default"
+      } group`, () => {
+        for (const classes of written({ group, groupProps, itemProps: { theme: "outline" } })) {
+          expect(classes).toContain(`${name}-outline`);
+          expect(classes).not.toContain(`${name}-fill`);
+        }
+      });
+
+    it(`${name} written fill keeps fill against an outlined group`, () => {
+      for (const classes of written({
+        group,
+        groupProps: { theme: "outline" },
+        itemProps: { theme: "fill" },
+      })) {
+        expect(classes).toContain(`${name}-fill`);
+        expect(classes).not.toContain(`${name}-outline`);
+      }
+    });
+
+    it(`${name} keeps the size it wrote when the group says nothing about size`, () => {
+      for (const classes of written({ group, itemProps: { size: "small" } }))
+        expect(classes).toContain(`${name}-sm`);
+    });
+  }
+
+  it("a tier inherited from the provider is still beaten by the item's own", () => {
+    const boxes = Array.from(
+      render(
+        <ConfigProvider theme="outline">
+          <CheckboxGroup>
+            <Checkbox value="a" label="A" theme="fill" />
+          </CheckboxGroup>
+          <RadioGroup value="a">
+            <Radio value="a" label="A" theme="fill" />
+          </RadioGroup>
+        </ConfigProvider>,
+      ).container.querySelectorAll(".k-checkbox, .k-radio"),
+    ).map((node) => Array.from(node.classList));
+    expect(boxes.length).toBe(2);
+    expect(boxes[0]).toContain("k-checkbox-fill");
+    expect(boxes[0]).not.toContain("k-checkbox-outline");
+    expect(boxes[1]).toContain("k-radio-fill");
+    expect(boxes[1]).not.toContain("k-radio-outline");
+  });
+
+  it("a radio button keeps the tier and shape it wrote inside a button group", () => {
+    // `RadioButton` is a `Button`, so its look lands on the button root: five tiers and four shapes,
+    // inherited over the same channel as the boxes above.
+    const buttons = Array.from(
+      render(
+        <RadioGroup value="a" type="button" theme="outline" shape="round">
+          <RadioButton value="a" theme="solid" shape="square" />
+        </RadioGroup>,
+      ).container.querySelectorAll(".k-btn"),
+    ).map((node) => Array.from(node.classList));
+    expect(buttons.length).toBe(1);
+    expect(buttons[0]).toContain("k-btn-solid");
+    expect(buttons[0]).not.toContain("k-btn-outline");
+    expect(buttons[0]).toContain("k-btn-square");
+  });
+});
 // on the items it makes (`components/radio/radio-group.tsx`, `components/checkbox/checkbox-group.tsx`),
 // so the tier has to reach them through the context. That matters now that 3d-乙 narrowed the types: a
 // `RadioGroup` is typed with the five surface tiers because its `type="button"` mode renders buttons,
