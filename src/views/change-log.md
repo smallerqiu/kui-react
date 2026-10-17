@@ -101,6 +101,10 @@ rm -rf node_modules/.vite
 - `Image` 的 `theme="outline"` 现在真的描出一圈边框：此前只给了边框颜色、没给边框宽度，什么也看不出来，`--kui-theme-outline-border` 在图片上也不生效。
 - `QRCode` 的 `theme` 补齐 `solid` / `dashed` 两档：`solid` 用主色铺满二维码的底，“已过期”这类遮罩文字跟着反白；`dashed` 是虚线描边。二维码上写 `theme="underlined"` 按 `outline` 呈现。
 - `QRCode` 的 `theme="plain"` 只去掉表面：不再顺手删掉边框内的 12px 内边距，边框也是改成透明而不是抹掉；要连边框和内边距一起去掉，仍然写 `bordered={false}`。
+- `Page` 的 `theme` 补齐 `solid` / `dashed` 两档：`solid` 用主色铺满页码格子，格子里的数字和省略号一起反白，当前页换成白底主色字，悬停是主色上的一层浅白；总条数那一行和左右翻页箭头仍在分页栏自己的底色上。`dashed` 是虚线描边，省略号那一格不描边。分页条上写 `theme="underlined"` 按 `fill` 呈现。
+- `Page` 的 `theme="plain"` 现在真的能用：此前分页条只把 `fill` / `outline` 写进类名，写 `plain` 什么也不会发生。
+- `Page` 选中页码的状态色现在真的落到格子上：此前 `theme="fill"` 的选中格只有数字变主色、底色还是悬停那层灰，`theme="outline"` 的选中格边框也没变成主色。
+- `Page` 的 `theme` 传给条内每页条数选择器和跳转输入框时，先换算成分页条自己画得到的那几档：写 `theme="underlined"` 不再出现分页条是扁平的、里面的输入框却带一条下划线。
 
 ### 3.1.2
 

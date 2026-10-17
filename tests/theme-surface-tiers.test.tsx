@@ -16,6 +16,8 @@
 // so `fill` paints that tint and `solid` paints the same colour at full strength rather than the library
 // primary — an error block and a success block have to stay two different blocks. Its stylesheet used to
 // answer only `outline` and `plain`, spelled `k-alert-theme-<tier>` behind an infix no other surface has.
+// 3c-丁c adds `Page`, which types six tiers, emits its own default `fill`, and paints the tier on the
+// cells the numbers sit on rather than on the root.
 // The style half — what each tier actually draws — is in tests/theme-variants.test.ts and the pixels in
 // scripts/check-theme.ts.
 import { render } from "@testing-library/react";
@@ -32,6 +34,7 @@ import {
   FeedbackPanel,
   // React spells the image component `KImage`; the label it carries below stays `Image`.
   KImage,
+  Page,
   QRCode,
   StatCard,
 } from "react-kui";
@@ -125,6 +128,15 @@ const SURFACES = [
     prefix: "k-qrcode",
     fallback: "outline",
     render: (props: Record<string, unknown>) => <QRCode value="https://example.com" {...props} />,
+  },
+  // 3c-丁c: a pagination bar names its tier on the root and paints it on the cells the numbers sit on.
+  // It typed six tiers, emitted two and had a rule for a third — `k-page-plain` was reachable only from
+  // the other repository — while `solid` and `dashed` had neither class nor rule. Its own look is `fill`.
+  {
+    name: "Page",
+    prefix: "k-page",
+    fallback: "fill",
+    render: (props: Record<string, unknown>) => <Page total={100} {...props} />,
   },
 ] as const;
 
@@ -456,5 +468,56 @@ describe("a solid alert keeps its type and everything it paints", () => {
     expect(Array.from(container.querySelector(".k-alert")!.classList)).toContain(
       "k-alert-has-description",
     );
+  });
+});
+
+// 3c-丁c: a pagination bar names its tier on the root — that is where `shape` and `size` live too — and
+// paints it on the cells, so the DOM contract here is one tier class and no dead one. The bar also hands
+// the tier it *resolved* to the controls inside it, guard included: `theme="underlined"` used to put an
+// underlined sizer in a bar whose own cells fell back to `fill`.
+const page = SURFACES.find((surface) => surface.name === "Page")!;
+const pageClasses = (props: Record<string, unknown>) =>
+  Array.from(
+    render(<Page total={100} {...props} />).container.querySelector(".k-page")!.classList,
+  );
+
+describe("a pager names its tier once and hands the same tier down", () => {
+  for (const tier of TIERS)
+    it(`theme="${tier}" puts exactly one tier class on the bar`, () => {
+      expect(tierClasses(page, pageClasses({ theme: tier }))).toEqual([
+        `k-page-${tier === "underlined" ? page.fallback : tier}`,
+      ]);
+    });
+
+  it("lands beside the shape and size flags", () => {
+    const classes = pageClasses({ theme: "solid", shape: "square", size: "small" });
+    expect(classes).toContain("k-page-solid");
+    expect(classes).toContain("k-page-square");
+    expect(classes).toContain("k-page-sm");
+  });
+
+  it("forwards the resolved tier to its own sizer and elevator", () => {
+    const { container } = render(<Page total={100} showSizer showElevator theme="solid" />);
+    expect(container.querySelector(".k-select-solid")).toBeTruthy();
+    // The elevator is an `InputNumber`, and the responsive bar renders one per layout that shows an
+    // elevator — so every one of them has to carry the tier the bar resolved to, not just the first.
+    const boxes = Array.from(container.querySelectorAll(".k-input-number"));
+    expect(boxes.length).toBeGreaterThan(0);
+    for (const box of boxes) expect(box.classList.contains("k-input-number-solid")).toBe(true);
+  });
+
+  // What the bar hands down is what it *resolved to*, not what it was asked for. `underlined` is a tier a
+  // pager never paints, so an underlined request has to leave an underlined sizer behind exactly the way
+  // it leaves an underlined page cell — the controls inside a bar are the bar's own parts.
+  it("never hands a tier it will not paint to the controls inside it", () => {
+    const { container } = render(<Page total={100} showSizer showElevator theme="underlined" />);
+    expect(container.querySelector(".k-select-fill")).toBeTruthy();
+    expect(container.querySelector(".k-select-underlined")).toBeNull();
+    const boxes = Array.from(container.querySelectorAll(".k-input-number"));
+    expect(boxes.length).toBeGreaterThan(0);
+    for (const box of boxes) {
+      expect(box.classList.contains("k-input-number-fill")).toBe(true);
+      expect(box.classList.contains("k-input-number-underlined")).toBe(false);
+    }
   });
 });

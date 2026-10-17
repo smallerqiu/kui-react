@@ -1,4 +1,4 @@
-import { useConfigAppearance } from "../config/use-config-appearance";
+import { resolvePaintedTheme, useConfigAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { ChevronsLeft, ChevronsRight, ChevronUp, Ellipsis } from "kui-icons";
 import React, { useContext, useState, useRef, useLayoutEffect } from "react";
@@ -8,6 +8,13 @@ import Icon from "../icon";
 import InputNumber from "../input-number";
 import { bindResponsivePage } from "./responsive";
 import Select from "../select/select";
+
+// A pagination bar has no plate of its own — its surface is the cells the numbers sit on — so it answers
+// the four surface tiers plus `fill`, and never `underlined`: "keep only the bottom border" on a row of
+// page boxes is not an appearance preset (see `.kui-theme-value` in `styles/less-css-var.less`). A tier
+// outside this list must not reach the class list: `k-page-<tier>` with no LESS block is the "class
+// ships, nothing paints" bug, and a bar's own default is `fill`, so the guard falls back to it.
+const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
 
 export interface PageProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -53,7 +60,8 @@ const Page: React.FC<PageProps> = ({
     return bindResponsivePage(rootRef.current);
   }, [responsive, simple]);
   const inheritedAppearance = useConfigAppearance();
-  const theme = themeProp ?? inheritedAppearance.theme ?? "fill";
+  const theme =
+    resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? "fill";
   const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
   const size = sizeProp ?? inheritedAppearance.size;
   const config = useContext(ConfigContext);
@@ -206,8 +214,7 @@ const Page: React.FC<PageProps> = ({
     {
       "k-page-sm": size === "small",
       "k-page-lg": size === "large",
-      "k-page-fill": theme === "fill",
-      "k-page-outline": theme === "outline",
+      [`k-page-${theme}`]: theme,
       "k-page-disabled": disabled,
       "k-page-simple": simple,
       "k-page-responsive": responsive && !simple,
