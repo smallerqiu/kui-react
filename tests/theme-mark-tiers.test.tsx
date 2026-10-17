@@ -10,12 +10,18 @@ import { render } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { describe, expect, it } from "vitest";
 import ConfigProvider from "../components/config";
+import type { SurfaceThemeType, ThemeType } from "react-kui";
 import { Checkbox, CheckboxGroup, Radio, RadioButton, RadioGroup, Select, Tag } from "react-kui";
 
 // The six values `theme` is typed as, and the five `tag/styles/index.less` paints.
 const TIERS = ["fill", "outline", "plain", "solid", "dashed", "underlined"] as const;
 const PAINTED = ["fill", "outline", "plain", "solid", "dashed"] as const;
 const UNSUPPORTED = ["underlined"] as const;
+
+// 3d-乙 narrowed `Tag.theme` to the five tiers a chip paints, so TypeScript no longer lets a caller write
+// `underlined` on one. The guard still answers it — a JavaScript caller or a `ConfigProvider` tier can —
+// and this helper is how the cases below reach it.
+const writeThroughGuard = (tier: ThemeType): SurfaceThemeType => tier as SurfaceThemeType;
 
 const PRESETS = ["red", "blue"] as const;
 
@@ -42,8 +48,12 @@ describe("a tag always carries exactly one painted tier", () => {
       // Unlike Button, a tag has a default tier to answer with, and that answer is `fill`.
       // `k-tag-underlined` has no rule because a chip has no caret, so the guard resolves it to the
       // tier the stylesheet does paint.
-      expect(tagClasses(<Tag theme={tier}>Tag</Tag>)).toEqual(tagClasses(<Tag>Tag</Tag>));
-      expect(tierClasses(tagClasses(<Tag theme={tier}>Tag</Tag>))).toEqual(["k-tag-fill"]);
+      expect(tagClasses(<Tag theme={writeThroughGuard(tier)}>Tag</Tag>)).toEqual(
+        tagClasses(<Tag>Tag</Tag>),
+      );
+      expect(tierClasses(tagClasses(<Tag theme={writeThroughGuard(tier)}>Tag</Tag>))).toEqual([
+        "k-tag-fill",
+      ]);
     });
   }
 
@@ -306,6 +316,79 @@ describe("a group hands its tier to the boxes it renders", () => {
       }
     });
   }
+});
+
+// The same hand-off, one step further down: a group built from `options` does not write a `theme` prop
+// on the items it makes (`components/radio/radio-group.tsx`, `components/checkbox/checkbox-group.tsx`),
+// so the tier has to reach them through the context. That matters now that 3d-乙 narrowed the types: a
+// `RadioGroup` is typed with the five surface tiers because its `type="button"` mode renders buttons,
+// while its radio mode paints two — so the group cannot resolve the value on the items' behalf without
+// quietly rewriting `solid` into `fill`. Each item runs its own guard, and these cases are what a
+// pre-resolution in the group would break.
+describe("a group built from options hands its tier through the context", () => {
+  const OPTIONS = [
+    { label: "A", value: "a" },
+    { label: "B", value: "b" },
+  ];
+
+  const radioBoxes = (props: Record<string, unknown>) =>
+    Array.from(
+      render(<RadioGroup options={OPTIONS} {...props} />).container.querySelectorAll(".k-radio"),
+    ).map((node) => Array.from(node.classList));
+
+  for (const tier of MARK_PAINTED) {
+    it(`a radio group theme="${tier}" reaches every option box`, () => {
+      const list = radioBoxes({ theme: tier });
+      expect(list.length, "options must render a box each").toBe(OPTIONS.length);
+      for (const classes of list)
+        expect(markTiers(classes, "k-radio")).toEqual([`k-radio-${tier}`]);
+    });
+  }
+
+  for (const tier of ["plain", "solid", "dashed"] as const) {
+    it(`a radio group theme="${tier}" lands every option box on fill`, () => {
+      // The tier is legal on the group — the button mode paints it — and still has to be refused by a
+      // box that cannot, with no class for it reaching the DOM.
+      const bare = radioBoxes({});
+      const list = radioBoxes({ theme: tier });
+      expect(list.length).toBe(bare.length);
+      for (const [index, classes] of list.entries()) {
+        expect(ordered(classes), `box ${index} of a ${tier} group`).toEqual(ordered(bare[index]));
+        expect(markTiers(classes, "k-radio"), `a ${tier} box ships a class no LESS paints`).toEqual(
+          ["k-radio-fill"],
+        );
+      }
+    });
+  }
+
+  const checkboxBoxes = (props: Record<string, unknown>) =>
+    Array.from(
+      render(<CheckboxGroup options={OPTIONS} {...props} />).container.querySelectorAll(
+        ".k-checkbox",
+      ),
+    ).map((node) => Array.from(node.classList));
+
+  for (const tier of MARK_PAINTED) {
+    it(`a check box group theme="${tier}" reaches every option box`, () => {
+      const list = checkboxBoxes({ theme: tier });
+      expect(list.length, "options must render a box each").toBe(OPTIONS.length);
+      for (const classes of list)
+        expect(markTiers(classes, "k-checkbox")).toEqual([`k-checkbox-${tier}`]);
+    });
+  }
+
+  it("a button-mode option group keeps the surface tiers its buttons paint", () => {
+    // The other half of the same decision: the group must not funnel its items through the two-tier
+    // mark list, or `solid` would reach these buttons as `fill`.
+    // A `RadioButton` is a `Button`, so the tier lands on the button root rather than on a box.
+    const buttons = Array.from(
+      render(
+        <RadioGroup type="button" options={OPTIONS} theme="solid" />,
+      ).container.querySelectorAll(".k-btn"),
+    ).map((node) => Array.from(node.classList));
+    expect(buttons.length, "options must render a button each").toBe(OPTIONS.length);
+    for (const classes of buttons) expect(classes).toContain("k-btn-solid");
+  });
 });
 
 describe("an inherited tier goes through the mark guard too", () => {

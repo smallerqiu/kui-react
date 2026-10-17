@@ -43,7 +43,7 @@
 | searchable | 是否可搜索 | `boolean` | false |
 | disabled | 是否禁用 | `boolean` | false |
 | readOnly | 是否只读 | `boolean` | false |
-| theme | 外观主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | outline |
+| theme | 外观主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
 | filterOption | 自定义筛选 | `((keyword: string, item: TransferItem) => boolean)` | - |
 | item | 自定义列表项渲染 | `((item: TransferItem) => React.ReactNode)` | - |
 | footer | 自定义列表底部渲染 | `((direction: "left" \| "right") => React.ReactNode)` | - |

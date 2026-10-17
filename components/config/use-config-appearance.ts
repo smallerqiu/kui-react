@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { ConfigContext } from "./config-context";
 import { FormContext } from "../form/form-context";
-import type { ShapeType, ThemeType } from "../const/types";
+import type { MarkThemeType, ShapeType, SurfaceThemeType, ThemeType } from "../const/types";
 
 // Resolve inherited values separately so component props and defaults retain their priority.
 /**
@@ -59,3 +59,20 @@ export function resolvePaintedTheme<T extends ThemeType>(
 ): T | undefined {
   return painted.find((tier) => tier === theme);
 }
+
+/**
+ * The two painted sets as values, for the components that hand a tier *onward* instead of painting it:
+ * a group forwarding to its items, a dropdown forwarding to its buttons, a chip list forwarding to
+ * `Tag`. Those callers must vouch for what they pass — `theme` is typed by what the receiver paints —
+ * so they run the inherited value through the receiver's guard rather than forwarding a tier the
+ * receiver would only fall back from. A component that paints its own surface keeps its own
+ * `PAINTED_THEMES` list next to its stylesheet, because the style contract reads it from there.
+ */
+export const SURFACE_THEMES: readonly SurfaceThemeType[] = [
+  "fill",
+  "outline",
+  "plain",
+  "solid",
+  "dashed",
+];
+export const MARK_THEMES: readonly MarkThemeType[] = ["fill", "outline"];

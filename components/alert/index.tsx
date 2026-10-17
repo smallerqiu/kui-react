@@ -5,7 +5,7 @@ import React, { useRef, useState } from "react";
 import Transition from "../base/transition";
 import { getTransitionProp } from "../utils/transition";
 import Icon, { type IconType } from "../icon";
-import type { ShapeType, ThemeType } from "../const/types";
+import type { ShapeType, SurfaceThemeType } from "../const/types";
 
 export interface AlertProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -18,7 +18,7 @@ export interface AlertProps extends Omit<
   message?: React.ReactNode;
   description?: React.ReactNode;
   bordered?: boolean;
-  theme?: ThemeType;
+  theme?: SurfaceThemeType;
   shape?: ShapeType;
   onClose?: (e: React.MouseEvent<HTMLElement>) => void;
   onAfterClose?: () => void;

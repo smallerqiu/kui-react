@@ -45,7 +45,7 @@
 | margin | 二维码矩阵区域四周的空白边距（即白边格子的层数）。 | `number` | `0` |
 | errorLevel | 二维码的容错率纠错级别。可选值：`'L'` (7%), `'M'` (15%), `'Q'` (25%), `'H'` (30%)。<br>_注：如果需要在正中心嵌入 Logo，建议维持在 'M' 或强行改为 'H'，以确保中心被遮挡后依然能百分百被识别。_ | `"L" \| "M" \| "Q" \| "H"` | `'M'` |
 | shape | 二维码形状 | `"round" \| "default" \| "square" \| "circle"` | `round` |
-| theme | 二维码主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | `outline` |
+| theme | 二维码主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | `outline` |
 | loadingContent | 自定义 `loading` 状态的遮罩内容。 | `ReactNode` | - |
 | expiredContent | 自定义 `expired` 状态的遮罩内容。 | `ReactNode` | - |
 | scannedContent | 自定义 `scanned` 状态的遮罩内容。 | `ReactNode` | - |

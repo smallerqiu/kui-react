@@ -984,15 +984,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "外观主题",
@@ -1562,15 +1561,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "外观主题",
@@ -1825,15 +1823,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "外观主题",
@@ -4080,15 +4077,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "按钮主题，可用 `fill` / `outline` / `plain` / `solid` / `dashed`；不写 `theme` 就是按钮自身的外观，`underlined` 是给可输入的控件用的，按钮不会画下划线",
@@ -4892,15 +4888,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "外观主题",
@@ -5095,11 +5090,11 @@ export default function App() {
 ## 外观与形状
 
 ```tsx
-import type { ShapeType, ThemeType } from "react-kui";
+import type { ShapeType, SurfaceThemeType } from "react-kui";
 import { Card, Space } from "react-kui";
 
 const shapes: ShapeType[] = ["round", "square", "circle"];
-const themes: ThemeType[] = ["fill", "outline", "plain"];
+const themes: SurfaceThemeType[] = ["fill", "outline", "plain"];
 
 export default function Demo() {
   return (
@@ -5275,11 +5270,11 @@ export default function App() {
 ## 外观与形状
 
 ```tsx
-import type { ShapeType, ThemeType } from "react-kui";
+import type { ShapeType, SurfaceThemeType } from "react-kui";
 import { Card, Space } from "react-kui";
 
 const shapes: ShapeType[] = ["round", "square", "circle"];
-const themes: ThemeType[] = ["fill", "outline", "plain"];
+const themes: SurfaceThemeType[] = ["fill", "outline", "plain"];
 
 export default function Demo() {
   return (
@@ -5666,15 +5661,11 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "MarkThemeType | undefined",
       "required": false,
       "enumValues": [
-        "dashed",
-        "solid",
         "fill",
-        "outline",
-        "plain",
-        "underlined"
+        "outline"
       ],
       "boolean": false,
       "descriptionZh": "组件呈现主题",
@@ -5963,15 +5954,11 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "MarkThemeType | undefined",
       "required": false,
       "enumValues": [
-        "dashed",
-        "solid",
         "fill",
-        "outline",
-        "plain",
-        "underlined"
+        "outline"
       ],
       "boolean": false,
       "descriptionZh": "组件呈现主题",
@@ -6347,15 +6334,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "主题",
@@ -6598,15 +6584,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "卡片主题",
@@ -6829,15 +6814,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "主题",
@@ -10515,15 +10499,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "按钮主题，可用 `fill` / `outline` / `plain` / `solid` / `dashed`；不写 `theme` 就是按钮自身的外观，`underlined` 是给可输入的控件用的，按钮不会画下划线",
@@ -13638,15 +13621,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "外观主题",
@@ -14189,15 +14171,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "主题样式",
@@ -15343,15 +15324,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "外观主题",
@@ -24300,15 +24280,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "外观主题",
@@ -26434,15 +26413,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "二维码主题",
@@ -26804,15 +26782,11 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "MarkThemeType | undefined",
       "required": false,
       "enumValues": [
-        "dashed",
-        "solid",
         "fill",
-        "outline",
-        "plain",
-        "underlined"
+        "outline"
       ],
       "boolean": false,
       "descriptionZh": "`button` 的主题",
@@ -27029,7 +27003,13 @@ export default function App() {
 ```tsx
 import { LogoApple } from "kui-icons";
 import { useState } from "react";
-import type { DirectionType, RadioType, ShapeType, SizeType, ThemeType } from "react-kui";
+import type {
+  DirectionType,
+  RadioType,
+  ShapeType,
+  SizeType,
+  SurfaceThemeType,
+} from "react-kui";
 import { RadioGroup, Space } from "react-kui";
 const dates = [
     { label: "1 week", value: 0 },
@@ -27060,7 +27040,7 @@ const dates = [
 export default function App() {
   const [size, setSize] = useState<SizeType>("medium"),
     [shape, setShape] = useState<ShapeType>("round"),
-    [theme, setTheme] = useState<ThemeType>("fill"),
+    [theme, setTheme] = useState<SurfaceThemeType>("fill"),
     [direction, setDirection] = useState<DirectionType>("horizontal"),
     [type, setType] = useState<RadioType>("button"),
     [value, setValue] = useState(0);
@@ -27118,15 +27098,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "按钮外观",
@@ -27377,7 +27356,13 @@ export default function App() {
 ```tsx
 import { LogoApple } from "kui-icons";
 import { useState } from "react";
-import type { DirectionType, RadioType, ShapeType, SizeType, ThemeType } from "react-kui";
+import type {
+  DirectionType,
+  RadioType,
+  ShapeType,
+  SizeType,
+  SurfaceThemeType,
+} from "react-kui";
 import { RadioGroup, Space } from "react-kui";
 const dates = [
     { label: "1 week", value: 0 },
@@ -27408,7 +27393,7 @@ const dates = [
 export default function App() {
   const [size, setSize] = useState<SizeType>("medium"),
     [shape, setShape] = useState<ShapeType>("round"),
-    [theme, setTheme] = useState<ThemeType>("fill"),
+    [theme, setTheme] = useState<SurfaceThemeType>("fill"),
     [direction, setDirection] = useState<DirectionType>("horizontal"),
     [type, setType] = useState<RadioType>("button"),
     [value, setValue] = useState(0);
@@ -27508,15 +27493,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "`button` 的主题",
@@ -27732,7 +27716,13 @@ export default function App() {
 ```tsx
 import { LogoApple } from "kui-icons";
 import { useState } from "react";
-import type { DirectionType, RadioType, ShapeType, SizeType, ThemeType } from "react-kui";
+import type {
+  DirectionType,
+  RadioType,
+  ShapeType,
+  SizeType,
+  SurfaceThemeType,
+} from "react-kui";
 import { RadioGroup, Space } from "react-kui";
 const dates = [
     { label: "1 week", value: 0 },
@@ -27763,7 +27753,7 @@ const dates = [
 export default function App() {
   const [size, setSize] = useState<SizeType>("medium"),
     [shape, setShape] = useState<ShapeType>("round"),
-    [theme, setTheme] = useState<ThemeType>("fill"),
+    [theme, setTheme] = useState<SurfaceThemeType>("fill"),
     [direction, setDirection] = useState<DirectionType>("horizontal"),
     [type, setType] = useState<RadioType>("button"),
     [value, setValue] = useState(0);
@@ -31821,15 +31811,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "主题",
@@ -40890,15 +40879,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "组件呈现主题",
@@ -40978,7 +40966,7 @@ export default function App() {
 ```tsx
 import { useState } from "react";
 import { RadioGroup, Space, Tag } from "react-kui";
-import type { ShapeType, SizeType, ThemeType } from "react-kui";
+import type { ShapeType, SizeType, SurfaceThemeType } from "react-kui";
 const sizes = [
     { label: "Large", value: "large" },
     { label: "Medium", value: "medium" },
@@ -40995,7 +40983,7 @@ const sizes = [
 export default function App() {
   const [size, setSize] = useState<SizeType>("small"),
     [shape, setShape] = useState<ShapeType>("circle"),
-    [theme, setTheme] = useState<ThemeType>("fill");
+    [theme, setTheme] = useState<SurfaceThemeType>("fill");
   return (
     <Space vertical>
       <RadioGroup value={size} type="button" options={sizes} onChange={setSize} />
@@ -43213,15 +43201,14 @@ export default function App() {
     },
     {
       "name": "theme",
-      "type": "ThemeType | undefined",
+      "type": "SurfaceThemeType | undefined",
       "required": false,
       "enumValues": [
         "dashed",
         "solid",
         "fill",
         "outline",
-        "plain",
-        "underlined"
+        "plain"
       ],
       "boolean": false,
       "descriptionZh": "外观主题",

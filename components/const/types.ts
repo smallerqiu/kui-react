@@ -34,6 +34,25 @@ export type BooleanType = boolean | undefined;
 
 export type ButtonType = "primary" | "danger" | "warning" | "default" | "text" | "link";
 export type ThemeType = "outline" | "fill" | "plain" | "underlined" | "solid" | "dashed";
+/**
+ * The five tiers a component that paints a *plate* actually draws: every surface (Card, Collapse,
+ * Alert, Page, Kanban, Transfer, ListPanel, CheckCard, Image, QRCode, FeedbackPanel) plus Tag and
+ * Button. `underlined` belongs to controls you type into — a card with one edge deleted is not an
+ * appearance preset — so a surface never accepts it, and the runtime guard
+ * (`resolvePaintedTheme(theme, PAINTED_THEMES)`) lands anything outside these five on the plate the
+ * component was built to look like.
+ *
+ * `ThemeType` stays the wider vocabulary of `ConfigProvider` and `Form`: a provider can still say
+ * `underlined`, and the component that cannot paint it decides what that means.
+ */
+export type SurfaceThemeType = "fill" | "outline" | "plain" | "solid" | "dashed";
+/**
+ * The two tiers a mark actually draws. A checkbox or radio box paints a shallow filled plate
+ * (`fill`) or an outlined one (`outline`); the other four would either delete its border or flood
+ * the tick, so the mark family — Checkbox, CheckboxGroup, Radio, RadioButton, RadioGroup — accepts
+ * only these two, and the guard lands anything else on `fill`.
+ */
+export type MarkThemeType = "fill" | "outline";
 
 export type RadioType = "radio" | "button";
 export type DirectionType = "horizontal" | "vertical" | "inline";

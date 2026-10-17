@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { Loading } from "kui-icons";
 import React, { useContext } from "react";
 import { SizeContext } from "../config/size-context";
-import type { ButtonType, ShapeType, SizeType, ThemeType } from "../const/types";
+import type { ButtonType, ShapeType, SizeType, SurfaceThemeType } from "../const/types";
 import { colors } from "../const/var";
 import Icon, { type IconType } from "../icon";
 import { getChildren } from "../utils/react-node";
@@ -27,7 +27,7 @@ export interface ButtonProps extends Omit<
   loading?: boolean;
   type?: ButtonType;
   disabled?: boolean;
-  theme?: ThemeType;
+  theme?: SurfaceThemeType;
   shape?: ShapeType;
   href?: string;
   target?: string;

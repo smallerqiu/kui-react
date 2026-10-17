@@ -40,7 +40,7 @@ Present richer choices with a title, description, and optional symbol.
 | showIndicator | Whether to show the indicator | `boolean` | true |
 | disabled | Whether disabled | `boolean` | false |
 | readOnly | Whether read-only | `boolean` | false |
-| theme | Theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | outline |
+| theme | Theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
 | size | Size | `"small" \| "medium" \| "large"` | medium |
 | shape | Shape | `"round" \| "default" \| "square" \| "circle"` | round |
 | onChange | State change callback | `((event: CheckCardChangeEvent) => void)` | - |
@@ -54,7 +54,7 @@ Present richer choices with a title, description, and optional symbol.
 | disabled | Whether disabled | `boolean` | false |
 | readOnly | Whether read-only | `boolean` | false |
 | direction | Layout direction | `"horizontal" \| "vertical"` | horizontal |
-| theme | Card theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | outline |
+| theme | Card theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
 | size | Card size | `"small" \| "medium" \| "large"` | medium |
 | shape | Card shape | `"round" \| "default" \| "square" \| "circle"` | round |
 | onChange | Selected value callback | `((value: CheckCardValue) => void)` | - |

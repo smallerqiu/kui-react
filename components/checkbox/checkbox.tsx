@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { Check } from "kui-icons";
 import React, { useContext, useLayoutEffect, useRef } from "react";
-import type { SizeType, ThemeType, ValueType } from "../const/types";
+import type { SizeType, MarkThemeType, ValueType } from "../const/types";
 import Icon from "../icon";
 import { getValueWithType } from "../utils/checked";
 import { CheckboxGroupContext } from "./checkbox-group-context";
@@ -23,7 +23,7 @@ export interface CheckboxProps extends Omit<
   valueType?: ValueType;
   value?: unknown;
   label?: React.ReactNode;
-  theme?: ThemeType;
+  theme?: MarkThemeType;
   disabled?: boolean;
   readOnly?: boolean;
   indeterminate?: boolean;

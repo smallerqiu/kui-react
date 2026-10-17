@@ -15,7 +15,7 @@ import {
 } from "react";
 import { Button } from "../button";
 import { ConfigContext, DEFAULT_LOCALE } from "../config/config-context";
-import type { QRCodeErrorLevel, QRCodeStatus, ShapeType, ThemeType } from "../const/types";
+import type { QRCodeErrorLevel, QRCodeStatus, ShapeType, SurfaceThemeType } from "../const/types";
 import Spin from "../spin";
 
 export interface QRCodeRef {
@@ -32,7 +32,7 @@ export interface QRCodeProps extends Omit<
   colorLight?: string;
   bordered?: boolean;
   shape?: ShapeType;
-  theme?: ThemeType;
+  theme?: SurfaceThemeType;
   status?: QRCodeStatus;
   logo?: string;
   logoSize?: number;

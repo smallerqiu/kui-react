@@ -41,7 +41,7 @@ Previewable images.
 | showPanel   | Whether to display the extension panel by default      | boolean                 | false   |
 | onClose     | Close trigger event                                    | () => void              | -       |
 | onSwitch    | Multi-image switch callback                            | (index: number) => void | -       |
-| theme       | Appearance theme                                       | ThemeType               | plain   |
+| theme       | Appearance theme                                       | SurfaceThemeType        | plain   |
 | shape       | Shape                                                  | ShapeType               | -       |
 | tools       | Custom toolbar buttons                                 | ReactNode               | -       |
 | panel       | Custom extension panel                                 | ReactNode               | -       |

@@ -2,7 +2,7 @@ import { resolvePaintedTheme, useConfigAppearance } from "../config/use-config-a
 import clsx from "clsx";
 import type { HTMLAttributes, ReactNode } from "react";
 import Card from "../card";
-import type { ShapeType, SizeType, ThemeType } from "../const/types";
+import type { ShapeType, SizeType, SurfaceThemeType } from "../const/types";
 
 // The five tiers the card this panel renders actually paints.
 const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
@@ -17,7 +17,7 @@ export interface ListPanelProps extends Omit<
   // the card can. It still resolves them here: the panel is the caller of that card and the one that decides
   // which appearance it asks for, and its own look is the outlined card, so a tier the card cannot paint
   // lands on `outline` rather than on the card's own `fill`.
-  theme?: ThemeType;
+  theme?: SurfaceThemeType;
   shape?: ShapeType;
   size?: SizeType;
   selectedCount?: number;

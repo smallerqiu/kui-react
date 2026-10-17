@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { ChevronsLeft, ChevronsRight, ChevronUp, Ellipsis } from "kui-icons";
 import React, { useContext, useState, useRef, useLayoutEffect } from "react";
 import { ConfigContext, DEFAULT_LOCALE } from "../config/config-context";
-import type { ShapeType, SizeType, ThemeType } from "../const/types";
+import type { ShapeType, SizeType, SurfaceThemeType } from "../const/types";
 import Icon from "../icon";
 import InputNumber from "../input-number";
 import { bindResponsivePage } from "./responsive";
@@ -26,7 +26,7 @@ export interface PageProps extends Omit<
   showSizer?: boolean;
   showTotal?: boolean;
   showElevator?: boolean;
-  theme?: ThemeType;
+  theme?: SurfaceThemeType;
   shape?: ShapeType;
   sizeData?: number[];
   size?: SizeType;

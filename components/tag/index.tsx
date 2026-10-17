@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { X } from "kui-icons";
 import React, { useRef, useState } from "react";
 import Transition from "../base/transition";
-import { type ColorType, type ShapeType, type SizeType, type ThemeType } from "../const/types";
+import { type ColorType, type ShapeType, type SizeType, type SurfaceThemeType } from "../const/types";
 import { colors } from "../const/var";
 import Icon, { type IconType } from "../icon";
 import { isColor } from "../utils/color";
@@ -18,7 +18,7 @@ export interface TagProps extends Omit<
   shape?: ShapeType;
   icon?: IconType[];
   size?: SizeType;
-  theme?: ThemeType;
+  theme?: SurfaceThemeType;
   onClose?: () => void;
   onAfterClose?: () => void;
   children?: React.ReactNode;

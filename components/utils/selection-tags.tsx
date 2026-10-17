@@ -1,5 +1,6 @@
 import type { ReactNode, Key } from "react";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
+import { resolvePaintedTheme, SURFACE_THEMES } from "../config/use-config-appearance";
 import Space from "../space";
 import Tag from "../tag";
 import Tooltip from "../tooltip";
@@ -40,13 +41,18 @@ export function renderSelectionTags({
     typeof maxTagCount === "number" && Number.isFinite(maxTagCount)
       ? Math.max(0, Math.floor(maxTagCount))
       : labels.length;
+  // The control that owns these chips resolves six tiers; a chip paints five. `underlined` on a select
+  // therefore lands on the filled chip the tag itself would have fallen back to — the value handed to
+  // `Tag` is exactly the one its own guard produced, which is what lets `Tag`'s prop be typed by what it
+  // paints. Resolving here cannot let a provider repaint a chip: the tier always arrives defined.
+  const chipTheme = resolvePaintedTheme(theme, SURFACE_THEMES) ?? "fill";
   const renderTag = (label: ReactNode, index: number, overflow = false) => (
     <Tag
       key={`${keys?.[index] ?? label}-${index}`}
       className={overflow ? undefined : tagClass}
       size={overflow ? overflowSize : size}
       shape={shape}
-      theme={theme}
+      theme={chipTheme}
       compact
       closeable={!disabled && !readOnly}
       onClose={() => onRemove(index)}
@@ -67,7 +73,7 @@ export function renderSelectionTags({
         key="tag-more"
         title={tooltipClass ? <div className={tooltipClass}>{preview}</div> : preview}
       >
-        <Tag className={restClass} size={size} shape={shape} theme={theme} compact>
+        <Tag className={restClass} size={size} shape={shape} theme={chipTheme} compact>
           +{hidden.length}...
         </Tag>
       </Tooltip>,

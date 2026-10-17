@@ -40,7 +40,7 @@
 | description | 警告提示的辅助性文字介绍 | `React.ReactNode` | - |
 | showIcon | 是否显示图标 | `boolean` | false |
 | bordered | 是否展示边框 | `boolean` | false |
-| theme | 外观主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | 外观主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | fill |
 | shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | - |
 | closable | 是否显示关闭按钮 | `boolean` | false |
 | onClose | 点击关闭按钮时触发 | `((e: React.MouseEvent<HTMLElement>) => void)` | - |

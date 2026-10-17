@@ -6,7 +6,7 @@ import {
 import clsx from "clsx";
 import { CircleCheck, CircleX, Info, TriangleAlert } from "kui-icons";
 import { isValidElement, type HTMLAttributes, type ReactNode } from "react";
-import type { FeedbackPanelKind, ShapeType, ThemeType } from "../const/types";
+import type { FeedbackPanelKind, ShapeType, SurfaceThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
 
 export interface FeedbackPanelProps extends Omit<
@@ -19,7 +19,7 @@ export interface FeedbackPanelProps extends Omit<
   symbol?: IconType[] | ReactNode;
   compact?: boolean;
   actions?: ReactNode;
-  theme?: ThemeType;
+  theme?: SurfaceThemeType;
   shape?: ShapeType;
 }
 

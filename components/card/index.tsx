@@ -3,14 +3,14 @@ import clsx from "clsx";
 import React from "react";
 import { Avatar } from "../avatar";
 import Icon, { type IconType } from "../icon";
-import type { ShapeType, SizeType, ThemeType } from "../const/types";
+import type { ShapeType, SizeType, SurfaceThemeType } from "../const/types";
 
 export interface CardProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
   "title" | "defaultValue" | "defaultChecked"
 > {
   bordered?: boolean;
-  theme?: ThemeType;
+  theme?: SurfaceThemeType;
   shape?: ShapeType;
   size?: SizeType;
   title?: React.ReactNode;

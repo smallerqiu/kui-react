@@ -31,7 +31,7 @@
 | draggable | 是否允许拖拽 | `boolean` | true |
 | emptyText | 空列提示，默认使用全局语言配置 | `string` | - |
 | minColumnWidth | 最小列宽 | `string \| number` | 250 |
-| theme | 外观主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | `fill` |
+| theme | 外观主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | `fill` |
 | onMove | 卡片移动回调 | `((event: KanbanMoveEvent) => void)` | - |
 | onItemClick | 卡片点击回调 | `((item: KanbanItemData, column: KanbanColumnData) => void)` | - |
 | columnTitle | 自定义列标题渲染 | `((column: KanbanColumnData, items: KanbanItemData[]) => React.ReactNode)` | - |

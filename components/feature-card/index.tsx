@@ -5,7 +5,7 @@ import {
 } from "../config/use-config-appearance";
 import clsx from "clsx";
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
-import type { ShapeType, ThemeType } from "../const/types";
+import type { ShapeType, SurfaceThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
 
 export interface FeatureCardProps extends Omit<
@@ -17,7 +17,7 @@ export interface FeatureCardProps extends Omit<
   desc?: ReactNode;
   extra?: ReactNode;
   bordered?: boolean;
-  theme?: ThemeType;
+  theme?: SurfaceThemeType;
   shape?: ShapeType;
   size?: "small" | "medium" | "large";
   direction?: "horizontal" | "vertical";

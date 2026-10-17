@@ -3,7 +3,13 @@ import { useFormAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import React, { useId, useMemo, useRef } from "react";
-import type { DirectionType, RadioType, ShapeType, SizeType, ThemeType } from "../const/types";
+import type {
+  DirectionType,
+  RadioType,
+  ShapeType,
+  SizeType,
+  SurfaceThemeType,
+} from "../const/types";
 import type { IconType } from "../icon";
 import Radio from "./radio";
 import RadioButton from "./radio-button";
@@ -29,7 +35,7 @@ export interface RadioGroupProps<T extends RadioValue = string | number> extends
   readOnly?: boolean;
   direction?: DirectionType;
   size?: SizeType;
-  theme?: ThemeType;
+  theme?: SurfaceThemeType;
   shape?: ShapeType;
   options?: RadioOption[];
   type?: RadioType;
@@ -87,6 +93,9 @@ const RadioGroup = <T extends RadioValue = string | number>({
 
   const content = useMemo(() => {
     if (options && options.length > 0) {
+      // No `theme` here: the tier reaches every item through the context below, which can carry a
+      // button-mode group's `solid` as well as a radio-mode group's two, and each item resolves what
+      // it can actually paint.
       return options.map((option) => (
         <Component
           key={option.label ?? option.value}
@@ -96,16 +105,18 @@ const RadioGroup = <T extends RadioValue = string | number>({
           readOnly={readOnly}
           icon={option.icon}
           size={size}
-          theme={theme}
           shape={shape}
         />
       ));
     }
+    // `theme` is deliberately absent from the dependencies below: the items take their tier from the
+    // context, whose value is rebuilt every render, so memoising on it would only freeze a tier the
+    // item never reads.
     return React.Children.map(children, (child) => {
       if (React.isValidElement(child)) return child;
       return child;
     });
-  }, [options, children, disabled, readOnly, size, theme, shape, Component]);
+  }, [options, children, disabled, readOnly, size, shape, Component]);
 
   return (
     <RadioGroupContext.Provider

@@ -1,4 +1,8 @@
-import { useConfigAppearance } from "../config/use-config-appearance";
+import {
+  resolvePaintedTheme,
+  SURFACE_THEMES,
+  useConfigAppearance,
+} from "../config/use-config-appearance";
 import { Ellipsis } from "kui-icons";
 import React, { useRef } from "react";
 import Button from "../button/button";
@@ -7,7 +11,7 @@ import type {
   DropPlacementsType,
   ShapeType,
   SizeType,
-  ThemeType,
+  SurfaceThemeType,
   TriggerType,
 } from "../const/types";
 import { type IconType } from "../icon";
@@ -22,7 +26,7 @@ export interface DropdownButtonProps extends Omit<
   shape?: ShapeType;
   disabled?: boolean;
   icon?: IconType[];
-  theme?: ThemeType;
+  theme?: SurfaceThemeType;
   arrow?: boolean;
   trigger?: TriggerType;
   placement?: DropPlacementsType;
@@ -52,7 +56,10 @@ const DropdownButton: React.FC<DropdownButtonProps> = ({
   const inheritedAppearance = useConfigAppearance();
   const size = sizeProp ?? inheritedAppearance.size;
   const shape = shapeProp ?? inheritedAppearance.shape;
-  const theme = themeProp ?? inheritedAppearance.theme;
+  // This component owns no plate — the two buttons inside it do — so what it hands them has to be a
+  // tier they can paint. A provider can still say `underlined`; the guard answers it the same way the
+  // buttons' own guard would have, and a button keeps its guard for what a caller writes on it.
+  const theme = resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, SURFACE_THEMES);
   const refTrigger = useRef<HTMLButtonElement>(null);
 
   const triggerNode = (

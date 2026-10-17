@@ -34,6 +34,7 @@
 // scripts/check-theme.ts.
 import { fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+import type { SurfaceThemeType, ThemeType } from "react-kui";
 import {
   Alert,
   Card,
@@ -209,6 +210,11 @@ const rootClasses = (surface: (typeof SURFACES)[number], props: Record<string, u
     render(surface.render(props)).container.querySelector(`.${surface.prefix}`)?.classList ?? [],
   );
 
+// 3d-乙 narrowed `theme` to the tiers a component paints, so TypeScript no longer lets a caller write
+// `underlined` on a surface. The guard still has to answer it — a JavaScript caller, or a tier that came
+// in through `ConfigProvider`, can — and those cases are what this helper reaches.
+const writeThroughGuard = (tier: ThemeType): SurfaceThemeType => tier as SurfaceThemeType;
+
 // Only the six tier spellings count here: `-bordered`, `-round` and `-small` are the flags, shape and
 // size, and `-default` is the round shape spelling, not a tier.
 const tierClasses = (surface: (typeof SURFACES)[number], classes: string[]) =>
@@ -372,7 +378,7 @@ describe("a feedback panel names its tier like every other surface", () => {
   for (const tier of TIERS)
     it(`theme="${tier}" never emits the -theme- infix`, () => {
       const classes = Array.from(
-        render(<FeedbackPanel theme={tier} />).container.querySelector(".k-feedback-panel")!
+        render(<FeedbackPanel theme={writeThroughGuard(tier)} />).container.querySelector(".k-feedback-panel")!
           .classList,
       );
       expect(classes.some((cls) => cls.includes("-theme-"))).toBe(false);
@@ -428,7 +434,7 @@ describe("a check card takes its tier from whoever asks for it", () => {
   // The group paints nothing, so an unsupported tier has to be answered by the card's own fallback —
   // and the group root must not grow a tier class of its own on the way.
   it("a group hands an unpainted tier down to the card's fallback", () => {
-    const { container } = render(<CheckCardGroup theme="underlined" options={options} />);
+    const { container } = render(<CheckCardGroup theme={writeThroughGuard("underlined")} options={options} />);
     expect(
       [...container.querySelectorAll<HTMLElement>(".k-check-card")].map((element) =>
         tierClasses(card, Array.from(element.classList)),
@@ -574,7 +580,7 @@ describe("a pager names its tier once and hands the same tier down", () => {
   // pager never paints, so an underlined request has to leave an underlined sizer behind exactly the way
   // it leaves an underlined page cell — the controls inside a bar are the bar's own parts.
   it("never hands a tier it will not paint to the controls inside it", () => {
-    const { container } = render(<Page total={100} showSizer showElevator theme="underlined" />);
+    const { container } = render(<Page total={100} showSizer showElevator theme={writeThroughGuard("underlined")} />);
     expect(container.querySelector(".k-select-fill")).toBeTruthy();
     expect(container.querySelector(".k-select-underlined")).toBeNull();
     const boxes = Array.from(container.querySelectorAll(".k-input-number"));

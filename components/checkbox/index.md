@@ -47,7 +47,7 @@
 | disabled | 是否禁用当前项 | `boolean` | false |
 | readOnly | 是否只读当前项 | `boolean` | false |
 | indeterminate | 组合辅助选项控制半选状态 | `boolean` | false |
-| theme | 组件呈现主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | 组件呈现主题 | `"fill" \| "outline"` | fill |
 | valueType | 独立使用时的输出值类型 | `"string" \| "number" \| "boolean"` | boolean |
 | onChange | 在选项状态发生改变时回调 | `((e: ChangeEvent) => void)` | - |
 
@@ -61,7 +61,7 @@
 | onChange | 在选项状态发生改变时触发，返回当前选中的项和状态 | `((value: T[]) => void)` | - |
 | direction | 布局方向 | `"inline" \| "horizontal" \| "vertical"` | horizontal |
 | options | 可以指定子项 `checkbox` | `CheckboxOption<string \| number>[]` | - |
-| theme | 组件呈现主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | 组件呈现主题 | `"fill" \| "outline"` | fill |
 | size | 设置复选框的大小 | `"small" \| "medium" \| "large"` | - |
 
 `options` 中每一项还支持 `disabled` 和 `readOnly`。

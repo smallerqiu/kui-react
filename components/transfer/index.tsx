@@ -8,7 +8,7 @@ import Checkbox from "../checkbox";
 import Empty from "../empty";
 import Input from "../input";
 import { resolvePaintedTheme, useFormAppearance } from "../config/use-config-appearance";
-import type { ThemeType } from "../const/types";
+import type { SurfaceThemeType } from "../const/types";
 
 // A transfer owns no plate of its own — the two lists are its surfaces — so it answers the four surface
 // tiers plus `fill`, and never `underlined`: "keep only the bottom border" on a box deletes three of its
@@ -44,7 +44,7 @@ export interface TransferProps extends Omit<
   searchable?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
-  theme?: ThemeType;
+  theme?: SurfaceThemeType;
   filterOption?: (keyword: string, item: TransferItem) => boolean;
   item?: (item: TransferItem) => React.ReactNode;
   footer?: (direction: "left" | "right") => React.ReactNode;

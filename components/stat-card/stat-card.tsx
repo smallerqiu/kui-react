@@ -8,7 +8,7 @@ import type { HTMLAttributes, ReactNode } from "react";
 import { hasRenderableContent } from "../utils/react-node";
 import StatNumber from "./stat-number";
 import { statItemKey } from "./utils/stat-item-key";
-import type { SizeType, SurfaceShapeType, ThemeType } from "../const/types";
+import type { SizeType, SurfaceShapeType, SurfaceThemeType } from "../const/types";
 
 export interface StatNumberItem {
   key?: string | number;
@@ -36,7 +36,7 @@ export interface StatCardProps extends Omit<
   statNumberType?: "rollup" | "countup";
   reverse?: boolean;
   bordered?: boolean;
-  theme?: ThemeType;
+  theme?: SurfaceThemeType;
   shape?: SurfaceShapeType;
   size?: SizeType;
   prefix?: ReactNode;
@@ -45,7 +45,7 @@ export interface StatCardProps extends Omit<
 
 // The surface contract `Card` uses: a stat card is a box, so `underlined` is not one of its looks and
 // a tier it cannot draw must not reach the class list. Widened from the private
-// `"fill" | "outline" | "plain"` literal to `ThemeType` so a `ConfigProvider theme="solid"` reaches
+// `"fill" | "outline" | "plain"` literal to `SurfaceThemeType` so a `ConfigProvider theme="solid"` reaches
 // every surface the same way — the guard below, not the prop type, is what decides support.
 const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
 

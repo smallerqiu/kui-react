@@ -17,7 +17,7 @@ import Icon from "../icon";
 import { ImageGroupContext } from "./image-group-context";
 import createInstance, { type ImagePreviewInstance } from "./instance";
 import type { ImagePreviewProps, ImageType } from "./preview";
-import type { ShapeType, ThemeType } from "../const/types";
+import type { ShapeType, SurfaceThemeType } from "../const/types";
 import { loadImage } from "./utils";
 
 export interface ImageRef {
@@ -43,7 +43,7 @@ export interface ImageProps extends Omit<
   panel?: ReactNode;
   onClose?: () => void;
   onSwitch?: (index: number) => void;
-  theme?: ThemeType;
+  theme?: SurfaceThemeType;
   shape?: ShapeType;
 }
 

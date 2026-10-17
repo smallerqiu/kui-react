@@ -8,7 +8,7 @@ import clsx from "clsx";
 import React, { useState } from "react";
 import { getChildren } from "../utils/react-node";
 import type { CollapsePanelProps } from "./collapse-panel";
-import type { ShapeType, ThemeType } from "../const/types";
+import type { ShapeType, SurfaceThemeType } from "../const/types";
 
 export interface CollapseProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -17,7 +17,7 @@ export interface CollapseProps extends Omit<
   openKeys?: (string | number)[];
   accordion?: boolean;
   sample?: boolean;
-  theme?: ThemeType;
+  theme?: SurfaceThemeType;
   shape?: ShapeType;
   onChange?: (key: string | number) => void;
   onOpenKeysChange?: (keys: (string | number)[]) => void;

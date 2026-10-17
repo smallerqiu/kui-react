@@ -1,5 +1,5 @@
 import { resolvePaintedTheme, useConfigAppearance } from "../config/use-config-appearance";
-import type { ThemeType } from "../const/types";
+import type { SurfaceThemeType } from "../const/types";
 import clsx from "clsx";
 import { useMemo, useState } from "react";
 import Empty from "../empty";
@@ -37,7 +37,7 @@ export interface KanbanProps extends Omit<
   draggable?: boolean;
   emptyText?: string;
   minColumnWidth?: number | string;
-  theme?: ThemeType;
+  theme?: SurfaceThemeType;
   onMove?: (event: KanbanMoveEvent) => void;
   onItemClick?: (item: KanbanItemData, column: KanbanColumnData) => void;
   columnTitle?: (column: KanbanColumnData, items: KanbanItemData[]) => React.ReactNode;

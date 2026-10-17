@@ -41,7 +41,7 @@
 | showPanel   | 默认是否展示扩展面板       | boolean                 | false  |
 | onClose     | 关闭触发事件               | () => void              | -      |
 | onSwitch    | 多图切换触发事件           | (index: number) => void | -      |
-| theme       | 外观主题                   | ThemeType               | plain  |
+| theme       | 外观主题                   | SurfaceThemeType        | plain  |
 | shape       | 形状                       | ShapeType               | -      |
 | tools       | 自定义工具栏按钮           | ReactNode               | -      |
 | panel       | 自定义扩展面板             | ReactNode               | -      |

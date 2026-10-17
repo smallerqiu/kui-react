@@ -59,7 +59,7 @@
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | icon | 从 `kui-icons` 导入的图标定义 | `IconType[]` | - |
-| theme | 按钮外观 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| theme | 按钮外观 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | - |
 | size | 按钮尺寸 | `"small" \| "medium" \| "large"` | - |
 | shape | 按钮形状 | `"round" \| "default" \| "square" \| "circle"` | - |
 
@@ -73,7 +73,7 @@
 | size | 按钮尺寸 | `"small" \| "medium" \| "large"` | - |
 | direction | 布局方向 | `"inline" \| "horizontal" \| "vertical"` | horizontal |
 | shape | `button` 的形状 | `"round" \| "default" \| "square" \| "circle"` | - |
-| theme | `button` 的主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| theme | `button` 的主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | - |
 | onChange | 在选项状态发生改变时触发，返回当前选中的项 | `((value: T) => void)` | - |
 | options | 可以指定子项 `radio` | `RadioOption[]` | - |
 | type | 使用按钮样式的单选项 | `"button" \| "radio"` | radio |

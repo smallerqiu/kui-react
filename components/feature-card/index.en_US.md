@@ -27,7 +27,7 @@ Displays a product capability or feature highlight.
 | desc | Description | `ReactNode` | - |
 | extra | Trailing content | `ReactNode` | - |
 | bordered | Whether to show a border | `boolean` | false |
-| theme | Appearance theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | Appearance theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | fill |
 | shape | Card shape | `"round" \| "default" \| "square" \| "circle"` | round |
 | size | Card size | `"small" \| "medium" \| "large"` | medium |
 | direction | Content direction | `"horizontal" \| "vertical"` | horizontal |

@@ -1,9 +1,13 @@
 import { useValue } from "../utils/use-value";
-import { useFormAppearance } from "../config/use-config-appearance";
+import {
+  resolvePaintedTheme,
+  SURFACE_THEMES,
+  useFormAppearance,
+} from "../config/use-config-appearance";
 import React, { useContext } from "react";
 import { createFormFieldComponent } from "../form/field-context";
 import { Button } from "../button";
-import type { ShapeType, SizeType, ThemeType } from "../const/types";
+import type { ShapeType, SizeType, SurfaceThemeType } from "../const/types";
 import type { IconType } from "../icon";
 import { RadioGroupContext } from "./radio-group-context";
 import type { ChangeEvent } from "./types";
@@ -14,7 +18,7 @@ export interface RadioButtonProps extends Omit<
 > {
   label?: string;
   value?: string | number;
-  theme?: ThemeType;
+  theme?: SurfaceThemeType;
   disabled?: boolean;
   readOnly?: boolean;
   checked?: boolean;
@@ -56,7 +60,9 @@ const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
     const isChecked = isGroup ? groupChecked : localChecked;
     const currentDisabled = disabled || (isGroup && group.disabled);
     const currentReadOnly = readOnly || Boolean(isGroup && group.readOnly);
-    const currentTheme = themeProp ?? group?.theme ?? theme;
+    // A radio button owns no plate of its own — it renders a `Button` — so what it hands on has to be a
+    // tier a button paints. The buttons keep their own guard for what a caller writes on them.
+    const currentTheme = resolvePaintedTheme(themeProp ?? group?.theme ?? theme, SURFACE_THEMES);
     const currentSize = sizeProp ?? group?.size ?? size;
     const currentShape = shapeProp ?? group?.shape ?? shape;
 

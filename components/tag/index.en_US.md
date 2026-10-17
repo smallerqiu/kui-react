@@ -53,5 +53,5 @@ For dynamic lists, remove the corresponding item from the array in `onAfterClose
 | onClose | Triggered when the close button is clicked | `(() => void)` | - |
 | onAfterClose | Triggered after the exit animation | `(() => void)` | - |
 | size | Button size, optional values `small`, `large`, default not selected | `"small" \| "medium" \| "large"` | - |
-| theme | The component renders the theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | The component renders the theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | fill |
 | shape | The shape in which the component is presented | `"round" \| "default" \| "square" \| "circle"` | circle |

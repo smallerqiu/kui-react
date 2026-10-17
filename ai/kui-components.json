@@ -1468,15 +1468,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "外观主题",
@@ -2552,15 +2551,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "外观主题",
@@ -3055,15 +3053,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "外观主题",
@@ -7937,15 +7934,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "按钮主题，可用 `fill` / `outline` / `plain` / `solid` / `dashed`；不写 `theme` 就是按钮自身的外观，`underlined` 是给可输入的控件用的，按钮不会画下划线",
@@ -8909,15 +8905,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "外观主题",
@@ -9390,7 +9385,7 @@
         {
           "id": "components/card/demo/appearance.tsx",
           "title": "外观与形状",
-          "source": "import type { ShapeType, ThemeType } from \"react-kui\";\nimport { Card, Space } from \"react-kui\";\n\nconst shapes: ShapeType[] = [\"round\", \"square\", \"circle\"];\nconst themes: ThemeType[] = [\"fill\", \"outline\", \"plain\"];\n\nexport default function Demo() {\n  return (\n    <Space vertical block>\n      <Space>\n        {shapes.map((shape) => (\n          <Card key={shape} shape={shape} style={{ width: 180 }}>\n            shape: {shape}\n          </Card>\n        ))}\n      </Space>\n      <Space>\n        {themes.map((theme) => (\n          <Card key={theme} theme={theme} shape=\"square\" style={{ width: 180 }}>\n            theme: {theme}\n          </Card>\n        ))}\n      </Space>\n    </Space>\n  );\n}"
+          "source": "import type { ShapeType, SurfaceThemeType } from \"react-kui\";\nimport { Card, Space } from \"react-kui\";\n\nconst shapes: ShapeType[] = [\"round\", \"square\", \"circle\"];\nconst themes: SurfaceThemeType[] = [\"fill\", \"outline\", \"plain\"];\n\nexport default function Demo() {\n  return (\n    <Space vertical block>\n      <Space>\n        {shapes.map((shape) => (\n          <Card key={shape} shape={shape} style={{ width: 180 }}>\n            shape: {shape}\n          </Card>\n        ))}\n      </Space>\n      <Space>\n        {themes.map((theme) => (\n          <Card key={theme} theme={theme} shape=\"square\" style={{ width: 180 }}>\n            theme: {theme}\n          </Card>\n        ))}\n      </Space>\n    </Space>\n  );\n}"
         }
       ]
     },
@@ -9823,7 +9818,7 @@
         {
           "id": "components/card/demo/appearance.tsx",
           "title": "外观与形状",
-          "source": "import type { ShapeType, ThemeType } from \"react-kui\";\nimport { Card, Space } from \"react-kui\";\n\nconst shapes: ShapeType[] = [\"round\", \"square\", \"circle\"];\nconst themes: ThemeType[] = [\"fill\", \"outline\", \"plain\"];\n\nexport default function Demo() {\n  return (\n    <Space vertical block>\n      <Space>\n        {shapes.map((shape) => (\n          <Card key={shape} shape={shape} style={{ width: 180 }}>\n            shape: {shape}\n          </Card>\n        ))}\n      </Space>\n      <Space>\n        {themes.map((theme) => (\n          <Card key={theme} theme={theme} shape=\"square\" style={{ width: 180 }}>\n            theme: {theme}\n          </Card>\n        ))}\n      </Space>\n    </Space>\n  );\n}"
+          "source": "import type { ShapeType, SurfaceThemeType } from \"react-kui\";\nimport { Card, Space } from \"react-kui\";\n\nconst shapes: ShapeType[] = [\"round\", \"square\", \"circle\"];\nconst themes: SurfaceThemeType[] = [\"fill\", \"outline\", \"plain\"];\n\nexport default function Demo() {\n  return (\n    <Space vertical block>\n      <Space>\n        {shapes.map((shape) => (\n          <Card key={shape} shape={shape} style={{ width: 180 }}>\n            shape: {shape}\n          </Card>\n        ))}\n      </Space>\n      <Space>\n        {themes.map((theme) => (\n          <Card key={theme} theme={theme} shape=\"square\" style={{ width: 180 }}>\n            theme: {theme}\n          </Card>\n        ))}\n      </Space>\n    </Space>\n  );\n}"
         }
       ]
     },
@@ -10766,15 +10761,11 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "MarkThemeType | undefined",
           "required": false,
           "enumValues": [
-            "dashed",
-            "solid",
             "fill",
-            "outline",
-            "plain",
-            "underlined"
+            "outline"
           ],
           "boolean": false,
           "descriptionZh": "组件呈现主题",
@@ -11270,15 +11261,11 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "MarkThemeType | undefined",
           "required": false,
           "enumValues": [
-            "dashed",
-            "solid",
             "fill",
-            "outline",
-            "plain",
-            "underlined"
+            "outline"
           ],
           "boolean": false,
           "descriptionZh": "组件呈现主题",
@@ -11861,15 +11848,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "主题",
@@ -12380,15 +12366,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "卡片主题",
@@ -12881,15 +12866,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "主题",
@@ -18075,15 +18059,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "按钮主题，可用 `fill` / `outline` / `plain` / `solid` / `dashed`；不写 `theme` 就是按钮自身的外观，`underlined` 是给可输入的控件用的，按钮不会画下划线",
@@ -20727,15 +20710,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "外观主题",
@@ -21504,15 +21486,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "主题样式",
@@ -23416,15 +23397,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "外观主题",
@@ -32550,15 +32530,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "外观主题",
@@ -35049,15 +35028,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "二维码主题",
@@ -35619,15 +35597,11 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "MarkThemeType | undefined",
           "required": false,
           "enumValues": [
-            "dashed",
-            "solid",
             "fill",
-            "outline",
-            "plain",
-            "underlined"
+            "outline"
           ],
           "boolean": false,
           "descriptionZh": "`button` 的主题",
@@ -36091,7 +36065,7 @@
         {
           "id": "components/radio/demo/radio-buttons.tsx",
           "title": "组合Button使用",
-          "source": "import { LogoApple } from \"kui-icons\";\nimport { useState } from \"react\";\nimport type { DirectionType, RadioType, ShapeType, SizeType, ThemeType } from \"react-kui\";\nimport { RadioGroup, Space } from \"react-kui\";\nconst dates = [\n    { label: \"1 week\", value: 0 },\n    { label: \"1 month\", value: 1 },\n    { label: \"Q1\", value: 2 },\n    { label: \"1 year\", value: 3 },\n    { label: \"5 years\", value: 4, disabled: true },\n  ],\n  sizes = [\n    { label: \"Large\", value: \"large\", icon: LogoApple },\n    { label: \"Medium\", value: \"medium\" },\n    { label: \"Small\", value: \"small\" },\n  ],\n  directions = [\n    { label: \"Horizontal\", value: \"horizontal\" },\n    { label: \"Vertical\", value: \"vertical\" },\n  ],\n  types = [\n    { label: \"Radio\", value: \"radio\" },\n    { label: \"Button\", value: \"button\" },\n  ],\n  shapes = [\n    { label: \"Round\", value: \"round\" },\n    { label: \"Circle\", value: \"circle\" },\n    { label: \"Square\", value: \"square\" },\n  ],\n  themes = [{ label: \"Fill\", value: \"fill\" }, { label: \"Outline\", value: \"outline\" }];\nexport default function App() {\n  const [size, setSize] = useState<SizeType>(\"medium\"),\n    [shape, setShape] = useState<ShapeType>(\"round\"),\n    [theme, setTheme] = useState<ThemeType>(\"fill\"),\n    [direction, setDirection] = useState<DirectionType>(\"horizontal\"),\n    [type, setType] = useState<RadioType>(\"button\"),\n    [value, setValue] = useState(0);\n  return (\n    <Space vertical>\n      <RadioGroup value={shape} size=\"small\" type=\"button\" options={shapes} onChange={setShape} />\n      <RadioGroup value={theme} size=\"small\" type=\"button\" options={themes} onChange={setTheme} />\n      <RadioGroup value={size} type=\"button\" size=\"small\" options={sizes} onChange={setSize} />\n      <RadioGroup\n        value={direction}\n        type=\"button\"\n        size=\"small\"\n        options={directions}\n        onChange={setDirection}\n      />\n      <RadioGroup value={type} type=\"button\" size=\"small\" options={types} onChange={setType} />\n      <br />\n      <RadioGroup\n        value={value}\n        onChange={setValue}\n        size={size}\n        theme={theme}\n        shape={shape}\n        options={dates}\n        direction={direction}\n        type={type}\n      />\n    </Space>\n  );\n}"
+          "source": "import { LogoApple } from \"kui-icons\";\nimport { useState } from \"react\";\nimport type {\n  DirectionType,\n  RadioType,\n  ShapeType,\n  SizeType,\n  SurfaceThemeType,\n} from \"react-kui\";\nimport { RadioGroup, Space } from \"react-kui\";\nconst dates = [\n    { label: \"1 week\", value: 0 },\n    { label: \"1 month\", value: 1 },\n    { label: \"Q1\", value: 2 },\n    { label: \"1 year\", value: 3 },\n    { label: \"5 years\", value: 4, disabled: true },\n  ],\n  sizes = [\n    { label: \"Large\", value: \"large\", icon: LogoApple },\n    { label: \"Medium\", value: \"medium\" },\n    { label: \"Small\", value: \"small\" },\n  ],\n  directions = [\n    { label: \"Horizontal\", value: \"horizontal\" },\n    { label: \"Vertical\", value: \"vertical\" },\n  ],\n  types = [\n    { label: \"Radio\", value: \"radio\" },\n    { label: \"Button\", value: \"button\" },\n  ],\n  shapes = [\n    { label: \"Round\", value: \"round\" },\n    { label: \"Circle\", value: \"circle\" },\n    { label: \"Square\", value: \"square\" },\n  ],\n  themes = [{ label: \"Fill\", value: \"fill\" }, { label: \"Outline\", value: \"outline\" }];\nexport default function App() {\n  const [size, setSize] = useState<SizeType>(\"medium\"),\n    [shape, setShape] = useState<ShapeType>(\"round\"),\n    [theme, setTheme] = useState<SurfaceThemeType>(\"fill\"),\n    [direction, setDirection] = useState<DirectionType>(\"horizontal\"),\n    [type, setType] = useState<RadioType>(\"button\"),\n    [value, setValue] = useState(0);\n  return (\n    <Space vertical>\n      <RadioGroup value={shape} size=\"small\" type=\"button\" options={shapes} onChange={setShape} />\n      <RadioGroup value={theme} size=\"small\" type=\"button\" options={themes} onChange={setTheme} />\n      <RadioGroup value={size} type=\"button\" size=\"small\" options={sizes} onChange={setSize} />\n      <RadioGroup\n        value={direction}\n        type=\"button\"\n        size=\"small\"\n        options={directions}\n        onChange={setDirection}\n      />\n      <RadioGroup value={type} type=\"button\" size=\"small\" options={types} onChange={setType} />\n      <br />\n      <RadioGroup\n        value={value}\n        onChange={setValue}\n        size={size}\n        theme={theme}\n        shape={shape}\n        options={dates}\n        direction={direction}\n        type={type}\n      />\n    </Space>\n  );\n}"
         }
       ]
     },
@@ -36118,15 +36092,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "按钮外观",
@@ -36624,7 +36597,7 @@
         {
           "id": "components/radio/demo/radio-buttons.tsx",
           "title": "组合Button使用",
-          "source": "import { LogoApple } from \"kui-icons\";\nimport { useState } from \"react\";\nimport type { DirectionType, RadioType, ShapeType, SizeType, ThemeType } from \"react-kui\";\nimport { RadioGroup, Space } from \"react-kui\";\nconst dates = [\n    { label: \"1 week\", value: 0 },\n    { label: \"1 month\", value: 1 },\n    { label: \"Q1\", value: 2 },\n    { label: \"1 year\", value: 3 },\n    { label: \"5 years\", value: 4, disabled: true },\n  ],\n  sizes = [\n    { label: \"Large\", value: \"large\", icon: LogoApple },\n    { label: \"Medium\", value: \"medium\" },\n    { label: \"Small\", value: \"small\" },\n  ],\n  directions = [\n    { label: \"Horizontal\", value: \"horizontal\" },\n    { label: \"Vertical\", value: \"vertical\" },\n  ],\n  types = [\n    { label: \"Radio\", value: \"radio\" },\n    { label: \"Button\", value: \"button\" },\n  ],\n  shapes = [\n    { label: \"Round\", value: \"round\" },\n    { label: \"Circle\", value: \"circle\" },\n    { label: \"Square\", value: \"square\" },\n  ],\n  themes = [{ label: \"Fill\", value: \"fill\" }, { label: \"Outline\", value: \"outline\" }];\nexport default function App() {\n  const [size, setSize] = useState<SizeType>(\"medium\"),\n    [shape, setShape] = useState<ShapeType>(\"round\"),\n    [theme, setTheme] = useState<ThemeType>(\"fill\"),\n    [direction, setDirection] = useState<DirectionType>(\"horizontal\"),\n    [type, setType] = useState<RadioType>(\"button\"),\n    [value, setValue] = useState(0);\n  return (\n    <Space vertical>\n      <RadioGroup value={shape} size=\"small\" type=\"button\" options={shapes} onChange={setShape} />\n      <RadioGroup value={theme} size=\"small\" type=\"button\" options={themes} onChange={setTheme} />\n      <RadioGroup value={size} type=\"button\" size=\"small\" options={sizes} onChange={setSize} />\n      <RadioGroup\n        value={direction}\n        type=\"button\"\n        size=\"small\"\n        options={directions}\n        onChange={setDirection}\n      />\n      <RadioGroup value={type} type=\"button\" size=\"small\" options={types} onChange={setType} />\n      <br />\n      <RadioGroup\n        value={value}\n        onChange={setValue}\n        size={size}\n        theme={theme}\n        shape={shape}\n        options={dates}\n        direction={direction}\n        type={type}\n      />\n    </Space>\n  );\n}"
+          "source": "import { LogoApple } from \"kui-icons\";\nimport { useState } from \"react\";\nimport type {\n  DirectionType,\n  RadioType,\n  ShapeType,\n  SizeType,\n  SurfaceThemeType,\n} from \"react-kui\";\nimport { RadioGroup, Space } from \"react-kui\";\nconst dates = [\n    { label: \"1 week\", value: 0 },\n    { label: \"1 month\", value: 1 },\n    { label: \"Q1\", value: 2 },\n    { label: \"1 year\", value: 3 },\n    { label: \"5 years\", value: 4, disabled: true },\n  ],\n  sizes = [\n    { label: \"Large\", value: \"large\", icon: LogoApple },\n    { label: \"Medium\", value: \"medium\" },\n    { label: \"Small\", value: \"small\" },\n  ],\n  directions = [\n    { label: \"Horizontal\", value: \"horizontal\" },\n    { label: \"Vertical\", value: \"vertical\" },\n  ],\n  types = [\n    { label: \"Radio\", value: \"radio\" },\n    { label: \"Button\", value: \"button\" },\n  ],\n  shapes = [\n    { label: \"Round\", value: \"round\" },\n    { label: \"Circle\", value: \"circle\" },\n    { label: \"Square\", value: \"square\" },\n  ],\n  themes = [{ label: \"Fill\", value: \"fill\" }, { label: \"Outline\", value: \"outline\" }];\nexport default function App() {\n  const [size, setSize] = useState<SizeType>(\"medium\"),\n    [shape, setShape] = useState<ShapeType>(\"round\"),\n    [theme, setTheme] = useState<SurfaceThemeType>(\"fill\"),\n    [direction, setDirection] = useState<DirectionType>(\"horizontal\"),\n    [type, setType] = useState<RadioType>(\"button\"),\n    [value, setValue] = useState(0);\n  return (\n    <Space vertical>\n      <RadioGroup value={shape} size=\"small\" type=\"button\" options={shapes} onChange={setShape} />\n      <RadioGroup value={theme} size=\"small\" type=\"button\" options={themes} onChange={setTheme} />\n      <RadioGroup value={size} type=\"button\" size=\"small\" options={sizes} onChange={setSize} />\n      <RadioGroup\n        value={direction}\n        type=\"button\"\n        size=\"small\"\n        options={directions}\n        onChange={setDirection}\n      />\n      <RadioGroup value={type} type=\"button\" size=\"small\" options={types} onChange={setType} />\n      <br />\n      <RadioGroup\n        value={value}\n        onChange={setValue}\n        size={size}\n        theme={theme}\n        shape={shape}\n        options={dates}\n        direction={direction}\n        type={type}\n      />\n    </Space>\n  );\n}"
         }
       ]
     },
@@ -36693,15 +36666,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "`button` 的主题",
@@ -37162,7 +37134,7 @@
         {
           "id": "components/radio/demo/radio-buttons.tsx",
           "title": "组合Button使用",
-          "source": "import { LogoApple } from \"kui-icons\";\nimport { useState } from \"react\";\nimport type { DirectionType, RadioType, ShapeType, SizeType, ThemeType } from \"react-kui\";\nimport { RadioGroup, Space } from \"react-kui\";\nconst dates = [\n    { label: \"1 week\", value: 0 },\n    { label: \"1 month\", value: 1 },\n    { label: \"Q1\", value: 2 },\n    { label: \"1 year\", value: 3 },\n    { label: \"5 years\", value: 4, disabled: true },\n  ],\n  sizes = [\n    { label: \"Large\", value: \"large\", icon: LogoApple },\n    { label: \"Medium\", value: \"medium\" },\n    { label: \"Small\", value: \"small\" },\n  ],\n  directions = [\n    { label: \"Horizontal\", value: \"horizontal\" },\n    { label: \"Vertical\", value: \"vertical\" },\n  ],\n  types = [\n    { label: \"Radio\", value: \"radio\" },\n    { label: \"Button\", value: \"button\" },\n  ],\n  shapes = [\n    { label: \"Round\", value: \"round\" },\n    { label: \"Circle\", value: \"circle\" },\n    { label: \"Square\", value: \"square\" },\n  ],\n  themes = [{ label: \"Fill\", value: \"fill\" }, { label: \"Outline\", value: \"outline\" }];\nexport default function App() {\n  const [size, setSize] = useState<SizeType>(\"medium\"),\n    [shape, setShape] = useState<ShapeType>(\"round\"),\n    [theme, setTheme] = useState<ThemeType>(\"fill\"),\n    [direction, setDirection] = useState<DirectionType>(\"horizontal\"),\n    [type, setType] = useState<RadioType>(\"button\"),\n    [value, setValue] = useState(0);\n  return (\n    <Space vertical>\n      <RadioGroup value={shape} size=\"small\" type=\"button\" options={shapes} onChange={setShape} />\n      <RadioGroup value={theme} size=\"small\" type=\"button\" options={themes} onChange={setTheme} />\n      <RadioGroup value={size} type=\"button\" size=\"small\" options={sizes} onChange={setSize} />\n      <RadioGroup\n        value={direction}\n        type=\"button\"\n        size=\"small\"\n        options={directions}\n        onChange={setDirection}\n      />\n      <RadioGroup value={type} type=\"button\" size=\"small\" options={types} onChange={setType} />\n      <br />\n      <RadioGroup\n        value={value}\n        onChange={setValue}\n        size={size}\n        theme={theme}\n        shape={shape}\n        options={dates}\n        direction={direction}\n        type={type}\n      />\n    </Space>\n  );\n}"
+          "source": "import { LogoApple } from \"kui-icons\";\nimport { useState } from \"react\";\nimport type {\n  DirectionType,\n  RadioType,\n  ShapeType,\n  SizeType,\n  SurfaceThemeType,\n} from \"react-kui\";\nimport { RadioGroup, Space } from \"react-kui\";\nconst dates = [\n    { label: \"1 week\", value: 0 },\n    { label: \"1 month\", value: 1 },\n    { label: \"Q1\", value: 2 },\n    { label: \"1 year\", value: 3 },\n    { label: \"5 years\", value: 4, disabled: true },\n  ],\n  sizes = [\n    { label: \"Large\", value: \"large\", icon: LogoApple },\n    { label: \"Medium\", value: \"medium\" },\n    { label: \"Small\", value: \"small\" },\n  ],\n  directions = [\n    { label: \"Horizontal\", value: \"horizontal\" },\n    { label: \"Vertical\", value: \"vertical\" },\n  ],\n  types = [\n    { label: \"Radio\", value: \"radio\" },\n    { label: \"Button\", value: \"button\" },\n  ],\n  shapes = [\n    { label: \"Round\", value: \"round\" },\n    { label: \"Circle\", value: \"circle\" },\n    { label: \"Square\", value: \"square\" },\n  ],\n  themes = [{ label: \"Fill\", value: \"fill\" }, { label: \"Outline\", value: \"outline\" }];\nexport default function App() {\n  const [size, setSize] = useState<SizeType>(\"medium\"),\n    [shape, setShape] = useState<ShapeType>(\"round\"),\n    [theme, setTheme] = useState<SurfaceThemeType>(\"fill\"),\n    [direction, setDirection] = useState<DirectionType>(\"horizontal\"),\n    [type, setType] = useState<RadioType>(\"button\"),\n    [value, setValue] = useState(0);\n  return (\n    <Space vertical>\n      <RadioGroup value={shape} size=\"small\" type=\"button\" options={shapes} onChange={setShape} />\n      <RadioGroup value={theme} size=\"small\" type=\"button\" options={themes} onChange={setTheme} />\n      <RadioGroup value={size} type=\"button\" size=\"small\" options={sizes} onChange={setSize} />\n      <RadioGroup\n        value={direction}\n        type=\"button\"\n        size=\"small\"\n        options={directions}\n        onChange={setDirection}\n      />\n      <RadioGroup value={type} type=\"button\" size=\"small\" options={types} onChange={setType} />\n      <br />\n      <RadioGroup\n        value={value}\n        onChange={setValue}\n        size={size}\n        theme={theme}\n        shape={shape}\n        options={dates}\n        direction={direction}\n        type={type}\n      />\n    </Space>\n  );\n}"
         }
       ]
     },
@@ -42642,15 +42614,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "主题",
@@ -53112,15 +53083,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "组件呈现主题",
@@ -53544,7 +53514,7 @@
         {
           "id": "components/tag/demo/size.tsx",
           "title": "尺寸和形状",
-          "source": "import { useState } from \"react\";\nimport { RadioGroup, Space, Tag } from \"react-kui\";\nimport type { ShapeType, SizeType, ThemeType } from \"react-kui\";\nconst sizes = [\n    { label: \"Large\", value: \"large\" },\n    { label: \"Medium\", value: \"medium\" },\n    { label: \"Small\", value: \"small\" },\n  ],\n  shapes = [\n    { label: \"Circle\", value: \"circle\" },\n    { label: \"Square\", value: \"square\" },\n  ],\n  themes = [\n    { label: \"Fill\", value: \"fill\" },\n    { label: \"Outline\", value: \"outline\" },\n  ];\nexport default function App() {\n  const [size, setSize] = useState<SizeType>(\"small\"),\n    [shape, setShape] = useState<ShapeType>(\"circle\"),\n    [theme, setTheme] = useState<ThemeType>(\"fill\");\n  return (\n    <Space vertical>\n      <RadioGroup value={size} type=\"button\" options={sizes} onChange={setSize} />\n      <RadioGroup value={shape} type=\"button\" options={shapes} onChange={setShape} />\n      <RadioGroup value={theme} type=\"button\" options={themes} onChange={setTheme} />\n      {[1, 2, 3].map((x) => (\n        <Tag key={x} size={size} shape={shape} theme={theme}>\n          Tag{x}\n        </Tag>\n      ))}\n    </Space>\n  );\n}"
+          "source": "import { useState } from \"react\";\nimport { RadioGroup, Space, Tag } from \"react-kui\";\nimport type { ShapeType, SizeType, SurfaceThemeType } from \"react-kui\";\nconst sizes = [\n    { label: \"Large\", value: \"large\" },\n    { label: \"Medium\", value: \"medium\" },\n    { label: \"Small\", value: \"small\" },\n  ],\n  shapes = [\n    { label: \"Circle\", value: \"circle\" },\n    { label: \"Square\", value: \"square\" },\n  ],\n  themes = [\n    { label: \"Fill\", value: \"fill\" },\n    { label: \"Outline\", value: \"outline\" },\n  ];\nexport default function App() {\n  const [size, setSize] = useState<SizeType>(\"small\"),\n    [shape, setShape] = useState<ShapeType>(\"circle\"),\n    [theme, setTheme] = useState<SurfaceThemeType>(\"fill\");\n  return (\n    <Space vertical>\n      <RadioGroup value={size} type=\"button\" options={sizes} onChange={setSize} />\n      <RadioGroup value={shape} type=\"button\" options={shapes} onChange={setShape} />\n      <RadioGroup value={theme} type=\"button\" options={themes} onChange={setTheme} />\n      {[1, 2, 3].map((x) => (\n        <Tag key={x} size={size} shape={shape} theme={theme}>\n          Tag{x}\n        </Tag>\n      ))}\n    </Space>\n  );\n}"
         },
         {
           "id": "components/tag/demo/icon.tsx",
@@ -56447,15 +56417,14 @@
         },
         {
           "name": "theme",
-          "type": "ThemeType | undefined",
+          "type": "SurfaceThemeType | undefined",
           "required": false,
           "enumValues": [
             "dashed",
             "solid",
             "fill",
             "outline",
-            "plain",
-            "underlined"
+            "plain"
           ],
           "boolean": false,
           "descriptionZh": "外观主题",

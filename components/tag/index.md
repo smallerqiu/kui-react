@@ -53,5 +53,5 @@
 | onClose | 点击关闭按钮时触发 | `(() => void)` | - |
 | onAfterClose | 退出动画结束后触发 | `(() => void)` | - |
 | size | 按钮尺寸,可选值 `small`、`large`，默认不选 | `"small" \| "medium" \| "large"` | - |
-| theme | 组件呈现主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | 组件呈现主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | fill |
 | shape | 组件呈现的形状, | `"round" \| "default" \| "square" \| "circle"` | circle |

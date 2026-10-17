@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { RadioGroup, Space, Tag } from "react-kui";
-import type { ShapeType, SizeType, ThemeType } from "react-kui";
+import type { ShapeType, SizeType, SurfaceThemeType } from "react-kui";
 const sizes = [
     { label: "Large", value: "large" },
     { label: "Medium", value: "medium" },
@@ -17,7 +17,7 @@ const sizes = [
 export default function App() {
   const [size, setSize] = useState<SizeType>("small"),
     [shape, setShape] = useState<ShapeType>("circle"),
-    [theme, setTheme] = useState<ThemeType>("fill");
+    [theme, setTheme] = useState<SurfaceThemeType>("fill");
   return (
     <Space vertical>
       <RadioGroup value={size} type="button" options={sizes} onChange={setSize} />

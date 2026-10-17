@@ -47,7 +47,7 @@ A `CheckboxGroup` passes its own `theme` down to every box it renders, and a sta
 | disabled | Whether the current item is disabled | `boolean` | false |
 | readOnly | Whether the current item is read-only | `boolean` | false |
 | indeterminate | Combined auxiliary option controls the indeterminate state | `boolean` | false |
-| theme | Component theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | Component theme | `"fill" \| "outline"` | fill |
 | valueType | Standalone output value type | `"string" \| "number" \| "boolean"` | boolean |
 | onChange | Callback when the option state changes | `((e: ChangeEvent) => void)` | - |
 
@@ -61,7 +61,7 @@ A `CheckboxGroup` passes its own `theme` down to every box it renders, and a sta
 | onChange | Triggered when the option state changes, returns the currently selected values | `((value: T[]) => void)` | - |
 | direction | Layout direction | `"inline" \| "horizontal" \| "vertical"` | horizontal |
 | options | Can specify child `checkbox` items | `CheckboxOption<string \| number>[]` | - |
-| theme | Component theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | Component theme | `"fill" \| "outline"` | fill |
 | size | Checkbox size | `"small" \| "medium" \| "large"` | - |
 
 Each item in `options` also supports `disabled` and `readOnly`.

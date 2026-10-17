@@ -3,7 +3,7 @@ import { resolvePaintedTheme, useFormAppearance } from "../config/use-config-app
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import React, { useContext } from "react";
-import type { SizeType, ThemeType } from "../const/types";
+import type { SizeType, MarkThemeType } from "../const/types";
 import { RadioGroupContext } from "./radio-group-context";
 import type { ChangeEvent } from "./types";
 
@@ -14,7 +14,7 @@ export interface RadioProps extends Omit<
   checked?: boolean;
   value?: string | number;
   label?: string;
-  theme?: ThemeType;
+  theme?: MarkThemeType;
   size?: SizeType;
   onChange?: (e: ChangeEvent) => void;
   children?: React.ReactNode;

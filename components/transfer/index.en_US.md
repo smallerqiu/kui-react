@@ -43,7 +43,7 @@ Move and select items between two lists.
 | searchable | Whether searchable | `boolean` | false |
 | disabled | Whether disabled | `boolean` | false |
 | readOnly | Whether read-only | `boolean` | false |
-| theme | Appearance theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | outline |
+| theme | Appearance theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
 | filterOption | Custom filter | `((keyword: string, item: TransferItem) => boolean)` | - |
 | item | Custom list item renderer | `((item: TransferItem) => React.ReactNode)` | - |
 | footer | Custom list footer renderer | `((direction: "left" \| "right") => React.ReactNode)` | - |

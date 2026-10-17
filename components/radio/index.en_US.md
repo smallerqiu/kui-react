@@ -59,7 +59,7 @@ In addition to Radio props, RadioButton supports:
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
 | icon | Icon definition imported from `kui-icons` | `IconType[]` | - |
-| theme | Button appearance | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| theme | Button appearance | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | - |
 | size | Button size | `"small" \| "medium" \| "large"` | - |
 | shape | Button shape | `"round" \| "default" \| "square" \| "circle"` | - |
 
@@ -73,7 +73,7 @@ In addition to Radio props, RadioButton supports:
 | size | Button size | `"small" \| "medium" \| "large"` | - |
 | direction | Layout direction | `"inline" \| "horizontal" \| "vertical"` | horizontal |
 | shape | Button shape | `"round" \| "default" \| "square" \| "circle"` | - |
-| theme | Button theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | - |
+| theme | Button theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | - |
 | onChange | Triggered when option state changes, returns currently selected item | `((value: T) => void)` | - |
 | options | Can specify child `radio` items | `RadioOption[]` | - |
 | type | Use radio or button-style items | `"button" \| "radio"` | radio |

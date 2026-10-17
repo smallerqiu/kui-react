@@ -3,7 +3,7 @@ import { useFormAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import React from "react";
-import type { DirectionType, SizeType, ThemeType } from "../const/types";
+import type { DirectionType, SizeType, MarkThemeType } from "../const/types";
 import Checkbox, { type ChangeEvent } from "./checkbox";
 import { CheckboxGroupContext } from "./checkbox-group-context";
 
@@ -20,7 +20,7 @@ export interface CheckboxGroupProps<T extends string | number = string | number>
   "onChange" | "defaultValue" | "defaultChecked"
 > {
   value?: T[];
-  theme?: ThemeType;
+  theme?: MarkThemeType;
   disabled?: boolean;
   readOnly?: boolean;
   options?: CheckboxOption[];
