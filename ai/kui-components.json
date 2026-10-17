@@ -2552,16 +2552,19 @@
         },
         {
           "name": "theme",
-          "type": "\"fill\" | \"outline\" | undefined",
+          "type": "ThemeType | undefined",
           "required": false,
           "enumValues": [
+            "dashed",
+            "solid",
             "fill",
-            "outline"
+            "outline",
+            "plain",
+            "underlined"
           ],
           "boolean": false,
-          "defaultExpression": "\"fill\"",
-          "descriptionZh": "主题",
-          "descriptionEn": "Theme"
+          "descriptionZh": "外观主题",
+          "descriptionEn": "Surface theme"
         },
         {
           "name": "onMove",
@@ -3020,7 +3023,7 @@
         {
           "id": "components/kanban/demo/theme.tsx",
           "title": "主题",
-          "source": "import { useState } from \"react\";\nimport { Card, Kanban, RadioGroup, Space } from \"react-kui\";\nconst columns = [\n  { key: \"todo\", title: \"Todo\", color: \"#87909c\" },\n  { key: \"doing\", title: \"Doing\", color: \"#3a95ff\" },\n  { key: \"done\", title: \"Done\", color: \"#22a06b\" },\n];\nconst tasks = [\n  { id: 1, status: \"todo\", title: \"Define requirements\" },\n  { id: 2, status: \"doing\", title: \"Build component\" },\n];\nexport default function App() {\n  const [theme, setTheme] = useState<\"fill\" | \"outline\">(\"fill\");\n  return (\n    <Space vertical block>\n      <RadioGroup\n        type=\"button\"\n        options={[\n          { label: \"Fill\", value: \"fill\" },\n          { label: \"Outline\", value: \"outline\" },\n        ]}\n        value={theme}\n        onChange={(value) => setTheme(value as typeof theme)}\n      />\n      <Kanban\n        columns={columns}\n        data={tasks}\n        theme={theme}\n        item={(item) => (\n          <Card size=\"small\" theme={theme}>\n            {String(item.title)}\n          </Card>\n        )}\n      />\n    </Space>\n  );\n}"
+          "source": "import { useState } from \"react\";\nimport { Card, Kanban, RadioGroup, Space } from \"react-kui\";\nconst columns = [\n  { key: \"todo\", title: \"Todo\", color: \"#87909c\" },\n  { key: \"doing\", title: \"Doing\", color: \"#3a95ff\" },\n  { key: \"done\", title: \"Done\", color: \"#22a06b\" },\n];\nconst tasks = [\n  { id: 1, status: \"todo\", title: \"Define requirements\" },\n  { id: 2, status: \"doing\", title: \"Build component\" },\n];\nexport default function App() {\n  // The board offers the five tiers it paints; `underlined` is a control tier and would land back on `fill`.\n  const [theme, setTheme] = useState<\"fill\" | \"outline\" | \"plain\" | \"solid\" | \"dashed\">(\"fill\");\n  return (\n    <Space vertical block>\n      <RadioGroup\n        type=\"button\"\n        options={[\n          { label: \"Fill\", value: \"fill\" },\n          { label: \"Outline\", value: \"outline\" },\n          { label: \"Plain\", value: \"plain\" },\n          { label: \"Solid\", value: \"solid\" },\n          { label: \"Dashed\", value: \"dashed\" },\n        ]}\n        value={theme}\n        onChange={(value) => setTheme(value as typeof theme)}\n      />\n      <Kanban\n        columns={columns}\n        data={tasks}\n        theme={theme}\n        item={(item) => (\n          <Card size=\"small\" theme={theme}>\n            {String(item.title)}\n          </Card>\n        )}\n      />\n    </Space>\n  );\n}"
         }
       ]
     },

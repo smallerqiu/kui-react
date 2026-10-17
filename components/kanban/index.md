@@ -31,7 +31,7 @@
 | draggable | 是否允许拖拽 | `boolean` | true |
 | emptyText | 空列提示，默认使用全局语言配置 | `string` | - |
 | minColumnWidth | 最小列宽 | `string \| number` | 250 |
-| theme | 主题 | `"fill" \| "outline"` | fill |
+| theme | 外观主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | `fill` |
 | onMove | 卡片移动回调 | `((event: KanbanMoveEvent) => void)` | - |
 | onItemClick | 卡片点击回调 | `((item: KanbanItemData, column: KanbanColumnData) => void)` | - |
 | columnTitle | 自定义列标题渲染 | `((column: KanbanColumnData, items: KanbanItemData[]) => React.ReactNode)` | - |
@@ -40,3 +40,8 @@
 | footer | 自定义列底部渲染 | `((column: KanbanColumnData, items: KanbanItemData[]) => React.ReactNode)` | - |
 
 卡片获得焦点后，可以使用 `Alt + ←` 或 `Alt + →` 将其移动到相邻列。
+## 主题
+
+`theme` 支持 `fill`、`outline`、`plain`、`solid`、`dashed` 五种外观，不写 `theme` 时就是 `fill`；`underlined` 是给可输入的控件用的，看板会按 `fill` 呈现。
+
+外观落在每一列上，不是整块看板：`fill` 给列铺一层浅底，`outline` 只描一条库的边框色，`plain` 既不铺底也不描边，`dashed` 把那一圈换成虚线。`solid` 用主色铺满整列，列标题、计数和列里的卡片一起反白，卡片上的键盘焦点环也跟着换成主色上的一层浅白。列头那颗状态点吃的是 `column.color`，属于数据不属于外观，五种外观都不改它。把卡片拖到某一列上方时的提示——一条主色描边加一层主色浅底——在五种外观下都看得见，`solid` 的列改用铺底的反白色来描这条边。

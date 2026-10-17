@@ -18,9 +18,12 @@
 // answer only `outline` and `plain`, spelled `k-alert-theme-<tier>` behind an infix no other surface has.
 // 3c-丁c adds `Page`, which types six tiers, emits its own default `fill`, and paints the tier on the
 // cells the numbers sit on rather than on the root.
+// 3c-丁d adds `Kanban`, the board whose columns are the surfaces: it typed two tiers and painted those
+// two, so a tier outside its own two could still arrive from `ConfigProvider` as a class no rule answered,
+// and the drop hint — the one state a column has — sat below the tier plates and never drew.
 // The style half — what each tier actually draws — is in tests/theme-variants.test.ts and the pixels in
 // scripts/check-theme.ts.
-import { render } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import {
   Alert,
@@ -34,6 +37,7 @@ import {
   FeedbackPanel,
   // React spells the image component `KImage`; the label it carries below stays `Image`.
   KImage,
+  Kanban,
   Page,
   QRCode,
   StatCard,
@@ -48,6 +52,14 @@ vi.mock("qrcode", () => ({ toCanvas: vi.fn(async () => {}) }));
 const TIERS = ["fill", "outline", "plain", "solid", "dashed", "underlined"] as const;
 const PAINTED = TIERS.filter((tier) => tier !== "underlined");
 const UNSUPPORTED = ["underlined"] as const;
+
+// A board renders one column per entry, so the cases hand it the smallest one that has a header, a card
+// and an empty column at the same time.
+const BOARD_COLUMNS = [
+  { key: "todo", title: "Todo", color: "#87909c" },
+  { key: "doing", title: "Doing", color: "#3a95ff" },
+];
+const BOARD_TASKS = [{ id: 1, status: "todo", title: "Define requirements" }];
 
 const SURFACES = [
   {
@@ -137,6 +149,16 @@ const SURFACES = [
     prefix: "k-page",
     fallback: "fill",
     render: (props: Record<string, unknown>) => <Page total={100} {...props} />,
+  },
+  // 3c-丁d: a board has no plate of its own — its columns are the surfaces — so the tier names the root
+  // and draws on every `.k-kanban-column`. It typed two tiers and painted those two, which left
+  // `plain` / `solid` / `dashed` unreachable while `ConfigProvider` could still hand them out. Its own
+  // look is `fill`.
+  {
+    name: "Kanban",
+    prefix: "k-kanban",
+    fallback: "fill",
+    render: (props: Record<string, unknown>) => <Kanban columns={BOARD_COLUMNS} {...props} />,
   },
 ] as const;
 
@@ -519,5 +541,48 @@ describe("a pager names its tier once and hands the same tier down", () => {
       expect(box.classList.contains("k-input-number-fill")).toBe(true);
       expect(box.classList.contains("k-input-number-underlined")).toBe(false);
     }
+  });
+});
+
+// 3c-丁d: a board names its tier on the root and paints it on every column — it owns no plate of its own —
+// so the DOM contract is one tier class plus one column per entry, and the drop hint (the state the
+// stylesheet now has to out-order those plates for) has to land on the column itself.
+const kanban = SURFACES.find((surface) => surface.name === "Kanban")!;
+const board = (props: Record<string, unknown> = {}) =>
+  render(<Kanban columns={BOARD_COLUMNS} data={BOARD_TASKS} {...props} />).container;
+
+describe("a board names its tier once and drops on its columns", () => {
+  for (const tier of TIERS)
+    it(`theme="${tier}" puts exactly one tier class on the board`, () => {
+      expect(
+        tierClasses(
+          kanban,
+          Array.from(board({ theme: tier }).querySelector(".k-kanban")!.classList),
+        ),
+      ).toEqual([`k-kanban-${tier === "underlined" ? kanban.fallback : tier}`]);
+    });
+
+  // A tier that reached nothing but the root would be invisible, so the parts it colours are the ones a
+  // caller can see: the column, its title, its count, and the card inside it.
+  it("renders one column per entry with the parts a solid plate inverts", () => {
+    const columns = Array.from(board({ theme: "solid" }).querySelectorAll(".k-kanban-column"));
+    expect(columns).toHaveLength(BOARD_COLUMNS.length);
+    expect(columns[0].querySelector(".k-kanban-column-header strong")?.textContent).toBe("Todo");
+    expect(columns[0].querySelector(".k-kanban-column-header em")?.textContent).toBe("1");
+    expect(columns[0].querySelector(".k-kanban-item")?.textContent).toBe("Define requirements");
+    expect(columns[1].querySelector(".k-kanban-column-content")).toBeTruthy();
+  });
+
+  // `.k-kanban-column.k-kanban-column-drag-over` paints the hint, so the state class belongs on the column
+  // the tier just plated — anywhere else the rule matches nothing and the board stops answering a drag.
+  it("marks the column a card is dragged over", () => {
+    const columns = board().querySelectorAll(".k-kanban-column");
+    // jsdom hands a `DragEvent` no `dataTransfer`, and the board reads `dropEffect` off it, so the case
+    // supplies the one property the handler touches.
+    const dataTransfer = { dropEffect: "", setData: () => {} };
+    fireEvent.dragOver(columns[1], { dataTransfer });
+    expect(columns[1].classList.contains("k-kanban-column-drag-over")).toBe(true);
+    fireEvent.dragLeave(columns[1], { relatedTarget: null });
+    expect(columns[1].classList.contains("k-kanban-column-drag-over")).toBe(false);
   });
 });

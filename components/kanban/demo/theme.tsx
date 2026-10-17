@@ -10,7 +10,8 @@ const tasks = [
   { id: 2, status: "doing", title: "Build component" },
 ];
 export default function App() {
-  const [theme, setTheme] = useState<"fill" | "outline">("fill");
+  // The board offers the five tiers it paints; `underlined` is a control tier and would land back on `fill`.
+  const [theme, setTheme] = useState<"fill" | "outline" | "plain" | "solid" | "dashed">("fill");
   return (
     <Space vertical block>
       <RadioGroup
@@ -18,6 +19,9 @@ export default function App() {
         options={[
           { label: "Fill", value: "fill" },
           { label: "Outline", value: "outline" },
+          { label: "Plain", value: "plain" },
+          { label: "Solid", value: "solid" },
+          { label: "Dashed", value: "dashed" },
         ]}
         value={theme}
         onChange={(value) => setTheme(value as typeof theme)}

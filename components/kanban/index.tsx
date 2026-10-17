@@ -1,6 +1,15 @@
+import { resolvePaintedTheme, useConfigAppearance } from "../config/use-config-appearance";
+import type { ThemeType } from "../const/types";
 import clsx from "clsx";
 import { useMemo, useState } from "react";
 import Empty from "../empty";
+
+// A board has no plate of its own — the surfaces are its columns — so it answers the four surface tiers
+// plus `fill`, and never `underlined`: "keep only the bottom border" on a column that holds a whole list
+// is not an appearance preset (see `.kui-theme-value` in `styles/less-css-var.less`). A tier outside this
+// list must not reach the class list: `k-kanban-<tier>` with no LESS block is the "class ships, nothing
+// paints" bug, and a board's own look is `fill`, so the guard falls back to it.
+const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
 
 export interface KanbanColumnData {
   key: string | number;
@@ -28,7 +37,7 @@ export interface KanbanProps extends Omit<
   draggable?: boolean;
   emptyText?: string;
   minColumnWidth?: number | string;
-  theme?: "fill" | "outline";
+  theme?: ThemeType;
   onMove?: (event: KanbanMoveEvent) => void;
   onItemClick?: (item: KanbanItemData, column: KanbanColumnData) => void;
   columnTitle?: (column: KanbanColumnData, items: KanbanItemData[]) => React.ReactNode;
@@ -44,7 +53,7 @@ export default function Kanban({
   draggable = true,
   emptyText,
   minColumnWidth = 250,
-  theme = "fill",
+  theme: themeProp,
   onMove,
   onItemClick,
   columnTitle,
@@ -57,6 +66,9 @@ export default function Kanban({
 }: KanbanProps) {
   const [draggingKey, setDraggingKey] = useState<unknown>();
   const [dragOverKey, setDragOverKey] = useState<string | number>();
+  const inheritedAppearance = useConfigAppearance();
+  const theme =
+    resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? "fill";
   const width = typeof minColumnWidth === "number" ? `${minColumnWidth}px` : minColumnWidth;
   const grouped = useMemo(() => {
     const groups = new Map<string | number, KanbanItemData[]>();
