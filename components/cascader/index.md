@@ -38,7 +38,7 @@
 | --- | --- | --- | --- |
 | value | 选中项的路径值数组（模式，如 `['zhejiang', 'hangzhou', 'xihu']`）。 | `CascaderValue` | - |
 | open | 下拉框显示状态。 | `boolean` | - |
-| theme | 组件主题。 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | `fill` |
+| theme | 主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | bordered | 是否显示边框。 | `boolean` | `true` |
 | shape | 组件形状。 | `"round" \| "default" \| "square" \| "circle"` | - |
 | showArrow | 是否显示下拉箭头。 | `boolean` | `true` |

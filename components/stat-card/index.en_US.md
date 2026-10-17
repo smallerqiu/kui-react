@@ -31,7 +31,7 @@ Can be used in BI/Dashboard scenarios, business backend oriented, intuitive.
 | separator | Separator | `string` | - |
 | reverse | Whether to reverse number/number description arrangement | `boolean` | false |
 | bordered | Show border or not | `boolean` | false |
-| theme | Theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | fill |
+| theme | Appearance theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | fill |
 | shape | Card shape; only `square` / `round` apply — a circle would clip the content, so an inherited `circle` falls back to `round` | `"round" \| "square"` | round |
 | size | Size | `"small" \| "medium" \| "large"` | medium |
 | prefix | Default prefix for all values | `ReactNode` | - |

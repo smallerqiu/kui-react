@@ -31,7 +31,7 @@ Displays tasks in status columns and supports drag-and-drop movement.
 | draggable | Whether dragging is enabled | `boolean` | true |
 | emptyText | Empty column text; defaults to the global locale | `string` | - |
 | minColumnWidth | Minimum column width | `string \| number` | 250 |
-| theme | Surface theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | `fill` |
+| theme | Surface theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | fill |
 | onMove | Called when a card moves | `((event: KanbanMoveEvent) => void)` | - |
 | onItemClick | Called when a card is clicked | `((item: KanbanItemData, column: KanbanColumnData) => void)` | - |
 | columnTitle | Custom column title renderer | `((column: KanbanColumnData, items: KanbanItemData[]) => React.ReactNode)` | - |

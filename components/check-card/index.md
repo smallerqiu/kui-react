@@ -42,7 +42,7 @@
 | showIndicator | 是否显示选中标记 | `boolean` | true |
 | disabled | 是否禁用 | `boolean` | false |
 | readOnly | 是否只读 | `boolean` | false |
-| theme | 主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
+| theme | 外观主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
 | size | 尺寸 | `"small" \| "medium" \| "large"` | medium |
 | shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | round |
 | onChange | 状态变化回调 | `((event: CheckCardChangeEvent) => void)` | - |

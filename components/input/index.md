@@ -79,7 +79,7 @@
 | --- | --- | --- | --- |
 | value | 输入值 | `string \| number \| readonly string[]` | - |
 | size | 尺寸，可选值 `small`、`large`，默认不选 | `"small" \| "medium" \| "large"` | - |
-| theme | 主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | 文本域主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | - |
 | rows | 默认行数 | number | 2 |
 | disabled | 是否禁用 | boolean | false |

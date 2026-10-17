@@ -20,7 +20,7 @@ Presents feedback, supporting details, and follow-up actions.
 | symbol | Custom icon or content | `ReactNode \| IconType[]` | - |
 | compact | Compact layout | `boolean` | false |
 | actions | Action content | `ReactNode` | - |
-| theme | Appearance | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
+| theme | Appearance theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
 | shape | Shape | `"round" \| "default" \| "square" \| "circle"` | round |
 | children | Detail content | ReactNode | - |
 

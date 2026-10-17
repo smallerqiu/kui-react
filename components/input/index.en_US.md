@@ -54,7 +54,7 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 | prefix | Inline prefix | `React.ReactNode` | - |
 | addonBefore | Addon before the input | `React.ReactNode` | - |
 | addonAfter | Addon after the input | `React.ReactNode` | - |
-| theme | The theme of Input | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | Theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | Input shape | `"round" \| "default" \| "square" \| "circle"` | - |
 | disabled | Whether the input is disabled | boolean | false |
 | multiple | Whether native multiple input is enabled | boolean | false |
@@ -79,7 +79,7 @@ Input content via mouse or keyboard, the most basic wrapper for form fields.
 | --- | --- | --- | --- |
 | value | input value | `string \| number \| readonly string[]` | - |
 | size | Size, optional values `small`, `large`, default not selected | `"small" \| "medium" \| "large"` | - |
-| theme | Theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | Textarea theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | shape | Shape | `"round" \| "default" \| "square" \| "circle"` | - |
 | rows | Default row count | number | 2 |
 | disabled | Whether disabled | boolean | false |

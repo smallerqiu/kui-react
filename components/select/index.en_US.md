@@ -70,7 +70,7 @@ Dropdown selector.
 | extendWidth | Whether dropdown width matches input width | `boolean` | true |
 | showArrow | Whether to show dropdown button | `boolean` | true |
 | options | options data, if set, no need to manually construct Option nodes | `SelectOption[]` | [] |
-| theme | The theme of Select | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
+| theme | Theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | icon | Custom icon | `IconType[]` | - |
 | shape | When shape='circle', displays rounded corners | `"round" \| "default" \| "square" \| "circle"` | - |
 | virtual | Whether to enable virtual scrolling for large option lists | `boolean` | false |

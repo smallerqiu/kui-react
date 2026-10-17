@@ -20,7 +20,7 @@
 | symbol | 自定义图标或内容 | `ReactNode \| IconType[]` | - |
 | compact | 紧凑模式 | `boolean` | false |
 | actions | 操作区域 | `ReactNode` | - |
-| theme | 主题样式 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
+| theme | 外观主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
 | shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | round |
 | children | 详情内容 | ReactNode | - |
 

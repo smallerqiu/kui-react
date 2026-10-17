@@ -31,7 +31,7 @@
 | separator | 分隔符 | `string` | - |
 | reverse | 数值/数值描述是否反相排列 | `boolean` | false |
 | bordered | 是否显示边框 | `boolean` | false |
-| theme | 主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | fill |
+| theme | 外观主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | fill |
 | shape | 卡片形状，只支持 `square` / `round`；圆形会裁掉内容，继承到 `circle` 时按 `round` 处理 | `"round" \| "square"` | round |
 | size | 尺寸 | `"small" \| "medium" \| "large"` | medium |
 | prefix | 所有数值的默认前置内容 | `ReactNode` | - |

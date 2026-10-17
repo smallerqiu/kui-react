@@ -38,7 +38,7 @@ A cascading selection box.
 | --- | --- | --- | --- |
 | value | array of path values (e.g., `['zhejiang', 'hangzhou', 'xihu']`). | `CascaderValue` | - |
 | open | dropdown visibility. | `boolean` | - |
-| theme | Component theme. | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | `fill` |
+| theme | Theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | bordered | Whether to display the border. | `boolean` | `true` |
 | shape | Component shape. | `"round" \| "default" \| "square" \| "circle"` | - |
 | showArrow | Whether to display the dropdown arrow. | `boolean` | `true` |

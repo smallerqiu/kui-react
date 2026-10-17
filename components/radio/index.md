@@ -46,6 +46,7 @@
 | value | 组合使用时的值 | `string \| number` | - |
 | disabled | 是否禁用当前项 | `boolean` | false |
 | readOnly | 是否只读当前项 | `boolean` | false |
+| theme | 组件呈现主题 | `"fill" \| "outline"` | fill |
 | onChange | 在选项状态发生改变时回调 | `((e: ChangeEvent) => void)` | - |
 
 `RadioButton` 额外支持 `icon`、`theme`、`size` 和 `shape`，在 `RadioGroup type="button"` 中使用。
@@ -73,7 +74,7 @@
 | size | 按钮尺寸 | `"small" \| "medium" \| "large"` | - |
 | direction | 布局方向 | `"inline" \| "horizontal" \| "vertical"` | horizontal |
 | shape | `button` 的形状 | `"round" \| "default" \| "square" \| "circle"` | - |
-| theme | `button` 的主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | - |
+| theme | 单选项外观，`type="button"` 时为按钮主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | - |
 | onChange | 在选项状态发生改变时触发，返回当前选中的项 | `((value: T) => void)` | - |
 | options | 可以指定子项 `radio` | `RadioOption[]` | - |
 | type | 使用按钮样式的单选项 | `"button" \| "radio"` | radio |

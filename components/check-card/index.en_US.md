@@ -40,7 +40,7 @@ Present richer choices with a title, description, and optional symbol.
 | showIndicator | Whether to show the indicator | `boolean` | true |
 | disabled | Whether disabled | `boolean` | false |
 | readOnly | Whether read-only | `boolean` | false |
-| theme | Theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
+| theme | Appearance theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
 | size | Size | `"small" \| "medium" \| "large"` | medium |
 | shape | Shape | `"round" \| "default" \| "square" \| "circle"` | round |
 | onChange | State change callback | `((event: CheckCardChangeEvent) => void)` | - |

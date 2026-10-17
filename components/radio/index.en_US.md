@@ -46,6 +46,7 @@ A `RadioGroup` passes its own `theme` down to every option it renders; an option
 | value | Value when used in combination | `string \| number` | - |
 | disabled | Whether current item is disabled | `boolean` | false |
 | readOnly | Whether current item is read-only | `boolean` | false |
+| theme | Component theme | `"fill" \| "outline"` | fill |
 | onChange | Callback when option state changes | `((e: ChangeEvent) => void)` | - |
 
 `RadioButton` additionally supports `icon`, `theme`, `size`, and `shape`, and is used through `RadioGroup type="button"`.
@@ -73,7 +74,7 @@ In addition to Radio props, RadioButton supports:
 | size | Button size | `"small" \| "medium" \| "large"` | - |
 | direction | Layout direction | `"inline" \| "horizontal" \| "vertical"` | horizontal |
 | shape | Button shape | `"round" \| "default" \| "square" \| "circle"` | - |
-| theme | Button theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | - |
+| theme | Radio option appearance; the button's theme when `type="button"` | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | - |
 | onChange | Triggered when option state changes, returns currently selected item | `((value: T) => void)` | - |
 | options | Can specify child `radio` items | `RadioOption[]` | - |
 | type | Use radio or button-style items | `"button" \| "radio"` | radio |

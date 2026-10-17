@@ -11858,8 +11858,8 @@
             "plain"
           ],
           "boolean": false,
-          "descriptionZh": "主题",
-          "descriptionEn": "Theme"
+          "descriptionZh": "外观主题",
+          "descriptionEn": "Appearance theme"
         },
         {
           "name": "size",
@@ -12876,8 +12876,8 @@
             "plain"
           ],
           "boolean": false,
-          "descriptionZh": "主题",
-          "descriptionEn": "Theme"
+          "descriptionZh": "外观主题",
+          "descriptionEn": "Appearance theme"
         },
         {
           "name": "shape",
@@ -15258,8 +15258,8 @@
             "underlined"
           ],
           "boolean": false,
-          "descriptionZh": "theme='fill' 时呈现浅色主题",
-          "descriptionEn": "When theme='fill', presents a fill theme"
+          "descriptionZh": "主题",
+          "descriptionEn": "Theme"
         },
         {
           "name": "shape",
@@ -15978,8 +15978,8 @@
             "underlined"
           ],
           "boolean": false,
-          "descriptionZh": "theme='fill' 时呈现浅色主题",
-          "descriptionEn": "When theme='fill', presents a fill theme"
+          "descriptionZh": "主题",
+          "descriptionEn": "Theme"
         },
         {
           "name": "shape",
@@ -21496,8 +21496,8 @@
             "plain"
           ],
           "boolean": false,
-          "descriptionZh": "主题样式",
-          "descriptionEn": "Appearance"
+          "descriptionZh": "外观主题",
+          "descriptionEn": "Appearance theme"
         },
         {
           "name": "shape",
@@ -24391,7 +24391,7 @@
           ],
           "boolean": false,
           "descriptionZh": "主题",
-          "descriptionEn": "The theme of Input"
+          "descriptionEn": "Theme"
         },
         {
           "name": "shape",
@@ -24982,8 +24982,8 @@
             "underlined"
           ],
           "boolean": false,
-          "descriptionZh": "主题",
-          "descriptionEn": "Theme"
+          "descriptionZh": "文本域主题",
+          "descriptionEn": "Textarea theme"
         },
         {
           "name": "size",
@@ -25440,8 +25440,8 @@
             "underlined"
           ],
           "boolean": false,
-          "descriptionZh": "主题",
-          "descriptionEn": "Theme"
+          "descriptionZh": "文本域主题",
+          "descriptionEn": "Textarea theme"
         },
         {
           "name": "shape",
@@ -35038,8 +35038,8 @@
             "plain"
           ],
           "boolean": false,
-          "descriptionZh": "二维码主题",
-          "descriptionEn": "Theme of the QR code"
+          "descriptionZh": "外观主题",
+          "descriptionEn": "Appearance theme"
         },
         {
           "name": "status",
@@ -35604,8 +35604,8 @@
             "outline"
           ],
           "boolean": false,
-          "descriptionZh": "`button` 的主题",
-          "descriptionEn": "Button theme"
+          "descriptionZh": "组件呈现主题",
+          "descriptionEn": "Component theme"
         },
         {
           "name": "size",
@@ -36676,8 +36676,8 @@
             "plain"
           ],
           "boolean": false,
-          "descriptionZh": "`button` 的主题",
-          "descriptionEn": "Button theme"
+          "descriptionZh": "单选项外观，`type=\"button\"` 时为按钮主题",
+          "descriptionEn": "Radio option appearance; the button's theme when `type=\"button\"`"
         },
         {
           "name": "shape",
@@ -39430,7 +39430,7 @@
           ],
           "boolean": false,
           "descriptionZh": "主题",
-          "descriptionEn": "The theme of Select"
+          "descriptionEn": "Theme"
         },
         {
           "name": "emptyText",
@@ -42624,8 +42624,8 @@
             "plain"
           ],
           "boolean": false,
-          "descriptionZh": "主题",
-          "descriptionEn": "Theme"
+          "descriptionZh": "外观主题",
+          "descriptionEn": "Appearance theme"
         },
         {
           "name": "shape",
@@ -51601,7 +51601,7 @@
           ],
           "boolean": false,
           "descriptionZh": "主题",
-          "descriptionEn": "The theme of TreeSelect"
+          "descriptionEn": "Theme"
         },
         {
           "name": "emptyText",
@@ -52372,8 +52372,8 @@
             "underlined"
           ],
           "boolean": false,
-          "descriptionZh": "组件主题。",
-          "descriptionEn": "Component theme."
+          "descriptionZh": "主题",
+          "descriptionEn": "Theme"
         },
         {
           "name": "bordered",

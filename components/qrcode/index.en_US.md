@@ -45,7 +45,7 @@ A component that converts text into QR codes, supporting custom colors and logo 
 | margin | Quiet zone (white border) width around the QR code matrix, measured in module counts. | `number` | `0` |
 | errorLevel | Error correction level. Options: `'L'` (7%), `'M'` (15%), `'Q'` (25%), `'H'` (30%).<br>_Note: When embedding a logo, it is recommended to use `'M'` or `'H'` to ensure reliable scanning even if the center is obscured._ | `"L" \| "M" \| "Q" \| "H"` | `'M'` |
 | shape | Shape of the QR code | `"round" \| "default" \| "square" \| "circle"` | `round` |
-| theme | Theme of the QR code | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | `outline` |
+| theme | Appearance theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
 | loadingContent | Custom overlay content for the `loading` status. | `ReactNode` | - |
 | expiredContent | Custom overlay content for the `expired` status. | `ReactNode` | - |
 | scannedContent | Custom overlay content for the `scanned` status. | `ReactNode` | - |
