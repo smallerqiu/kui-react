@@ -27606,13 +27606,13 @@ export default function App() {
   return (
     <Space vertical block>
       {marks.map((tier) => (
-        <Space key={tier} vertical>
+        <Space key={`dot-${tier}`} vertical>
           <code>theme: {tier}</code>
           <RadioGroup options={fruits} value={dot} onChange={setDot} theme={tier} />
         </Space>
       ))}
       {buttons.map((tier) => (
-        <Space key={String(tier)} vertical>
+        <Space key={`button-${tier}`} vertical>
           <code>{tier ? `theme: ${tier}` : "no theme"}</code>
           <RadioGroup
             type="button"
@@ -28011,13 +28011,13 @@ export default function App() {
   return (
     <Space vertical block>
       {marks.map((tier) => (
-        <Space key={tier} vertical>
+        <Space key={`dot-${tier}`} vertical>
           <code>theme: {tier}</code>
           <RadioGroup options={fruits} value={dot} onChange={setDot} theme={tier} />
         </Space>
       ))}
       {buttons.map((tier) => (
-        <Space key={String(tier)} vertical>
+        <Space key={`button-${tier}`} vertical>
           <code>{tier ? `theme: ${tier}` : "no theme"}</code>
           <RadioGroup
             type="button"
@@ -28423,13 +28423,13 @@ export default function App() {
   return (
     <Space vertical block>
       {marks.map((tier) => (
-        <Space key={tier} vertical>
+        <Space key={`dot-${tier}`} vertical>
           <code>theme: {tier}</code>
           <RadioGroup options={fruits} value={dot} onChange={setDot} theme={tier} />
         </Space>
       ))}
       {buttons.map((tier) => (
-        <Space key={String(tier)} vertical>
+        <Space key={`button-${tier}`} vertical>
           <code>{tier ? `theme: ${tier}` : "no theme"}</code>
           <RadioGroup
             type="button"
