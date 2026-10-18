@@ -27,6 +27,7 @@ import {
   FeedbackPanel,
   Form,
   Input,
+  InputGroup,
   InputNumber,
   InputOTP,
   InputTag,
@@ -257,5 +258,94 @@ describe("a Form keeps its tier off everything else", () => {
     expect(classesOf(container, ".field")).toContain("k-input-circle");
     expect(classesOf(container, ".panel")).toContain("k-card-square");
     expect(classesOf(container, ".action")).toContain("k-btn-square");
+  });
+});
+
+// `InputGroup` is the control-family wrapper those two tables do not cover. It owns one visual state —
+// `k-input-group-fill`, which merges its addon boxes into the field — and its absence, which borders them,
+// so every tier except `fill` paints the bordered state. The contract worth pinning is that the group
+// always agrees with the field it wraps, because that is the only thing its border means.
+// vue mirrors these cases with the tier arriving through `Input` rather than through the form: its
+// `FormItem` hands its field to a marked field component in its own slot, and a wrapper is not one. Same
+// visible result, one channel per tree — the cases here are what that side has to keep answering.
+describe("InputGroup follows the tier its field is on", () => {
+  const groupTiers = (container: HTMLElement) =>
+    tiersOf(classesOf(container, ".k-input-group"), "k-input-group");
+
+  const underProvider = (tier: ThemeType | undefined, groupProps: Record<string, unknown> = {}) =>
+    render(
+      <ConfigProvider {...(tier === undefined ? {} : { theme: tier })}>
+        <InputGroup {...groupProps}>
+          <Input />
+        </InputGroup>
+      </ConfigProvider>,
+    ).container;
+
+  const fieldWithAddon = (providerProps: Record<string, unknown>, formProps?: Record<string, unknown>) =>
+    render(
+      <ConfigProvider {...providerProps}>
+        {formProps ? (
+          <Form model={{ name: "" }} {...formProps}>
+            <Input addonBefore="https://" />
+          </Form>
+        ) : (
+          <Input addonBefore="https://" />
+        )}
+      </ConfigProvider>,
+    ).container;
+
+  it("stays on its own fill when nothing asks for a tier", () => {
+    expect(groupTiers(underProvider(undefined))).toEqual(["k-input-group-fill"]);
+  });
+
+  for (const tier of TIERS.filter((name) => name !== "fill")) {
+    it(`ConfigProvider theme="${tier}" borders the addon boxes`, () => {
+      expect(groupTiers(underProvider(tier))).toEqual([]);
+    });
+
+    it(`ConfigProvider theme="${tier}" borders them on the group an Input builds`, () => {
+      const container = fieldWithAddon({ theme: tier });
+      expect(classesOf(container, ".k-input")).toContain(`k-input-${tier}`);
+      expect(groupTiers(container)).toEqual([]);
+    });
+  }
+
+  it("an explicit theme outranks the tier it is standing in", () => {
+    expect(groupTiers(underProvider("outline", { theme: "fill" }))).toEqual(["k-input-group-fill"]);
+    expect(groupTiers(underProvider("fill", { theme: "outline" }))).toEqual([]);
+  });
+
+  it("a form tier reaches it through the field it wraps", () => {
+    const container = fieldWithAddon({}, { theme: "outline" });
+    expect(classesOf(container, ".k-input")).toContain("k-input-outline");
+    expect(groupTiers(container)).toEqual([]);
+  });
+
+  it("takes its size the same way, and hands it to the controls inside", () => {
+    const container = fieldWithAddon({ size: "small" }, { size: "large" });
+    expect(classesOf(container, ".k-input")).toContain("k-input-lg");
+    expect(classesOf(container, ".k-input-group")).toContain("k-input-group-lg");
+
+    // A provider sizes a bare group exactly as it sizes the control that would sit in it.
+    const inherited = render(
+      <ConfigProvider size="small">
+        <InputGroup>
+          <Button className="action">按钮</Button>
+        </InputGroup>
+      </ConfigProvider>,
+    ).container;
+    expect(classesOf(inherited, ".k-input-group")).toContain("k-input-group-sm");
+    expect(classesOf(inherited, ".action")).toContain("k-btn-sm");
+
+    // A size written on the group outranks the provider, and it is that resolved size the children inherit.
+    const explicit = render(
+      <ConfigProvider size="large">
+        <InputGroup size="small">
+          <Button className="action">按钮</Button>
+        </InputGroup>
+      </ConfigProvider>,
+    ).container;
+    expect(classesOf(explicit, ".k-input-group")).toContain("k-input-group-sm");
+    expect(classesOf(explicit, ".action")).toContain("k-btn-sm");
   });
 });
