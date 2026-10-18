@@ -117,6 +117,8 @@ rm -rf node_modules/.vite
 - `Form` 的 `size` / `shape` / `theme` 只管表单里的控件：写在 `Form` 上的外观不再传给同一个表单里的 `Card`、`Collapse`、`FeedbackPanel`、`Alert`、`Table`、`Page`、`Tag`、`Button` 这些不是控件的区块，它们继续从 `ConfigProvider` 继承。此前 `<Form size="small">` 会顺手把表单里的卡片、面板、分页条一起缩小，`<Form theme="solid">` 会把它们一起铺成主色。要让整块页面跟着变外观，请把外观写在 `ConfigProvider` 上或直接写在组件上。
 - **不兼容变更**：`theme` 的类型改成只列组件画得出的档位。表面型组件——`Card` / `FeatureCard` / `StatCard` / `Collapse` / `FeedbackPanel` / `CheckCard` / `Alert` / `Image` / `QRCode` / `Page` / `Kanban` / `Transfer` / `ListPanel` / `Tag` / `Button` / `DropdownButton`，以及 `RadioGroup` / `RadioButton`——只收 `fill` / `outline` / `plain` / `solid` / `dashed` 五档（`SurfaceThemeType`）；`Checkbox` / `Radio` / `CheckboxGroup` 只收 `fill` / `outline` 两档（`MarkThemeType`）；`ConfigProvider` 与 `Form` 仍然六档全收。在这类组件上写过它画不到的档位（比如给卡片写 `theme="underlined"`）现在 TypeScript 会报错，运行时没有变化，组件仍旧按自己的外观呈现。
 - `TreeSelect` 展开面板时不再多出一圈光晕：`fill` / `plain` / `solid` / `underlined`、无边框与禁用这几种外观下，展开只剩那一圈焦点环，和 `Select`、`Cascader` 一致；`outline` 与 `dashed` 仍带原来的浅光。
+- `Input` / `Textarea` 用 `theme="solid"` 时聚焦不再多出一圈浅色光晕：主色实底上那层淡光本来就看不出来，现在和 `InputNumber` / `InputOTP` / `InputTag` / `ColorPicker` 一致，只留那一圈焦点环。
+- 禁用的输入框聚焦时不再发光；`ColorPicker` 禁用时，哪怕面板是用 `open` 手动展开的也不再发光。`outline` / `dashed` 这些留着描边的外观，聚焦与展开时的那层浅光照旧。
 
 ### 3.1.2
 
