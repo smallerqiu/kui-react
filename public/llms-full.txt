@@ -6031,6 +6031,46 @@ export default function App() {
   );
 }
 ```
+## 外观档位
+
+```tsx
+import { useState } from "react";
+import { Checkbox, CheckboxGroup, Space, type CheckboxOption, type MarkThemeType } from "react-kui";
+
+// A check box paints two tiers, and both land on the square rather than on the label: `fill` — what it does
+// when nobody writes a theme — gives the box a pale plate, `outline` puts a border on it instead. Whatever the
+// tier, a checked box is still primary and a disabled one still reads as disabled, and a group hands its own
+// tier to every item that did not write one.
+const tiers: MarkThemeType[] = ["fill", "outline"];
+const options: CheckboxOption[] = ["Apple", "Orange", "Banana"].map((label) => ({
+  label,
+  value: label.toLowerCase(),
+}));
+
+export default function App() {
+  const [grouped, setGrouped] = useState<(string | number)[]>(["apple", "banana"]);
+  const [single, setSingle] = useState(true);
+  return (
+    <Space vertical block>
+      {tiers.map((tier) => (
+        <Space key={tier} vertical>
+          <code>theme: {tier}</code>
+          <CheckboxGroup options={options} value={grouped} onChange={setGrouped} theme={tier} />
+          <Space>
+            <Checkbox
+              label="Checked"
+              checked={single}
+              onChange={({ checked }) => setSingle(checked)}
+              theme={tier}
+            />
+            <Checkbox label="Disabled" disabled theme={tier} />
+          </Space>
+        </Space>
+      ))}
+    </Space>
+  );
+}
+```
 
 # CheckboxGroup
 
@@ -6327,6 +6367,46 @@ export default function App() {
         Check all
       </Checkbox>
       <CheckboxGroup options={options} value={cities} onChange={setCities} />
+    </Space>
+  );
+}
+```
+## 外观档位
+
+```tsx
+import { useState } from "react";
+import { Checkbox, CheckboxGroup, Space, type CheckboxOption, type MarkThemeType } from "react-kui";
+
+// A check box paints two tiers, and both land on the square rather than on the label: `fill` — what it does
+// when nobody writes a theme — gives the box a pale plate, `outline` puts a border on it instead. Whatever the
+// tier, a checked box is still primary and a disabled one still reads as disabled, and a group hands its own
+// tier to every item that did not write one.
+const tiers: MarkThemeType[] = ["fill", "outline"];
+const options: CheckboxOption[] = ["Apple", "Orange", "Banana"].map((label) => ({
+  label,
+  value: label.toLowerCase(),
+}));
+
+export default function App() {
+  const [grouped, setGrouped] = useState<(string | number)[]>(["apple", "banana"]);
+  const [single, setSingle] = useState(true);
+  return (
+    <Space vertical block>
+      {tiers.map((tier) => (
+        <Space key={tier} vertical>
+          <code>theme: {tier}</code>
+          <CheckboxGroup options={options} value={grouped} onChange={setGrouped} theme={tier} />
+          <Space>
+            <Checkbox
+              label="Checked"
+              checked={single}
+              onChange={({ checked }) => setSingle(checked)}
+              theme={tier}
+            />
+            <Checkbox label="Disabled" disabled theme={tier} />
+          </Space>
+        </Space>
+      ))}
     </Space>
   );
 }
@@ -16196,7 +16276,24 @@ export default function App() {
 ```tsx
 import { Search } from "kui-icons";
 import { useState } from "react";
-import { Checkbox, type ShapeType, message, Space, Input, TextArea } from "react-kui";
+import {
+  Checkbox,
+  type ShapeType,
+  type ThemeType,
+  message,
+  Space,
+  Input,
+  TextArea,
+} from "react-kui";
+
+// An input paints all six tiers, and the tier lands on the box itself: `fill` — what it does when nobody
+// writes a theme — plates it, `outline` and `dashed` put a solid or dashed edge on it instead, `plain` leaves
+// it bare, `solid` plates it on the primary and inverts the typed text, the placeholder and the icons, and
+// `underlined` keeps only the bottom rule. A text area and an input with an addon are drawn from the same
+// arms, so they take the same tiers. The addon is the group's own surface: a group that is not `fill` borders
+// the addon it wraps, which is why the second row of each pair reads differently from the first.
+const tiers: ThemeType[] = ["fill", "outline", "plain", "solid", "dashed", "underlined"];
+
 export default function App() {
   const [circle, setCircle] = useState(false);
   const shape: ShapeType | undefined = circle ? "circle" : undefined;
@@ -16210,9 +16307,15 @@ export default function App() {
       <Input placeholder="Please input" shape={shape} />
       <Input placeholder="Disabled" disabled shape={shape} />
       <Input placeholder="Please input" icon={Search} shape={shape} />
-      <Input placeholder="theme='outline'" theme="outline" shape={shape} />
       <Input placeholder="Please input" clearable={false} shape={shape} onSearch={search} />
-      <TextArea placeholder="Please input" rows={3} />
+      <br />
+      {tiers.map((tier) => (
+        <div key={tier} style={{ display: "grid", gap: 4 }}>
+          <code>theme: {tier}</code>
+          <TextArea theme={tier} rows={2} placeholder="Please input" />
+          <Input theme={tier} addonBefore="https://" placeholder="Please input" />
+        </div>
+      ))}
     </Space>
   );
 }
@@ -16635,7 +16738,24 @@ export default function App() {
 ```tsx
 import { Search } from "kui-icons";
 import { useState } from "react";
-import { Checkbox, type ShapeType, message, Space, Input, TextArea } from "react-kui";
+import {
+  Checkbox,
+  type ShapeType,
+  type ThemeType,
+  message,
+  Space,
+  Input,
+  TextArea,
+} from "react-kui";
+
+// An input paints all six tiers, and the tier lands on the box itself: `fill` — what it does when nobody
+// writes a theme — plates it, `outline` and `dashed` put a solid or dashed edge on it instead, `plain` leaves
+// it bare, `solid` plates it on the primary and inverts the typed text, the placeholder and the icons, and
+// `underlined` keeps only the bottom rule. A text area and an input with an addon are drawn from the same
+// arms, so they take the same tiers. The addon is the group's own surface: a group that is not `fill` borders
+// the addon it wraps, which is why the second row of each pair reads differently from the first.
+const tiers: ThemeType[] = ["fill", "outline", "plain", "solid", "dashed", "underlined"];
+
 export default function App() {
   const [circle, setCircle] = useState(false);
   const shape: ShapeType | undefined = circle ? "circle" : undefined;
@@ -16649,9 +16769,15 @@ export default function App() {
       <Input placeholder="Please input" shape={shape} />
       <Input placeholder="Disabled" disabled shape={shape} />
       <Input placeholder="Please input" icon={Search} shape={shape} />
-      <Input placeholder="theme='outline'" theme="outline" shape={shape} />
       <Input placeholder="Please input" clearable={false} shape={shape} onSearch={search} />
-      <TextArea placeholder="Please input" rows={3} />
+      <br />
+      {tiers.map((tier) => (
+        <div key={tier} style={{ display: "grid", gap: 4 }}>
+          <code>theme: {tier}</code>
+          <TextArea theme={tier} rows={2} placeholder="Please input" />
+          <Input theme={tier} addonBefore="https://" placeholder="Please input" />
+        </div>
+      ))}
     </Space>
   );
 }
@@ -17082,7 +17208,24 @@ export default function App() {
 ```tsx
 import { Search } from "kui-icons";
 import { useState } from "react";
-import { Checkbox, type ShapeType, message, Space, Input, TextArea } from "react-kui";
+import {
+  Checkbox,
+  type ShapeType,
+  type ThemeType,
+  message,
+  Space,
+  Input,
+  TextArea,
+} from "react-kui";
+
+// An input paints all six tiers, and the tier lands on the box itself: `fill` — what it does when nobody
+// writes a theme — plates it, `outline` and `dashed` put a solid or dashed edge on it instead, `plain` leaves
+// it bare, `solid` plates it on the primary and inverts the typed text, the placeholder and the icons, and
+// `underlined` keeps only the bottom rule. A text area and an input with an addon are drawn from the same
+// arms, so they take the same tiers. The addon is the group's own surface: a group that is not `fill` borders
+// the addon it wraps, which is why the second row of each pair reads differently from the first.
+const tiers: ThemeType[] = ["fill", "outline", "plain", "solid", "dashed", "underlined"];
+
 export default function App() {
   const [circle, setCircle] = useState(false);
   const shape: ShapeType | undefined = circle ? "circle" : undefined;
@@ -17096,9 +17239,15 @@ export default function App() {
       <Input placeholder="Please input" shape={shape} />
       <Input placeholder="Disabled" disabled shape={shape} />
       <Input placeholder="Please input" icon={Search} shape={shape} />
-      <Input placeholder="theme='outline'" theme="outline" shape={shape} />
       <Input placeholder="Please input" clearable={false} shape={shape} onSearch={search} />
-      <TextArea placeholder="Please input" rows={3} />
+      <br />
+      {tiers.map((tier) => (
+        <div key={tier} style={{ display: "grid", gap: 4 }}>
+          <code>theme: {tier}</code>
+          <TextArea theme={tier} rows={2} placeholder="Please input" />
+          <Input theme={tier} addonBefore="https://" placeholder="Please input" />
+        </div>
+      ))}
     </Space>
   );
 }
@@ -18078,6 +18227,30 @@ export default function App() {
       <InputNumber placeholder="Large Input" size="large" icon={LogoKui} />
       <InputNumber placeholder="Base Input" icon={LogoKui} />
       <InputNumber size="small" placeholder="Small Input" icon={LogoKui} />
+    </Space>
+  );
+}
+```
+## 外观档位
+
+```tsx
+import { InputNumber, Space, type ThemeType } from "react-kui";
+
+// A number input is a text control, so it paints all six tiers: `fill` — what it does when nobody writes a
+// theme — plates the box, `outline` and `dashed` put a solid or dashed edge on it instead, `plain` leaves it
+// bare, `solid` plates it on the primary and inverts the digits, the placeholder and the steppers, and
+// `underlined` keeps only the bottom rule. The steppers are part of the box, so they follow the tier.
+const tiers: ThemeType[] = ["fill", "outline", "plain", "solid", "dashed", "underlined"];
+
+export default function App() {
+  return (
+    <Space vertical block style={{ width: 220, maxWidth: "100%" }}>
+      {tiers.map((tier) => (
+        <div key={tier} style={{ display: "grid", gap: 4, justifyItems: "start" }}>
+          <code>theme: {tier}</code>
+          <InputNumber theme={tier} value={42} />
+        </div>
+      ))}
     </Space>
   );
 }
@@ -27402,6 +27575,58 @@ export default function App() {
   );
 }
 ```
+## 外观档位
+
+```tsx
+import { useState } from "react";
+import { RadioGroup, Space, type MarkThemeType, type SurfaceThemeType } from "react-kui";
+
+// A radio dot paints the two tiers a mark has, and the tier lands on the dot rather than on the label: `fill`
+// — what it does when nobody writes a theme — gives it a pale plate, `outline` puts a border on it instead.
+// `type="button"` is a different surface entirely: the group renders buttons, so it paints the five tiers a
+// button has, and writing no theme at all keeps the buttons' own type-driven look — the checked one primary,
+// the rest outlined. Only `fill` changes how the buttons are joined; the others keep their adjacent borders.
+const marks: MarkThemeType[] = ["fill", "outline"];
+const buttons: (SurfaceThemeType | undefined)[] = [
+  undefined,
+  "fill",
+  "outline",
+  "plain",
+  "solid",
+  "dashed",
+];
+const fruits = ["Apple", "Orange", "Banana"].map((label) => ({
+  label,
+  value: label.toLowerCase(),
+}));
+
+export default function App() {
+  const [dot, setDot] = useState("apple");
+  const [button, setButton] = useState("apple");
+  return (
+    <Space vertical block>
+      {marks.map((tier) => (
+        <Space key={tier} vertical>
+          <code>theme: {tier}</code>
+          <RadioGroup options={fruits} value={dot} onChange={setDot} theme={tier} />
+        </Space>
+      ))}
+      {buttons.map((tier) => (
+        <Space key={String(tier)} vertical>
+          <code>{tier ? `theme: ${tier}` : "no theme"}</code>
+          <RadioGroup
+            type="button"
+            options={fruits}
+            value={button}
+            onChange={setButton}
+            theme={tier}
+          />
+        </Space>
+      ))}
+    </Space>
+  );
+}
+```
 
 # RadioButton
 
@@ -27751,6 +27976,58 @@ export default function App() {
         direction={direction}
         type={type}
       />
+    </Space>
+  );
+}
+```
+## 外观档位
+
+```tsx
+import { useState } from "react";
+import { RadioGroup, Space, type MarkThemeType, type SurfaceThemeType } from "react-kui";
+
+// A radio dot paints the two tiers a mark has, and the tier lands on the dot rather than on the label: `fill`
+// — what it does when nobody writes a theme — gives it a pale plate, `outline` puts a border on it instead.
+// `type="button"` is a different surface entirely: the group renders buttons, so it paints the five tiers a
+// button has, and writing no theme at all keeps the buttons' own type-driven look — the checked one primary,
+// the rest outlined. Only `fill` changes how the buttons are joined; the others keep their adjacent borders.
+const marks: MarkThemeType[] = ["fill", "outline"];
+const buttons: (SurfaceThemeType | undefined)[] = [
+  undefined,
+  "fill",
+  "outline",
+  "plain",
+  "solid",
+  "dashed",
+];
+const fruits = ["Apple", "Orange", "Banana"].map((label) => ({
+  label,
+  value: label.toLowerCase(),
+}));
+
+export default function App() {
+  const [dot, setDot] = useState("apple");
+  const [button, setButton] = useState("apple");
+  return (
+    <Space vertical block>
+      {marks.map((tier) => (
+        <Space key={tier} vertical>
+          <code>theme: {tier}</code>
+          <RadioGroup options={fruits} value={dot} onChange={setDot} theme={tier} />
+        </Space>
+      ))}
+      {buttons.map((tier) => (
+        <Space key={String(tier)} vertical>
+          <code>{tier ? `theme: ${tier}` : "no theme"}</code>
+          <RadioGroup
+            type="button"
+            options={fruits}
+            value={button}
+            onChange={setButton}
+            theme={tier}
+          />
+        </Space>
+      ))}
     </Space>
   );
 }
@@ -28111,6 +28388,58 @@ export default function App() {
         direction={direction}
         type={type}
       />
+    </Space>
+  );
+}
+```
+## 外观档位
+
+```tsx
+import { useState } from "react";
+import { RadioGroup, Space, type MarkThemeType, type SurfaceThemeType } from "react-kui";
+
+// A radio dot paints the two tiers a mark has, and the tier lands on the dot rather than on the label: `fill`
+// — what it does when nobody writes a theme — gives it a pale plate, `outline` puts a border on it instead.
+// `type="button"` is a different surface entirely: the group renders buttons, so it paints the five tiers a
+// button has, and writing no theme at all keeps the buttons' own type-driven look — the checked one primary,
+// the rest outlined. Only `fill` changes how the buttons are joined; the others keep their adjacent borders.
+const marks: MarkThemeType[] = ["fill", "outline"];
+const buttons: (SurfaceThemeType | undefined)[] = [
+  undefined,
+  "fill",
+  "outline",
+  "plain",
+  "solid",
+  "dashed",
+];
+const fruits = ["Apple", "Orange", "Banana"].map((label) => ({
+  label,
+  value: label.toLowerCase(),
+}));
+
+export default function App() {
+  const [dot, setDot] = useState("apple");
+  const [button, setButton] = useState("apple");
+  return (
+    <Space vertical block>
+      {marks.map((tier) => (
+        <Space key={tier} vertical>
+          <code>theme: {tier}</code>
+          <RadioGroup options={fruits} value={dot} onChange={setDot} theme={tier} />
+        </Space>
+      ))}
+      {buttons.map((tier) => (
+        <Space key={String(tier)} vertical>
+          <code>{tier ? `theme: ${tier}` : "no theme"}</code>
+          <RadioGroup
+            type="button"
+            options={fruits}
+            value={button}
+            onChange={setButton}
+            theme={tier}
+          />
+        </Space>
+      ))}
     </Space>
   );
 }
@@ -41147,6 +41476,64 @@ export default function App() {
       <Cascader {...common} size="large" placeholder="Large Size (38px)" />
       <Cascader {...common} placeholder="Default Size (32px)" />
       <Cascader {...common} size="small" placeholder="Small Size (24px)" />
+    </Space>
+  );
+}
+```
+## 外观档位
+
+```tsx
+import { useState } from "react";
+import {
+  Cascader,
+  Space,
+  type CascaderOption,
+  type CascaderValue,
+  type ThemeType,
+} from "react-kui";
+
+const areaOptions: CascaderOption[] = [
+  {
+    value: "hubei",
+    label: "湖北省",
+    children: [
+      { value: "wuhan", label: "武汉市", children: [{ value: "hongshan", label: "洪山区" }] },
+      { value: "huanggang", label: "黄冈市" },
+    ],
+  },
+  {
+    value: "guangdong",
+    label: "广东省",
+    children: [
+      { value: "shenzhen", label: "深圳市", children: [{ value: "nanshan", label: "南山区" }] },
+      { value: "guangzhou", label: "广州市" },
+    ],
+  },
+];
+
+// A cascader is a text control with a tree behind it, so it paints the same six tiers an input does: `fill`
+// — its own look — plates the box, `outline` and `dashed` edge it, `plain` leaves it bare, `solid` plates it
+// on the primary and inverts the chosen path and the arrow, `underlined` keeps only the bottom rule. Only the
+// trigger box takes a tier; the popup it opens keeps the library's popup surface in every one of them.
+const tiers: ThemeType[] = ["fill", "outline", "plain", "solid", "dashed", "underlined"];
+
+export default function App() {
+  const [selected, setSelected] = useState<CascaderValue>(["guangdong", "shenzhen", "nanshan"]);
+  return (
+    <Space vertical block style={{ width: 260, maxWidth: "100%" }}>
+      {tiers.map((tier) => (
+        <div key={tier} style={{ display: "grid", gap: 4, justifyItems: "start" }}>
+          <code>theme: {tier}</code>
+          <Cascader
+            value={selected}
+            onChange={setSelected}
+            options={areaOptions}
+            theme={tier}
+            placeholder="请选择省市区"
+            style={{ width: "100%" }}
+          />
+        </div>
+      ))}
     </Space>
   );
 }
