@@ -18,6 +18,10 @@ Displays a product capability or feature highlight.
 
 - Combine `direction="vertical"` and `clickable` for a keyboard-accessible feature entry.
 
+[Appearance](./demo/appearance.tsx?show=vertical)
+
+- Shares the `theme` appearance system with the other surface components; `solid` plates the icon and the title on the primary colour.
+
 ## API
 
 | Property | Description | Type | Default |

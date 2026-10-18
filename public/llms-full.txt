@@ -1227,6 +1227,30 @@ export default function App() {
   );
 }
 ```
+## 外观
+
+```tsx
+import { Alert, Space, type SurfaceThemeType } from "react-kui";
+
+// The alert's colour comes from `type` and the tier only decides how much of it is shown, so the five rows
+// below keep one `type` and change nothing else: `fill` — the alert's own look — is that colour as a pale
+// plate, `solid` spreads the same colour over the whole bar and inverts its text, icon and close button,
+// `outline` and `plain` drop the plate and keep the border, `dashed` swaps that border for a dashed one.
+// An `error` alert stays red under `solid`; the primary is not involved.
+const tiers: SurfaceThemeType[] = ["fill", "outline", "plain", "solid", "dashed"];
+
+export default function App() {
+  return (
+    <Space vertical block>
+      {tiers.map((tier) => (
+        <Alert key={tier} type="info" theme={tier}>
+          theme: {tier}
+        </Alert>
+      ))}
+    </Space>
+  );
+}
+```
 
 # Calendar
 
@@ -2067,6 +2091,77 @@ export default function App() {
         columns={columns}
       />
     </ListPanel>
+  );
+}
+```
+## 外观
+
+```tsx
+import { Search } from "kui-icons";
+import { useState } from "react";
+import {
+  Button,
+  Input,
+  ListPanel,
+  RadioGroup,
+  Space,
+  Table,
+  type SurfaceThemeType,
+} from "react-kui";
+
+const columns = [
+  { title: "Name", key: "name" },
+  { title: "Role", key: "role" },
+];
+const data = [
+  { key: 1, name: "Alex", role: "Admin" },
+  { key: 2, name: "Mia", role: "Editor" },
+  { key: 3, name: "Leo", role: "Viewer" },
+];
+
+// The panel does not plate itself: the tier it is given is painted on the card it renders under the header,
+// so the five options change the plate and frame of the whole panel rather than one part of it. `solid` is
+// the tier that moves content — the result summary turns to light-on-primary text and the bulk-action strip
+// swaps its grey plate for a pale one on the primary. Select a row to make that strip appear.
+const tiers: SurfaceThemeType[] = ["outline", "fill", "plain", "solid", "dashed"];
+
+export default function App() {
+  const [tier, setTier] = useState<SurfaceThemeType>("outline");
+  const [selected, setSelected] = useState<(string | number)[]>([1]);
+  return (
+    <Space vertical block>
+      <RadioGroup
+        type="button"
+        options={tiers.map((value) => ({ label: value, value }))}
+        value={tier}
+        onChange={(value) => setTier(value as SurfaceThemeType)}
+      />
+      <ListPanel
+        theme={tier}
+        summary={`${data.length} users`}
+        selectedCount={selected.length}
+        selection={(count) => (
+          <>
+            <strong>{count} selected</strong>
+            <Button size="small" theme="plain">
+              Disable
+            </Button>
+            <Button size="small" theme="plain" onClick={() => setSelected([])}>
+              Clear
+            </Button>
+          </>
+        )}
+        filters={<Input icon={Search} placeholder="Search users" style={{ width: 200 }} />}
+      >
+        <Table
+          checkable
+          selectedKeys={selected}
+          onSelectedKeysChange={setSelected}
+          data={data}
+          columns={columns}
+        />
+      </ListPanel>
+    </Space>
   );
 }
 ```
@@ -5094,7 +5189,7 @@ import type { ShapeType, SurfaceThemeType } from "react-kui";
 import { Card, Space } from "react-kui";
 
 const shapes: ShapeType[] = ["round", "square", "circle"];
-const themes: SurfaceThemeType[] = ["fill", "outline", "plain"];
+const themes: SurfaceThemeType[] = ["fill", "outline", "plain", "solid", "dashed"];
 
 export default function Demo() {
   return (
@@ -5274,7 +5369,7 @@ import type { ShapeType, SurfaceThemeType } from "react-kui";
 import { Card, Space } from "react-kui";
 
 const shapes: ShapeType[] = ["round", "square", "circle"];
-const themes: SurfaceThemeType[] = ["fill", "outline", "plain"];
+const themes: SurfaceThemeType[] = ["fill", "outline", "plain", "solid", "dashed"];
 
 export default function Demo() {
   return (
@@ -6483,40 +6578,45 @@ export default function App() {
 
 ```tsx
 import { useState } from "react";
-import { CheckCardGroup } from "react-kui";
+import { CheckCardGroup, type CheckCardValue, type SurfaceThemeType } from "react-kui";
 
+// A check card paints all five surface tiers, and its own default is `outline` rather than the `fill` the
+// other cards start on — so the row is listed from `outline` and the tiers are shown side by side instead of
+// behind a switch. The last row is the disabled state: the tier still decides the shape of the box, but the
+// plate and the check mark both step back.
+const tiers: SurfaceThemeType[] = ["outline", "fill", "plain", "solid", "dashed"];
 const items = [
   { value: "basic", title: "Basic", description: "Essential features" },
   { value: "pro", title: "Pro", description: "Advanced capabilities" },
 ];
 
 export default function App() {
-  const [outline, setOutline] = useState("basic");
-  const [fill, setFill] = useState("pro");
-  const [disabled, setDisabled] = useState("basic");
+  const [selected, setSelected] = useState<Record<string, CheckCardValue>>(
+    Object.fromEntries(tiers.map((tier) => [tier, "basic"])),
+  );
+  const [disabled, setDisabled] = useState<CheckCardValue>("basic");
+
   return (
     <div style={{ display: "grid", gap: 24 }}>
+      {tiers.map((tier) => (
+        <CheckCardGroup
+          key={tier}
+          value={selected[tier]}
+          onChange={(next) => setSelected((prev) => ({ ...prev, [tier]: next }))}
+          theme={tier}
+          shape="square"
+          size="small"
+          options={items}
+        />
+      ))}
       <CheckCardGroup
-        value={outline}
-        onChange={(next) => setOutline(String(next))}
-        theme="outline"
+        value={disabled}
+        onChange={(next) => setDisabled(next)}
+        theme="solid"
         shape="square"
         size="small"
         options={items}
-      />
-      <CheckCardGroup
-        value={fill}
-        onChange={(next) => setFill(String(next))}
-        theme="fill"
-        shape="circle"
-        size="large"
-        options={items}
-      />
-      <CheckCardGroup
-        value={disabled}
-        onChange={(next) => setDisabled(String(next))}
         disabled
-        options={items}
       />
     </div>
   );
@@ -6731,40 +6831,45 @@ export default function App() {
 
 ```tsx
 import { useState } from "react";
-import { CheckCardGroup } from "react-kui";
+import { CheckCardGroup, type CheckCardValue, type SurfaceThemeType } from "react-kui";
 
+// A check card paints all five surface tiers, and its own default is `outline` rather than the `fill` the
+// other cards start on — so the row is listed from `outline` and the tiers are shown side by side instead of
+// behind a switch. The last row is the disabled state: the tier still decides the shape of the box, but the
+// plate and the check mark both step back.
+const tiers: SurfaceThemeType[] = ["outline", "fill", "plain", "solid", "dashed"];
 const items = [
   { value: "basic", title: "Basic", description: "Essential features" },
   { value: "pro", title: "Pro", description: "Advanced capabilities" },
 ];
 
 export default function App() {
-  const [outline, setOutline] = useState("basic");
-  const [fill, setFill] = useState("pro");
-  const [disabled, setDisabled] = useState("basic");
+  const [selected, setSelected] = useState<Record<string, CheckCardValue>>(
+    Object.fromEntries(tiers.map((tier) => [tier, "basic"])),
+  );
+  const [disabled, setDisabled] = useState<CheckCardValue>("basic");
+
   return (
     <div style={{ display: "grid", gap: 24 }}>
+      {tiers.map((tier) => (
+        <CheckCardGroup
+          key={tier}
+          value={selected[tier]}
+          onChange={(next) => setSelected((prev) => ({ ...prev, [tier]: next }))}
+          theme={tier}
+          shape="square"
+          size="small"
+          options={items}
+        />
+      ))}
       <CheckCardGroup
-        value={outline}
-        onChange={(next) => setOutline(String(next))}
-        theme="outline"
+        value={disabled}
+        onChange={(next) => setDisabled(next)}
+        theme="solid"
         shape="square"
         size="small"
         options={items}
-      />
-      <CheckCardGroup
-        value={fill}
-        onChange={(next) => setFill(String(next))}
-        theme="fill"
-        shape="circle"
-        size="large"
-        options={items}
-      />
-      <CheckCardGroup
-        value={disabled}
-        onChange={(next) => setDisabled(String(next))}
         disabled
-        options={items}
       />
     </div>
   );
@@ -6970,6 +7075,35 @@ export default function App() {
   return <CollapseDemo sample />;
 }
 ```
+## 外观
+
+```tsx
+import { Collapse, CollapsePanel, type SurfaceThemeType } from "react-kui";
+
+// A collapse paints all five tiers and starts on `outline` rather than the `fill` the cards start on. The tier
+// lands on the panel heads: `solid` plates the head on the primary and flips its title, `dashed` puts the head
+// row behind a dashed edge, and `plain` leaves the rows with no box at all. Only the first panel of each group
+// is opened, so the head — the part that changes — is what the row reads as.
+const tiers: SurfaceThemeType[] = ["outline", "fill", "plain", "solid", "dashed"];
+const text = "面板内容跟着面板自己的外观走，档位只决定它露出多少。";
+
+export default function App() {
+  return (
+    <div style={{ display: "grid", gap: 16 }}>
+      {tiers.map((tier) => (
+        <Collapse key={tier} theme={tier} openKeys={[1]}>
+          <CollapsePanel key={1} title={`theme: ${tier}`}>
+            <div>{text}</div>
+          </CollapsePanel>
+          <CollapsePanel key={2} title="第二段">
+            <div>{text}</div>
+          </CollapsePanel>
+        </Collapse>
+      ))}
+    </div>
+  );
+}
+```
 
 # CollapsePanel
 
@@ -7140,6 +7274,35 @@ export default function App() {
 import { CollapseDemo } from "./content";
 export default function App() {
   return <CollapseDemo sample />;
+}
+```
+## 外观
+
+```tsx
+import { Collapse, CollapsePanel, type SurfaceThemeType } from "react-kui";
+
+// A collapse paints all five tiers and starts on `outline` rather than the `fill` the cards start on. The tier
+// lands on the panel heads: `solid` plates the head on the primary and flips its title, `dashed` puts the head
+// row behind a dashed edge, and `plain` leaves the rows with no box at all. Only the first panel of each group
+// is opened, so the head — the part that changes — is what the row reads as.
+const tiers: SurfaceThemeType[] = ["outline", "fill", "plain", "solid", "dashed"];
+const text = "面板内容跟着面板自己的外观走，档位只决定它露出多少。";
+
+export default function App() {
+  return (
+    <div style={{ display: "grid", gap: 16 }}>
+      {tiers.map((tier) => (
+        <Collapse key={tier} theme={tier} openKeys={[1]}>
+          <CollapsePanel key={1} title={`theme: ${tier}`}>
+            <div>{text}</div>
+          </CollapsePanel>
+          <CollapsePanel key={2} title="第二段">
+            <div>{text}</div>
+          </CollapsePanel>
+        </Collapse>
+      ))}
+    </div>
+  );
 }
 ```
 
@@ -13836,6 +13999,35 @@ export default function App() {
   );
 }
 ```
+## 外观
+
+```tsx
+import { Zap } from "kui-icons";
+import { FeatureCard, Grid, type SurfaceThemeType } from "react-kui";
+
+// The feature card paints the same five tiers as the plain card and starts on `fill`; `solid` puts the icon
+// plate and the title on the primary, which is the one tier that moves the text, and `plain` drops the box
+// around the content entirely. Kept to `direction="vertical"` and one line of copy so the five read as a row
+// of the same card rather than five different layouts.
+const tiers: SurfaceThemeType[] = ["fill", "outline", "plain", "solid", "dashed"];
+
+export default function App() {
+  return (
+    <Grid cols={5} xGap={12} yGap={12}>
+      {tiers.map((tier) => (
+        <FeatureCard
+          key={tier}
+          icon={Zap}
+          title={`theme: ${tier}`}
+          direction="vertical"
+          size="small"
+          theme={tier}
+        />
+      ))}
+    </Grid>
+  );
+}
+```
 
 # FlameWrap
 
@@ -14266,6 +14458,38 @@ export default function App() {
         description="Unable to access the target service. Please try again later."
       />
     </Space>
+  );
+}
+```
+## 外观
+
+```tsx
+import { Button, FeedbackPanel, Space, type SurfaceThemeType } from "react-kui";
+
+// A feedback panel paints all five tiers and starts on `outline`. The tier only decides how much of the panel
+// shows: the four-pixel status stripe on the left and the `kind` colours stay put in every tier, while `solid`
+// plates the panel itself on the primary and moves the heading and the actions onto the light ink of the plate.
+const tiers: SurfaceThemeType[] = ["outline", "fill", "plain", "solid", "dashed"];
+
+export default function App() {
+  return (
+    <div style={{ display: "grid", gap: 16 }}>
+      {tiers.map((tier) => (
+        <FeedbackPanel
+          key={tier}
+          theme={tier}
+          kind="positive"
+          heading={`theme: ${tier}`}
+          description="状态色带和图标不受档位影响，只有面板自己铺多少。"
+          actions={
+            <Space>
+              <Button type="primary">继续</Button>
+              <Button>查看设置</Button>
+            </Space>
+          }
+        />
+      ))}
+    </div>
   );
 }
 ```
@@ -15194,6 +15418,35 @@ export default function App() {
   );
 }
 ```
+## 外观
+
+```tsx
+import { KImage, Space, type SurfaceThemeType } from "react-kui";
+
+// An image is a frame around a picture, so the tier lands on the frame: `fill` gives it a plate, `outline` and
+// `dashed` put a solid or dashed edge around it, `solid` plates the frame on the primary, and `plain` — the
+// image's own look — leaves the picture alone. Listed from `plain` because that is what an image does when
+// nobody tells it otherwise.
+const tiers: SurfaceThemeType[] = ["plain", "fill", "outline", "solid", "dashed"];
+
+export default function App() {
+  return (
+    <Space wrap size={16}>
+      {tiers.map((tier) => (
+        <div key={tier} style={{ display: "grid", gap: 8, justifyItems: "center" }}>
+          <KImage
+            width={104}
+            height={104}
+            theme={tier}
+            src="https://cdn.chuchur.com/upload/demo/test_300.jpg"
+          />
+          <code>theme: {tier}</code>
+        </div>
+      ))}
+    </Space>
+  );
+}
+```
 
 # KImage
 
@@ -15483,6 +15736,35 @@ export default function App() {
         }
         panel={<div>Some thing here.</div>}
       />
+    </Space>
+  );
+}
+```
+## 外观
+
+```tsx
+import { KImage, Space, type SurfaceThemeType } from "react-kui";
+
+// An image is a frame around a picture, so the tier lands on the frame: `fill` gives it a plate, `outline` and
+// `dashed` put a solid or dashed edge around it, `solid` plates the frame on the primary, and `plain` — the
+// image's own look — leaves the picture alone. Listed from `plain` because that is what an image does when
+// nobody tells it otherwise.
+const tiers: SurfaceThemeType[] = ["plain", "fill", "outline", "solid", "dashed"];
+
+export default function App() {
+  return (
+    <Space wrap size={16}>
+      {tiers.map((tier) => (
+        <div key={tier} style={{ display: "grid", gap: 8, justifyItems: "center" }}>
+          <KImage
+            width={104}
+            height={104}
+            theme={tier}
+            src="https://cdn.chuchur.com/upload/demo/test_300.jpg"
+          />
+          <code>theme: {tier}</code>
+        </div>
+      ))}
     </Space>
   );
 }
@@ -24539,6 +24821,31 @@ export default function App() {
   );
 }
 ```
+## 外观
+
+```tsx
+import { Page, type SurfaceThemeType } from "react-kui";
+
+// The tier lands on the page-number cells, not on the bar around them: `fill` — the pager's own look — gives
+// each cell a pale plate, `outline` and `dashed` edge them instead, `plain` leaves them bare, and `solid`
+// plates them on the primary and inverts the digits and the ellipsis. The current page flips to a white cell
+// with primary digits under `solid`, and the total line plus the previous/next arrows keep the bar's own
+// background in every tier — they are not cells.
+const tiers: SurfaceThemeType[] = ["fill", "outline", "plain", "solid", "dashed"];
+
+export default function App() {
+  return (
+    <div style={{ display: "grid", gap: 12 }}>
+      {tiers.map((tier) => (
+        <div key={tier} style={{ display: "grid", gap: 6, justifyItems: "start" }}>
+          <code>theme: {tier}</code>
+          <Page page={2} pageSize={10} total={80} theme={tier} showTotal={false} />
+        </div>
+      ))}
+    </div>
+  );
+}
+```
 
 # PageHeader
 
@@ -26740,6 +27047,29 @@ export default function App() {
           </>
         }
       />
+    </Space>
+  );
+}
+```
+## 外观
+
+```tsx
+import { QRCode, Space, type SurfaceThemeType } from "react-kui";
+
+// A code is a frame around a canvas, so its tiers read the same way an image's do, and its own look is
+// `outline` — the ring it draws when nobody writes a theme. The modules inside stay the same ink in every
+// tier; only the frame around them changes.
+const tiers: SurfaceThemeType[] = ["outline", "fill", "plain", "solid", "dashed"];
+
+export default function App() {
+  return (
+    <Space wrap size={16}>
+      {tiers.map((tier) => (
+        <div key={tier} style={{ display: "grid", gap: 8, justifyItems: "center" }}>
+          <QRCode value="https://react.k-ui.cn" size={104} theme={tier} />
+          <code>theme: {tier}</code>
+        </div>
+      ))}
     </Space>
   );
 }
@@ -31896,7 +32226,7 @@ import {
   type StatCardProps,
 } from "react-kui";
 const sizes = ["small", "medium", "large"].map((value) => ({ value, label: value }));
-const themeOptions = ["outline", "fill", "plain"].map((value) => ({ value, label: value }));
+const themeOptions = ["outline", "fill", "plain", "solid", "dashed"].map((value) => ({ value, label: value }));
 const items = [
   { value: 5872, desc: "Number of orders" },
   { value: 9873672, desc: "Total Order Amount", prefix: "￥" },
@@ -32059,6 +32389,27 @@ export default function App() {
       </Card>
       <Button onClick={() => setValue(Math.random() * 100000)}>change</Button>
     </Space>
+  );
+}
+```
+## 外观
+
+```tsx
+import { StatCard, Grid, type StatNumberItem, type SurfaceThemeType } from "react-kui";
+
+// The stat card takes the same five tiers as the other cards and starts on `fill`. `solid` is the tier worth
+// looking at here: the numbers and their captions both go to the light ink of the plate, and `plain` leaves
+// them with no box at all. One short item list, so the only thing moving down the row is the surface.
+const tiers: SurfaceThemeType[] = ["fill", "outline", "plain", "solid", "dashed"];
+const items: StatNumberItem[] = [{ value: 5872, desc: "订单数" }];
+
+export default function App() {
+  return (
+    <Grid cols={5} xGap={12} yGap={12}>
+      {tiers.map((tier) => (
+        <StatCard key={tier} title={`theme: ${tier}`} items={items} theme={tier} size="small" />
+      ))}
+    </Grid>
   );
 }
 ```
@@ -41111,6 +41462,29 @@ export default function App() {
           New Tag
         </Button>
       )}
+    </Space>
+  );
+}
+```
+## 外观
+
+```tsx
+import { Space, Tag, type SurfaceThemeType } from "react-kui";
+
+// A tag paints the same five tiers as any other surface and starts on `fill`. `solid` is the tier that moves
+// the text: the chip goes to the primary and the label and close button invert with it. A `color` written on
+// the tag outranks the tier, which the colour demo shows, so this one leaves it out and keeps one chip per
+// tier.
+const tiers: SurfaceThemeType[] = ["fill", "outline", "plain", "solid", "dashed"];
+
+export default function App() {
+  return (
+    <Space wrap size={16}>
+      {tiers.map((tier) => (
+        <Tag key={tier} theme={tier} closeable>
+          theme: {tier}
+        </Tag>
+      ))}
     </Space>
   );
 }

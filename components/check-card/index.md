@@ -25,7 +25,7 @@
 
 [外观与禁用](./demo/appearance.tsx?show=vertical)
 
-- 支持主题、尺寸、形状和禁用状态。
+- 支持 `fill` / `outline` / `plain` / `solid` / `dashed` 五档外观，以及尺寸、形状和禁用状态。
 
 ## CheckCard API
 

@@ -25,7 +25,7 @@ Present richer choices with a title, description, and optional symbol.
 
 [Appearance and disabled](./demo/appearance.tsx?show=vertical)
 
-- Themes, sizes, shapes, and disabled states.
+- Five appearance tiers - `fill` / `outline` / `plain` / `solid` / `dashed` - plus sizes, shapes, and a disabled state.
 
 ## CheckCard API
 

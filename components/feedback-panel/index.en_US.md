@@ -10,6 +10,10 @@ Presents feedback, supporting details, and follow-up actions.
 
 - Demonstrate different feedback kinds
 
+[Appearance](./demo/appearance.tsx?show=vertical)
+
+- `theme` only decides how much the panel plates itself; the 4px status stripe and the icon are content, so none of the five looks repaints them.
+
 ## API
 
 | Property | Description | Type | Default |

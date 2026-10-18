@@ -13,7 +13,7 @@ import {
   type StatCardProps,
 } from "react-kui";
 const sizes = ["small", "medium", "large"].map((value) => ({ value, label: value }));
-const themeOptions = ["outline", "fill", "plain"].map((value) => ({ value, label: value }));
+const themeOptions = ["outline", "fill", "plain", "solid", "dashed"].map((value) => ({ value, label: value }));
 const items = [
   { value: 5872, desc: "Number of orders" },
   { value: 9873672, desc: "Total Order Amount", prefix: "￥" },
