@@ -84,6 +84,8 @@ function Demo() {
 | onSubmit | 提交并完成校验后触发 | `((event: FormSubmitEvent) => void)` | - |
 | onChange | 字段变化时返回不可变更新后的 model | `((model: Record<string, unknown>) => void)` | - |
 
+`size`、`theme`、`shape` 只作用于表单内的控件（Input、Select、Checkbox、Switch 一类），不会传给 Card、Table、Button 等容器或表面组件——它们只读取最近的 `ConfigProvider`。控件的优先级仍是组件属性 > Form 属性 > 最近的 ConfigProvider > 组件默认值，且三个键各自解析；控件只呈现自身支持的档位，Form 给了它画不出的档位不会报错。
+
 ## Form Expose API
 
 | 属性     | 说明                                                   | 类型                                                                                   | 默认值 |

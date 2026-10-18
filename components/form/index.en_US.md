@@ -84,6 +84,8 @@ function Demo() {
 | onSubmit | Called after submission validation completes | `((event: FormSubmitEvent) => void)` | - |
 | onChange | Returns an immutably updated model when a field changes | `((model: Record<string, unknown>) => void)` | - |
 
+`size`, `theme`, and `shape` apply to the controls inside the form (Input, Select, Checkbox, Switch and similar). They are not passed to container or surface components such as Card, Table, and Button, which read only the nearest `ConfigProvider`. Controls keep the same precedence — component props > Form props > nearest ConfigProvider > component defaults — resolved per key, and a control only renders the tiers it supports, so an unsupported tier raises no error.
+
 ## Form Expose API
 
 | Property | Description                                                                      | Type                                                                                   | Default |
