@@ -56,6 +56,26 @@ export const isFormFieldComponent = (component: unknown) =>
   component !== null &&
   formFieldComponents.has(component);
 
+/**
+ * A layout wrapper that owns no value of its own but carries the field down to the control nested inside it —
+ * `InputGroup` around an `Input`. `FormItem` only sees the children handed to its own slot, so without this the
+ * shape `<FormItem><InputGroup><Input/></InputGroup></FormItem>` has no control: the label points at an id
+ * nothing carries and the model never reaches the input.
+ * These get the field context rather than cloned props, exactly like a control, and only when nothing sitting
+ * directly in the slot claims the field first — a real control keeps its precedence.
+ */
+const formFieldWrappers = new WeakSet<object>();
+
+export const markFormFieldWrapper = <T extends object>(component: T): T => {
+  formFieldWrappers.add(component);
+  return component;
+};
+
+export const isFormFieldWrapper = (component: unknown) =>
+  (typeof component === "object" || typeof component === "function") &&
+  component !== null &&
+  formFieldWrappers.has(component);
+
 export function createFormFieldComponent<T extends ElementType>(
   Component: T,
   adapter: FormFieldAdapter = {},

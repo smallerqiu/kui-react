@@ -1,7 +1,15 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { createRef, useState } from "react";
 import { describe, expect, it, vi } from "vitest";
-import { Checkbox, Form, FormItem, Input, type FormExpose, type FormRule } from "react-kui";
+import {
+  Checkbox,
+  Form,
+  FormItem,
+  Input,
+  InputGroup,
+  type FormExpose,
+  type FormRule,
+} from "react-kui";
 
 describe("Form", () => {
   it("keeps wrapperCol immutable and supports colon overrides", () => {
@@ -140,6 +148,45 @@ describe("Form", () => {
       </Form>,
     );
     expect(container.querySelectorAll<HTMLInputElement>("input")[0].value).toBe("Grace");
+  });
+
+  it("reaches the control that an InputGroup wraps", () => {
+    const onChange = vi.fn();
+    const { container } = render(
+      <Form model={{ name: "Ada" }} onChange={onChange} theme="outline">
+        <FormItem prop="name" label="Name">
+          <InputGroup>
+            <Input />
+          </InputGroup>
+        </FormItem>
+      </Form>,
+    );
+    const input = container.querySelector("input") as HTMLInputElement;
+    expect(input.value).toBe("Ada");
+    expect(input.id).toBe(container.querySelector("label")!.htmlFor);
+    // The group and the field it wraps resolve the same tier, so the frame is drawn once.
+    expect(
+      container.querySelector(".k-input-group")!.classList.contains("k-input-group-fill"),
+    ).toBe(false);
+    expect(input.closest(".k-input")!.classList.contains("k-input-outline")).toBe(true);
+
+    fireEvent.change(input, { target: { value: "Hopper" } });
+    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ name: "Hopper" }));
+  });
+
+  it("keeps the field on the control that sits directly in the slot", () => {
+    const { container } = render(
+      <Form model={{ name: "Ada" }}>
+        <FormItem prop="name">
+          <InputGroup>
+            <Input className="wrapped" />
+          </InputGroup>
+          <Input className="direct" />
+        </FormItem>
+      </Form>,
+    );
+    expect(container.querySelector<HTMLInputElement>(".direct input")!.value).toBe("Ada");
+    expect(container.querySelector<HTMLInputElement>(".wrapped input")!.value).toBe("");
   });
 
   it("renders content and error as siblings", async () => {

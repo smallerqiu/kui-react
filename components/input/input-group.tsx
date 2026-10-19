@@ -1,4 +1,5 @@
 import { resolveTheme, useFormAppearance } from "../config/use-config-appearance";
+import { markFormFieldWrapper } from "../form/field-context";
 import clsx from "clsx";
 import React, { useContext } from "react";
 import { SizeContext } from "../config/size-context";
@@ -99,4 +100,7 @@ const InputGroup: React.FC<InputGroupProps> = ({
   );
 };
 
-export default InputGroup;
+// Registered as a field wrapper so `FormItem` hands this node the field even when the control it belongs to is
+// nested inside: the group passes the field context on rather than isolating it, so the input keeps its value,
+// label wiring and error state, while the group and the field it wraps resolve the same tier.
+export default markFormFieldWrapper(InputGroup);

@@ -21,7 +21,10 @@ export default defineConfig([
     rules: {
       'react-refresh/only-export-components': [
         'error',
-        { allowConstantExport: true, extraHOCs: ['createFormFieldComponent'] },
+        {
+          allowConstantExport: true,
+          extraHOCs: ['createFormFieldComponent', 'markFormFieldWrapper'],
+        },
       ],
     },
   },

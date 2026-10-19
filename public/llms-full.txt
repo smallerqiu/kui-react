@@ -16648,7 +16648,6 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "defaultExpression": "false",
       "descriptionZh": "是否继承父集宽度",
       "descriptionEn": "Whether to inherit the parent width"
     },
@@ -16661,7 +16660,6 @@ export default function App() {
         true
       ],
       "boolean": true,
-      "defaultExpression": "true",
       "descriptionZh": "是否使用紧凑模式",
       "descriptionEn": "Whether to use compact mode"
     },

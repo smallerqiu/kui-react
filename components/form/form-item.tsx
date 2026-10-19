@@ -20,6 +20,7 @@ import { FormContext } from "./form-context";
 import {
   FormFieldProvider,
   isFormFieldComponent,
+  isFormFieldWrapper,
   type FormFieldContextValue,
 } from "./field-context";
 import type { ColProps, FormRule, FormValidateTrigger } from "./types";
@@ -63,6 +64,9 @@ const isEmptyValue = (value: unknown) =>
 
 const isFormControlElement = (child: ReactNode) =>
   isValidElement(child) && isFormFieldComponent(child.type);
+
+const isFieldWrapperElement = (child: ReactNode) =>
+  isValidElement(child) && isFormFieldWrapper(child.type);
 
 export default function FormItem({
   label,
@@ -296,6 +300,11 @@ export default function FormItem({
   };
   const childArray = Children.toArray(children);
   const controlIndex = childArray.findIndex(isFormControlElement);
+  // The item only sees the children handed to its own slot, so a control wrapped in an `InputGroup` is
+  // invisible to it. Fall back to a marked wrapper: the group passes the field context on rather than
+  // isolating it, so the control nested inside gets its value, label and error wiring.
+  const fieldIndex =
+    controlIndex === -1 ? childArray.findIndex(isFieldWrapperElement) : controlIndex;
   const childNodes: ReactNode[] = [];
   for (let index = 0; index < childArray.length; index++) {
     const child = childArray[index];
@@ -349,7 +358,7 @@ export default function FormItem({
       );
       continue;
     }
-    if (index !== controlIndex) {
+    if (index !== fieldIndex) {
       childNodes.push(child);
       continue;
     }
