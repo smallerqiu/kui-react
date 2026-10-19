@@ -1,11 +1,11 @@
-// 3c-乙a: `Tag` is the opposite case to `Button` (tests/theme-action-tiers) — its own default look *is*
-// a tier class, `fill`, so a tag carries exactly one tier whatever it is handed. The source used to emit
-// `k-tag-${theme}` for any value it received, so `theme="outline" / "solid" / "dashed"` shipped classes
-// that no LESS rule answered: a chip inside `<Select multiple theme="solid">` was unthemed twice over,
-// and the tier the control forwarded to its chips had nowhere to land. Now the five tiers the
-// stylesheet paints all reach the root, and anything it cannot paint — `underlined`, which only means
-// something on a box you type into (theme 口径 §五.1) — lands on `fill`. The style half is in
-// tests/theme-variants.test.ts and scripts/check-theme.ts.
+// `Tag` is the opposite case to `Button` (tests/theme-action-tiers) — its own default look *is*
+// a tier class, `fill`, so a tag carries exactly one tier whatever it is handed. That is only true
+// because the class list is filtered: emitting `k-tag-${theme}` for whatever the prop receives ships
+// `theme="outline" / "solid" / "dashed"` as classes no LESS rule answers, which leaves a chip inside
+// `<Select multiple theme="solid">` unthemed twice over and gives the tier the control forwards to its
+// chips nowhere to land. So the five tiers the stylesheet paints reach the root, and anything it
+// cannot paint — `underlined`, which only means something on a box you type into — lands on `fill`.
+// The style half is in tests/theme-variants.test.ts and scripts/check-theme.ts.
 import { render } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { describe, expect, it } from "vitest";
@@ -18,7 +18,7 @@ const TIERS = ["fill", "outline", "plain", "solid", "dashed", "underlined"] as c
 const PAINTED = ["fill", "outline", "plain", "solid", "dashed"] as const;
 const UNSUPPORTED = ["underlined"] as const;
 
-// 3d-乙 narrowed `Tag.theme` to the five tiers a chip paints, so TypeScript no longer lets a caller write
+// `Tag.theme` is typed as the five tiers a chip paints, so TypeScript stops a caller writing
 // `underlined` on one. The guard still answers it — a JavaScript caller or a `ConfigProvider` tier can —
 // and this helper is how the cases below reach it.
 const writeThroughGuard = (tier: ThemeType): SurfaceThemeType => tier as SurfaceThemeType;
@@ -183,11 +183,11 @@ describe("a multiple control hands its tier to the chips it renders", () => {
   });
 });
 
-// 3c-乙b: the other two marks. A check box and a radio have two looks, not five — a shallow filled box
+// the other two marks. A check box and a radio have two looks, not five — a shallow filled box
 // and a bordered one — and their default is `fill`, so they take the same guard as `Tag` with a shorter
-// painted list (`components/checkbox/checkbox.tsx`, `components/radio/radio.tsx`). The bug this half
-// locks is the one the source used to have: `theme="outline"` shipped no class at all, so the box fell
-// back to the base border with no way for `--kui-theme-outline-border` to reach it. The style half is
+// painted list (`components/checkbox/checkbox.tsx`, `components/radio/radio.tsx`). The case this half
+// locks is the easy one to get wrong: if `theme="outline"` shipped no class at all the box would fall
+// back to the base border, with no way for `--kui-theme-outline-border` to reach it. The style half is
 // `tests/theme-variants.test.ts` and `scripts/check-theme.ts`.
 const MARK_PAINTED = ["fill", "outline"] as const;
 const MARK_UNPAINTED = ["plain", "solid", "dashed", "underlined"] as const;
@@ -318,12 +318,12 @@ describe("a group hands its tier to the boxes it renders", () => {
   }
 });
 
-// The vue half of this precedence had the wrong shape (issue #158, "an item that wrote its own appearance
-// keeps it against the group"): a vue group hands its tier down by *writing it on the child's vnode*, and
-// that build decides "explicit" by `hasOwnProperty`, so a group could override a box the author had already
-// written. This build reads `props ?? group ?? provider` inside the item, so the item's own value has always
-// won — these cases pin the side of the pair that has to stay true, and they are what a "tidy" refactor that
-// resolves the tier in the group and writes it to every child would break.
+// An item that states its own appearance keeps it against the group on both sides, through two different
+// shapes: this build resolves the tier inside the item (`props ?? group ?? provider`), while a vue group
+// writes its tier onto the child's vnode and has to skip the keys the child already wrote — that build
+// decides "explicit" by `hasOwnProperty`, so a group value written there would outrank the author's own.
+// Resolving the appearance in the group and handing it to every child without that check is what breaks
+// these cases.
 describe("an item that wrote its own appearance keeps it against the group", () => {
   // The two builds keep their own shape here: a vue group writes the appearance onto the child's vnode,
   // while this one puts it in the context and lets the item read `props ?? group ?? provider`. Either way
@@ -414,10 +414,10 @@ describe("an item that wrote its own appearance keeps it against the group", () 
   });
 });
 // on the items it makes (`components/radio/radio-group.tsx`, `components/checkbox/checkbox-group.tsx`),
-// so the tier has to reach them through the context. That matters now that 3d-乙 narrowed the types: a
-// `RadioGroup` is typed with the five surface tiers because its `type="button"` mode renders buttons,
-// while its radio mode paints two — so the group cannot resolve the value on the items' behalf without
-// quietly rewriting `solid` into `fill`. Each item runs its own guard, and these cases are what a
+// so the tier has to reach them through the context. It matters because the group is typed wider than
+// its items: a `RadioGroup` carries the five surface tiers because its `type="button"` mode renders
+// buttons, while its radio mode paints two — so the group cannot resolve the value on the items' behalf
+// without quietly rewriting `solid` into `fill`. Each item runs its own guard, and these cases are what a
 // pre-resolution in the group would break.
 describe("a group built from options hands its tier through the context", () => {
   const OPTIONS = [
@@ -525,8 +525,7 @@ describe("an inherited tier goes through the mark guard too", () => {
 // box: the joined-button spacing only exists for the filled look, and it has to follow the value the
 // buttons are actually painted with. A button written with no `theme` is not that value — its own look
 // is the bordered one, which is what the base spacing already draws — so this condition stays a literal
-// `fill` comparison while still reading the inherited value (`vue` used to read `props.theme`, so a
-// provider that asked for `fill` painted filled buttons inside un-joined spacing).
+// `fill` comparison while still reading the inherited value.
 describe("the button-style radio group joins its buttons for the filled tier only", () => {
   const buttonGroup = (props: Record<string, unknown>) =>
     Array.from(

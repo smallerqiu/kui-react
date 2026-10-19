@@ -24,10 +24,9 @@ export interface FeedbackPanelProps extends Omit<
 }
 
 // A feedback panel paints a whole box, so it answers the four surface tiers plus `fill` and never
-// `underlined`. Its own default is `outline`, which is what the fallback means. The tier class used to
-// be spelled `k-feedback-panel-theme-<tier>` — every other component in the library puts the tier
-// straight after its prefix, and the extra word is why those two blocks were the only theme rules no
-// other file could point at.
+// `underlined`. Its own default is `outline`, which is what the fallback means. The tier class goes
+// straight after the prefix, like every other component's, so the shared tooling can point at these
+// blocks by name.
 const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
 
 const symbols: Record<FeedbackPanelKind, IconType[]> = {

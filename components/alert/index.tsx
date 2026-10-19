@@ -27,9 +27,7 @@ export interface AlertProps extends Omit<
 
 // An alert paints a whole box, so it answers the five surface tiers and never `underlined`. Its own look
 // is the tinted plate `fill`, so a tier it does not draw falls back to `fill` — the same DOM as writing
-// no `theme` at all. The stylesheet used to answer only `outline` and `plain` (and spelled them with a
-// `-theme-` infix no other surface used), which left `theme="fill"` — the documented default — shipping
-// `k-alert-theme-fill` as a class nothing painted.
+// no `theme` at all.
 const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
 
 const Alert: React.FC<AlertProps> = ({

@@ -1,35 +1,25 @@
-// 3c-丙a: the surface family — `Card`, `FeatureCard` and `StatCard` — resolves its tier through
-// `resolvePaintedTheme` and puts it straight on the root class, so unlike Button its own look *is* a
-// tier class (`fill`). That makes the contract "an unsupported tier lands on `fill`, the same DOM as a
-// card with no `theme` written", not Button's "an unsupported tier emits nothing": `k-card-fill` is the
-// component's own appearance, so falling back to it is what keeps the promise. `underlined` is the tier
-// none of them paint — "keep only the bottom border" on a box deletes three of its four sides, which is
-// not an appearance preset (theme 口径 §五.1), and `StatCard` used to type three tiers while `Card` and
-// `FeatureCard` typed all six and shipped `k-card-solid` as a class no rule answered.
-// 3c-丙b adds the two panels of the same family, `Collapse` and `FeedbackPanel`. They resolve the same
-// way but their own look is `outline`, not `fill`, and `FeedbackPanel` used to spell its tier class
-// `k-feedback-panel-theme-<tier>` while also shipping `k-feedback-panel-solid` / `-dashed` as classes no
-// rule answered.
-// 3c-丙c adds the last card of this family, `CheckCard`, which typed its tier as a private
-// `"outline" | "fill"` union while a `ConfigProvider` could still hand it any of the six.
-// 3c-丁a adds `Alert`, the one surface whose plate is not a neutral token: the tint comes from `type`,
-// so `fill` paints that tint and `solid` paints the same colour at full strength rather than the library
-// primary — an error block and a success block have to stay two different blocks. Its stylesheet used to
-// answer only `outline` and `plain`, spelled `k-alert-theme-<tier>` behind an infix no other surface has.
-// 3c-丁c adds `Page`, which types six tiers, emits its own default `fill`, and paints the tier on the
-// cells the numbers sit on rather than on the root.
-// 3c-丁d adds `Kanban`, the board whose columns are the surfaces: it typed two tiers and painted those
-// two, so a tier outside its own two could still arrive from `ConfigProvider` as a class no rule answered,
-// and the drop hint — the one state a column has — sat below the tier plates and never drew.
-// 3c-丁d also adds `Transfer`, the pair of panels: it typed two tiers, react read no provider or form
-// value at all, and vue threw one away behind a hand-written gate, so three tiers were unreachable and a
-// fourth was invisible twice over. Its own look is the outlined frame, so an unsupported tier lands there.
-// 3c-丁d adds the one surface that paints through another component: `ListPanel` typed a private three
-// tier union while handing whatever it got to the `Card` underneath, which answers all five — so a
-// `ConfigProvider theme="solid"` already plated the panel in the primary while its own summary line stayed
-// dark and its selection strip stayed a grey plate nobody asked for. The union is gone, and because the
-// panel is the caller of that card it resolves the tier itself: an unsupported one lands on the outlined
-// card the panel was built to look like, not on the card's own `fill`.
+// The surface family — `Card`, `FeatureCard`, `StatCard`, `Collapse`, `FeedbackPanel`, `CheckCard`,
+// `Alert`, `Image`, `QRCode`, `Page`, `Kanban`, `Transfer`, `ListPanel` — resolves its tier through
+// `resolvePaintedTheme` and puts the answer on the root class, so unlike `Button` its own look *is* a
+// tier class. That makes this contract "an unsupported tier lands on the appearance the component was
+// built to look like" — the same DOM as one with no `theme` written — and not Button's "an unsupported
+// tier emits nothing": `k-card-fill` is the card's own appearance, so falling back to it keeps the promise.
+// Three shapes make that worth testing rather than obvious:
+//   * No surface paints `underlined`. "Keep only the bottom border" on a box deletes three of its four
+//     sides, which is not an appearance preset, so a tier list that includes it has to resolve it away
+//     instead of shipping a class no rule answers. The same reasoning keeps every surface's tier class
+//     spelled `<prefix>-<tier>`: an infix like `-theme-` is a second spelling the shared style contract
+//     and the pixel checks would have to keep up with, and a tier that goes by it can go unpainted.
+//   * Several components type `theme` with tiers their own stylesheet does not paint, and
+//     `ConfigProvider` / `Form` can hand any of the six to any of them, so the guard has to run even
+//     where the type says the value is safe. Where it does, each component resolves to the frame or
+//     plate it is built with: `Card`, `FeatureCard`, `StatCard`, `Alert`, `Page` and `Kanban` fill,
+//     `Collapse`, `FeedbackPanel`, `CheckCard`, `QRCode`, `Transfer` and `ListPanel` outline, and an
+//     image is `plain`. An image or a code that typed all six would set a colour on an edge
+//     `base.less` gives no width, or delete a 12px ring the caller never asked to lose.
+//   * `ListPanel` paints through the `Card` it renders. Because the panel is that card's caller it
+//     resolves the tier itself, so an unsupported one lands on the outlined card the panel was built
+//     to look like, not on the card's own `fill`.
 // The style half — what each tier actually draws — is in tests/theme-variants.test.ts and the pixels in
 // scripts/check-theme.ts.
 import { fireEvent, render } from "@testing-library/react";
@@ -126,7 +116,7 @@ const SURFACES = [
       </FeedbackPanel>
     ),
   },
-  // 3c-丙c: a check card resolves the same way, and its own look is the outlined frame too.
+  // a check card resolves the same way, and its own look is the outlined frame too.
   {
     name: "CheckCard",
     prefix: "k-check-card",
@@ -135,20 +125,20 @@ const SURFACES = [
       <CheckCard title="选项" description="描述" {...props} />
     ),
   },
-  // 3c-丁a: an alert tints its own plate from `type`, and its stylesheet answered only `outline` and
-  // `plain` — spelled `k-alert-theme-<tier>`, the one infix left in the library — so the documented
-  // default `theme="fill"` shipped a class nothing painted, and `solid` / `dashed` shipped two more.
+  // an alert tints its own plate from `type` rather than from a neutral token, and its tier class is
+  // `<prefix>-<tier>` like every other surface's: spelled through an infix, a documented default
+  // `theme="fill"` would ship a class no rule answers.
   {
     name: "Alert",
     prefix: "k-alert",
     fallback: "fill",
     render: (props: Record<string, unknown>) => <Alert type="info" message="提示" {...props} />,
   },
-  // 3c-丁b: an image is a frame around a picture and a code is a frame around a canvas, so both paint
-  // the whole ring — and both used to type six tiers while their stylesheets drew three. `outline` on an
-  // image set a colour on an edge that `base.less` gives no width, so it painted nothing, and `plain` on
-  // a code deleted the 12px ring the caller never asked to lose. An image's own look is `plain`, a code's
-  // is the outlined frame.
+  // an image is a frame around a picture and a code is a frame around a canvas, so both paint
+  // the whole ring. `outline` on an image sets a colour on an edge that `base.less` gives no width, so it
+  // paints nothing, and `plain` on a code deletes the 12px ring the caller never asked to lose — which is
+  // why the type list and the painted list cannot be assumed equal here. An image's own look is `plain`, a
+  // code's is the outlined frame.
   {
     name: "Image",
     prefix: "k-image",
@@ -161,29 +151,28 @@ const SURFACES = [
     fallback: "outline",
     render: (props: Record<string, unknown>) => <QRCode value="https://example.com" {...props} />,
   },
-  // 3c-丁c: a pagination bar names its tier on the root and paints it on the cells the numbers sit on.
-  // It typed six tiers, emitted two and had a rule for a third — `k-page-plain` was reachable only from
-  // the other repository — while `solid` and `dashed` had neither class nor rule. Its own look is `fill`.
+  // a pagination bar names its tier on the root — where `shape` and `size` also live — and paints it
+  // on the cells the numbers sit on, so a tier only shows up once the cell has a rule of its own. Its
+  // own look is `fill`.
   {
     name: "Page",
     prefix: "k-page",
     fallback: "fill",
     render: (props: Record<string, unknown>) => <Page total={100} {...props} />,
   },
-  // 3c-丁d: a board has no plate of its own — its columns are the surfaces — so the tier names the root
-  // and draws on every `.k-kanban-column`. It typed two tiers and painted those two, which left
-  // `plain` / `solid` / `dashed` unreachable while `ConfigProvider` could still hand them out. Its own
-  // look is `fill`.
+  // a board has no plate of its own — its columns are the surfaces — so the tier names the root and
+  // draws on every `.k-kanban-column`, which declares the 1px edge that makes it visible. The drop
+  // hint is a column state on that same element, so it has to out-specify the tier plate. Its own look
+  // is `fill`.
   {
     name: "Kanban",
     prefix: "k-kanban",
     fallback: "fill",
     render: (props: Record<string, unknown>) => <Kanban columns={BOARD_COLUMNS} {...props} />,
   },
-  // 3c-丁d: a transfer is the two panels you move rows between. It typed `"outline" | "fill"` privately,
-  // react never read a provider or a form at all, and vue dropped any other tier behind a hand-written
-  // gate — so `plain` / `solid` / `dashed` were unreachable while the stylesheet painted the two it could
-  // reach by hand-copying their chains. Its own look is the outlined frame, so the guard falls back there.
+  // a transfer is the two panels you move rows between, and the tier plates both of them. Resolving it
+  // through the shared guard rather than reading `props.theme` by hand is what lets a provider's tier
+  // land at all. Its own look is the outlined frame, so the guard falls back there.
   {
     name: "Transfer",
     prefix: "k-transfer",
@@ -192,11 +181,10 @@ const SURFACES = [
       <Transfer dataSource={TRANSFER_DATA} targetKeys={TRANSFER_SPLIT} {...props} />
     ),
   },
-  // 3c-丁d: a list panel is a card with a toolbar over a list, so the plate it hands out is the card's and
-  // its tier class is spelled `k-card-<tier>` — the panel adds no tier class of its own to the same
-  // element. It typed `"fill" | "outline" | "plain"` privately while the card beneath it answered five,
-  // and its own look is the outlined card, so the guard it now runs falls back there rather than to the
-  // card's `fill`.
+  // a list panel is a card with a toolbar over a list, so the plate it hands out is the card's and its
+  // tier class is spelled `k-card-<tier>` — the panel adds no tier class of its own to the same
+  // element. Because the panel is that card's caller it resolves the tier itself, and its own look is
+  // the outlined card, so the guard falls back there rather than to the card's `fill`.
   {
     name: "ListPanel",
     prefix: "k-card",
@@ -210,7 +198,7 @@ const rootClasses = (surface: (typeof SURFACES)[number], props: Record<string, u
     render(surface.render(props)).container.querySelector(`.${surface.prefix}`)?.classList ?? [],
   );
 
-// 3d-乙 narrowed `theme` to the tiers a component paints, so TypeScript no longer lets a caller write
+// `theme` is typed as the tiers a component paints, so TypeScript stops a caller writing
 // `underlined` on a surface. The guard still has to answer it — a JavaScript caller, or a tier that came
 // in through `ConfigProvider`, can — and those cases are what this helper reaches.
 const writeThroughGuard = (tier: ThemeType): SurfaceThemeType => tier as SurfaceThemeType;
@@ -370,9 +358,9 @@ describe("a solid surface keeps its content and its other classes", () => {
   });
 });
 
-// 3c-丙b: `FeedbackPanel` used to spell its tier class `k-feedback-panel-theme-<tier>`. The infix is
-// gone so every surface in the library answers `<prefix>-<tier>`, which is the spelling the shared
-// style contract and the pixel checks read — a second spelling would let a tier go unpainted again.
+// Every surface in the library answers `<prefix>-<tier>` — that is the spelling the shared style
+// contract and the pixel checks read. A second spelling (`<prefix>-theme-<tier>`) lets a tier go
+// unpainted while still looking themed, so the infix is not allowed back.
 describe("a feedback panel names its tier like every other surface", () => {
   const panel = SURFACES.find((surface) => surface.name === "FeedbackPanel")!;
   for (const tier of TIERS)
@@ -408,7 +396,7 @@ describe("a tier lands beside the flags of a Collapse", () => {
   });
 });
 
-// 3c-丙c: a check card can be handed its tier three ways — written on the card, forwarded by the group
+// a check card can be handed its tier three ways — written on the card, forwarded by the group
 // that owns the choice, or inherited from the provider — and only the card paints a surface. The group
 // therefore passes what it was given straight through the card's guard instead of resolving a tier of
 // its own: `k-check-card-group` has no LESS block to fall back to.
@@ -482,7 +470,7 @@ describe("a check card takes its tier from whoever asks for it", () => {
   });
 });
 
-// 3c-丁a: `Alert` spelled its tier class `k-alert-theme-<tier>` while every other surface answered
+// `Alert` spelled its tier class `k-alert-theme-<tier>` while every other surface answered
 // `<prefix>-<tier>`, which is how `solid` and `dashed` went unpainted for as long as the shared style
 // contract and the pixel checks only read the one spelling. The infix is gone, so an alert now resolves
 // like the rest of the family: five painted tiers, and `underlined` landing on `fill` — the tinted plate
@@ -541,10 +529,10 @@ describe("a solid alert keeps its type and everything it paints", () => {
   });
 });
 
-// 3c-丁c: a pagination bar names its tier on the root — that is where `shape` and `size` live too — and
+// a pagination bar names its tier on the root — that is where `shape` and `size` live too — and
 // paints it on the cells, so the DOM contract here is one tier class and no dead one. The bar also hands
-// the tier it *resolved* to the controls inside it, guard included: `theme="underlined"` used to put an
-// underlined sizer in a bar whose own cells fell back to `fill`.
+// the tier it *resolved* to the controls inside it, guard included: writing `theme="underlined"` on a bar
+// whose own cells fall back to `fill` cannot be allowed to put an underlined sizer inside it.
 const page = SURFACES.find((surface) => surface.name === "Page")!;
 const pageClasses = (props: Record<string, unknown>) =>
   Array.from(
@@ -592,7 +580,7 @@ describe("a pager names its tier once and hands the same tier down", () => {
   });
 });
 
-// 3c-丁d: a board names its tier on the root and paints it on every column — it owns no plate of its own —
+// a board names its tier on the root and paints it on every column — it owns no plate of its own —
 // so the DOM contract is one tier class plus one column per entry, and the drop hint (the state the
 // stylesheet now has to out-order those plates for) has to land on the column itself.
 const kanban = SURFACES.find((surface) => surface.name === "Kanban")!;
@@ -635,7 +623,7 @@ describe("a board names its tier once and drops on its columns", () => {
   });
 });
 
-// 3c-丁d: a transfer names its tier on the root and paints it on both panels, so the DOM contract is one
+// a transfer names its tier on the root and paints it on both panels, so the DOM contract is one
 // tier class beside two lists — and the search box inside a panel is the one control the component hands
 // its tier to, which `solid` has to refuse: a primary box on a primary plate is nothing to look at, the
 // same reason a solid board hints in its plate's own ink.
@@ -729,7 +717,7 @@ describe("a transfer names its tier once and plates both panels", () => {
   });
 });
 
-// 3c-丁d: a list panel paints through the card it renders, so its tier class is the card's spelling and
+// a list panel paints through the card it renders, so its tier class is the card's spelling and
 // the panel's own two lines — the summary count and the selection strip — are the only parts its stylesheet
 // can reach. Both name a dark token of their own, so neither inherits the plate's ink and `solid` has to
 // hand them one; every other line inside the panel is the caller's own node and follows the card.

@@ -1,4 +1,4 @@
-// 3d-甲: `Form`'s `size`, `shape` and `theme` are documented as the appearance of its *child controls*, and a
+// `Form`'s `size`, `shape` and `theme` are documented as the appearance of its *child controls*, and a
 // Card or an Alert sitting in the same form is not one. vue has always said this with two hooks —
 // `useFormAppearance` for controls, `useConfigAppearance` for everything else. react read Form from the single
 // hook every component called, so `<Form theme="solid">` plated every panel around its fields and

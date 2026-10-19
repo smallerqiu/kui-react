@@ -1,6 +1,6 @@
-// Audit ⑪: `theme="plain"` used to be answered with `k-<component>-borderless`, so the components
-// had no way to say "no border *and* no surface" apart from "no border", and their own
-// `.k-<component>-plain` LESS rules could never be matched. The two are now separate classes.
+// `plain` and `borderless` are two different requests and have to stay two class names.
+// `plain` means "no border *and* no surface", `borderless` means only "no border"; answer both with
+// `k-<component>-borderless` and every `.k-<component>-plain` rule in the stylesheets is unreachable.
 // The style half of this contract is in tests/theme-variants.test.ts.
 import { render } from "@testing-library/react";
 import type { ReactElement } from "react";
@@ -34,7 +34,7 @@ const CASES: {
     fallback: "fill",
     node: (props) => <TreeSelect treeData={[{ key: "apple", title: "Apple" }]} {...props} />,
   },
-  // 3c-丁b: a code carried the same fold — `bordered={false}` and `theme="plain"` both answered with one
+  // a code carried the same fold — `bordered={false}` and `theme="plain"` both answered with one
   // `.k-qrcode-plain, .k-qrcode-borderless` rule that deleted the border *and* the 12px ring, so asking
   // for a plain surface quietly cropped the box while a cropped box still kept a 1px edge.
   {

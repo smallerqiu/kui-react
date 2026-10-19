@@ -10,7 +10,7 @@ import type { CheckCardProps } from "./types";
 
 // A check card paints a whole box, so it answers the five surface tiers and never `underlined` —
 // "keep only the bottom border" on a card deletes three of its sides. Its own look is the outlined
-// frame the base block used to hand-copy, so an unsupported tier falls back to `outline` rather than
+// frame the base block already draws, so an unsupported tier falls back to `outline` rather than
 // shipping `k-check-card-<tier>` with nothing behind it. The group forwards its value untouched: it
 // paints no surface, so the guard belongs to the cards that do.
 const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;

@@ -1,8 +1,8 @@
-// 3b: these controls have always typed `theme` as more values than they emitted — the source emitted a
-// class for two of them (`fill`, `plain`), so `theme="outline"` reached the DOM as nothing at all and
-// LESS had no rule to paint either, which made the preset invisible twice over. Every tier the type
-// allows now reaches the root as `k-<component>-<tier>`, and a control written with no `theme` lands on
-// its own default (`fill`) instead of the bordered base a class-less root used to render.
+// These controls type `theme` as more values than their LESS paints, which is why the class list is
+// filtered rather than interpolated: emitting a name the stylesheet never answers makes the preset
+// invisible twice over — nothing on the box and nothing to write it back. Every tier the type allows
+// reaches the root as `k-<component>-<tier>`, and a control written with no `theme` lands on its own
+// default (`fill`), not on the bordered base a class-less root would render.
 // The input family is the same contract on the three elements a tier class can land on: the bare
 // `<input>`, the wrapper that replaces it once anything decorates the field, and `<textarea>`.
 // The style half is in tests/theme-variants.test.ts.
@@ -75,12 +75,12 @@ const CASES: {
     attribute: "data-multiple",
     node: (props) => <InputNumber {...props} />,
   },
-  // 3b-乙2: these two carry the tier on their own root. A tag box paints it on that wrapper, an OTP
+  // these two carry the tier on their own root. A tag box paints it on that wrapper, an OTP
   // group paints it on every cell inside, so the emission contract is the same even though the
   // element the paint lands on is not (`tests/theme-variants.test.ts` reads the compiled rules).
   { name: "k-input-tag", tag: "DIV", node: (props) => <InputTag {...props} /> },
   { name: "k-input-otp", tag: "DIV", node: (props) => <InputOTP {...props} /> },
-  // 3b-乙2b: the color picker's box is its root too, and its "open" state is a sibling class.
+  // the color picker's box is its root too, and its "open" state is a sibling class.
   { name: "k-color-picker", tag: "DIV", node: (props) => <ColorPicker {...props} /> },
 ];
 
@@ -100,10 +100,10 @@ describe("every theme tier reaches the control root", () => {
     }
 
     it(`${label} lands on its own default tier with no theme written`, () => {
-      // Writing no `theme` is the only spelling of "listen to the component", and for a control that
-      // means `fill` — not the bordered base a class-less root used to render. The tier is named here
-      // rather than compared between two renders, because two renders that both land on a class no
-      // LESS paints still agree with each other.
+// Writing no `theme` is the only spelling of "listen to the component", and for a control that
+// means `fill` — not the bordered base a class-less root would render. The tier is named here
+// rather than compared between two renders, because two renders that both land on a class no
+// LESS paints still agree with each other.
       const tiers = (container: HTMLElement) =>
         rootClasses(container, name).filter((cls) => cls.startsWith(`${name}-`));
       expect(
@@ -123,7 +123,7 @@ describe("every theme tier reaches the control root", () => {
   }
 });
 
-// 3b-乙3: `AutoComplete` and `Mentions` have no theme surface of their own. LESS holds no
+// `AutoComplete` and `Mentions` have no theme surface of their own. LESS holds no
 // `.k-auto-complete-<tier>` / `.k-mentions-<tier>` rule at all — the box a tier paints is the `Input`
 // / `TextArea` each of them renders, and the wrapper only sizes and positions it. So the contract for
 // these two is the delegation itself: the tier has to arrive on the inner control, and the wrapper
