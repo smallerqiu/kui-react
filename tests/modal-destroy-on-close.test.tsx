@@ -101,7 +101,7 @@ describe("Modal destroy on close", () => {
     view?.rerender(modal(false));
     await sleep(30); // 倒计时还没跑完就反悔（窗口留足余量，别让 CI 抖动写成假失败）
     view?.rerender(modal(true));
-    await sleep(600); // 跨过原来那次关闭的 300ms 边界
+    await sleep(600); // 让反悔前那次关闭排下的 300ms 销毁倒计时跑完：它不该再来拆已经重开的面板
 
     // 反悔不该走一遍"销毁再重挂"：面板从头到尾没消失过，填过的内容也还在。
     // （光断言 .k-modal 还在不行——受控的 open 仍是 true，effect 会把它自己救回来。）

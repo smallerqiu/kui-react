@@ -71,7 +71,7 @@ export default function Toast({
       return;
     }
     // onOk 返 Promise 时由这层接管：成功才关窗，失败只停 loading、窗口留着让用户改完再试。
-    // （以前这里是 catch 完照样关窗，请求失败了窗口却消失，等于把错误吞了。）
+    // catch 完照样关窗等于把请求失败吞掉——窗口消失了，用户不知道为什么。
     setLoading(true);
     Promise.resolve(result).then(
       () => {

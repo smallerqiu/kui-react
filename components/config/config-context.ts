@@ -7,8 +7,8 @@ export type Locale = typeof enUS & Record<string, unknown>;
 
 /**
  * 没有 ConfigProvider 兜底时用的语言。
- * 库里以前是 16 处各自写死 `|| zhCN`，而文档写的是"默认英语"（dayjs 的中文语言包也从没注册过，
- * 月份和星期本来就是英文），代码跟文档正好相反。默认值收到这一个出处，以后改默认只改这里。
+ * 默认值只有这一个出处，组件里不许再各自写 `|| zhCN` 之类的兜底；要改库级默认就改这里。
+ * 选 `en` 与文档口径一致，也和 dayjs 那侧对得上——中文语言包没注册时月份和星期本来就是英文。
  */
 export const DEFAULT_LOCALE: Locale = enUS;
 

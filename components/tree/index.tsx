@@ -262,8 +262,8 @@ const Tree = forwardRef<TreeExpose, TreeProps>(function Tree(
     if (node.disabled || node.isLeaf || loadingKeys.has(node.key)) return;
     const nextExpanded = !expanded.includes(node.key);
     // `loadedKeys` 让同一个节点只请求一次（vue 版的文档就是这么写的：
-    // “成功后同一节点不会重复加载”）。之前只按“当前有没有 children”判断，
-    // 于是加载回来是空的、或者 data 是在别处异步替换的，每次展开都再发一次请求。
+    // “成功后同一节点不会重复加载”）。判据若换成“当前有没有 children”，加载回来是空的、
+    // 或者 data 是在别处异步替换的，每次展开都会再发一次请求。
     if (nextExpanded && loadData && !loadedKeys.has(node.key) && !node.children?.length) {
       setLoadingKeys((current) => new Set(current).add(node.key));
       try {

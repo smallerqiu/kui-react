@@ -216,8 +216,8 @@ function DatePicker({
   const [hoverDate, setHoverDate] = useState<Dayjs | null>(null);
   const [timeEditSide, setTimeEditSide] = useState<"start" | "end">("start");
   // 文本回退的唯一来源是"当前这份值"——受控时由 props 派生，非受控时是最近一次提交的结果。
-  // 原来区间模式恒取 parsedSource（props 那份），于是非受控提交过新值后删空再失焦，
-  // 文本会弹回 props 里的原始值，和内部已提交的那份漂移。
+  // 区间模式不能直接取 props 那份：非受控时提交过新值，再删空并失焦，文本会弹回 props 里的原始值，
+  // 与内部已提交的那份漂移。
   const formattedValues = values.map((item) => item?.format(fmt) ?? "");
   const [textState, setTextState] = useState({
     signature: syncSignature,
@@ -275,9 +275,8 @@ function DatePicker({
     // 区间的内部值固定是 `[起, 止]` 两格：清空得到 `[null, null]` 而不是 `[]`，
     // 只有一头时另一格留 null——文本和面板草稿同源才谈得上"下一次点选补空位"。
     const pair = isRange ? [next[0] ?? null, next[1] ?? null] : next;
-    // 值没变就不要再通知：重复点已经选中的日期、重复点已经对准的时/分/秒，
-    // 原来都会原样再发一次 onChange（区间还带 onStartDateChange/onEndDateChange）。
-    // 父级在 onChange 里发请求的话，这一趟是白跑的。
+    // 值没变就不要再通知：重复点已经选中的日期、重复点已经对准的时/分/秒，都会原样再发一次
+    // onChange（区间还连着 onStartDateChange/onEndDateChange）。父级在 onChange 里发请求的话，这一趟是白跑的。
     // 比的是显示出来的文本，不是毫秒时间戳：日历格子每渲染一拨就重算一个 Dayjs，
     // 同一天可能带着不同的时分秒落进来，比时间戳会把"同一天"误判成变了。
     const unchanged =
@@ -303,8 +302,8 @@ function DatePicker({
     if (isRange) {
       const [start, end] = draft;
       // 只有一头已定时（父级单边受控也长这样）这一枪是去补空着的那一头，已有的那头不动。
-      // 原来按 `draft.length !== 1` 判"是不是重新开始"，单边受控时草稿是空的、
-      // 框里却显示着 endDate，于是下一次点选会当成第一次点击、把 endDate 覆盖掉。
+      // 判"是不是重新开始"不能看草稿长度：单边受控时草稿是空的、框里却显示着 endDate，
+      // 按长度会把下一次点选当成第一次点击，把 endDate 覆盖掉。
       const fill = start && !end ? "end" : !start && end ? "start" : null;
       if (!fill) {
         const s = date.startOf("day");
@@ -384,8 +383,8 @@ function DatePicker({
   }, [panelDate, localeInfo]);
   const nav = (amount: number, unit: "month" | "year") =>
     setPanelDate((current) => current.add(amount, unit));
-  // 切进年 / 月面板的那两个标签原来只有 onClick。格子做得再可达也没用——
-  // 键盘用户根本进不了年/月面板，所以这里一并补成能 Tab 到、Enter/空格能按的按钮。
+  // 切进年 / 月面板的那两个标签要能 Tab 到、Enter/空格能按：只有 onClick 的话，
+  // 格子做得再可达也没用——键盘用户根本进不了年/月面板。
   const switchLabel = (target: "year" | "month", label: ReactNode, className?: string) => (
     <span
       className={className}
@@ -444,7 +443,7 @@ function DatePicker({
   // 判据是"这一整格里一天都挑不出来"，不是"格子对准的那一天被禁"——
   // disabledDate 只禁了 3 月 5 号时，3 月这格照样得点得进去。
   // 返回 null 表示整格禁用，返回一个日子表示这一格能落值；
-  // 优先用当前浏览位置的那一天（和没改之前一致），那天被禁时往后找第一个能选的，
+  // 优先用当前浏览位置的那一天，那天被禁时往后找第一个能选的，
   // 这样"格子看着能点、点了没反应"不再出现。
   const unitPick = (base: Dayjs, unit: "year" | "month"): Dayjs | null => {
     if (!disabledDate(base.toDate())) return base;
@@ -466,8 +465,8 @@ function DatePicker({
           const selects = mode === "year";
           const candidate = selects ? unitPick(browsing, "year") : browsing;
           const off = selects && !candidate;
-          // 选中态取当前值，不取浏览位置：原来高亮跟着 panelDate，
-          // 已有值时翻几年，选中样式就跑到别的年份上去了。
+          // 选中态取当前值，不取浏览位置：高亮跟着 panelDate 走时，已有值再翻几年，
+          // 选中样式就跑到了别的年份上。
           const selected = draft.some((item) => !!item && item.year() === year);
           const pick = () => {
             if (off || !candidate) return;

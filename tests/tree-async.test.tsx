@@ -149,8 +149,8 @@ describe("Tree DOM shape", () => {
     const { container } = render(<Tree data={[{ key: "root", title: "Root" }]} />);
     const list = container.querySelector<HTMLElement>(".k-tree-node-list")!;
 
-    // vue 版曾经多落一层匿名 div（`TransitionGroup tag="div"`），两边 DOM 对不上；
-    // react 这边 `component={null}` 不该有 wrapper，条目直接挂在节点列表下。
+    // 条目直接挂在节点列表下：`component={null}` 不该产出 wrapper。vue 侧同一个位置也不许多落一层匿名
+    // div（`TransitionGroup` 不能写 `tag="div"`），否则两仓 DOM 对不上。
     expect(list.firstElementChild?.classList.contains("k-tree-item")).toBe(true);
     expect(list.querySelectorAll(":scope > div:not(.k-tree-item)")).toHaveLength(0);
   });

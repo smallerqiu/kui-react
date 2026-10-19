@@ -8,11 +8,10 @@ import Select from "../components/select/select";
 import zhCN from "../components/locale/zh-CN";
 
 /**
- * 库级默认语言是英语。
- * 以前这件事没有出处：16 处 `config?.locale || zhCN` 各写各的，文档却写着"默认英语"
- * （而 dayjs 的中文语言包也从没注册过，月份和星期本来就是英文），两头对不上。
- * 现在默认值只有 `DEFAULT_LOCALE` 一个出处，所以这条用例管两件事：
- * 不带 Provider 时组件吐英文，以及没有任何组件源码再把兜底偷偷写回中文。
+ * 库级默认语言是英语，默认值只有 `DEFAULT_LOCALE` 一个出处。
+ * 组件里各自写 `|| zhCN` 会让文档说的"默认英语"和实际渲染对不上（dayjs 的中文语言包没注册，
+ * 月份和星期本来就是英文），所以这条用例管两件事：不带 Provider 时组件吐英文，
+ * 以及没有任何组件源码把兜底偷偷写回中文。
  */
 
 const componentSources = (() => {

@@ -70,7 +70,7 @@ describe("Drawer header", () => {
   it("keeps the bar for the close button when no title is given", async () => {
     render(<Drawer open>内容</Drawer>);
     await waitFor(() => expect(document.querySelector(".k-drawer-header")).not.toBeNull());
-    // 以前这里会印出默认的 "Title"；现在标题文本是空的，X 还在。
+    // Drawer 没有默认的 Title：没给标题时标题文本是空的，X 还在。
     expect(document.querySelector(".k-drawer-header-inner")?.textContent).toBe("");
     expect(document.querySelector(".k-drawer-close")).not.toBeNull();
   });
