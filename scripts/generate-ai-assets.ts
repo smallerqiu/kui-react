@@ -48,27 +48,127 @@ const children: Record<string, string[]> = {
   Collapse: ["CollapsePanel"],
   Splitter: ["SplitterPanel"],
 };
+const nullish = (kind: ts.SyntaxKind) =>
+  kind === ts.SyntaxKind.QuestionQuestionToken || kind === ts.SyntaxKind.BarBarToken;
+/** The value the whole expression falls back to last, or the expression itself when it is not a chain. */
+const chainTail = (node: ts.Expression): ts.Expression => {
+  let tail = node;
+  while (ts.isBinaryExpression(tail) && nullish(tail.operatorToken.kind)) tail = tail.right;
+  return tail;
+};
+/** The reference a chain starts from, stepping through a leading call only when it already chains. */
+const chainStart = (node: ts.Expression): ts.Expression => {
+  let head = node;
+  for (;;) {
+    if (ts.isBinaryExpression(head) && nullish(head.operatorToken.kind)) head = head.left;
+    // `resolvePaintedTheme(themeProp ?? inherited.theme, THEMES) ?? "fill"` chains the prop before the
+    // helper runs, so the literal after it is the component's own fallback. A call that merely *takes*
+    // the prop (`resolveResponsive(columnStart, 0) ?? 0`) keeps its sentinel inside the helper, where the
+    // caller's `?? 0` says nothing about what the prop means.
+    else if (
+      ts.isCallExpression(head) &&
+      head.arguments[0] &&
+      ts.isBinaryExpression(head.arguments[0]) &&
+      nullish(head.arguments[0].operatorToken.kind)
+    )
+      head = head.arguments[0];
+    else return head;
+  }
+};
+const isLiteralValue = (node: ts.Expression) =>
+  ts.isStringLiteral(node) ||
+  ts.isNoSubstitutionTemplateLiteral(node) ||
+  ts.isNumericLiteral(node) ||
+  (ts.isPrefixUnaryExpression(node) && node.operator === ts.SyntaxKind.MinusToken
+    ? ts.isNumericLiteral(node.operand)
+    : node.kind === ts.SyntaxKind.TrueKeyword ||
+      node.kind === ts.SyntaxKind.FalseKeyword ||
+      node.kind === ts.SyntaxKind.NullKeyword);
+
+/**
+ * Bodies to read defaults from. A component exported through a wrapper
+ * (`export default createFormFieldComponent(Switch)`) declares its defaults inside the body that was handed
+ * over, so step through wrapper arguments. Only wrappers are followed, never a call made from inside a
+ * function body, and names are resolved by the checker rather than looked up by text, so a same-file sibling
+ * or a helper cannot lend its defaults to this component.
+ */
+const defaultsRoots = (declaration: ts.Declaration) => {
+  const roots: ts.Node[] = [declaration];
+  const seen = new Set<ts.Node>();
+  const unwrap = (node: ts.Node | undefined) => {
+    if (!node || seen.has(node)) return;
+    seen.add(node);
+    if (ts.isCallExpression(node)) {
+      for (const argument of node.arguments)
+        if (ts.isIdentifier(argument)) {
+          const symbol = checker.getSymbolAtLocation(argument);
+          const target = symbol
+            ? getDeclaration(resolveSymbol(symbol))
+            : undefined;
+          if (target) {
+            roots.push(target);
+            unwrap(target);
+          }
+        }
+      return;
+    }
+    if (ts.isVariableDeclaration(node)) unwrap(node.initializer);
+    else if (ts.isExportAssignment(node)) unwrap(node.expression);
+    else if (ts.isParenthesizedExpression(node) || ts.isAsExpression(node)) unwrap(node.expression);
+  };
+  unwrap(declaration);
+  return roots;
+};
+
+/**
+ * Defaults the source declares for a component's props.
+ *
+ * The destructuring pattern is the direct case. The other shape the library uses is a chain resolved in
+ * the body — `const size = sizeProp ?? inheritedAppearance.size ?? "medium"` and
+ * `const theme = resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, THEMES) ?? "fill"` — where
+ * the prop arrives renamed precisely so the body can fall back. A chain is recorded only when a literal
+ * sits at the end of the *whole* expression, because that is what guarantees the literal is the value the
+ * assignment lands on; a value a wrapper can still rewrite
+ * (`normalizeSurfaceShape(shapeProp ?? inherited.shape ?? "round")`) and a controlled-state fallback
+ * (`useValue(checked, (next) => next ?? false)`, which says nothing about the prop) are left unrecorded
+ * instead of guessed at.
+ */
 const defaultsFor = (declaration: ts.Declaration) => {
   const values = new Map<string, string>();
-  const scan = (node: ts.Node) => {
+  // Local name in the body → prop name it was destructured from.
+  const locals = new Map<string, string>();
+  const roots = defaultsRoots(declaration);
+  const collect = (node: ts.Node) => {
     if (
       (ts.isArrowFunction(node) ||
         ts.isFunctionDeclaration(node) ||
         ts.isFunctionExpression(node)) &&
       node.parameters[0] &&
       ts.isObjectBindingPattern(node.parameters[0].name)
-    ) {
+    )
       for (const binding of node.parameters[0].name.elements) {
-        if (binding.initializer)
-          values.set(
-            (binding.propertyName || binding.name).getText(),
-            binding.initializer.getText(),
-          );
+        if (!ts.isIdentifier(binding.name)) continue;
+        const prop = binding.propertyName?.getText() ?? binding.name.getText();
+        locals.set(binding.name.getText(), prop);
+        if (binding.initializer) values.set(prop, binding.initializer.getText());
       }
-    }
-    ts.forEachChild(node, scan);
+    ts.forEachChild(node, collect);
   };
-  scan(declaration);
+  for (const root of roots) collect(root);
+  const resolve = (node: ts.Node) => {
+    if (
+      ts.isVariableDeclaration(node) &&
+      node.initializer &&
+      ts.isIdentifier(node.name) &&
+      isLiteralValue(chainTail(node.initializer))
+    ) {
+      const head = chainStart(node.initializer);
+      const prop = ts.isIdentifier(head) ? locals.get(head.text) : undefined;
+      if (prop && !values.has(prop)) values.set(prop, node.initializer.getText());
+    }
+    ts.forEachChild(node, resolve);
+  };
+  for (const root of roots) resolve(root);
   return values;
 };
 const components = exports.flatMap((exported) => {
@@ -93,6 +193,13 @@ const components = exports.flatMap((exported) => {
   const docZh = tableDocs(markdown, name);
   const docEn = tableDocs(path.join(directory, "index.en_US.md"), name);
   const defaults = defaultsFor(declaration);
+  // A controlled channel — `value` read back through `onChange`, `open` through `onOpenChange` — is
+  // documented as unset: the literal the component falls back to for uncontrolled mode (`open ?? false`)
+  // is neither a value the reader passes nor a look they get, so the pairing, not a name list, marks it.
+  const propNames = new Set(checker.getPropertiesOfType(propsType).map((prop) => prop.name));
+  const controlled = (propName: string) =>
+    propNames.has(`on${propName.charAt(0).toUpperCase()}${propName.slice(1)}Change`) ||
+    ((propName === "value" || propName === "modelValue") && propNames.has("onChange"));
   const nativeProps: string[] = [];
   const nativeValueTypes: Record<string, string> = {};
   const props = checker.getPropertiesOfType(propsType).flatMap((prop) => {
@@ -150,7 +257,7 @@ const components = exports.flatMap((exported) => {
         boolean:
           union.length > 0 &&
           union.every((t) => !!(t.flags & (ts.TypeFlags.Boolean | ts.TypeFlags.BooleanLiteral))),
-        defaultExpression: defaults.get(prop.name),
+        defaultExpression: controlled(prop.name) ? undefined : defaults.get(prop.name),
         descriptionZh: docZh.get(prop.name) || descriptions[name]?.[prop.name]?.zh || comment || "",
         descriptionEn: docEn.get(prop.name) || descriptions[name]?.[prop.name]?.en || comment || "",
       },

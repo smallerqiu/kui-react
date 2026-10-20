@@ -994,6 +994,7 @@ export default function App() {
         "plain"
       ],
       "boolean": false,
+      "defaultExpression": "resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? \"fill\"",
       "descriptionZh": "外观主题",
       "descriptionEn": "Surface theme"
     },
@@ -1008,6 +1009,7 @@ export default function App() {
         "circle"
       ],
       "boolean": false,
+      "defaultExpression": "shapeProp ?? inheritedAppearance.shape ?? \"round\"",
       "descriptionZh": "形状",
       "descriptionEn": "Shape"
     },
@@ -1311,6 +1313,7 @@ export default function App() {
       "type": "string | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "todayText ?? locale.k.datePicker.today ?? \"Today\"",
       "descriptionZh": "“今天”按钮的文本",
       "descriptionEn": "Text of the \"Today\" button"
     },
@@ -1595,6 +1598,7 @@ export default function App() {
         "plain"
       ],
       "boolean": false,
+      "defaultExpression": "resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? \"fill\"",
       "descriptionZh": "外观主题",
       "descriptionEn": "Surface theme"
     },
@@ -1857,6 +1861,7 @@ export default function App() {
         "plain"
       ],
       "boolean": false,
+      "defaultExpression": "resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? \"outline\"",
       "descriptionZh": "外观主题",
       "descriptionEn": "Appearance theme"
     },
@@ -1882,6 +1887,7 @@ export default function App() {
         "large"
       ],
       "boolean": false,
+      "defaultExpression": "sizeProp ?? inheritedAppearance.size ?? \"medium\"",
       "descriptionZh": "尺寸",
       "descriptionEn": "Size"
     },
@@ -2184,6 +2190,7 @@ export default function App() {
       "type": "(string | AutoCompleteOption)[] | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "EMPTY_OPTIONS",
       "descriptionZh": "候选项",
       "descriptionEn": "Suggestions"
     },
@@ -2208,6 +2215,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "空输入聚焦时展示建议",
       "descriptionEn": "Show suggestions for an empty focused input"
     },
@@ -2220,6 +2228,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "有值且悬停时显示清除按钮",
       "descriptionEn": "Show clear button on hover"
     },
@@ -2232,6 +2241,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否正在加载",
       "descriptionEn": "Loading state"
     },
@@ -2283,6 +2293,7 @@ export default function App() {
         "underlined"
       ],
       "boolean": false,
+      "defaultExpression": "themeProp ?? inheritedAppearance.theme ?? \"fill\"",
       "descriptionZh": "主题，画在内部输入框上，可用档位与 Input 一致",
       "descriptionEn": "Theme, painted on the inner input box; supports the same tiers as Input"
     },
@@ -2291,6 +2302,7 @@ export default function App() {
       "type": "boolean | ((input: string, option: AutoCompleteOption) => boolean) | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "true",
       "descriptionZh": "是否过滤或自定义过滤",
       "descriptionEn": "Filter strategy"
     },
@@ -2303,6 +2315,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
       "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
     },
@@ -4114,6 +4127,7 @@ export default function App() {
         "large"
       ],
       "boolean": false,
+      "defaultExpression": "sizeProp ?? buttonGroup?.size ?? parentSize ?? size ?? \"default\"",
       "descriptionZh": "按钮尺寸,",
       "descriptionEn": "Button size,"
     },
@@ -4991,6 +5005,7 @@ export default function App() {
         "plain"
       ],
       "boolean": false,
+      "defaultExpression": "resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? \"fill\"",
       "descriptionZh": "外观主题",
       "descriptionEn": "Surface theme"
     },
@@ -5016,6 +5031,7 @@ export default function App() {
         "large"
       ],
       "boolean": false,
+      "defaultExpression": "sizeProp ?? inheritedAppearance.size ?? \"medium\"",
       "descriptionZh": "卡片尺寸",
       "descriptionEn": "Card size"
     },
@@ -5731,6 +5747,7 @@ export default function App() {
         "boolean"
       ],
       "boolean": false,
+      "defaultExpression": "\"boolean\"",
       "descriptionZh": "独立使用时的输出值类型",
       "descriptionEn": "Standalone output value type"
     },
@@ -5759,6 +5776,7 @@ export default function App() {
         "outline"
       ],
       "boolean": false,
+      "defaultExpression": "resolvePaintedTheme(themeProp ?? group?.theme ?? inheritedAppearance.theme, PAINTED_THEMES) ??\n    \"fill\"",
       "descriptionZh": "组件呈现主题",
       "descriptionEn": "Component theme"
     },
@@ -5771,6 +5789,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否禁用当前项",
       "descriptionEn": "Whether the current item is disabled"
     },
@@ -5783,6 +5802,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否只读当前项",
       "descriptionEn": "Whether the current item is read-only"
     },
@@ -5795,6 +5815,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "组合辅助选项控制半选状态",
       "descriptionEn": "Combined auxiliary option controls the indeterminate state"
     },
@@ -6092,6 +6113,7 @@ export default function App() {
         "outline"
       ],
       "boolean": false,
+      "defaultExpression": "themeProp ?? inheritedAppearance.theme ?? \"fill\"",
       "descriptionZh": "组件呈现主题",
       "descriptionEn": "Component theme"
     },
@@ -6104,6 +6126,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否禁用组件",
       "descriptionEn": "Whether the component is disabled"
     },
@@ -6116,6 +6139,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否只读组件",
       "descriptionEn": "Whether the component is read-only"
     },
@@ -6137,6 +6161,7 @@ export default function App() {
         "vertical"
       ],
       "boolean": false,
+      "defaultExpression": "\"horizontal\"",
       "descriptionZh": "布局方向",
       "descriptionEn": "Layout direction"
     },
@@ -6476,6 +6501,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否显示选中标记",
       "descriptionEn": "Whether to show the indicator"
     },
@@ -6488,6 +6514,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否禁用",
       "descriptionEn": "Whether disabled"
     },
@@ -6500,6 +6527,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否只读",
       "descriptionEn": "Whether read-only"
     },
@@ -6515,6 +6543,7 @@ export default function App() {
         "plain"
       ],
       "boolean": false,
+      "defaultExpression": "resolvePaintedTheme(\n        themeProp ?? group?.theme ?? inheritedAppearance.theme,\n        PAINTED_THEMES,\n      ) ?? \"outline\"",
       "descriptionZh": "外观主题",
       "descriptionEn": "Appearance theme"
     },
@@ -6528,6 +6557,7 @@ export default function App() {
         "large"
       ],
       "boolean": false,
+      "defaultExpression": "sizeProp ?? inheritedAppearance.size ?? \"medium\"",
       "descriptionZh": "尺寸",
       "descriptionEn": "Size"
     },
@@ -6542,6 +6572,7 @@ export default function App() {
         "circle"
       ],
       "boolean": false,
+      "defaultExpression": "shapeProp ?? inheritedAppearance.shape ?? \"round\"",
       "descriptionZh": "形状",
       "descriptionEn": "Shape"
     },
@@ -6731,6 +6762,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否禁用该选项",
       "descriptionEn": "Whether this option is disabled"
     },
@@ -6743,6 +6775,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否只读该选项",
       "descriptionEn": "Whether this option is read-only"
     },
@@ -6755,6 +6788,7 @@ export default function App() {
         "vertical"
       ],
       "boolean": false,
+      "defaultExpression": "\"horizontal\"",
       "descriptionZh": "排列方向",
       "descriptionEn": "Layout direction"
     },
@@ -6770,6 +6804,7 @@ export default function App() {
         "plain"
       ],
       "boolean": false,
+      "defaultExpression": "themeProp ?? inheritedAppearance.theme ?? \"outline\"",
       "descriptionZh": "卡片主题",
       "descriptionEn": "Card theme"
     },
@@ -6783,6 +6818,7 @@ export default function App() {
         "large"
       ],
       "boolean": false,
+      "defaultExpression": "sizeProp ?? inheritedAppearance.size ?? \"medium\"",
       "descriptionZh": "卡片尺寸",
       "descriptionEn": "Card size"
     },
@@ -6797,6 +6833,7 @@ export default function App() {
         "circle"
       ],
       "boolean": false,
+      "defaultExpression": "shapeProp ?? inheritedAppearance.shape ?? \"round\"",
       "descriptionZh": "卡片形状",
       "descriptionEn": "Card shape"
     },
@@ -7005,6 +7042,7 @@ export default function App() {
         "plain"
       ],
       "boolean": false,
+      "defaultExpression": "resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? \"outline\"",
       "descriptionZh": "外观主题",
       "descriptionEn": "Appearance theme"
     },
@@ -7416,6 +7454,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否禁用",
       "descriptionEn": "Whether the picker is disabled"
     },
@@ -7428,6 +7467,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否只读",
       "descriptionEn": "Whether the picker is read-only"
     },
@@ -7440,6 +7480,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否禁用透明度",
       "descriptionEn": "Whether alpha editing is disabled"
     },
@@ -7452,6 +7493,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否展示颜色文字",
       "descriptionEn": "Whether to display the color text"
     },
@@ -7468,6 +7510,7 @@ export default function App() {
         "bottom-right"
       ],
       "boolean": false,
+      "defaultExpression": "\"bottom-left\"",
       "descriptionZh": "弹层位置",
       "descriptionEn": "Popup placement"
     },
@@ -7480,6 +7523,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
       "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
     },
@@ -7492,6 +7536,7 @@ export default function App() {
         "click"
       ],
       "boolean": false,
+      "defaultExpression": "\"click\"",
       "descriptionZh": "弹层触发方式",
       "descriptionEn": "Popup trigger mode"
     },
@@ -7600,6 +7645,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "只渲染颜色面板，不包含触发元素与弹层",
       "descriptionEn": "Render only the color panel, without a trigger or portal"
     }
@@ -8186,6 +8232,7 @@ export default function App() {
         "unix"
       ],
       "boolean": false,
+      "defaultExpression": "\"string\"",
       "descriptionZh": "输出值类型",
       "descriptionEn": "Output value type"
     },
@@ -8203,6 +8250,7 @@ export default function App() {
         "dateTimeRange"
       ],
       "boolean": false,
+      "defaultExpression": "\"date\"",
       "descriptionZh": "日期选择模式",
       "descriptionEn": "Date picker mode"
     },
@@ -8259,6 +8307,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否显示清除图标",
       "descriptionEn": "Whether to show the clear icon"
     },
@@ -8271,6 +8320,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否可编辑",
       "descriptionEn": "Whether it is editable"
     },
@@ -8279,6 +8329,7 @@ export default function App() {
       "type": "string | string[] | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "\"\"",
       "descriptionZh": "提示语",
       "descriptionEn": "Placeholder text"
     },
@@ -8295,6 +8346,7 @@ export default function App() {
       "type": "((date: Date) => boolean) | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "() => false",
       "descriptionZh": "不可选择的日期",
       "descriptionEn": "Disabled dates"
     },
@@ -8303,6 +8355,7 @@ export default function App() {
       "type": "((date: Date) => boolean) | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "() => false",
       "descriptionZh": "不可选择的时间",
       "descriptionEn": "Disabled times"
     },
@@ -8324,6 +8377,7 @@ export default function App() {
       "type": "IconType[] | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "CalendarDays",
       "descriptionZh": "自定义图标",
       "descriptionEn": "Custom icon"
     },
@@ -8366,6 +8420,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否展示边框",
       "descriptionEn": "Whether to display the border"
     },
@@ -8382,6 +8437,7 @@ export default function App() {
         "bottom-right"
       ],
       "boolean": false,
+      "defaultExpression": "\"bottom-left\"",
       "descriptionZh": "下拉展示的方位",
       "descriptionEn": "Direction displayed when pulled down"
     },
@@ -8394,6 +8450,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
       "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
     },
@@ -8462,6 +8519,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "只渲染选择面板，不包含触发元素与弹层",
       "descriptionEn": "Render only the picker panel, without a trigger or portal"
     }
@@ -13866,6 +13924,7 @@ export default function App() {
         "plain"
       ],
       "boolean": false,
+      "defaultExpression": "resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? \"fill\"",
       "descriptionZh": "外观主题",
       "descriptionEn": "Appearance theme"
     },
@@ -13891,6 +13950,7 @@ export default function App() {
         "large"
       ],
       "boolean": false,
+      "defaultExpression": "sizeProp ?? inheritedAppearance.size ?? \"medium\"",
       "descriptionZh": "卡片尺寸",
       "descriptionEn": "Card size"
     },
@@ -14443,6 +14503,7 @@ export default function App() {
         "plain"
       ],
       "boolean": false,
+      "defaultExpression": "resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? \"outline\"",
       "descriptionZh": "外观主题",
       "descriptionEn": "Appearance theme"
     },
@@ -15655,6 +15716,7 @@ export default function App() {
         "plain"
       ],
       "boolean": false,
+      "defaultExpression": "resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? \"plain\"",
       "descriptionZh": "外观主题",
       "descriptionEn": "Appearance theme"
     },
@@ -15669,6 +15731,7 @@ export default function App() {
         "circle"
       ],
       "boolean": false,
+      "defaultExpression": "shapeProp ?? inheritedAppearance.shape ?? \"round\"",
       "descriptionZh": "形状",
       "descriptionEn": "Shape"
     }
@@ -16636,6 +16699,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否继承父集宽度",
       "descriptionEn": "Whether to inherit the parent width"
     },
@@ -16648,6 +16712,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否使用紧凑模式",
       "descriptionEn": "Whether to use compact mode"
     },
@@ -17582,6 +17647,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "禁用",
       "descriptionEn": "Disabled state"
     },
@@ -17594,6 +17660,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "只读，允许聚焦和复制但不可修改",
       "descriptionEn": "Read-only while remaining focusable"
     },
@@ -17606,6 +17673,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否显示一键清空按钮",
       "descriptionEn": "Whether to show the clear button"
     },
@@ -17618,6 +17686,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否撑满父容器宽度",
       "descriptionEn": "Fill the parent width"
     },
@@ -17630,6 +17699,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "允许重复",
       "descriptionEn": "Allow duplicate tags"
     },
@@ -17654,6 +17724,7 @@ export default function App() {
       "type": "string[] | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "[\",\"]",
       "descriptionZh": "提交分隔键",
       "descriptionEn": "Commit keys"
     },
@@ -17667,6 +17738,7 @@ export default function App() {
         "large"
       ],
       "boolean": false,
+      "defaultExpression": "sizeProp ?? inheritedAppearance.size ?? \"medium\"",
       "descriptionZh": "尺寸",
       "descriptionEn": "Size"
     },
@@ -17896,6 +17968,7 @@ export default function App() {
       "type": "number | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "-Infinity",
       "descriptionZh": "最小值",
       "descriptionEn": "Minimum value"
     },
@@ -17904,6 +17977,7 @@ export default function App() {
       "type": "number | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "Infinity",
       "descriptionZh": "最大值",
       "descriptionEn": "Maximum value"
     },
@@ -17912,6 +17986,7 @@ export default function App() {
       "type": "string | number | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "1",
       "descriptionZh": "每次改变步数，可以为小数",
       "descriptionEn": "Step value for each change, can be a decimal"
     },
@@ -17948,6 +18023,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "禁用",
       "descriptionEn": "Disabled"
     },
@@ -17960,6 +18036,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否只读",
       "descriptionEn": "Whether the input is read-only"
     },
@@ -17972,6 +18049,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否显示增减按钮",
       "descriptionEn": "Whether to show increase/decrease buttons"
     },
@@ -17984,6 +18062,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否允许通过上下方向键调整数值",
       "descriptionEn": "Whether the value can be adjusted with the up/down arrow keys"
     },
@@ -18262,6 +18341,7 @@ export default function App() {
       "type": "number | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "6",
       "descriptionZh": "输入框数量，按非负整数处理",
       "descriptionEn": "Number of inputs, normalized to a non-negative integer"
     },
@@ -18274,6 +18354,7 @@ export default function App() {
         "text"
       ],
       "boolean": false,
+      "defaultExpression": "\"number\"",
       "descriptionZh": "字符类型",
       "descriptionEn": "Character type"
     },
@@ -18299,6 +18380,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否禁用",
       "descriptionEn": "Whether disabled"
     },
@@ -18311,6 +18393,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否只读",
       "descriptionEn": "Whether read-only"
     },
@@ -18323,6 +18406,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否隐藏内容",
       "descriptionEn": "Whether to mask the value"
     },
@@ -18335,6 +18419,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否自动聚焦",
       "descriptionEn": "Whether to focus automatically"
     },
@@ -22456,6 +22541,7 @@ export default function App() {
       "type": "(string | MentionOption)[] | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "EMPTY_OPTIONS",
       "descriptionZh": "候选项",
       "descriptionEn": "Suggestions"
     },
@@ -22464,6 +22550,7 @@ export default function App() {
       "type": "string[] | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "[\"@\"]",
       "descriptionZh": "触发字符",
       "descriptionEn": "Trigger strings"
     },
@@ -22472,6 +22559,7 @@ export default function App() {
       "type": "number | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "1",
       "descriptionZh": "文本域行数",
       "descriptionEn": "Textarea rows"
     },
@@ -22488,6 +22576,7 @@ export default function App() {
         "bottom-right"
       ],
       "boolean": false,
+      "defaultExpression": "\"bottom-left\"",
       "descriptionZh": "下拉菜单优先位置",
       "descriptionEn": "Preferred dropdown placement"
     },
@@ -22500,6 +22589,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
       "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
     },
@@ -22543,6 +22633,7 @@ export default function App() {
         "underlined"
       ],
       "boolean": false,
+      "defaultExpression": "themeProp ?? inheritedAppearance.theme ?? \"fill\"",
       "descriptionZh": "主题，画在内部文本域上，可用档位与 TextArea 一致",
       "descriptionEn": "Theme, painted on the inner text area; supports the same tiers as TextArea"
     },
@@ -22563,6 +22654,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否显示加载状态",
       "descriptionEn": "Whether to show loading"
     },
@@ -22583,6 +22675,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否显示清除按钮",
       "descriptionEn": "Whether to show the clear button"
     },
@@ -24731,6 +24824,7 @@ export default function App() {
         "plain"
       ],
       "boolean": false,
+      "defaultExpression": "resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? \"fill\"",
       "descriptionZh": "外观主题",
       "descriptionEn": "Surface theme"
     },
@@ -24745,6 +24839,7 @@ export default function App() {
         "circle"
       ],
       "boolean": false,
+      "defaultExpression": "shapeProp ?? inheritedAppearance.shape ?? \"round\"",
       "descriptionZh": "分页器形状",
       "descriptionEn": "Pagination shape"
     },
@@ -26874,6 +26969,7 @@ export default function App() {
         "circle"
       ],
       "boolean": false,
+      "defaultExpression": "shapeProp ?? inheritedAppearance.shape ?? \"round\"",
       "descriptionZh": "二维码形状",
       "descriptionEn": "Shape of the QR code"
     },
@@ -26889,6 +26985,7 @@ export default function App() {
         "plain"
       ],
       "boolean": false,
+      "defaultExpression": "resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? \"outline\"",
       "descriptionZh": "外观主题",
       "descriptionEn": "Appearance theme"
     },
@@ -27278,6 +27375,7 @@ export default function App() {
         "outline"
       ],
       "boolean": false,
+      "defaultExpression": "resolvePaintedTheme(themeProp ?? group?.theme ?? inheritedAppearance.theme, PAINTED_THEMES) ??\n      \"fill\"",
       "descriptionZh": "组件呈现主题",
       "descriptionEn": "Component theme"
     },
@@ -27319,6 +27417,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否禁用当前项",
       "descriptionEn": "Whether current item is disabled"
     },
@@ -27331,6 +27430,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否只读当前项",
       "descriptionEn": "Whether current item is read-only"
     }
@@ -27661,6 +27761,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否禁用整个单选组",
       "descriptionEn": "Disable the entire group"
     },
@@ -27673,6 +27774,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否只读",
       "descriptionEn": "Whether the group is read-only"
     },
@@ -28043,6 +28145,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否禁用整个单选组",
       "descriptionEn": "Disable the entire group"
     },
@@ -28055,6 +28158,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否只读",
       "descriptionEn": "Whether the group is read-only"
     },
@@ -28068,6 +28172,7 @@ export default function App() {
         "vertical"
       ],
       "boolean": false,
+      "defaultExpression": "\"horizontal\"",
       "descriptionZh": "布局方向",
       "descriptionEn": "Layout direction"
     },
@@ -28451,6 +28556,7 @@ export default function App() {
       "type": "SegmentedOption[] | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "[]",
       "descriptionZh": "选项数据",
       "descriptionEn": "Option data"
     },
@@ -28463,6 +28569,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否禁用",
       "descriptionEn": "Disable this option"
     },
@@ -28475,6 +28582,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否只读",
       "descriptionEn": "Read-only state"
     },
@@ -28487,6 +28595,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否撑满父容器",
       "descriptionEn": "Fill the parent width"
     },
@@ -28499,6 +28608,7 @@ export default function App() {
         "vertical"
       ],
       "boolean": false,
+      "defaultExpression": "\"horizontal\"",
       "descriptionZh": "排列方向",
       "descriptionEn": "Layout direction"
     },
@@ -28512,6 +28622,7 @@ export default function App() {
         "large"
       ],
       "boolean": false,
+      "defaultExpression": "sizeProp ?? inheritedAppearance.size ?? \"medium\"",
       "descriptionZh": "尺寸",
       "descriptionEn": "Size"
     },
@@ -28526,6 +28637,7 @@ export default function App() {
         "circle"
       ],
       "boolean": false,
+      "defaultExpression": "shapeProp ?? inheritedAppearance.shape ?? \"round\"",
       "descriptionZh": "形状",
       "descriptionEn": "Shape"
     },
@@ -28719,6 +28831,7 @@ export default function SegmentedLabelDemo() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否允许再次点击后清除",
       "descriptionEn": "Whether to allow clearing by clicking again"
     },
@@ -28731,6 +28844,7 @@ export default function SegmentedLabelDemo() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否允许半选",
       "descriptionEn": "Whether to allow half selection"
     },
@@ -28759,6 +28873,7 @@ export default function SegmentedLabelDemo() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否显示分数",
       "descriptionEn": "Whether to show score"
     },
@@ -28767,6 +28882,7 @@ export default function SegmentedLabelDemo() {
       "type": "string[] | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "[]",
       "descriptionZh": "自定义每项的提示信息",
       "descriptionEn": "Custom prompt information for each item"
     },
@@ -28779,6 +28895,7 @@ export default function SegmentedLabelDemo() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "只读，无法进行交互",
       "descriptionEn": "Read-only, cannot interact"
     },
@@ -28791,6 +28908,7 @@ export default function SegmentedLabelDemo() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "只读，保持正常外观但无法修改",
       "descriptionEn": "Read-only with normal appearance"
     },
@@ -28799,6 +28917,7 @@ export default function SegmentedLabelDemo() {
       "type": "number | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "5",
       "descriptionZh": "star 总数",
       "descriptionEn": "Total number of stars"
     },
@@ -28827,6 +28946,7 @@ export default function SegmentedLabelDemo() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "符号反相填充颜色",
       "descriptionEn": "Symbol Inverted Fill Color"
     },
@@ -28835,6 +28955,7 @@ export default function SegmentedLabelDemo() {
       "type": "number | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "1",
       "descriptionZh": "符号边框单位",
       "descriptionEn": "Symbol Border Unit"
     },
@@ -29565,6 +29686,7 @@ export default function App() {
         "bottom-right"
       ],
       "boolean": false,
+      "defaultExpression": "\"bottom-left\"",
       "descriptionZh": "下拉框弹出位置",
       "descriptionEn": "Dropdown placement"
     },
@@ -29577,6 +29699,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
       "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
     },
@@ -29625,6 +29748,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否可以清空选项",
       "descriptionEn": "Whether options can be cleared"
     },
@@ -29637,6 +29761,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否允许搜索过滤",
       "descriptionEn": "Whether search filtering is enabled"
     },
@@ -29649,6 +29774,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "多选时是否允许输入并创建新选项",
       "descriptionEn": "Allow creating a unique option from input in multiple mode"
     },
@@ -29661,6 +29787,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否撑满父容器宽度",
       "descriptionEn": "Whether to fill the parent width"
     },
@@ -29673,6 +29800,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否禁用当前项",
       "descriptionEn": "Whether current item is disabled"
     },
@@ -29685,6 +29813,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否只读",
       "descriptionEn": "Whether the component is read-only"
     },
@@ -29697,6 +29826,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否呈现多选模式",
       "descriptionEn": "Whether to display in multiple selection mode"
     },
@@ -29709,6 +29839,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否显示异步加载",
       "descriptionEn": "Whether to show asynchronous loading"
     },
@@ -29721,6 +29852,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否显示边框",
       "descriptionEn": "Whether to show border"
     },
@@ -29733,6 +29865,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "下拉框的宽度是否与input一致",
       "descriptionEn": "Whether dropdown width matches input width"
     },
@@ -29745,6 +29878,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否显示下拉按钮",
       "descriptionEn": "Whether to show dropdown button"
     },
@@ -29819,6 +29953,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否开启虚拟滚动，用于高效渲染大量选项",
       "descriptionEn": "Whether to enable virtual scrolling for large option lists"
     },
@@ -29827,6 +29962,7 @@ export default function App() {
       "type": "number | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "33",
       "descriptionZh": "虚拟滚动时每个选项的高度，单位 `px`",
       "descriptionEn": "Height of each option in pixels when virtual scrolling is enabled"
     },
@@ -29835,6 +29971,7 @@ export default function App() {
       "type": "number | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "5",
       "descriptionZh": "虚拟滚动时视口外额外渲染的选项数量",
       "descriptionEn": "Number of extra options rendered outside the viewport"
     },
@@ -32466,6 +32603,7 @@ export default function App() {
         "plain"
       ],
       "boolean": false,
+      "defaultExpression": "resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? \"fill\"",
       "descriptionZh": "外观主题",
       "descriptionEn": "Appearance theme"
     },
@@ -32491,6 +32629,7 @@ export default function App() {
         "large"
       ],
       "boolean": false,
+      "defaultExpression": "sizeProp ?? inheritedAppearance.size ?? \"medium\"",
       "descriptionZh": "尺寸",
       "descriptionEn": "Size"
     },
@@ -32757,7 +32896,6 @@ export default function App() {
       "type": "number | undefined",
       "required": false,
       "boolean": false,
-      "defaultExpression": "1.2",
       "descriptionZh": "数值动态展示时间(秒)",
       "descriptionEn": "Numerical dynamic display time (seconds)"
     },
@@ -32922,6 +33060,7 @@ export default function App() {
       "type": "number | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "0",
       "descriptionZh": "最小值",
       "descriptionEn": "Minimum value"
     },
@@ -32930,6 +33069,7 @@ export default function App() {
       "type": "number | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "100",
       "descriptionZh": "最大值",
       "descriptionEn": "Maximum value"
     },
@@ -32938,6 +33078,7 @@ export default function App() {
       "type": "number | null | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "1",
       "descriptionZh": "间距大小 , 步长，取值必须大于 0，并且可被 (max - min) 整除",
       "descriptionEn": "Step size, must be greater than 0 and divisible by (max - min)"
     },
@@ -32950,6 +33091,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "滑块是否禁用",
       "descriptionEn": "Whether the slider is disabled"
     },
@@ -32962,6 +33104,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "滑块是否只读",
       "descriptionEn": "Whether the slider is read-only"
     },
@@ -32974,6 +33117,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否设置方向为垂直",
       "descriptionEn": "Whether to set direction to vertical"
     },
@@ -32986,6 +33130,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否倒序排列",
       "descriptionEn": "Sort in reverse order"
     },
@@ -32998,6 +33143,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否支持两边同时可滑动",
       "descriptionEn": "Whether to support sliding on both sides simultaneously"
     },
@@ -33026,6 +33172,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "marks 不为空对象时有效，值为 true 时表示值为包含关系，false 表示并列",
       "descriptionEn": "Effective when marks is not empty object, true means inclusive relationship, false means parallel"
     },
@@ -33042,6 +33189,7 @@ export default function App() {
       "type": "boolean | null | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "null",
       "descriptionZh": "值为true时，Tooltip 将会始终显示；否则始终不显示，哪怕在拖拽及移入时。",
       "descriptionEn": "When true, Tooltip will always display; otherwise never display, even when dragging and hovering"
     },
@@ -34455,6 +34603,7 @@ export default function App() {
         "boolean"
       ],
       "boolean": false,
+      "defaultExpression": "\"boolean\"",
       "descriptionZh": "输出值类型",
       "descriptionEn": "Output value type"
     },
@@ -34483,6 +34632,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "禁用开关",
       "descriptionEn": "Disable switch"
     },
@@ -34495,6 +34645,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "只读开关",
       "descriptionEn": "Make the switch read-only"
     },
@@ -34507,6 +34658,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "加载状态，加载时不可操作",
       "descriptionEn": "Loading state; interaction is disabled while loading"
     },
@@ -34534,6 +34686,7 @@ export default function App() {
         "circle"
       ],
       "boolean": false,
+      "defaultExpression": "shapeProp ?? inheritedAppearance.shape ?? \"round\"",
       "descriptionZh": "形状",
       "descriptionEn": "Shape"
     },
@@ -36246,7 +36399,6 @@ export default function EllipsisDemo() {
       "type": "(string | number)[] | undefined",
       "required": false,
       "boolean": false,
-      "defaultExpression": "[]",
       "descriptionZh": "隐藏列的 key 集合；在变更回调中更新，并把同一值传给 Table 的 `hiddenColumnKeys`。",
       "descriptionEn": "Hidden column keys. Update this value in the change callback and pass the same value to Table's `hiddenColumnKeys`."
     },
@@ -36272,6 +36424,7 @@ export default function EllipsisDemo() {
       "type": "string | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "titleProp || locale?.k?.table?.columnSettings || \"Column settings\"",
       "descriptionZh": "弹层标题及默认触发按钮文案。",
       "descriptionEn": "Popup title and default trigger button text."
     },
@@ -36280,6 +36433,7 @@ export default function EllipsisDemo() {
       "type": "string | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "resetTextProp || locale?.k?.table?.resetColumns || \"Reset\"",
       "descriptionZh": "重置按钮文案；重置会显示所有可配置列。",
       "descriptionEn": "Reset button text. Reset shows all configurable columns."
     },
@@ -40109,6 +40263,7 @@ export default function App() {
         "bottom-right"
       ],
       "boolean": false,
+      "defaultExpression": "\"bottom-left\"",
       "descriptionZh": "下拉框弹出位置",
       "descriptionEn": "Dropdown placement"
     },
@@ -40121,6 +40276,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
       "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
     },
@@ -40169,6 +40325,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否可以清空选项",
       "descriptionEn": "Whether options can be cleared"
     },
@@ -40253,6 +40410,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否显示边框",
       "descriptionEn": "Whether to show border"
     },
@@ -40265,6 +40423,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否显示下拉按钮",
       "descriptionEn": "Whether to show dropdown button"
     },
@@ -40327,6 +40486,7 @@ export default function App() {
       "type": "IconType[] | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "ChevronDown",
       "descriptionZh": "自定义下拉箭头图标",
       "descriptionEn": "Custom dropdown arrow icon"
     },
@@ -40371,6 +40531,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否展示图标",
       "descriptionEn": "Whether to show icons"
     },
@@ -40447,6 +40608,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否启用虚拟滚动",
       "descriptionEn": "Whether to enable virtual scrolling"
     },
@@ -40455,6 +40617,7 @@ export default function App() {
       "type": "number | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "260",
       "descriptionZh": "虚拟滚动视口高度",
       "descriptionEn": "Virtual scrolling viewport height"
     },
@@ -40463,6 +40626,7 @@ export default function App() {
       "type": "number | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "28",
       "descriptionZh": "虚拟滚动节点高度",
       "descriptionEn": "Virtual node height"
     },
@@ -40471,6 +40635,7 @@ export default function App() {
       "type": "number | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "5",
       "descriptionZh": "可视区域外预渲染的节点数量",
       "descriptionEn": "Extra nodes rendered outside the viewport"
     },
@@ -40972,6 +41137,7 @@ export default function Demo() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否显示边框。",
       "descriptionEn": "Whether to display the border."
     },
@@ -40998,6 +41164,7 @@ export default function Demo() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否显示下拉箭头。",
       "descriptionEn": "Whether to display the dropdown arrow."
     },
@@ -41006,6 +41173,7 @@ export default function Demo() {
       "type": "string | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "\"请选择\"",
       "descriptionZh": "当没有任何选择路径时的兜底提示占位文案。",
       "descriptionEn": "Fallback placeholder text displayed when no path is selected."
     },
@@ -41022,6 +41190,7 @@ export default function Demo() {
       "type": "IconType[] | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "ChevronDown",
       "descriptionZh": "自定义下拉箭头。",
       "descriptionEn": "Custom dropdown arrow."
     },
@@ -41074,6 +41243,7 @@ export default function Demo() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否支持一键清空所选路径。",
       "descriptionEn": "Whether to support clearing the selected path with one click."
     },
@@ -41099,6 +41269,7 @@ export default function Demo() {
         "click"
       ],
       "boolean": false,
+      "defaultExpression": "\"click\"",
       "descriptionZh": "下一级菜单的展开交互触发方式。可选值：`'click'` (点击) 或 `'hover'` (鼠标悬浮即展开)。",
       "descriptionEn": "Interaction mode for expanding the next-level menu. Options: `'click'` or `'hover'`."
     },
@@ -41111,6 +41282,7 @@ export default function Demo() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否展示完整选中的祖先路径。若为 `false` 则仅在输入框内显示最终的末端叶子节点。",
       "descriptionEn": "Whether to display the full selected ancestor path. If `false`, only the final leaf node is shown in the input box."
     },
@@ -41119,6 +41291,7 @@ export default function Demo() {
       "type": "string | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "\" / \"",
       "descriptionZh": "当 `showAllLevels` 开启时，各层级标签之间的多级分隔符。",
       "descriptionEn": "Separator between labels of different levels when `showAllLevels` is enabled."
     },
@@ -41135,6 +41308,7 @@ export default function Demo() {
         "bottom-right"
       ],
       "boolean": false,
+      "defaultExpression": "\"bottom-left\"",
       "descriptionZh": "弹层位置。",
       "descriptionEn": "Popup placement."
     },
@@ -41147,6 +41321,7 @@ export default function Demo() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内已填写的表单状态，代价是每个打开过的实例留一份隐藏 DOM",
       "descriptionEn": "Whether to destroy panel content after closing. Destroyed by default (remounted on reopen); set false to keep form state at the cost of one hidden DOM node per opened instance"
     },
@@ -41596,6 +41771,7 @@ export default function App() {
         "large"
       ],
       "boolean": false,
+      "defaultExpression": "sizeProp ?? inheritedAppearance.size ?? \"small\"",
       "descriptionZh": "标签尺寸，可选值 `small`、`medium`、`large`",
       "descriptionEn": "Tag size, optional values `small`, `medium`, `large`"
     },
@@ -41611,6 +41787,7 @@ export default function App() {
         "plain"
       ],
       "boolean": false,
+      "defaultExpression": "resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? \"fill\"",
       "descriptionZh": "组件呈现主题",
       "descriptionEn": "The component renders the theme"
     },
@@ -42574,6 +42751,7 @@ export default function App() {
       "type": "string | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "\"post\"",
       "descriptionZh": "上传请求的 http method",
       "descriptionEn": "HTTP method for upload request"
     },
@@ -42582,6 +42760,7 @@ export default function App() {
       "type": "string | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "\"file\"",
       "descriptionZh": "发到后台的文件参数名,默认`file`",
       "descriptionEn": "File parameter name sent to backend, default `file`"
     },
@@ -42602,6 +42781,7 @@ export default function App() {
         "picture"
       ],
       "boolean": false,
+      "defaultExpression": "\"list\"",
       "descriptionZh": "选择上传文件之后所呈现的形式",
       "descriptionEn": "Display style after selecting files"
     },
@@ -42610,6 +42790,7 @@ export default function App() {
       "type": "Record<string, string | number | boolean | Blob> | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "{}",
       "descriptionZh": "上传可能所需的其它参数",
       "descriptionEn": "Other parameters that may be required for upload"
     },
@@ -42686,6 +42867,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "跨域请求是否携带凭证",
       "descriptionEn": "Include credentials in cross-origin requests"
     },
@@ -42694,6 +42876,7 @@ export default function App() {
       "type": "number | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "0",
       "descriptionZh": "请求超时时间（毫秒），`0` 表示不限制",
       "descriptionEn": "Request timeout in milliseconds"
     },
@@ -42722,6 +42905,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否显示上传列表",
       "descriptionEn": "Whether to show upload list"
     },
@@ -42750,6 +42934,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否自动上传",
       "descriptionEn": "Whether to auto upload"
     },
@@ -42834,6 +43019,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "点击照片是否打开图片预览",
       "descriptionEn": "Whether clicking a picture opens image preview"
     },
@@ -42846,6 +43032,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "true",
       "descriptionZh": "是否校验文件类型",
       "descriptionEn": "Whether to validate file types"
     },
@@ -42854,6 +43041,7 @@ export default function App() {
       "type": "number | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "Infinity",
       "descriptionZh": "最大并发上传数",
       "descriptionEn": "Maximum concurrent uploads"
     },
@@ -43881,6 +44069,7 @@ export default function App() {
       "type": "TransferItem[] | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "EMPTY_ITEMS",
       "descriptionZh": "数据源",
       "descriptionEn": "Source data"
     },
@@ -43897,6 +44086,7 @@ export default function App() {
       "type": "[ReactNode, ReactNode] | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "[\"Source\", \"Target\"]",
       "descriptionZh": "两侧标题",
       "descriptionEn": "Titles for both lists"
     },
@@ -43905,6 +44095,7 @@ export default function App() {
       "type": "[string, string] | undefined",
       "required": false,
       "boolean": false,
+      "defaultExpression": "[\"\", \"\"]",
       "descriptionZh": "向右、向左按钮文案",
       "descriptionEn": "Right and left operation labels"
     },
@@ -43917,6 +44108,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否可搜索",
       "descriptionEn": "Whether searchable"
     },
@@ -43929,6 +44121,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否禁用此项",
       "descriptionEn": "Disable this item"
     },
@@ -43941,6 +44134,7 @@ export default function App() {
         true
       ],
       "boolean": true,
+      "defaultExpression": "false",
       "descriptionZh": "是否只读",
       "descriptionEn": "Whether read-only"
     },
@@ -43956,6 +44150,7 @@ export default function App() {
         "plain"
       ],
       "boolean": false,
+      "defaultExpression": "resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? \"outline\"",
       "descriptionZh": "外观主题",
       "descriptionEn": "Appearance theme"
     },
