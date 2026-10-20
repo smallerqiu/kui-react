@@ -26,7 +26,7 @@ const Badge: React.FC<BadgeProps> = ({
   pill = false,
   active = false,
   color,
-  status = "default",
+  status,
   text,
   maxCount = 99,
   children,
@@ -44,6 +44,9 @@ const Badge: React.FC<BadgeProps> = ({
     displayCount = count;
   }
 
+  // The status dot is a mode the caller asks for, so `status` carries no default: `!hasChildren` alone
+  // would paint a grey dot on every plain `<Badge />`, and on every `<Badge count={0} />`, whose count
+  // never becomes a display value — a dot that says nothing where the author meant nothing.
   const isStatusType = !hasChildren && (status || color) && !dot;
 
   const statusNodes: React.ReactNode[] = [];
