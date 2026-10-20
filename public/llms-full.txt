@@ -4036,7 +4036,6 @@ import { useState } from "react";
 import { Badge, Space, Switch } from "react-kui";
 const custom = ["#c20", "#39f", "#e3f", "#6c0"];
 const colors = [
-  "default",
   "red",
   "orange",
   "yellow",
@@ -4348,7 +4347,6 @@ export default function App() {
 ```tsx
 import { Button, Space } from "react-kui";
 const colors = [
-  "default",
   "red",
   "orange",
   "yellow",
@@ -4733,7 +4731,6 @@ export default function App() {
 ```tsx
 import { Button, Space } from "react-kui";
 const colors = [
-  "default",
   "red",
   "orange",
   "yellow",
@@ -41930,7 +41927,6 @@ export default function App() {
 ```tsx
 import { Space, Tag } from "react-kui";
 const colors = [
-    "default",
     "red",
     "orange",
     "yellow",
