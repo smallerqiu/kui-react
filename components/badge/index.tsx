@@ -1,7 +1,10 @@
 import clsx from "clsx";
 import React from "react";
+import { colors } from "../const/var";
+import type { ColorType } from "../const/types";
 import RollUp from "../stat-card/rollup";
 import { getChildren } from "../utils/react-node";
+import { isColor } from "../utils/color";
 
 export type BadgeStatusType = "default" | "success" | "error" | "warning";
 
@@ -13,7 +16,7 @@ export interface BadgeProps extends Omit<
   dot?: boolean;
   pill?: boolean;
   active?: boolean;
-  color?: string;
+  color?: ColorType;
   status?: BadgeStatusType;
   text?: React.ReactNode;
   maxCount?: number;
@@ -49,18 +52,21 @@ const Badge: React.FC<BadgeProps> = ({
   // never becomes a display value — a dot that says nothing where the author meant nothing.
   const isStatusType = !hasChildren && (status || color) && !dot;
 
+  // `color` speaks the same vocabulary as `Tag`: a preset name picks up a palette slot, anything the
+  // browser can read as a colour paints itself, and a string that is neither falls back to `status` —
+  // a class assembled from it would name a colour no stylesheet defines, so the dot would be transparent.
+  const isPresetColor = color !== undefined && colors.some((preset) => preset === color);
+  const isCustomColor = !!color && isColor(color) && !isPresetColor;
+
   const statusNodes: React.ReactNode[] = [];
   if (isStatusType && !displayCount) {
-    const isHexColor = color && /^#/.test(color);
-
     const dotClasses = clsx("k-badge-status-dot", {
       "k-badge-status-active": active,
-      [`k-badge-status-${status}`]: status,
-      [`k-badge-status-${color}`]: color && !isHexColor,
+      [isPresetColor ? `k-badge-status-${color}` : `k-badge-status-${status ?? "default"}`]: true,
     });
 
     const dotStyle: React.CSSProperties = {
-      backgroundColor: isHexColor ? color : undefined,
+      backgroundColor: isCustomColor ? color : undefined,
     };
 
     statusNodes.push(<span key="dot" className={dotClasses} style={dotStyle} />);
@@ -82,11 +88,11 @@ const Badge: React.FC<BadgeProps> = ({
       "k-badge-count": !dot && displayCount !== null,
       "k-badge-dot": dot,
       "k-badge-no-child": !hasChildren,
-      [`k-badge-${status}`]: status && !color,
+      [`k-badge-${color}`]: isPresetColor,
     });
 
     const supStyle: React.CSSProperties = {
-      backgroundColor: color,
+      backgroundColor: isCustomColor ? color : undefined,
     };
 
     supNode = (

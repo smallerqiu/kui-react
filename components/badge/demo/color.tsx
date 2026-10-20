@@ -2,18 +2,24 @@ import { useState } from "react";
 import { Badge, Space, Switch } from "react-kui";
 const custom = ["#c20", "#39f", "#e3f", "#6c0"];
 const colors = [
-  "pink",
+  "default",
   "red",
-  "yellow",
   "orange",
-  "cyan",
+  "yellow",
+  "olive",
   "green",
+  "teal",
   "blue",
-  "purple",
-  "magenta",
   "volcano",
+  "violet",
+  "cyan",
   "gold",
   "lime",
+  "magenta",
+  "purple",
+  "pink",
+  "brown",
+  "gray",
 ];
 export default function App() {
   const [active, setActive] = useState(false);
