@@ -41740,8 +41740,8 @@ export default function App() {
       "type": "string | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "标签的颜色",
-      "descriptionEn": "Tag color"
+      "descriptionZh": "标签颜色：预设色值名（与 `Badge` 同一套，如 `blue`）或任意可读色值",
+      "descriptionEn": "Tag color: a preset name (the same set `Badge` uses, e.g. `blue`) or any readable color value"
     },
     {
       "name": "shape",
@@ -41930,18 +41930,24 @@ export default function App() {
 ```tsx
 import { Space, Tag } from "react-kui";
 const colors = [
-    "pink",
+    "default",
     "red",
-    "yellow",
     "orange",
-    "cyan",
+    "yellow",
+    "olive",
     "green",
+    "teal",
     "blue",
-    "purple",
-    "magenta",
     "volcano",
+    "violet",
+    "cyan",
     "gold",
     "lime",
+    "magenta",
+    "purple",
+    "pink",
+    "brown",
+    "gray",
   ],
   custom = ["#c20", "#39f", "#e3f", "#6c0"];
 export default function App() {
