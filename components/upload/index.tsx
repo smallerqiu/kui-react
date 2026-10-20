@@ -282,7 +282,7 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
         item.errorText =
           value instanceof Error
             ? value.message
-            : String(value || messages?.k?.upload?.failed || "Upload failed");
+            : String(value || messages?.k.upload.failed);
       }
       item.xhr = undefined;
       update(item);
@@ -336,11 +336,11 @@ const Upload = forwardRef<UploadRef, UploadProps>(function Upload(
     xhr.timeout = Math.max(0, timeout);
     if (item.uid) requestHandlesRef.current.set(item.uid, { abort: () => xhr.abort() });
     Object.entries(headers ?? {}).forEach(([key, value]) => xhr.setRequestHeader(key, value));
-    // 失败时给出提示文案，与 kui-vue 的修复保持一致
+    // 失败文案只有语言包一个出处；`detail` 是传输给出的原因（状态码、超时），有就接在文案后面
     const fail = (detail?: string) => {
       const message = detail
-        ? `${messages?.k?.upload?.failed ?? "上传失败"}: ${detail}`
-        : (messages?.k?.upload?.failed ?? "上传失败");
+        ? `${messages?.k.upload.failed}: ${detail}`
+        : messages?.k.upload.failed;
       settle("error", message);
     };
     xhr.upload.onloadstart = () => {
