@@ -42,11 +42,11 @@ To unmount the entire component after closing, update the parent state in `onAft
 | type | Alert type, optional values are `success`, `info`, `warning`, `error` or not set | `"info" \| "success" \| "warning" \| "error"` | warning |
 | message | Alert content | `React.ReactNode` | - |
 | description | Auxiliary text introduction for the alert | `React.ReactNode` | - |
-| showIcon | Whether to show the icon | `boolean` | false |
+| showIcon | Whether to show the icon | `boolean` | true |
 | closable | Whether to show the close button | `boolean` | false |
 | bordered | Whether to display the border | `boolean` | false |
 | theme | Surface theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | fill |
-| shape | Shape | `"round" \| "default" \| "square" \| "circle"` | - |
+| shape | Shape | `"round" \| "default" \| "square" \| "circle"` | round |
 | onClose | Triggered when the close button is clicked | `((e: React.MouseEvent<HTMLElement>) => void)` | - |
 | onAfterClose | Triggered after the exit animation | `(() => void)` | - |
 | icon | Custom icon | `IconType[]` | - |

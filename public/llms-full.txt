@@ -916,7 +916,7 @@ export default function App() {
       ],
       "boolean": false,
       "defaultExpression": "\"warning\"",
-      "descriptionZh": "按钮类型，可选值为 `success`、`info`、`warning`、`error` 或者不设置",
+      "descriptionZh": "警告类型，可选值为 `success`、`info`、`warning`、`error`，不设置时是 `warning`",
       "descriptionEn": "Alert type, optional values are `success`, `info`, `warning`, `error` or not set"
     },
     {

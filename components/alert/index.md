@@ -39,13 +39,13 @@
 
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| type | 按钮类型，可选值为 `success`、`info`、`warning`、`error` 或者不设置 | `"info" \| "success" \| "warning" \| "error"` | warning |
+| type | 警告类型，可选值为 `success`、`info`、`warning`、`error`，不设置时是 `warning` | `"info" \| "success" \| "warning" \| "error"` | warning |
 | message | 警告提示内容 | `React.ReactNode` | - |
 | description | 警告提示的辅助性文字介绍 | `React.ReactNode` | - |
-| showIcon | 是否显示图标 | `boolean` | false |
+| showIcon | 是否显示图标 | `boolean` | true |
 | bordered | 是否展示边框 | `boolean` | false |
 | theme | 外观主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | fill |
-| shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | - |
+| shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | round |
 | closable | 是否显示关闭按钮 | `boolean` | false |
 | onClose | 点击关闭按钮时触发 | `((e: React.MouseEvent<HTMLElement>) => void)` | - |
 | onAfterClose | 退出动画结束后触发 | `(() => void)` | - |
