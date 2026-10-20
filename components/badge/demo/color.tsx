@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Badge, Space, Switch } from "react-kui";
 const custom = ["#c20", "#39f", "#e3f", "#6c0"];
 const colors = [
-  "default",
   "red",
   "orange",
   "yellow",

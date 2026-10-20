@@ -1,6 +1,5 @@
 import { Button, Space } from "react-kui";
 const colors = [
-  "default",
   "red",
   "orange",
   "yellow",

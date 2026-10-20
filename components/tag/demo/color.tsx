@@ -1,6 +1,5 @@
 import { Space, Tag } from "react-kui";
 const colors = [
-    "default",
     "red",
     "orange",
     "yellow",
