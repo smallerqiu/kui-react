@@ -128,6 +128,7 @@ rm -rf node_modules/.vite
 - An input wrapped in an `InputGroup` inside a form item still counts as that item’s control: the form value fills it, clicking the label focuses it, and the validation message and appearance tier follow it.
 - In a vertical `Form` (`layout="vertical"`) a `block` control now really fills the row: previously every field shrink-wrapped to its own content width, so the right edges inside one form did not line up.
 - `Cascader` now reads its placeholder from the locale when `placeholder` is not set, so an English interface no longer shows 请选择.
+- `Badge`: a status dot now needs `status` or `color` to be set, so an empty `<Badge />` or `count={0}` no longer shows a grey dot nobody asked for.
 
 ### 3.1.2
 

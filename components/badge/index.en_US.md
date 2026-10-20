@@ -46,5 +46,5 @@ Generally appears in the upper right corner of notification icons or avatars, us
 | dot | Do not display the number, only a small red dot | `boolean` | false |
 | pill | Display the badge with a pill shape | `boolean` | false |
 | text | If status is set, text sets the display text of the status dot | `React.ReactNode` | '' |
-| status | Set Badge as a status dot | `"default" \| "success" \| "warning" \| "error"` | default |
+| status | Set Badge as a status dot | `"default" \| "success" \| "warning" \| "error"` | - |
 | active | The dot is in the active state. | `boolean` | false |

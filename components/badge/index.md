@@ -46,5 +46,5 @@
 | dot | 不展示数字，只有一个小红点 | `boolean` | false |
 | pill | 使用胶囊形状显示徽标 | `boolean` | false |
 | text | 如果设置了状态，文本将设置状态点的显示文本 | `React.ReactNode` | '' |
-| status | 将徽章设置为状态点 | `"default" \| "success" \| "warning" \| "error"` | default |
+| status | 将徽章设置为状态点 | `"default" \| "success" \| "warning" \| "error"` | - |
 | active | 小红点为激活状态 | `boolean` | false |

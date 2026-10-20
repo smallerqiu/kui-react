@@ -3849,7 +3849,6 @@ export default function App() {
         "error"
       ],
       "boolean": false,
-      "defaultExpression": "\"default\"",
       "descriptionZh": "将徽章设置为状态点",
       "descriptionEn": "Set Badge as a status dot"
     },
