@@ -30,7 +30,7 @@ The difference from `Tooltip` is that users can operate on elements in the float
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
-| trigger | Trigger method, optional values: `hover` (hover) `click` (click) | `"hover" \| "click" \| "focus"` | click |
+| trigger | Trigger method, optional values: `hover` (hover) `click` (click) | `"hover" \| "click" \| "focus"` | hover |
 | title | Displayed title | `React.ReactNode` | - |
 | content | Displayed main content | `React.ReactNode` | - |
 | placement | Position where the tooltip appears | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right" \| "left" \| "left-bottom" \| "left-top" \| "right" \| "right-top" \| "right-bottom"` | top |

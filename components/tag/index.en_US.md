@@ -56,6 +56,6 @@ For dynamic lists, remove the corresponding item from the array in `onAfterClose
 | icon | Tag icon | `IconType[]` | - |
 | onClose | Triggered when the close button is clicked | `(() => void)` | - |
 | onAfterClose | Triggered after the exit animation | `(() => void)` | - |
-| size | Button size, optional values `small`, `large`, default not selected | `"small" \| "medium" \| "large"` | - |
+| size | Tag size, optional values `small`, `medium`, `large` | `"small" \| "medium" \| "large"` | small |
 | theme | The component renders the theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | fill |
 | shape | The shape in which the component is presented | `"round" \| "default" \| "square" \| "circle"` | circle |

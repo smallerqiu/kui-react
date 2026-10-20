@@ -30,7 +30,7 @@
 
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| trigger | 触发方式，可选值为 `hover`（悬停）`click`（点击） | `"hover" \| "click" \| "focus"` | click |
+| trigger | 触发方式，可选值为 `hover`（悬停）`click`（点击） | `"hover" \| "click" \| "focus"` | hover |
 | title | 显示的标题 | `React.ReactNode` | - |
 | content | 显示的正文内容 | `React.ReactNode` | - |
 | placement | 提示框出现的位置，可选值为`top`，`top-left`，`top-right`，`bottom`，`bottom-left`，`bottom-right`，`left`，`left-top`，`left-bottom`，`right`，`right-top`，`right-bottom` | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right" \| "left" \| "left-bottom" \| "left-top" \| "right" \| "right-top" \| "right-bottom"` | top |

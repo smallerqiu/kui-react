@@ -53152,8 +53152,8 @@
             "large"
           ],
           "boolean": false,
-          "descriptionZh": "按钮尺寸,可选值 `small`、`large`，默认不选",
-          "descriptionEn": "Button size, optional values `small`, `large`, default not selected"
+          "descriptionZh": "标签尺寸，可选值 `small`、`medium`、`large`",
+          "descriptionEn": "Tag size, optional values `small`, `medium`, `large`"
         },
         {
           "name": "theme",

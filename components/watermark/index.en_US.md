@@ -44,7 +44,7 @@ Add a watermark to a specific area of the page.
 | font | Global fallback styles for the watermark text (including color, font size, weight, family, and style). | `Font` | - |
 | gap | The horizontal and vertical spacing between watermark cells, formatted as `[x, y]`. | `[number, number]` | `[40, 40]` |
 | offset | The starting offset origin for the watermark grid tiling, formatted as `[x, y]`. Useful for fine-tuning edge whitespace. | `[number, number]` | `[20, 20]` |
-| layout | Layout mode of the watermark. Options: `'grid'` (traditional orthogonal grid) or `'stagger'` (advanced staggered grid with alternating row offsets). | `"grid" \| "stagger"` | `'grid'` |
+| layout | Layout mode of the watermark. Options: `'grid'` (traditional orthogonal grid) or `'stagger'` (advanced staggered grid with alternating row offsets). | `"grid" \| "stagger"` | stagger |
 
 ### WatermarkTextItem
 

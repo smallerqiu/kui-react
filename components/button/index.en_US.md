@@ -56,7 +56,7 @@ import { Button } from "react-kui";
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
-| type | Set the button type | `"link" \| "text" \| "default" \| "warning" \| "primary" \| "danger"` | - |
+| type | Set the button type | `"link" \| "text" \| "default" \| "warning" \| "primary" \| "danger"` | default |
 | htmlType | Set the native type value of the button | `"button" \| "reset" \| "submit"` | button |
 | disabled | Disabled state of the button | `boolean` | false |
 | size | Button size, | `"small" \| "medium" \| "large"` | - |
