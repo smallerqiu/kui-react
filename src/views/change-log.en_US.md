@@ -129,6 +129,7 @@ rm -rf node_modules/.vite
 - In a vertical `Form` (`layout="vertical"`) a `block` control now really fills the row: previously every field shrink-wrapped to its own content width, so the right edges inside one form did not line up.
 - `Cascader` now reads its placeholder from the locale when `placeholder` is not set, so an English interface no longer shows 请选择.
 - `Badge`: a status dot now needs `status` or `color` to be set, so an empty `<Badge />` or `count={0}` no longer shows a grey dot nobody asked for.
+- `Badge` color now takes the same set of preset names as `Tag`, and both the status dot and the count bubble follow them. A color outside the presets still paints as written, and a name the browser cannot read no longer renders as an invisible dot - it falls back to the grey status dot.
 
 ### 3.1.2
 

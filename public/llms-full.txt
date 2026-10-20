@@ -3835,8 +3835,8 @@ export default function App() {
       "type": "string | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "徽标颜色",
-      "descriptionEn": "Badge color"
+      "descriptionZh": "徽标颜色：预设色值名（与 `Tag` 同一套，如 `blue`）或任意可读色值",
+      "descriptionEn": "Badge color: a preset name (the same set `Tag` uses, e.g. `blue`) or any readable color value"
     },
     {
       "name": "status",
@@ -4036,18 +4036,24 @@ import { useState } from "react";
 import { Badge, Space, Switch } from "react-kui";
 const custom = ["#c20", "#39f", "#e3f", "#6c0"];
 const colors = [
-  "pink",
+  "default",
   "red",
-  "yellow",
   "orange",
-  "cyan",
+  "yellow",
+  "olive",
   "green",
+  "teal",
   "blue",
-  "purple",
-  "magenta",
   "volcano",
+  "violet",
+  "cyan",
   "gold",
   "lime",
+  "magenta",
+  "purple",
+  "pink",
+  "brown",
+  "gray",
 ];
 export default function App() {
   const [active, setActive] = useState(false);

@@ -7399,8 +7399,8 @@
           "type": "string | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "徽标颜色",
-          "descriptionEn": "Badge color"
+          "descriptionZh": "徽标颜色：预设色值名（与 `Tag` 同一套，如 `blue`）或任意可读色值",
+          "descriptionEn": "Badge color: a preset name (the same set `Tag` uses, e.g. `blue`) or any readable color value"
         },
         {
           "name": "status",
@@ -7844,7 +7844,7 @@
         {
           "id": "components/badge/demo/color.tsx",
           "title": "多彩徽标",
-          "source": "import { useState } from \"react\";\nimport { Badge, Space, Switch } from \"react-kui\";\nconst custom = [\"#c20\", \"#39f\", \"#e3f\", \"#6c0\"];\nconst colors = [\n  \"pink\",\n  \"red\",\n  \"yellow\",\n  \"orange\",\n  \"cyan\",\n  \"green\",\n  \"blue\",\n  \"purple\",\n  \"magenta\",\n  \"volcano\",\n  \"gold\",\n  \"lime\",\n];\nexport default function App() {\n  const [active, setActive] = useState(false);\n  return (\n    <Space vertical block>\n      <Space>\n        Active : <Switch checked={active} onChange={(value) => setActive(Boolean(value))} />\n      </Space>\n      <code>Presets</code>\n      <Space wrap>\n        {colors.map((color) => (\n          <Badge key={color} color={color} text={color} active={active} />\n        ))}\n      </Space>\n      <br />\n      <code>Custom</code>\n      {custom.map((color) => (\n        <div key={color}>\n          <Badge color={color} text={color} active={active} />\n        </div>\n      ))}\n    </Space>\n  );\n}"
+          "source": "import { useState } from \"react\";\nimport { Badge, Space, Switch } from \"react-kui\";\nconst custom = [\"#c20\", \"#39f\", \"#e3f\", \"#6c0\"];\nconst colors = [\n  \"default\",\n  \"red\",\n  \"orange\",\n  \"yellow\",\n  \"olive\",\n  \"green\",\n  \"teal\",\n  \"blue\",\n  \"volcano\",\n  \"violet\",\n  \"cyan\",\n  \"gold\",\n  \"lime\",\n  \"magenta\",\n  \"purple\",\n  \"pink\",\n  \"brown\",\n  \"gray\",\n];\nexport default function App() {\n  const [active, setActive] = useState(false);\n  return (\n    <Space vertical block>\n      <Space>\n        Active : <Switch checked={active} onChange={(value) => setActive(Boolean(value))} />\n      </Space>\n      <code>Presets</code>\n      <Space wrap>\n        {colors.map((color) => (\n          <Badge key={color} color={color} text={color} active={active} />\n        ))}\n      </Space>\n      <br />\n      <code>Custom</code>\n      {custom.map((color) => (\n        <div key={color}>\n          <Badge color={color} text={color} active={active} />\n        </div>\n      ))}\n    </Space>\n  );\n}"
         }
       ]
     },
