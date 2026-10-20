@@ -127,6 +127,7 @@ rm -rf node_modules/.vite
 - Turning off `Cascader`’s border with `bordered={false}` now removes it for real: `theme="outline"` and `theme="dashed"` no longer leave a frame behind, and `theme="fill"` no longer keeps its tint, the way `Select`, `TreeSelect` and `DatePicker` already behave.
 - An input wrapped in an `InputGroup` inside a form item still counts as that item’s control: the form value fills it, clicking the label focuses it, and the validation message and appearance tier follow it.
 - In a vertical `Form` (`layout="vertical"`) a `block` control now really fills the row: previously every field shrink-wrapped to its own content width, so the right edges inside one form did not line up.
+- `Cascader` now reads its placeholder from the locale when `placeholder` is not set, so an English interface no longer shows 请选择.
 
 ### 3.1.2
 

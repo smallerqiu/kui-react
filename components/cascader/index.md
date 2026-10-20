@@ -56,7 +56,7 @@
 | onExpandChange | 展开的级联路径变化时触发。 | `((value: CascaderValue) => void)` | - |
 | onOpenChange | 下拉框显示状态变化时触发。 | `((open: boolean) => void)` | - |
 | options | 可选择的级联数据源树状结构。 | `CascaderOption[]` | `[]` |
-| placeholder | 当没有任何选择路径时的兜底提示占位文案。 | `string` | `"请选择"` |
+| placeholder | 当没有任何选择路径时的兜底提示占位文案。 | `string` | 根据语言 |
 | disabled | 是否完全禁用整个组件交互。 | `boolean` | `false` |
 | readOnly | 是否只读。 | `boolean` | `false` |
 | clearable | 是否支持一键清空所选路径。 | `boolean` | `true` |

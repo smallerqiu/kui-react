@@ -41173,7 +41173,6 @@ export default function Demo() {
       "type": "string | undefined",
       "required": false,
       "boolean": false,
-      "defaultExpression": "\"请选择\"",
       "descriptionZh": "当没有任何选择路径时的兜底提示占位文案。",
       "descriptionEn": "Fallback placeholder text displayed when no path is selected."
     },

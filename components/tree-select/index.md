@@ -56,7 +56,7 @@
 | block | 是否撑满父容器宽度 | `boolean` | false |
 | options | `treeData` 的兼容数据源属性 | `TreeNode[]` | [] |
 | arrowIcon | 自定义下拉箭头图标 | `IconType[]` | - |
-| placeholder | 选择框默认文字 | `string` | 请选择 |
+| placeholder | 选择框默认文字 | `string` | 根据语言 |
 | disabled | 是否禁用当前项 | `boolean` | false |
 | readOnly | 是否只读 | `boolean` | false |
 | size | 组件尺寸大小,提供`small`,`large`两种尺寸，默认为正常 | `"small" \| "medium" \| "large"` | - |

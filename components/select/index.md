@@ -57,7 +57,7 @@
 | loadingText | 加载状态提示文字 | `string` | - |
 | arrowIcon | 自定义下拉箭头图标 | `IconType[]` | - |
 | width | 组件宽度 | `number` | - |
-| placeholder | 选择框默认文字 | `string` | 请选择 |
+| placeholder | 选择框默认文字 | `string` | 根据语言 |
 | disabled | 是否禁用当前项 | `boolean` | false |
 | readOnly | 是否只读 | `boolean` | false |
 | size | 组件尺寸大小,提供`small`,`large`两种尺寸，默认为正常 | `"small" \| "medium" \| "large"` | - |

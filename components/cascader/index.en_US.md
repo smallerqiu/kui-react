@@ -56,7 +56,7 @@ A cascading selection box.
 | onExpandChange | Called when the expanded path changes. | `((value: CascaderValue) => void)` | - |
 | onOpenChange | Called when dropdown visibility changes. | `((open: boolean) => void)` | - |
 | options | Tree-structured data source for cascading options. | `CascaderOption[]` | `[]` |
-| placeholder | Fallback placeholder text displayed when no path is selected. | `string` | `"请选择"` |
+| placeholder | Fallback placeholder text displayed when no path is selected. | `string` | locale |
 | disabled | Whether to completely disable interaction for the entire component. | `boolean` | `false` |
 | readOnly | Whether the component is read-only. | `boolean` | `false` |
 | clearable | Whether to support clearing the selected path with one click. | `boolean` | `true` |

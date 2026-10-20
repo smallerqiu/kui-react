@@ -57,7 +57,7 @@ Dropdown selector.
 | loadingText | Loading-state text | `string` | - |
 | arrowIcon | Custom dropdown arrow icon | `IconType[]` | - |
 | width | Component width | `number` | - |
-| placeholder | Default text of selector | `string` | Please select |
+| placeholder | Default text of selector | `string` | locale |
 | disabled | Whether current item is disabled | `boolean` | false |
 | readOnly | Whether the component is read-only | `boolean` | false |
 | size | Component size, provides two sizes: `small`, `large`, default is normal | `"small" \| "medium" \| "large"` | - |
