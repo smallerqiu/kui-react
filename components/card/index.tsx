@@ -1,9 +1,13 @@
-import { resolvePaintedTheme, useConfigAppearance } from "../config/use-config-appearance";
+import {
+  normalizeSurfaceShape,
+  resolvePaintedTheme,
+  useConfigAppearance,
+} from "../config/use-config-appearance";
 import clsx from "clsx";
 import React from "react";
 import { Avatar } from "../avatar";
 import Icon, { type IconType } from "../icon";
-import type { ShapeType, SizeType, SurfaceThemeType } from "../const/types";
+import type { SizeType, SurfaceShapeType, SurfaceThemeType } from "../const/types";
 
 export interface CardProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -11,7 +15,7 @@ export interface CardProps extends Omit<
 > {
   bordered?: boolean;
   theme?: SurfaceThemeType;
-  shape?: ShapeType;
+  shape?: SurfaceShapeType;
   size?: SizeType;
   title?: React.ReactNode;
   icon?: IconType[];
@@ -43,7 +47,7 @@ const Card: React.FC<CardProps> = ({
   const inheritedAppearance = useConfigAppearance();
   const theme =
     resolvePaintedTheme(themeProp ?? inheritedAppearance.theme, PAINTED_THEMES) ?? "fill";
-  const shape = shapeProp ?? inheritedAppearance.shape ?? "round";
+  const shape = normalizeSurfaceShape(shapeProp ?? inheritedAppearance.shape ?? "round");
   const size = sizeProp ?? inheritedAppearance.size ?? "medium";
   const iconNode = icon ? <Icon type={icon} className="k-card-title-icon" /> : null;
   const titleNode =

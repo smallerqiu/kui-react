@@ -42,7 +42,7 @@ Commonly seen in detail page information display.
 | layout | Description layout | `"inline" \| "horizontal" \| "vertical"` | horizontal |
 | size | List size | `"small" \| "medium" \| "large"` | large |
 | title | The title of the description list, displayed at the very top | `React.ReactNode` | - |
-| shape | Shape | `"round" \| "default" \| "square" \| "circle"` | round |
+| shape | Shape | `"round" \| "square"` | round |
 
 ## Item props
 

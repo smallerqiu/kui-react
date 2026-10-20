@@ -32,7 +32,7 @@ Displays a product capability or feature highlight.
 | extra | Trailing content | `ReactNode` | - |
 | bordered | Whether to show a border | `boolean` | false |
 | theme | Appearance theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | fill |
-| shape | Card shape | `"round" \| "default" \| "square" \| "circle"` | round |
+| shape | Card shape | `"round" \| "square"` | round |
 | size | Card size | `"small" \| "medium" \| "large"` | medium |
 | direction | Content direction | `"horizontal" \| "vertical"` | horizontal |
 | clickable | Enable interaction, keyboard control, and button semantics | `boolean` | false |

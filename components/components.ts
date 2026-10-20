@@ -334,6 +334,7 @@ export type {
   ShapeType,
   SizeType,
   SpinModeType,
+  SurfaceShapeType,
   SurfaceThemeType,
   ThemeType,
   TriggerType,

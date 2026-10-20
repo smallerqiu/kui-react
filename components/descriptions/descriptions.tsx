@@ -1,7 +1,7 @@
 import { useConfigAppearance, normalizeSurfaceShape } from "../config/use-config-appearance";
 import clsx from "clsx";
 import React, { useRef } from "react";
-import type { DirectionType, ShapeType, SizeType } from "../const/types";
+import type { DirectionType, SizeType, SurfaceShapeType } from "../const/types";
 import { useBreakpoint, type Breakpoint, type ResponsiveValue } from "../grid/useBreakpoint";
 import { getChildren } from "../utils/react-node";
 
@@ -91,7 +91,7 @@ export interface DescriptionsProps extends Omit<
   title?: React.ReactNode;
   extra?: React.ReactNode;
   size?: SizeType;
-  shape?: ShapeType;
+  shape?: SurfaceShapeType;
   children?: React.ReactNode;
 }
 

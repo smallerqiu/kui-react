@@ -74,7 +74,7 @@ rm -rf node_modules/.vite
 - `Select` / `TreeSelect` 用 `theme="fill"` 时，鼠标悬停不再抹掉应用用 `--kui-theme-fill-border` 描的那圈边框，与 `Cascader` 一致。
 - 报错的表单项不再漏掉控件：`Cascader` / `ColorPicker` / `InputTag` / `InputOTP` 放进验证失败的表单项时同样描红，此前只有 `Input` / `Select` 那几类会变色；`InputOTP` 是每一格一起描红。
 - `Select` / `TreeSelect` / `Cascader` / `ColorPicker` / `InputTag` / `InputOTP` 放进报错的表单项后，鼠标悬停、聚焦、展开面板都不会让那圈红色描边消失，红边和红色浅光一直留着；六种 `theme` 下都一样。
-报错的表单项里，聚焦或展开面板时那圈焦点光晕也跟着变红，不再出现红边配主色光晕；`theme="solid"` 的实底控件保留原来那圈反白光晕，红色在实底上反而看不清。
+- 报错的表单项里，聚焦或展开面板时那圈焦点光晕也跟着变红，不再出现红边配主色光晕；`theme="solid"` 的实底控件保留原来那圈反白光晕，红色在实底上反而看不清。
 - `DatePicker` 去掉边框（`bordered={false}` 或 `theme="plain"`）后聚焦不再出现一圈焦点环，与 `Select` 系列一致。
 - `Input` / `TextArea` / `InputNumber` 的 `theme` 补齐 `outline` / `solid` / `dashed` / `underlined` 四档：描边框、主色实底（输入的文字、占位提示与前后缀图标一起反白）、虚线描边、只留一条下划线（悬停、聚焦时变主色）。
 - `Input` / `TextArea` / `InputNumber` 的 `theme="plain"` 悬停时不再突然描出一圈边框，禁用时仍显示禁用态；`plain` 与 `underlined` 聚焦时不再出现焦点环，与 `Select` 系列一致。
@@ -120,6 +120,7 @@ rm -rf node_modules/.vite
 - 列表面板上写 `theme="underlined"` 按面板自己的 `outline` 呈现，不再落到卡片的 `fill`；`ConfigProvider` 传下来的这一档同样如此。
 - `Form` 的 `size` / `shape` / `theme` 只管表单里的控件：写在 `Form` 上的外观不再传给同一个表单里的 `Card`、`Collapse`、`FeedbackPanel`、`Alert`、`Table`、`Page`、`Tag`、`Button` 这些不是控件的区块，它们继续从 `ConfigProvider` 继承。此前 `<Form size="small">` 会顺手把表单里的卡片、面板、分页条一起缩小，`<Form theme="solid">` 会把它们一起铺成主色。要让整块页面跟着变外观，请把外观写在 `ConfigProvider` 上或直接写在组件上。
 - **不兼容变更**：`theme` 的类型改成只列组件画得出的档位。表面型组件——`Card` / `FeatureCard` / `StatCard` / `Collapse` / `FeedbackPanel` / `CheckCard` / `Alert` / `Image` / `QRCode` / `Page` / `Kanban` / `Transfer` / `ListPanel` / `Tag` / `Button` / `DropdownButton`，以及 `RadioGroup` / `RadioButton`——只收 `fill` / `outline` / `plain` / `solid` / `dashed` 五档（`SurfaceThemeType`）；`Checkbox` / `Radio` / `CheckboxGroup` 只收 `fill` / `outline` 两档（`MarkThemeType`）；`ConfigProvider` 与 `Form` 仍然六档全收。在这类组件上写过它画不到的档位（比如给卡片写 `theme="underlined"`）现在 TypeScript 会报错，运行时没有变化，组件仍旧按自己的外观呈现。
+- **不兼容变更**：表面型组件——`Card` / `ListPanel` / `FeatureCard` / `FeedbackPanel` / `Table` / `Descriptions` / `Collapse`——的 `shape` 类型改成只收 `square` / `round` 两档（`SurfaceShapeType`），与 Vue 版一致：表面只会把角切方或切成圆角，`circle` 会把内容一起裁掉，所以在这类组件上写 `shape="circle"` 现在 TypeScript 会报错，从 `ConfigProvider` 继承到 `circle` 时按 `round` 呈现。`Collapse` 与 `FeedbackPanel` 碰上 `circle` 时原本留着比圆角档更大的外角，现在一起收成圆角。
 - `TreeSelect` 展开面板时不再多出一圈光晕：`fill` / `plain` / `solid` / `underlined`、无边框与禁用这几种外观下，展开只剩那一圈焦点环，和 `Select`、`Cascader` 一致；`outline` 与 `dashed` 仍带原来的浅光。
 - `Input` / `Textarea` 用 `theme="solid"` 时聚焦不再多出一圈浅色光晕：主色实底上那层淡光本来就看不出来，现在和 `InputNumber` / `InputOTP` / `InputTag` / `ColorPicker` 一致，只留那一圈焦点环。
 - 禁用的输入框聚焦时不再发光；`ColorPicker` 禁用时，哪怕面板是用 `open` 手动展开的也不再发光。`outline` / `dashed` 这些留着描边的外观，聚焦与展开时的那层浅光照旧。

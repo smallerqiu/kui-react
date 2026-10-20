@@ -152,7 +152,7 @@ const columns = [
 | itemHeight | Virtual row height | `number` | 44 |
 | overscan | Extra virtual rows rendered outside the viewport | `number` | 5 |
 | hiddenColumnKeys | Hidden column key collection | `(string \| number)[]` | [] |
-| shape | Shape | `"round" \| "default" \| "square" \| "circle"` | round |
+| shape | Shape | `"round" \| "square"` | round |
 | onRowClick | Triggered when clicking a row | `((record: T, index: number) => void)` | - |
 | onSort | Triggered when clicking to sort | `((state: SortState) => void)` | - |
 | onSelect | Triggered when clicking the checkbox | `((record: T, selected: boolean, selectedKeys: TableKey[]) => void)` | - |

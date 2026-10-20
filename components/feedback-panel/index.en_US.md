@@ -25,7 +25,7 @@ Presents feedback, supporting details, and follow-up actions.
 | compact | Compact layout | `boolean` | false |
 | actions | Action content | `ReactNode` | - |
 | theme | Appearance theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
-| shape | Shape | `"round" \| "default" \| "square" \| "circle"` | round |
+| shape | Shape | `"round" \| "square"` | round |
 | children | Detail content | ReactNode | - |
 
 ## Theme

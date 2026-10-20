@@ -13,6 +13,9 @@ import Cascader from "../components/cascader";
 import Tag from "../components/tag";
 import Card from "../components/card";
 import StatCard from "../components/stat-card/stat-card";
+import ListPanel from "../components/list-panel";
+import FeatureCard from "../components/feature-card";
+import FeedbackPanel from "../components/feedback-panel";
 import Table from "../components/table";
 import Collapse from "../components/collapse/collapse";
 import Descriptions from "../components/descriptions/descriptions";
@@ -147,15 +150,32 @@ describe("ConfigProvider appearance", () => {
   });
 
   it("normalizes circle to round for surface components", () => {
+    // A surface has content to clip, so `circle` is not a shape it can draw and every one of them
+    // lands back on `round`. The panel paints through the card it renders, so its shape reaches the
+    // element as a card class rather than a `k-list-panel-` one.
     const { container } = render(
       <ConfigProvider shape="circle">
+        <Card className="surface-card" />
+        <ListPanel className="surface-panel" />
+        <FeatureCard />
+        <FeedbackPanel />
         <Table />
         <Descriptions />
         <Collapse />
       </ConfigProvider>,
     );
-    for (const component of ["table", "descriptions", "collapse"]) {
-      expectClasses(container, `.k-${component}`, [`k-${component}-round`]);
+    const surfaces: [string, string][] = [
+      [".surface-card", "k-card"],
+      [".surface-panel", "k-card"],
+      [".k-feature-card", "k-feature-card"],
+      [".k-feedback-panel", "k-feedback-panel-shape"],
+      [".k-table", "k-table"],
+      [".k-descriptions", "k-descriptions"],
+      [".k-collapse", "k-collapse"],
+    ];
+    for (const [selector, prefix] of surfaces) {
+      expectClasses(container, selector, [`${prefix}-round`]);
+      expect(container.querySelector(selector)!.classList.contains(`${prefix}-circle`)).toBe(false);
     }
   });
 

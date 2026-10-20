@@ -41,7 +41,7 @@
 | accordion | 是否开启手风琴模式 | `boolean` | false |
 | sample | 是否开启简洁模式 | `boolean` | false |
 | theme | 外观主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
-| shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | round |
+| shape | 形状 | `"round" \| "square"` | round |
 | onChange | 切换面板时触发，返回当前面板的 key | `((key: string \| number) => void)` | - |
 | onOpenKeysChange | 展开项变化时触发，返回全部展开项 | `((keys: (string \| number)[]) => void)` | - |
 

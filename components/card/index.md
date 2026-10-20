@@ -40,7 +40,7 @@
 | icon | 卡片标题的图标 | `IconType[]` | - |
 | bordered | 卡片是否显示边框 | `boolean` | false |
 | theme | 外观主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | fill |
-| shape | 外框形状 | `"round" \| "default" \| "square" \| "circle"` | round |
+| shape | 外框形状 | `"round" \| "square"` | round |
 | size | 卡片尺寸 | `"small" \| "medium" \| "large"` | medium |
 | extra | 卡片标题扩展 | `React.ReactNode` | - |
 | cover | 卡片封面 | `React.ReactNode` | - |

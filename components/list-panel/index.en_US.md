@@ -35,7 +35,7 @@ Provides a consistent layout for filters, result summaries, list content, and pa
 | footer | Footer area | `ReactNode` | - |
 | bordered | Whether to show a border | `boolean` | true |
 | theme | Appearance theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
-| shape | Shape | `"round" \| "default" \| "square" \| "circle"` | round |
+| shape | Shape | `"round" \| "square"` | round |
 | size | Size | `"small" \| "medium" \| "large"` | medium |
 | selectedCount | Selected item count | `number` | 0 |
 

@@ -6,7 +6,7 @@ import {
 import clsx from "clsx";
 import { CircleCheck, CircleX, Info, TriangleAlert } from "kui-icons";
 import { isValidElement, type HTMLAttributes, type ReactNode } from "react";
-import type { FeedbackPanelKind, ShapeType, SurfaceThemeType } from "../const/types";
+import type { FeedbackPanelKind, SurfaceShapeType, SurfaceThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
 
 export interface FeedbackPanelProps extends Omit<
@@ -20,7 +20,7 @@ export interface FeedbackPanelProps extends Omit<
   compact?: boolean;
   actions?: ReactNode;
   theme?: SurfaceThemeType;
-  shape?: ShapeType;
+  shape?: SurfaceShapeType;
 }
 
 // A feedback panel paints a whole box, so it answers the four surface tiers plus `fill` and never

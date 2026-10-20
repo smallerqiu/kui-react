@@ -32,7 +32,7 @@
 | extra | 右侧扩展区域 | `ReactNode` | - |
 | bordered | 是否显示边框 | `boolean` | false |
 | theme | 外观主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | fill |
-| shape | 卡片形状 | `"round" \| "default" \| "square" \| "circle"` | round |
+| shape | 卡片形状 | `"round" \| "square"` | round |
 | size | 卡片尺寸 | `"small" \| "medium" \| "large"` | medium |
 | direction | 内容排列方向 | `"horizontal" \| "vertical"` | horizontal |
 | clickable | 是否可交互；启用键盘及按钮语义 | `boolean` | false |

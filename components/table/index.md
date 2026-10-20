@@ -152,7 +152,7 @@ const columns = [
 | itemHeight | 虚拟滚动行高度 | `number` | 44 |
 | overscan | 虚拟滚动视口外预渲染行数 | `number` | 5 |
 | hiddenColumnKeys | 隐藏的列 key 集合 | `(string \| number)[]` | [] |
-| shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | round |
+| shape | 形状 | `"round" \| "square"` | round |
 | onRowClick | 单击某一行时触发 | `((record: T, index: number) => void)` | - |
 | onSort | 点击排序时触发 | `((state: SortState) => void)` | - |
 | onSelect | 点击复选框时触发 | `((record: T, selected: boolean, selectedKeys: TableKey[]) => void)` | - |

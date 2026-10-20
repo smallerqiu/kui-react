@@ -1,7 +1,7 @@
-import type { ShapeType, SurfaceThemeType } from "react-kui";
+import type { SurfaceShapeType, SurfaceThemeType } from "react-kui";
 import { Card, Space } from "react-kui";
 
-const shapes: ShapeType[] = ["round", "square", "circle"];
+const shapes: SurfaceShapeType[] = ["round", "square"];
 const themes: SurfaceThemeType[] = ["fill", "outline", "plain", "solid", "dashed"];
 
 export default function Demo() {

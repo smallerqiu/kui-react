@@ -40,7 +40,7 @@ The most basic card container, can carry text, lists, images, paragraphs, often 
 | icon | Icon for the card title | `IconType[]` | - |
 | bordered | Whether the card displays a border | `boolean` | false |
 | theme | Surface theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | fill |
-| shape | Surface shape | `"round" \| "default" \| "square" \| "circle"` | round |
+| shape | Surface shape | `"round" \| "square"` | round |
 | size | Card size | `"small" \| "medium" \| "large"` | medium |
 | extra | Card title extension | `React.ReactNode` | - |
 | cover | Card cover | `React.ReactNode` | - |

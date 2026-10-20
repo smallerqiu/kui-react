@@ -25,7 +25,7 @@
 | compact | 紧凑模式 | `boolean` | false |
 | actions | 操作区域 | `ReactNode` | - |
 | theme | 外观主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
-| shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | round |
+| shape | 形状 | `"round" \| "square"` | round |
 | children | 详情内容 | ReactNode | - |
 
 ## 主题

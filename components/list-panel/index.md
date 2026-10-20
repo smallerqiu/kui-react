@@ -35,7 +35,7 @@
 | footer | 底部区域 | `ReactNode` | - |
 | bordered | 是否显示边框 | `boolean` | true |
 | theme | 外观主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
-| shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | round |
+| shape | 形状 | `"round" \| "square"` | round |
 | size | 尺寸 | `"small" \| "medium" \| "large"` | medium |
 | selectedCount | 已选数量 | `number` | 0 |
 

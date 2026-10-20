@@ -1862,13 +1862,11 @@ export default function App() {
     },
     {
       "name": "shape",
-      "type": "ShapeType | undefined",
+      "type": "SurfaceShapeType | undefined",
       "required": false,
       "enumValues": [
         "round",
-        "default",
-        "square",
-        "circle"
+        "square"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -4998,13 +4996,11 @@ export default function App() {
     },
     {
       "name": "shape",
-      "type": "ShapeType | undefined",
+      "type": "SurfaceShapeType | undefined",
       "required": false,
       "enumValues": [
         "round",
-        "default",
-        "square",
-        "circle"
+        "square"
       ],
       "boolean": false,
       "descriptionZh": "外框形状",
@@ -5185,10 +5181,10 @@ export default function App() {
 ## 外观与形状
 
 ```tsx
-import type { ShapeType, SurfaceThemeType } from "react-kui";
+import type { SurfaceShapeType, SurfaceThemeType } from "react-kui";
 import { Card, Space } from "react-kui";
 
-const shapes: ShapeType[] = ["round", "square", "circle"];
+const shapes: SurfaceShapeType[] = ["round", "square"];
 const themes: SurfaceThemeType[] = ["fill", "outline", "plain", "solid", "dashed"];
 
 export default function Demo() {
@@ -5365,10 +5361,10 @@ export default function App() {
 ## 外观与形状
 
 ```tsx
-import type { ShapeType, SurfaceThemeType } from "react-kui";
+import type { SurfaceShapeType, SurfaceThemeType } from "react-kui";
 import { Card, Space } from "react-kui";
 
-const shapes: ShapeType[] = ["round", "square", "circle"];
+const shapes: SurfaceShapeType[] = ["round", "square"];
 const themes: SurfaceThemeType[] = ["fill", "outline", "plain", "solid", "dashed"];
 
 export default function Demo() {
@@ -7014,13 +7010,11 @@ export default function App() {
     },
     {
       "name": "shape",
-      "type": "ShapeType | undefined",
+      "type": "SurfaceShapeType | undefined",
       "required": false,
       "enumValues": [
         "round",
-        "default",
-        "square",
-        "circle"
+        "square"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -9451,13 +9445,11 @@ export default function App() {
     },
     {
       "name": "shape",
-      "type": "ShapeType | undefined",
+      "type": "SurfaceShapeType | undefined",
       "required": false,
       "enumValues": [
         "round",
-        "default",
-        "square",
-        "circle"
+        "square"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -13879,13 +13871,11 @@ export default function App() {
     },
     {
       "name": "shape",
-      "type": "ShapeType | undefined",
+      "type": "SurfaceShapeType | undefined",
       "required": false,
       "enumValues": [
         "round",
-        "default",
-        "square",
-        "circle"
+        "square"
       ],
       "boolean": false,
       "descriptionZh": "卡片形状",
@@ -14458,13 +14448,11 @@ export default function App() {
     },
     {
       "name": "shape",
-      "type": "ShapeType | undefined",
+      "type": "SurfaceShapeType | undefined",
       "required": false,
       "enumValues": [
         "round",
-        "default",
-        "square",
-        "circle"
+        "square"
       ],
       "boolean": false,
       "descriptionZh": "形状",
@@ -35125,13 +35113,11 @@ export default function App() {
     },
     {
       "name": "shape",
-      "type": "ShapeType | undefined",
+      "type": "SurfaceShapeType | undefined",
       "required": false,
       "enumValues": [
         "round",
-        "default",
-        "square",
-        "circle"
+        "square"
       ],
       "boolean": false,
       "descriptionZh": "形状",

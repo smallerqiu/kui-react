@@ -41,7 +41,7 @@ Content area that can be collapsed/expanded.
 | accordion | Whether at most one panel can be expanded | `boolean` | false |
 | sample | Whether to enable simple mode | `boolean` | false |
 | theme | Appearance theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain"` | outline |
-| shape | Shape | `"round" \| "default" \| "square" \| "circle"` | round |
+| shape | Shape | `"round" \| "square"` | round |
 | onChange | Called with the key of the panel being toggled | `((key: string \| number) => void)` | - |
 | onOpenKeysChange | Called with all expanded keys after a change | `((keys: (string \| number)[]) => void)` | - |
 

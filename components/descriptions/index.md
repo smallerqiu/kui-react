@@ -42,7 +42,7 @@
 | layout | 描述布局 | `"inline" \| "horizontal" \| "vertical"` | horizontal |
 | size | 设置列表大小 | `"small" \| "medium" \| "large"` | large |
 | title | 描述列表的标题，显示在最顶部 | `React.ReactNode` | - |
-| shape | 形状 | `"round" \| "default" \| "square" \| "circle"` | round |
+| shape | 形状 | `"round" \| "square"` | round |
 
 ## Item props
 

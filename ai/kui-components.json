@@ -3073,13 +3073,11 @@
         },
         {
           "name": "shape",
-          "type": "ShapeType | undefined",
+          "type": "SurfaceShapeType | undefined",
           "required": false,
           "enumValues": [
             "round",
-            "default",
-            "square",
-            "circle"
+            "square"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -8930,13 +8928,11 @@
         },
         {
           "name": "shape",
-          "type": "ShapeType | undefined",
+          "type": "SurfaceShapeType | undefined",
           "required": false,
           "enumValues": [
             "round",
-            "default",
-            "square",
-            "circle"
+            "square"
           ],
           "boolean": false,
           "descriptionZh": "外框形状",
@@ -9395,7 +9391,7 @@
         {
           "id": "components/card/demo/appearance.tsx",
           "title": "外观与形状",
-          "source": "import type { ShapeType, SurfaceThemeType } from \"react-kui\";\nimport { Card, Space } from \"react-kui\";\n\nconst shapes: ShapeType[] = [\"round\", \"square\", \"circle\"];\nconst themes: SurfaceThemeType[] = [\"fill\", \"outline\", \"plain\", \"solid\", \"dashed\"];\n\nexport default function Demo() {\n  return (\n    <Space vertical block>\n      <Space>\n        {shapes.map((shape) => (\n          <Card key={shape} shape={shape} style={{ width: 180 }}>\n            shape: {shape}\n          </Card>\n        ))}\n      </Space>\n      <Space>\n        {themes.map((theme) => (\n          <Card key={theme} theme={theme} shape=\"square\" style={{ width: 180 }}>\n            theme: {theme}\n          </Card>\n        ))}\n      </Space>\n    </Space>\n  );\n}"
+          "source": "import type { SurfaceShapeType, SurfaceThemeType } from \"react-kui\";\nimport { Card, Space } from \"react-kui\";\n\nconst shapes: SurfaceShapeType[] = [\"round\", \"square\"];\nconst themes: SurfaceThemeType[] = [\"fill\", \"outline\", \"plain\", \"solid\", \"dashed\"];\n\nexport default function Demo() {\n  return (\n    <Space vertical block>\n      <Space>\n        {shapes.map((shape) => (\n          <Card key={shape} shape={shape} style={{ width: 180 }}>\n            shape: {shape}\n          </Card>\n        ))}\n      </Space>\n      <Space>\n        {themes.map((theme) => (\n          <Card key={theme} theme={theme} shape=\"square\" style={{ width: 180 }}>\n            theme: {theme}\n          </Card>\n        ))}\n      </Space>\n    </Space>\n  );\n}"
         }
       ]
     },
@@ -9828,7 +9824,7 @@
         {
           "id": "components/card/demo/appearance.tsx",
           "title": "外观与形状",
-          "source": "import type { ShapeType, SurfaceThemeType } from \"react-kui\";\nimport { Card, Space } from \"react-kui\";\n\nconst shapes: ShapeType[] = [\"round\", \"square\", \"circle\"];\nconst themes: SurfaceThemeType[] = [\"fill\", \"outline\", \"plain\", \"solid\", \"dashed\"];\n\nexport default function Demo() {\n  return (\n    <Space vertical block>\n      <Space>\n        {shapes.map((shape) => (\n          <Card key={shape} shape={shape} style={{ width: 180 }}>\n            shape: {shape}\n          </Card>\n        ))}\n      </Space>\n      <Space>\n        {themes.map((theme) => (\n          <Card key={theme} theme={theme} shape=\"square\" style={{ width: 180 }}>\n            theme: {theme}\n          </Card>\n        ))}\n      </Space>\n    </Space>\n  );\n}"
+          "source": "import type { SurfaceShapeType, SurfaceThemeType } from \"react-kui\";\nimport { Card, Space } from \"react-kui\";\n\nconst shapes: SurfaceShapeType[] = [\"round\", \"square\"];\nconst themes: SurfaceThemeType[] = [\"fill\", \"outline\", \"plain\", \"solid\", \"dashed\"];\n\nexport default function Demo() {\n  return (\n    <Space vertical block>\n      <Space>\n        {shapes.map((shape) => (\n          <Card key={shape} shape={shape} style={{ width: 180 }}>\n            shape: {shape}\n          </Card>\n        ))}\n      </Space>\n      <Space>\n        {themes.map((theme) => (\n          <Card key={theme} theme={theme} shape=\"square\" style={{ width: 180 }}>\n            theme: {theme}\n          </Card>\n        ))}\n      </Space>\n    </Space>\n  );\n}"
         }
       ]
     },
@@ -12901,13 +12897,11 @@
         },
         {
           "name": "shape",
-          "type": "ShapeType | undefined",
+          "type": "SurfaceShapeType | undefined",
           "required": false,
           "enumValues": [
             "round",
-            "default",
-            "square",
-            "circle"
+            "square"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -16705,13 +16699,11 @@
         },
         {
           "name": "shape",
-          "type": "ShapeType | undefined",
+          "type": "SurfaceShapeType | undefined",
           "required": false,
           "enumValues": [
             "round",
-            "default",
-            "square",
-            "circle"
+            "square"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -20755,13 +20747,11 @@
         },
         {
           "name": "shape",
-          "type": "ShapeType | undefined",
+          "type": "SurfaceShapeType | undefined",
           "required": false,
           "enumValues": [
             "round",
-            "default",
-            "square",
-            "circle"
+            "square"
           ],
           "boolean": false,
           "descriptionZh": "卡片形状",
@@ -21536,13 +21526,11 @@
         },
         {
           "name": "shape",
-          "type": "ShapeType | undefined",
+          "type": "SurfaceShapeType | undefined",
           "required": false,
           "enumValues": [
             "round",
-            "default",
-            "square",
-            "circle"
+            "square"
           ],
           "boolean": false,
           "descriptionZh": "形状",
@@ -47338,13 +47326,11 @@
         },
         {
           "name": "shape",
-          "type": "ShapeType | undefined",
+          "type": "SurfaceShapeType | undefined",
           "required": false,
           "enumValues": [
             "round",
-            "default",
-            "square",
-            "circle"
+            "square"
           ],
           "boolean": false,
           "descriptionZh": "形状",
