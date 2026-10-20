@@ -1,17 +1,23 @@
 import { Space, Tag } from "react-kui";
 const colors = [
-    "pink",
+    "default",
     "red",
-    "yellow",
     "orange",
-    "cyan",
+    "yellow",
+    "olive",
     "green",
+    "teal",
     "blue",
-    "purple",
-    "magenta",
     "volcano",
+    "violet",
+    "cyan",
     "gold",
     "lime",
+    "magenta",
+    "purple",
+    "pink",
+    "brown",
+    "gray",
   ],
   custom = ["#c20", "#39f", "#e3f", "#6c0"];
 export default function App() {
