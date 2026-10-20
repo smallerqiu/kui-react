@@ -3,8 +3,17 @@ import { resolveTheme, useFormAppearance } from "../config/use-config-appearance
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
 import { ChevronDown, ChevronRight, CircleAlert, CircleX, Loading } from "kui-icons";
-import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
 import Popup from "../popup";
+import { ConfigContext, DEFAULT_LOCALE } from "../config/config-context";
 import Empty from "../empty";
 import Icon from "../icon";
 import type { CascaderOption, CascaderProps, CascaderValue } from "./types";
@@ -35,7 +44,7 @@ function Cascader({
   bordered = true,
   shape: shapeProp,
   showArrow = true,
-  placeholder = "请选择",
+  placeholder,
   icon,
   arrowIcon = ChevronDown,
   emptyText,
@@ -62,6 +71,9 @@ function Cascader({
   const theme = resolveTheme(themeProp ?? inheritedAppearance.theme, "fill");
   const shape = shapeProp ?? inheritedAppearance.shape;
   const size = sizeProp ?? inheritedAppearance.size;
+  const config = useContext(ConfigContext);
+  const locale = config?.locale || DEFAULT_LOCALE;
+  const placeholderText = placeholder || locale?.k?.select?.placeholder;
   const options = optionsProp ?? EMPTY_OPTIONS;
   const [innerValue, setInnerValue] = useValue(value, (next): CascaderValue => next ?? []);
   const currentValue = innerValue;
@@ -327,7 +339,7 @@ function Cascader({
           {hasValue ? (
             <div className="k-cascader-label">{shownLabel}</div>
           ) : (
-            <div className="k-cascader-placeholder">{placeholder}</div>
+            <div className="k-cascader-placeholder">{placeholderText}</div>
           )}
         </div>
         {showArrow && (
