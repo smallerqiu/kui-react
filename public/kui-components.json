@@ -7907,8 +7907,8 @@
           "type": "string | undefined",
           "required": false,
           "boolean": false,
-          "descriptionZh": "自定义按钮颜色",
-          "descriptionEn": "Custom button color"
+          "descriptionZh": "按钮颜色：预设色值名（与 `Tag` / `Badge` 同一套，如 `blue`）；这套名字之外的颜色不改变按钮外观",
+          "descriptionEn": "Button color: a preset name (the same set `Tag` / `Badge` use, e.g. `blue`); a color outside this set does not change the button's look"
         },
         {
           "name": "loading",
@@ -8414,7 +8414,7 @@
         {
           "id": "components/button/demo/color.tsx",
           "title": "多彩",
-          "source": "import { Button, Space } from \"react-kui\";\nconst colors = [\n  \"red\",\n  \"orange\",\n  \"yellow\",\n  \"olive\",\n  \"green\",\n  \"teal\",\n  \"blue\",\n  \"volcano\",\n  \"violet\",\n  \"cyan\",\n  \"gold\",\n  \"lime\",\n  \"magenta\",\n  \"purple\",\n  \"pink\",\n  \"brown\",\n];\nexport default function App() {\n  return (\n    <Space size=\"small\" wrap>\n      {([\"solid\", \"outline\", \"dashed\"] as const).map((theme) => (\n        <Space size=\"small\" wrap key={theme}>\n          {colors.map((color) => (\n            <Button color={color} key={color} theme={theme}>\n              {theme}\n            </Button>\n          ))}\n        </Space>\n      ))}\n    </Space>\n  );\n}"
+          "source": "import { Button, Space } from \"react-kui\";\nconst colors = [\n  \"red\",\n  \"orange\",\n  \"yellow\",\n  \"olive\",\n  \"green\",\n  \"teal\",\n  \"blue\",\n  \"volcano\",\n  \"violet\",\n  \"cyan\",\n  \"gold\",\n  \"lime\",\n  \"magenta\",\n  \"purple\",\n  \"pink\",\n  \"brown\",\n  \"gray\",\n];\nexport default function App() {\n  return (\n    <Space size=\"small\" wrap>\n      {([\"solid\", \"outline\", \"dashed\"] as const).map((theme) => (\n        <Space size=\"small\" wrap key={theme}>\n          {colors.map((color) => (\n            <Button color={color} key={color} theme={theme}>\n              {theme}\n            </Button>\n          ))}\n        </Space>\n      ))}\n    </Space>\n  );\n}"
         },
         {
           "id": "components/button/demo/with-icon.tsx",
@@ -8872,7 +8872,7 @@
         {
           "id": "components/button/demo/color.tsx",
           "title": "多彩",
-          "source": "import { Button, Space } from \"react-kui\";\nconst colors = [\n  \"red\",\n  \"orange\",\n  \"yellow\",\n  \"olive\",\n  \"green\",\n  \"teal\",\n  \"blue\",\n  \"volcano\",\n  \"violet\",\n  \"cyan\",\n  \"gold\",\n  \"lime\",\n  \"magenta\",\n  \"purple\",\n  \"pink\",\n  \"brown\",\n];\nexport default function App() {\n  return (\n    <Space size=\"small\" wrap>\n      {([\"solid\", \"outline\", \"dashed\"] as const).map((theme) => (\n        <Space size=\"small\" wrap key={theme}>\n          {colors.map((color) => (\n            <Button color={color} key={color} theme={theme}>\n              {theme}\n            </Button>\n          ))}\n        </Space>\n      ))}\n    </Space>\n  );\n}"
+          "source": "import { Button, Space } from \"react-kui\";\nconst colors = [\n  \"red\",\n  \"orange\",\n  \"yellow\",\n  \"olive\",\n  \"green\",\n  \"teal\",\n  \"blue\",\n  \"volcano\",\n  \"violet\",\n  \"cyan\",\n  \"gold\",\n  \"lime\",\n  \"magenta\",\n  \"purple\",\n  \"pink\",\n  \"brown\",\n  \"gray\",\n];\nexport default function App() {\n  return (\n    <Space size=\"small\" wrap>\n      {([\"solid\", \"outline\", \"dashed\"] as const).map((theme) => (\n        <Space size=\"small\" wrap key={theme}>\n          {colors.map((color) => (\n            <Button color={color} key={color} theme={theme}>\n              {theme}\n            </Button>\n          ))}\n        </Space>\n      ))}\n    </Space>\n  );\n}"
         },
         {
           "id": "components/button/demo/with-icon.tsx",
