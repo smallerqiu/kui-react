@@ -21,7 +21,7 @@ const colors = [
 export default function App() {
   return (
     <Space size="small" wrap>
-      {([undefined, "solid", "outline", "dashed"] as const).map((theme) => (
+      {([undefined, "solid", "fill", "outline", "dashed"] as const).map((theme) => (
         <Space size="small" wrap key={theme ?? "no-theme"}>
           {colors.map((color) => (
             <Button color={color} key={color} theme={theme}>

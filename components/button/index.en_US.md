@@ -26,7 +26,7 @@ import { Button } from "react-kui";
 
 [Color Variants](./demo/color.tsx)
 
-- Use `color` to create more button variants; without `theme`, a palette name is already a solid button.
+- Use `color` to create more button variants; without `theme`, a palette name is already a solid button, and on the `fill` tier it colours the label. A solid surface keeps its text on whichever of black and white stays readable.
 
 [With Icon](./demo/with-icon.tsx)
 

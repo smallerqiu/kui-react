@@ -26,7 +26,7 @@ import { Button } from "kui-react";
 
 [多彩](./demo/color.tsx)
 
-- 使用 `color` 可以衍生出更多的变体按钮；不写 `theme` 时，色板里的名字本身就是一张实心按钮。
+- 使用 `color` 可以衍生出更多的变体按钮；不写 `theme` 时，色板里的名字本身就是一张实心按钮，`fill` 档上它进的是文字。实心面上的文字取黑、白里读得出的那一头。
 
 [带图标](./demo/with-icon.tsx)
 
