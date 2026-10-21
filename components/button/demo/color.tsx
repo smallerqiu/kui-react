@@ -16,6 +16,7 @@ const colors = [
   "purple",
   "pink",
   "brown",
+  "gray",
 ];
 export default function App() {
   return (
