@@ -26,7 +26,7 @@ import { Button } from "react-kui";
 
 [Color Variants](./demo/color.tsx)
 
-- Use `color` to create more button variants.
+- Use `color` to create more button variants; without `theme`, a palette name is already a solid button.
 
 [With Icon](./demo/with-icon.tsx)
 
@@ -67,5 +67,5 @@ import { Button } from "react-kui";
 | href | The address to jump to when clicked. Specifying this property makes the button behave like an a link | `string` | - |
 | target | Equivalent to the target attribute of an a link, takes effect when href exists | `string` | - |
 | block | Option to fit button width to its parent width | `boolean` | false |
-| color | Button color: a preset name (the same set `Tag` / `Badge` use, e.g. `blue`); a color outside this set does not change the button's look | `string` | - |
+| color | Button color: a preset name (the same set `Tag` / `Badge` use, e.g. `blue`); with `theme` it paints that tier, without one it brings its own solid surface; a color outside this set does not change the button's look | `string` | - |
 | onClick | Triggered when the button is clicked | `React.MouseEventHandler<HTMLElement>` | - |

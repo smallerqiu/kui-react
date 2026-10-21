@@ -4140,8 +4140,8 @@ export default function App() {
       "type": "string | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "按钮颜色：预设色值名（与 `Tag` / `Badge` 同一套，如 `blue`）；这套名字之外的颜色不改变按钮外观",
-      "descriptionEn": "Button color: a preset name (the same set `Tag` / `Badge` use, e.g. `blue`); a color outside this set does not change the button's look"
+      "descriptionZh": "按钮颜色：预设色值名（与 `Tag` / `Badge` 同一套，如 `blue`）；写了 `theme` 就在这一档上上色，没写时它自带一张实心面；这套名字之外的颜色不改变按钮外观",
+      "descriptionEn": "Button color: a preset name (the same set `Tag` / `Badge` use, e.g. `blue`); with `theme` it paints that tier, without one it brings its own solid surface; a color outside this set does not change the button's look"
     },
     {
       "name": "loading",
@@ -4368,11 +4368,11 @@ const colors = [
 export default function App() {
   return (
     <Space size="small" wrap>
-      {(["solid", "outline", "dashed"] as const).map((theme) => (
-        <Space size="small" wrap key={theme}>
+      {([undefined, "solid", "outline", "dashed"] as const).map((theme) => (
+        <Space size="small" wrap key={theme ?? "no-theme"}>
           {colors.map((color) => (
             <Button color={color} key={color} theme={theme}>
-              {theme}
+              {theme ?? "no theme"}
             </Button>
           ))}
         </Space>
@@ -4753,11 +4753,11 @@ const colors = [
 export default function App() {
   return (
     <Space size="small" wrap>
-      {(["solid", "outline", "dashed"] as const).map((theme) => (
-        <Space size="small" wrap key={theme}>
+      {([undefined, "solid", "outline", "dashed"] as const).map((theme) => (
+        <Space size="small" wrap key={theme ?? "no-theme"}>
           {colors.map((color) => (
             <Button color={color} key={color} theme={theme}>
-              {theme}
+              {theme ?? "no theme"}
             </Button>
           ))}
         </Space>
