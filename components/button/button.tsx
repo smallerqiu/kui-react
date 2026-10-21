@@ -89,15 +89,20 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
       return false;
     };
 
+    // A `color` only counts when `button/styles/index.less` can paint it, which is the shared palette and
+    // nothing else — there is no inline arm here. So a name outside the palette must be read as "no color
+    // written" rather than as a color that cancels `type` and leaves the button with no surface at all.
+    const isPresetColor = !!color && colors.some((preset) => preset === color);
+
     const classes = clsx(
       "k-btn",
       {
-        [`k-btn-${type}`]: type && !color,
+        [`k-btn-${type}`]: type && !isPresetColor,
         "k-btn-sm": computedSize === "small",
         "k-btn-block": block,
         "k-btn-loading": loading,
         "k-btn-icon-only": iconOnly(),
-        [`k-btn-${color}`]: color && colors.some((preset) => preset === color),
+        [`k-btn-${color}`]: isPresetColor,
         "k-btn-lg": computedSize === "large",
         "k-btn-circle": computedShape === "circle",
         "k-btn-square": computedShape === "square",

@@ -44,8 +44,13 @@ const Tooltip: React.FC<TooltipProps> = ({
   onShowChange,
   children,
 }) => {
+  // Two arms, and both need something the stylesheet or the browser can read: a palette name that CSS
+  // cannot resolve (`volcano`) is drawn by `.k-tooltip-<name>`, anything CSS does resolve paints inline.
+  // A string that is neither would name a rule nobody defines, so it reads as "no color written" here and
+  // the bubble keeps its own surface.
+  const isPresetColor = colors.some((preset) => preset === color);
   const bgColor = isColor(color)
-    ? colors.some((preset) => preset === color)
+    ? isPresetColor
       ? `var(--kui-color-${color})`
       : color
     : undefined;
@@ -64,7 +69,7 @@ const Tooltip: React.FC<TooltipProps> = ({
       closeOnOutsideClick={false}
       className={[
         `k-tooltip-has-arrow`,
-        color && !isColor(color) && `k-tooltip-${color}`,
+        isPresetColor && !isColor(color) && `k-tooltip-${color}`,
         isColor(color) && "k-tooltip-has-color",
       ]
         .filter(Boolean)
