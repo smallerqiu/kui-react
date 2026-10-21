@@ -54,7 +54,7 @@
     "**/*.less"
   ],
   "scripts": {
-    "check:theme": "node --experimental-strip-types --max-old-space-size=512 scripts/check-theme.ts",
+    "check:theme": "node --experimental-strip-types --max-old-space-size=512 scripts/check-theme.ts && node --experimental-strip-types --max-old-space-size=512 scripts/check-color-mix.ts",
     "dev": "vite --config vite.config.docs.ts",
     "start": "pnpm dev",
     "typecheck": "node --max-old-space-size=2048 node_modules/typescript/bin/tsc -b",
