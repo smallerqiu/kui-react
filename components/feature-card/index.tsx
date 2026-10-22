@@ -7,6 +7,7 @@ import clsx from "clsx";
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import type { SurfaceShapeType, SurfaceThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
+import { wash } from "../utils/color";
 
 export interface FeatureCardProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
@@ -32,6 +33,10 @@ export interface FeatureCardProps extends Omit<
 // card is a surface, not a field you type into. Anything outside this set resolves to the card's own
 // default so it cannot ship a `k-feature-card-<tier>` class no stylesheet answers.
 const PAINTED_THEMES = ["fill", "outline", "plain", "solid", "dashed"] as const;
+
+// The share the icon chip washes its colour by. The sheet's own default — the one that paints when no
+// `color` reaches this function — has to fade the same amount.
+const ICON_WASH_SHARE = 12;
 
 export default function FeatureCard({
   icon,
@@ -69,6 +74,12 @@ export default function FeatureCard({
       (item): item is IconType =>
         typeof item === "object" && item != null && "d" in item && typeof item.d === "string",
     );
+  // The chip washes whatever colour this card carries, and only this function knows what that colour
+  // is — `color` is a string the caller typed. Doing the mix in the sheet would need `color-mix()`, so
+  // the share is applied here and handed over as a plain `rgba()`. `iconBackground` still wins, and a
+  // colour that only resolves inside the page (`currentColor`, `var(--token)`) leaves the sheet's
+  // literal default standing.
+  const iconWash = iconBackground ? undefined : wash(color, ICON_WASH_SHARE);
 
   return (
     <div
@@ -83,6 +94,7 @@ export default function FeatureCard({
           ...rest.style,
           ...(color ? { "--k-feature-card-color": color } : {}),
           ...(iconBackground ? { "--k-feature-card-icon-bg": iconBackground } : {}),
+          ...(iconWash ? { "--k-feature-card-icon-wash": iconWash } : {}),
         } as CSSProperties
       }
       className={clsx(

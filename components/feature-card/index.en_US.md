@@ -38,7 +38,7 @@ Displays a product capability or feature highlight.
 | clickable | Enable interaction, keyboard control, and button semantics | `boolean` | false |
 | disabled | Disable interaction | `boolean` | false |
 | color | Icon accent color | `string` | primary |
-| iconBackground | Icon background, generated from `color` when omitted | `string` | auto |
+| iconBackground | Icon container background; a wash of `color`, or of the theme primary when `color` cannot be parsed (e.g. `currentColor`, a CSS variable) | `string` | auto |
 
 ## Events
 
