@@ -1,7 +1,7 @@
 import type { ValueType } from "../const/types";
 
-export const getValueWithType = (checked: boolean, vType: ValueType): boolean | number | string => {
-  let value: boolean | number | string = checked;
+export const getValueWithType = (checked: boolean, vType: ValueType): string | number | boolean => {
+  let value: string | number | boolean = checked;
   switch (vType) {
     case "string":
       value = checked ? "1" : "0";
