@@ -31,7 +31,7 @@ export function renderSelectionTags({
   disabled,
   readOnly,
   onRemove,
-  overflowSize = "small",
+  overflowSize = size,
   tagClass,
   restClass,
   tooltipClass,

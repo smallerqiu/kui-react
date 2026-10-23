@@ -72,6 +72,7 @@ rm -rf node_modules/.vite
 - `Select` / `Cascader` / `TreeSelect` / `DatePicker`: `theme` now supports `outline`, `solid`, `dashed` and `underlined` — a 1px outlined box, a primary-filled block whose text and icons invert, a dashed frame, and a single bottom rule that turns primary on focus.
 - `Cascader`: a `theme="fill"` field no longer grows a border when you hover it.
 - `Select` / `TreeSelect`: a `theme="fill"` field keeps the border an app draws through `--kui-theme-fill-border` under the pointer, matching `Cascader`.
+- `Select` / `TreeSelect`: the chips inside the "+N..." hover preview now come at the control's own size, matching the Vue build. They used to render a step smaller — a 12px label in a shorter box — which read as a different kind of chip.
 - `Cascader` / `ColorPicker` / `InputTag` / `InputOTP` now turn red inside an invalid form item; previously only the `Input` / `Select` families changed colour. Every `InputOTP` cell turns red together.
 - A red border inside an invalid form item survives interaction: hovering, focusing or opening the panel of a `Select` / `TreeSelect` / `Cascader` / `ColorPicker` / `InputTag` / `InputOTP` keeps both the red edge and its red glow, under any of the six `theme` values.
 - Inside an invalid form item the focus halo turns red too, so a focused or opened field no longer pairs a red border with a primary-coloured glow; a `theme="solid"` field keeps its inverted white halo, because red would be hard to see on a filled surface.

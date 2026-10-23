@@ -29,4 +29,27 @@ describe("shared selection tags", () => {
     expect(container.querySelectorAll(".k-tag")).toHaveLength(2);
     expect(container.textContent).toBe("ApplePear");
   });
+  it.each(["small", "medium", "large"] as const)(
+    "keeps the overflow preview at the control's own size (%s)",
+    async (size) => {
+      render(
+        <div>
+          {renderSelectionTags({
+            labels: ["Apple", "Pear"],
+            maxTagCount: 0,
+            size,
+            onRemove: vi.fn(),
+          })}
+        </div>,
+      );
+      fireEvent.mouseEnter(screen.getByText("+2..."));
+      await waitFor(() => expect(document.querySelectorAll(".k-tooltip .k-tag")).toHaveLength(2));
+      // The preview holds the very tags the limit hid, so shrinking them there reads as a
+      // different kind of chip. Both size classes are pinned: the medium control paints neither.
+      for (const tag of document.querySelectorAll(".k-tooltip .k-tag")) {
+        expect(tag.classList.contains("k-tag-sm")).toBe(size === "small");
+        expect(tag.classList.contains("k-tag-lg")).toBe(size === "large");
+      }
+    },
+  );
 });

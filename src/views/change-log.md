@@ -72,6 +72,7 @@ rm -rf node_modules/.vite
 - `Select` / `Cascader` / `TreeSelect` / `DatePicker` 的 `theme` 补齐 `outline` / `solid` / `dashed` / `underlined` 四档：描边框、主色实底（文字与图标跟着反白）、虚线描边、只留一条下划线（聚焦时下划线变主色）。
 - `Cascader` 用 `theme="fill"` 时，鼠标悬停不再突然描出一圈边框。
 - `Select` / `TreeSelect` 用 `theme="fill"` 时，鼠标悬停不再抹掉应用用 `--kui-theme-fill-border` 描的那圈边框，与 `Cascader` 一致。
+- `Select` / `TreeSelect` 收起多余标签后，悬停「+N...」弹出的预览标签改为与控件同尺寸，与 Vue 版一致：此前预览里那几颗标签小一号，字更小、盒子更矮，看着像另一种标签。
 - 报错的表单项不再漏掉控件：`Cascader` / `ColorPicker` / `InputTag` / `InputOTP` 放进验证失败的表单项时同样描红，此前只有 `Input` / `Select` 那几类会变色；`InputOTP` 是每一格一起描红。
 - `Select` / `TreeSelect` / `Cascader` / `ColorPicker` / `InputTag` / `InputOTP` 放进报错的表单项后，鼠标悬停、聚焦、展开面板都不会让那圈红色描边消失，红边和红色浅光一直留着；六种 `theme` 下都一样。
 - 报错的表单项里，聚焦或展开面板时那圈焦点光晕也跟着变红，不再出现红边配主色光晕；`theme="solid"` 的实底控件保留原来那圈反白光晕，红色在实底上反而看不清。
