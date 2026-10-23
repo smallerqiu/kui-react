@@ -1,6 +1,6 @@
 import Color from "color";
 
-export function isColor(value?:string) {
+export function isColor(value?: string) {
   if (typeof value !== "string" || typeof CSS === "undefined" || !CSS.supports) return false;
   return CSS.supports("color", value);
   // 弃用
