@@ -10,6 +10,10 @@ Suggest options while keeping free-form input available.
 
 - Supports free input, filtering, and keyboard selection.
 
+[Addons](./demo/addon.tsx)
+
+- `addonBefore` and `addonAfter` render boxed affixes outside the input; the suggestion list spans the whole group.
+
 [Controlled](./demo/controlled.tsx)
 
 - Control the input externally with `value` and `onChange`.
@@ -42,6 +46,8 @@ Suggest options while keeping free-form input available.
 | disabled | Disabled | boolean | false |
 | readOnly | Read-only; prevents editing, clearing and opening | boolean | false |
 | placeholder | Placeholder | string | - |
+| addonBefore | Addon before the input | `React.ReactNode` | - |
+| addonAfter | Addon after the input | `React.ReactNode` | - |
 | loading | Loading state | `boolean` | false |
 | loadingText | Loading text | `string` | Loading |
 | size | Size | `"small" \| "medium" \| "large"` | medium |

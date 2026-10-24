@@ -34,6 +34,8 @@ export interface AutoCompleteProps extends Omit<
   clearable?: boolean;
   loading?: boolean;
   loadingText?: string;
+  addonBefore?: React.ReactNode;
+  addonAfter?: React.ReactNode;
   size?: SizeType;
   shape?: ShapeType;
   theme?: ThemeType;
@@ -57,6 +59,8 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   clearable = false,
   loading = false,
   loadingText,
+  addonBefore,
+  addonAfter,
   size: sizeProp,
   shape: shapeProp,
   theme: themeProp,
@@ -252,6 +256,8 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         shape={shape}
         theme={theme}
         clearable={clearable}
+        addonBefore={addonBefore}
+        addonAfter={addonAfter}
         role="combobox"
         aria-autocomplete="list"
         aria-expanded={visible}

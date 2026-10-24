@@ -28,6 +28,8 @@ export interface InputNumberProps extends Omit<
   keyboard?: boolean;
   suffix?: React.ReactNode;
   prefix?: React.ReactNode;
+  addonBefore?: React.ReactNode;
+  addonAfter?: React.ReactNode;
   theme?: ThemeType;
   shape?: ShapeType;
   icon?: IconType[];
@@ -50,6 +52,8 @@ const InputNumber: React.FC<InputNumberProps> = ({
   keyboard = true,
   suffix,
   prefix,
+  addonBefore,
+  addonAfter,
   theme: themeProp,
   shape: shapeProp,
   icon,
@@ -195,6 +199,8 @@ const InputNumber: React.FC<InputNumberProps> = ({
       placeholder={placeholder}
       suffix={suffix}
       prefix={prefix}
+      addonBefore={addonBefore}
+      addonAfter={addonAfter}
       size={sizeProp ?? parentSize ?? size}
       icon={icon}
       shape={shape}

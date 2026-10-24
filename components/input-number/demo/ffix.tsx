@@ -8,6 +8,11 @@ export default function App() {
         <InputNumber placeholder="Please input amount" step={50} suffix="元" prefix="充值" />
         <InputNumber placeholder="Please input amount" suffix=".00" />
       </Space>
+      <Divider text="Addons" />
+      <Space vertical block>
+        <InputNumber placeholder="Please input amount" addonBefore="¥" addonAfter="RMB" />
+        <InputNumber placeholder="Please input weight" addonAfter="kg" />
+      </Space>
       <Divider text="React nodes" />
       <Space vertical block>
         <InputNumber

@@ -18,9 +18,9 @@
 
 - 通过 formatter 格式化数字，以展示具有具体含义的数据，往往需要配合 parser 一起使用。
 
-[扩展, 前缀和后缀](./demo/ffix.tsx)
+[扩展, 前缀、后缀与附件](./demo/ffix.tsx)
 
-- suffix，prefix 扩展
+- `suffix`、`prefix` 显示在输入框内部；`addonBefore`、`addonAfter` 用于输入框外部附件。
 
 [尺寸](./demo/size.tsx)
 
@@ -49,6 +49,8 @@
 | shape | 组件的外观 | `"round" \| "default" \| "square" \| "circle"` | - |
 | suffix | 自定义后缀 | `React.ReactNode` | - |
 | prefix | 前缀内容 | `React.ReactNode` | - |
+| addonBefore | 输入框外部前置附件 | `React.ReactNode` | - |
+| addonAfter | 输入框外部后置附件 | `React.ReactNode` | - |
 | controls | 是否显示增减按钮 | `boolean` | true |
 | keyboard | 是否允许通过上下方向键调整数值 | `boolean` | true |
 | theme | 组件呈现主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |

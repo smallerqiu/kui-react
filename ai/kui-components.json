@@ -3634,6 +3634,22 @@
           "descriptionEn": "Loading text"
         },
         {
+          "name": "addonBefore",
+          "type": "React.ReactNode",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "输入框外部前置附件",
+          "descriptionEn": "Addon before the input"
+        },
+        {
+          "name": "addonAfter",
+          "type": "React.ReactNode",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "输入框外部后置附件",
+          "descriptionEn": "Addon after the input"
+        },
+        {
           "name": "size",
           "type": "SizeType | undefined",
           "required": false,
@@ -4190,6 +4206,8 @@
         }
       ],
       "renderProps": [
+        "addonBefore",
+        "addonAfter",
         "filterOption"
       ],
       "behavior": {
@@ -4201,6 +4219,11 @@
           "id": "components/auto-complete/demo/basic.tsx",
           "title": "基础用法",
           "source": "import { AutoComplete } from \"react-kui\";\nimport { useState } from \"react\";\nexport default function App() {\n  const [value, setValue] = useState(\"\");\n  return (\n    <AutoComplete\n      value={value}\n      onChange={setValue}\n      clearable\n      placeholder=\"Please input\"\n      options={[\"Vue\", \"React\", \"Solid\", \"Svelte\"]}\n    />\n  );\n}"
+        },
+        {
+          "id": "components/auto-complete/demo/addon.tsx",
+          "title": "外部附件",
+          "source": "import { AutoComplete } from \"react-kui\";\nimport { useState } from \"react\";\nexport default function App() {\n  const [value, setValue] = useState(\"\");\n  return (\n    <AutoComplete\n      value={value}\n      onChange={setValue}\n      addonBefore=\"https://\"\n      addonAfter=\".com\"\n      placeholder=\"Please input domain\"\n      options={[\"kui\", \"kui-pro\", \"kui-admin\", \"kui-docs\"]}\n    />\n  );\n}"
         },
         {
           "id": "components/auto-complete/demo/controlled.tsx",
@@ -4215,7 +4238,7 @@
         {
           "id": "components/auto-complete/demo/appearance.tsx",
           "title": "尺寸、主题与形状",
-          "source": "import { AutoComplete, Space } from \"react-kui\";\nconst options = [\"Vue\", \"Vite\", \"Vitest\"];\nexport default function App() {\n  return (\n    <Space vertical>\n      <AutoComplete size=\"small\" theme=\"plain\" options={options} placeholder=\"small / plain\" />\n      <AutoComplete\n        shape=\"square\"\n        theme=\"outline\"\n        options={options}\n        placeholder=\"square / outline\"\n      />\n      <AutoComplete size=\"large\" shape=\"circle\" options={options} placeholder=\"large / circle\" />\n    </Space>\n  );\n}"
+          "source": "import { AutoComplete, Space } from \"react-kui\";\nconst options = [\"Vue\", \"Vite\", \"Vitest\"];\nexport default function App() {\n  return (\n    <Space vertical>\n      <AutoComplete size=\"small\" theme=\"plain\" options={options} placeholder=\"small / plain\" />\n      <AutoComplete theme=\"dashed\" options={options} placeholder=\"plain\" />\n      <AutoComplete\n        shape=\"square\"\n        theme=\"outline\"\n        options={options}\n        placeholder=\"square / outline\"\n      />\n      <AutoComplete size=\"large\" shape=\"circle\" options={options} placeholder=\"large / circle\" />\n    </Space>\n  );\n}"
         },
         {
           "id": "components/auto-complete/demo/show-on-empty.tsx",
@@ -25004,7 +25027,7 @@
         {
           "id": "components/input/demo/theme.tsx",
           "title": "主题",
-          "source": "import { Search } from \"kui-icons\";\nimport { useState } from \"react\";\nimport {\n  Checkbox,\n  type ShapeType,\n  type ThemeType,\n  message,\n  Space,\n  Input,\n  TextArea,\n} from \"react-kui\";\n\n// An input paints all six tiers, and the tier lands on the box itself: `fill` — what it does when nobody\n// writes a theme — plates it, `outline` and `dashed` put a solid or dashed edge on it instead, `plain` leaves\n// it bare, `solid` plates it on the primary and inverts the typed text, the placeholder and the icons, and\n// `underlined` keeps only the bottom rule. A text area and an input with an addon are drawn from the same\n// arms, so they take the same tiers. The addon is the group's own surface: a group that is not `fill` borders\n// the addon it wraps, which is why the second row of each pair reads differently from the first.\nconst tiers: ThemeType[] = [\"fill\", \"outline\", \"plain\", \"solid\", \"dashed\", \"underlined\"];\n\nexport default function App() {\n  const [circle, setCircle] = useState(false);\n  const shape: ShapeType | undefined = circle ? \"circle\" : undefined;\n  const search = (value: string) => {\n    message.info(\"This is search event\");\n    console.log(value);\n  };\n  return (\n    <Space vertical block>\n      <Checkbox checked={circle} label=\"Circle\" onChange={(event) => setCircle(event.checked)} />\n      <Input placeholder=\"Please input\" shape={shape} />\n      <Input placeholder=\"Disabled\" disabled shape={shape} />\n      <Input placeholder=\"Please input\" icon={Search} shape={shape} />\n      <Input placeholder=\"Please input\" clearable={false} shape={shape} onSearch={search} />\n      <br />\n      {tiers.map((tier) => (\n        <div key={tier} style={{ display: \"grid\", gap: 4 }}>\n          <code>theme: {tier}</code>\n          <TextArea theme={tier} rows={2} placeholder=\"Please input\" />\n          <Input theme={tier} addonBefore=\"https://\" placeholder=\"Please input\" />\n        </div>\n      ))}\n    </Space>\n  );\n}"
+          "source": "import { Search } from \"kui-icons\";\nimport { useState } from \"react\";\nimport {\n  Checkbox,\n  Input,\n  message,\n  Space,\n  TextArea,\n  type ShapeType,\n  type ThemeType,\n} from \"react-kui\";\n\n// An input paints all six tiers, and the tier lands on the box itself: `fill` — what it does when nobody\n// writes a theme — plates it, `outline` and `dashed` put a solid or dashed edge on it instead, `plain` leaves\n// it bare, `solid` plates it on the primary and inverts the typed text, the placeholder and the icons, and\n// `underlined` keeps only the bottom rule. A text area and an input with an addon are drawn from the same\n// arms, so they take the same tiers. The addon is the group's own surface: a group that is not `fill` borders\n// the addon it wraps, which is why the second row of each pair reads differently from the first.\nconst tiers: ThemeType[] = [\"fill\", \"outline\", \"plain\", \"solid\", \"dashed\", \"underlined\"];\n\nexport default function App() {\n  const [circle, setCircle] = useState(false);\n  const shape: ShapeType | undefined = circle ? \"circle\" : undefined;\n  const search = (value: string) => {\n    message.info(\"This is search event\");\n    console.log(value);\n  };\n  return (\n    <Space vertical block>\n      <Checkbox checked={circle} label=\"Circle\" onChange={(event) => setCircle(event.checked)} />\n      <Input placeholder=\"Please input\" shape={shape} />\n      <Input placeholder=\"Disabled\" disabled shape={shape} />\n      <Input placeholder=\"Please input\" icon={Search} shape={shape} />\n      <Input placeholder=\"Please input\" clearable={false} shape={shape} onSearch={search} />\n      <br />\n      {tiers.map((tier) => (\n        <div key={tier} style={{ display: \"grid\", gap: 4 }}>\n          <code>theme: {tier}</code>\n          <TextArea theme={tier} rows={2} placeholder=\"Please input\" />\n          <Input theme={tier} prefix=\"https://\" placeholder=\"Please input\" />\n        </div>\n      ))}\n    </Space>\n  );\n}"
         },
         {
           "id": "components/input/demo/icon.tsx",
@@ -25480,7 +25503,7 @@
         {
           "id": "components/input/demo/theme.tsx",
           "title": "主题",
-          "source": "import { Search } from \"kui-icons\";\nimport { useState } from \"react\";\nimport {\n  Checkbox,\n  type ShapeType,\n  type ThemeType,\n  message,\n  Space,\n  Input,\n  TextArea,\n} from \"react-kui\";\n\n// An input paints all six tiers, and the tier lands on the box itself: `fill` — what it does when nobody\n// writes a theme — plates it, `outline` and `dashed` put a solid or dashed edge on it instead, `plain` leaves\n// it bare, `solid` plates it on the primary and inverts the typed text, the placeholder and the icons, and\n// `underlined` keeps only the bottom rule. A text area and an input with an addon are drawn from the same\n// arms, so they take the same tiers. The addon is the group's own surface: a group that is not `fill` borders\n// the addon it wraps, which is why the second row of each pair reads differently from the first.\nconst tiers: ThemeType[] = [\"fill\", \"outline\", \"plain\", \"solid\", \"dashed\", \"underlined\"];\n\nexport default function App() {\n  const [circle, setCircle] = useState(false);\n  const shape: ShapeType | undefined = circle ? \"circle\" : undefined;\n  const search = (value: string) => {\n    message.info(\"This is search event\");\n    console.log(value);\n  };\n  return (\n    <Space vertical block>\n      <Checkbox checked={circle} label=\"Circle\" onChange={(event) => setCircle(event.checked)} />\n      <Input placeholder=\"Please input\" shape={shape} />\n      <Input placeholder=\"Disabled\" disabled shape={shape} />\n      <Input placeholder=\"Please input\" icon={Search} shape={shape} />\n      <Input placeholder=\"Please input\" clearable={false} shape={shape} onSearch={search} />\n      <br />\n      {tiers.map((tier) => (\n        <div key={tier} style={{ display: \"grid\", gap: 4 }}>\n          <code>theme: {tier}</code>\n          <TextArea theme={tier} rows={2} placeholder=\"Please input\" />\n          <Input theme={tier} addonBefore=\"https://\" placeholder=\"Please input\" />\n        </div>\n      ))}\n    </Space>\n  );\n}"
+          "source": "import { Search } from \"kui-icons\";\nimport { useState } from \"react\";\nimport {\n  Checkbox,\n  Input,\n  message,\n  Space,\n  TextArea,\n  type ShapeType,\n  type ThemeType,\n} from \"react-kui\";\n\n// An input paints all six tiers, and the tier lands on the box itself: `fill` — what it does when nobody\n// writes a theme — plates it, `outline` and `dashed` put a solid or dashed edge on it instead, `plain` leaves\n// it bare, `solid` plates it on the primary and inverts the typed text, the placeholder and the icons, and\n// `underlined` keeps only the bottom rule. A text area and an input with an addon are drawn from the same\n// arms, so they take the same tiers. The addon is the group's own surface: a group that is not `fill` borders\n// the addon it wraps, which is why the second row of each pair reads differently from the first.\nconst tiers: ThemeType[] = [\"fill\", \"outline\", \"plain\", \"solid\", \"dashed\", \"underlined\"];\n\nexport default function App() {\n  const [circle, setCircle] = useState(false);\n  const shape: ShapeType | undefined = circle ? \"circle\" : undefined;\n  const search = (value: string) => {\n    message.info(\"This is search event\");\n    console.log(value);\n  };\n  return (\n    <Space vertical block>\n      <Checkbox checked={circle} label=\"Circle\" onChange={(event) => setCircle(event.checked)} />\n      <Input placeholder=\"Please input\" shape={shape} />\n      <Input placeholder=\"Disabled\" disabled shape={shape} />\n      <Input placeholder=\"Please input\" icon={Search} shape={shape} />\n      <Input placeholder=\"Please input\" clearable={false} shape={shape} onSearch={search} />\n      <br />\n      {tiers.map((tier) => (\n        <div key={tier} style={{ display: \"grid\", gap: 4 }}>\n          <code>theme: {tier}</code>\n          <TextArea theme={tier} rows={2} placeholder=\"Please input\" />\n          <Input theme={tier} prefix=\"https://\" placeholder=\"Please input\" />\n        </div>\n      ))}\n    </Space>\n  );\n}"
         },
         {
           "id": "components/input/demo/icon.tsx",
@@ -25992,7 +26015,7 @@
         {
           "id": "components/input/demo/theme.tsx",
           "title": "主题",
-          "source": "import { Search } from \"kui-icons\";\nimport { useState } from \"react\";\nimport {\n  Checkbox,\n  type ShapeType,\n  type ThemeType,\n  message,\n  Space,\n  Input,\n  TextArea,\n} from \"react-kui\";\n\n// An input paints all six tiers, and the tier lands on the box itself: `fill` — what it does when nobody\n// writes a theme — plates it, `outline` and `dashed` put a solid or dashed edge on it instead, `plain` leaves\n// it bare, `solid` plates it on the primary and inverts the typed text, the placeholder and the icons, and\n// `underlined` keeps only the bottom rule. A text area and an input with an addon are drawn from the same\n// arms, so they take the same tiers. The addon is the group's own surface: a group that is not `fill` borders\n// the addon it wraps, which is why the second row of each pair reads differently from the first.\nconst tiers: ThemeType[] = [\"fill\", \"outline\", \"plain\", \"solid\", \"dashed\", \"underlined\"];\n\nexport default function App() {\n  const [circle, setCircle] = useState(false);\n  const shape: ShapeType | undefined = circle ? \"circle\" : undefined;\n  const search = (value: string) => {\n    message.info(\"This is search event\");\n    console.log(value);\n  };\n  return (\n    <Space vertical block>\n      <Checkbox checked={circle} label=\"Circle\" onChange={(event) => setCircle(event.checked)} />\n      <Input placeholder=\"Please input\" shape={shape} />\n      <Input placeholder=\"Disabled\" disabled shape={shape} />\n      <Input placeholder=\"Please input\" icon={Search} shape={shape} />\n      <Input placeholder=\"Please input\" clearable={false} shape={shape} onSearch={search} />\n      <br />\n      {tiers.map((tier) => (\n        <div key={tier} style={{ display: \"grid\", gap: 4 }}>\n          <code>theme: {tier}</code>\n          <TextArea theme={tier} rows={2} placeholder=\"Please input\" />\n          <Input theme={tier} addonBefore=\"https://\" placeholder=\"Please input\" />\n        </div>\n      ))}\n    </Space>\n  );\n}"
+          "source": "import { Search } from \"kui-icons\";\nimport { useState } from \"react\";\nimport {\n  Checkbox,\n  Input,\n  message,\n  Space,\n  TextArea,\n  type ShapeType,\n  type ThemeType,\n} from \"react-kui\";\n\n// An input paints all six tiers, and the tier lands on the box itself: `fill` — what it does when nobody\n// writes a theme — plates it, `outline` and `dashed` put a solid or dashed edge on it instead, `plain` leaves\n// it bare, `solid` plates it on the primary and inverts the typed text, the placeholder and the icons, and\n// `underlined` keeps only the bottom rule. A text area and an input with an addon are drawn from the same\n// arms, so they take the same tiers. The addon is the group's own surface: a group that is not `fill` borders\n// the addon it wraps, which is why the second row of each pair reads differently from the first.\nconst tiers: ThemeType[] = [\"fill\", \"outline\", \"plain\", \"solid\", \"dashed\", \"underlined\"];\n\nexport default function App() {\n  const [circle, setCircle] = useState(false);\n  const shape: ShapeType | undefined = circle ? \"circle\" : undefined;\n  const search = (value: string) => {\n    message.info(\"This is search event\");\n    console.log(value);\n  };\n  return (\n    <Space vertical block>\n      <Checkbox checked={circle} label=\"Circle\" onChange={(event) => setCircle(event.checked)} />\n      <Input placeholder=\"Please input\" shape={shape} />\n      <Input placeholder=\"Disabled\" disabled shape={shape} />\n      <Input placeholder=\"Please input\" icon={Search} shape={shape} />\n      <Input placeholder=\"Please input\" clearable={false} shape={shape} onSearch={search} />\n      <br />\n      {tiers.map((tier) => (\n        <div key={tier} style={{ display: \"grid\", gap: 4 }}>\n          <code>theme: {tier}</code>\n          <TextArea theme={tier} rows={2} placeholder=\"Please input\" />\n          <Input theme={tier} prefix=\"https://\" placeholder=\"Please input\" />\n        </div>\n      ))}\n    </Space>\n  );\n}"
         },
         {
           "id": "components/input/demo/icon.tsx",
@@ -26643,7 +26666,7 @@
         {
           "id": "components/input-tag/demo/appearance.tsx",
           "title": "外观与禁用",
-          "source": "import { InputTag, Space } from \"react-kui\";\nexport default function App() {\n  return (\n    <Space vertical>\n      <InputTag size=\"small\" theme=\"plain\" value={[\"Plain\"]} />\n      <InputTag shape=\"square\" theme=\"outline\" value={[\"Outline\"]} />\n      <InputTag size=\"large\" shape=\"circle\" value={[\"Circle\"]} />\n      <InputTag disabled value={[\"Disabled\"]} />\n    </Space>\n  );\n}"
+          "source": "import { InputTag, Space } from \"react-kui\";\nexport default function App() {\n  return (\n    <Space vertical>\n      <InputTag size=\"small\" theme=\"plain\" value={[\"Plain\"]} />\n      <InputTag theme=\"dashed\" value={[\"Outline\"]} />\n      <InputTag shape=\"square\" theme=\"outline\" value={[\"Outline\"]} />\n      <InputTag size=\"large\" shape=\"circle\" value={[\"Circle\"]} />\n      <InputTag disabled value={[\"Disabled\"]} />\n    </Space>\n  );\n}"
         }
       ]
     },
@@ -26778,6 +26801,22 @@
           "boolean": false,
           "descriptionZh": "前缀内容",
           "descriptionEn": "Prefix content"
+        },
+        {
+          "name": "addonBefore",
+          "type": "React.ReactNode",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "输入框外部前置附件",
+          "descriptionEn": "Addon before the input"
+        },
+        {
+          "name": "addonAfter",
+          "type": "React.ReactNode",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "输入框外部后置附件",
+          "descriptionEn": "Addon after the input"
         },
         {
           "name": "theme",
@@ -27220,7 +27259,9 @@
         "formatter",
         "parser",
         "suffix",
-        "prefix"
+        "prefix",
+        "addonBefore",
+        "addonAfter"
       ],
       "behavior": {
         "rules": []
@@ -27239,8 +27280,8 @@
         },
         {
           "id": "components/input-number/demo/ffix.tsx",
-          "title": "扩展, 前缀和后缀",
-          "source": "import { CircleQuestionMark, LogoYen, UserPlus } from \"kui-icons\";\nimport { Button, Divider, Space, Tooltip, InputNumber } from \"react-kui\";\nexport default function App() {\n  return (\n    <>\n      <Space block vertical>\n        <InputNumber placeholder=\"Please input amount\" suffix=\"元\" prefix=\"¥\" />\n        <InputNumber placeholder=\"Please input amount\" step={50} suffix=\"元\" prefix=\"充值\" />\n        <InputNumber placeholder=\"Please input amount\" suffix=\".00\" />\n      </Space>\n      <Divider text=\"React nodes\" />\n      <Space vertical block>\n        <InputNumber\n          placeholder=\"请填写您的薪资\"\n          icon={LogoYen}\n          suffix={\n            <Tooltip title=\"此处如果不知道怎么填，请咨询管理员\">\n              <Button icon={CircleQuestionMark} />\n            </Tooltip>\n          }\n        />\n        <InputNumber\n          placeholder=\"Please input amount\"\n          prefix={<Button icon={UserPlus} />}\n          suffix={<Button>Top up</Button>}\n        />\n      </Space>\n    </>\n  );\n}"
+          "title": "扩展, 前缀、后缀与附件",
+          "source": "import { CircleQuestionMark, LogoYen, UserPlus } from \"kui-icons\";\nimport { Button, Divider, Space, Tooltip, InputNumber } from \"react-kui\";\nexport default function App() {\n  return (\n    <>\n      <Space block vertical>\n        <InputNumber placeholder=\"Please input amount\" suffix=\"元\" prefix=\"¥\" />\n        <InputNumber placeholder=\"Please input amount\" step={50} suffix=\"元\" prefix=\"充值\" />\n        <InputNumber placeholder=\"Please input amount\" suffix=\".00\" />\n      </Space>\n      <Divider text=\"Addons\" />\n      <Space vertical block>\n        <InputNumber placeholder=\"Please input amount\" addonBefore=\"¥\" addonAfter=\"RMB\" />\n        <InputNumber placeholder=\"Please input weight\" addonAfter=\"kg\" />\n      </Space>\n      <Divider text=\"React nodes\" />\n      <Space vertical block>\n        <InputNumber\n          placeholder=\"请填写您的薪资\"\n          icon={LogoYen}\n          suffix={\n            <Tooltip title=\"此处如果不知道怎么填，请咨询管理员\">\n              <Button icon={CircleQuestionMark} />\n            </Tooltip>\n          }\n        />\n        <InputNumber\n          placeholder=\"Please input amount\"\n          prefix={<Button icon={UserPlus} />}\n          suffix={<Button>Top up</Button>}\n        />\n      </Space>\n    </>\n  );\n}"
         },
         {
           "id": "components/input-number/demo/size.tsx",

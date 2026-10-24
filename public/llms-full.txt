@@ -2254,6 +2254,22 @@ export default function App() {
       "descriptionEn": "Loading text"
     },
     {
+      "name": "addonBefore",
+      "type": "React.ReactNode",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "输入框外部前置附件",
+      "descriptionEn": "Addon before the input"
+    },
+    {
+      "name": "addonAfter",
+      "type": "React.ReactNode",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "输入框外部后置附件",
+      "descriptionEn": "Addon after the input"
+    },
+    {
       "name": "size",
       "type": "SizeType | undefined",
       "required": false,
@@ -2403,6 +2419,8 @@ export default function App() {
     }
   ],
   "renderProps": [
+    "addonBefore",
+    "addonAfter",
     "filterOption"
   ],
   "behavior": {
@@ -2425,6 +2443,25 @@ export default function App() {
       clearable
       placeholder="Please input"
       options={["Vue", "React", "Solid", "Svelte"]}
+    />
+  );
+}
+```
+## 外部附件
+
+```tsx
+import { AutoComplete } from "react-kui";
+import { useState } from "react";
+export default function App() {
+  const [value, setValue] = useState("");
+  return (
+    <AutoComplete
+      value={value}
+      onChange={setValue}
+      addonBefore="https://"
+      addonAfter=".com"
+      placeholder="Please input domain"
+      options={["kui", "kui-pro", "kui-admin", "kui-docs"]}
     />
   );
 }
@@ -2485,6 +2522,7 @@ export default function App() {
   return (
     <Space vertical>
       <AutoComplete size="small" theme="plain" options={options} placeholder="small / plain" />
+      <AutoComplete theme="dashed" options={options} placeholder="plain" />
       <AutoComplete
         shape="square"
         theme="outline"
@@ -16333,12 +16371,12 @@ import { Search } from "kui-icons";
 import { useState } from "react";
 import {
   Checkbox,
-  type ShapeType,
-  type ThemeType,
+  Input,
   message,
   Space,
-  Input,
   TextArea,
+  type ShapeType,
+  type ThemeType,
 } from "react-kui";
 
 // An input paints all six tiers, and the tier lands on the box itself: `fill` — what it does when nobody
@@ -16368,7 +16406,7 @@ export default function App() {
         <div key={tier} style={{ display: "grid", gap: 4 }}>
           <code>theme: {tier}</code>
           <TextArea theme={tier} rows={2} placeholder="Please input" />
-          <Input theme={tier} addonBefore="https://" placeholder="Please input" />
+          <Input theme={tier} prefix="https://" placeholder="Please input" />
         </div>
       ))}
     </Space>
@@ -16795,12 +16833,12 @@ import { Search } from "kui-icons";
 import { useState } from "react";
 import {
   Checkbox,
-  type ShapeType,
-  type ThemeType,
+  Input,
   message,
   Space,
-  Input,
   TextArea,
+  type ShapeType,
+  type ThemeType,
 } from "react-kui";
 
 // An input paints all six tiers, and the tier lands on the box itself: `fill` — what it does when nobody
@@ -16830,7 +16868,7 @@ export default function App() {
         <div key={tier} style={{ display: "grid", gap: 4 }}>
           <code>theme: {tier}</code>
           <TextArea theme={tier} rows={2} placeholder="Please input" />
-          <Input theme={tier} addonBefore="https://" placeholder="Please input" />
+          <Input theme={tier} prefix="https://" placeholder="Please input" />
         </div>
       ))}
     </Space>
@@ -17265,12 +17303,12 @@ import { Search } from "kui-icons";
 import { useState } from "react";
 import {
   Checkbox,
-  type ShapeType,
-  type ThemeType,
+  Input,
   message,
   Space,
-  Input,
   TextArea,
+  type ShapeType,
+  type ThemeType,
 } from "react-kui";
 
 // An input paints all six tiers, and the tier lands on the box itself: `fill` — what it does when nobody
@@ -17300,7 +17338,7 @@ export default function App() {
         <div key={tier} style={{ display: "grid", gap: 4 }}>
           <code>theme: {tier}</code>
           <TextArea theme={tier} rows={2} placeholder="Please input" />
-          <Input theme={tier} addonBefore="https://" placeholder="Please input" />
+          <Input theme={tier} prefix="https://" placeholder="Please input" />
         </div>
       ))}
     </Space>
@@ -17944,6 +17982,7 @@ export default function App() {
   return (
     <Space vertical>
       <InputTag size="small" theme="plain" value={["Plain"]} />
+      <InputTag theme="dashed" value={["Outline"]} />
       <InputTag shape="square" theme="outline" value={["Outline"]} />
       <InputTag size="large" shape="circle" value={["Circle"]} />
       <InputTag disabled value={["Disabled"]} />
@@ -18087,6 +18126,22 @@ export default function App() {
       "descriptionEn": "Prefix content"
     },
     {
+      "name": "addonBefore",
+      "type": "React.ReactNode",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "输入框外部前置附件",
+      "descriptionEn": "Addon before the input"
+    },
+    {
+      "name": "addonAfter",
+      "type": "React.ReactNode",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "输入框外部后置附件",
+      "descriptionEn": "Addon after the input"
+    },
+    {
       "name": "theme",
       "type": "ThemeType | undefined",
       "required": false,
@@ -18168,7 +18223,9 @@ export default function App() {
     "formatter",
     "parser",
     "suffix",
-    "prefix"
+    "prefix",
+    "addonBefore",
+    "addonAfter"
   ],
   "behavior": {
     "rules": []
@@ -18251,7 +18308,7 @@ export default function App() {
   );
 }
 ```
-## 扩展, 前缀和后缀
+## 扩展, 前缀、后缀与附件
 
 ```tsx
 import { CircleQuestionMark, LogoYen, UserPlus } from "kui-icons";
@@ -18263,6 +18320,11 @@ export default function App() {
         <InputNumber placeholder="Please input amount" suffix="元" prefix="¥" />
         <InputNumber placeholder="Please input amount" step={50} suffix="元" prefix="充值" />
         <InputNumber placeholder="Please input amount" suffix=".00" />
+      </Space>
+      <Divider text="Addons" />
+      <Space vertical block>
+        <InputNumber placeholder="Please input amount" addonBefore="¥" addonAfter="RMB" />
+        <InputNumber placeholder="Please input weight" addonAfter="kg" />
       </Space>
       <Divider text="React nodes" />
       <Space vertical block>

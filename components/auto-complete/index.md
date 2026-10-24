@@ -10,6 +10,10 @@
 
 - 支持自由输入、过滤和键盘选择。
 
+[外部附件](./demo/addon.tsx)
+
+- 通过 `addonBefore`、`addonAfter` 把附件画在输入框外部，候选项列表按整组宽度展开。
+
 [受控值](./demo/controlled.tsx)
 
 - 使用 `value` 和 `onChange` 从外部控制输入内容。
@@ -42,6 +46,8 @@
 | disabled | 禁用 | boolean | false |
 | readOnly | 只读，不可输入、清空或展开 | boolean | false |
 | placeholder | 占位文本 | string | - |
+| addonBefore | 输入框外部前置附件 | `React.ReactNode` | - |
+| addonAfter | 输入框外部后置附件 | `React.ReactNode` | - |
 | loading | 是否正在加载 | `boolean` | false |
 | loadingText | 加载提示文字 | `string` | 加载中 |
 | size | 尺寸 | `"small" \| "medium" \| "large"` | medium |

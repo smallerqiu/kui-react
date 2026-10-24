@@ -18,9 +18,9 @@ When standard numerical values need to be obtained.
 
 - Format numbers using `formatter` to display data with specific meaning, often used in conjunction with `parser`.
 
-[Extension, Prefix and Suffix](./demo/ffix.tsx)
+[Extension, Prefix, Suffix and Addons](./demo/ffix.tsx)
 
-- suffix, prefix extension
+- `suffix` and `prefix` render inside the input; `addonBefore` and `addonAfter` render outside as boxed affixes.
 
 [Size](./demo/size.tsx)
 
@@ -49,6 +49,8 @@ When standard numerical values need to be obtained.
 | shape | Component appearance | `"round" \| "default" \| "square" \| "circle"` | - |
 | suffix | Custom suffix | `React.ReactNode` | - |
 | prefix | Prefix content | `React.ReactNode` | - |
+| addonBefore | Addon before the input | `React.ReactNode` | - |
+| addonAfter | Addon after the input | `React.ReactNode` | - |
 | controls | Whether to show increase/decrease buttons | `boolean` | true |
 | keyboard | Whether the value can be adjusted with the up/down arrow keys | `boolean` | true |
 | theme | Component theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
