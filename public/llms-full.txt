@@ -2270,6 +2270,22 @@ export default function App() {
       "descriptionEn": "Addon after the input"
     },
     {
+      "name": "prefix",
+      "type": "React.ReactNode",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "输入框内部前缀",
+      "descriptionEn": "Inline prefix"
+    },
+    {
+      "name": "suffix",
+      "type": "React.ReactNode",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "输入框内部后缀",
+      "descriptionEn": "Inline suffix"
+    },
+    {
       "name": "size",
       "type": "SizeType | undefined",
       "required": false,
@@ -2421,6 +2437,8 @@ export default function App() {
   "renderProps": [
     "addonBefore",
     "addonAfter",
+    "prefix",
+    "suffix",
     "filterOption"
   ],
   "behavior": {
@@ -2447,22 +2465,30 @@ export default function App() {
   );
 }
 ```
-## 外部附件
+## 附件与前后缀
 
 ```tsx
-import { AutoComplete } from "react-kui";
+import { AutoComplete, Space } from "react-kui";
 import { useState } from "react";
 export default function App() {
   const [value, setValue] = useState("");
   return (
-    <AutoComplete
-      value={value}
-      onChange={setValue}
-      addonBefore="https://"
-      addonAfter=".com"
-      placeholder="Please input domain"
-      options={["kui", "kui-pro", "kui-admin", "kui-docs"]}
-    />
+    <Space vertical block>
+      <AutoComplete
+        value={value}
+        onChange={setValue}
+        addonBefore="https://"
+        addonAfter=".com"
+        placeholder="Please input domain"
+        options={["kui", "kui-pro", "kui-admin", "kui-docs"]}
+      />
+      <AutoComplete
+        prefix="@"
+        suffix=".cn"
+        placeholder="Please input handle"
+        options={["kui", "kui-pro", "kui-admin", "kui-docs"]}
+      />
+    </Space>
   );
 }
 ```

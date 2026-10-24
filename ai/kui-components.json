@@ -3650,6 +3650,22 @@
           "descriptionEn": "Addon after the input"
         },
         {
+          "name": "prefix",
+          "type": "React.ReactNode",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "输入框内部前缀",
+          "descriptionEn": "Inline prefix"
+        },
+        {
+          "name": "suffix",
+          "type": "React.ReactNode",
+          "required": false,
+          "boolean": false,
+          "descriptionZh": "输入框内部后缀",
+          "descriptionEn": "Inline suffix"
+        },
+        {
           "name": "size",
           "type": "SizeType | undefined",
           "required": false,
@@ -3784,7 +3800,6 @@
         "content",
         "datatype",
         "inlist",
-        "prefix",
         "property",
         "rel",
         "resource",
@@ -4081,7 +4096,6 @@
         "about": "string",
         "content": "string",
         "datatype": "string",
-        "prefix": "string",
         "property": "string",
         "rel": "string",
         "resource": "string",
@@ -4208,6 +4222,8 @@
       "renderProps": [
         "addonBefore",
         "addonAfter",
+        "prefix",
+        "suffix",
         "filterOption"
       ],
       "behavior": {
@@ -4222,8 +4238,8 @@
         },
         {
           "id": "components/auto-complete/demo/addon.tsx",
-          "title": "外部附件",
-          "source": "import { AutoComplete } from \"react-kui\";\nimport { useState } from \"react\";\nexport default function App() {\n  const [value, setValue] = useState(\"\");\n  return (\n    <AutoComplete\n      value={value}\n      onChange={setValue}\n      addonBefore=\"https://\"\n      addonAfter=\".com\"\n      placeholder=\"Please input domain\"\n      options={[\"kui\", \"kui-pro\", \"kui-admin\", \"kui-docs\"]}\n    />\n  );\n}"
+          "title": "附件与前后缀",
+          "source": "import { AutoComplete, Space } from \"react-kui\";\nimport { useState } from \"react\";\nexport default function App() {\n  const [value, setValue] = useState(\"\");\n  return (\n    <Space vertical block>\n      <AutoComplete\n        value={value}\n        onChange={setValue}\n        addonBefore=\"https://\"\n        addonAfter=\".com\"\n        placeholder=\"Please input domain\"\n        options={[\"kui\", \"kui-pro\", \"kui-admin\", \"kui-docs\"]}\n      />\n      <AutoComplete\n        prefix=\"@\"\n        suffix=\".cn\"\n        placeholder=\"Please input handle\"\n        options={[\"kui\", \"kui-pro\", \"kui-admin\", \"kui-docs\"]}\n      />\n    </Space>\n  );\n}"
         },
         {
           "id": "components/auto-complete/demo/controlled.tsx",

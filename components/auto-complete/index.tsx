@@ -25,7 +25,7 @@ export interface AutoCompleteOption {
 }
 export interface AutoCompleteProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
-  "size" | "value" | "defaultValue" | "onChange" | "onSelect" | "defaultChecked"
+  "size" | "prefix" | "value" | "defaultValue" | "onChange" | "onSelect" | "defaultChecked"
 > {
   value?: string;
   options?: Array<string | AutoCompleteOption>;
@@ -36,6 +36,8 @@ export interface AutoCompleteProps extends Omit<
   loadingText?: string;
   addonBefore?: React.ReactNode;
   addonAfter?: React.ReactNode;
+  prefix?: React.ReactNode;
+  suffix?: React.ReactNode;
   size?: SizeType;
   shape?: ShapeType;
   theme?: ThemeType;
@@ -61,6 +63,8 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   loadingText,
   addonBefore,
   addonAfter,
+  prefix,
+  suffix,
   size: sizeProp,
   shape: shapeProp,
   theme: themeProp,
@@ -258,6 +262,8 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         clearable={clearable}
         addonBefore={addonBefore}
         addonAfter={addonAfter}
+        prefix={prefix}
+        suffix={suffix}
         role="combobox"
         aria-autocomplete="list"
         aria-expanded={visible}

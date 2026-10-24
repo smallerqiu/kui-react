@@ -81,4 +81,18 @@ describe("AutoComplete addons", () => {
     fireEvent.click(option);
     expect((screen.getByRole("combobox") as HTMLInputElement).value).toBe("kui");
   });
+
+  it("keeps prefix and suffix inside the field", () => {
+    const { container } = render(
+      <AutoComplete
+        prefix={<span data-testid="prefix-node">@</span>}
+        suffix={<span data-testid="suffix-node">.cn</span>}
+        options={["kui"]}
+      />,
+    );
+
+    expect(container.querySelector(".k-input-group")).toBeNull();
+    expect(screen.getByTestId("prefix-node").closest(".k-input-prefix")).not.toBeNull();
+    expect(screen.getByTestId("suffix-node").closest(".k-input-suffix")).not.toBeNull();
+  });
 });

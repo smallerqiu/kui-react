@@ -10,9 +10,9 @@ Suggest options while keeping free-form input available.
 
 - Supports free input, filtering, and keyboard selection.
 
-[Addons](./demo/addon.tsx)
+[Addons and affixes](./demo/addon.tsx)
 
-- `addonBefore` and `addonAfter` render boxed affixes outside the input; the suggestion list spans the whole group.
+- `addonBefore` and `addonAfter` render boxed affixes outside the input; `prefix` and `suffix` render inside it. The suggestion list spans the whole group.
 
 [Controlled](./demo/controlled.tsx)
 
@@ -48,6 +48,8 @@ Suggest options while keeping free-form input available.
 | placeholder | Placeholder | string | - |
 | addonBefore | Addon before the input | `React.ReactNode` | - |
 | addonAfter | Addon after the input | `React.ReactNode` | - |
+| prefix | Inline prefix | `React.ReactNode` | - |
+| suffix | Inline suffix | `React.ReactNode` | - |
 | loading | Loading state | `boolean` | false |
 | loadingText | Loading text | `string` | Loading |
 | size | Size | `"small" \| "medium" \| "large"` | medium |

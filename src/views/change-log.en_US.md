@@ -44,7 +44,7 @@ rm -rf node_modules/.vite
 - **Modal / Drawer**: `destroyOnClose`; fixed `Escape` across stacked panels, `centered`, `width`, an empty title bar and a clipped focus ring; `title` and `content` on imperative dialogs take any node.
 - **Popup components**: `destroyOnClose` throughout (default `true`); a confirm dialog whose `onOk` returns a Promise closes only on success.
 - **Form**: a field wrapped in `InputGroup` still counts as the item's control; a `block` control fills the row in a vertical form.
-- **InputNumber / AutoComplete**: support `addonBefore` / `addonAfter` to place a unit or fixed text outside the field.
+- **InputNumber / AutoComplete**: support `addonBefore` / `addonAfter` to place a unit or fixed text outside the field, and `prefix` / `suffix` for the inside.
 - **Other components**: fixed the `DropdownButton` menu trigger, the `Cascader` placeholder, `StatCard` / `StatNumber` rendering, the `Select` crash on `NaN`, the `Tooltip` border, and `Ripple` / `FlameWrap` clicks in recent Chrome.
 - **Accessibility and styles**: accessibility semantics for menus, tables and friends; one scrollbar style across the library.
 

@@ -44,7 +44,7 @@ rm -rf node_modules/.vite
 - **Modal / Drawer**：支持 `destroyOnClose`；修复多层叠开时的 `Escape`、`centered`、`width`、空标题栏及焦点高亮被裁切的问题；命令式弹窗的 `title` / `content` 可以传节点。
 - **弹层组件**：统一支持 `destroyOnClose`（默认 `true`）；确认弹窗的 `onOk` 返回 Promise 时，成功才关窗。
 - **Form**：`InputGroup` 内的输入框仍算表单项控件；竖排表单中写了 `block` 的控件占满整行。
-- **InputNumber / AutoComplete**：支持 `addonBefore` / `addonAfter`，把单位或固定文字贴在输入框外面。
+- **InputNumber / AutoComplete**：支持 `addonBefore` / `addonAfter`，把单位或固定文字贴在输入框外面；`prefix` / `suffix` 则贴在框内。
 - **其他组件**：修复 `DropdownButton` 的菜单触发、`Cascader` 的占位文案、`StatCard` / `StatNumber` 的渲染、`Select` 遇到 `NaN` 时的崩溃、`Tooltip` 的描边，以及 `Ripple` / `FlameWrap` 在新版 Chrome 中的点击问题。
 - **无障碍与样式**：补齐菜单、表格等组件的无障碍语义；统一库内滚动条样式。
 
