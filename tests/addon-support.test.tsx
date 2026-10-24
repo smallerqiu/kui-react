@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { createRef, useState } from "react";
 import { describe, expect, it, vi } from "vitest";
-import { AutoComplete, Form, FormItem, InputNumber, type FormExpose } from "../components";
+import { AutoComplete, Form, FormItem, Input, InputNumber, type FormExpose } from "../components";
 
 const boxes = (container: HTMLElement) => ({
   before: container.querySelector(".k-input-group-prefix"),
@@ -9,6 +9,29 @@ const boxes = (container: HTMLElement) => ({
 });
 
 describe("InputNumber addons", () => {
+  it.each(["fill", "outline", "dashed", "plain", "solid", "underlined"] as const)(
+    "forwards %s to the addon group",
+    (theme) => {
+      const { container, unmount } = render(
+        <InputNumber theme={theme} addonBefore="¥" addonAfter="RMB" />,
+      );
+      expect(
+        container.querySelector(".k-input-group")?.classList.contains(`k-input-group-${theme}`),
+      ).toBe(true);
+      unmount();
+    },
+  );
+  it("keeps numeric zero addons in both Input and InputNumber", () => {
+    for (const element of [
+      <Input addonBefore={0} addonAfter={0} />,
+      <InputNumber addonBefore={0} addonAfter={0} />,
+    ]) {
+      const { container, unmount } = render(element);
+      expect(boxes(container).before?.textContent).toBe("0");
+      expect(boxes(container).after?.textContent).toBe("0");
+      unmount();
+    }
+  });
   it("renders both addons outside the field and keeps stepping on the inner input", () => {
     const onChange = vi.fn();
     const { container } = render(
@@ -36,12 +59,7 @@ describe("InputNumber addons", () => {
     function Demo() {
       const [model, setModel] = useState<Record<string, unknown>>({ amount: "" });
       return (
-        <Form
-          ref={ref}
-          model={model}
-          onChange={setModel}
-          rules={{ amount: [{ required: true }] }}
-        >
+        <Form ref={ref} model={model} onChange={setModel} rules={{ amount: [{ required: true }] }}>
           <FormItem label="Amount" prop="amount">
             <InputNumber addonBefore="¥" addonAfter="RMB" />
           </FormItem>

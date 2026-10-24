@@ -4,6 +4,7 @@ export default function App() {
   return (
     <Space vertical>
       <AutoComplete size="small" theme="plain" options={options} placeholder="small / plain" />
+      <AutoComplete theme="dashed" options={options} placeholder="plain" />
       <AutoComplete
         shape="square"
         theme="outline"

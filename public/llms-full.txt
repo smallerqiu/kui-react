@@ -2468,8 +2468,8 @@ export default function App() {
 ## 附件与前后缀
 
 ```tsx
-import { AutoComplete, Space } from "react-kui";
 import { useState } from "react";
+import { AutoComplete, Button, Space } from "react-kui";
 export default function App() {
   const [value, setValue] = useState("");
   return (
@@ -2478,7 +2478,7 @@ export default function App() {
         value={value}
         onChange={setValue}
         addonBefore="https://"
-        addonAfter=".com"
+        addonAfter={<Button>OK</Button>}
         placeholder="Please input domain"
         options={["kui", "kui-pro", "kui-admin", "kui-docs"]}
       />
@@ -18338,7 +18338,7 @@ export default function App() {
 
 ```tsx
 import { CircleQuestionMark, LogoYen, UserPlus } from "kui-icons";
-import { Button, Divider, Space, Tooltip, InputNumber } from "react-kui";
+import { Button, Divider, InputNumber, Space, Tooltip } from "react-kui";
 export default function App() {
   return (
     <>
@@ -18357,7 +18357,7 @@ export default function App() {
         <InputNumber
           placeholder="请填写您的薪资"
           icon={LogoYen}
-          suffix={
+          addonAfter={
             <Tooltip title="此处如果不知道怎么填，请咨询管理员">
               <Button icon={CircleQuestionMark} />
             </Tooltip>
@@ -18365,8 +18365,8 @@ export default function App() {
         />
         <InputNumber
           placeholder="Please input amount"
-          prefix={<Button icon={UserPlus} />}
-          suffix={<Button>Top up</Button>}
+          addonBefore={<Button icon={UserPlus} />}
+          addonAfter={<Button>Top up</Button>}
         />
       </Space>
     </>

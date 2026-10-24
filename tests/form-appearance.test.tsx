@@ -281,7 +281,10 @@ describe("InputGroup follows the tier its field is on", () => {
       </ConfigProvider>,
     ).container;
 
-  const fieldWithAddon = (providerProps: Record<string, unknown>, formProps?: Record<string, unknown>) =>
+  const fieldWithAddon = (
+    providerProps: Record<string, unknown>,
+    formProps?: Record<string, unknown>,
+  ) =>
     render(
       <ConfigProvider {...providerProps}>
         {formProps ? (
@@ -300,25 +303,27 @@ describe("InputGroup follows the tier its field is on", () => {
 
   for (const tier of TIERS.filter((name) => name !== "fill")) {
     it(`ConfigProvider theme="${tier}" borders the addon boxes`, () => {
-      expect(groupTiers(underProvider(tier))).toEqual([]);
+      expect(groupTiers(underProvider(tier))).toEqual([`k-input-group-${tier}`]);
     });
 
     it(`ConfigProvider theme="${tier}" borders them on the group an Input builds`, () => {
       const container = fieldWithAddon({ theme: tier });
       expect(classesOf(container, ".k-input")).toContain(`k-input-${tier}`);
-      expect(groupTiers(container)).toEqual([]);
+      expect(groupTiers(container)).toEqual([`k-input-group-${tier}`]);
     });
   }
 
   it("an explicit theme outranks the tier it is standing in", () => {
     expect(groupTiers(underProvider("outline", { theme: "fill" }))).toEqual(["k-input-group-fill"]);
-    expect(groupTiers(underProvider("fill", { theme: "outline" }))).toEqual([]);
+    expect(groupTiers(underProvider("fill", { theme: "outline" }))).toEqual([
+      "k-input-group-outline",
+    ]);
   });
 
   it("a form tier reaches it through the field it wraps", () => {
     const container = fieldWithAddon({}, { theme: "outline" });
     expect(classesOf(container, ".k-input")).toContain("k-input-outline");
-    expect(groupTiers(container)).toEqual([]);
+    expect(groupTiers(container)).toEqual(["k-input-group-outline"]);
   });
 
   it("takes its size the same way, and hands it to the controls inside", () => {

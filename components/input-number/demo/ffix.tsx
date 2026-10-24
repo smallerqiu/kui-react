@@ -1,5 +1,5 @@
 import { CircleQuestionMark, LogoYen, UserPlus } from "kui-icons";
-import { Button, Divider, Space, Tooltip, InputNumber } from "react-kui";
+import { Button, Divider, InputNumber, Space, Tooltip } from "react-kui";
 export default function App() {
   return (
     <>
@@ -18,7 +18,7 @@ export default function App() {
         <InputNumber
           placeholder="请填写您的薪资"
           icon={LogoYen}
-          suffix={
+          addonAfter={
             <Tooltip title="此处如果不知道怎么填，请咨询管理员">
               <Button icon={CircleQuestionMark} />
             </Tooltip>
@@ -26,8 +26,8 @@ export default function App() {
         />
         <InputNumber
           placeholder="Please input amount"
-          prefix={<Button icon={UserPlus} />}
-          suffix={<Button>Top up</Button>}
+          addonBefore={<Button icon={UserPlus} />}
+          addonAfter={<Button>Top up</Button>}
         />
       </Space>
     </>

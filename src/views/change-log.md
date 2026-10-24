@@ -37,6 +37,8 @@ rm -rf node_modules/.vite
 
 #### 组件修复与增强
 
+- **输入框附件**：纯文本 `addonBefore` / `addonAfter` 补齐留白、底色及各主题边框，`outline` / `dashed` 分别使用实线 / 虚线；修正 InputNumber 外部按钮附件示例，并验证数字 `0` 正常显示。
+
 - **Menu**：支持方向键与 `Enter` 操作，`Escape` 只收起当前一层；修复纵向子菜单展开时的错位；读屏软件能识别菜单层级与展开状态。
 - **Table**：修复分组表头、固定列与 `scroll.y` 的表头接缝、圆角和右下角缺口，列宽不足时整表横向滚动；支持嵌套 `dataIndex`、稳定兜底 `rowKey` 和单元格省略显示（`ellipsis`）；内置文案接入语言包。
 - **Tree**：`loadData` 对同一节点只请求一次；修复虚拟滚动的行高与背景、缺 `key` 节点的展开与勾选串台；展开箭头不再进入 `Tab` 序列。

@@ -2,12 +2,12 @@ import { Search } from "kui-icons";
 import { useState } from "react";
 import {
   Checkbox,
-  type ShapeType,
-  type ThemeType,
+  Input,
   message,
   Space,
-  Input,
   TextArea,
+  type ShapeType,
+  type ThemeType,
 } from "react-kui";
 
 // An input paints all six tiers, and the tier lands on the box itself: `fill` — what it does when nobody
@@ -37,7 +37,7 @@ export default function App() {
         <div key={tier} style={{ display: "grid", gap: 4 }}>
           <code>theme: {tier}</code>
           <TextArea theme={tier} rows={2} placeholder="Please input" />
-          <Input theme={tier} addonBefore="https://" placeholder="Please input" />
+          <Input theme={tier} prefix="https://" placeholder="Please input" />
         </div>
       ))}
     </Space>

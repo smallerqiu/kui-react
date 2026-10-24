@@ -37,6 +37,8 @@ rm -rf node_modules/.vite
 
 #### Component fixes and enhancements
 
+- **Input addons**: text addons gain spacing and theme-specific surfaces, including solid outline and dashed borders. Corrected the external-button addon example for InputNumber and added regression coverage for numeric `0`.
+
 - **Menu**: arrow keys and `Enter` now work, `Escape` closes only the current level, the offset when an inline sub-menu expands is fixed, and screen readers can tell the hierarchy and the expanded state.
 - **Table**: fixed the header seams, corners and bottom-right gap when grouped headers, fixed columns and `scroll.y` meet; a table narrower than its columns scrolls as a whole; nested `dataIndex`, a stable fallback `rowKey` and cell ellipsis (`ellipsis`); built-in text now comes from the locale.
 - **Tree**: `loadData` runs once per node; fixed the row height and backgrounds in virtual scrolling, and nodes without a `key` no longer leak their expanded or checked state to other nodes; the expand arrow no longer enters the `Tab` order.

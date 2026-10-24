@@ -40,7 +40,7 @@ const InputGroup: React.FC<InputGroupProps> = ({
     {
       "k-input-group-compact": compact,
       "k-input-group-block": block,
-      "k-input-group-fill": theme === "fill",
+      [`k-input-group-${theme}`]: true,
       "k-input-group-lg": currentSize === "large",
       "k-input-group-sm": currentSize === "small",
     },

@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
       // VITE_APP_VERSION: 111,
     },
     server: {
-      port: 7006,
+      port: 7009,
       strictPort: true,
     },
     plugins: [reactMarkdown(), react(), babel({ presets: [reactCompilerPreset()] }), banner()],

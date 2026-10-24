@@ -1,5 +1,5 @@
-import { AutoComplete, Space } from "react-kui";
 import { useState } from "react";
+import { AutoComplete, Button, Space } from "react-kui";
 export default function App() {
   const [value, setValue] = useState("");
   return (
@@ -8,7 +8,7 @@ export default function App() {
         value={value}
         onChange={setValue}
         addonBefore="https://"
-        addonAfter=".com"
+        addonAfter={<Button>OK</Button>}
         placeholder="Please input domain"
         options={["kui", "kui-pro", "kui-admin", "kui-docs"]}
       />
