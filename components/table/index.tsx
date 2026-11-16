@@ -3,6 +3,7 @@ import { useConfigAppearance, normalizeSurfaceShape } from "../config/use-config
 import clsx from "clsx";
 import { ChevronDown, ChevronRight, Triangle } from "kui-icons";
 import {
+  isValidElement,
   useCallback,
   useContext,
   useEffect,
@@ -172,6 +173,18 @@ const EllipsisCell = ({
       {node}
     </Tooltip>
   );
+};
+
+/**
+ * 单元格原始值的渲染兜底，与 kui-vue 同口径（vue 的渲染器会把对象子节点转成文本：普通对象与
+ * `Date` 调 `String()`，数组逐项展开）。React 遇到同样的对象会直接抛
+ * "Objects are not valid as a React child" 把整张表打崩，所以先在这一层转掉。
+ * React 元素原样保留，数组继续按子节点序列交给 React（`[1, 2]` 两边都渲染成 "12"）。
+ */
+const renderRawValue = (value: unknown): ReactNode => {
+  if (Array.isArray(value)) return value.map(renderRawValue);
+  if (value !== null && typeof value === "object" && !isValidElement(value)) return String(value);
+  return value as ReactNode;
 };
 
 interface RowExpansionOptions {
@@ -432,7 +445,10 @@ export default function Table<T extends object = Record<string, unknown>>({
   const fixedClass = (column: Column<T>, index: number, colSpan = 1) =>
     clsx({
       "k-table-cell-fix-left": column.fixed === "left",
-      "k-table-cell-fix-left-last": column.fixed === "left" && leaves[index + 1]?.fixed !== "left",
+      // 固定区的右边界落在合并区间末尾，不是起始格的下一列：跨了两列固定列时 `index + 1` 仍固定，
+      // 这一格就漏掉 `-last`，横向滚动时冻结区边缘没有阴影。
+      "k-table-cell-fix-left-last":
+        column.fixed === "left" && leaves[index + colSpan]?.fixed !== "left",
       "k-table-cell-fix-right": column.fixed === "right",
       "k-table-cell-fix-right-first":
         column.fixed === "right" && leaves[index - 1]?.fixed !== "right",
@@ -714,7 +730,9 @@ export default function Table<T extends object = Record<string, unknown>>({
             <th
               rowSpan={headerInfo.maxDepth}
               className={clsx("k-table-cell-fix-left", {
-                "k-table-cell-fix-left-last": ping.left,
+                // 勾选列也是左侧固定区的一员：只有它右边的第一列不再固定时，它才是这段固定区的末格。
+                // 否则第一列也固定时，冻结区中间会多画一道阴影（表头与表体各一道）。
+                "k-table-cell-fix-left-last": ping.left && leaves[0]?.fixed !== "left",
                 // 叶子列全被隐藏时，勾选格就是这一行的最后一格，边框口径要跟着走
                 "k-table-cell-last-column": !leaves.length,
               })}
@@ -818,7 +836,7 @@ export default function Table<T extends object = Record<string, unknown>>({
           {checkable && (
             <td
               className={clsx("k-table-cell-fix-left", {
-                "k-table-cell-fix-left-last": ping.left,
+                "k-table-cell-fix-left-last": ping.left && leaves[0]?.fixed !== "left",
                 "k-table-cell-last-column": !leaves.length,
               })}
               style={{ width: SELECTION_COLUMN_WIDTH, left: 0 }}
@@ -837,7 +855,7 @@ export default function Table<T extends object = Record<string, unknown>>({
             if (!cell.show) return null;
             const value = getRecordValue(record, column.key);
             const content =
-              column.render?.(value, record, rowIndex, column) ?? (value as ReactNode);
+              column.render?.(value, record, rowIndex, column) ?? renderRawValue(value);
             const ellipsis = cellEllipsis.get(column.key);
             return (
               <td
@@ -961,7 +979,8 @@ export default function Table<T extends object = Record<string, unknown>>({
         ref={bodyRef}
         style={{
           overflowY: scroll.y ? "scroll" : "auto",
-          overflowX: data.length ? "auto" : "hidden",
+          // 空表也可能有比容器宽的列（固定列 + 列宽下限），横向照样要能滚，否则右侧列永远看不到。
+          overflowX: "auto",
           maxHeight: scroll.y,
         }}
         onScroll={handleScroll}

@@ -35426,8 +35426,8 @@ export default function App() {
       ],
       "boolean": true,
       "defaultExpression": "false",
-      "descriptionZh": "是否启用虚拟滚动",
-      "descriptionEn": "Whether to enable virtual scrolling"
+      "descriptionZh": "是否启用虚拟滚动，需设置 `scroll.y`",
+      "descriptionEn": "Whether to enable virtual scrolling; requires `scroll.y`"
     },
     {
       "name": "itemHeight",

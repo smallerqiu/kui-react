@@ -73,7 +73,7 @@ const columns = [
 
 [Table Row/Column Span](./demo/col-row-span.tsx?show=vertical)
 
-- Headers support only column spanning; use colSpan inside column definitions to configure. The table supports row and column spanning; in renders, use cell props colSpan or rowSpan. When set to 0, the cell will not render.
+- Headers only support column spanning, and only through grouping: give a column `children` and its header cell spans all the leaf columns underneath. An explicit `colSpan` on a column applies to body cells only. The table body supports row and column spanning; in renders, use cell props colSpan or rowSpan. When set to 0, the cell will not render.
 
 [Editable Cells](./demo/table-edit.tsx?show=vertical)
 
@@ -148,7 +148,7 @@ const columns = [
 | indentSize | Indentation per tree level | `number` | 20 |
 | scroll | Scroll configuration; `x` is the minimum content width and `y` is the vertical viewport height of the body | `{ x?: number \| string; y?: number \| string; }` | {} |
 | striped | Whether to display zebra stripes | `boolean` | false |
-| virtual | Whether to enable virtual scrolling | `boolean` | false |
+| virtual | Whether to enable virtual scrolling; requires `scroll.y` | `boolean` | false |
 | itemHeight | Virtual row height | `number` | 44 |
 | overscan | Extra virtual rows rendered outside the viewport | `number` | 5 |
 | hiddenColumnKeys | Hidden column key collection | `(string \| number)[]` | [] |

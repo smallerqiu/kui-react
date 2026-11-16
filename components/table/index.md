@@ -73,7 +73,7 @@ const columns = [
 
 [表格行/列合并](./demo/col-row-span.tsx?show=vertical)
 
-- 表头仅支持列合并；在列定义中使用 colSpan 进行配置。 表格支持行合并与列合并；在渲染时，使用单元格属性 colSpan 或 rowSpan。当设置为 0 时，该单元格将不会渲染。
+- 表头只支持列合并（不支持行合并）：给列配置 `children` 分组，父列的表头格就会横跨它包含的叶子列数；写在列上的 `colSpan` 只作用于表体单元格。表格支持行合并与列合并；在渲染时，使用单元格属性 colSpan 或 rowSpan。当设置为 0 时，该单元格将不会渲染。
 
 [可编辑单元格](./demo/table-edit.tsx?show=vertical)
 
@@ -148,7 +148,7 @@ const columns = [
 | indentSize | 每级树节点缩进距离 | `number` | 20 |
 | scroll | 滚动配置；`x` 为内容最小宽度，`y` 为表体的纵向滚动区域高度 | `{ x?: number \| string; y?: number \| string; }` | {} |
 | striped | 是否展示斑马条纹 | `boolean` | false |
-| virtual | 是否启用虚拟滚动 | `boolean` | false |
+| virtual | 是否启用虚拟滚动，需设置 `scroll.y` | `boolean` | false |
 | itemHeight | 虚拟滚动行高度 | `number` | 44 |
 | overscan | 虚拟滚动视口外预渲染行数 | `number` | 5 |
 | hiddenColumnKeys | 隐藏的列 key 集合 | `(string \| number)[]` | [] |
