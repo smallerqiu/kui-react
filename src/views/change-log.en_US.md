@@ -14,6 +14,19 @@ Vite seems to cache builds—you can manually clear it:
 rm -rf node_modules/.vite
 ```
 
+### 3.2.1
+
+`2026-11-16`
+
+#### Component fixes and enhancements
+
+- **Segmented**: options may be a plain string or number, which doubles as the label; the group stays reachable with Tab when nothing matches the value or the checked option is disabled; vertical groups now announce their orientation to screen readers.
+- **Table**: an empty table now scrolls horizontally, and the empty message stays pinned to the left instead of scrolling out of view; merged cells and the selection column no longer miss or add the fixed-column shadow; when a function `rowKey` returns no usable value, checking one row no longer checks others; object and date values no longer crash when rendered as cell content.
+
+#### Other notes
+
+- **Ripple**: clicking shows no ripple when the system requests reduced motion or the browser cannot create a WebGL2 context; the documentation now covers both cases.
+
 ### 3.2.0
 
 `2026-10-24`
