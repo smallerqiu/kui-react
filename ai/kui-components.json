@@ -37380,12 +37380,12 @@
         },
         {
           "name": "options",
-          "type": "SegmentedOption[] | undefined",
+          "type": "SegmentedOptionInput[] | undefined",
           "required": false,
           "boolean": false,
           "defaultExpression": "[]",
-          "descriptionZh": "选项数据",
-          "descriptionEn": "Option data"
+          "descriptionZh": "选项数据；直接传字符串或数字时，该值同时作为显示内容",
+          "descriptionEn": "Option data; a bare string or number is used as both the value and the label"
         },
         {
           "name": "disabled",
@@ -37872,7 +37872,7 @@
         {
           "id": "components/segmented/demo/options.tsx",
           "title": "尺寸与布局",
-          "source": "import { useState } from \"react\";\nimport { Segmented, Space } from \"react-kui\";\n\nexport default function SegmentedOptionsDemo() {\n  const [value, setValue] = useState(\"react\");\n  const options = [\n    { label: \"Vue\", value: \"vue\" },\n    { label: \"React\", value: \"react\" },\n    { label: \"Disabled\", value: \"disabled\", disabled: true },\n  ];\n  return (\n    <Space direction=\"vertical\">\n      <Segmented\n        value={value}\n        onChange={(next) => setValue(String(next))}\n        options={options}\n        size=\"small\"\n      />\n      <Segmented\n        value={value}\n        onChange={(next) => setValue(String(next))}\n        options={options}\n        block\n      />\n      <Segmented\n        value={value}\n        onChange={(next) => setValue(String(next))}\n        options={options}\n        direction=\"vertical\"\n      />\n    </Space>\n  );\n}"
+          "source": "import { useState } from \"react\";\nimport { Segmented } from \"react-kui\";\n\nexport default function SegmentedOptionsDemo() {\n  const [value, setValue] = useState(\"react\");\n  const options = [\n    { label: \"Vue\", value: \"vue\" },\n    { label: \"React\", value: \"react\" },\n    { label: \"Disabled\", value: \"disabled\", disabled: true },\n  ];\n  return (\n    <div style={{ display: \"flex\", flexDirection: \"column\", alignItems: \"flex-start\", gap: 8 }}>\n      <Segmented\n        value={value}\n        onChange={(next) => setValue(String(next))}\n        options={options}\n        size=\"small\"\n      />\n      <Segmented\n        value={value}\n        onChange={(next) => setValue(String(next))}\n        options={options}\n        block\n      />\n      <Segmented\n        value={value}\n        onChange={(next) => setValue(String(next))}\n        options={options}\n        direction=\"vertical\"\n      />\n    </div>\n  );\n}"
         },
         {
           "id": "components/segmented/demo/icon.tsx",

@@ -28645,12 +28645,12 @@ export default function App() {
     },
     {
       "name": "options",
-      "type": "SegmentedOption[] | undefined",
+      "type": "SegmentedOptionInput[] | undefined",
       "required": false,
       "boolean": false,
       "defaultExpression": "[]",
-      "descriptionZh": "选项数据",
-      "descriptionEn": "Option data"
+      "descriptionZh": "选项数据；直接传字符串或数字时，该值同时作为显示内容",
+      "descriptionEn": "Option data; a bare string or number is used as both the value and the label"
     },
     {
       "name": "disabled",
@@ -28794,7 +28794,7 @@ export default function SegmentedBasicDemo() {
 
 ```tsx
 import { useState } from "react";
-import { Segmented, Space } from "react-kui";
+import { Segmented } from "react-kui";
 
 export default function SegmentedOptionsDemo() {
   const [value, setValue] = useState("react");
@@ -28804,7 +28804,7 @@ export default function SegmentedOptionsDemo() {
     { label: "Disabled", value: "disabled", disabled: true },
   ];
   return (
-    <Space direction="vertical">
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 8 }}>
       <Segmented
         value={value}
         onChange={(next) => setValue(String(next))}
@@ -28823,7 +28823,7 @@ export default function SegmentedOptionsDemo() {
         options={options}
         direction="vertical"
       />
-    </Space>
+    </div>
   );
 }
 ```
