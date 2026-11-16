@@ -27,7 +27,7 @@
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | value | 当前选中值 | `SegmentedValue` | - |
-| options | 选项数据 | `SegmentedOption[]` | [] |
+| options | 选项数据；直接传字符串或数字时，该值同时作为显示内容 | `SegmentedOptionInput[]` | [] |
 | disabled | 是否禁用 | `boolean` | false |
 | readOnly | 是否只读 | `boolean` | false |
 | block | 是否撑满父容器 | `boolean` | false |

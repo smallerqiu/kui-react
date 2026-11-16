@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Segmented, Space } from "react-kui";
+import { Segmented } from "react-kui";
 
 export default function SegmentedOptionsDemo() {
   const [value, setValue] = useState("react");
@@ -9,7 +9,7 @@ export default function SegmentedOptionsDemo() {
     { label: "Disabled", value: "disabled", disabled: true },
   ];
   return (
-    <Space direction="vertical">
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 8 }}>
       <Segmented
         value={value}
         onChange={(next) => setValue(String(next))}
@@ -28,6 +28,6 @@ export default function SegmentedOptionsDemo() {
         options={options}
         direction="vertical"
       />
-    </Space>
+    </div>
   );
 }

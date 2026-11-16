@@ -14,12 +14,22 @@ export interface SegmentedOption {
   disabled?: boolean;
   [key: string]: unknown;
 }
+export type SegmentedOptionInput = SegmentedValue | SegmentedOption;
+
+const isOptionObject = (option: SegmentedOptionInput): option is SegmentedOption =>
+  typeof option === "object" && option !== null;
+
+// A bare string or number is both the value and the visible content. Normalising
+// up front keeps the rest of the component on one shape.
+const normalizeOptions = (options: SegmentedOptionInput[]): SegmentedOption[] =>
+  options.map((option) => (isOptionObject(option) ? option : { label: option, value: option }));
+
 export interface SegmentedProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
   "defaultValue" | "onChange" | "defaultChecked"
 > {
   value?: SegmentedValue;
-  options?: SegmentedOption[];
+  options?: SegmentedOptionInput[];
   disabled?: boolean;
   readOnly?: boolean;
   block?: boolean;
@@ -52,6 +62,15 @@ const Segmented = ({
   const itemRefs = useRef(new Map<SegmentedValue, HTMLButtonElement>());
   const [innerValue, setInnerValue] = useValue(value, (next) => next);
   const currentValue = innerValue;
+  const items = normalizeOptions(options);
+  // Roving tabindex: the checked item is the tab stop. Without a checked item
+  // -- or when the checked one is disabled -- the first enabled item has to
+  // take the 0, otherwise every item is -1 and the group is unreachable.
+  const selectedItem = items.find((item) => item.value === currentValue);
+  const focusValue =
+    selectedItem && !selectedItem.disabled
+      ? selectedItem.value
+      : items.find((item) => !item.disabled)?.value;
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const [ready, setReady] = useState(false);
   const vertical = direction === "vertical";
@@ -90,7 +109,7 @@ const Segmented = ({
       !["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp", "Home", "End"].includes(event.key)
     )
       return;
-    const available = options.filter((option) => !option.disabled);
+    const available = items.filter((option) => !option.disabled);
     if (!available.length || disabled || readOnly) return;
     event.preventDefault();
     const current = available.findIndex((option) => option.value === currentValue);
@@ -127,11 +146,12 @@ const Segmented = ({
         className,
       )}
       role="radiogroup"
+      aria-orientation={vertical ? "vertical" : "horizontal"}
       aria-disabled={disabled || undefined}
       aria-readonly={readOnly || undefined}
       onKeyDown={move}
     >
-      {options.map((option) => (
+      {items.map((option) => (
         <button
           key={option.value}
           ref={(node) => {
@@ -145,7 +165,7 @@ const Segmented = ({
           role="radio"
           aria-checked={option.value === currentValue}
           disabled={disabled || option.disabled}
-          tabIndex={option.value === currentValue ? 0 : -1}
+          tabIndex={option.value === focusValue ? 0 : -1}
           onClick={() => select(option)}
         >
           {option.icon && <Icon type={option.icon} />}
