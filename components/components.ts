@@ -66,6 +66,20 @@ export type { CollapsePanelProps, CollapseProps } from "./collapse";
 export { default as ColorPicker, ColorPickerPanel } from "./color-picker";
 export type { ColorPickerPanelProps, ColorPickerProps } from "./color-picker";
 
+export { default as GradientPicker } from "./gradient-picker";
+export {
+  createCornerGradient,
+  createLinearGradient,
+  formatGradient,
+} from "./gradient-picker/types";
+export type {
+  CornerGradientValue,
+  GradientPickerProps,
+  GradientStop,
+  GradientType,
+  GradientValue,
+} from "./gradient-picker";
+
 export { default as DatePicker, DatePickerPanel } from "./date-picker";
 export type {
   DatePickerInput,

@@ -11,6 +11,7 @@ export interface PoptipProps {
   width?: number | string;
   trigger?: "click" | "hover" | "focus";
   placement?: PlacementsType;
+  arrowPointAtCenter?: boolean;
   /** 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内的表单状态，代价是每个打开过的实例留一份隐藏 DOM。 */
   destroyOnClose?: boolean;
   /** 只渲染浮层本身，不包含触发元素、定位与动画，与 kui-vue 一致 */
@@ -37,6 +38,7 @@ const Poptip: React.FC<PoptipProps> = ({
   width,
   trigger = "hover",
   placement = "top",
+  arrowPointAtCenter = false,
   destroyOnClose = true,
   panelOnly = false,
   onClose,
@@ -48,6 +50,7 @@ const Poptip: React.FC<PoptipProps> = ({
     open={open ?? show}
     trigger={trigger}
     placement={placement}
+    arrowPointAtCenter={arrowPointAtCenter}
     panelOnly={panelOnly}
     arrow
     destroyOnClose={destroyOnClose}

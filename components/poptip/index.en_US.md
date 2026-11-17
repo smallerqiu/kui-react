@@ -30,6 +30,7 @@ The difference from `Tooltip` is that users can operate on elements in the float
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
+| arrowPointAtCenter | Point the arrow at the trigger center instead of aligning panel edges; requires a visible arrow | `boolean` | false |
 | trigger | Trigger method, optional values: `hover` (hover) `click` (click) | `"hover" \| "click" \| "focus"` | hover |
 | title | Displayed title | `React.ReactNode` | - |
 | content | Displayed main content | `React.ReactNode` | - |

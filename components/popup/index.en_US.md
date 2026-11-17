@@ -54,6 +54,7 @@ Use children for the trigger and overlay for content. An overlay render function
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
+| arrowPointAtCenter | Point the arrow at the trigger center instead of aligning panel edges; requires a visible arrow | `boolean` | false |
 | open | Initial visibility; subsequent changes synchronize the state; synchronize through onOpenChange | `boolean` | - |
 | disabled | Prevents opening and cancels delayed opening; does not override open | `boolean` | false |
 | placement | Popup placement; supports 12 positions | `"top" \| "top-left" \| "top-right" \| "bottom" \| "bottom-left" \| "bottom-right" \| "left" \| "left-bottom" \| "left-top" \| "right" \| "right-top" \| "right-bottom"` | bottom-left |

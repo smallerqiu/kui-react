@@ -33,6 +33,7 @@ export interface PopupProps extends Omit<
   placement?: PlacementsType;
   trigger?: PopupTrigger;
   arrow?: boolean;
+  arrowPointAtCenter?: boolean;
   offset?: number;
   openDelay?: number;
   closeDelay?: number;
@@ -65,7 +66,7 @@ export interface PopupProps extends Omit<
 }
 
 export const PopupArrow = ({ prefixCls }: { prefixCls: string }) => (
-  <div className={`${prefixCls}-arrow`} aria-hidden="true">
+  <div className={`${prefixCls}-arrow`} data-popup-arrow="" aria-hidden="true">
     <svg
       style={{ fill: "currentcolor" }}
       viewBox={prefixCls === "k-popup" ? "0 0 24 9" : "0 0 24 8"}
@@ -100,6 +101,7 @@ const Popup = forwardRef<PopupRef, PopupProps>(function Popup(
     placement = "bottom-left",
     trigger = "click",
     arrow = false,
+    arrowPointAtCenter = false,
     offset = 3,
     openDelay = 0,
     closeDelay = 300,
@@ -198,6 +200,7 @@ const Popup = forwardRef<PopupRef, PopupProps>(function Popup(
     setPlacement({
       ...refs,
       offset,
+      arrowPointAtCenter,
       position:
         getAnchorPosition?.() ?? (point ? { x: rect.left + point.x, y: rect.top + point.y } : null),
     });
@@ -216,7 +219,15 @@ const Popup = forwardRef<PopupRef, PopupProps>(function Popup(
         ? prev
         : next,
     );
-  }, [getTriggerElement, matchTriggerWidth, offset, panelOnly, placement, getAnchorPosition]);
+  }, [
+    getTriggerElement,
+    matchTriggerWidth,
+    offset,
+    panelOnly,
+    placement,
+    getAnchorPosition,
+    arrowPointAtCenter,
+  ]);
   const requestFromEvent = useEffectEvent(request);
   // 挂在 Modal / Drawer 里的浮层要跟着宿主一起关：面板是 teleported 到 body 的，
   // 窗口摘掉了它不会自己走（Vue 侧同一处是 usePopupHost）。

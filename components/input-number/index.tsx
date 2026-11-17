@@ -3,12 +3,13 @@ import { resolveTheme, useFormAppearance } from "../config/use-config-appearance
 import Big from "big.js";
 import { createFormFieldComponent } from "../form/field-context";
 import { ChevronDown, ChevronUp } from "kui-icons";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { SizeContext } from "../config/size-context";
 import type { ShapeType, SizeType, ThemeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
 import InputBase from "../input/input-base";
 import { isValidBig, normalize } from "../utils/number";
+import { startNumberDrag } from "./drag";
 
 export interface InputNumberProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -24,6 +25,7 @@ export interface InputNumberProps extends Omit<
   disabled?: boolean;
   readOnly?: boolean;
   controls?: boolean;
+  draggable?: boolean;
   /** 是否允许通过上下方向键调整数值 */
   keyboard?: boolean;
   suffix?: React.ReactNode;
@@ -49,6 +51,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
   disabled = false,
   readOnly = false,
   controls = true,
+  draggable = true,
   keyboard = true,
   suffix,
   prefix,
@@ -78,6 +81,11 @@ const InputNumber: React.FC<InputNumberProps> = ({
     setUserInput(null);
   }
   const currentValue = normalize(innerValue, safePrecision);
+  const stopDrag = useRef<() => void>(() => {});
+  useEffect(() => () => stopDrag.current(), []);
+  useEffect(() => {
+    if (disabled || readOnly || !draggable) stopDrag.current();
+  }, [disabled, readOnly, draggable]);
 
   const clamp = (val: string | number): string => {
     if (!isValidBig(val)) {
@@ -214,7 +222,37 @@ const InputNumber: React.FC<InputNumberProps> = ({
       onChange={handleInput}
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
-      controls={controlsNode}
+      controls={
+        <>
+          {draggable && !disabled && !readOnly && (
+            <span
+              className="k-input-number-drag"
+              aria-hidden="true"
+              onDoubleClick={(event) =>
+                event.currentTarget.parentElement?.querySelector("input")?.select()
+              }
+              onPointerDown={(event) => {
+                stopDrag.current();
+                let previous = currentValue;
+                stopDrag.current = startNumberDrag(event, {
+                  value: isValidBig(currentValue) ? currentValue : "0",
+                  step,
+                  blocked: () => disabled || readOnly || !draggable,
+                  update: (value) => {
+                    const next = clamp(value);
+                    if (next === previous) return;
+                    previous = next;
+                    setInnerValue(next);
+                    setUserInput(null);
+                    emitValue(Number(next));
+                  },
+                });
+              }}
+            />
+          )}
+          {controlsNode}
+        </>
+      }
     />
   );
 };

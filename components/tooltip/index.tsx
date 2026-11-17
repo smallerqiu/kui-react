@@ -13,6 +13,7 @@ export interface TooltipProps {
   disabled?: boolean;
   width?: number | string;
   placement?: PlacementsType;
+  arrowPointAtCenter?: boolean;
   /** 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内的表单状态，代价是每个打开过的实例留一份隐藏 DOM。 */
   destroyOnClose?: boolean;
   /** 只渲染浮层本身，不包含触发元素、定位与动画，与 kui-vue 一致 */
@@ -38,6 +39,7 @@ const Tooltip: React.FC<TooltipProps> = ({
   disabled = false,
   width,
   placement = "top",
+  arrowPointAtCenter = false,
   destroyOnClose = true,
   panelOnly = false,
   onOpenChange,
@@ -61,6 +63,7 @@ const Tooltip: React.FC<TooltipProps> = ({
       trigger={trigger}
       openDelay={1}
       placement={placement}
+      arrowPointAtCenter={arrowPointAtCenter}
       panelOnly={panelOnly}
       prefixCls="k-tooltip"
       arrow
@@ -82,7 +85,7 @@ const Tooltip: React.FC<TooltipProps> = ({
       }}
       overlay={<div className="k-tooltip-title">{title}</div>}
       arrowContent={
-        <div className="k-tooltip-arrow">
+        <div className="k-tooltip-arrow" data-popup-arrow="">
           <svg style={{ fill: bgColor || "currentcolor" }} viewBox="0 0 24 7">
             <path d="M24 0V1C20 1 18.5 2 16.5 4C14.5 6 14 7 12 7C10 7 9.5 6 7.5 4C5.5 2 4 1 0 1V0H24Z" />
             {/* 与 poptip 同一套路（`#ot`）：只描外沿那一圈，把面板的 1px 边接过来。

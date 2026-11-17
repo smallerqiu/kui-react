@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button, Checkbox, Popup, Space } from "react-kui";
 export default function App() {
   const [arrow, setArrow] = useState(true);
+  const [arrowPointAtCenter, setArrowPointAtCenter] = useState(false);
   const placements = [
     "top-left",
     "top",
@@ -21,7 +22,14 @@ export default function App() {
       <Checkbox checked={arrow} onChange={(event) => setArrow(event.checked)}>
         Show arrow
       </Checkbox>
+      <Checkbox
+        checked={arrowPointAtCenter}
+        onChange={(event) => setArrowPointAtCenter(event.checked)}
+      >
+        Point arrow at trigger center
+      </Checkbox>
       <div
+        aria-label="Popup placements"
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
@@ -34,6 +42,7 @@ export default function App() {
             key={placement}
             placement={placement}
             arrow={arrow}
+            arrowPointAtCenter={arrowPointAtCenter}
             offset={10}
             overlay={<span>{placement}</span>}
           >

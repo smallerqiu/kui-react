@@ -1,4 +1,4 @@
-# React KUI 3.2.1
+# React KUI 3.3.0
 
 React 19.2+ library. Package: react-kui. Import CSS once from react-kui/style/index.css. Prefer installed-version metadata. Use JSX/TSX, not Vue templates or v-model.
 
@@ -31,6 +31,7 @@ React 19.2+ library. Package: react-kui. Import CSS once from react-kui/style/in
 - [CollapsePanel](https://react.k-ui.cn/components/collapse)
 - [ColorPicker](https://react.k-ui.cn/components/color-picker)
 - [ColorPickerPanel](https://react.k-ui.cn/components/color-picker)
+- [GradientPicker](https://react.k-ui.cn/components/gradient-picker)
 - [DatePicker](https://react.k-ui.cn/components/date-picker)
 - [DatePickerPanel](https://react.k-ui.cn/components/date-picker)
 - [Descriptions](https://react.k-ui.cn/components/descriptions)
@@ -365,6 +366,19 @@ export default function App() {
       "defaultExpression": "false",
       "descriptionZh": "显示箭头",
       "descriptionEn": "Show arrow"
+    },
+    {
+      "name": "arrowPointAtCenter",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "false",
+      "descriptionZh": "让箭头中心指向触发器中心；默认按面板边缘或中心对齐，需有箭头时才生效",
+      "descriptionEn": "Point the arrow at the trigger center instead of aligning panel edges; requires a visible arrow"
     },
     {
       "name": "offset",
@@ -740,6 +754,7 @@ import { useState } from "react";
 import { Button, Checkbox, Popup, Space } from "react-kui";
 export default function App() {
   const [arrow, setArrow] = useState(true);
+  const [arrowPointAtCenter, setArrowPointAtCenter] = useState(false);
   const placements = [
     "top-left",
     "top",
@@ -759,7 +774,14 @@ export default function App() {
       <Checkbox checked={arrow} onChange={(event) => setArrow(event.checked)}>
         Show arrow
       </Checkbox>
+      <Checkbox
+        checked={arrowPointAtCenter}
+        onChange={(event) => setArrowPointAtCenter(event.checked)}
+      >
+        Point arrow at trigger center
+      </Checkbox>
       <div
+        aria-label="Popup placements"
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
@@ -772,6 +794,7 @@ export default function App() {
             key={placement}
             placement={placement}
             arrow={arrow}
+            arrowPointAtCenter={arrowPointAtCenter}
             offset={10}
             overlay={<span>{placement}</span>}
           >
@@ -7583,6 +7606,19 @@ export default function App() {
       "descriptionEn": "Popup placement"
     },
     {
+      "name": "arrowPointAtCenter",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "false",
+      "descriptionZh": "让箭头中心指向触发器中心；默认按面板边缘或中心对齐，需有箭头时才生效",
+      "descriptionEn": "Point the arrow at the trigger center instead of aligning panel edges; requires a visible arrow"
+    },
+    {
       "name": "destroyOnClose",
       "type": "boolean | undefined",
       "required": false,
@@ -7949,6 +7985,18 @@ export default function App() {
       "descriptionEn": "Popup trigger mode"
     },
     {
+      "name": "arrowPointAtCenter",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "让箭头中心指向触发器中心；默认按面板边缘或中心对齐，需有箭头时才生效",
+      "descriptionEn": "Point the arrow at the trigger center instead of aligning panel edges; requires a visible arrow"
+    },
+    {
       "name": "destroyOnClose",
       "type": "boolean | undefined",
       "required": false,
@@ -8253,6 +8301,287 @@ export default function App() {
           <Button>{placement}</Button>
         </ColorPicker>
       ))}
+    </Space>
+  );
+}
+```
+
+# GradientPicker
+
+{
+  "name": "GradientPicker",
+  "import": "import { GradientPicker } from \"react-kui\"",
+  "documentation": "https://react.k-ui.cn/components/gradient-picker",
+  "props": [
+    {
+      "name": "value",
+      "type": "GradientValue | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "渐变值，受控；色条、四角与颜色面板都跟随它",
+      "descriptionEn": "Gradient value, controlled; the bar, corners and color panel all follow it"
+    },
+    {
+      "name": "type",
+      "type": "GradientType | undefined",
+      "required": false,
+      "enumValues": [
+        "linear",
+        "corner"
+      ],
+      "boolean": false,
+      "defaultExpression": "\"linear\"",
+      "descriptionZh": "渐变类型，`linear` 为多色标渐变，`corner` 为四角渐变",
+      "descriptionEn": "Gradient type: `linear` for multi-stop, `corner` for four corners"
+    },
+    {
+      "name": "alpha",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "false",
+      "descriptionZh": "颜色面板是否提供透明度调节",
+      "descriptionEn": "Show the transparency control in the color panel"
+    },
+    {
+      "name": "arrowPointAtCenter",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "true",
+      "descriptionZh": "让颜色面板箭头指向色标或角标中心；关闭后按面板边缘对齐",
+      "descriptionEn": "Point the color-panel arrow at the stop or corner center; disable to align panel edges"
+    },
+    {
+      "name": "mode",
+      "type": "ColorMode | undefined",
+      "required": false,
+      "enumValues": [
+        "hex",
+        "rgb",
+        "hsl"
+      ],
+      "boolean": false,
+      "descriptionZh": "颜色面板输入区的展示类型，提供 3 种模式（`hex`、`rgb`、`hsl`）",
+      "descriptionEn": "Presentation of the color panel input: `hex`, `rgb` or `hsl`"
+    },
+    {
+      "name": "size",
+      "type": "SizeType | undefined",
+      "required": false,
+      "enumValues": [
+        "small",
+        "medium",
+        "large"
+      ],
+      "boolean": false,
+      "descriptionZh": "控件尺寸，与其它控件一样分三档；色条加色标或四角预览块的总高度与对应尺寸的控件一致",
+      "descriptionEn": "Control size, same three tiers as other controls; the bar plus its stops, or the corner block, add up to the height of the matching control"
+    },
+    {
+      "name": "disabled",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "false",
+      "descriptionZh": "是否失效状态",
+      "descriptionEn": "Disabled state"
+    },
+    {
+      "name": "readOnly",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "false",
+      "descriptionZh": "是否只读，不能拖动色标或打开颜色面板",
+      "descriptionEn": "Read-only; stops cannot be dragged and the color panel cannot open"
+    },
+    {
+      "name": "onChange",
+      "type": "((value: GradientValue) => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "渐变值改变时触发，参数是新的渐变值（线性档为色标数组，四角档为四色数组）",
+      "descriptionEn": "Called when the gradient changes; the argument is the new value (a stop list for `linear`, four colors for `corner`)"
+    },
+    {
+      "name": "onUpdateMode",
+      "type": "((mode: ColorMode) => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "颜色模式改变时触发",
+      "descriptionEn": "Called when the color mode changes"
+    }
+  ],
+  "events": [
+    {
+      "name": "onChange",
+      "type": "((value: GradientValue) => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "渐变值改变时触发，参数是新的渐变值（线性档为色标数组，四角档为四色数组）",
+      "descriptionEn": "Called when the gradient changes; the argument is the new value (a stop list for `linear`, four colors for `corner`)"
+    },
+    {
+      "name": "onUpdateMode",
+      "type": "((mode: ColorMode) => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "颜色模式改变时触发",
+      "descriptionEn": "Called when the color mode changes"
+    }
+  ],
+  "renderProps": [],
+  "behavior": {
+    "rules": []
+  },
+  "children": []
+}
+
+## 基本用法
+
+```tsx
+import { useState } from "react";
+import {
+  formatGradient,
+  GradientPicker,
+  Space,
+  type GradientStop,
+  type GradientValue,
+} from "react-kui";
+
+const initial: GradientValue = [
+  { color: "#ffd166", offset: 0 },
+  { color: "#ef476f", offset: 55 },
+  { color: "#118ab2", offset: 100 },
+];
+
+const stopsText = (stops: GradientStop[]) =>
+  stops.map((stop) => `${stop.color} ${stop.offset}%`).join(", ");
+
+export default function App() {
+  const [value, setValue] = useState<GradientValue>(initial);
+  const [linear, setLinear] = useState(() => formatGradient(initial));
+  const [radial, setRadial] = useState(
+    () => `radial-gradient(circle, ${stopsText(initial as GradientStop[])})`,
+  );
+  return (
+    <Space vertical>
+      <div style={{ width: 360 }}>
+        <GradientPicker
+          value={value}
+          alpha
+          onChange={(next) => {
+            setValue(next);
+            setLinear(formatGradient(next));
+            setRadial(`radial-gradient(circle, ${stopsText(next as GradientStop[])})`);
+          }}
+        />
+      </div>
+      <code>linear: {linear}</code>
+      <code>radial: {radial}</code>
+      <div style={{ width: 360 }}>
+        <GradientPicker value={value} disabled onChange={() => undefined} />
+      </div>
+    </Space>
+  );
+}
+```
+## 四角渐变
+
+```tsx
+import { useState } from "react";
+import { GradientPicker, Space, type CornerGradientValue, type GradientValue } from "react-kui";
+
+const initial: GradientValue = ["#ffffff", "#a9f0d1", "#5fe08a", "#3cbf6b"];
+
+export default function App() {
+  const [value, setValue] = useState<GradientValue>(initial);
+  return (
+    <Space vertical>
+      <div style={{ width: 360 }}>
+        <GradientPicker type="corner" value={value} onChange={(next) => setValue(next)} />
+      </div>
+      <code>colors: {(value as CornerGradientValue).join(", ")}</code>
+      <div style={{ width: 360 }}>
+        <GradientPicker type="corner" value={value} disabled onChange={() => undefined} />
+      </div>
+    </Space>
+  );
+}
+```
+## 三种尺寸
+
+```tsx
+import { useState } from "react";
+import { GradientPicker, Space, type GradientValue } from "react-kui";
+
+const create = (): GradientValue => [
+  { color: "#ffd166", offset: 0 },
+  { color: "#ef476f", offset: 55 },
+  { color: "#118ab2", offset: 100 },
+];
+
+const createCorner = (): GradientValue => ["#ffd166", "#ef476f", "#118ab2", "#06d6a0"];
+
+export default function App() {
+  const [small, setSmall] = useState<GradientValue>(create);
+  const [medium, setMedium] = useState<GradientValue>(create);
+  const [large, setLarge] = useState<GradientValue>(create);
+  const [cornerSmall, setCornerSmall] = useState<GradientValue>(createCorner);
+  const [cornerMedium, setCornerMedium] = useState<GradientValue>(createCorner);
+  const [cornerLarge, setCornerLarge] = useState<GradientValue>(createCorner);
+  return (
+    <Space vertical>
+      <div style={{ width: 360 }}>
+        <GradientPicker value={small} size="small" onChange={(next) => setSmall(next)} />
+      </div>
+      <div style={{ width: 360 }}>
+        <GradientPicker value={medium} size="medium" onChange={(next) => setMedium(next)} />
+      </div>
+      <div style={{ width: 360 }}>
+        <GradientPicker value={large} size="large" onChange={(next) => setLarge(next)} />
+      </div>
+      <div style={{ width: 360 }}>
+        <GradientPicker
+          value={cornerSmall}
+          type="corner"
+          size="small"
+          onChange={(next) => setCornerSmall(next)}
+        />
+      </div>
+      <div style={{ width: 360 }}>
+        <GradientPicker
+          value={cornerMedium}
+          type="corner"
+          size="medium"
+          onChange={(next) => setCornerMedium(next)}
+        />
+      </div>
+      <div style={{ width: 360 }}>
+        <GradientPicker
+          value={cornerLarge}
+          type="corner"
+          size="large"
+          onChange={(next) => setCornerLarge(next)}
+        />
+      </div>
     </Space>
   );
 }
@@ -18123,6 +18452,19 @@ export default function App() {
       "descriptionEn": "Whether to show increase/decrease buttons"
     },
     {
+      "name": "draggable",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "true",
+      "descriptionZh": "是否允许在输入框内拖动快速调节数值",
+      "descriptionEn": "Allow dragging inside the input to adjust the value quickly"
+    },
+    {
       "name": "keyboard",
       "type": "boolean | undefined",
       "required": false,
@@ -18370,6 +18712,25 @@ export default function App() {
         />
       </Space>
     </>
+  );
+}
+```
+## 拖动调节
+
+```tsx
+import { useState } from "react";
+import { InputNumber, Space } from "react-kui";
+
+export default function App() {
+  const [amount, setAmount] = useState<number | undefined>(100);
+  const [decimal, setDecimal] = useState<number | undefined>(1.25);
+  return (
+    <Space vertical block style={{ maxWidth: 280 }}>
+      <span>Drag inside the input left or right; click to type, double-click to select.</span>
+      <InputNumber value={amount} onChange={setAmount} min={0} max={10000} addonAfter="USD" />
+      <InputNumber value={decimal} onChange={setDecimal} step={0.01} precision={2} min={0} max={100} />
+      <InputNumber value={10} draggable={false} placeholder="Drag disabled" />
+    </Space>
   );
 }
 ```
@@ -25458,6 +25819,19 @@ export default function App() {
       "descriptionEn": "Position where the tooltip appears"
     },
     {
+      "name": "arrowPointAtCenter",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "false",
+      "descriptionZh": "让箭头中心指向触发器中心；默认按面板边缘或中心对齐，需有箭头时才生效",
+      "descriptionEn": "Point the arrow at the trigger center instead of aligning panel edges; requires a visible arrow"
+    },
+    {
       "name": "destroyOnClose",
       "type": "boolean | undefined",
       "required": false,
@@ -25739,6 +26113,18 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "触发方式，可选值为 `hover`（悬停）`click`（点击）",
       "descriptionEn": "Trigger method, optional values: `hover` (hover) `click` (click)"
+    },
+    {
+      "name": "arrowPointAtCenter",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "让箭头中心指向触发器中心；默认按面板边缘或中心对齐，需有箭头时才生效",
+      "descriptionEn": "Point the arrow at the trigger center instead of aligning panel edges; requires a visible arrow"
     },
     {
       "name": "destroyOnClose",
@@ -26074,6 +26460,19 @@ export default function App() {
       "descriptionEn": "Position where the tooltip appears, optional values: `top`, `top-left`, `top-right`, `bottom`, `bottom-left`, `bottom-right`, `left`, `left-top`, `left-bottom`, `right`, `right-top`, `right-bottom`"
     },
     {
+      "name": "arrowPointAtCenter",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "false",
+      "descriptionZh": "让箭头中心指向触发器中心；默认按面板边缘或中心对齐，需有箭头时才生效",
+      "descriptionEn": "Point the arrow at the trigger center instead of aligning panel edges; requires a visible arrow"
+    },
+    {
       "name": "destroyOnClose",
       "type": "boolean | undefined",
       "required": false,
@@ -26301,6 +26700,18 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "提示框出现的位置，可选值为`top`，`top-left`，`top-right`，`bottom`，`bottom-left`，`bottom-right`，`left`，`left-top`，`left-bottom`，`right`，`right-top`，`right-bottom`",
       "descriptionEn": "Position where the tooltip appears, optional values: `top`, `top-left`, `top-right`, `bottom`, `bottom-left`, `bottom-right`, `left`, `left-top`, `left-bottom`, `right`, `right-top`, `right-bottom`"
+    },
+    {
+      "name": "arrowPointAtCenter",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "让箭头中心指向触发器中心；默认按面板边缘或中心对齐，需有箭头时才生效",
+      "descriptionEn": "Point the arrow at the trigger center instead of aligning panel edges; requires a visible arrow"
     },
     {
       "name": "destroyOnClose",
@@ -37572,6 +37983,19 @@ export default function EllipsisDemo() {
       "descriptionEn": "Position where tooltip appears, optional values: `top`, `top-left`, `top-right`, `bottom`, `bottom-left`, `bottom-right`, `left`, `left-top`, `left-bottom`, `right`, `right-top`, `right-bottom`"
     },
     {
+      "name": "arrowPointAtCenter",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "false",
+      "descriptionZh": "让箭头中心指向触发器中心；默认按面板边缘或中心对齐，需有箭头时才生效",
+      "descriptionEn": "Point the arrow at the trigger center instead of aligning panel edges; requires a visible arrow"
+    },
+    {
       "name": "destroyOnClose",
       "type": "boolean | undefined",
       "required": false,
@@ -37824,6 +38248,18 @@ export default function App() {
       "boolean": false,
       "descriptionZh": "自动悬停触发或手动控制显隐",
       "descriptionEn": "Automatic hover or manual visibility"
+    },
+    {
+      "name": "arrowPointAtCenter",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "让箭头中心指向触发器中心；默认按面板边缘或中心对齐，需有箭头时才生效",
+      "descriptionEn": "Point the arrow at the trigger center instead of aligning panel edges; requires a visible arrow"
     },
     {
       "name": "destroyOnClose",

@@ -30,6 +30,7 @@ export interface ColorPickerProps extends Omit<
   disabledAlpha?: boolean;
   showText?: boolean;
   placement?: DropPlacementsType;
+  arrowPointAtCenter?: boolean;
   /** 关闭后是否销毁面板内容。默认销毁（重开时重新挂载）；设为 false 可保留面板内的表单状态，代价是每个打开过的实例留一份隐藏 DOM。 */
   destroyOnClose?: boolean;
   trigger?: "hover" | "click";
@@ -54,6 +55,7 @@ function ColorPicker({
   disabledAlpha = false,
   showText = false,
   placement = "bottom-left",
+  arrowPointAtCenter = false,
   destroyOnClose = true,
   trigger = "click",
   size: sizeProp,
@@ -283,7 +285,7 @@ function ColorPicker({
         />
       </div>
       {!panelOnly && (
-        <div className="k-color-picker-arrow">
+        <div className="k-color-picker-arrow" data-popup-arrow="">
           <svg style={{ fill: "currentcolor" }} viewBox="0 0 24 8">
             <path
               id="ot"
@@ -309,6 +311,7 @@ function ColorPicker({
       target={triggerRef}
       trigger="manual"
       placement={placement}
+      arrowPointAtCenter={arrowPointAtCenter}
       prefixCls="k-color-picker-dropdown"
       transitionName="k-color-picker"
       transitionDuration={200}

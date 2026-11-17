@@ -22,6 +22,10 @@
 
 - `suffix`、`prefix` 显示在输入框内部；`addonBefore`、`addonAfter` 用于输入框外部附件。
 
+[拖动调节](./demo/drag.tsx)
+
+- 在输入框内左右拖动快速增减，支持小数步长和上下界；设置 `draggable=false` 可关闭。
+
 [尺寸](./demo/size.tsx)
 
 - `large` 为大尺寸， `small` 为小尺寸
@@ -31,6 +35,8 @@
 - 六档外观从数字输入框自己的 `fill` 起依次排开；`solid` 会把数字、占位符和步进按钮一起反白。
 
 ## InputNumber API
+
+输入框默认提供全覆盖透明拖动区：向右拖动增大、向左拖动减小，长距离拖动会加速；仍按 `step` 调节并遵守 `precision`、`min` 和 `max`。单击聚焦输入，双击选中数值；上下步进按钮、前后缀和外部附件保持独立交互。设置 `draggable=false` 可关闭拖动调节。
 
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
@@ -52,6 +58,7 @@
 | addonBefore | 输入框外部前置附件 | `React.ReactNode` | - |
 | addonAfter | 输入框外部后置附件 | `React.ReactNode` | - |
 | controls | 是否显示增减按钮 | `boolean` | true |
+| draggable | 是否允许在输入框内拖动快速调节数值 | `boolean` | true |
 | keyboard | 是否允许通过上下方向键调整数值 | `boolean` | true |
 | theme | 组件呈现主题 | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | onChange | 变化回调，清空时返回 `undefined` | `((value: number \| undefined) => void)` | - |

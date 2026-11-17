@@ -3,6 +3,8 @@
 
 import type { RefObject } from "react";
 
+import { measurePopupArrow } from "./popup-arrow";
+
 const popupAppearanceSources = new Map<HTMLElement, HTMLElement>();
 let popupAppearanceObserver: MutationObserver | null = null;
 const inheritedAppearanceAttributes = ["theme-mode", "shape-mode"] as const;
@@ -52,6 +54,7 @@ interface PlacementOptions {
   top: RefObject<number>;
   left: RefObject<number>;
   offset?: number;
+  arrowPointAtCenter?: boolean;
 }
 
 export function setPlacement({
@@ -63,6 +66,7 @@ export function setPlacement({
   top,
   left,
   offset = 3,
+  arrowPointAtCenter = false,
 }: PlacementOptions) {
   if (!refPopper) return;
   if (refPopper.current && refSelection.current) {
@@ -190,6 +194,14 @@ export function setPlacement({
     }
   }
 
+  const popupArrow = refPopper.current
+    ? measurePopupArrow(refPopper.current, finalPlacement, arrowPointAtCenter && !isMouseMode)
+    : undefined;
+  const horizontalArrow = side === "top" || side === "bottom";
+  if (popupArrow) {
+    if (horizontalArrow) calcLeft = rect.left + rect.width / 2 - popupArrow.center;
+    else calcTop = rect.top + rect.height / 2 - popupArrow.center;
+  }
   const anchorInViewport =
     rect.bottom > 0 && rect.top < clientHeight && rect.right > 0 && rect.left < clientWidth;
   if (anchorInViewport) {
@@ -200,6 +212,14 @@ export function setPlacement({
     else if (calcTop + pickerH > clientHeight) calcTop = clientHeight - pickerH;
   }
 
+  if (popupArrow) {
+    const target = horizontalArrow
+      ? rect.left + rect.width / 2 - calcLeft
+      : rect.top + rect.height / 2 - calcTop;
+    popupArrow.shift(target);
+    if (horizontalArrow) originX = `${target}px`;
+    else originY = `${target}px`;
+  }
   // 将视口坐标换算为弹层实际定位容器的坐标。这样弹层被 Portal 到
   // ConfigProvider 指定的局部主题容器时，位置仍然准确。
   const offsetParent = refPopper.current?.offsetParent as HTMLElement | null;

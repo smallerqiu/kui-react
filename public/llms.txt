@@ -1,4 +1,4 @@
-# React KUI 3.2.1
+# React KUI 3.3.0
 
 React 19.2+ library. Package: react-kui. Import CSS once from react-kui/style/index.css. Prefer installed-version metadata. Use JSX/TSX, not Vue templates or v-model.
 
@@ -31,6 +31,7 @@ React 19.2+ library. Package: react-kui. Import CSS once from react-kui/style/in
 - [CollapsePanel](https://react.k-ui.cn/components/collapse)
 - [ColorPicker](https://react.k-ui.cn/components/color-picker)
 - [ColorPickerPanel](https://react.k-ui.cn/components/color-picker)
+- [GradientPicker](https://react.k-ui.cn/components/gradient-picker)
 - [DatePicker](https://react.k-ui.cn/components/date-picker)
 - [DatePickerPanel](https://react.k-ui.cn/components/date-picker)
 - [Descriptions](https://react.k-ui.cn/components/descriptions)

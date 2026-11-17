@@ -14,6 +14,27 @@ Vite seems to cache builds—you can manually clear it:
 rm -rf node_modules/.vite
 ```
 
+### 3.3.0
+
+`2026-11-17`
+
+#### New component
+
+- **GradientPicker**: edit linear gradients with multiple color stops or four-corner gradients. Add stops, drag to reposition, drag down to remove, or use the keyboard to move and delete stops; at least two stops are retained. Click a stop or corner to open its color panel, switch color modes and optionally edit opacity.
+- Exports `GradientStop`, `GradientValue`, `CornerGradientValue` and related types, plus `createLinearGradient`, `createCornerGradient` and `formatGradient`. Values store colors and positions independently of the rendering function. The four-corner CSS preview uses a layered approximation.
+- Supports three sizes, `value` / `onChange`, Form binding, disabled/read-only states and touch dragging. Alpha-weighted interpolation avoids introducing invisible hues when adding stops. Keyboard edits keep coincident and closely spaced stops within bounds and ordered; cancelling a drag clears the pending-delete state and event listeners.
+
+#### Interaction enhancements
+
+- **InputNumber**: adds `draggable`, enabled by default. Drag horizontally inside the input for faster adjustment; longer drags accelerate while respecting `step`, `precision`, `min` and `max`. Click to focus and type, or double-click to select the value. Step buttons, prefixes, suffixes and addons retain their own interactions. Set `draggable=false` for ordinary input interaction.
+- **Popup arrow alignment**: Popup, Tooltip, Poptip, Popconfirm and ColorPicker add `arrowPointAtCenter`. Enable it to point the arrow center at the trigger center across all 12 placements, including placement flips and viewport clamping. It defaults to `false`, preserving panel alignment. GradientPicker displays the color-panel arrow and enables this option by default; its matching prop can disable it.
+
+#### Documentation and development
+
+- Added bilingual documentation, interactive examples and AI metadata for the new component, drag adjustment and arrow alignment.
+- Pinned the jsdom test environment to avoid false style-regression failures caused by changes in CSS serialization.
+- CI now runs manually rather than on pushes or pull requests. Manual releases retain the full verification workflow.
+
 ### 3.2.1
 
 `2026-11-16`

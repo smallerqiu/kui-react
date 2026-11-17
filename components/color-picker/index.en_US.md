@@ -34,6 +34,7 @@ Freely output colors.
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
+| arrowPointAtCenter | Point the arrow at the trigger center instead of aligning panel edges; requires a visible arrow | `boolean` | false |
 | value | color value | `string` | - |
 | open | popup visibility | `boolean` | - |
 | mode | Color output mode: `hex`, `rgb`, or `hsl` | `"hex" \| "rgb" \| "hsl"` | `hex` |

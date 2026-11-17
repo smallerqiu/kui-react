@@ -34,6 +34,7 @@
 
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
+| arrowPointAtCenter | 让箭头中心指向触发器中心；默认按面板边缘或中心对齐，需有箭头时才生效 | `boolean` | false |
 | value | 颜色值 | `string` | - |
 | open | 弹层显示状态 | `boolean` | - |
 | mode | 颜色展示类型，支持 `hex`、`rgb`、`hsl` | `"hex" \| "rgb" \| "hsl"` | `hex` |

@@ -22,6 +22,10 @@ When standard numerical values need to be obtained.
 
 - `suffix` and `prefix` render inside the input; `addonBefore` and `addonAfter` render outside as boxed affixes.
 
+[Drag adjustment](./demo/drag.tsx)
+
+- Drag inside the input for faster adjustment with decimal steps and bounds; set `draggable=false` to disable.
+
 [Size](./demo/size.tsx)
 
 - `large` for large size, `small` for small size
@@ -31,6 +35,8 @@ When standard numerical values need to be obtained.
 - All six tiers, listed from `fill`, which is what a number input does on its own; `solid` inverts the digits, the placeholder and the steppers.
 
 ## InputNumber API
+
+Drag anywhere in the input right to increase or left to decrease. Longer drags accelerate while respecting `step`, `precision`, `min` and `max`. Click to focus and type; double-click to select the value. Step buttons, prefixes, suffixes and external addons retain their own interactions. Set `draggable=false` to disable drag adjustment.
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
@@ -52,6 +58,7 @@ When standard numerical values need to be obtained.
 | addonBefore | Addon before the input | `React.ReactNode` | - |
 | addonAfter | Addon after the input | `React.ReactNode` | - |
 | controls | Whether to show increase/decrease buttons | `boolean` | true |
+| draggable | Allow dragging inside the input to adjust the value quickly | `boolean` | true |
 | keyboard | Whether the value can be adjusted with the up/down arrow keys | `boolean` | true |
 | theme | Component theme | `"dashed" \| "solid" \| "fill" \| "outline" \| "plain" \| "underlined"` | fill |
 | onChange | Change callback; returns `undefined` when cleared | `((value: number \| undefined) => void)` | - |
