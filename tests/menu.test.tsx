@@ -107,9 +107,9 @@ describe("Menu inline collapse", () => {
     rerender(<Controlled collapsed />);
     await act(() => vi.advanceTimersByTimeAsync(250));
     fireEvent.mouseEnter(screen.getByText("Root"));
-    await act(() => vi.advanceTimersByTimeAsync(100));
+    await act(() => vi.advanceTimersByTimeAsync(300));
     fireEvent.mouseEnter(screen.getByText("Nested"));
-    await act(() => vi.advanceTimersByTimeAsync(100));
+    await act(() => vi.advanceTimersByTimeAsync(300));
     fireEvent.click(screen.getByText("Leaf"));
     rerender(<Controlled collapsed={false} />);
     await act(() => vi.advanceTimersByTimeAsync(400));
@@ -235,7 +235,7 @@ it("overflows individual Fragment children and restores them when space returns"
   const menu = container.querySelector("ul")!;
   expect(menu.querySelectorAll(":scope > .k-menu-item")).toHaveLength(1);
   fireEvent.mouseEnter(screen.getByText("..."));
-  await act(() => vi.advanceTimersByTimeAsync(100));
+  await act(() => vi.advanceTimersByTimeAsync(300));
   fireEvent.click(screen.getByText("b"));
   expect(onSelect).toHaveBeenCalledWith({ key: "b", keyPath: [] });
   width = 400;

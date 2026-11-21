@@ -1,4 +1,4 @@
-# React KUI 3.3.0
+# React KUI 3.4.0
 
 React 19.2+ library. Package: react-kui. Import CSS once from react-kui/style/index.css. Prefer installed-version metadata. Use JSX/TSX, not Vue templates or v-model.
 
@@ -20292,6 +20292,15 @@ export default function App() {
       "descriptionEn": "Whether leaf items show a tooltip when collapsed"
     },
     {
+      "name": "subMenuOpenDelay",
+      "type": "number | undefined",
+      "required": false,
+      "boolean": false,
+      "defaultExpression": "200",
+      "descriptionZh": "弹出式子菜单的鼠标悬停展开延迟（毫秒），快速经过不展开；设为 0 可立即展开，不影响键盘操作或 inline 点击展开",
+      "descriptionEn": "Hover-open delay for popup submenus in milliseconds; passing over does not open them. Set to 0 for immediate opening. Keyboard and inline click interactions remain immediate"
+    },
+    {
       "name": "openKeys",
       "type": "string[] | undefined",
       "required": false,
@@ -29241,9 +29250,9 @@ export default function SegmentedOptionsDemo() {
 ## 带图标的选项
 
 ```tsx
-import { Monitor, Smartphone, Tablet } from "kui-icons";
+import { Monitor, Smartphone, Tablet, List, LayoutGrid } from "kui-icons";
 import { useState } from "react";
-import { Segmented } from "react-kui";
+import { Segmented, Space } from "react-kui";
 
 const options = [
   { label: "Desktop", value: "desktop", icon: Monitor },
@@ -29253,7 +29262,21 @@ const options = [
 
 export default function SegmentedIconDemo() {
   const [device, setDevice] = useState("desktop");
-  return <Segmented value={device} options={options} onChange={(value) => setDevice(String(value))} />;
+  const [layout, setLayout] = useState("list");
+  return (
+    <Space vertical>
+      <Segmented value={device} options={options} onChange={(value) => setDevice(String(value))} />
+      <Segmented
+        value={layout}
+        options={[
+          { value: "list", icon: List },
+          { value: "grid", icon: LayoutGrid },
+        ]}
+        onChange={(value) => setLayout(String(value))}
+        aria-label="Layout"
+      />
+    </Space>
+  );
 }
 ```
 ## 自定义标签
@@ -35376,10 +35399,9 @@ export default function App() {
   "props": [
     {
       "name": "direction",
-      "type": "DirectionType | undefined",
+      "type": "\"horizontal\" | \"vertical\" | undefined",
       "required": false,
       "enumValues": [
-        "inline",
         "horizontal",
         "vertical"
       ],
@@ -35389,54 +35411,120 @@ export default function App() {
       "descriptionEn": "Layout direction"
     },
     {
+      "name": "value",
+      "type": "number[] | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "面板尺寸数组（px），通过 onChange 接收并回写布局",
+      "descriptionEn": "Panel sizes in pixels; receive and write back layouts through onChange"
+    },
+    {
+      "name": "disabled",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "false",
+      "descriptionZh": "禁用拖拽、键盘调整和折叠按钮",
+      "descriptionEn": "Disable pointer resizing, keyboard resizing and collapse controls"
+    },
+    {
+      "name": "lazy",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "defaultExpression": "false",
+      "descriptionZh": "拖动时只展示参考线，松开后应用尺寸",
+      "descriptionEn": "Move a preview guide and apply sizes on release"
+    },
+    {
+      "name": "onChange",
+      "type": "((sizes: number[]) => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "已应用的布局变化时触发，包括容器缩放和折叠",
+      "descriptionEn": "Applied layout changed, including container resizing and collapsing"
+    },
+    {
       "name": "onResize",
       "type": "((sizes: number[]) => void) | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "面板大小变化回调",
-      "descriptionEn": "Callback when panel size changes"
+      "descriptionZh": "拖动或键盘调整时触发；参考线模式返回预览尺寸",
+      "descriptionEn": "Pointer or keyboard resizing; preview mode reports proposed sizes"
     },
     {
       "name": "onResizeEnd",
       "type": "((sizes: number[]) => void) | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "拖拽结束回调",
-      "descriptionEn": "Callback when dragging ends"
+      "descriptionZh": "结束或取消调整尺寸时触发，返回最终尺寸",
+      "descriptionEn": "Resizing ended or was cancelled; reports final sizes"
     },
     {
       "name": "onResizeStart",
       "type": "((sizes: number[]) => void) | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "开始拖拽之前回调",
-      "descriptionEn": "Callback before dragging starts"
+      "descriptionZh": "开始调整尺寸时触发",
+      "descriptionEn": "Resizing started"
+    },
+    {
+      "name": "onCollapse",
+      "type": "((index: number, collapsed: boolean) => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "通过按钮切换面板折叠状态时触发，index 从 0 开始",
+      "descriptionEn": "Panel collapse toggled by a button; index starts at zero"
     }
   ],
   "events": [
     {
+      "name": "onChange",
+      "type": "((sizes: number[]) => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "已应用的布局变化时触发，包括容器缩放和折叠",
+      "descriptionEn": "Applied layout changed, including container resizing and collapsing"
+    },
+    {
       "name": "onResize",
       "type": "((sizes: number[]) => void) | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "面板大小变化回调",
-      "descriptionEn": "Callback when panel size changes"
+      "descriptionZh": "拖动或键盘调整时触发；参考线模式返回预览尺寸",
+      "descriptionEn": "Pointer or keyboard resizing; preview mode reports proposed sizes"
     },
     {
       "name": "onResizeEnd",
       "type": "((sizes: number[]) => void) | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "拖拽结束回调",
-      "descriptionEn": "Callback when dragging ends"
+      "descriptionZh": "结束或取消调整尺寸时触发，返回最终尺寸",
+      "descriptionEn": "Resizing ended or was cancelled; reports final sizes"
     },
     {
       "name": "onResizeStart",
       "type": "((sizes: number[]) => void) | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "开始拖拽之前回调",
-      "descriptionEn": "Callback before dragging starts"
+      "descriptionZh": "开始调整尺寸时触发",
+      "descriptionEn": "Resizing started"
+    },
+    {
+      "name": "onCollapse",
+      "type": "((index: number, collapsed: boolean) => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "通过按钮切换面板折叠状态时触发，index 从 0 开始",
+      "descriptionEn": "Panel collapse toggled by a button; index starts at zero"
     }
   ],
   "renderProps": [],
@@ -35478,7 +35566,7 @@ export default function App() {
   );
 }
 ```
-## 垂直方向
+## 垂直与嵌套布局
 
 ```tsx
 import { Flex, Splitter, SplitterPanel } from "react-kui";
@@ -35507,6 +35595,106 @@ export default function App() {
   );
 }
 ```
+## 折叠与锁定
+
+```tsx
+import { useState } from "react";
+import { Flex, Splitter, SplitterPanel } from "react-kui";
+export default function App() {
+  const [collapsed, setCollapsed] = useState(false);
+  return (
+    <>
+      <Splitter style={{ height: 220 }}>
+        <SplitterPanel
+          collapsed={collapsed}
+          onCollapsedChange={setCollapsed}
+          size="25%"
+          min="100px"
+          collapsible
+        >
+          <Flex align="center" justify="center" style={{ height: "100%" }}>
+            Folders
+          </Flex>
+        </SplitterPanel>
+        <SplitterPanel>
+          <Flex align="center" justify="center" style={{ height: "100%" }}>
+            Editor
+          </Flex>
+        </SplitterPanel>
+        <SplitterPanel size="120px" resizable={false}>
+          <Flex align="center" justify="center" style={{ height: "100%" }}>
+            Locked
+          </Flex>
+        </SplitterPanel>
+      </Splitter>
+      <code>collapsed: {String(collapsed)}</code>
+    </>
+  );
+}
+```
+## 绑定与恢复布局
+
+```tsx
+import { useState } from "react";
+import { Button, Flex, Space, Splitter, SplitterPanel } from "react-kui";
+export default function App() {
+  const [sizes, setSizes] = useState([240, 556]);
+  const [saved, setSaved] = useState([...sizes]);
+  return (
+    <Space vertical style={{ width: "100%" }}>
+      <Space>
+        <Button onClick={() => setSaved([...sizes])}>Save layout</Button>
+        <Button onClick={() => setSizes([...saved])}>Restore layout</Button>
+      </Space>
+      <code>sizes: {sizes.map((size) => Math.round(size)).join(", ")}</code>
+      <Splitter value={sizes} onChange={setSizes} style={{ height: 200 }}>
+        <SplitterPanel min="100px">
+          <Flex align="center" justify="center" style={{ height: "100%" }}>
+            Left
+          </Flex>
+        </SplitterPanel>
+        <SplitterPanel min="100px">
+          <Flex align="center" justify="center" style={{ height: "100%" }}>
+            Right
+          </Flex>
+        </SplitterPanel>
+      </Splitter>
+    </Space>
+  );
+}
+```
+## 参考线拖动
+
+```tsx
+import { useState } from "react";
+import { Flex, Splitter, SplitterPanel } from "react-kui";
+export default function App() {
+  const [preview, setPreview] = useState<number[]>([]);
+  const [applied, setApplied] = useState<number[]>([]);
+  return (
+    <>
+      <Splitter lazy style={{ height: 220 }} onResize={setPreview} onChange={setApplied}>
+        <SplitterPanel size="35%" min="100px">
+          <Flex align="center" justify="center" style={{ height: "100%" }}>
+            Chart
+          </Flex>
+        </SplitterPanel>
+        <SplitterPanel min="100px">
+          <Flex align="center" justify="center" style={{ height: "100%" }}>
+            Editor
+          </Flex>
+        </SplitterPanel>
+      </Splitter>
+      <div>
+        <code>preview: {preview.map((size) => Math.round(size)).join(", ")}</code>
+      </div>
+      <div>
+        <code>applied: {applied.map((size) => Math.round(size)).join(", ")}</code>
+      </div>
+    </>
+  );
+}
+```
 
 # SplitterPanel
 
@@ -35521,26 +35709,79 @@ export default function App() {
       "required": false,
       "boolean": false,
       "descriptionZh": "初始尺寸；数字为 px，字符串支持 px 或百分比",
-      "descriptionEn": "Initial size; numbers are px, strings support px or percentages"
+      "descriptionEn": "Initial size; numbers are px, strings accept px or percentages"
     },
     {
       "name": "min",
       "type": "string | number | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "最小尺寸；数字为 px，字符串支持 px 或百分比",
-      "descriptionEn": "Minimum size; numbers are px, strings support px or percentages"
+      "descriptionZh": "展开时的最小尺寸；数字为 px，字符串支持 px 或百分比",
+      "descriptionEn": "Minimum expanded size; numbers are px, strings accept px or percentages"
     },
     {
       "name": "max",
       "type": "string | number | undefined",
       "required": false,
       "boolean": false,
-      "descriptionZh": "最大尺寸；数字为 px，字符串支持 px 或百分比",
-      "descriptionEn": "Maximum size; numbers are px, strings support px or percentages"
+      "descriptionZh": "展开时的最大尺寸；数字为 px，字符串支持 px 或百分比",
+      "descriptionEn": "Maximum expanded size; numbers are px, strings accept px or percentages"
+    },
+    {
+      "name": "resizable",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "是否允许调整此面板；关闭后相邻分隔条不可拖动，面板不可通过按钮折叠",
+      "descriptionEn": "Allow resizing; when false, adjacent separators cannot be dragged and this panel cannot be collapsed by a button"
+    },
+    {
+      "name": "collapsible",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "是否显示此面板的折叠按钮",
+      "descriptionEn": "Show this panel's collapse controls"
+    },
+    {
+      "name": "collapsed",
+      "type": "boolean | undefined",
+      "required": false,
+      "enumValues": [
+        false,
+        true
+      ],
+      "boolean": true,
+      "descriptionZh": "是否折叠，折叠尺寸为 0",
+      "descriptionEn": "Collapse the panel to zero size"
+    },
+    {
+      "name": "onCollapsedChange",
+      "type": "((collapsed: boolean) => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "此面板通过按钮切换折叠状态时触发",
+      "descriptionEn": "This panel was collapsed or expanded by a button"
     }
   ],
-  "events": [],
+  "events": [
+    {
+      "name": "onCollapsedChange",
+      "type": "((collapsed: boolean) => void) | undefined",
+      "required": false,
+      "boolean": false,
+      "descriptionZh": "此面板通过按钮切换折叠状态时触发",
+      "descriptionEn": "This panel was collapsed or expanded by a button"
+    }
+  ],
   "renderProps": [],
   "behavior": {
     "rules": []
@@ -35579,7 +35820,7 @@ export default function App() {
   );
 }
 ```
-## 垂直方向
+## 垂直与嵌套布局
 
 ```tsx
 import { Flex, Splitter, SplitterPanel } from "react-kui";
@@ -35605,6 +35846,106 @@ export default function App() {
         </Splitter>
       </SplitterPanel>
     </Splitter>
+  );
+}
+```
+## 折叠与锁定
+
+```tsx
+import { useState } from "react";
+import { Flex, Splitter, SplitterPanel } from "react-kui";
+export default function App() {
+  const [collapsed, setCollapsed] = useState(false);
+  return (
+    <>
+      <Splitter style={{ height: 220 }}>
+        <SplitterPanel
+          collapsed={collapsed}
+          onCollapsedChange={setCollapsed}
+          size="25%"
+          min="100px"
+          collapsible
+        >
+          <Flex align="center" justify="center" style={{ height: "100%" }}>
+            Folders
+          </Flex>
+        </SplitterPanel>
+        <SplitterPanel>
+          <Flex align="center" justify="center" style={{ height: "100%" }}>
+            Editor
+          </Flex>
+        </SplitterPanel>
+        <SplitterPanel size="120px" resizable={false}>
+          <Flex align="center" justify="center" style={{ height: "100%" }}>
+            Locked
+          </Flex>
+        </SplitterPanel>
+      </Splitter>
+      <code>collapsed: {String(collapsed)}</code>
+    </>
+  );
+}
+```
+## 绑定与恢复布局
+
+```tsx
+import { useState } from "react";
+import { Button, Flex, Space, Splitter, SplitterPanel } from "react-kui";
+export default function App() {
+  const [sizes, setSizes] = useState([240, 556]);
+  const [saved, setSaved] = useState([...sizes]);
+  return (
+    <Space vertical style={{ width: "100%" }}>
+      <Space>
+        <Button onClick={() => setSaved([...sizes])}>Save layout</Button>
+        <Button onClick={() => setSizes([...saved])}>Restore layout</Button>
+      </Space>
+      <code>sizes: {sizes.map((size) => Math.round(size)).join(", ")}</code>
+      <Splitter value={sizes} onChange={setSizes} style={{ height: 200 }}>
+        <SplitterPanel min="100px">
+          <Flex align="center" justify="center" style={{ height: "100%" }}>
+            Left
+          </Flex>
+        </SplitterPanel>
+        <SplitterPanel min="100px">
+          <Flex align="center" justify="center" style={{ height: "100%" }}>
+            Right
+          </Flex>
+        </SplitterPanel>
+      </Splitter>
+    </Space>
+  );
+}
+```
+## 参考线拖动
+
+```tsx
+import { useState } from "react";
+import { Flex, Splitter, SplitterPanel } from "react-kui";
+export default function App() {
+  const [preview, setPreview] = useState<number[]>([]);
+  const [applied, setApplied] = useState<number[]>([]);
+  return (
+    <>
+      <Splitter lazy style={{ height: 220 }} onResize={setPreview} onChange={setApplied}>
+        <SplitterPanel size="35%" min="100px">
+          <Flex align="center" justify="center" style={{ height: "100%" }}>
+            Chart
+          </Flex>
+        </SplitterPanel>
+        <SplitterPanel min="100px">
+          <Flex align="center" justify="center" style={{ height: "100%" }}>
+            Editor
+          </Flex>
+        </SplitterPanel>
+      </Splitter>
+      <div>
+        <code>preview: {preview.map((size) => Math.round(size)).join(", ")}</code>
+      </div>
+      <div>
+        <code>applied: {applied.map((size) => Math.round(size)).join(", ")}</code>
+      </div>
+    </>
   );
 }
 ```

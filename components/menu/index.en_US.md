@@ -75,6 +75,7 @@ The navigation menu is the soul of a website. Users rely on navigation to jump b
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
+| subMenuOpenDelay | Hover-open delay for popup submenus in milliseconds; passing over does not open them. Set to 0 for immediate opening. Keyboard and inline click interactions remain immediate | `number` | 200 |
 | icon | Item icon | `React.ReactNode \| IconType[]` | - |
 | disabled | Whether disabled | `boolean` | false |
 | onClick | Called when the menu item is activated | `React.MouseEventHandler<HTMLLIElement>` | - |

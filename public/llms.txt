@@ -1,4 +1,4 @@
-# React KUI 3.3.0
+# React KUI 3.4.0
 
 React 19.2+ library. Package: react-kui. Import CSS once from react-kui/style/index.css. Prefer installed-version metadata. Use JSX/TSX, not Vue templates or v-model.
 

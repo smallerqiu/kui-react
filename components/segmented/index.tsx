@@ -2,7 +2,7 @@ import { useValue } from "../utils/use-value";
 import { useFormAppearance } from "../config/use-config-appearance";
 import clsx from "clsx";
 import { createFormFieldComponent } from "../form/field-context";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useLayoutEffect, useRef, useState } from "react";
 import type { ShapeType, SizeType } from "../const/types";
 import Icon, { type IconType } from "../icon";
 
@@ -73,28 +73,63 @@ const Segmented = ({
       : items.find((item) => !item.disabled)?.value;
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const [ready, setReady] = useState(false);
+  const [animating, setAnimating] = useState(false);
+  const measured = useRef<
+    | {
+        value: SegmentedValue | undefined;
+        vertical: boolean;
+        width: number;
+        height: number;
+        left: number;
+        top: number;
+      }
+    | undefined
+  >(undefined);
   const vertical = direction === "vertical";
 
   const updateIndicator = useCallback(() => {
     const item = currentValue === undefined ? undefined : itemRefs.current.get(currentValue);
-    if (!item) {
+    if (!item || item.offsetWidth === 0 || item.offsetHeight === 0) {
       setReady(false);
+      setAnimating(false);
+      measured.current = undefined;
       setIndicatorStyle({});
       return;
     }
+    const next = {
+      value: currentValue,
+      vertical,
+      width: item.offsetWidth,
+      height: item.offsetHeight,
+      left: item.offsetLeft,
+      top: item.offsetTop,
+    };
+    const previous = measured.current;
+    if (
+      previous &&
+      Object.keys(next).every(
+        (key) => next[key as keyof typeof next] === previous[key as keyof typeof next],
+      )
+    )
+      return;
+    setAnimating(
+      !!previous && previous.vertical === next.vertical && !Object.is(previous.value, next.value),
+    );
+    measured.current = next;
     setIndicatorStyle(
       vertical
         ? { height: item.offsetHeight, top: item.offsetTop }
         : { width: item.offsetWidth, left: item.offsetLeft },
     );
-    requestAnimationFrame(() => setReady(true));
+    setReady(true);
   }, [currentValue, vertical]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     updateIndicator();
-    const observer = new ResizeObserver(updateIndicator);
-    if (rootRef.current) observer.observe(rootRef.current);
-    return () => observer.disconnect();
+    const observer =
+      typeof ResizeObserver !== "undefined" ? new ResizeObserver(updateIndicator) : undefined;
+    if (rootRef.current) observer?.observe(rootRef.current);
+    return () => observer?.disconnect();
   }, [options, updateIndicator]);
 
   const select = (option: SegmentedOption) => {
@@ -151,31 +186,37 @@ const Segmented = ({
       aria-readonly={readOnly || undefined}
       onKeyDown={move}
     >
-      {items.map((option) => (
-        <button
-          key={option.value}
-          ref={(node) => {
-            if (node) itemRefs.current.set(option.value, node);
-            else itemRefs.current.delete(option.value);
-          }}
-          type="button"
-          className={clsx("k-segmented-item", {
-            "k-segmented-item-active": option.value === currentValue,
-          })}
-          role="radio"
-          aria-checked={option.value === currentValue}
-          disabled={disabled || option.disabled}
-          tabIndex={option.value === focusValue ? 0 : -1}
-          onClick={() => select(option)}
-        >
-          {option.icon && <Icon type={option.icon} />}
-          <span>
-            {renderLabel?.(option, option.value === currentValue) ?? option.label ?? option.value}
-          </span>
-        </button>
-      ))}
+      {items.map((option) => {
+        const label =
+          renderLabel?.(option, option.value === currentValue) ??
+          option.label ??
+          (option.icon ? undefined : option.value);
+        const hasLabel = label !== undefined && label !== null && label !== false && label !== "";
+        return (
+          <button
+            key={option.value}
+            ref={(node) => {
+              if (node) itemRefs.current.set(option.value, node);
+              else itemRefs.current.delete(option.value);
+            }}
+            type="button"
+            className={clsx("k-segmented-item", {
+              "k-segmented-item-active": option.value === currentValue,
+            })}
+            role="radio"
+            aria-checked={option.value === currentValue}
+            aria-label={!hasLabel ? String(option.value) : undefined}
+            disabled={disabled || option.disabled}
+            tabIndex={option.value === focusValue ? 0 : -1}
+            onClick={() => select(option)}
+          >
+            {option.icon && <Icon type={option.icon} />}
+            {hasLabel && <span>{label}</span>}
+          </button>
+        );
+      })}
       <span
-        className={clsx("k-segmented-indicator", { "is-ready": ready })}
+        className={clsx("k-segmented-indicator", { "is-ready": ready, "is-animating": animating })}
         style={indicatorStyle}
       />
     </div>

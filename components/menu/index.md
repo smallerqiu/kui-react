@@ -48,6 +48,7 @@
 
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
+| subMenuOpenDelay | 弹出式子菜单的鼠标悬停展开延迟（毫秒），快速经过不展开；设为 0 可立即展开，不影响键盘操作或 inline 点击展开 | `number` | 200 |
 | value | 当前选中的菜单项 | `string[]` | - |
 | theme | 局部主题，未设置时继承全局主题 | `"dark" \| "light"` | - |
 | items | 菜单数据 | `MenuOptionsProps[]` | - |

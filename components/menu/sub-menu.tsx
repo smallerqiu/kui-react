@@ -86,6 +86,7 @@ export const SubMenu: React.FC<SubMenuProps> = ({
     }
   }
   const popTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const openTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const positionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const openRaf = useRef(0);
   const preCls = menuContext?.dropdown ? "dropdown-menu-submenu" : "menu-submenu";
@@ -103,10 +104,17 @@ export const SubMenu: React.FC<SubMenuProps> = ({
   // Controlled opening must also instantiate a popup that has never been hovered.
   if (opened && popup && !rendered) setRendered(true);
 
+  const cancelHoverOpen = useCallback(() => {
+    if (openTimer.current !== null) clearTimeout(openTimer.current);
+    openTimer.current = null;
+    cancelAnimationFrame(openRaf.current);
+  }, []);
+
   // 宿主窗口（Modal / Drawer）关掉时子菜单要跟着收：面板是 teleported 到 body 的，
   // 窗口摘了它还飘在页面上。只在真开着时才回调，免得给折叠态菜单白写一次 openKeys
   // （Vue 侧 usePopupHost 同一处也是这个守卫）。
   usePopupHost(() => {
+    cancelHoverOpen();
     if (!opened) return;
     menuContext?.openKeysChange?.(currentKey, false, subMenuContext?.keyPath || []);
   });
@@ -116,12 +124,28 @@ export const SubMenu: React.FC<SubMenuProps> = ({
     popTimer.current = null;
   }, []);
 
+  const ancestorsOpen =
+    subMenuContext?.keyPath.every((parent) => menuContext?.openKeys.includes(parent)) ?? true;
+  useEffect(() => {
+    if (disabled || !popup || !ancestorsOpen) cancelHoverOpen();
+    return cancelHoverOpen;
+  }, [
+    disabled,
+    popup,
+    ancestorsOpen,
+    menuContext?.mode,
+    menuContext?.subMenuOpenDelay,
+    cancelHoverOpen,
+  ]);
+
   const hideCurrentPopTimer = useCallback(() => {
+    cancelHoverOpen();
     clearCurrentPopTimer();
+    if (!opened) return;
     popTimer.current = setTimeout(() => {
       menuContext?.openKeysChange?.(currentKey, false, subMenuContext?.keyPath || []);
     }, 200);
-  }, [clearCurrentPopTimer, currentKey, menuContext, subMenuContext]);
+  }, [clearCurrentPopTimer, cancelHoverOpen, opened, currentKey, menuContext, subMenuContext]);
 
   const childSubMenuContext = useMemo(
     () => ({
@@ -169,6 +193,7 @@ export const SubMenu: React.FC<SubMenuProps> = ({
   }, [updatePosition]);
 
   const showPopper = () => {
+    cancelHoverOpen();
     clearCurrentPopTimer();
     if (!rendered) {
       setRendered(true);
@@ -190,10 +215,11 @@ export const SubMenu: React.FC<SubMenuProps> = ({
   useEffect(
     () => () => {
       clearCurrentPopTimer();
+      cancelHoverOpen();
       if (positionTimer.current) clearTimeout(positionTimer.current);
       cancelAnimationFrame(openRaf.current);
     },
-    [clearCurrentPopTimer],
+    [clearCurrentPopTimer, cancelHoverOpen],
   );
 
   const popperProps = {
@@ -208,6 +234,7 @@ export const SubMenu: React.FC<SubMenuProps> = ({
       visibility: popup && !popupPositioned ? "hidden" : undefined,
     } as CSSProperties,
     onMouseEnter: () => {
+      cancelHoverOpen();
       clearCurrentPopTimer();
       menuContext?.openKeysChange?.(currentKey, true, subMenuContext?.keyPath || []);
       subMenuContext?.clearPopTimer?.();
@@ -237,6 +264,8 @@ export const SubMenu: React.FC<SubMenuProps> = ({
     : { className: `k-${preCls}-sub` };
 
   const activateTitle = () => {
+    cancelHoverOpen();
+    clearCurrentPopTimer();
     if (disabled) return;
     if (menuContext?.mode === "inline" && !menuContext.inlineCollapsed) {
       menuContext.openKeysChange?.(currentKey, !opened, subMenuContext?.keyPath || []);
@@ -341,10 +370,19 @@ export const SubMenu: React.FC<SubMenuProps> = ({
         }
       : {
           onMouseEnter: () => {
-            if (!disabled) showPopper();
+            if (disabled) return;
+            cancelHoverOpen();
+            clearCurrentPopTimer();
+            subMenuContext?.clearPopTimer?.();
+            dropdownContext?.clearPopTimer?.();
+            if (opened) return;
+            const configured = menuContext?.subMenuOpenDelay ?? 200;
+            const delay = Number.isFinite(configured) ? Math.max(0, configured) : 200;
+            if (delay === 0) showPopper();
+            else openTimer.current = setTimeout(showPopper, delay);
           },
           onMouseLeave: () => {
-            if (!disabled) hideCurrentPopTimer();
+            hideCurrentPopTimer();
           },
         };
 

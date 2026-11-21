@@ -48,6 +48,7 @@ export interface MenuProps extends Omit<
   items?: MenuOptionsProps[];
   inlineCollapsed?: boolean;
   collapsedTooltip?: boolean;
+  subMenuOpenDelay?: number;
   openKeys?: string[];
   onSelect?: (data: MenuSelectEvent) => void;
   onOpenChange?: (openKeys: string[]) => void;
@@ -64,6 +65,7 @@ export const Menu: React.FC<MenuProps> = ({
   items,
   inlineCollapsed = false,
   collapsedTooltip = true,
+  subMenuOpenDelay = 200,
   openKeys,
   onSelect,
   onOpenChange,
@@ -297,6 +299,7 @@ export const Menu: React.FC<MenuProps> = ({
       mode,
       inlineCollapsed,
       collapsedTooltip,
+      subMenuOpenDelay,
       popupInlineCollapsed,
       inlineTransition,
       inlineOpenKeys: tempOpenKeys,
@@ -311,6 +314,7 @@ export const Menu: React.FC<MenuProps> = ({
       mode,
       inlineCollapsed,
       collapsedTooltip,
+      subMenuOpenDelay,
       popupInlineCollapsed,
       inlineTransition,
       tempOpenKeys,

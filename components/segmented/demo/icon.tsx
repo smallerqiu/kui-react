@@ -1,6 +1,6 @@
-import { Monitor, Smartphone, Tablet } from "kui-icons";
+import { Monitor, Smartphone, Tablet, List, LayoutGrid } from "kui-icons";
 import { useState } from "react";
-import { Segmented } from "react-kui";
+import { Segmented, Space } from "react-kui";
 
 const options = [
   { label: "Desktop", value: "desktop", icon: Monitor },
@@ -10,5 +10,19 @@ const options = [
 
 export default function SegmentedIconDemo() {
   const [device, setDevice] = useState("desktop");
-  return <Segmented value={device} options={options} onChange={(value) => setDevice(String(value))} />;
+  const [layout, setLayout] = useState("list");
+  return (
+    <Space vertical>
+      <Segmented value={device} options={options} onChange={(value) => setDevice(String(value))} />
+      <Segmented
+        value={layout}
+        options={[
+          { value: "list", icon: List },
+          { value: "grid", icon: LayoutGrid },
+        ]}
+        onChange={(value) => setLayout(String(value))}
+        aria-label="Layout"
+      />
+    </Space>
+  );
 }
